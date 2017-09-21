@@ -1,0 +1,49 @@
+## Java
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+## Intellij
+out/
+lib/
+.idea/
+*.ipr
+*.iws
+*.iml
+
+## Eclipse
+.classpath
+.project
+.metadata
+**/bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.externalToolBuilders/
+*.launch
+
+## NetBeans
+**/nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+## Gradle
+.gradle
+gradle-app.setting
+build/
+
+## OS Specific
+.DS_Store
+
+## Android
+gen/
