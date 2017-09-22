@@ -93,8 +93,8 @@ class RestoreBackupActivityController {
         try {
             String[] selectedPackageArray = selectedPackages.toArray(new String[selectedPackages.size()]);
 
-            ContentProviderBackupConfiguration backupConfiguration = ContentProviderBackupConfigurationBuilder.
-                    buildDefaultConfiguration(parent, contentUri, selectedPackageArray.length);
+            ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder().
+                    setContext(parent).setOutputUri(contentUri).setPackages(selectedPackageArray).build();
             boolean success = initializeBackupTransport(backupConfiguration);
 
             if(!success) {

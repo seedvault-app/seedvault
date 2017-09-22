@@ -18,13 +18,13 @@ public class ContentProviderBackupConfiguration {
 
     private final long backupSizeQuota;
 
-    private final int packageCount;
+    private final String[] packages;
 
-    public ContentProviderBackupConfiguration(Context context, Uri uri, long backupSizeQuota, int packageCount) {
+    ContentProviderBackupConfiguration(Context context, Uri uri, String[] packages, long backupSizeQuota) {
         this.context = context;
         this.uri = uri;
+        this.packages = packages;
         this.backupSizeQuota = backupSizeQuota;
-        this.packageCount = packageCount;
     }
 
     public Context getContext() {
@@ -40,7 +40,7 @@ public class ContentProviderBackupConfiguration {
     }
 
     public int getPackageCount() {
-        return packageCount;
+        return packages.length;
     }
 
 }

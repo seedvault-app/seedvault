@@ -61,11 +61,11 @@ class CreateBackupActivityController {
             String[] selectedPackageArray = selectedPackages.toArray(new String[selectedPackages.size() + 1]);
             selectedPackageArray[selectedPackageArray.length - 1] = "@pm@";
 
-            ContentProviderBackupConfiguration backupConfiguration = ContentProviderBackupConfigurationBuilder.
-                    buildDefaultConfiguration(parent, contentUri, selectedPackageArray.length);
+            ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder()
+                    .setContext(parent).setOutputUri(contentUri).setPackages(selectedPackageArray).build();
             boolean success = initializeBackupTransport(backupConfiguration);
 
-            if(!success) {
+            if (!success) {
                 Toast.makeText(parent, R.string.backup_in_progress, Toast.LENGTH_LONG).show();
                 return;
             }
@@ -88,7 +88,7 @@ class CreateBackupActivityController {
     private boolean initializeBackupTransport(ContentProviderBackupConfiguration configuration) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if(backupTransport.getBackupComponent() != null || backupTransport.getRestoreComponent() != null) {
+        if (backupTransport.getBackupComponent() != null || backupTransport.getRestoreComponent() != null) {
             return false;
         }
 
