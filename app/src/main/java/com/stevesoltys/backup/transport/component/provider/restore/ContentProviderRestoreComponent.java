@@ -8,29 +8,19 @@ import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
-
+import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.util.Arrays;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import libcore.io.IoUtils;
 import libcore.io.Streams;
 
-import static android.app.backup.BackupTransport.NO_MORE_DATA;
-import static android.app.backup.BackupTransport.TRANSPORT_ERROR;
-import static android.app.backup.BackupTransport.TRANSPORT_OK;
-import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
+import java.io.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static android.app.backup.BackupTransport.*;
 import static android.app.backup.RestoreDescription.TYPE_FULL_STREAM;
 import static android.app.backup.RestoreDescription.TYPE_KEY_VALUE;
 import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.FULL_BACKUP_DIRECTORY;
@@ -59,12 +49,9 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     @Override
     public int startRestore(long token, PackageInfo[] packages) {
-        Log.i(TAG, "startRestore() " + Arrays.asList(packages));
-
         restoreState = new ContentProviderRestoreState();
         restoreState.setPackages(packages);
         restoreState.setPackageIndex(-1);
-
         return TRANSPORT_OK;
     }
 
@@ -104,11 +91,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     @Override
     public RestoreDescription nextRestorePackage() {
-        Log.i(TAG, "nextRestorePackage()");
-
-        if (restoreState == null) {
-            throw new IllegalStateException("startRestore not called");
-        }
+        Preconditions.checkNotNull(restoreState, "startRestore() not called");
 
         int packageIndex = restoreState.getPackageIndex();
         PackageInfo[] packages = restoreState.getPackages();
@@ -119,42 +102,27 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
             try {
                 if (containsPackageFile(INCREMENTAL_BACKUP_DIRECTORY + name)) {
-                    Log.i(TAG, "  nextRestorePackage(TYPE_KEY_VALUE) @ " + packageIndex + " = " + name);
-
                     restoreState.setRestoreType(TYPE_KEY_VALUE);
                     return new RestoreDescription(name, restoreState.getRestoreType());
 
                 } else if (containsPackageFile(FULL_BACKUP_DIRECTORY + name)) {
-                    Log.i(TAG, "  nextRestorePackage(TYPE_FULL_STREAM) @ " + packageIndex + " = " + name);
-
                     restoreState.setRestoreType(TYPE_FULL_STREAM);
                     return new RestoreDescription(name, restoreState.getRestoreType());
                 }
 
-            } catch (IOException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-                Log.e(TAG, "  ... package @ " + packageIndex + " = " + name + " error:", e);
+            } catch (IOException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
+                Log.e(TAG, "Error choosing package  " + name + "  at index " + packageIndex + "failed selection:", ex);
             }
-
-            Log.i(TAG, "  ... package @ " + packageIndex + " = " + name + " has no data; skipping");
         }
-
-        Log.i(TAG, "  no more packages to restore");
         return RestoreDescription.NO_MORE_PACKAGES;
     }
 
     @Override
     public int getRestoreData(ParcelFileDescriptor outputFileDescriptor) {
-        Log.i(TAG, "getRestoreData() " + outputFileDescriptor.toString());
-
-        if (restoreState == null) {
-            throw new IllegalStateException("startRestore not called");
-
-        } else if (restoreState.getPackageIndex() < 0) {
-            throw new IllegalStateException("nextRestorePackage not called");
-
-        } else if (restoreState.getRestoreType() != TYPE_KEY_VALUE) {
-            throw new IllegalStateException("getRestoreData(fd) for non-key/value dataset");
-        }
+        Preconditions.checkState(restoreState != null, "startRestore() not called");
+        Preconditions.checkState(restoreState.getPackageIndex() >= 0, "nextRestorePackage() not called");
+        Preconditions.checkState(restoreState.getRestoreType() == TYPE_KEY_VALUE,
+                "getRestoreData() for non-key/value dataset");
 
         PackageInfo packageInfo = restoreState.getPackages()[restoreState.getPackageIndex()];
         BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
@@ -170,8 +138,6 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     private int transferIncrementalRestoreData(String packageName, BackupDataOutput backupDataOutput)
             throws IOException, InvalidAlgorithmParameterException, InvalidKeyException {
-        Log.i(TAG, "transferIncrementalRestoreData() " + packageName);
-
         ParcelFileDescriptor inputFileDescriptor = buildFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
 
@@ -183,8 +149,6 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 String blobKey = new String(Base64.decode(fileName, Base64.DEFAULT));
 
                 byte[] backupData = Streams.readFullyNoClose(inputStream);
-                Log.i(TAG, "Backup data: " + packageName + ": " + backupData.length);
-
                 backupDataOutput.writeEntityHeader(blobKey, backupData.length);
                 backupDataOutput.writeEntityData(backupData, backupData.length);
             }
@@ -199,10 +163,8 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     @Override
     public int getNextFullRestoreDataChunk(ParcelFileDescriptor fileDescriptor) {
-
-        if (restoreState.getRestoreType() != TYPE_FULL_STREAM) {
-            throw new IllegalStateException("Asked for full restore data for non-stream package");
-        }
+        Preconditions.checkState(restoreState.getRestoreType() == TYPE_FULL_STREAM,
+                "Asked for full restore data for non-stream package");
 
         ParcelFileDescriptor inputFileDescriptor = restoreState.getInputFileDescriptor();
         ZipInputStream inputStream = restoreState.getInputStream();
@@ -220,7 +182,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             } catch (FileNotFoundException ex) {
                 Log.e(TAG, "Unable to read archive for " + name, ex);
 
-                if(inputFileDescriptor != null) {
+                if (inputFileDescriptor != null) {
                     IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
                 }
 
@@ -270,7 +232,6 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 bytesRead = NO_MORE_DATA;
 
             } else if (bytesRead == 0) {
-                Log.w(TAG, "read() of archive file returned 0; treating as EOF");
                 bytesRead = NO_MORE_DATA;
 
             } else {
@@ -328,19 +289,12 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
     }
 
     private void resetFullRestoreState() {
-
-        if(restoreState == null) {
-            return;
-        }
-
-        if (restoreState.getRestoreType() != TYPE_FULL_STREAM) {
-            throw new IllegalStateException("abortFullRestore() but not currently restoring");
-        }
+        Preconditions.checkNotNull(restoreState);
+        Preconditions.checkState(restoreState.getRestoreType() != TYPE_FULL_STREAM);
 
         IoUtils.closeQuietly(restoreState.getInputFileDescriptor());
         IoUtils.closeQuietly(restoreState.getInputStream());
         IoUtils.closeQuietly(restoreState.getOutputStream());
-
         restoreState = null;
     }
 }
