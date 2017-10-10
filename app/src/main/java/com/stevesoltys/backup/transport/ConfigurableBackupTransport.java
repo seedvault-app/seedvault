@@ -6,6 +6,7 @@ import android.app.backup.RestoreSet;
 import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 
+import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 
@@ -24,6 +25,32 @@ public class ConfigurableBackupTransport extends BackupTransport {
     public ConfigurableBackupTransport() {
         backupComponent = null;
         restoreComponent = null;
+    }
+
+    public void initialize(BackupComponent backupComponent, RestoreComponent restoreComponent) {
+        Preconditions.checkNotNull(backupComponent);
+        Preconditions.checkNotNull(restoreComponent);
+        Preconditions.checkState(!isActive());
+
+        this.restoreComponent = restoreComponent;
+        this.backupComponent = backupComponent;
+    }
+
+    public void reset() {
+        backupComponent = null;
+        restoreComponent = null;
+    }
+
+    public boolean isActive() {
+        return backupComponent != null && restoreComponent != null;
+    }
+
+    public BackupComponent getBackupComponent() {
+        return backupComponent;
+    }
+
+    public RestoreComponent getRestoreComponent() {
+        return restoreComponent;
     }
 
     @Override
@@ -140,21 +167,5 @@ public class ConfigurableBackupTransport extends BackupTransport {
     @Override
     public void finishRestore() {
         restoreComponent.finishRestore();
-    }
-
-    public BackupComponent getBackupComponent() {
-        return backupComponent;
-    }
-
-    public void setBackupComponent(BackupComponent backupComponent) {
-        this.backupComponent = backupComponent;
-    }
-
-    public RestoreComponent getRestoreComponent() {
-        return restoreComponent;
-    }
-
-    public void setRestoreComponent(RestoreComponent restoreComponent) {
-        this.restoreComponent = restoreComponent;
     }
 }

@@ -15,12 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.BackupManagerController;
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
+import com.stevesoltys.backup.transport.component.BackupComponent;
+import com.stevesoltys.backup.transport.component.RestoreComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
 import com.stevesoltys.backup.transport.component.provider.backup.ContentProviderBackupComponent;
@@ -88,12 +89,13 @@ class CreateBackupActivityController {
     private boolean initializeBackupTransport(ContentProviderBackupConfiguration configuration) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if (backupTransport.getBackupComponent() != null || backupTransport.getRestoreComponent() != null) {
+        if (backupTransport.isActive()) {
             return false;
         }
 
-        backupTransport.setBackupComponent(new ContentProviderBackupComponent(configuration));
-        backupTransport.setRestoreComponent(new ContentProviderRestoreComponent(configuration));
+        BackupComponent backupComponent = new ContentProviderBackupComponent(configuration);
+        RestoreComponent restoreComponent = new ContentProviderRestoreComponent(configuration);
+        backupTransport.initialize(backupComponent, restoreComponent);
         return true;
     }
 

@@ -55,12 +55,11 @@ class RestoreObserver implements RestoreSessionObserver {
     public void restoreSessionCompleted(RestoreResult restoreResult) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if(backupTransport.getRestoreComponent() == null || backupTransport.getBackupComponent() == null) {
+        if(!backupTransport.isActive()) {
             return;
         }
 
-        backupTransport.setBackupComponent(null);
-        backupTransport.setRestoreComponent(null);
+        backupTransport.reset();
 
         context.runOnUiThread(() -> {
             if (restoreResult == RestoreResult.SUCCESS) {

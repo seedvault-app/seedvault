@@ -6,7 +6,6 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.backup.BackupResult;
 import com.stevesoltys.backup.session.backup.BackupSession;
@@ -63,12 +62,11 @@ class BackupObserver implements BackupSessionObserver {
     public void backupSessionCompleted(BackupSession backupSession, BackupResult backupResult) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if (backupTransport.getRestoreComponent() == null || backupTransport.getBackupComponent() == null) {
+        if (!backupTransport.isActive()) {
             return;
         }
 
-        backupTransport.setBackupComponent(null);
-        backupTransport.setRestoreComponent(null);
+        backupTransport.reset();
 
         context.runOnUiThread(() -> {
             if (backupResult == BackupResult.SUCCESS) {
