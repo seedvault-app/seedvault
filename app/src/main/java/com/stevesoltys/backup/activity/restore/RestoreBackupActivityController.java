@@ -38,8 +38,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.FULL_BACKUP_DIRECTORY;
-
 /**
  * @author Steve Soltys
  */
@@ -78,7 +76,7 @@ class RestoreBackupActivityController {
         while ((zipEntry = inputStream.getNextEntry()) != null) {
             String zipEntryPath = zipEntry.getName();
 
-            if (zipEntryPath.startsWith(FULL_BACKUP_DIRECTORY)) {
+            if (zipEntryPath.startsWith(ContentProviderBackupConfigurationBuilder.DEFAULT_FULL_BACKUP_DIRECTORY)) {
                 String fileName = new File(zipEntryPath).getName();
                 results.add(fileName);
             }

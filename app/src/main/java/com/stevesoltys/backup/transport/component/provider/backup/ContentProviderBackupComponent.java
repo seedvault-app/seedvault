@@ -18,8 +18,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static android.app.backup.BackupTransport.*;
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.FULL_BACKUP_DIRECTORY;
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.INCREMENTAL_BACKUP_DIRECTORY;
 
 /**
  * TODO: Clean this up. Much of it was taken from the LocalTransport implementation.
@@ -121,7 +119,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             int dataSize = backupDataInput.getDataSize();
 
             if (dataSize >= 0) {
-                ZipEntry zipEntry = new ZipEntry(INCREMENTAL_BACKUP_DIRECTORY + backupState.getPackageName() +
+                ZipEntry zipEntry = new ZipEntry(configuration.getIncrementalBackupDirectory() + backupState.getPackageName() +
                         "/" + chunkFileName);
                 outputStream.putNextEntry(zipEntry);
 
@@ -167,7 +165,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.setBuffer(new byte[INITIAL_BUFFER_SIZE]);
             backupState.setBytesTransferred(0);
 
-            ZipEntry zipEntry = new ZipEntry(FULL_BACKUP_DIRECTORY + backupState.getPackageName());
+            ZipEntry zipEntry = new ZipEntry(configuration.getFullBackupDirectory() + backupState.getPackageName());
             backupState.getOutputStream().putNextEntry(zipEntry);
 
         } catch (Exception ex) {

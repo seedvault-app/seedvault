@@ -10,10 +10,6 @@ import java.util.Set;
  */
 public class ContentProviderBackupConfiguration {
 
-    public static final String FULL_BACKUP_DIRECTORY = "full/";
-
-    public static final String INCREMENTAL_BACKUP_DIRECTORY = "incr/";
-
     private final Context context;
 
     private final Uri uri;
@@ -22,11 +18,18 @@ public class ContentProviderBackupConfiguration {
 
     private final Set<String> packages;
 
-    ContentProviderBackupConfiguration(Context context, Uri uri, Set<String> packages, long backupSizeQuota) {
+    private final String fullBackupDirectory;
+
+    private final String incrementalBackupDirectory;
+
+    ContentProviderBackupConfiguration(Context context, Uri uri, Set<String> packages, long backupSizeQuota,
+                                       String fullBackupDirectory, String incrementalBackupDirectory) {
         this.context = context;
         this.uri = uri;
         this.packages = packages;
         this.backupSizeQuota = backupSizeQuota;
+        this.fullBackupDirectory = fullBackupDirectory;
+        this.incrementalBackupDirectory = incrementalBackupDirectory;
     }
 
     public Context getContext() {
@@ -45,4 +48,11 @@ public class ContentProviderBackupConfiguration {
         return packages.size();
     }
 
+    public String getFullBackupDirectory() {
+        return fullBackupDirectory;
+    }
+
+    public String getIncrementalBackupDirectory() {
+        return incrementalBackupDirectory;
+    }
 }

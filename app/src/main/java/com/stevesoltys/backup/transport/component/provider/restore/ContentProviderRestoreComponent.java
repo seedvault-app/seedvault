@@ -24,8 +24,6 @@ import java.util.zip.ZipInputStream;
 import static android.app.backup.BackupTransport.*;
 import static android.app.backup.RestoreDescription.TYPE_FULL_STREAM;
 import static android.app.backup.RestoreDescription.TYPE_KEY_VALUE;
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.FULL_BACKUP_DIRECTORY;
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration.INCREMENTAL_BACKUP_DIRECTORY;
 
 /**
  * @author Steve Soltys
@@ -66,11 +64,11 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             String name = packages[packageIndex].packageName;
 
             try {
-                if (containsPackageFile(INCREMENTAL_BACKUP_DIRECTORY + name)) {
+                if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
                     restoreState.setRestoreType(TYPE_KEY_VALUE);
                     return new RestoreDescription(name, restoreState.getRestoreType());
 
-                } else if (containsPackageFile(FULL_BACKUP_DIRECTORY + name)) {
+                } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
                     restoreState.setRestoreType(TYPE_FULL_STREAM);
                     return new RestoreDescription(name, restoreState.getRestoreType());
                 }
@@ -139,7 +137,8 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
 
-        Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream, INCREMENTAL_BACKUP_DIRECTORY + packageName);
+        Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
+                configuration.getIncrementalBackupDirectory() + packageName);
         while (zipEntryOptional.isPresent()) {
             String fileName = new File(zipEntryOptional.get().getName()).getName();
             String blobKey = new String(Base64.decode(fileName, Base64.DEFAULT));
@@ -149,7 +148,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             backupDataOutput.writeEntityData(backupData, backupData.length);
             inputStream.closeEntry();
 
-            zipEntryOptional = seekToEntry(inputStream, INCREMENTAL_BACKUP_DIRECTORY + packageName);
+            zipEntryOptional = seekToEntry(inputStream, configuration.getIncrementalBackupDirectory() + packageName);
         }
 
         IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
@@ -174,7 +173,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 inputStream = buildInputStream(inputFileDescriptor);
                 restoreState.setInputStream(inputStream);
 
-                if (!seekToEntry(inputStream, FULL_BACKUP_DIRECTORY + name).isPresent()) {
+                if (!seekToEntry(inputStream, configuration.getFullBackupDirectory() + name).isPresent()) {
                     IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
                     return TRANSPORT_PACKAGE_REJECTED;
                 }
