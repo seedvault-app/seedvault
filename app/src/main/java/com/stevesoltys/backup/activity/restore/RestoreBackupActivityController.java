@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -89,12 +91,10 @@ class RestoreBackupActivityController {
         return results;
     }
 
-    void restorePackages(List<String> selectedPackages, Uri contentUri, Activity parent) {
+    void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent) {
         try {
-            String[] selectedPackageArray = selectedPackages.toArray(new String[selectedPackages.size()]);
-
             ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder().
-                    setContext(parent).setOutputUri(contentUri).setPackages(selectedPackageArray).build();
+                    setContext(parent).setOutputUri(contentUri).setPackages(selectedPackages).build();
             boolean success = initializeBackupTransport(backupConfiguration);
 
             if(!success) {
@@ -103,16 +103,14 @@ class RestoreBackupActivityController {
             }
 
             PopupWindow popupWindow = buildPopupWindow(parent);
-            RestoreObserver restoreObserver = new RestoreObserver(parent, popupWindow, selectedPackageArray.length);
-            RestoreSession restoreSession = backupManager.restore(restoreObserver, selectedPackageArray);
+            RestoreObserver restoreObserver = new RestoreObserver(parent, popupWindow, selectedPackages.size());
+            RestoreSession restoreSession = backupManager.restore(restoreObserver, selectedPackages);
 
             View popupWindowButton = popupWindow.getContentView().findViewById(R.id.popup_cancel_button);
-
             if (popupWindowButton != null) {
                 popupWindowButton.setOnClickListener(new RestorePopupWindowListener(restoreSession));
             }
-
-        } catch (Exception e) {
+        } catch (RemoteException e) {
             Log.e(TAG, "Error while running restore: ", e);
         }
     }

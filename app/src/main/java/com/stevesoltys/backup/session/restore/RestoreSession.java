@@ -1,11 +1,9 @@
 package com.stevesoltys.backup.session.restore;
 
-import android.app.backup.BackupManager;
-import android.app.backup.IBackupManager;
-import android.app.backup.IRestoreObserver;
-import android.app.backup.IRestoreSession;
-import android.app.backup.RestoreSet;
+import android.app.backup.*;
 import android.os.RemoteException;
+
+import java.util.Set;
 
 /**
  * @author Steve Soltys
@@ -16,11 +14,11 @@ public class RestoreSession extends IRestoreObserver.Stub {
 
     private final RestoreSessionObserver observer;
 
-    private final String[] packages;
+    private final Set<String> packages;
 
     private IRestoreSession restoreSession;
 
-    public RestoreSession(IBackupManager backupManager, RestoreSessionObserver observer, String... packages) {
+    public RestoreSession(IBackupManager backupManager, RestoreSessionObserver observer, Set<String> packages) {
         this.backupManager = backupManager;
         this.observer = observer;
         this.packages = packages;
@@ -28,7 +26,7 @@ public class RestoreSession extends IRestoreObserver.Stub {
 
     public void start() throws RemoteException {
 
-        if (restoreSession != null || packages.length == 0) {
+        if (restoreSession != null || packages.isEmpty()) {
             observer.restoreSessionCompleted(RestoreResult.FAILURE);
             return;
         }
@@ -63,7 +61,8 @@ public class RestoreSession extends IRestoreObserver.Stub {
     public void restoreSetsAvailable(RestoreSet[] restoreSets) throws RemoteException {
         if (restoreSets.length > 0) {
             RestoreSet restoreSet = restoreSets[0];
-            int result = restoreSession.restoreSome(restoreSet.token, this, null, packages);
+            String[] packageArray = packages.toArray(new String[packages.size()]);
+            int result = restoreSession.restoreSome(restoreSet.token, this, null, packageArray);
 
             if (result != BackupManager.SUCCESS) {
                 stop(RestoreResult.FAILURE);
@@ -88,6 +87,7 @@ public class RestoreSession extends IRestoreObserver.Stub {
 
         } else if (result == BackupManager.ERROR_BACKUP_CANCELLED) {
             stop(RestoreResult.CANCELLED);
+
         } else  {
             stop(RestoreResult.FAILURE);
         }

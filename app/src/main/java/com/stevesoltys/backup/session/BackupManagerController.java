@@ -5,7 +5,6 @@ import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.session.backup.BackupSessionObserver;
 import com.stevesoltys.backup.session.restore.RestoreSession;
@@ -13,6 +12,7 @@ import com.stevesoltys.backup.session.restore.RestoreSessionObserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static android.os.UserHandle.USER_SYSTEM;
 
@@ -32,7 +32,7 @@ public class BackupManagerController {
         packageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
     }
 
-    public BackupSession backup(BackupSessionObserver observer, String... packages) throws RemoteException {
+    public BackupSession backup(BackupSessionObserver observer, Set<String> packages) throws RemoteException {
 
         if (!BACKUP_TRANSPORT.equals(backupManager.getCurrentTransport())) {
             backupManager.selectBackupTransport(BACKUP_TRANSPORT);
@@ -43,7 +43,7 @@ public class BackupManagerController {
         return backupSession;
     }
 
-    public RestoreSession restore(RestoreSessionObserver observer, String... packages) throws RemoteException {
+    public RestoreSession restore(RestoreSessionObserver observer, Set<String> packages) throws RemoteException {
 
         if (!BACKUP_TRANSPORT.equals(backupManager.getCurrentTransport())) {
             backupManager.selectBackupTransport(BACKUP_TRANSPORT);

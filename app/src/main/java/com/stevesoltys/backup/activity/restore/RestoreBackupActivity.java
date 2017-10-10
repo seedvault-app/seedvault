@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.stevesoltys.backup.R;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RestoreBackupActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -18,7 +17,7 @@ public class RestoreBackupActivity extends Activity implements View.OnClickListe
 
     private ListView packageListView;
 
-    private List<String> selectedPackageList;
+    private Set<String> selectedPackageList;
 
     private Uri contentUri;
 
@@ -30,7 +29,7 @@ public class RestoreBackupActivity extends Activity implements View.OnClickListe
         findViewById(R.id.restore_confirm_button).setOnClickListener(this);
 
         packageListView = findViewById(R.id.restore_package_list);
-        selectedPackageList = new LinkedList<>();
+        selectedPackageList = new HashSet<>();
         contentUri = getIntent().getData();
 
         controller = new RestoreBackupActivityController();

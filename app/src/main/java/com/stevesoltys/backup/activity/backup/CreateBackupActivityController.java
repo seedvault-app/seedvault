@@ -29,6 +29,7 @@ import com.stevesoltys.backup.transport.component.provider.restore.ContentProvid
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Steve Soltys
@@ -57,13 +58,12 @@ class CreateBackupActivityController {
         packageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 
-    void backupPackages(List<String> selectedPackages, Uri contentUri, Activity parent) {
+    void backupPackages(Set<String> selectedPackages, Uri contentUri, Activity parent) {
         try {
-            String[] selectedPackageArray = selectedPackages.toArray(new String[selectedPackages.size() + 1]);
-            selectedPackageArray[selectedPackageArray.length - 1] = "@pm@";
+            selectedPackages.add("@pm@");
 
             ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder()
-                    .setContext(parent).setOutputUri(contentUri).setPackages(selectedPackageArray).build();
+                    .setContext(parent).setOutputUri(contentUri).setPackages(selectedPackages).build();
             boolean success = initializeBackupTransport(backupConfiguration);
 
             if (!success) {
@@ -73,7 +73,7 @@ class CreateBackupActivityController {
 
             PopupWindow popupWindow = buildPopupWindow(parent);
             BackupObserver backupObserver = new BackupObserver(parent, popupWindow);
-            BackupSession backupSession = backupManager.backup(backupObserver, selectedPackageArray);
+            BackupSession backupSession = backupManager.backup(backupObserver, selectedPackages);
 
             View popupWindowButton = popupWindow.getContentView().findViewById(R.id.popup_cancel_button);
 

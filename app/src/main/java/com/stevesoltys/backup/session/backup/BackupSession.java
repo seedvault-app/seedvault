@@ -6,6 +6,8 @@ import android.app.backup.IBackupManager;
 import android.app.backup.IBackupObserver;
 import android.os.RemoteException;
 
+import java.util.Set;
+
 import static android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP;
 
 /**
@@ -17,16 +19,18 @@ public class BackupSession extends IBackupObserver.Stub {
 
     private final BackupSessionObserver backupSessionObserver;
 
-    private final String[] packages;
+    private final Set<String> packages;
 
-    public BackupSession(IBackupManager backupManager, BackupSessionObserver backupSessionObserver, String... packages) {
+    public BackupSession(IBackupManager backupManager, BackupSessionObserver backupSessionObserver,
+                         Set<String> packages) {
         this.backupManager = backupManager;
         this.backupSessionObserver = backupSessionObserver;
         this.packages = packages;
     }
 
     public void start() throws RemoteException {
-        backupManager.requestBackup(packages, this, null, FLAG_NON_INCREMENTAL_BACKUP);
+        String [] selectedPackageArray = packages.toArray(new String[packages.size()]);
+        backupManager.requestBackup(selectedPackageArray, this, null, FLAG_NON_INCREMENTAL_BACKUP);
     }
 
     public void stop(BackupResult result) throws RemoteException {

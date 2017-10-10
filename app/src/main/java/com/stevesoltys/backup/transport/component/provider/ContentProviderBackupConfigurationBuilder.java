@@ -3,6 +3,8 @@ package com.stevesoltys.backup.transport.component.provider;
 import android.content.Context;
 import android.net.Uri;
 
+import java.util.Set;
+
 /**
  * @author Steve Soltys
  */
@@ -12,7 +14,7 @@ public class ContentProviderBackupConfigurationBuilder {
 
     private Uri outputUri;
 
-    private String[] packages;
+    private Set<String> packages;
 
     private long backupSizeQuota = Long.MAX_VALUE;
 
@@ -41,7 +43,7 @@ public class ContentProviderBackupConfigurationBuilder {
         return this;
     }
 
-    public ContentProviderBackupConfigurationBuilder setPackages(String[] packages) {
+    public ContentProviderBackupConfigurationBuilder setPackages(Set<String> packages) {
         this.packages = packages;
         return this;
     }
