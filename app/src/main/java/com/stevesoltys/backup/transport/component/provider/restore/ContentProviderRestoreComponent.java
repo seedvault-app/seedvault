@@ -156,12 +156,11 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
     }
 
     @Override
-    public int getNextFullRestoreDataChunk(ParcelFileDescriptor fileDescriptor) {
+    public int getNextFullRestoreDataChunk(ParcelFileDescriptor outputFileDescriptor) {
         Preconditions.checkState(restoreState.getRestoreType() == TYPE_FULL_STREAM,
                 "Asked for full restore data for non-stream package");
 
         ParcelFileDescriptor inputFileDescriptor = restoreState.getInputFileDescriptor();
-        ZipInputStream inputStream = restoreState.getInputStream();
 
         if (inputFileDescriptor == null) {
             String name = restoreState.getPackages()[restoreState.getPackageIndex()].packageName;
@@ -170,7 +169,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 inputFileDescriptor = buildInputFileDescriptor();
                 restoreState.setInputFileDescriptor(inputFileDescriptor);
 
-                inputStream = buildInputStream(inputFileDescriptor);
+                ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
                 restoreState.setInputStream(inputStream);
 
                 if (!seekToEntry(inputStream, configuration.getFullBackupDirectory() + name).isPresent()) {
@@ -189,9 +188,14 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         }
 
         if (restoreState.getOutputStream() == null) {
-            restoreState.setOutputStream(new FileOutputStream(fileDescriptor.getFileDescriptor()));
+            restoreState.setOutputStream(new FileOutputStream(outputFileDescriptor.getFileDescriptor()));
         }
 
+        return transferFullRestoreData(outputFileDescriptor);
+    }
+
+    private int transferFullRestoreData(ParcelFileDescriptor outputFileDescriptor) {
+        ZipInputStream inputStream = restoreState.getInputStream();
         OutputStream outputStream = restoreState.getOutputStream();
 
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
@@ -212,10 +216,11 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
         } finally {
             if (bytesRead == NO_MORE_DATA) {
-                if (inputFileDescriptor != null) {
-                    IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
+
+                if (restoreState.getInputFileDescriptor() != null) {
+                    IoUtils.closeQuietly(restoreState.getInputFileDescriptor().getFileDescriptor());
                 }
-                IoUtils.closeQuietly(fileDescriptor.getFileDescriptor());
+                IoUtils.closeQuietly(outputFileDescriptor.getFileDescriptor());
 
                 restoreState.setInputFileDescriptor(null);
                 restoreState.setInputStream(null);
