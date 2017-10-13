@@ -9,5 +9,8 @@ A backup application for the [Android Open Source Project](https://source.androi
 - Check out [the wiki](https://github.com/stevesoltys/backup/wiki) for information on building the application with 
 AOSP.
 
+## Contributing
+Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/backup. 
+
 ## License
 This application is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
