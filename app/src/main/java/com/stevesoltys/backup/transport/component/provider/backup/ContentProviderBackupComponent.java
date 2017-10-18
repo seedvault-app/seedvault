@@ -7,9 +7,9 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
-
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
+import sun.misc.IOUtils;
 
 import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
@@ -162,7 +162,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
             backupState.setInputFileDescriptor(fileDescriptor);
             backupState.setInputStream(new FileInputStream(fileDescriptor.getFileDescriptor()));
-            backupState.setBuffer(new byte[INITIAL_BUFFER_SIZE]);
             backupState.setBytesTransferred(0);
 
             ZipEntry zipEntry = new ZipEntry(configuration.getFullBackupDirectory() + backupState.getPackageName());
@@ -210,29 +209,11 @@ public class ContentProviderBackupComponent implements BackupComponent {
             return TRANSPORT_QUOTA_EXCEEDED;
         }
 
-        byte[] buffer = backupState.getBuffer();
-        if (numBytes > buffer.length) {
-            buffer = new byte[numBytes];
-        }
-
         InputStream inputStream = backupState.getInputStream();
         ZipOutputStream outputStream = backupState.getOutputStream();
 
         try {
-            int bytesRemaining = numBytes;
-
-            while (bytesRemaining > 0) {
-                int bytesRead = inputStream.read(buffer, 0, bytesRemaining);
-
-                if (bytesRead < 0) {
-                    Log.e(TAG, "Unexpected EOD; failing backup");
-                    return TRANSPORT_ERROR;
-                }
-
-                outputStream.write(buffer, 0, bytesRead);
-                bytesRemaining -= bytesRead;
-            }
-
+            outputStream.write(IOUtils.readFully(inputStream, numBytes, true));
             backupState.setBytesTransferred(bytesTransferred);
 
         } catch (IOException ex) {

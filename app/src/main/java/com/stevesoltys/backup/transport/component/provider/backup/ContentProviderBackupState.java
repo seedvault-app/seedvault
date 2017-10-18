@@ -20,8 +20,6 @@ class ContentProviderBackupState {
 
     private long bytesTransferred;
 
-    private byte[] buffer;
-
     private String packageName;
 
     private int packageIndex;
@@ -80,13 +78,5 @@ class ContentProviderBackupState {
 
     void setPackageIndex(int packageIndex) {
         this.packageIndex = packageIndex;
-    }
-
-    byte[] getBuffer() {
-        return buffer;
-    }
-
-    void setBuffer(byte[] buffer) {
-        this.buffer = buffer;
     }
 }
