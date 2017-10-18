@@ -101,7 +101,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             return transferIncrementalBackupData(backupDataInput);
 
         } catch (Exception ex) {
-            Log.v(TAG, "Error reading backup input: ", ex);
+            Log.e(TAG, "Error reading backup input: ", ex);
             return TRANSPORT_ERROR;
         }
     }
@@ -153,8 +153,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
             return TRANSPORT_ERROR;
         }
 
-        Log.i(TAG, "performFullBackup : " + targetPackage);
-
         try {
             initializeBackupState();
             backupState.setPackageIndex(backupState.getPackageIndex() + 1);
@@ -168,7 +166,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.getOutputStream().putNextEntry(zipEntry);
 
         } catch (Exception ex) {
-            Log.e(TAG, "Error creating backup file for " + backupState.getPackageName() + ": ", ex);
+            Log.e(TAG, "Error creating backup file for " + targetPackage.packageName + ": ", ex);
             clearBackupState(true);
 
             return TRANSPORT_ERROR;
@@ -186,10 +184,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
         } else if (size > configuration.getBackupSizeQuota()) {
             result = TRANSPORT_QUOTA_EXCEEDED;
-        }
-
-        if (result != TRANSPORT_OK) {
-            Log.v(TAG, "Declining backup of size " + size);
         }
 
         return result;
@@ -220,8 +214,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
             Log.e(TAG, "Error handling backup data for " + backupState.getPackageName() + ": ", ex);
             return TRANSPORT_ERROR;
         }
-
-        Log.v(TAG, "   stored " + numBytes + " of data");
         return TRANSPORT_OK;
     }
 
