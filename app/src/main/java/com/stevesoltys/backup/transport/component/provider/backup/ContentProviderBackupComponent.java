@@ -219,7 +219,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
     @Override
     public void cancelFullBackup() {
-        clearBackupState(true);
+        clearBackupState(false);
     }
 
     @Override
