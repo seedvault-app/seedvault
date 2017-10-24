@@ -25,8 +25,8 @@ import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
-import com.stevesoltys.backup.transport.component.provider.backup.ContentProviderBackupComponent;
-import com.stevesoltys.backup.transport.component.provider.restore.ContentProviderRestoreComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 import libcore.io.IoUtils;
 
 import java.io.File;

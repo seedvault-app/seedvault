@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.transport.component.provider.restore;
+package com.stevesoltys.backup.transport.component.provider;
 
 import android.app.backup.BackupDataOutput;
 import android.app.backup.RestoreDescription;
@@ -10,7 +10,6 @@ import android.util.Base64;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import libcore.io.IoUtils;
 import libcore.io.Streams;
 

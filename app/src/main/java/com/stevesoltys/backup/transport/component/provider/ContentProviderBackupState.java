@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.transport.component.provider.backup;
+package com.stevesoltys.backup.transport.component.provider;
 
 import android.os.ParcelFileDescriptor;
 

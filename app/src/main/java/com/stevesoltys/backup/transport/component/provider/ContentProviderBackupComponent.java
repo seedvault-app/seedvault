@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.transport.component.provider.backup;
+package com.stevesoltys.backup.transport.component.provider;
 
 import android.app.backup.BackupDataInput;
 import android.content.ContentResolver;
@@ -7,7 +7,6 @@ import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.stevesoltys.backup.transport.component.BackupComponent;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import libcore.io.IoUtils;
 import sun.misc.IOUtils;
 

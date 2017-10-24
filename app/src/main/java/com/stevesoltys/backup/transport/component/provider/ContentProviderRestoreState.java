@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.transport.component.provider.restore;
+package com.stevesoltys.backup.transport.component.provider;
 
 import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
