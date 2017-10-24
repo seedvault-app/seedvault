@@ -3,12 +3,12 @@ package com.stevesoltys.backup.transport.component.provider.backup;
 import android.app.backup.BackupDataInput;
 import android.content.ContentResolver;
 import android.content.pm.PackageInfo;
-import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
+import libcore.io.IoUtils;
 import sun.misc.IOUtils;
 
 import java.io.*;
@@ -20,8 +20,6 @@ import java.util.zip.ZipOutputStream;
 import static android.app.backup.BackupTransport.*;
 
 /**
- * TODO: Clean this up. Much of it was taken from the LocalTransport implementation.
- *
  * @author Steve Soltys
  */
 public class ContentProviderBackupComponent implements BackupComponent {
@@ -62,6 +60,21 @@ public class ContentProviderBackupComponent implements BackupComponent {
         return TRANSPORT_OK;
     }
 
+    @Override
+    public int clearBackupData(PackageInfo packageInfo) {
+        return TRANSPORT_OK;
+    }
+
+    @Override
+    public long getBackupQuota(String packageName, boolean fullBackup) {
+        return configuration.getBackupSizeQuota();
+    }
+
+    @Override
+    public long requestFullBackupTime() {
+        return 0;
+    }
+
     private void initializeBackupState() throws IOException {
         if (backupState == null) {
             backupState = new ContentProviderBackupState();
@@ -73,20 +86,13 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     private void initializeOutputStream() throws FileNotFoundException {
-        Uri outputUri = configuration.getUri();
-
         ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        ParcelFileDescriptor outputFileDescriptor = contentResolver.openFileDescriptor(outputUri, "w");
+        ParcelFileDescriptor outputFileDescriptor = contentResolver.openFileDescriptor(configuration.getUri(), "w");
         backupState.setOutputFileDescriptor(outputFileDescriptor);
 
         FileOutputStream fileOutputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
         ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
         backupState.setOutputStream(zipOutputStream);
-    }
-
-    @Override
-    public int clearBackupData(PackageInfo packageInfo) {
-        return TRANSPORT_OK;
     }
 
     @Override
@@ -119,8 +125,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
             int dataSize = backupDataInput.getDataSize();
 
             if (dataSize >= 0) {
-                ZipEntry zipEntry = new ZipEntry(configuration.getIncrementalBackupDirectory() + backupState.getPackageName() +
-                        "/" + chunkFileName);
+                ZipEntry zipEntry = new ZipEntry(configuration.getIncrementalBackupDirectory() +
+                        backupState.getPackageName() + "/" + chunkFileName);
                 outputStream.putNextEntry(zipEntry);
 
                 if (dataSize > bufferSize) {
@@ -136,7 +142,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
                 } catch (Exception ex) {
                     Log.e(TAG, "Error performing incremental backup for " + backupState.getPackageName() + ": ", ex);
                     clearBackupState(true);
-
                     return TRANSPORT_ERROR;
                 }
             }
@@ -168,7 +173,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
         } catch (Exception ex) {
             Log.e(TAG, "Error creating backup file for " + targetPackage.packageName + ": ", ex);
             clearBackupState(true);
-
             return TRANSPORT_ERROR;
         }
 
@@ -193,7 +197,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
     public int sendBackupData(int numBytes) {
 
         if (backupState == null) {
-            Log.e(TAG, "Attempted sendBackupData before performFullBackup");
+            Log.e(TAG, "Attempted sendBackupData() before performFullBackup()");
             return TRANSPORT_ERROR;
         }
 
@@ -234,10 +238,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
         }
 
         try {
-            if (backupState.getInputFileDescriptor() != null) {
-                backupState.getInputFileDescriptor().close();
-                backupState.setInputFileDescriptor(null);
-            }
+            IoUtils.closeQuietly(backupState.getInputFileDescriptor());
+            backupState.setInputFileDescriptor(null);
 
             ZipOutputStream outputStream = backupState.getOutputStream();
 
@@ -246,16 +248,12 @@ public class ContentProviderBackupComponent implements BackupComponent {
             }
 
             if (backupState.getPackageIndex() == configuration.getPackageCount() || closeFile) {
-
                 if (outputStream != null) {
                     outputStream.finish();
                     outputStream.close();
                 }
 
-                if (backupState.getOutputFileDescriptor() != null) {
-                    backupState.getOutputFileDescriptor().close();
-                }
-
+                IoUtils.closeQuietly(backupState.getOutputFileDescriptor());
                 backupState = null;
             }
 
@@ -265,15 +263,5 @@ public class ContentProviderBackupComponent implements BackupComponent {
         }
 
         return TRANSPORT_OK;
-    }
-
-    @Override
-    public long getBackupQuota(String packageName, boolean fullBackup) {
-        return fullBackup ? configuration.getBackupSizeQuota() : Long.MAX_VALUE;
-    }
-
-    @Override
-    public long requestFullBackupTime() {
-        return 0;
     }
 }
