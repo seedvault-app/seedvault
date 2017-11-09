@@ -9,6 +9,10 @@ A backup application for the [Android Open Source Project](https://source.androi
 - Check out [the wiki](https://github.com/stevesoltys/backup/wiki) for information on building the application with 
 AOSP.
 
+## What makes this different?
+This application is compiled with the operating system and does not require a rooted device for use. It uses the same 
+internal APIs as `adb backup` and only requires one permission: `android.permission.BACKUP`.
+
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/backup. 
 
