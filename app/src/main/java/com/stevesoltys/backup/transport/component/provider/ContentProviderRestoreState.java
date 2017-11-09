@@ -3,7 +3,6 @@ package com.stevesoltys.backup.transport.component.provider;
 import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 
-import java.io.OutputStream;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -20,8 +19,6 @@ class ContentProviderRestoreState {
     private int restoreType;
 
     private ZipInputStream inputStream;
-
-    private OutputStream outputStream;
 
     PackageInfo[] getPackages() {
         return packages;
@@ -45,14 +42,6 @@ class ContentProviderRestoreState {
 
     void setRestoreType(int restoreType) {
         this.restoreType = restoreType;
-    }
-
-    OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
     }
 
     ZipInputStream getInputStream() {

@@ -85,7 +85,8 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
 
         Optional<ZipEntry> zipEntry = seekToEntry(inputStream, fileName);
-        IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
+        IoUtils.closeQuietly(inputFileDescriptor);
+        IoUtils.closeQuietly(inputStream);
         return zipEntry.isPresent();
     }
 
@@ -120,10 +121,9 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 "getRestoreData() for non-key/value dataset");
 
         PackageInfo packageInfo = restoreState.getPackages()[restoreState.getPackageIndex()];
-        BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
 
         try {
-            return transferIncrementalRestoreData(packageInfo.packageName, backupDataOutput);
+            return transferIncrementalRestoreData(packageInfo.packageName, outputFileDescriptor);
 
         } catch (Exception ex) {
             Log.e(TAG, "Unable to read backup records: ", ex);
@@ -131,10 +131,12 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         }
     }
 
-    private int transferIncrementalRestoreData(String packageName, BackupDataOutput backupDataOutput)
+    private int transferIncrementalRestoreData(String packageName, ParcelFileDescriptor outputFileDescriptor)
             throws IOException, InvalidAlgorithmParameterException, InvalidKeyException {
+
         ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+        BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
 
         Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
                 configuration.getIncrementalBackupDirectory() + packageName);
@@ -150,7 +152,8 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             zipEntryOptional = seekToEntry(inputStream, configuration.getIncrementalBackupDirectory() + packageName);
         }
 
-        IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
+        IoUtils.closeQuietly(inputFileDescriptor);
+        IoUtils.closeQuietly(outputFileDescriptor);
         return TRANSPORT_OK;
     }
 
@@ -172,22 +175,18 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 restoreState.setInputStream(inputStream);
 
                 if (!seekToEntry(inputStream, configuration.getFullBackupDirectory() + name).isPresent()) {
-                    IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
+                    IoUtils.closeQuietly(inputFileDescriptor);
+                    IoUtils.closeQuietly(outputFileDescriptor);
                     return TRANSPORT_PACKAGE_REJECTED;
                 }
 
             } catch (IOException ex) {
                 Log.e(TAG, "Unable to read archive for " + name, ex);
 
-                if (inputFileDescriptor != null) {
-                    IoUtils.closeQuietly(inputFileDescriptor.getFileDescriptor());
-                }
+                IoUtils.closeQuietly(inputFileDescriptor);
+                IoUtils.closeQuietly(outputFileDescriptor);
                 return TRANSPORT_PACKAGE_REJECTED;
             }
-        }
-
-        if (restoreState.getOutputStream() == null) {
-            restoreState.setOutputStream(new FileOutputStream(outputFileDescriptor.getFileDescriptor()));
         }
 
         return transferFullRestoreData(outputFileDescriptor);
@@ -195,7 +194,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     private int transferFullRestoreData(ParcelFileDescriptor outputFileDescriptor) {
         ZipInputStream inputStream = restoreState.getInputStream();
-        OutputStream outputStream = restoreState.getOutputStream();
+        OutputStream outputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
 
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int bytesRead = NO_MORE_DATA;
@@ -217,14 +216,14 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             if (bytesRead == NO_MORE_DATA) {
 
                 if (restoreState.getInputFileDescriptor() != null) {
-                    IoUtils.closeQuietly(restoreState.getInputFileDescriptor().getFileDescriptor());
+                    IoUtils.closeQuietly(restoreState.getInputFileDescriptor());
                 }
-                IoUtils.closeQuietly(outputFileDescriptor.getFileDescriptor());
 
                 restoreState.setInputFileDescriptor(null);
                 restoreState.setInputStream(null);
-                restoreState.setOutputStream(null);
             }
+
+            IoUtils.closeQuietly(outputFileDescriptor);
         }
 
         return bytesRead;
@@ -260,7 +259,6 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         Preconditions.checkState(restoreState.getRestoreType() == TYPE_FULL_STREAM);
 
         IoUtils.closeQuietly(restoreState.getInputFileDescriptor());
-        IoUtils.closeQuietly(restoreState.getOutputStream());
         restoreState = null;
     }
 }

@@ -13,14 +13,7 @@ public class ConfigurableBackupTransportService extends Service {
     private static ConfigurableBackupTransport backupTransport;
 
     public ConfigurableBackupTransportService() {
-        backupTransport = null;
-    }
-
-    @Override
-    public void onCreate() {
-        if (backupTransport == null) {
-            backupTransport = new ConfigurableBackupTransport();
-        }
+        backupTransport  = new ConfigurableBackupTransport();
     }
 
     @Override
