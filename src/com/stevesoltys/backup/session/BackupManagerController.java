@@ -38,6 +38,10 @@ public class BackupManagerController {
             backupManager.selectBackupTransport(BACKUP_TRANSPORT);
         }
 
+        if (!backupManager.isBackupEnabled()) {
+            backupManager.setBackupEnabled(true);
+        }
+
         BackupSession backupSession = new BackupSession(backupManager, observer, packages);
         backupSession.start();
         return backupSession;
@@ -47,6 +51,10 @@ public class BackupManagerController {
 
         if (!BACKUP_TRANSPORT.equals(backupManager.getCurrentTransport())) {
             backupManager.selectBackupTransport(BACKUP_TRANSPORT);
+        }
+
+        if (!backupManager.isBackupEnabled()) {
+            backupManager.setBackupEnabled(true);
         }
 
         RestoreSession restoreSession = new RestoreSession(backupManager, observer, packages);
