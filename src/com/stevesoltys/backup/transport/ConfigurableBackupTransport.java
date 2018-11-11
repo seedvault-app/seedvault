@@ -9,6 +9,8 @@ import android.os.ParcelFileDescriptor;
 import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
+import com.stevesoltys.backup.transport.component.stub.StubBackupComponent;
+import com.stevesoltys.backup.transport.component.stub.StubRestoreComponent;
 
 /**
  * @author Steve Soltys
@@ -23,8 +25,8 @@ public class ConfigurableBackupTransport extends BackupTransport {
     private RestoreComponent restoreComponent;
 
     public ConfigurableBackupTransport() {
-        backupComponent = null;
-        restoreComponent = null;
+        backupComponent = new StubBackupComponent();
+        restoreComponent = new StubRestoreComponent();
     }
 
     public void initialize(BackupComponent backupComponent, RestoreComponent restoreComponent) {
@@ -37,12 +39,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     }
 
     public void reset() {
-        backupComponent = null;
-        restoreComponent = null;
+        backupComponent = new StubBackupComponent();
+        restoreComponent = new StubRestoreComponent();
     }
 
     public boolean isActive() {
-        return backupComponent != null && restoreComponent != null;
+        return !(backupComponent instanceof StubBackupComponent || restoreComponent instanceof StubRestoreComponent);
     }
 
     public BackupComponent getBackupComponent() {
