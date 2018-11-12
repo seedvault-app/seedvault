@@ -10,6 +10,7 @@
         android:targetSdkVersion="26"/>
 
     <application
+        android:name=".Backup"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:icon="@mipmap/ic_launcher"

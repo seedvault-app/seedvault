@@ -9,19 +9,20 @@ import android.os.IBinder;
  */
 public class ConfigurableBackupTransportService extends Service {
 
-    // TODO: Make this field non-static and communicate with this service correctly.
-    private static ConfigurableBackupTransport backupTransport;
+    private static ConfigurableBackupTransport backupTransport = null;
 
-    public ConfigurableBackupTransportService() {
-        backupTransport  = new ConfigurableBackupTransport();
+    public static ConfigurableBackupTransport getBackupTransport() {
+        return backupTransport;
+    }
+
+    public void onCreate() {
+        if (backupTransport == null) {
+            backupTransport = new ConfigurableBackupTransport();
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return backupTransport.getBinder();
-    }
-
-    public static ConfigurableBackupTransport getBackupTransport() {
-        return backupTransport;
     }
 }
