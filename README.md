@@ -1,4 +1,6 @@
 # Backup
+[![Build Status](https://travis-ci.com/stevesoltys/backup.svg?branch=master)](https://travis-ci.com/stevesoltys/backup)
+
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
 ## Features
