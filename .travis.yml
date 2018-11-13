@@ -1,0 +1,15 @@
+language: android
+
+android:
+  components:
+  - build-tools-26.0.2
+  - android-26
+
+deploy:
+  provider: releases
+  api_key:
+    secure: gTw3GYE2BaZMYDFTW9wNMiUqmZc6shYgrIqQnqPS5ji8a47mNjjo8fwTMSnbBnT0975oHbtJq4nXJYE3hxSMWxKwsdBMlNFPpqROxDa6IRlw1R3gZiM3bdrWj4g3q0ebVd5CSQTLYXuVP2IVfmaPVWDmWa4uYVCuhBnWQIK4vYcta9Y0xMPWN/knOpzPeknR3eByDV94UBNPQXvu6zigymp4gQXjoPk36/lfTKB8wPMI8aU61PPwMpp9ncM3vkiE3PRbi4KSHmSLcl2VHWoT4Aq8MPDsinYe4xfPUL8M+f7FK07rOuKHbJBjphSVmu7kOF0HqhysxqXnzEH4TItvdtC3wT8BVfdS/GbHHgCtxIo7cJzbBjjir7fvy6tFomXBFs3fI/0bVXF/F9beVvYoBTPQe40qEFBV+imoGZi+MJR1jWEwMFAh+MC/ySBdQh3m7cAcu9msepFX0nPz7Q0MsCbeOVsqhFeIYgRBV+0m5Uh8MOFkmOueljJGcgCqsOfzxwGE7yxxNIpslzxkLzRlXSiizFFeb92WkkIk2K7R5FvQgZ4At29jVZ68U2ByJ7v5rUGZr3ta0d4w6enN6EAjklKfmm8Mh34kd9aYDCdSgAOis4RudYv6gv9TYotqXmO+iGCp8YHQTekAFs5z4dnd77uwrpysJAcs0bgwWt4POJo=
+  file: app/build/outputs/apk/release/app-release-unsigned.apk
+  on:
+    tags: true
+  skip_cleanup: true
