@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.stevesoltys.backup">
+    package="com.stevesoltys.backup"
+    android:versionCode="1"
+    android:versionName="0.1.0">
 
-    <uses-permission android:name="android.permission.BACKUP"/>
+    <uses-permission android:name="android.permission.BACKUP" />
 
     <uses-sdk
         android:minSdkVersion="26"
-        android:targetSdkVersion="26"/>
+        android:targetSdkVersion="26" />
 
     <application
         android:name=".Backup"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:icon="@mipmap/ic_launcher"
-	    android:label="@string/app_name"
-	    android:allowBackup="false"
+        android:label="@string/app_name"
+        android:allowBackup="false"
         tools:replace="android:allowBackup">
 
         <activity android:name="com.stevesoltys.backup.activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.stevesoltys.backup.activity.backup.CreateBackupActivity"
-                  android:parentActivityName="com.stevesoltys.backup.activity.MainActivity">
-        </activity>
+        <activity
+            android:name="com.stevesoltys.backup.activity.backup.CreateBackupActivity"
+            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
 
-        <activity android:name="com.stevesoltys.backup.activity.restore.RestoreBackupActivity"
-                  android:parentActivityName="com.stevesoltys.backup.activity.MainActivity">
-        </activity>
+        <activity
+            android:name="com.stevesoltys.backup.activity.restore.RestoreBackupActivity"
+            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
 
-        <service android:name="com.stevesoltys.backup.transport.ConfigurableBackupTransportService"
-                 android:exported="false">
+        <service
+            android:name="com.stevesoltys.backup.transport.ConfigurableBackupTransportService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.backup.TRANSPORT_HOST" />
             </intent-filter>
