@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/40510200/49803717-906acd00-fd8b-11e8-907f-ed3757b9f257.png)
+
 # Backup
 [![Build Status](https://travis-ci.com/stevesoltys/backup.svg?branch=master)](https://travis-ci.com/stevesoltys/backup)
 
