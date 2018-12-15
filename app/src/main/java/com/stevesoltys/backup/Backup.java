@@ -11,11 +11,8 @@ public class Backup extends Application {
 
     @Override
     public void onCreate() {
-        startService(new Intent(this, ConfigurableBackupTransportService.class));
-    }
+        super.onCreate();
 
-    @Override
-    public void onTerminate() {
-        stopService(new Intent(this, ConfigurableBackupTransportService.class));
+        startForegroundService(new Intent(this, ConfigurableBackupTransportService.class));
     }
 }
