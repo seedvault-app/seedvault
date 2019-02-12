@@ -18,4 +18,6 @@
 
     <string name="popup_cancel">Cancel</string>
 
+    <string name="select_all">Select all</string>
+
 </resources>
