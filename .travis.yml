@@ -1,8 +1,8 @@
 language: android
 android:
   components:
-  - build-tools-26.0.2
-  - android-26
+  - build-tools-28.0.0
+  - android-28
 deploy:
   provider: releases
   api_key:
