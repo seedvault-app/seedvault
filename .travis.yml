@@ -7,7 +7,10 @@ deploy:
   provider: releases
   api_key:
     secure: BJ+0riccbDPQMcvZkYveHHcSa3wlVRdvLIHMJtZQXmjJnYu4Mh2YH4RkZdd+4OBPf2iBCyP1CIxB9NTKldb8Qn1m/6+LcReYf2xd8Y6XCrHDsycT5GZTENEif0EyVPdB1En4NwRVYiNwGMSv49Cz03aGtzq5jrGWxPhYAEY4jt86HKRqw8SCUPEqug3Rz+deG4juUdIAvARiN8jKoqu9EeMOP5ST7nbZjZQbee8SGP7wPW+J7E6kWPvn+mSoZsMXw/ELz8nEAu4pHh/98agreMvApjImpiEpVXNhMpENfk42U+wztiGNspoOh/vDFrNikWFGIJ3lE4yPJteBo2vpVo/7/tfBzKjMnL7c/5ZNMnjv9e2yoqwfpwmh8GzjKaDuwG1Fy8g5ctJAS4wYHr4z4LDlfdmFVUE3r3NPI8XdzsnjVpqkXhC/5eBPO50p82c0Za24SwkmO+JzIaIF41fTt0An9Dd/1Q5321WGJK6HqQwdjRG3HciLF6lNJu/gzSVHnfC9REQGY7vDdNSVaP9ps0W07URewsKwC5Vm5SFYUEFIM2d3C+62+eciqlpfqON6htd9zAZnFTSE6rMTJdGXMs+hLb89C1J3tavz89T2d9Dqnvs6MlKEO3ontDcwYdbx8czPKv22Fm4iI4XG6VTzK9hS4BNCvhvyvqSq7mYIXsA=
-  file: app/build/outputs/apk/release/app-release-unsigned.apk
+  file:
+    - app/build/outputs/apk/release/app-release-unsigned.apk
+    - app/src/permissions_com.stevesoltys.backup.xml
+    - app/src/whitelist_com.stevesoltys.backup.xml
   on:
     repo: stevesoltys/backup
     tags: true
