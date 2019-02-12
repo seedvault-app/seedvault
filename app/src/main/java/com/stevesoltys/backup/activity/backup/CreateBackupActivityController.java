@@ -22,14 +22,12 @@ import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Steve Soltys
@@ -37,6 +35,8 @@ import java.util.Set;
 class CreateBackupActivityController {
 
     private static final String TAG = CreateBackupActivityController.class.getName();
+
+    private static final Set<String> IGNORED_PACKAGES = Collections.singleton("com.android.providers.downloads.ui");
 
     private final BackupManagerController backupManager;
 
@@ -46,12 +46,15 @@ class CreateBackupActivityController {
 
     void populatePackageList(ListView packageListView, CreateBackupActivity parent) {
         List<String> eligiblePackageList = new LinkedList<>();
+
         try {
             eligiblePackageList.addAll(backupManager.getEligiblePackages());
+            eligiblePackageList.removeAll(IGNORED_PACKAGES);
 
         } catch (RemoteException e) {
             Log.e(TAG, "Error while obtaining package list: ", e);
         }
+
 
         packageListView.setOnItemClickListener(parent);
         packageListView.setAdapter(new ArrayAdapter<>(parent, R.layout.checked_list_item, eligiblePackageList));
