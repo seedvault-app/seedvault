@@ -1,20 +1,19 @@
 package com.stevesoltys.backup.activity.backup;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.Toast;
+import android.widget.*;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.BackupManagerController;
 import com.stevesoltys.backup.session.backup.BackupSession;
@@ -27,7 +26,10 @@ import com.stevesoltys.backup.transport.component.provider.ContentProviderBackup
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Steve Soltys
@@ -61,12 +63,64 @@ class CreateBackupActivityController {
         packageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 
-    void backupPackages(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+    void showEnterPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+        final EditText passwordTextView = new EditText(parent);
+        passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        new AlertDialog.Builder(parent)
+                .setMessage("Please enter a password.\n" +
+                        "You'll need this to restore your backup, so write it down!")
+                .setView(passwordTextView)
+
+                .setPositiveButton("Set password", (dialog, button) ->
+                        showConfirmPasswordAlert(selectedPackages, contentUri, parent,
+                                passwordTextView.getText().toString()))
+
+                .setNegativeButton("Cancel", (dialog, button) -> dialog.cancel())
+                .show();
+    }
+
+    private void showConfirmPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent,
+                                          String originalPassword) {
+        final EditText passwordTextView = new EditText(parent);
+        passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        new AlertDialog.Builder(parent)
+                .setMessage("Please confirm your password.")
+                .setView(passwordTextView)
+
+                .setPositiveButton("Confirm", (dialog, button) -> {
+                    String password = passwordTextView.getText().toString();
+
+                    if (originalPassword.equals(password)) {
+                        backupPackages(selectedPackages, contentUri, parent, password);
+
+                    } else {
+                        new AlertDialog.Builder(parent)
+                                .setMessage("Passwords do not match, please try again.")
+                                .setPositiveButton("Ok", (dialog2, button2) -> dialog2.dismiss())
+                                .show();
+
+                        dialog.cancel();
+                    }
+                })
+
+                .setNegativeButton("Cancel", (dialog, button) -> dialog.cancel())
+                .show();
+    }
+
+    private void backupPackages(Set<String> selectedPackages, Uri contentUri, Activity parent,
+                                String selectedPassword) {
         try {
             selectedPackages.add("@pm@");
 
             ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder()
-                    .setContext(parent).setOutputUri(contentUri).setPackages(selectedPackages).build();
+                    .setContext(parent)
+                    .setOutputUri(contentUri)
+                    .setPackages(selectedPackages)
+                    .setPassword(selectedPassword)
+                    .build();
+
             boolean success = initializeBackupTransport(backupConfiguration);
 
             if (!success) {
@@ -74,7 +128,7 @@ class CreateBackupActivityController {
                 return;
             }
 
-            PopupWindow popupWindow = buildPopupWindow(parent);
+            PopupWindow popupWindow = buildStatusPopupWindow(parent);
             BackupObserver backupObserver = new BackupObserver(parent, popupWindow);
             BackupSession backupSession = backupManager.backup(backupObserver, selectedPackages);
 
@@ -102,7 +156,7 @@ class CreateBackupActivityController {
         return true;
     }
 
-    private PopupWindow buildPopupWindow(Activity parent) {
+    private PopupWindow buildStatusPopupWindow(Activity parent) {
         LayoutInflater inflater = (LayoutInflater) parent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup popupViewGroup = parent.findViewById(R.id.popup_layout);
         View popupView = inflater.inflate(R.layout.progress_popup_window, popupViewGroup);

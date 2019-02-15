@@ -32,7 +32,7 @@ public class RestoreBackupActivity extends Activity implements View.OnClickListe
         switch (viewId) {
 
             case R.id.restore_confirm_button:
-                controller.restorePackages(selectedPackageList, contentUri, this);
+                controller.showEnterPasswordAlert(selectedPackageList, contentUri, this);
                 break;
         }
     }

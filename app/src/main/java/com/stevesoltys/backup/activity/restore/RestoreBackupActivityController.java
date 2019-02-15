@@ -1,21 +1,20 @@
 package com.stevesoltys.backup.activity.restore;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.Toast;
+import android.widget.*;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.BackupManagerController;
 import com.stevesoltys.backup.session.restore.RestoreSession;
@@ -89,10 +88,31 @@ class RestoreBackupActivityController {
         return results;
     }
 
-    void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+    void showEnterPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+        final EditText passwordTextView = new EditText(parent);
+        passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        new AlertDialog.Builder(parent)
+                .setMessage("Please enter a password.\n" +
+                        "If you didn't enter one while creating the backup, you can leave this blank.")
+                .setView(passwordTextView)
+
+                .setPositiveButton("Confirm", (dialog, button) ->
+                        restorePackages(selectedPackages, contentUri, parent, passwordTextView.getText().toString()))
+                .setNegativeButton("Cancel", (dialog, button) -> dialog.cancel())
+                .show();
+    }
+
+
+    private void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent, String password) {
         try {
             ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder().
-                    setContext(parent).setOutputUri(contentUri).setPackages(selectedPackages).build();
+                    setContext(parent)
+                    .setOutputUri(contentUri)
+                    .setPackages(selectedPackages)
+                    .setPassword(password)
+                    .build();
+
             boolean success = initializeBackupTransport(backupConfiguration);
 
             if(!success) {

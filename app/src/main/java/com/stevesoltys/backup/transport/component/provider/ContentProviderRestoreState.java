@@ -20,28 +20,14 @@ class ContentProviderRestoreState {
 
     private ZipInputStream inputStream;
 
-    PackageInfo[] getPackages() {
-        return packages;
+    private byte[] salt;
+
+    ParcelFileDescriptor getInputFileDescriptor() {
+        return inputFileDescriptor;
     }
 
-    void setPackages(PackageInfo[] packages) {
-        this.packages = packages;
-    }
-
-    int getPackageIndex() {
-        return packageIndex;
-    }
-
-    void setPackageIndex(int packageIndex) {
-        this.packageIndex = packageIndex;
-    }
-
-    int getRestoreType() {
-        return restoreType;
-    }
-
-    void setRestoreType(int restoreType) {
-        this.restoreType = restoreType;
+    void setInputFileDescriptor(ParcelFileDescriptor inputFileDescriptor) {
+        this.inputFileDescriptor = inputFileDescriptor;
     }
 
     ZipInputStream getInputStream() {
@@ -52,11 +38,35 @@ class ContentProviderRestoreState {
         this.inputStream = inputStream;
     }
 
-    ParcelFileDescriptor getInputFileDescriptor() {
-        return inputFileDescriptor;
+    int getPackageIndex() {
+        return packageIndex;
     }
 
-    void setInputFileDescriptor(ParcelFileDescriptor inputFileDescriptor) {
-        this.inputFileDescriptor = inputFileDescriptor;
+    void setPackageIndex(int packageIndex) {
+        this.packageIndex = packageIndex;
+    }
+
+    PackageInfo[] getPackages() {
+        return packages;
+    }
+
+    void setPackages(PackageInfo[] packages) {
+        this.packages = packages;
+    }
+
+    int getRestoreType() {
+        return restoreType;
+    }
+
+    void setRestoreType(int restoreType) {
+        this.restoreType = restoreType;
+    }
+
+    byte[] getSalt() {
+        return salt;
+    }
+
+    void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 }

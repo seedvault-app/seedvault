@@ -9,13 +9,15 @@ import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
+import com.stevesoltys.backup.security.KeyGenerator;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import libcore.io.IoUtils;
 import libcore.io.Streams;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -48,6 +50,23 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         restoreState = new ContentProviderRestoreState();
         restoreState.setPackages(packages);
         restoreState.setPackageIndex(-1);
+
+        if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
+            try {
+                ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
+                ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+                seekToEntry(inputStream, ContentProviderBackupConstants.SALT_FILE_PATH);
+
+                restoreState.setSalt(Streams.readFullyNoClose(inputStream));
+
+                IoUtils.closeQuietly(inputFileDescriptor);
+                IoUtils.closeQuietly(inputStream);
+
+            } catch (IOException ex) {
+                Log.e(TAG, "Salt not found", ex);
+            }
+        }
+
         return TRANSPORT_OK;
     }
 
@@ -72,15 +91,14 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                     return new RestoreDescription(name, restoreState.getRestoreType());
                 }
 
-            } catch (IOException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
+            } catch (IOException ex) {
                 Log.e(TAG, "Error choosing package  " + name + "  at index " + packageIndex + "failed selection:", ex);
             }
         }
         return RestoreDescription.NO_MORE_PACKAGES;
     }
 
-    private boolean containsPackageFile(String fileName) throws IOException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
+    private boolean containsPackageFile(String fileName) throws IOException {
         ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
 
@@ -132,7 +150,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
     }
 
     private int transferIncrementalRestoreData(String packageName, ParcelFileDescriptor outputFileDescriptor)
-            throws IOException, InvalidAlgorithmParameterException, InvalidKeyException {
+            throws Exception {
 
         ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
@@ -140,11 +158,12 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
         Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
                 configuration.getIncrementalBackupDirectory() + packageName);
+
         while (zipEntryOptional.isPresent()) {
             String fileName = new File(zipEntryOptional.get().getName()).getName();
             String blobKey = new String(Base64.decode(fileName, Base64.DEFAULT));
 
-            byte[] backupData = Streams.readFullyNoClose(inputStream);
+            byte[] backupData = readBackupData(inputStream);
             backupDataOutput.writeEntityHeader(blobKey, backupData.length);
             backupDataOutput.writeEntityData(backupData, backupData.length);
             inputStream.closeEntry();
@@ -155,6 +174,22 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         IoUtils.closeQuietly(inputFileDescriptor);
         IoUtils.closeQuietly(outputFileDescriptor);
         return TRANSPORT_OK;
+    }
+
+    private byte[] readBackupData(ZipInputStream inputStream) throws Exception {
+        byte[] backupData = Streams.readFullyNoClose(inputStream);
+
+        if (configuration.getPassword() != null && !configuration.getPassword().isEmpty() &&
+                restoreState.getSalt() != null) {
+
+            SecretKey secretKey = KeyGenerator.generate(configuration.getPassword(), restoreState.getSalt());
+
+            Cipher cipher = Cipher.getInstance(ContentProviderBackupConstants.CIPHER_ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(restoreState.getSalt()));
+            backupData = cipher.doFinal(backupData);
+        }
+
+        return backupData;
     }
 
     @Override

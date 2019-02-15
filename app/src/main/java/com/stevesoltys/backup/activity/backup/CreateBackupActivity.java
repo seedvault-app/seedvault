@@ -32,7 +32,7 @@ public class CreateBackupActivity extends Activity implements View.OnClickListen
         switch (viewId) {
 
             case R.id.create_confirm_button:
-                controller.backupPackages(selectedPackageList, contentUri, this);
+                controller.showEnterPasswordAlert(selectedPackageList, contentUri, this);
                 break;
         }
     }
