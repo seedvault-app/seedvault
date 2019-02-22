@@ -15,10 +15,10 @@ import com.stevesoltys.backup.transport.component.RestoreComponent;
 import libcore.io.IoUtils;
 import libcore.io.Streams;
 
-import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -59,13 +59,35 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 seekToEntry(inputStream, ContentProviderBackupConstants.SALT_FILE_PATH);
 
                 restoreState.setSalt(Streams.readFullyNoClose(inputStream));
+                restoreState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), restoreState.getSalt()));
 
                 IoUtils.closeQuietly(inputFileDescriptor);
                 IoUtils.closeQuietly(inputStream);
 
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Log.e(TAG, "Salt not found", ex);
             }
+        }
+
+        try {
+            List<ZipEntry> zipEntries = new LinkedList<>();
+
+            ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
+            ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+
+            ZipEntry zipEntry;
+            while ((zipEntry = inputStream.getNextEntry()) != null) {
+                zipEntries.add(zipEntry);
+                inputStream.closeEntry();
+            }
+
+            IoUtils.closeQuietly(inputFileDescriptor);
+            IoUtils.closeQuietly(inputStream);
+
+            restoreState.setZipEntries(zipEntries);
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Salt not found", ex);
         }
 
         return TRANSPORT_OK;
@@ -82,54 +104,21 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             restoreState.setPackageIndex(packageIndex);
             String name = packages[packageIndex].packageName;
 
-            try {
-                if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
-                    restoreState.setRestoreType(TYPE_KEY_VALUE);
-                    return new RestoreDescription(name, restoreState.getRestoreType());
+            if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
+                restoreState.setRestoreType(TYPE_KEY_VALUE);
+                return new RestoreDescription(name, restoreState.getRestoreType());
 
-                } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
-                    restoreState.setRestoreType(TYPE_FULL_STREAM);
-                    return new RestoreDescription(name, restoreState.getRestoreType());
-                }
-
-            } catch (IOException ex) {
-                Log.e(TAG, "Error choosing package  " + name + "  at index " + packageIndex + "failed selection:", ex);
+            } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
+                restoreState.setRestoreType(TYPE_FULL_STREAM);
+                return new RestoreDescription(name, restoreState.getRestoreType());
             }
         }
         return RestoreDescription.NO_MORE_PACKAGES;
     }
 
-    private boolean containsPackageFile(String fileName) throws IOException {
-        ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
-        ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
-
-        Optional<ZipEntry> zipEntry = seekToEntry(inputStream, fileName);
-        IoUtils.closeQuietly(inputFileDescriptor);
-        IoUtils.closeQuietly(inputStream);
-        return zipEntry.isPresent();
-    }
-
-    private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
-        ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        return contentResolver.openFileDescriptor(configuration.getUri(), "r");
-    }
-
-    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) throws FileNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(inputFileDescriptor.getFileDescriptor());
-        return new ZipInputStream(fileInputStream);
-    }
-
-    private Optional<ZipEntry> seekToEntry(ZipInputStream inputStream, String entryPath) throws IOException {
-        ZipEntry zipEntry;
-        while ((zipEntry = inputStream.getNextEntry()) != null) {
-
-            if (zipEntry.getName().startsWith(entryPath)) {
-                return Optional.of(zipEntry);
-            }
-            inputStream.closeEntry();
-        }
-
-        return Optional.empty();
+    private boolean containsPackageFile(String fileName) {
+        return restoreState.getZipEntries().stream()
+                .anyMatch(zipEntry -> zipEntry.getName().startsWith(fileName));
     }
 
     @Override
@@ -177,14 +166,36 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         return TRANSPORT_OK;
     }
 
+    private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
+        ContentResolver contentResolver = configuration.getContext().getContentResolver();
+        return contentResolver.openFileDescriptor(configuration.getUri(), "r");
+    }
+
+    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) throws FileNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(inputFileDescriptor.getFileDescriptor());
+        return new ZipInputStream(fileInputStream);
+    }
+
+    private Optional<ZipEntry> seekToEntry(ZipInputStream inputStream, String entryPath) throws IOException {
+        ZipEntry zipEntry;
+        while ((zipEntry = inputStream.getNextEntry()) != null) {
+
+            if (zipEntry.getName().startsWith(entryPath)) {
+                return Optional.of(zipEntry);
+            }
+            inputStream.closeEntry();
+        }
+
+        return Optional.empty();
+    }
+
     private byte[] readBackupData(ZipInputStream inputStream) throws Exception {
         byte[] backupData = Streams.readFullyNoClose(inputStream);
+        SecretKey secretKey = restoreState.getSecretKey();
+        byte[] initializationVector = restoreState.getSalt();
 
-        String password = configuration.getPassword();
-        byte[] salt = restoreState.getSalt();
-
-        if (password != null && !password.isEmpty() && salt != null) {
-            backupData = CipherUtil.decrypt(backupData, password, salt);
+        if (secretKey != null) {
+            backupData = CipherUtil.decrypt(backupData, secretKey, initializationVector);
         }
 
         return backupData;

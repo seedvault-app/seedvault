@@ -3,6 +3,9 @@ package com.stevesoltys.backup.transport.component.provider;
 import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 
+import javax.crypto.SecretKey;
+import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -21,6 +24,10 @@ class ContentProviderRestoreState {
     private ZipInputStream inputStream;
 
     private byte[] salt;
+
+    private SecretKey secretKey;
+
+    private List<ZipEntry> zipEntries;
 
     ParcelFileDescriptor getInputFileDescriptor() {
         return inputFileDescriptor;
@@ -68,5 +75,21 @@ class ContentProviderRestoreState {
 
     void setSalt(byte[] salt) {
         this.salt = salt;
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public List<ZipEntry> getZipEntries() {
+        return zipEntries;
+    }
+
+    public void setZipEntries(List<ZipEntry> zipEntries) {
+        this.zipEntries = zipEntries;
     }
 }

@@ -5,7 +5,6 @@ import javax.crypto.spec.IvParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 /**
  * A utility class for encrypting and decrypting data using a {@link Cipher}.
@@ -19,39 +18,35 @@ public class CipherUtil {
      */
     public static final String CIPHER_ALGORITHM = "AES/CFB/PKCS5Padding";
 
-    /**
-     * Encrypts the given payload using a key generated from the provided password and salt.
+    /**.
+     * Encrypts the given payload using the provided secret key.
      *
      * @param payload  The payload.
-     * @param password The password.
-     * @param salt     The salt.
+     * @param secretKey The secret key.
+     * @param iv        The initialization vector.
      */
-    public static byte[] encrypt(byte[] payload, String password, byte[] salt) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException,
+    public static byte[] encrypt(byte[] payload, SecretKey secretKey, byte[] iv) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException,
             InvalidAlgorithmParameterException, InvalidKeyException {
 
-        SecretKey secretKey = KeyGenerator.generate(password, salt);
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(salt));
-
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
         return cipher.doFinal(payload);
     }
 
     /**
-     * Decrypts the given payload using a key generated from the provided password and salt.
+     * Decrypts the given payload using the provided secret key.
      *
-     * @param payload  The payload.
-     * @param password The password.
-     * @param salt     The salt.
+     * @param payload   The payload.
+     * @param secretKey The secret key.
+     * @param iv        The initialization vector.
      */
-    public static byte[] decrypt(byte[] payload, String password, byte[] salt) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException,
+    public static byte[] decrypt(byte[] payload, SecretKey secretKey, byte[] iv) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException,
             InvalidAlgorithmParameterException, InvalidKeyException {
 
-        SecretKey secretKey = KeyGenerator.generate(password, salt);
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(salt));
-
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
         return cipher.doFinal(payload);
     }
 }

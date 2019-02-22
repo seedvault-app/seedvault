@@ -7,10 +7,12 @@ import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.stevesoltys.backup.security.CipherUtil;
+import com.stevesoltys.backup.security.KeyGenerator;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import libcore.io.IoUtils;
 import org.apache.commons.io.IOUtils;
 
+import javax.crypto.SecretKey;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -209,13 +211,23 @@ public class ContentProviderBackupComponent implements BackupComponent {
         clearBackupState(false);
     }
 
-    private void initializeBackupState() throws IOException {
+    private void initializeBackupState() throws Exception {
         if (backupState == null) {
             backupState = new ContentProviderBackupState();
         }
 
         if (backupState.getOutputStream() == null) {
             initializeOutputStream();
+
+            ZipEntry saltZipEntry = new ZipEntry(ContentProviderBackupConstants.SALT_FILE_PATH);
+            backupState.getOutputStream().putNextEntry(saltZipEntry);
+            backupState.getOutputStream().write(backupState.getSalt());
+            backupState.getOutputStream().closeEntry();
+
+
+            if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
+                backupState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), backupState.getSalt()));
+            }
         }
     }
 
@@ -227,11 +239,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
         FileOutputStream fileOutputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
         ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
         backupState.setOutputStream(zipOutputStream);
-
-        ZipEntry saltZipEntry = new ZipEntry(ContentProviderBackupConstants.SALT_FILE_PATH);
-        zipOutputStream.putNextEntry(saltZipEntry);
-        zipOutputStream.write(backupState.getSalt());
-        zipOutputStream.closeEntry();
     }
 
     private int transferIncrementalBackupData(BackupDataInput backupDataInput) throws IOException {
@@ -257,13 +264,12 @@ public class ContentProviderBackupComponent implements BackupComponent {
                 backupDataInput.readEntityData(buffer, 0, dataSize);
 
                 try {
-                    if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
-
+                    if (backupState.getSecretKey() != null) {
                         byte[] payload = Arrays.copyOfRange(buffer, 0, dataSize);
-                        String password = configuration.getPassword();
+                        SecretKey secretKey = backupState.getSecretKey();
                         byte[] salt = backupState.getSalt();
 
-                        outputStream.write(CipherUtil.encrypt(payload, password, salt));
+                        outputStream.write(CipherUtil.encrypt(payload, secretKey, salt));
 
                     } else {
                         outputStream.write(buffer, 0, dataSize);
