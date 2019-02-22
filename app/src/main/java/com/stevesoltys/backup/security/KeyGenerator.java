@@ -18,7 +18,7 @@ public class KeyGenerator {
     /**
      * The number of iterations for key generation.
      */
-    private static final int ITERATIONS = 1000;
+    private static final int ITERATIONS = 100;
 
     /**
      * The generated key length.
