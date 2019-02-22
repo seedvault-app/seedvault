@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
+import com.stevesoltys.backup.security.CipherUtil;
 import com.stevesoltys.backup.security.KeyGenerator;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import libcore.io.IoUtils;
@@ -179,14 +180,11 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
     private byte[] readBackupData(ZipInputStream inputStream) throws Exception {
         byte[] backupData = Streams.readFullyNoClose(inputStream);
 
-        if (configuration.getPassword() != null && !configuration.getPassword().isEmpty() &&
-                restoreState.getSalt() != null) {
+        String password = configuration.getPassword();
+        byte[] salt = restoreState.getSalt();
 
-            SecretKey secretKey = KeyGenerator.generate(configuration.getPassword(), restoreState.getSalt());
-
-            Cipher cipher = Cipher.getInstance(ContentProviderBackupConstants.CIPHER_ALGORITHM);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(restoreState.getSalt()));
-            backupData = cipher.doFinal(backupData);
+        if (password != null && !password.isEmpty() && salt != null) {
+            backupData = CipherUtil.decrypt(backupData, password, salt);
         }
 
         return backupData;

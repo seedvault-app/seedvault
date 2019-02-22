@@ -6,19 +6,15 @@ import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
-import com.stevesoltys.backup.security.KeyGenerator;
+import com.stevesoltys.backup.security.CipherUtil;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import libcore.io.IoUtils;
 import org.apache.commons.io.IOUtils;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -262,14 +258,12 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
                 try {
                     if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
-                        SecretKey secretKey = KeyGenerator.generate(configuration.getPassword(), backupState.getSalt());
-
-                        Cipher cipher = Cipher.getInstance(ContentProviderBackupConstants.CIPHER_ALGORITHM);
-                        cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(backupState.getSalt()));
 
                         byte[] payload = Arrays.copyOfRange(buffer, 0, dataSize);
-                        byte[] encryptedBuffer = cipher.doFinal(payload);
-                        outputStream.write(encryptedBuffer);
+                        String password = configuration.getPassword();
+                        byte[] salt = backupState.getSalt();
+
+                        outputStream.write(CipherUtil.encrypt(payload, password, salt));
 
                     } else {
                         outputStream.write(buffer, 0, dataSize);
