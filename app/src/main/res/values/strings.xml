@@ -21,5 +21,6 @@
     <string name="select_all">Select all</string>
     <string name="loading_backup">Loading backup…</string>
     <string name="loading_packages">Loading packages…</string>
+    <string name="initializing">Initializing…</string>
 
 </resources>

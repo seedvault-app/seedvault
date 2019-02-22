@@ -167,10 +167,10 @@ class CreateBackupActivityController {
             BackupSession backupSession = backupManager.backup(backupObserver, selectedPackages);
 
             View popupWindowButton = popupWindow.getContentView().findViewById(R.id.popup_cancel_button);
+            popupWindowButton.setOnClickListener(new BackupPopupWindowListener(backupSession));
 
-            if (popupWindowButton != null) {
-                popupWindowButton.setOnClickListener(new BackupPopupWindowListener(backupSession));
-            }
+            TextView textView = popupWindow.getContentView().findViewById(R.id.popup_text_view);
+            textView.setText(R.string.initializing);
 
         } catch (Exception e) {
             Log.e(TAG, "Error while running backup: ", e);
