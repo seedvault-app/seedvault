@@ -87,7 +87,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             restoreState.setZipEntries(zipEntries);
 
         } catch (Exception ex) {
-            Log.e(TAG, "Salt not found", ex);
+            Log.e(TAG, "Error while caching zip entries", ex);
         }
 
         return TRANSPORT_OK;
