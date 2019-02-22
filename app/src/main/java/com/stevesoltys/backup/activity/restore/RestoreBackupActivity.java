@@ -2,6 +2,7 @@ package com.stevesoltys.backup.activity.restore;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +50,7 @@ public class RestoreBackupActivity extends Activity implements View.OnClickListe
         contentUri = getIntent().getData();
 
         controller = new RestoreBackupActivityController();
-        controller.populatePackageList(packageListView, contentUri, this);
+        AsyncTask.execute(() -> controller.populatePackageList(packageListView, contentUri, this));
     }
 
     @Override

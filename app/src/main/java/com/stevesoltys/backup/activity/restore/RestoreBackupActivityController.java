@@ -22,9 +22,9 @@ import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 import libcore.io.IoUtils;
 
@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -51,7 +52,19 @@ class RestoreBackupActivityController {
     }
 
     void populatePackageList(ListView packageListView, Uri contentUri, RestoreBackupActivity parent) {
+        AtomicReference<PopupWindow> popupWindow = new AtomicReference<>();
+
+        parent.runOnUiThread(() -> {
+            popupWindow.set(showLoadingPopupWindow(parent));
+            TextView textView = popupWindow.get().getContentView().findViewById(R.id.popup_text_view);
+            textView.setText(R.string.loading_backup);
+
+            View popupWindowButton = popupWindow.get().getContentView().findViewById(R.id.popup_cancel_button);
+            popupWindowButton.setOnClickListener(view -> parent.finish());
+        });
+
         List<String> eligiblePackageList = new LinkedList<>();
+
         try {
             eligiblePackageList.addAll(getEligiblePackages(contentUri, parent));
 
@@ -59,9 +72,29 @@ class RestoreBackupActivityController {
             Log.e(TAG, "Error while obtaining package list: ", e);
         }
 
-        packageListView.setOnItemClickListener(parent);
-        packageListView.setAdapter(new ArrayAdapter<>(parent, R.layout.checked_list_item, eligiblePackageList));
-        packageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        parent.runOnUiThread(() -> {
+            if (popupWindow.get() != null) {
+                popupWindow.get().dismiss();
+            }
+
+            packageListView.setOnItemClickListener(parent);
+            packageListView.setAdapter(new ArrayAdapter<>(parent, R.layout.checked_list_item, eligiblePackageList));
+            packageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        });
+    }
+
+    private PopupWindow showLoadingPopupWindow(Activity parent) {
+        LayoutInflater inflater = (LayoutInflater) parent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup popupViewGroup = parent.findViewById(R.id.popup_layout);
+        View popupView = inflater.inflate(R.layout.progress_popup_window, popupViewGroup);
+
+        PopupWindow popupWindow = new PopupWindow(popupView, 750, 350, true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        popupWindow.setElevation(10);
+        popupWindow.setFocusable(false);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        popupWindow.setOutsideTouchable(false);
+        return popupWindow;
     }
 
     private List<String> getEligiblePackages(Uri contentUri, Activity context) throws IOException {
@@ -93,8 +126,8 @@ class RestoreBackupActivityController {
         passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         new AlertDialog.Builder(parent)
-                .setMessage("Please enter a password.\n" +
-                        "If you didn't enter one while creating the backup, you can leave this blank.")
+                .setTitle("Enter a password")
+                .setMessage("If you didn't enter one while creating the backup, you can leave this blank.")
                 .setView(passwordTextView)
 
                 .setPositiveButton("Confirm", (dialog, button) ->
@@ -102,7 +135,6 @@ class RestoreBackupActivityController {
                 .setNegativeButton("Cancel", (dialog, button) -> dialog.cancel())
                 .show();
     }
-
 
     private void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent, String password) {
         try {
@@ -115,12 +147,12 @@ class RestoreBackupActivityController {
 
             boolean success = initializeBackupTransport(backupConfiguration);
 
-            if(!success) {
+            if (!success) {
                 Toast.makeText(parent, R.string.restore_in_progress, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            PopupWindow popupWindow = buildPopupWindow(parent);
+            PopupWindow popupWindow = showLoadingPopupWindow(parent);
             RestoreObserver restoreObserver = new RestoreObserver(parent, popupWindow, selectedPackages.size());
             RestoreSession restoreSession = backupManager.restore(restoreObserver, selectedPackages);
 
@@ -136,7 +168,7 @@ class RestoreBackupActivityController {
     private boolean initializeBackupTransport(ContentProviderBackupConfiguration configuration) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if(backupTransport.isActive()) {
+        if (backupTransport.isActive()) {
             return false;
         }
 
@@ -144,18 +176,5 @@ class RestoreBackupActivityController {
         RestoreComponent restoreComponent = new ContentProviderRestoreComponent(configuration);
         backupTransport.initialize(backupComponent, restoreComponent);
         return true;
-    }
-
-    private PopupWindow buildPopupWindow(Activity parent) {
-        LayoutInflater inflater = (LayoutInflater) parent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ViewGroup popupViewGroup = parent.findViewById(R.id.popup_layout);
-        View popupView = inflater.inflate(R.layout.progress_popup_window, popupViewGroup);
-
-        PopupWindow popupWindow = new PopupWindow(popupView, 750, 350, true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        popupWindow.setElevation(10);
-        popupWindow.setFocusable(false);
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-        return popupWindow;
     }
 }

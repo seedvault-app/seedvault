@@ -19,5 +19,7 @@
     <string name="popup_cancel">Cancel</string>
 
     <string name="select_all">Select all</string>
+    <string name="loading_backup">Loading backup…</string>
+    <string name="loading_packages">Loading packages…</string>
 
 </resources>
