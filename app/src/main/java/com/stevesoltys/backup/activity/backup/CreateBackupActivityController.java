@@ -40,7 +40,8 @@ class CreateBackupActivityController {
     private static final String TAG = CreateBackupActivityController.class.getName();
 
     private static final Set<String> IGNORED_PACKAGES = Sets.newArraySet(
-            "com.android.providers.downloads.ui", "com.android.providers.media"
+            "com.android.providers.downloads.ui", "com.android.providers.downloads", "com.android.providers.media",
+            "com.stevesoltys.backup"
     );
 
     private final BackupManagerController backupManager;
