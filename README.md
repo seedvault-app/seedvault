@@ -6,6 +6,7 @@ A backup application for the [Android Open Source Project](https://source.androi
 ## Features
 - Backup application data to a zip file.
 - Restore application data from a zip file.
+- Password-based encryption.
 
 ## Getting Started
 - Check out [the wiki](https://github.com/stevesoltys/backup/wiki) for information on building the application with 
