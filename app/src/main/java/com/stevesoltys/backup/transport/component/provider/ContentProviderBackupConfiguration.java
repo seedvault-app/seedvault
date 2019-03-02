@@ -14,6 +14,8 @@ public class ContentProviderBackupConfiguration {
 
     private final Uri uri;
 
+    private final String password;
+
     private final long backupSizeQuota;
 
     private final Set<String> packages;
@@ -22,30 +24,24 @@ public class ContentProviderBackupConfiguration {
 
     private final String incrementalBackupDirectory;
 
-    ContentProviderBackupConfiguration(Context context, Uri uri, Set<String> packages, long backupSizeQuota,
-                                       String fullBackupDirectory, String incrementalBackupDirectory) {
+    ContentProviderBackupConfiguration(Context context, Uri uri, Set<String> packages, String password,
+                                       long backupSizeQuota, String fullBackupDirectory,
+                                       String incrementalBackupDirectory) {
         this.context = context;
         this.uri = uri;
         this.packages = packages;
+        this.password = password;
         this.backupSizeQuota = backupSizeQuota;
         this.fullBackupDirectory = fullBackupDirectory;
         this.incrementalBackupDirectory = incrementalBackupDirectory;
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public Uri getUri() {
-        return uri;
     }
 
     public long getBackupSizeQuota() {
         return backupSizeQuota;
     }
 
-    public int getPackageCount() {
-        return packages.size();
+    public Context getContext() {
+        return context;
     }
 
     public String getFullBackupDirectory() {
@@ -54,5 +50,17 @@ public class ContentProviderBackupConfiguration {
 
     public String getIncrementalBackupDirectory() {
         return incrementalBackupDirectory;
+    }
+
+    public int getPackageCount() {
+        return packages.size();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Uri getUri() {
+        return uri;
     }
 }

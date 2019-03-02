@@ -1,11 +1,10 @@
-package com.stevesoltys.backup.activity.restore;
+package com.stevesoltys.backup.service.restore;
 
 import android.app.Activity;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.restore.RestoreResult;
 import com.stevesoltys.backup.session.restore.RestoreSessionObserver;
@@ -31,6 +30,10 @@ class RestoreObserver implements RestoreSessionObserver {
 
     @Override
     public void restoreSessionStarted(int packageCount) {
+        context.runOnUiThread(() -> {
+            TextView textView = popupWindow.getContentView().findViewById(R.id.popup_text_view);
+            textView.setText(R.string.initializing);
+        });
     }
 
     @Override
@@ -55,7 +58,7 @@ class RestoreObserver implements RestoreSessionObserver {
     public void restoreSessionCompleted(RestoreResult restoreResult) {
         ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
 
-        if(!backupTransport.isActive()) {
+        if (!backupTransport.isActive()) {
             return;
         }
 

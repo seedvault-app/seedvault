@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.activity.backup;
+package com.stevesoltys.backup.service.backup;
 
 import android.app.Activity;
 import android.app.backup.BackupProgress;
@@ -13,6 +13,8 @@ import com.stevesoltys.backup.session.backup.BackupSessionObserver;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 
+import java.net.URI;
+
 /**
  * @author Steve Soltys
  */
@@ -22,9 +24,12 @@ class BackupObserver implements BackupSessionObserver {
 
     private final PopupWindow popupWindow;
 
-    BackupObserver(Activity context, PopupWindow popupWindow) {
+    private final URI contentUri;
+
+    BackupObserver(Activity context, PopupWindow popupWindow, URI contentUri) {
         this.context = context;
         this.popupWindow = popupWindow;
+        this.contentUri = contentUri;
     }
 
     @Override

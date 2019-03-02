@@ -1,27 +1,19 @@
 package com.stevesoltys.backup.activity.backup;
 
-import android.app.Activity;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import com.stevesoltys.backup.R;
+import com.stevesoltys.backup.activity.PackageListActivity;
 
 import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.IntStream;
 
-public class CreateBackupActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class CreateBackupActivity extends PackageListActivity implements View.OnClickListener {
 
     private CreateBackupActivityController controller;
-
-    private ListView packageListView;
-
-    private Set<String> selectedPackageList;
 
     private Uri contentUri;
 
@@ -29,11 +21,8 @@ public class CreateBackupActivity extends Activity implements View.OnClickListen
     public void onClick(View view) {
         int viewId = view.getId();
 
-        switch (viewId) {
-
-            case R.id.create_confirm_button:
-                controller.backupPackages(selectedPackageList, contentUri, this);
-                break;
+        if (viewId == R.id.create_confirm_button) {
+            controller.showEnterPasswordAlert(selectedPackageList, contentUri, this);
         }
     }
 
@@ -49,7 +38,7 @@ public class CreateBackupActivity extends Activity implements View.OnClickListen
         contentUri = getIntent().getData();
 
         controller = new CreateBackupActivityController();
-        controller.populatePackageList(packageListView, this);
+        AsyncTask.execute(() -> controller.populatePackageList(packageListView, CreateBackupActivity.this));
     }
 
     @Override
@@ -57,39 +46,5 @@ public class CreateBackupActivity extends Activity implements View.OnClickListen
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.backup_menu, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.action_select_all:
-
-                IntStream.range(0, packageListView.getCount())
-                        .forEach(position -> {
-                            selectedPackageList.add((String) packageListView.getItemAtPosition(position));
-                            packageListView.setItemChecked(position, true);
-                        });
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String clickedPackage = (String) packageListView.getItemAtPosition(position);
-
-        if (!selectedPackageList.remove(clickedPackage)) {
-            selectedPackageList.add(clickedPackage);
-            packageListView.setItemChecked(position, true);
-
-        } else {
-            packageListView.setItemChecked(position, false);
-        }
     }
 }

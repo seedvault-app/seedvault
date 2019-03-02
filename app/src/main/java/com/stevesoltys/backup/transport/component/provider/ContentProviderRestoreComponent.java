@@ -9,13 +9,16 @@ import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
+import com.stevesoltys.backup.security.CipherUtil;
+import com.stevesoltys.backup.security.KeyGenerator;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import libcore.io.IoUtils;
 import libcore.io.Streams;
 
+import javax.crypto.SecretKey;
 import java.io.*;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -48,6 +51,45 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         restoreState = new ContentProviderRestoreState();
         restoreState.setPackages(packages);
         restoreState.setPackageIndex(-1);
+
+        if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
+            try {
+                ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
+                ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+                seekToEntry(inputStream, ContentProviderBackupConstants.SALT_FILE_PATH);
+
+                restoreState.setSalt(Streams.readFullyNoClose(inputStream));
+                restoreState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), restoreState.getSalt()));
+
+                IoUtils.closeQuietly(inputFileDescriptor);
+                IoUtils.closeQuietly(inputStream);
+
+            } catch (Exception ex) {
+                Log.e(TAG, "Salt not found", ex);
+            }
+        }
+
+        try {
+            List<ZipEntry> zipEntries = new LinkedList<>();
+
+            ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
+            ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+
+            ZipEntry zipEntry;
+            while ((zipEntry = inputStream.getNextEntry()) != null) {
+                zipEntries.add(zipEntry);
+                inputStream.closeEntry();
+            }
+
+            IoUtils.closeQuietly(inputFileDescriptor);
+            IoUtils.closeQuietly(inputStream);
+
+            restoreState.setZipEntries(zipEntries);
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Error while caching zip entries", ex);
+        }
+
         return TRANSPORT_OK;
     }
 
@@ -62,32 +104,66 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             restoreState.setPackageIndex(packageIndex);
             String name = packages[packageIndex].packageName;
 
-            try {
-                if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
-                    restoreState.setRestoreType(TYPE_KEY_VALUE);
-                    return new RestoreDescription(name, restoreState.getRestoreType());
+            if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
+                restoreState.setRestoreType(TYPE_KEY_VALUE);
+                return new RestoreDescription(name, restoreState.getRestoreType());
 
-                } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
-                    restoreState.setRestoreType(TYPE_FULL_STREAM);
-                    return new RestoreDescription(name, restoreState.getRestoreType());
-                }
-
-            } catch (IOException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
-                Log.e(TAG, "Error choosing package  " + name + "  at index " + packageIndex + "failed selection:", ex);
+            } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
+                restoreState.setRestoreType(TYPE_FULL_STREAM);
+                return new RestoreDescription(name, restoreState.getRestoreType());
             }
         }
         return RestoreDescription.NO_MORE_PACKAGES;
     }
 
-    private boolean containsPackageFile(String fileName) throws IOException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
+    private boolean containsPackageFile(String fileName) {
+        return restoreState.getZipEntries().stream()
+                .anyMatch(zipEntry -> zipEntry.getName().startsWith(fileName));
+    }
+
+    @Override
+    public int getRestoreData(ParcelFileDescriptor outputFileDescriptor) {
+        Preconditions.checkState(restoreState != null, "startRestore() not called");
+        Preconditions.checkState(restoreState.getPackageIndex() >= 0, "nextRestorePackage() not called");
+        Preconditions.checkState(restoreState.getRestoreType() == TYPE_KEY_VALUE,
+                "getRestoreData() for non-key/value dataset");
+
+        PackageInfo packageInfo = restoreState.getPackages()[restoreState.getPackageIndex()];
+
+        try {
+            return transferIncrementalRestoreData(packageInfo.packageName, outputFileDescriptor);
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Unable to read backup records: ", ex);
+            return TRANSPORT_ERROR;
+        }
+    }
+
+    private int transferIncrementalRestoreData(String packageName, ParcelFileDescriptor outputFileDescriptor)
+            throws Exception {
+
         ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
         ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
+        BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
 
-        Optional<ZipEntry> zipEntry = seekToEntry(inputStream, fileName);
+        Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
+                configuration.getIncrementalBackupDirectory() + packageName);
+
+        while (zipEntryOptional.isPresent()) {
+            String fileName = new File(zipEntryOptional.get().getName()).getName();
+            String blobKey = new String(Base64.decode(fileName, Base64.DEFAULT));
+
+            byte[] backupData = readBackupData(inputStream);
+            backupDataOutput.writeEntityHeader(blobKey, backupData.length);
+            backupDataOutput.writeEntityData(backupData, backupData.length);
+            inputStream.closeEntry();
+
+            zipEntryOptional = seekToEntry(inputStream, configuration.getIncrementalBackupDirectory() + packageName);
+        }
+
         IoUtils.closeQuietly(inputFileDescriptor);
-        IoUtils.closeQuietly(inputStream);
-        return zipEntry.isPresent();
+        IoUtils.closeQuietly(outputFileDescriptor);
+        return TRANSPORT_OK;
     }
 
     private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
@@ -113,48 +189,16 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         return Optional.empty();
     }
 
-    @Override
-    public int getRestoreData(ParcelFileDescriptor outputFileDescriptor) {
-        Preconditions.checkState(restoreState != null, "startRestore() not called");
-        Preconditions.checkState(restoreState.getPackageIndex() >= 0, "nextRestorePackage() not called");
-        Preconditions.checkState(restoreState.getRestoreType() == TYPE_KEY_VALUE,
-                "getRestoreData() for non-key/value dataset");
+    private byte[] readBackupData(ZipInputStream inputStream) throws Exception {
+        byte[] backupData = Streams.readFullyNoClose(inputStream);
+        SecretKey secretKey = restoreState.getSecretKey();
+        byte[] initializationVector = restoreState.getSalt();
 
-        PackageInfo packageInfo = restoreState.getPackages()[restoreState.getPackageIndex()];
-
-        try {
-            return transferIncrementalRestoreData(packageInfo.packageName, outputFileDescriptor);
-
-        } catch (Exception ex) {
-            Log.e(TAG, "Unable to read backup records: ", ex);
-            return TRANSPORT_ERROR;
-        }
-    }
-
-    private int transferIncrementalRestoreData(String packageName, ParcelFileDescriptor outputFileDescriptor)
-            throws IOException, InvalidAlgorithmParameterException, InvalidKeyException {
-
-        ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
-        ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
-        BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
-
-        Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
-                configuration.getIncrementalBackupDirectory() + packageName);
-        while (zipEntryOptional.isPresent()) {
-            String fileName = new File(zipEntryOptional.get().getName()).getName();
-            String blobKey = new String(Base64.decode(fileName, Base64.DEFAULT));
-
-            byte[] backupData = Streams.readFullyNoClose(inputStream);
-            backupDataOutput.writeEntityHeader(blobKey, backupData.length);
-            backupDataOutput.writeEntityData(backupData, backupData.length);
-            inputStream.closeEntry();
-
-            zipEntryOptional = seekToEntry(inputStream, configuration.getIncrementalBackupDirectory() + packageName);
+        if (secretKey != null) {
+            backupData = CipherUtil.decrypt(backupData, secretKey, initializationVector);
         }
 
-        IoUtils.closeQuietly(inputFileDescriptor);
-        IoUtils.closeQuietly(outputFileDescriptor);
-        return TRANSPORT_OK;
+        return backupData;
     }
 
     @Override

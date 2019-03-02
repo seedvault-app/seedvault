@@ -3,6 +3,9 @@ package com.stevesoltys.backup.transport.component.provider;
 import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 
+import javax.crypto.SecretKey;
+import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -20,28 +23,18 @@ class ContentProviderRestoreState {
 
     private ZipInputStream inputStream;
 
-    PackageInfo[] getPackages() {
-        return packages;
+    private byte[] salt;
+
+    private SecretKey secretKey;
+
+    private List<ZipEntry> zipEntries;
+
+    ParcelFileDescriptor getInputFileDescriptor() {
+        return inputFileDescriptor;
     }
 
-    void setPackages(PackageInfo[] packages) {
-        this.packages = packages;
-    }
-
-    int getPackageIndex() {
-        return packageIndex;
-    }
-
-    void setPackageIndex(int packageIndex) {
-        this.packageIndex = packageIndex;
-    }
-
-    int getRestoreType() {
-        return restoreType;
-    }
-
-    void setRestoreType(int restoreType) {
-        this.restoreType = restoreType;
+    void setInputFileDescriptor(ParcelFileDescriptor inputFileDescriptor) {
+        this.inputFileDescriptor = inputFileDescriptor;
     }
 
     ZipInputStream getInputStream() {
@@ -52,11 +45,51 @@ class ContentProviderRestoreState {
         this.inputStream = inputStream;
     }
 
-    ParcelFileDescriptor getInputFileDescriptor() {
-        return inputFileDescriptor;
+    int getPackageIndex() {
+        return packageIndex;
     }
 
-    void setInputFileDescriptor(ParcelFileDescriptor inputFileDescriptor) {
-        this.inputFileDescriptor = inputFileDescriptor;
+    void setPackageIndex(int packageIndex) {
+        this.packageIndex = packageIndex;
+    }
+
+    PackageInfo[] getPackages() {
+        return packages;
+    }
+
+    void setPackages(PackageInfo[] packages) {
+        this.packages = packages;
+    }
+
+    int getRestoreType() {
+        return restoreType;
+    }
+
+    void setRestoreType(int restoreType) {
+        this.restoreType = restoreType;
+    }
+
+    byte[] getSalt() {
+        return salt;
+    }
+
+    void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public List<ZipEntry> getZipEntries() {
+        return zipEntries;
+    }
+
+    public void setZipEntries(List<ZipEntry> zipEntries) {
+        this.zipEntries = zipEntries;
     }
 }

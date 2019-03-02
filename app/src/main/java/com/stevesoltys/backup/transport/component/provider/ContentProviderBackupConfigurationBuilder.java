@@ -21,6 +21,8 @@ public class ContentProviderBackupConfigurationBuilder {
 
     private Set<String> packages;
 
+    private String password;
+
     private long backupSizeQuota = Long.MAX_VALUE;
 
     private String incrementalBackupDirectory = DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
@@ -34,12 +36,27 @@ public class ContentProviderBackupConfigurationBuilder {
         Preconditions.checkState(incrementalBackupDirectory != null, "Incremental backup directory must be set.");
         Preconditions.checkState(fullBackupDirectory != null, "Full backup directory must be set.");
 
-        return new ContentProviderBackupConfiguration(context, outputUri, packages, backupSizeQuota,
+        return new ContentProviderBackupConfiguration(context, outputUri, packages, password, backupSizeQuota,
                 fullBackupDirectory, incrementalBackupDirectory);
+    }
+
+    public ContentProviderBackupConfigurationBuilder setBackupSizeQuota(long backupSizeQuota) {
+        this.backupSizeQuota = backupSizeQuota;
+        return this;
     }
 
     public ContentProviderBackupConfigurationBuilder setContext(Context context) {
         this.context = context;
+        return this;
+    }
+
+    public ContentProviderBackupConfigurationBuilder setFullBackupDirectory(String fullBackupDirectory) {
+        this.fullBackupDirectory = fullBackupDirectory;
+        return this;
+    }
+
+    public ContentProviderBackupConfigurationBuilder setIncrementalBackupDirectory(String incrementalBackupDirectory) {
+        this.incrementalBackupDirectory = incrementalBackupDirectory;
         return this;
     }
 
@@ -53,18 +70,8 @@ public class ContentProviderBackupConfigurationBuilder {
         return this;
     }
 
-    public ContentProviderBackupConfigurationBuilder setBackupSizeQuota(long backupSizeQuota) {
-        this.backupSizeQuota = backupSizeQuota;
-        return this;
-    }
-
-    public ContentProviderBackupConfigurationBuilder setIncrementalBackupDirectory(String incrementalBackupDirectory) {
-        this.incrementalBackupDirectory = incrementalBackupDirectory;
-        return this;
-    }
-
-    public ContentProviderBackupConfigurationBuilder setFullBackupDirectory(String fullBackupDirectory) {
-        this.fullBackupDirectory = fullBackupDirectory;
+    public ContentProviderBackupConfigurationBuilder setPassword(String password) {
+        this.password = password;
         return this;
     }
 }
