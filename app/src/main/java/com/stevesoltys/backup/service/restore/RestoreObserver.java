@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.activity.restore;
+package com.stevesoltys.backup.service.restore;
 
 import android.app.Activity;
 import android.widget.PopupWindow;

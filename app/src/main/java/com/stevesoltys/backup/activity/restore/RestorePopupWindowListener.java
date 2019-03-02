@@ -12,13 +12,13 @@ import com.stevesoltys.backup.session.restore.RestoreSession;
 /**
  * @author Steve Soltys
  */
-class RestorePopupWindowListener implements Button.OnClickListener {
+public class RestorePopupWindowListener implements Button.OnClickListener {
 
     private static final String TAG = RestorePopupWindowListener.class.getName();
 
     private final RestoreSession restoreSession;
 
-    RestorePopupWindowListener(RestoreSession restoreSession) {
+    public RestorePopupWindowListener(RestoreSession restoreSession) {
         this.restoreSession = restoreSession;
     }
 
