@@ -11,8 +11,8 @@ import android.widget.*;
 import com.google.android.collect.Sets;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
-import com.stevesoltys.backup.service.backup.BackupService;
 import com.stevesoltys.backup.service.PackageService;
+import com.stevesoltys.backup.service.backup.BackupService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +28,7 @@ class CreateBackupActivityController {
 
     private static final Set<String> IGNORED_PACKAGES = Sets.newArraySet(
             "com.android.providers.downloads.ui", "com.android.providers.downloads", "com.android.providers.media",
-            "com.stevesoltys.backup"
+            "com.android.providers.calendar", "com.android.providers.contacts", "com.stevesoltys.backup"
     );
 
     private final BackupService backupService = new BackupService();
