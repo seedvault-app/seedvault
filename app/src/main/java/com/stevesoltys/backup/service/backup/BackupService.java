@@ -8,8 +8,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.stevesoltys.backup.R;
-import com.stevesoltys.backup.activity.backup.BackupPopupWindowListener;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
+import com.stevesoltys.backup.activity.backup.BackupPopupWindowListener;
 import com.stevesoltys.backup.service.TransportService;
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
@@ -59,9 +59,5 @@ public class BackupService {
         } catch (Exception e) {
             Log.e(TAG, "Error while running backup: ", e);
         }
-    }
-
-    public void backupPackages() {
-
     }
 }
