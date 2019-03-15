@@ -10,6 +10,21 @@ import com.stevesoltys.backup.transport.component.BackupComponent;
 public class StubBackupComponent implements BackupComponent {
 
     @Override
+    public void cancelFullBackup() {
+
+    }
+
+    @Override
+    public int checkFullBackupSize(long size) {
+        return 0;
+    }
+
+    @Override
+    public int clearBackupData(PackageInfo packageInfo) {
+        return 0;
+    }
+
+    @Override
     public String currentDestinationString() {
         return null;
     }
@@ -20,22 +35,17 @@ public class StubBackupComponent implements BackupComponent {
     }
 
     @Override
-    public int initializeDevice() {
-        return 0;
-    }
-
-    @Override
-    public int clearBackupData(PackageInfo packageInfo) {
-        return 0;
-    }
-
-    @Override
     public int finishBackup() {
         return 0;
     }
 
     @Override
-    public int performIncrementalBackup(PackageInfo targetPackage, ParcelFileDescriptor data) {
+    public long getBackupQuota(String packageName, boolean fullBackup) {
+        return 0;
+    }
+
+    @Override
+    public int initializeDevice() {
         return 0;
     }
 
@@ -45,22 +55,7 @@ public class StubBackupComponent implements BackupComponent {
     }
 
     @Override
-    public int checkFullBackupSize(long size) {
-        return 0;
-    }
-
-    @Override
-    public int sendBackupData(int numBytes) {
-        return 0;
-    }
-
-    @Override
-    public void cancelFullBackup() {
-
-    }
-
-    @Override
-    public long getBackupQuota(String packageName, boolean fullBackup) {
+    public int performIncrementalBackup(PackageInfo targetPackage, ParcelFileDescriptor data) {
         return 0;
     }
 
@@ -71,6 +66,11 @@ public class StubBackupComponent implements BackupComponent {
 
     @Override
     public long requestFullBackupTime() {
+        return 0;
+    }
+
+    @Override
+    public int sendBackupData(int numBytes) {
         return 0;
     }
 }

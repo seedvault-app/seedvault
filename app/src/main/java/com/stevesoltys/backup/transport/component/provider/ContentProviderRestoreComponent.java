@@ -17,6 +17,7 @@ import libcore.io.Streams;
 
 import javax.crypto.SecretKey;
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -166,29 +167,6 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         return TRANSPORT_OK;
     }
 
-    private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
-        ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        return contentResolver.openFileDescriptor(configuration.getUri(), "r");
-    }
-
-    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) throws FileNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(inputFileDescriptor.getFileDescriptor());
-        return new ZipInputStream(fileInputStream);
-    }
-
-    private Optional<ZipEntry> seekToEntry(ZipInputStream inputStream, String entryPath) throws IOException {
-        ZipEntry zipEntry;
-        while ((zipEntry = inputStream.getNextEntry()) != null) {
-
-            if (zipEntry.getName().startsWith(entryPath)) {
-                return Optional.of(zipEntry);
-            }
-            inputStream.closeEntry();
-        }
-
-        return Optional.empty();
-    }
-
     private byte[] readBackupData(ZipInputStream inputStream) throws Exception {
         byte[] backupData = Streams.readFullyNoClose(inputStream);
         SecretKey secretKey = restoreState.getSecretKey();
@@ -248,7 +226,28 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
             if (bytesRead <= 0) {
                 bytesRead = NO_MORE_DATA;
+
+                if (restoreState.getCipher() != null) {
+                    buffer = restoreState.getCipher().doFinal();
+                    bytesRead = buffer.length;
+
+                    outputStream.write(buffer, 0, bytesRead);
+                    restoreState.setCipher(null);
+                }
+
             } else {
+                if (restoreState.getSecretKey() != null) {
+                    SecretKey secretKey = restoreState.getSecretKey();
+                    byte[] salt = restoreState.getSalt();
+
+                    if (restoreState.getCipher() == null) {
+                        restoreState.setCipher(CipherUtil.startDecrypt(secretKey, salt));
+                    }
+
+                    buffer = restoreState.getCipher().update(Arrays.copyOfRange(buffer, 0, bytesRead));
+                    bytesRead = buffer.length;
+                }
+
                 outputStream.write(buffer, 0, bytesRead);
             }
 
@@ -304,5 +303,28 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
         IoUtils.closeQuietly(restoreState.getInputFileDescriptor());
         restoreState = null;
+    }
+
+    private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
+        ContentResolver contentResolver = configuration.getContext().getContentResolver();
+        return contentResolver.openFileDescriptor(configuration.getUri(), "r");
+    }
+
+    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) throws FileNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(inputFileDescriptor.getFileDescriptor());
+        return new ZipInputStream(fileInputStream);
+    }
+
+    private Optional<ZipEntry> seekToEntry(ZipInputStream inputStream, String entryPath) throws IOException {
+        ZipEntry zipEntry;
+        while ((zipEntry = inputStream.getNextEntry()) != null) {
+
+            if (zipEntry.getName().startsWith(entryPath)) {
+                return Optional.of(zipEntry);
+            }
+            inputStream.closeEntry();
+        }
+
+        return Optional.empty();
     }
 }

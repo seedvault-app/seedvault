@@ -12,6 +12,7 @@ import com.stevesoltys.backup.transport.component.BackupComponent;
 import libcore.io.IoUtils;
 import org.apache.commons.io.IOUtils;
 
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,6 +46,30 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     @Override
+    public void cancelFullBackup() {
+        clearBackupState(false);
+    }
+
+    @Override
+    public int checkFullBackupSize(long size) {
+        int result = TRANSPORT_OK;
+
+        if (size <= 0) {
+            result = TRANSPORT_PACKAGE_REJECTED;
+
+        } else if (size > configuration.getBackupSizeQuota()) {
+            result = TRANSPORT_QUOTA_EXCEEDED;
+        }
+
+        return result;
+    }
+
+    @Override
+    public int clearBackupData(PackageInfo packageInfo) {
+        return TRANSPORT_OK;
+    }
+
+    @Override
     public String currentDestinationString() {
         return DESTINATION_DESCRIPTION;
     }
@@ -55,69 +80,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     @Override
-    public int initializeDevice() {
-        return TRANSPORT_OK;
-    }
-
-    @Override
-    public int clearBackupData(PackageInfo packageInfo) {
-        return TRANSPORT_OK;
-    }
-
-    @Override
     public int finishBackup() {
         return clearBackupState(false);
-    }
-
-    @Override
-    public int performIncrementalBackup(PackageInfo packageInfo, ParcelFileDescriptor data) {
-        BackupDataInput backupDataInput = new BackupDataInput(data.getFileDescriptor());
-
-        try {
-            initializeBackupState();
-            backupState.setPackageIndex(backupState.getPackageIndex() + 1);
-            backupState.setPackageName(packageInfo.packageName);
-
-            return transferIncrementalBackupData(backupDataInput);
-
-        } catch (Exception ex) {
-            Log.e(TAG, "Error reading backup input: ", ex);
-            return TRANSPORT_ERROR;
-        }
-    }
-
-    private int clearBackupState(boolean closeFile) {
-
-        if (backupState == null) {
-            return TRANSPORT_OK;
-        }
-
-        try {
-            IoUtils.closeQuietly(backupState.getInputFileDescriptor());
-            backupState.setInputFileDescriptor(null);
-
-            ZipOutputStream outputStream = backupState.getOutputStream();
-
-            if (outputStream != null) {
-                outputStream.closeEntry();
-            }
-
-            if (backupState.getPackageIndex() == configuration.getPackageCount() || closeFile) {
-                if (outputStream != null) {
-                    outputStream.finish();
-                    outputStream.close();
-                }
-
-                IoUtils.closeQuietly(backupState.getOutputFileDescriptor());
-                backupState = null;
-            }
-
-        } catch (IOException ex) {
-            Log.e(TAG, "Error cancelling full backup: ", ex);
-            return TRANSPORT_ERROR;
-        }
-
-        return TRANSPORT_OK;
     }
 
     @Override
@@ -126,13 +90,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     @Override
-    public long requestBackupTime() {
-        return 0;
-    }
-
-    @Override
-    public long requestFullBackupTime() {
-        return 0;
+    public int initializeDevice() {
+        return TRANSPORT_OK;
     }
 
     @Override
@@ -152,6 +111,9 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.setInputStream(new FileInputStream(fileDescriptor.getFileDescriptor()));
             backupState.setBytesTransferred(0);
 
+            Cipher cipher = CipherUtil.startEncrypt(backupState.getSecretKey(), backupState.getSalt());
+            backupState.setCipher(cipher);
+
             ZipEntry zipEntry = new ZipEntry(configuration.getFullBackupDirectory() + backupState.getPackageName());
             backupState.getOutputStream().putNextEntry(zipEntry);
 
@@ -165,17 +127,30 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     @Override
-    public int checkFullBackupSize(long size) {
-        int result = TRANSPORT_OK;
+    public int performIncrementalBackup(PackageInfo packageInfo, ParcelFileDescriptor data) {
+        BackupDataInput backupDataInput = new BackupDataInput(data.getFileDescriptor());
 
-        if (size <= 0) {
-            result = TRANSPORT_PACKAGE_REJECTED;
+        try {
+            initializeBackupState();
+            backupState.setPackageIndex(backupState.getPackageIndex() + 1);
+            backupState.setPackageName(packageInfo.packageName);
 
-        } else if (size > configuration.getBackupSizeQuota()) {
-            result = TRANSPORT_QUOTA_EXCEEDED;
+            return transferIncrementalBackupData(backupDataInput);
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Error reading backup input: ", ex);
+            return TRANSPORT_ERROR;
         }
+    }
 
-        return result;
+    @Override
+    public long requestBackupTime() {
+        return 0;
+    }
+
+    @Override
+    public long requestFullBackupTime() {
+        return 0;
     }
 
     @Override
@@ -196,49 +171,20 @@ public class ContentProviderBackupComponent implements BackupComponent {
         ZipOutputStream outputStream = backupState.getOutputStream();
 
         try {
-            outputStream.write(IOUtils.readFully(inputStream, numBytes));
+            byte[] payload = IOUtils.readFully(inputStream, numBytes);
+
+            if (backupState.getCipher() != null) {
+                payload = backupState.getCipher().update(payload);
+            }
+
+            outputStream.write(payload, 0, numBytes);
             backupState.setBytesTransferred(bytesTransferred);
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error handling backup data for " + backupState.getPackageName() + ": ", ex);
             return TRANSPORT_ERROR;
         }
         return TRANSPORT_OK;
-    }
-
-    @Override
-    public void cancelFullBackup() {
-        clearBackupState(false);
-    }
-
-    private void initializeBackupState() throws Exception {
-        if (backupState == null) {
-            backupState = new ContentProviderBackupState();
-        }
-
-        if (backupState.getOutputStream() == null) {
-            initializeOutputStream();
-
-            ZipEntry saltZipEntry = new ZipEntry(ContentProviderBackupConstants.SALT_FILE_PATH);
-            backupState.getOutputStream().putNextEntry(saltZipEntry);
-            backupState.getOutputStream().write(backupState.getSalt());
-            backupState.getOutputStream().closeEntry();
-
-
-            if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
-                backupState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), backupState.getSalt()));
-            }
-        }
-    }
-
-    private void initializeOutputStream() throws IOException {
-        ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        ParcelFileDescriptor outputFileDescriptor = contentResolver.openFileDescriptor(configuration.getUri(), "w");
-        backupState.setOutputFileDescriptor(outputFileDescriptor);
-
-        FileOutputStream fileOutputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
-        ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-        backupState.setOutputStream(zipOutputStream);
     }
 
     private int transferIncrementalBackupData(BackupDataInput backupDataInput) throws IOException {
@@ -281,6 +227,75 @@ public class ContentProviderBackupComponent implements BackupComponent {
                     return TRANSPORT_ERROR;
                 }
             }
+        }
+
+        return TRANSPORT_OK;
+    }
+
+    private void initializeBackupState() throws Exception {
+        if (backupState == null) {
+            backupState = new ContentProviderBackupState();
+        }
+
+        if (backupState.getOutputStream() == null) {
+            initializeOutputStream();
+
+            ZipEntry saltZipEntry = new ZipEntry(ContentProviderBackupConstants.SALT_FILE_PATH);
+            backupState.getOutputStream().putNextEntry(saltZipEntry);
+            backupState.getOutputStream().write(backupState.getSalt());
+            backupState.getOutputStream().closeEntry();
+
+            if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
+                backupState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), backupState.getSalt()));
+            }
+        }
+    }
+
+    private void initializeOutputStream() throws IOException {
+        ContentResolver contentResolver = configuration.getContext().getContentResolver();
+        ParcelFileDescriptor outputFileDescriptor = contentResolver.openFileDescriptor(configuration.getUri(), "w");
+        backupState.setOutputFileDescriptor(outputFileDescriptor);
+
+        FileOutputStream fileOutputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
+        ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+        backupState.setOutputStream(zipOutputStream);
+    }
+
+    private int clearBackupState(boolean closeFile) {
+
+        if (backupState == null) {
+            return TRANSPORT_OK;
+        }
+
+        try {
+            IoUtils.closeQuietly(backupState.getInputFileDescriptor());
+            backupState.setInputFileDescriptor(null);
+
+            ZipOutputStream outputStream = backupState.getOutputStream();
+
+            if (outputStream != null) {
+
+                if (backupState.getCipher() != null) {
+                    outputStream.write(backupState.getCipher().doFinal());
+                    backupState.setCipher(null);
+                }
+
+                outputStream.closeEntry();
+            }
+
+            if (backupState.getPackageIndex() == configuration.getPackageCount() || closeFile) {
+                if (outputStream != null) {
+                    outputStream.finish();
+                    outputStream.close();
+                }
+
+                IoUtils.closeQuietly(backupState.getOutputFileDescriptor());
+                backupState = null;
+            }
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Error cancelling full backup: ", ex);
+            return TRANSPORT_ERROR;
         }
 
         return TRANSPORT_OK;

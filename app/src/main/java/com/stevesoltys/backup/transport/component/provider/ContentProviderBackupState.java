@@ -2,6 +2,7 @@ package com.stevesoltys.backup.transport.component.provider;
 
 import android.os.ParcelFileDescriptor;
 
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import java.io.InputStream;
 import java.security.SecureRandom;
@@ -21,6 +22,8 @@ class ContentProviderBackupState {
     private InputStream inputStream;
 
     private ZipOutputStream outputStream;
+
+    private Cipher cipher;
 
     private long bytesTransferred;
 
@@ -43,6 +46,14 @@ class ContentProviderBackupState {
 
     void setBytesTransferred(long bytesTransferred) {
         this.bytesTransferred = bytesTransferred;
+    }
+
+    Cipher getCipher() {
+        return cipher;
+    }
+
+    void setCipher(Cipher cipher) {
+        this.cipher = cipher;
     }
 
     ParcelFileDescriptor getInputFileDescriptor() {
