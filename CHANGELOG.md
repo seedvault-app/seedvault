@@ -1,3 +1,10 @@
+## [0.3.0] - 2019-03-14
+### Fixed
+- Transport encryption. Some of the application data was not included during encryption.
+
+### Notes
+- This contains breaking changes, any backups made prior to this release can no longer be restored.
+
 ## [0.2.0] - 2019-03-01
 ### Added
 - Support for encrypted backups with a 256-bit AES key generated from a password using PBKDF2.
