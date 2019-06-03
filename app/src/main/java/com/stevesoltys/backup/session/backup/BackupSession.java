@@ -39,17 +39,17 @@ public class BackupSession extends IBackupObserver.Stub {
     }
 
     @Override
-    public void onUpdate(String currentPackage, BackupProgress backupProgress) throws RemoteException {
+    public void onUpdate(String currentPackage, BackupProgress backupProgress) {
         backupSessionObserver.backupPackageStarted(this, currentPackage, backupProgress);
     }
 
     @Override
-    public void onResult(String currentPackage, int status) throws RemoteException {
+    public void onResult(String currentPackage, int status) {
         backupSessionObserver.backupPackageCompleted(this, currentPackage, getBackupResult(status));
     }
 
     @Override
-    public void backupFinished(int status) throws RemoteException {
+    public void backupFinished(int status) {
         backupSessionObserver.backupSessionCompleted(this, getBackupResult(status));
     }
 

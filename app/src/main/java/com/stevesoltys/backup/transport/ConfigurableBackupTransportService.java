@@ -26,7 +26,6 @@ public class ConfigurableBackupTransportService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         startForeground(FOREGROUND_ID, new Notification.Builder(this).build());
     }
 

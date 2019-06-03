@@ -4,7 +4,6 @@
     <string name="create_backup_button">Create backup</string>
     <string name="restore_backup_button">Restore backup</string>
 
-    <string name="backup_button">Backup packages</string>
     <string name="backup_success">Backup success</string>
     <string name="backup_failure">Backup failure</string>
     <string name="backup_cancelled">Backup cancelled</string>

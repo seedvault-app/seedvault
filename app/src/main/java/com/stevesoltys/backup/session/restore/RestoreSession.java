@@ -71,12 +71,12 @@ public class RestoreSession extends IRestoreObserver.Stub {
     }
 
     @Override
-    public void restoreStarting(int numPackages) throws RemoteException {
+    public void restoreStarting(int numPackages) {
         observer.restoreSessionStarted(numPackages);
     }
 
     @Override
-    public void onUpdate(int nowBeingRestored, String currentPackage) throws RemoteException {
+    public void onUpdate(int nowBeingRestored, String currentPackage) {
         observer.restorePackageStarted(nowBeingRestored, currentPackage);
     }
 
