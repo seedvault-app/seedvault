@@ -39,6 +39,7 @@ nb-configuration.xml
 
 ## Gradle
 .gradle
+keystore.properties
 gradle-app.setting
 
 ## OS Specific
