@@ -25,6 +25,8 @@ import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
 import static android.provider.DocumentsContract.createDocument;
 import static android.provider.DocumentsContract.getTreeDocumentId;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
+import static com.stevesoltys.backup.settings.SettingsManager.getBackupFolderUri;
+import static com.stevesoltys.backup.settings.SettingsManager.setBackupFolderUri;
 
 /**
  * @author Steve Soltys
@@ -35,7 +37,22 @@ class MainActivityController {
     private static final String DOCUMENT_MIME_TYPE = "application/octet-stream";
     private static final String DOCUMENT_SUFFIX = "yyyy-MM-dd_HH_mm_ss";
 
-    void showChooseFolderActivity(Activity parent) {
+    void onBackupButtonClicked(Activity parent) {
+        Uri folderUri = getBackupFolderUri(parent);
+        if (folderUri == null) {
+            showChooseFolderActivity(parent);
+        } else {
+            try {
+                Uri fileUri = createBackupFile(parent.getContentResolver(), folderUri);
+                showCreateBackupActivity(parent, fileUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+                showChooseFolderActivity(parent);
+            }
+        }
+    }
+
+    private void showChooseFolderActivity(Activity parent) {
         Intent createDocumentIntent = new Intent(ACTION_OPEN_DOCUMENT_TREE);
         createDocumentIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
                 FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -77,7 +94,10 @@ class MainActivityController {
                 (FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
         contentResolver.takePersistableUriPermission(folderUri, takeFlags);
 
-        // create backup file in folder
+        // store backup folder location in settings
+        setBackupFolderUri(parent, folderUri);
+
+        // create a new backup file in folder
         Uri fileUri;
         try {
             fileUri = createBackupFile(contentResolver, folderUri);
@@ -88,6 +108,10 @@ class MainActivityController {
             return;
         }
 
+        showCreateBackupActivity(parent, fileUri);
+    }
+
+    private void showCreateBackupActivity(Activity parent, Uri fileUri) {
         Intent intent = new Intent(parent, CreateBackupActivity.class);
         intent.setData(fileUri);
         parent.startActivity(intent);
@@ -106,9 +130,14 @@ class MainActivityController {
 
     private Uri createBackupFile(ContentResolver contentResolver, Uri folderUri) throws IOException {
         Uri documentUri = buildDocumentUriUsingTree(folderUri, getTreeDocumentId(folderUri));
-        Uri fileUri = createDocument(contentResolver, documentUri, DOCUMENT_MIME_TYPE, getBackupFileName());
-        if (fileUri == null) throw new IOException();
-        return fileUri;
+        try {
+            Uri fileUri = createDocument(contentResolver, documentUri, DOCUMENT_MIME_TYPE, getBackupFileName());
+            if (fileUri == null) throw new IOException();
+            return fileUri;
+        } catch (SecurityException e) {
+            // happens when folder was deleted and thus Uri permission don't exist anymore
+            throw new IOException(e);
+        }
     }
 
     private String getBackupFileName() {

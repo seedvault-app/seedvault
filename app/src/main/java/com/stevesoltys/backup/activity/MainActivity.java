@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (viewId) {
 
             case R.id.create_backup_button:
-                controller.showChooseFolderActivity(this);
+                controller.onBackupButtonClicked(this);
                 break;
 
             case R.id.restore_backup_button:
