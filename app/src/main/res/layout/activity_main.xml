@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/activity_main"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:weightSum="1"
-              tools:context="com.stevesoltys.backup.activity.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.stevesoltys.backup.activity.MainActivity">
 
     <Button
         android:id="@+id/create_backup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/button_horizontal_margin"
-        android:layout_marginRight="@dimen/button_horizontal_margin"
         android:layout_marginTop="@dimen/button_vertical_margin"
-        android:text="@string/create_backup_button"/>
+        android:layout_marginRight="@dimen/button_horizontal_margin"
+        android:text="@string/create_backup_button" />
 
     <Button
         android:id="@+id/restore_backup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/button_horizontal_margin"
-        android:layout_marginRight="@dimen/button_horizontal_margin"
         android:layout_marginTop="@dimen/button_vertical_margin"
-        android:text="@string/restore_backup_button"/>
+        android:layout_marginRight="@dimen/button_horizontal_margin"
+        android:text="@string/restore_backup_button" />
+
+    <Button
+        android:id="@+id/change_backup_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/button_horizontal_margin"
+        android:layout_marginTop="72dp"
+        android:layout_marginRight="@dimen/button_horizontal_margin"
+        android:text="@string/change_backup_location_button" />
 
 </LinearLayout>
