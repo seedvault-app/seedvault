@@ -7,7 +7,8 @@
 
     <uses-sdk
         android:minSdkVersion="26"
-        android:targetSdkVersion="26" />
+        android:targetSdkVersion="26"
+        tools:ignore="GradleOverrides,OldTargetApi" />
 
     <uses-permission
         android:name="android.permission.BACKUP"
