@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.stevesoltys.backup.activity.backup.CreateBackupActivity;
@@ -35,6 +36,8 @@ import static com.stevesoltys.backup.settings.SettingsManager.setBackupFolderUri
  */
 class MainActivityController {
 
+    private static final String TAG = MainActivityController.class.getName();
+
     private static final String DOCUMENT_MIME_TYPE = "application/octet-stream";
     private static final String DOCUMENT_SUFFIX = "yyyy-MM-dd_HH_mm_ss";
 
@@ -48,7 +51,7 @@ class MainActivityController {
                 showCreateBackupActivity(parent, fileUri);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.w(TAG, "Error creating backup file: ", e);
                 showChooseFolderActivity(parent, true);
             }
         }
@@ -117,9 +120,9 @@ class MainActivityController {
             showCreateBackupActivity(parent, fileUri);
 
         } catch (IOException e) {
+            Log.e(TAG, "Error creating backup file: ", e);
             // TODO show better error message once more infrastructure is in place
             Toast.makeText(parent, "Error creating backup file", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 
