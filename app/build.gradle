@@ -3,13 +3,18 @@ import groovy.xml.XmlUtil
 apply plugin: 'com.android.application'
 
 android {
+
     compileSdkVersion 28
-    buildToolsVersion '28.0.0'
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 26
+    }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -20,6 +25,23 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    // optional signingConfigs
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    if (keystorePropertiesFile.exists()) {
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+        buildTypes.release.signingConfig = signingConfigs.release
+    }
 }
 
 gradle.projectsEvaluated {
@@ -28,28 +50,25 @@ gradle.projectsEvaluated {
     }
 }
 
-preBuild {
+preBuild.doLast {
+    def imlFile = file(project.name + ".iml")
 
-    doLast {
-        def imlFile = file(project.name + ".iml")
+    try {
+        def parsedXml = (new XmlParser()).parse(imlFile)
+        def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
+        parsedXml.component[1].remove(jdkNode)
 
-        try {
-            def parsedXml = (new XmlParser()).parse(imlFile)
-            def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
-            parsedXml.component[1].remove(jdkNode)
+        def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+        new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+        XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
 
-            def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
-            new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
-            XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
-
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace()
-        }
+    } catch (NullPointerException | FileNotFoundException ex) {
+        ex.printStackTrace()
     }
 }
 
 dependencies {
     compileOnly fileTree(include: ['android.jar', 'libcore.jar'], dir: 'libs')
 
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 }

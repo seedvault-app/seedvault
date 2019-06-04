@@ -24,7 +24,7 @@ public class ConfigurableBackupTransport extends BackupTransport {
 
     private RestoreComponent restoreComponent;
 
-    public ConfigurableBackupTransport() {
+    ConfigurableBackupTransport() {
         backupComponent = new StubBackupComponent();
         restoreComponent = new StubRestoreComponent();
     }
@@ -45,14 +45,6 @@ public class ConfigurableBackupTransport extends BackupTransport {
 
     public boolean isActive() {
         return !(backupComponent instanceof StubBackupComponent || restoreComponent instanceof StubRestoreComponent);
-    }
-
-    public BackupComponent getBackupComponent() {
-        return backupComponent;
-    }
-
-    public RestoreComponent getRestoreComponent() {
-        return restoreComponent;
     }
 
     @Override

@@ -8,15 +8,18 @@ import android.content.pm.PackageInfo;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
+
 import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.security.CipherUtil;
 import com.stevesoltys.backup.security.KeyGenerator;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
-import libcore.io.IoUtils;
-import libcore.io.Streams;
 
-import javax.crypto.SecretKey;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +27,15 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static android.app.backup.BackupTransport.*;
+import javax.crypto.SecretKey;
+
+import libcore.io.IoUtils;
+import libcore.io.Streams;
+
+import static android.app.backup.BackupTransport.NO_MORE_DATA;
+import static android.app.backup.BackupTransport.TRANSPORT_ERROR;
+import static android.app.backup.BackupTransport.TRANSPORT_OK;
+import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
 import static android.app.backup.RestoreDescription.TYPE_FULL_STREAM;
 import static android.app.backup.RestoreDescription.TYPE_KEY_VALUE;
 
@@ -310,7 +321,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         return contentResolver.openFileDescriptor(configuration.getUri(), "r");
     }
 
-    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) throws FileNotFoundException {
+    private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) {
         FileInputStream fileInputStream = new FileInputStream(inputFileDescriptor.getFileDescriptor());
         return new ZipInputStream(fileInputStream);
     }
