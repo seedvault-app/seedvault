@@ -10,7 +10,7 @@ import com.stevesoltys.backup.R;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    public static final int CREATE_DOCUMENT_REQUEST_CODE = 1;
+    public static final int OPEN_DOCUMENT_TREE_REQUEST_CODE = 1;
 
     public static final int LOAD_DOCUMENT_REQUEST_CODE = 2;
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (viewId) {
 
             case R.id.create_backup_button:
-                controller.showCreateDocumentActivity(this);
+                controller.showChooseFolderActivity(this);
                 break;
 
             case R.id.restore_backup_button:
@@ -53,8 +53,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         switch (requestCode) {
 
-            case CREATE_DOCUMENT_REQUEST_CODE:
-                controller.handleCreateDocumentResult(result, this);
+            case OPEN_DOCUMENT_TREE_REQUEST_CODE:
+                controller.handleChooseFolderResult(result, this);
                 break;
 
             case LOAD_DOCUMENT_REQUEST_CODE:
