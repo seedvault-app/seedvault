@@ -24,6 +24,7 @@ import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
 import static android.provider.DocumentsContract.createDocument;
 import static android.provider.DocumentsContract.getTreeDocumentId;
+import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
 import static com.stevesoltys.backup.settings.SettingsManager.getBackupFolderUri;
 import static com.stevesoltys.backup.settings.SettingsManager.setBackupFolderUri;
@@ -40,26 +41,32 @@ class MainActivityController {
     void onBackupButtonClicked(Activity parent) {
         Uri folderUri = getBackupFolderUri(parent);
         if (folderUri == null) {
-            showChooseFolderActivity(parent);
+            showChooseFolderActivity(parent, true);
         } else {
             try {
                 Uri fileUri = createBackupFile(parent.getContentResolver(), folderUri);
                 showCreateBackupActivity(parent, fileUri);
+
             } catch (IOException e) {
                 e.printStackTrace();
-                showChooseFolderActivity(parent);
+                showChooseFolderActivity(parent, true);
             }
         }
     }
 
-    private void showChooseFolderActivity(Activity parent) {
-        Intent createDocumentIntent = new Intent(ACTION_OPEN_DOCUMENT_TREE);
-        createDocumentIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
+    boolean isChangeBackupLocationButtonVisible(Activity parent) {
+        return getBackupFolderUri(parent) != null;
+    }
+
+    private void showChooseFolderActivity(Activity parent, boolean continueToBackup) {
+        Intent openTreeIntent = new Intent(ACTION_OPEN_DOCUMENT_TREE);
+        openTreeIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
                 FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
         try {
-            Intent documentChooser = Intent.createChooser(createDocumentIntent, "Select the backup location");
-            parent.startActivityForResult(documentChooser, OPEN_DOCUMENT_TREE_REQUEST_CODE);
+            Intent documentChooser = Intent.createChooser(openTreeIntent, "Select the backup location");
+            int requestCode = continueToBackup ? OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE : OPEN_DOCUMENT_TREE_REQUEST_CODE;
+            parent.startActivityForResult(documentChooser, requestCode);
 
         } catch (ActivityNotFoundException ex) {
             Toast.makeText(parent, "Please install a file manager.", Toast.LENGTH_SHORT).show();
@@ -80,7 +87,11 @@ class MainActivityController {
         }
     }
 
-    void handleChooseFolderResult(Intent result, Activity parent) {
+    void onChangeBackupLocationButtonClicked(Activity parent) {
+        showChooseFolderActivity(parent, false);
+    }
+
+    void handleChooseFolderResult(Intent result, Activity parent, boolean continueToBackup) {
 
         if (result == null || result.getData() == null) {
             return;
@@ -97,18 +108,19 @@ class MainActivityController {
         // store backup folder location in settings
         setBackupFolderUri(parent, folderUri);
 
-        // create a new backup file in folder
-        Uri fileUri;
+        if (!continueToBackup) return;
+
         try {
-            fileUri = createBackupFile(contentResolver, folderUri);
+            // create a new backup file in folder
+            Uri fileUri = createBackupFile(contentResolver, folderUri);
+
+            showCreateBackupActivity(parent, fileUri);
+
         } catch (IOException e) {
             // TODO show better error message once more infrastructure is in place
             Toast.makeText(parent, "Error creating backup file", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            return;
         }
-
-        showCreateBackupActivity(parent, fileUri);
     }
 
     private void showCreateBackupActivity(Activity parent, Uri fileUri) {
@@ -134,6 +146,7 @@ class MainActivityController {
             Uri fileUri = createDocument(contentResolver, documentUri, DOCUMENT_MIME_TYPE, getBackupFileName());
             if (fileUri == null) throw new IOException();
             return fileUri;
+
         } catch (SecurityException e) {
             // happens when folder was deleted and thus Uri permission don't exist anymore
             throw new IOException(e);
