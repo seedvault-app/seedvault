@@ -7,12 +7,19 @@ import android.os.RemoteException;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.collect.Sets;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.service.PackageService;
 import com.stevesoltys.backup.service.backup.BackupService;
+import com.stevesoltys.backup.settings.SettingsManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +75,16 @@ class CreateBackupActivityController {
         });
     }
 
-    void showEnterPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+    void onCreateBackupButtonClicked(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+        String password = SettingsManager.getBackupPassword(parent);
+        if (password == null) {
+            showEnterPasswordAlert(selectedPackages, contentUri, parent);
+        } else {
+            backupService.backupPackageData(selectedPackages, contentUri, parent, password);
+        }
+    }
+
+    private void showEnterPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent) {
         final EditText passwordTextView = new EditText(parent);
         passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -77,9 +93,16 @@ class CreateBackupActivityController {
                 .setMessage("You'll need this to restore your backup, so write it down!")
                 .setView(passwordTextView)
 
-                .setPositiveButton("Set password", (dialog, button) ->
+                .setPositiveButton("Set password", (dialog, button) -> {
+                    if (passwordTextView.getText().length() == 0) {
+                        Toast.makeText(parent, "Please enter a password", Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                        showEnterPasswordAlert(selectedPackages, contentUri, parent);
+                    } else {
                         showConfirmPasswordAlert(selectedPackages, contentUri, parent,
-                                passwordTextView.getText().toString()))
+                                passwordTextView.getText().toString());
+                    }
+                })
 
                 .setNegativeButton("Cancel", (dialog, button) -> dialog.cancel())
                 .show();
@@ -98,6 +121,7 @@ class CreateBackupActivityController {
                     String password = passwordTextView.getText().toString();
 
                     if (originalPassword.equals(password)) {
+                        SettingsManager.setBackupPassword(parent, password);
                         backupService.backupPackageData(selectedPackages, contentUri, parent, password);
 
                     } else {
