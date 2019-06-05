@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static android.app.backup.BackupTransport.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Steve Soltys
@@ -245,9 +246,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.getOutputStream().write(backupState.getSalt());
             backupState.getOutputStream().closeEntry();
 
-            if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
-                backupState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), backupState.getSalt()));
-            }
+            String password = requireNonNull(configuration.getPassword());
+            backupState.setSecretKey(KeyGenerator.generate(password, backupState.getSalt()));
         }
     }
 

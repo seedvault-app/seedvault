@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PackageListActivity;
 
@@ -22,7 +23,7 @@ public class CreateBackupActivity extends PackageListActivity implements View.On
         int viewId = view.getId();
 
         if (viewId == R.id.create_confirm_button) {
-            controller.showEnterPasswordAlert(selectedPackageList, contentUri, this);
+            controller.onCreateBackupButtonClicked(selectedPackageList, contentUri, this);
         }
     }
 

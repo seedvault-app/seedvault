@@ -9,6 +9,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class SettingsManager {
 
     private static final String PREF_KEY_BACKUP_URI = "backupUri";
+    private static final String PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword";
 
     public static void setBackupFolderUri(Context context, Uri uri) {
         getDefaultSharedPreferences(context)
@@ -22,6 +23,22 @@ public class SettingsManager {
         String uriStr = getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_URI, null);
         if (uriStr == null) return null;
         return Uri.parse(uriStr);
+    }
+
+    /**
+     * This is insecure and not supposed to be part of a release,
+     * but rather an intermediate step towards a generated passphrase.
+     */
+    public static void setBackupPassword(Context context, String password) {
+        getDefaultSharedPreferences(context)
+                .edit()
+                .putString(PREF_KEY_BACKUP_PASSWORD, password)
+                .apply();
+    }
+
+    @Nullable
+    public static String getBackupPassword(Context context) {
+        return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null);
     }
 
 }
