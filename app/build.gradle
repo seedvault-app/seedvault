@@ -79,4 +79,8 @@ dependencies {
     ], dir: 'libs')
 
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    // androidx uses old versions, but we need to use what AOSP currently supports
+    implementation 'androidx.preference:preference:1.0.0-alpha1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
 }
