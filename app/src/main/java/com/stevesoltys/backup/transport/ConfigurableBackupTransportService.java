@@ -1,16 +1,16 @@
 package com.stevesoltys.backup.transport;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * @author Steve Soltys
  */
 public class ConfigurableBackupTransportService extends Service {
 
-    private static final int FOREGROUND_ID = 43594;
+    private static final String TAG = ConfigurableBackupTransportService.class.getName();
 
     private static ConfigurableBackupTransport backupTransport = null;
 
@@ -26,11 +26,17 @@ public class ConfigurableBackupTransportService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startForeground(FOREGROUND_ID, new Notification.Builder(this).build());
+        Log.d(TAG, "Service created.");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return getBackupTransport().getBinder();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Service destroyed.");
     }
 }

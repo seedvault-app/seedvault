@@ -4,6 +4,7 @@ import android.app.backup.BackupManager;
 import android.app.backup.IBackupManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.util.Log;
 import com.google.android.collect.Sets;
 import com.stevesoltys.backup.service.PackageService;
 import com.stevesoltys.backup.service.TransportService;
+import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
 
@@ -44,6 +46,7 @@ public class BackupJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.i(TAG, "Triggering full backup");
+        startService(new Intent(this, ConfigurableBackupTransportService.class));
         try {
             LinkedList<String> packages = new LinkedList<>(new PackageService().getEligiblePackages());
             packages.removeAll(IGNORED_PACKAGES);

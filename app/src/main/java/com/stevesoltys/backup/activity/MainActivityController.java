@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.stevesoltys.backup.activity.backup.CreateBackupActivity;
 import com.stevesoltys.backup.activity.restore.RestoreBackupActivity;
 import com.stevesoltys.backup.service.backup.BackupJobService;
+import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -57,6 +58,9 @@ public class MainActivityController {
             showChooseFolderActivity(parent, true);
         } else {
             try {
+                // ensure that backup service is started
+                parent.startService(new Intent(parent, ConfigurableBackupTransportService.class));
+
                 Uri fileUri = createBackupFile(parent.getContentResolver(), folderUri);
                 showCreateBackupActivity(parent, fileUri);
 
