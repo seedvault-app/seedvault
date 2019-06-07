@@ -11,6 +11,7 @@ import com.stevesoltys.backup.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.stevesoltys.backup.settings.SettingsManager.areBackupsScheduled;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -21,6 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public static final int LOAD_DOCUMENT_REQUEST_CODE = 3;
 
     private MainActivityController controller;
+    private Button automaticBackupsButton;
     private Button changeLocationButton;
 
     @Override
@@ -32,6 +34,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         findViewById(R.id.create_backup_button).setOnClickListener(this);
         findViewById(R.id.restore_backup_button).setOnClickListener(this);
+
+        automaticBackupsButton = findViewById(R.id.automatic_backups_button);
+        automaticBackupsButton.setOnClickListener(this);
+        if (areBackupsScheduled(this)) automaticBackupsButton.setVisibility(GONE);
 
         changeLocationButton = findViewById(R.id.change_backup_location_button);
         changeLocationButton.setOnClickListener(this);
@@ -59,6 +65,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             case R.id.restore_backup_button:
                 controller.showLoadDocumentActivity(this);
+                break;
+
+            case R.id.automatic_backups_button:
+                if (controller.onAutomaticBackupsButtonClicked(this)) {
+                    automaticBackupsButton.setVisibility(GONE);
+                }
                 break;
 
             case R.id.change_backup_location_button:

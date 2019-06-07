@@ -1,7 +1,10 @@
 package com.stevesoltys.backup.activity;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,12 +13,14 @@ import android.widget.Toast;
 
 import com.stevesoltys.backup.activity.backup.CreateBackupActivity;
 import com.stevesoltys.backup.activity.restore.RestoreBackupActivity;
+import com.stevesoltys.backup.service.backup.BackupJobService;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.app.job.JobInfo.NETWORK_TYPE_UNMETERED;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT_TREE;
 import static android.content.Intent.CATEGORY_OPENABLE;
@@ -25,16 +30,21 @@ import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
 import static android.provider.DocumentsContract.createDocument;
 import static android.provider.DocumentsContract.getTreeDocumentId;
+import static com.stevesoltys.backup.Backup.JOB_ID_BACKGROUND_BACKUP;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
 import static com.stevesoltys.backup.settings.SettingsManager.getBackupFolderUri;
+import static com.stevesoltys.backup.settings.SettingsManager.getBackupPassword;
 import static com.stevesoltys.backup.settings.SettingsManager.setBackupFolderUri;
+import static com.stevesoltys.backup.settings.SettingsManager.setBackupsScheduled;
+import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.TimeUnit.DAYS;
 
 /**
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class MainActivityController {
+public class MainActivityController {
 
     private static final String TAG = MainActivityController.class.getName();
 
@@ -90,6 +100,27 @@ class MainActivityController {
         }
     }
 
+    boolean onAutomaticBackupsButtonClicked(Activity parent) {
+        if (getBackupFolderUri(parent) == null || getBackupPassword(parent) == null) {
+            Toast.makeText(parent, "Please make at least one manual backup first.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        final ComponentName serviceName = new ComponentName(parent, BackupJobService.class);
+        JobInfo job = new JobInfo.Builder(JOB_ID_BACKGROUND_BACKUP, serviceName)
+                .setRequiredNetworkType(NETWORK_TYPE_UNMETERED)
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)  // TODO warn the user instead
+                .setPeriodic(DAYS.toMillis(1))
+                .setRequiresCharging(true)
+                .setPersisted(true)
+                .build();
+        JobScheduler scheduler = requireNonNull(parent.getSystemService(JobScheduler.class));
+        scheduler.schedule(job);
+        setBackupsScheduled(parent);
+        Toast.makeText(parent, "Backups will run automatically now", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
     void onChangeBackupLocationButtonClicked(Activity parent) {
         showChooseFolderActivity(parent, false);
     }
@@ -143,7 +174,7 @@ class MainActivityController {
         parent.startActivity(intent);
     }
 
-    private Uri createBackupFile(ContentResolver contentResolver, Uri folderUri) throws IOException {
+    public static Uri createBackupFile(ContentResolver contentResolver, Uri folderUri) throws IOException {
         Uri documentUri = buildDocumentUriUsingTree(folderUri, getTreeDocumentId(folderUri));
         try {
             Uri fileUri = createDocument(contentResolver, documentUri, DOCUMENT_MIME_TYPE, getBackupFileName());
@@ -156,7 +187,7 @@ class MainActivityController {
         }
     }
 
-    private String getBackupFileName() {
+    private static String getBackupFileName() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DOCUMENT_SUFFIX, Locale.US);
         String date = dateFormat.format(new Date());
         return "backup-" + date;

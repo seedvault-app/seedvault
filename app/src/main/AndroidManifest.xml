@@ -14,6 +14,8 @@
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".Backup"
         android:supportsRtl="true"
@@ -47,6 +49,11 @@
                 <action android:name="android.backup.TRANSPORT_HOST" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".service.backup.BackupJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 </manifest>
