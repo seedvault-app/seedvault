@@ -7,7 +7,7 @@
 
     <uses-sdk
         android:minSdkVersion="26"
-        android:targetSdkVersion="26"
+        android:targetSdkVersion="28"
         tools:ignore="GradleOverrides,OldTargetApi" />
 
     <uses-permission

@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 26
+        targetSdkVersion 28
     }
 
     buildTypes {
@@ -50,6 +50,7 @@ gradle.projectsEvaluated {
     }
 }
 
+// http://www.31mins.com/android-studio-build-system-application/
 preBuild.doLast {
     def imlFile = file(project.name + ".iml")
 
