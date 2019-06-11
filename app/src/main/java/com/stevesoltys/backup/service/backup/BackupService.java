@@ -1,22 +1,21 @@
 package com.stevesoltys.backup.service.backup;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.activity.backup.BackupPopupWindowListener;
 import com.stevesoltys.backup.service.TransportService;
 import com.stevesoltys.backup.session.backup.BackupSession;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
+import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 
-import java.net.URI;
 import java.util.Set;
+
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 /**
  * @author Steve Soltys
@@ -27,27 +26,14 @@ public class BackupService {
 
     private final TransportService transportService = new TransportService();
 
-    public void backupPackageData(Set<String> selectedPackages, Uri contentUri, Activity parent,
-                                  String selectedPassword) {
+    public void backupPackageData(Set<String> selectedPackages, Activity parent) {
         try {
             selectedPackages.add("@pm@");
 
-            ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder()
-                    .setContext(parent)
-                    .setOutputUri(contentUri)
-                    .setPackages(selectedPackages)
-                    .setPassword(selectedPassword)
-                    .build();
-
-            boolean success = transportService.initializeBackupTransport(backupConfiguration);
-
-            if (!success) {
-                Toast.makeText(parent, R.string.backup_in_progress, Toast.LENGTH_LONG).show();
-                return;
-            }
-
             PopupWindow popupWindow = PopupWindowUtil.showLoadingPopupWindow(parent);
-            BackupObserver backupObserver = new BackupObserver(parent, popupWindow, new URI(contentUri.getPath()));
+            BackupObserver backupObserver = new BackupObserver(parent, popupWindow);
+            ConfigurableBackupTransport backupTransport = getBackupTransport(parent.getApplication());
+            backupTransport.prepareBackup(selectedPackages.size());
             BackupSession backupSession = transportService.backup(backupObserver, selectedPackages);
 
             View popupWindowButton = popupWindow.getContentView().findViewById(R.id.popup_cancel_button);

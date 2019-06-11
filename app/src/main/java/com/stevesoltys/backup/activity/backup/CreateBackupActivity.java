@@ -1,6 +1,5 @@
 package com.stevesoltys.backup.activity.backup;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,14 +15,12 @@ public class CreateBackupActivity extends PackageListActivity implements View.On
 
     private CreateBackupActivityController controller;
 
-    private Uri contentUri;
-
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
 
         if (viewId == R.id.create_confirm_button) {
-            controller.onCreateBackupButtonClicked(selectedPackageList, contentUri, this);
+            controller.onCreateBackupButtonClicked(selectedPackageList, this);
         }
     }
 
@@ -36,7 +33,6 @@ public class CreateBackupActivity extends PackageListActivity implements View.On
 
         packageListView = findViewById(R.id.create_package_list);
         selectedPackageList = new HashSet<>();
-        contentUri = getIntent().getData();
 
         controller = new CreateBackupActivityController();
         AsyncTask.execute(() -> controller.populatePackageList(packageListView, CreateBackupActivity.this));

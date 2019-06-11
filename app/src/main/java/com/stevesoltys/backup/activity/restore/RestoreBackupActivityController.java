@@ -7,12 +7,15 @@ import android.os.ParcelFileDescriptor;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.service.restore.RestoreService;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
-import libcore.io.IoUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +26,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import libcore.io.IoUtils;
+
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_FULL_BACKUP_DIRECTORY;
 
 /**
  * @author Steve Soltys
@@ -76,7 +83,7 @@ class RestoreBackupActivityController {
         while ((zipEntry = inputStream.getNextEntry()) != null) {
             String zipEntryPath = zipEntry.getName();
 
-            if (zipEntryPath.startsWith(ContentProviderBackupConfigurationBuilder.DEFAULT_FULL_BACKUP_DIRECTORY)) {
+            if (zipEntryPath.startsWith(DEFAULT_FULL_BACKUP_DIRECTORY)) {
                 String fileName = new File(zipEntryPath).getName();
                 results.add(fileName);
             }

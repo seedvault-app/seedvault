@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.transport;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,10 +15,10 @@ public class ConfigurableBackupTransportService extends Service {
 
     private static ConfigurableBackupTransport backupTransport = null;
 
-    public static ConfigurableBackupTransport getBackupTransport() {
+    public static ConfigurableBackupTransport getBackupTransport(Context context) {
 
         if (backupTransport == null) {
-            backupTransport = new ConfigurableBackupTransport();
+            backupTransport = new ConfigurableBackupTransport(context);
         }
 
         return backupTransport;
@@ -31,7 +32,7 @@ public class ConfigurableBackupTransportService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return getBackupTransport().getBinder();
+        return getBackupTransport(getApplicationContext()).getBinder();
     }
 
     @Override

@@ -3,14 +3,15 @@ package com.stevesoltys.backup.transport;
 import android.app.backup.BackupTransport;
 import android.app.backup.RestoreDescription;
 import android.app.backup.RestoreSet;
+import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
-import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
-import com.stevesoltys.backup.transport.component.stub.StubBackupComponent;
-import com.stevesoltys.backup.transport.component.stub.StubRestoreComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
 /**
  * @author Steve Soltys
@@ -20,31 +21,27 @@ public class ConfigurableBackupTransport extends BackupTransport {
     private static final String TRANSPORT_DIRECTORY_NAME =
             "com.stevesoltys.backup.transport.ConfigurableBackupTransport";
 
-    private BackupComponent backupComponent;
+    public static final String DEFAULT_FULL_BACKUP_DIRECTORY = "full/";
 
-    private RestoreComponent restoreComponent;
+    public static final String DEFAULT_INCREMENTAL_BACKUP_DIRECTORY = "incr/";
 
-    ConfigurableBackupTransport() {
-        backupComponent = new StubBackupComponent();
-        restoreComponent = new StubRestoreComponent();
+    public static final long DEFAULT_BACKUP_QUOTA = Long.MAX_VALUE;
+
+    private final BackupComponent backupComponent;
+
+    private final RestoreComponent restoreComponent;
+
+    ConfigurableBackupTransport(Context context) {
+        backupComponent = new ContentProviderBackupComponent(context);
+        restoreComponent = new ContentProviderRestoreComponent(context);
     }
 
-    public void initialize(BackupComponent backupComponent, RestoreComponent restoreComponent) {
-        Preconditions.checkNotNull(backupComponent);
-        Preconditions.checkNotNull(restoreComponent);
-        Preconditions.checkState(!isActive());
-
-        this.restoreComponent = restoreComponent;
-        this.backupComponent = backupComponent;
+    public void prepareBackup(int numberOfPackages) {
+        backupComponent.prepareBackup(numberOfPackages);
     }
 
-    public void reset() {
-        backupComponent = new StubBackupComponent();
-        restoreComponent = new StubRestoreComponent();
-    }
-
-    public boolean isActive() {
-        return !(backupComponent instanceof StubBackupComponent || restoreComponent instanceof StubRestoreComponent);
+    public void prepareRestore(String password, Uri fileUri) {
+        restoreComponent.prepareRestore(password, fileUri);
     }
 
     @Override

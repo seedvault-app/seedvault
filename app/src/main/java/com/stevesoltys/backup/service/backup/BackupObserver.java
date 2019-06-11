@@ -6,14 +6,11 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.backup.BackupResult;
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.session.backup.BackupSessionObserver;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
-
-import java.net.URI;
 
 /**
  * @author Steve Soltys
@@ -24,12 +21,9 @@ class BackupObserver implements BackupSessionObserver {
 
     private final PopupWindow popupWindow;
 
-    private final URI contentUri;
-
-    BackupObserver(Activity context, PopupWindow popupWindow, URI contentUri) {
+    BackupObserver(Activity context, PopupWindow popupWindow) {
         this.context = context;
         this.popupWindow = popupWindow;
-        this.contentUri = contentUri;
     }
 
     @Override
@@ -65,14 +59,6 @@ class BackupObserver implements BackupSessionObserver {
 
     @Override
     public void backupSessionCompleted(BackupSession backupSession, BackupResult backupResult) {
-        ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
-
-        if (!backupTransport.isActive()) {
-            return;
-        }
-
-        backupTransport.reset();
-
         context.runOnUiThread(() -> {
             if (backupResult == BackupResult.SUCCESS) {
                 Toast.makeText(context, R.string.backup_success, Toast.LENGTH_LONG).show();

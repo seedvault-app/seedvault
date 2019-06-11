@@ -1,10 +1,13 @@
 package com.stevesoltys.backup.transport.component.provider;
 
+import android.annotation.Nullable;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.RestoreDescription;
 import android.app.backup.RestoreSet;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
@@ -38,6 +41,9 @@ import static android.app.backup.BackupTransport.TRANSPORT_OK;
 import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
 import static android.app.backup.RestoreDescription.TYPE_FULL_STREAM;
 import static android.app.backup.RestoreDescription.TYPE_KEY_VALUE;
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Steve Soltys
@@ -50,12 +56,23 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
 
     private static final int DEFAULT_BUFFER_SIZE = 2048;
 
-    private ContentProviderBackupConfiguration configuration;
+    @Nullable
+    private String password;
+    @Nullable
+    private Uri fileUri;
 
     private ContentProviderRestoreState restoreState;
 
-    public ContentProviderRestoreComponent(ContentProviderBackupConfiguration configuration) {
-        this.configuration = configuration;
+    private final Context context;
+
+    public ContentProviderRestoreComponent(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void prepareRestore(String password, Uri fileUri) {
+        this.password = password;
+        this.fileUri = fileUri;
     }
 
     @Override
@@ -64,14 +81,16 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         restoreState.setPackages(packages);
         restoreState.setPackageIndex(-1);
 
-        if (configuration.getPassword() != null && !configuration.getPassword().isEmpty()) {
+        String password = requireNonNull(this.password);
+
+        if (!password.isEmpty()) {
             try {
                 ParcelFileDescriptor inputFileDescriptor = buildInputFileDescriptor();
                 ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
                 seekToEntry(inputStream, ContentProviderBackupConstants.SALT_FILE_PATH);
 
                 restoreState.setSalt(Streams.readFullyNoClose(inputStream));
-                restoreState.setSecretKey(KeyGenerator.generate(configuration.getPassword(), restoreState.getSalt()));
+                restoreState.setSecretKey(KeyGenerator.generate(password, restoreState.getSalt()));
 
                 IoUtils.closeQuietly(inputFileDescriptor);
                 IoUtils.closeQuietly(inputStream);
@@ -116,11 +135,11 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             restoreState.setPackageIndex(packageIndex);
             String name = packages[packageIndex].packageName;
 
-            if (containsPackageFile(configuration.getIncrementalBackupDirectory() + name)) {
+            if (containsPackageFile(DEFAULT_INCREMENTAL_BACKUP_DIRECTORY + name)) {
                 restoreState.setRestoreType(TYPE_KEY_VALUE);
                 return new RestoreDescription(name, restoreState.getRestoreType());
 
-            } else if (containsPackageFile(configuration.getFullBackupDirectory() + name)) {
+            } else if (containsPackageFile(DEFAULT_FULL_BACKUP_DIRECTORY + name)) {
                 restoreState.setRestoreType(TYPE_FULL_STREAM);
                 return new RestoreDescription(name, restoreState.getRestoreType());
             }
@@ -159,7 +178,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
         BackupDataOutput backupDataOutput = new BackupDataOutput(outputFileDescriptor.getFileDescriptor());
 
         Optional<ZipEntry> zipEntryOptional = seekToEntry(inputStream,
-                configuration.getIncrementalBackupDirectory() + packageName);
+                DEFAULT_INCREMENTAL_BACKUP_DIRECTORY + packageName);
 
         while (zipEntryOptional.isPresent()) {
             String fileName = new File(zipEntryOptional.get().getName()).getName();
@@ -170,7 +189,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
             backupDataOutput.writeEntityData(backupData, backupData.length);
             inputStream.closeEntry();
 
-            zipEntryOptional = seekToEntry(inputStream, configuration.getIncrementalBackupDirectory() + packageName);
+            zipEntryOptional = seekToEntry(inputStream, DEFAULT_INCREMENTAL_BACKUP_DIRECTORY + packageName);
         }
 
         IoUtils.closeQuietly(inputFileDescriptor);
@@ -207,7 +226,7 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
                 ZipInputStream inputStream = buildInputStream(inputFileDescriptor);
                 restoreState.setInputStream(inputStream);
 
-                if (!seekToEntry(inputStream, configuration.getFullBackupDirectory() + name).isPresent()) {
+                if (!seekToEntry(inputStream, DEFAULT_FULL_BACKUP_DIRECTORY + name).isPresent()) {
                     IoUtils.closeQuietly(inputFileDescriptor);
                     IoUtils.closeQuietly(outputFileDescriptor);
                     return TRANSPORT_PACKAGE_REJECTED;
@@ -317,8 +336,8 @@ public class ContentProviderRestoreComponent implements RestoreComponent {
     }
 
     private ParcelFileDescriptor buildInputFileDescriptor() throws FileNotFoundException {
-        ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        return contentResolver.openFileDescriptor(configuration.getUri(), "r");
+        ContentResolver contentResolver = context.getContentResolver();
+        return contentResolver.openFileDescriptor(requireNonNull(fileUri), "r");
     }
 
     private ZipInputStream buildInputStream(ParcelFileDescriptor inputFileDescriptor) {

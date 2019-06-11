@@ -8,6 +8,8 @@ import android.os.ParcelFileDescriptor;
  */
 public interface BackupComponent {
 
+    void prepareBackup(int numberOfPackages);
+
     String currentDestinationString();
 
     String dataManagementLabel();

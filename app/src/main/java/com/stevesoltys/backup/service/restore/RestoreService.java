@@ -6,16 +6,17 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.PopupWindow;
-import android.widget.Toast;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.activity.restore.RestorePopupWindowListener;
 import com.stevesoltys.backup.service.TransportService;
 import com.stevesoltys.backup.session.restore.RestoreSession;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
+import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 
 import java.util.Set;
+
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 /**
  * @author Steve Soltys
@@ -27,21 +28,9 @@ public class RestoreService {
     private final TransportService transportService = new TransportService();
 
     public void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent, String password) {
+        ConfigurableBackupTransport backupTransport = getBackupTransport(parent.getApplication());
+        backupTransport.prepareRestore(password, contentUri);
         try {
-            ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder().
-                    setContext(parent)
-                    .setOutputUri(contentUri)
-                    .setPackages(selectedPackages)
-                    .setPassword(password)
-                    .build();
-
-            boolean success = transportService.initializeBackupTransport(backupConfiguration);
-
-            if (!success) {
-                Toast.makeText(parent, R.string.restore_in_progress, Toast.LENGTH_LONG).show();
-                return;
-            }
-
             PopupWindow popupWindow = PopupWindowUtil.showLoadingPopupWindow(parent);
             RestoreObserver restoreObserver = new RestoreObserver(parent, popupWindow, selectedPackages.size());
             RestoreSession restoreSession = transportService.restore(restoreObserver, selectedPackages);

@@ -5,27 +5,20 @@ import android.app.backup.IBackupManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.google.android.collect.Sets;
 import com.stevesoltys.backup.service.PackageService;
-import com.stevesoltys.backup.service.TransportService;
+import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfigurationBuilder;
 
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
 import static android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP;
 import static android.os.ServiceManager.getService;
-import static com.stevesoltys.backup.activity.MainActivityController.createBackupFile;
-import static com.stevesoltys.backup.settings.SettingsManager.getBackupFolderUri;
-import static com.stevesoltys.backup.settings.SettingsManager.getBackupPassword;
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 public class BackupJobService extends JobService {
 
@@ -37,7 +30,6 @@ public class BackupJobService extends JobService {
     );
 
     private final IBackupManager backupManager;
-    private final TransportService transportService = new TransportService();
 
     public BackupJobService() {
         backupManager = IBackupManager.Stub.asInterface(getService("backup"));
@@ -50,17 +42,10 @@ public class BackupJobService extends JobService {
         try {
             LinkedList<String> packages = new LinkedList<>(new PackageService().getEligiblePackages());
             packages.removeAll(IGNORED_PACKAGES);
-            Uri fileUri = createBackupFile(getContentResolver(), getBackupFolderUri(this));
-            ContentProviderBackupConfiguration backupConfiguration = new ContentProviderBackupConfigurationBuilder()
-                    .setContext(this)
-                    .setPackages(new HashSet<>(packages))
-                    .setOutputUri(fileUri)
-                    .setPassword(getBackupPassword(this))
-                    .build();
-            transportService.initializeBackupTransport(backupConfiguration);
-
             // TODO use an observer to know when backups fail
             String[] packageArray = packages.toArray(new String[packages.size()]);
+            ConfigurableBackupTransport backupTransport = getBackupTransport(getApplication());
+            backupTransport.prepareBackup(packageArray.length);
             int result = backupManager.requestBackup(packageArray, null, null, FLAG_NON_INCREMENTAL_BACKUP);
             if (result == BackupManager.SUCCESS) {
                 Log.i(TAG, "Backup succeeded ");
@@ -69,8 +54,6 @@ public class BackupJobService extends JobService {
             }
 
         // TODO show notification on backup error
-        } catch (IOException e) {
-            Log.e(TAG, "Error creating backup file: ", e);
         } catch (RemoteException e) {
             Log.e(TAG, "Error during backup: ", e);
         } finally {
