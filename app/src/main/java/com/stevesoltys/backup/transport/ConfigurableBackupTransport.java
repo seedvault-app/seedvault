@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
@@ -20,6 +21,8 @@ public class ConfigurableBackupTransport extends BackupTransport {
 
     private static final String TRANSPORT_DIRECTORY_NAME =
             "com.stevesoltys.backup.transport.ConfigurableBackupTransport";
+
+    private static final String TAG = TRANSPORT_DIRECTORY_NAME;
 
     private final BackupComponent backupComponent;
 
@@ -50,6 +53,24 @@ public class ConfigurableBackupTransport extends BackupTransport {
     }
 
     @Override
+    public boolean isAppEligibleForBackup(PackageInfo targetPackage, boolean isFullBackup) {
+        // TODO re-include key-value (incremental)
+        // affected apps:
+        // * com.android.documentsui
+        // * android
+        // * com.android.nfc
+        // * com.android.calendar
+        // * com.android.providers.settings
+        // * com.android.cellbroadcastreceiver
+        // * com.android.calllogbackup
+        // * com.android.providers.blockednumber
+        // * com.android.providers.userdictionary
+        if (isFullBackup) return true;
+        Log.i(TAG, "Excluding key-value backup of " + targetPackage.packageName);
+        return false;
+    }
+
+    @Override
     public long requestBackupTime() {
         return backupComponent.requestBackupTime();
     }
@@ -70,6 +91,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     }
 
     @Override
+    public int performBackup(PackageInfo packageInfo, ParcelFileDescriptor inFd, int flags) {
+        // TODO handle flags
+        return performBackup(packageInfo, inFd);
+    }
+
+    @Override
     public int performBackup(PackageInfo targetPackage, ParcelFileDescriptor fileDescriptor) {
         return backupComponent.performIncrementalBackup(targetPackage, fileDescriptor);
     }
@@ -77,6 +104,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     @Override
     public int checkFullBackupSize(long size) {
         return backupComponent.checkFullBackupSize(size);
+    }
+
+    @Override
+    public int performFullBackup(PackageInfo targetPackage, ParcelFileDescriptor socket, int flags) {
+        // TODO handle flags
+        return performFullBackup(targetPackage, socket);
     }
 
     @Override
