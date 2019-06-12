@@ -61,7 +61,7 @@ public class RestoreSession extends IRestoreObserver.Stub {
     public void restoreSetsAvailable(RestoreSet[] restoreSets) throws RemoteException {
         if (restoreSets.length > 0) {
             RestoreSet restoreSet = restoreSets[0];
-            String[] packageArray = packages.toArray(new String[packages.size()]);
+            String[] packageArray = packages.toArray(new String[0]);
             int result = restoreSession.restoreSome(restoreSet.token, this, null, packageArray);
 
             if (result != BackupManager.SUCCESS) {

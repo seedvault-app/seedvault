@@ -29,7 +29,7 @@ public class BackupSession extends IBackupObserver.Stub {
     }
 
     public void start() throws RemoteException {
-        String [] selectedPackageArray = packages.toArray(new String[packages.size()]);
+        String [] selectedPackageArray = packages.toArray(new String[0]);
         backupManager.requestBackup(selectedPackageArray, this, null, FLAG_NON_INCREMENTAL_BACKUP);
     }
 

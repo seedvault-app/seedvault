@@ -13,15 +13,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.collect.Sets;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.service.PackageService;
 import com.stevesoltys.backup.service.backup.BackupService;
 import com.stevesoltys.backup.settings.SettingsManager;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,11 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
 class CreateBackupActivityController {
 
     private static final String TAG = CreateBackupActivityController.class.getName();
-
-    private static final Set<String> IGNORED_PACKAGES = Sets.newArraySet(
-            "com.android.providers.downloads.ui", "com.android.providers.downloads", "com.android.providers.media",
-            "com.android.providers.calendar", "com.android.providers.contacts", "com.stevesoltys.backup"
-    );
 
     private final BackupService backupService = new BackupService();
 
@@ -53,14 +45,15 @@ class CreateBackupActivityController {
             popupWindowButton.setOnClickListener(view -> parent.finish());
         });
 
-        List<String> eligiblePackageList = new LinkedList<>();
+        String[] eligiblePackageList;
 
         try {
-            eligiblePackageList.addAll(packageService.getEligiblePackages());
-            eligiblePackageList.removeAll(IGNORED_PACKAGES);
-
+            eligiblePackageList = packageService.getEligiblePackages();
         } catch (RemoteException e) {
             Log.e(TAG, "Error while obtaining package list: ", e);
+            Toast.makeText(parent, "Error obtaining package list", Toast.LENGTH_SHORT).show();
+            parent.finish();
+            return;
         }
 
         parent.runOnUiThread(() -> {
