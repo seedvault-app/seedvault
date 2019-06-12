@@ -30,6 +30,7 @@ public class BackupJobService extends JobService {
     );
 
     private final IBackupManager backupManager;
+    private final PackageService packageService = new PackageService();
 
     public BackupJobService() {
         backupManager = IBackupManager.Stub.asInterface(getService("backup"));
@@ -40,7 +41,7 @@ public class BackupJobService extends JobService {
         Log.i(TAG, "Triggering full backup");
         startService(new Intent(this, ConfigurableBackupTransportService.class));
         try {
-            LinkedList<String> packages = new LinkedList<>(new PackageService().getEligiblePackages());
+            LinkedList<String> packages = new LinkedList<>(packageService.getEligiblePackages());
             packages.removeAll(IGNORED_PACKAGES);
             // TODO use an observer to know when backups fail
             String[] packageArray = packages.toArray(new String[packages.size()]);

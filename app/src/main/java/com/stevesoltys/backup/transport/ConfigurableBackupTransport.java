@@ -21,12 +21,6 @@ public class ConfigurableBackupTransport extends BackupTransport {
     private static final String TRANSPORT_DIRECTORY_NAME =
             "com.stevesoltys.backup.transport.ConfigurableBackupTransport";
 
-    public static final String DEFAULT_FULL_BACKUP_DIRECTORY = "full/";
-
-    public static final String DEFAULT_INCREMENTAL_BACKUP_DIRECTORY = "incr/";
-
-    public static final long DEFAULT_BACKUP_QUOTA = Long.MAX_VALUE;
-
     private final BackupComponent backupComponent;
 
     private final RestoreComponent restoreComponent;

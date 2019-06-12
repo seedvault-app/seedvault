@@ -5,7 +5,6 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
@@ -89,6 +88,8 @@ public class MainActivityController {
             Toast.makeText(parent, "Please make at least one manual backup first.", Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        // schedule backups
         final ComponentName serviceName = new ComponentName(parent, BackupJobService.class);
         JobInfo job = new JobInfo.Builder(JOB_ID_BACKGROUND_BACKUP, serviceName)
                 .setRequiredNetworkType(NETWORK_TYPE_UNMETERED)
@@ -100,8 +101,13 @@ public class MainActivityController {
                 .build();
         JobScheduler scheduler = requireNonNull(parent.getSystemService(JobScheduler.class));
         scheduler.schedule(job);
+
+        // remember that backups were scheduled
         setBackupsScheduled(parent);
+
+        // show Toast informing the user
         Toast.makeText(parent, "Backups will run automatically now", Toast.LENGTH_SHORT).show();
+
         return true;
     }
 
@@ -116,12 +122,11 @@ public class MainActivityController {
         }
 
         Uri folderUri = result.getData();
-        ContentResolver contentResolver = parent.getContentResolver();
 
         // persist permission to access backup folder across reboots
         int takeFlags = result.getFlags() &
                 (FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
-        contentResolver.takePersistableUriPermission(folderUri, takeFlags);
+        parent.getContentResolver().takePersistableUriPermission(folderUri, takeFlags);
 
         // store backup folder location in settings
         setBackupFolderUri(parent, folderUri);

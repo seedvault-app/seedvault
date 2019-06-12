@@ -29,7 +29,7 @@ import java.util.zip.ZipInputStream;
 
 import libcore.io.IoUtils;
 
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
 
 /**
  * @author Steve Soltys

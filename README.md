@@ -14,10 +14,15 @@ AOSP.
 
 ## What makes this different?
 This application is compiled with the operating system and does not require a rooted device for use. It uses the same 
-internal APIs as `adb backup` and only requires one permission: `android.permission.BACKUP`.
+internal APIs as `adb backup` and only requires the permission `android.permission.BACKUP` for this.
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/backup. 
+
+## Permissions
+
+* `android.permission.BACKUP` to be allowed to back up apps
+* `android.permission.RECEIVE_BOOT_COMPLETED` to schedule automatic backups after boot
 
 ## License
 This application is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

@@ -39,9 +39,9 @@ import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
 import static android.provider.DocumentsContract.createDocument;
 import static android.provider.DocumentsContract.getTreeDocumentId;
 import static com.stevesoltys.backup.activity.MainActivityController.DOCUMENT_MIME_TYPE;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_BACKUP_QUOTA;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_FULL_BACKUP_DIRECTORY;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_BACKUP_QUOTA;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
 import static java.util.Objects.requireNonNull;
 
 /**

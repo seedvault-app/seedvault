@@ -41,8 +41,8 @@ import static android.app.backup.BackupTransport.TRANSPORT_OK;
 import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
 import static android.app.backup.RestoreDescription.TYPE_FULL_STREAM;
 import static android.app.backup.RestoreDescription.TYPE_KEY_VALUE;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_FULL_BACKUP_DIRECTORY;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransport.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
 import static java.util.Objects.requireNonNull;
 
 /**
