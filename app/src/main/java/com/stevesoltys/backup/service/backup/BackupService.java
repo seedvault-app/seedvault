@@ -11,11 +11,8 @@ import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.activity.backup.BackupPopupWindowListener;
 import com.stevesoltys.backup.service.TransportService;
 import com.stevesoltys.backup.session.backup.BackupSession;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 
 import java.util.Set;
-
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 /**
  * @author Steve Soltys
@@ -30,10 +27,10 @@ public class BackupService {
         try {
             selectedPackages.add("@pm@");
 
+            Log.i(TAG, "Backing up " + selectedPackages.size() + " packages...");
+
             PopupWindow popupWindow = PopupWindowUtil.showLoadingPopupWindow(parent);
             BackupObserver backupObserver = new BackupObserver(parent, popupWindow);
-            ConfigurableBackupTransport backupTransport = getBackupTransport(parent.getApplication());
-            backupTransport.prepareBackup(selectedPackages.size());
             BackupSession backupSession = transportService.backup(backupObserver, selectedPackages);
 
             View popupWindowButton = popupWindow.getContentView().findViewById(R.id.popup_cancel_button);

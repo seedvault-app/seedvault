@@ -9,8 +9,6 @@ import android.view.View;
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PackageListActivity;
 
-import java.util.HashSet;
-
 public class CreateBackupActivity extends PackageListActivity implements View.OnClickListener {
 
     private CreateBackupActivityController controller;
@@ -32,7 +30,7 @@ public class CreateBackupActivity extends PackageListActivity implements View.On
         findViewById(R.id.create_confirm_button).setOnClickListener(this);
 
         packageListView = findViewById(R.id.create_package_list);
-        selectedPackageList = new HashSet<>();
+        selectedPackageList.clear();
 
         controller = new CreateBackupActivityController();
         AsyncTask.execute(() -> controller.populatePackageList(packageListView, CreateBackupActivity.this));

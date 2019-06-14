@@ -69,6 +69,7 @@ class RestoreBackupActivityController {
             packageListView.setOnItemClickListener(parent);
             packageListView.setAdapter(new ArrayAdapter<>(parent, R.layout.checked_list_item, eligiblePackageList));
             packageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            parent.preSelectAllPackages();
         });
     }
 

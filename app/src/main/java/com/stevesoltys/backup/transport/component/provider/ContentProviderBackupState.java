@@ -2,11 +2,12 @@ package com.stevesoltys.backup.transport.component.provider;
 
 import android.os.ParcelFileDescriptor;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.zip.ZipOutputStream;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 
 /**
  * @author Steve Soltys
@@ -29,13 +30,11 @@ class ContentProviderBackupState {
 
     private String packageName;
 
-    private int packageIndex;
-
     private byte[] salt;
 
     private SecretKey secretKey;
 
-    public ContentProviderBackupState() {
+    ContentProviderBackupState() {
         salt = new byte[16];
         SECURE_RANDOM.nextBytes(salt);
     }
@@ -88,14 +87,6 @@ class ContentProviderBackupState {
         this.outputStream = outputStream;
     }
 
-    int getPackageIndex() {
-        return packageIndex;
-    }
-
-    void setPackageIndex(int packageIndex) {
-        this.packageIndex = packageIndex;
-    }
-
     String getPackageName() {
         return packageName;
     }
@@ -108,11 +99,11 @@ class ContentProviderBackupState {
         return salt;
     }
 
-    public SecretKey getSecretKey() {
+    SecretKey getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(SecretKey secretKey) {
+    void setSecretKey(SecretKey secretKey) {
         this.secretKey = secretKey;
     }
 }

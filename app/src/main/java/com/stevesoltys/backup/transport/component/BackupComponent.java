@@ -8,8 +8,6 @@ import android.os.ParcelFileDescriptor;
  */
 public interface BackupComponent {
 
-    void prepareBackup(int numberOfPackages);
-
     String currentDestinationString();
 
     String dataManagementLabel();
@@ -20,7 +18,7 @@ public interface BackupComponent {
 
     int finishBackup();
 
-    int performIncrementalBackup(PackageInfo targetPackage, ParcelFileDescriptor data);
+    int performIncrementalBackup(PackageInfo targetPackage, ParcelFileDescriptor data, int flags);
 
     int performFullBackup(PackageInfo targetPackage, ParcelFileDescriptor fileDescriptor);
 
@@ -35,4 +33,6 @@ public interface BackupComponent {
     long requestBackupTime();
 
     long requestFullBackupTime();
+
+    void backupFinished();
 }
