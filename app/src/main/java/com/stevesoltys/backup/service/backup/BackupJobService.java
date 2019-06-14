@@ -9,12 +9,10 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.stevesoltys.backup.service.PackageService;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 
 import static android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP;
 import static android.os.ServiceManager.getService;
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 public class BackupJobService extends JobService {
 
@@ -34,8 +32,6 @@ public class BackupJobService extends JobService {
         try {
             String[] packages = packageService.getEligiblePackages();
             // TODO use an observer to know when backups fail
-            ConfigurableBackupTransport backupTransport = getBackupTransport(getApplication());
-            backupTransport.prepareBackup(packages.length);
             int result = backupManager.requestBackup(packages, null, null, FLAG_NON_INCREMENTAL_BACKUP);
             if (result == BackupManager.SUCCESS) {
                 Log.i(TAG, "Backup succeeded ");

@@ -12,6 +12,8 @@ import com.stevesoltys.backup.session.backup.BackupResult;
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.session.backup.BackupSessionObserver;
 
+import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
+
 /**
  * @author Steve Soltys
  */
@@ -59,6 +61,9 @@ class BackupObserver implements BackupSessionObserver {
 
     @Override
     public void backupSessionCompleted(BackupSession backupSession, BackupResult backupResult) {
+
+        if (backupResult == BackupResult.SUCCESS) getBackupTransport(context).backupFinished();
+
         context.runOnUiThread(() -> {
             if (backupResult == BackupResult.SUCCESS) {
                 Toast.makeText(context, R.string.backup_success, Toast.LENGTH_LONG).show();

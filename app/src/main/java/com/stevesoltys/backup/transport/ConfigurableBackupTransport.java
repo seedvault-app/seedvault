@@ -36,10 +36,6 @@ public class ConfigurableBackupTransport extends BackupTransport {
         restoreComponent = new ContentProviderRestoreComponent(context);
     }
 
-    public void prepareBackup(int numberOfPackages) {
-        backupComponent.prepareBackup(numberOfPackages);
-    }
-
     public void prepareRestore(String password, Uri fileUri) {
         restoreComponent.prepareRestore(password, fileUri);
     }
@@ -63,20 +59,7 @@ public class ConfigurableBackupTransport extends BackupTransport {
 
     @Override
     public boolean isAppEligibleForBackup(PackageInfo targetPackage, boolean isFullBackup) {
-        // TODO re-include key-value (incremental)
-        // affected apps:
-        // * com.android.documentsui
-        // * android
-        // * com.android.nfc
-        // * com.android.calendar
-        // * com.android.providers.settings
-        // * com.android.cellbroadcastreceiver
-        // * com.android.calllogbackup
-        // * com.android.providers.blockednumber
-        // * com.android.providers.userdictionary
-        if (isFullBackup) return true;
-        Log.i(TAG, "Excluding key-value backup of " + targetPackage.packageName);
-        return false;
+        return true;
     }
 
     @Override
@@ -99,15 +82,17 @@ public class ConfigurableBackupTransport extends BackupTransport {
         return backupComponent.currentDestinationString();
     }
 
+    /* Methods related to Backup */
+
     @Override
     public int performBackup(PackageInfo packageInfo, ParcelFileDescriptor inFd, int flags) {
-        // TODO handle flags
-        return performBackup(packageInfo, inFd);
+        return backupComponent.performIncrementalBackup(packageInfo, inFd, flags);
     }
 
     @Override
     public int performBackup(PackageInfo targetPackage, ParcelFileDescriptor fileDescriptor) {
-        return backupComponent.performIncrementalBackup(targetPackage, fileDescriptor);
+        Log.w(TAG, "Warning: Legacy performBackup() method called.");
+        return performBackup(targetPackage, fileDescriptor, 0);
     }
 
     @Override
@@ -155,6 +140,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     public int clearBackupData(PackageInfo packageInfo) {
         return backupComponent.clearBackupData(packageInfo);
     }
+
+    public void backupFinished() {
+        backupComponent.backupFinished();
+    }
+
+    /* Methods related to Restore */
 
     @Override
     public long getCurrentRestoreSet() {

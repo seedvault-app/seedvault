@@ -31,7 +31,10 @@ import javax.crypto.SecretKey;
 
 import libcore.io.IoUtils;
 
+import static android.app.backup.BackupTransport.FLAG_INCREMENTAL;
+import static android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL;
 import static android.app.backup.BackupTransport.TRANSPORT_ERROR;
+import static android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED;
 import static android.app.backup.BackupTransport.TRANSPORT_OK;
 import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
 import static android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED;
@@ -49,7 +52,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ContentProviderBackupComponent implements BackupComponent {
 
-    private static final String TAG = ContentProviderBackupComponent.class.getName();
+    private static final String TAG = ContentProviderBackupComponent.class.getSimpleName();
 
     private static final String DOCUMENT_SUFFIX = "yyyy-MM-dd_HH_mm_ss";
 
@@ -60,8 +63,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
     private static final int INITIAL_BUFFER_SIZE = 512;
 
     private final Context context;
-
-    private int numberOfPackages = 0;
 
     private ContentProviderBackupState backupState;
 
@@ -91,11 +92,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
     @Override
     public int clearBackupData(PackageInfo packageInfo) {
         return TRANSPORT_OK;
-    }
-
-    @Override
-    public void prepareBackup(int numberOfPackages) {
-        this.numberOfPackages = numberOfPackages;
     }
 
     @Override
@@ -133,7 +129,6 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
         try {
             initializeBackupState();
-            backupState.setPackageIndex(backupState.getPackageIndex() + 1);
             backupState.setPackageName(targetPackage.packageName);
 
             backupState.setInputFileDescriptor(fileDescriptor);
@@ -156,12 +151,24 @@ public class ContentProviderBackupComponent implements BackupComponent {
     }
 
     @Override
-    public int performIncrementalBackup(PackageInfo packageInfo, ParcelFileDescriptor data) {
+    public int performIncrementalBackup(PackageInfo packageInfo, ParcelFileDescriptor data, int flags) {
+        boolean isIncremental = (flags & FLAG_INCREMENTAL) != 0;
+        if (isIncremental) {
+            Log.w(TAG, "Can not handle incremental backup. Requesting non-incremental for " + packageInfo.packageName);
+            return TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED;
+        }
+
+        boolean isNonIncremental = (flags & FLAG_NON_INCREMENTAL) != 0;
+        if (isNonIncremental) {
+            Log.i(TAG, "Performing non-incremental backup for " + packageInfo.packageName);
+        } else {
+            Log.i(TAG, "Performing backup for " + packageInfo.packageName);
+        }
+
         BackupDataInput backupDataInput = new BackupDataInput(data.getFileDescriptor());
 
         try {
             initializeBackupState();
-            backupState.setPackageIndex(backupState.getPackageIndex() + 1);
             backupState.setPackageName(packageInfo.packageName);
 
             return transferIncrementalBackupData(backupDataInput);
@@ -261,6 +268,11 @@ public class ContentProviderBackupComponent implements BackupComponent {
         return TRANSPORT_OK;
     }
 
+    @Override
+    public void backupFinished() {
+        clearBackupState(true);
+    }
+
     private void initializeBackupState() throws Exception {
         if (backupState == null) {
             backupState = new ContentProviderBackupState();
@@ -333,8 +345,8 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
                 outputStream.closeEntry();
             }
-
-            if (backupState.getPackageIndex() == numberOfPackages || closeFile) {
+            if (closeFile) {
+                Log.d(TAG, "Closing backup file...");
                 if (outputStream != null) {
                     outputStream.finish();
                     outputStream.close();
