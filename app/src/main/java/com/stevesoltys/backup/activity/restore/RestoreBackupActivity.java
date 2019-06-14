@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PackageListActivity;
-
-import java.util.HashSet;
 
 public class RestoreBackupActivity extends PackageListActivity implements View.OnClickListener {
 
@@ -34,7 +33,8 @@ public class RestoreBackupActivity extends PackageListActivity implements View.O
         findViewById(R.id.restore_confirm_button).setOnClickListener(this);
 
         packageListView = findViewById(R.id.restore_package_list);
-        selectedPackageList = new HashSet<>();
+        selectedPackageList.clear();
+
         contentUri = getIntent().getData();
 
         controller = new RestoreBackupActivityController();

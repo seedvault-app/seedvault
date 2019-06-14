@@ -30,6 +30,8 @@ public class BackupService {
         try {
             selectedPackages.add("@pm@");
 
+            Log.i(TAG, "Backing up " + selectedPackages.size() + " packages...");
+
             PopupWindow popupWindow = PopupWindowUtil.showLoadingPopupWindow(parent);
             BackupObserver backupObserver = new BackupObserver(parent, popupWindow);
             ConfigurableBackupTransport backupTransport = getBackupTransport(parent.getApplication());
