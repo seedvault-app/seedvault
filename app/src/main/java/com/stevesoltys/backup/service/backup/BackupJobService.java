@@ -8,13 +8,9 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.google.android.collect.Sets;
 import com.stevesoltys.backup.service.PackageService;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
-
-import java.util.LinkedList;
-import java.util.Set;
 
 import static android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP;
 import static android.os.ServiceManager.getService;
@@ -23,11 +19,6 @@ import static com.stevesoltys.backup.transport.ConfigurableBackupTransportServic
 public class BackupJobService extends JobService {
 
     private final static String TAG = BackupJobService.class.getName();
-
-    private static final Set<String> IGNORED_PACKAGES = Sets.newArraySet(
-            "com.android.providers.downloads.ui", "com.android.providers.downloads", "com.android.providers.media",
-            "com.android.providers.calendar", "com.android.providers.contacts", "com.stevesoltys.backup"
-    );
 
     private final IBackupManager backupManager;
     private final PackageService packageService = new PackageService();
@@ -41,13 +32,11 @@ public class BackupJobService extends JobService {
         Log.i(TAG, "Triggering full backup");
         startService(new Intent(this, ConfigurableBackupTransportService.class));
         try {
-            LinkedList<String> packages = new LinkedList<>(packageService.getEligiblePackages());
-            packages.removeAll(IGNORED_PACKAGES);
+            String[] packages = packageService.getEligiblePackages();
             // TODO use an observer to know when backups fail
-            String[] packageArray = packages.toArray(new String[packages.size()]);
             ConfigurableBackupTransport backupTransport = getBackupTransport(getApplication());
-            backupTransport.prepareBackup(packageArray.length);
-            int result = backupManager.requestBackup(packageArray, null, null, FLAG_NON_INCREMENTAL_BACKUP);
+            backupTransport.prepareBackup(packages.length);
+            int result = backupManager.requestBackup(packages, null, null, FLAG_NON_INCREMENTAL_BACKUP);
             if (result == BackupManager.SUCCESS) {
                 Log.i(TAG, "Backup succeeded ");
             } else {

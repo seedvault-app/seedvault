@@ -69,7 +69,14 @@ preBuild.doLast {
 }
 
 dependencies {
-    compileOnly fileTree(include: ['android.jar', 'libcore.jar'], dir: 'libs')
+    // To produce these binaries, in latest AOSP source tree, run
+    // $ make
+    compileOnly fileTree(include: [
+            // out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar
+            'android.jar',
+            // out/target/common/obj/JAVA_LIBRARIES/core-libart_intermediates/classes.jar
+            'libcore.jar'
+    ], dir: 'libs')
 
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 }

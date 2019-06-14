@@ -7,8 +7,10 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static com.google.android.collect.Sets.newArraySet;
 
 /**
  * @author Steve Soltys
@@ -19,24 +21,28 @@ public class PackageService {
 
     private final IPackageManager packageManager;
 
+    private static final Set<String> IGNORED_PACKAGES = newArraySet(
+            "com.android.externalstorage",
+            "com.android.providers.downloads.ui",
+            "com.android.providers.downloads",
+            "com.android.providers.media",
+            "com.android.providers.calendar",
+            "com.android.providers.contacts",
+            "com.stevesoltys.backup"
+    );
+
     public PackageService() {
         backupManager = IBackupManager.Stub.asInterface(ServiceManager.getService("backup"));
         packageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
     }
 
-    public List<String> getEligiblePackages() throws RemoteException {
-        List<String> results = new ArrayList<>();
+    public String[] getEligiblePackages() throws RemoteException {
         List<PackageInfo> packages = packageManager.getInstalledPackages(0, UserHandle.USER_SYSTEM).getList();
+        String[] packageArray = packages.stream()
+                .map(packageInfo -> packageInfo.packageName)
+                .filter(packageName -> !IGNORED_PACKAGES.contains(packageName))
+                .toArray(String[]::new);
 
-        if (packages != null) {
-            for (PackageInfo packageInfo : packages) {
-
-                if (backupManager.isAppEligibleForBackup(packageInfo.packageName)) {
-                    results.add(packageInfo.packageName);
-                }
-            }
-        }
-
-        return results;
+        return backupManager.filterAppsEligibleForBackup(packageArray);
     }
 }
