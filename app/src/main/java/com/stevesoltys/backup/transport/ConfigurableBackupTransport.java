@@ -3,14 +3,16 @@ package com.stevesoltys.backup.transport;
 import android.app.backup.BackupTransport;
 import android.app.backup.RestoreDescription;
 import android.app.backup.RestoreSet;
+import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
-import com.android.internal.util.Preconditions;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
-import com.stevesoltys.backup.transport.component.stub.StubBackupComponent;
-import com.stevesoltys.backup.transport.component.stub.StubRestoreComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
+import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
 /**
  * @author Steve Soltys
@@ -20,31 +22,23 @@ public class ConfigurableBackupTransport extends BackupTransport {
     private static final String TRANSPORT_DIRECTORY_NAME =
             "com.stevesoltys.backup.transport.ConfigurableBackupTransport";
 
-    private BackupComponent backupComponent;
+    private static final String TAG = TRANSPORT_DIRECTORY_NAME;
 
-    private RestoreComponent restoreComponent;
+    private final BackupComponent backupComponent;
 
-    ConfigurableBackupTransport() {
-        backupComponent = new StubBackupComponent();
-        restoreComponent = new StubRestoreComponent();
+    private final RestoreComponent restoreComponent;
+
+    ConfigurableBackupTransport(Context context) {
+        backupComponent = new ContentProviderBackupComponent(context);
+        restoreComponent = new ContentProviderRestoreComponent(context);
     }
 
-    public void initialize(BackupComponent backupComponent, RestoreComponent restoreComponent) {
-        Preconditions.checkNotNull(backupComponent);
-        Preconditions.checkNotNull(restoreComponent);
-        Preconditions.checkState(!isActive());
-
-        this.restoreComponent = restoreComponent;
-        this.backupComponent = backupComponent;
+    public void prepareBackup(int numberOfPackages) {
+        backupComponent.prepareBackup(numberOfPackages);
     }
 
-    public void reset() {
-        backupComponent = new StubBackupComponent();
-        restoreComponent = new StubRestoreComponent();
-    }
-
-    public boolean isActive() {
-        return !(backupComponent instanceof StubBackupComponent || restoreComponent instanceof StubRestoreComponent);
+    public void prepareRestore(String password, Uri fileUri) {
+        restoreComponent.prepareRestore(password, fileUri);
     }
 
     @Override
@@ -56,6 +50,24 @@ public class ConfigurableBackupTransport extends BackupTransport {
     public String name() {
         // TODO: Make this class non-static in ConfigurableBackupTransportService and use Context and a ComponentName.
         return this.getClass().getName();
+    }
+
+    @Override
+    public boolean isAppEligibleForBackup(PackageInfo targetPackage, boolean isFullBackup) {
+        // TODO re-include key-value (incremental)
+        // affected apps:
+        // * com.android.documentsui
+        // * android
+        // * com.android.nfc
+        // * com.android.calendar
+        // * com.android.providers.settings
+        // * com.android.cellbroadcastreceiver
+        // * com.android.calllogbackup
+        // * com.android.providers.blockednumber
+        // * com.android.providers.userdictionary
+        if (isFullBackup) return true;
+        Log.i(TAG, "Excluding key-value backup of " + targetPackage.packageName);
+        return false;
     }
 
     @Override
@@ -79,6 +91,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     }
 
     @Override
+    public int performBackup(PackageInfo packageInfo, ParcelFileDescriptor inFd, int flags) {
+        // TODO handle flags
+        return performBackup(packageInfo, inFd);
+    }
+
+    @Override
     public int performBackup(PackageInfo targetPackage, ParcelFileDescriptor fileDescriptor) {
         return backupComponent.performIncrementalBackup(targetPackage, fileDescriptor);
     }
@@ -86,6 +104,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     @Override
     public int checkFullBackupSize(long size) {
         return backupComponent.checkFullBackupSize(size);
+    }
+
+    @Override
+    public int performFullBackup(PackageInfo targetPackage, ParcelFileDescriptor socket, int flags) {
+        // TODO handle flags
+        return performFullBackup(targetPackage, socket);
     }
 
     @Override

@@ -26,6 +26,15 @@
         android:text="@string/restore_backup_button" />
 
     <Button
+        android:id="@+id/automatic_backups_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginLeft="@dimen/button_horizontal_margin"
+        android:layout_marginRight="@dimen/button_horizontal_margin"
+        android:text="Activate automatic backups" />
+
+    <Button
         android:id="@+id/change_backup_location_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

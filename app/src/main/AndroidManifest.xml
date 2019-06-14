@@ -7,12 +7,14 @@
 
     <uses-sdk
         android:minSdkVersion="26"
-        android:targetSdkVersion="26"
+        android:targetSdkVersion="28"
         tools:ignore="GradleOverrides,OldTargetApi" />
 
     <uses-permission
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".Backup"
@@ -47,6 +49,11 @@
                 <action android:name="android.backup.TRANSPORT_HOST" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".service.backup.BackupJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 </manifest>

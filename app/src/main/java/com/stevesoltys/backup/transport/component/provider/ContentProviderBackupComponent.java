@@ -1,28 +1,47 @@
 package com.stevesoltys.backup.transport.component.provider;
 
 import android.app.backup.BackupDataInput;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.Log;
+
 import com.stevesoltys.backup.security.CipherUtil;
 import com.stevesoltys.backup.security.KeyGenerator;
+import com.stevesoltys.backup.settings.SettingsManager;
 import com.stevesoltys.backup.transport.component.BackupComponent;
-import libcore.io.IoUtils;
+
 import org.apache.commons.io.IOUtils;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static android.app.backup.BackupTransport.*;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+
+import libcore.io.IoUtils;
+
+import static android.app.backup.BackupTransport.TRANSPORT_ERROR;
+import static android.app.backup.BackupTransport.TRANSPORT_OK;
+import static android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED;
+import static android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED;
+import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
+import static android.provider.DocumentsContract.createDocument;
+import static android.provider.DocumentsContract.getTreeDocumentId;
+import static com.stevesoltys.backup.activity.MainActivityController.DOCUMENT_MIME_TYPE;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_BACKUP_QUOTA;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,18 +51,22 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
     private static final String TAG = ContentProviderBackupComponent.class.getName();
 
+    private static final String DOCUMENT_SUFFIX = "yyyy-MM-dd_HH_mm_ss";
+
     private static final String DESTINATION_DESCRIPTION = "Backing up to zip file";
 
     private static final String TRANSPORT_DATA_MANAGEMENT_LABEL = "";
 
     private static final int INITIAL_BUFFER_SIZE = 512;
 
-    private final ContentProviderBackupConfiguration configuration;
+    private final Context context;
+
+    private int numberOfPackages = 0;
 
     private ContentProviderBackupState backupState;
 
-    public ContentProviderBackupComponent(ContentProviderBackupConfiguration configuration) {
-        this.configuration = configuration;
+    public ContentProviderBackupComponent(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -58,7 +81,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
         if (size <= 0) {
             result = TRANSPORT_PACKAGE_REJECTED;
 
-        } else if (size > configuration.getBackupSizeQuota()) {
+        } else if (size > DEFAULT_BACKUP_QUOTA) {
             result = TRANSPORT_QUOTA_EXCEEDED;
         }
 
@@ -68,6 +91,11 @@ public class ContentProviderBackupComponent implements BackupComponent {
     @Override
     public int clearBackupData(PackageInfo packageInfo) {
         return TRANSPORT_OK;
+    }
+
+    @Override
+    public void prepareBackup(int numberOfPackages) {
+        this.numberOfPackages = numberOfPackages;
     }
 
     @Override
@@ -87,7 +115,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
     @Override
     public long getBackupQuota(String packageName, boolean fullBackup) {
-        return configuration.getBackupSizeQuota();
+        return DEFAULT_BACKUP_QUOTA;
     }
 
     @Override
@@ -115,7 +143,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             Cipher cipher = CipherUtil.startEncrypt(backupState.getSecretKey(), backupState.getSalt());
             backupState.setCipher(cipher);
 
-            ZipEntry zipEntry = new ZipEntry(configuration.getFullBackupDirectory() + backupState.getPackageName());
+            ZipEntry zipEntry = new ZipEntry(DEFAULT_FULL_BACKUP_DIRECTORY + backupState.getPackageName());
             backupState.getOutputStream().putNextEntry(zipEntry);
 
         } catch (Exception ex) {
@@ -164,7 +192,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
 
         long bytesTransferred = backupState.getBytesTransferred() + numBytes;
 
-        if (bytesTransferred > configuration.getBackupSizeQuota()) {
+        if (bytesTransferred > DEFAULT_BACKUP_QUOTA) {
             return TRANSPORT_QUOTA_EXCEEDED;
         }
 
@@ -199,7 +227,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
             int dataSize = backupDataInput.getDataSize();
 
             if (dataSize >= 0) {
-                ZipEntry zipEntry = new ZipEntry(configuration.getIncrementalBackupDirectory() +
+                ZipEntry zipEntry = new ZipEntry(DEFAULT_INCREMENTAL_BACKUP_DIRECTORY +
                         backupState.getPackageName() + "/" + chunkFileName);
                 outputStream.putNextEntry(zipEntry);
 
@@ -246,19 +274,42 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.getOutputStream().write(backupState.getSalt());
             backupState.getOutputStream().closeEntry();
 
-            String password = requireNonNull(configuration.getPassword());
+            String password = requireNonNull(SettingsManager.getBackupPassword(context));
             backupState.setSecretKey(KeyGenerator.generate(password, backupState.getSalt()));
         }
     }
 
     private void initializeOutputStream() throws IOException {
-        ContentResolver contentResolver = configuration.getContext().getContentResolver();
-        ParcelFileDescriptor outputFileDescriptor = contentResolver.openFileDescriptor(configuration.getUri(), "w");
+        Uri folderUri = SettingsManager.getBackupFolderUri(context);
+        // TODO notify about failure with notification
+        Uri fileUri = createBackupFile(folderUri);
+
+        ParcelFileDescriptor outputFileDescriptor = context.getContentResolver().openFileDescriptor(fileUri, "w");
+        if (outputFileDescriptor == null) throw new IOException();
         backupState.setOutputFileDescriptor(outputFileDescriptor);
 
         FileOutputStream fileOutputStream = new FileOutputStream(outputFileDescriptor.getFileDescriptor());
         ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
         backupState.setOutputStream(zipOutputStream);
+    }
+
+    private Uri createBackupFile(Uri folderUri) throws IOException {
+        Uri documentUri = buildDocumentUriUsingTree(folderUri, getTreeDocumentId(folderUri));
+        try {
+            Uri fileUri = createDocument(context.getContentResolver(), documentUri, DOCUMENT_MIME_TYPE, getBackupFileName());
+            if (fileUri == null) throw new IOException();
+            return fileUri;
+
+        } catch (SecurityException e) {
+            // happens when folder was deleted and thus Uri permission don't exist anymore
+            throw new IOException(e);
+        }
+    }
+
+    private String getBackupFileName() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DOCUMENT_SUFFIX, Locale.US);
+        String date = dateFormat.format(new Date());
+        return "backup-" + date;
     }
 
     private int clearBackupState(boolean closeFile) {
@@ -283,7 +334,7 @@ public class ContentProviderBackupComponent implements BackupComponent {
                 outputStream.closeEntry();
             }
 
-            if (backupState.getPackageIndex() == configuration.getPackageCount() || closeFile) {
+            if (backupState.getPackageIndex() == numberOfPackages || closeFile) {
                 if (outputStream != null) {
                     outputStream.finish();
                     outputStream.close();

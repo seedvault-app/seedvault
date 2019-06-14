@@ -5,11 +5,10 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.session.restore.RestoreResult;
 import com.stevesoltys.backup.session.restore.RestoreSessionObserver;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 
 /**
  * @author Steve Soltys
@@ -56,14 +55,6 @@ class RestoreObserver implements RestoreSessionObserver {
 
     @Override
     public void restoreSessionCompleted(RestoreResult restoreResult) {
-        ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
-
-        if (!backupTransport.isActive()) {
-            return;
-        }
-
-        backupTransport.reset();
-
         context.runOnUiThread(() -> {
             if (restoreResult == RestoreResult.SUCCESS) {
                 Toast.makeText(context, R.string.restore_success, Toast.LENGTH_LONG).show();

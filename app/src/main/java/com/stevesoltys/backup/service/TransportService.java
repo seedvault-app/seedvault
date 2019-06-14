@@ -3,17 +3,11 @@ package com.stevesoltys.backup.service;
 import android.app.backup.IBackupManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+
 import com.stevesoltys.backup.session.backup.BackupSession;
 import com.stevesoltys.backup.session.backup.BackupSessionObserver;
 import com.stevesoltys.backup.session.restore.RestoreSession;
 import com.stevesoltys.backup.session.restore.RestoreSessionObserver;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
-import com.stevesoltys.backup.transport.component.BackupComponent;
-import com.stevesoltys.backup.transport.component.RestoreComponent;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConfiguration;
-import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
 import java.util.Set;
 
@@ -28,19 +22,6 @@ public class TransportService {
 
     public TransportService() {
         backupManager = IBackupManager.Stub.asInterface(ServiceManager.getService("backup"));
-    }
-
-    public boolean initializeBackupTransport(ContentProviderBackupConfiguration configuration) {
-        ConfigurableBackupTransport backupTransport = ConfigurableBackupTransportService.getBackupTransport();
-
-        if (backupTransport.isActive()) {
-            return false;
-        }
-
-        BackupComponent backupComponent = new ContentProviderBackupComponent(configuration);
-        RestoreComponent restoreComponent = new ContentProviderRestoreComponent(configuration);
-        backupTransport.initialize(backupComponent, restoreComponent);
-        return true;
     }
 
     public BackupSession backup(BackupSessionObserver observer, Set<String> packages) throws RemoteException {

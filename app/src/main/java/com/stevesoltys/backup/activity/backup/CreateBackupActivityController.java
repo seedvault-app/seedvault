@@ -2,7 +2,6 @@ package com.stevesoltys.backup.activity.backup;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.net.Uri;
 import android.os.RemoteException;
 import android.text.InputType;
 import android.util.Log;
@@ -75,16 +74,16 @@ class CreateBackupActivityController {
         });
     }
 
-    void onCreateBackupButtonClicked(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+    void onCreateBackupButtonClicked(Set<String> selectedPackages, Activity parent) {
         String password = SettingsManager.getBackupPassword(parent);
         if (password == null) {
-            showEnterPasswordAlert(selectedPackages, contentUri, parent);
+            showEnterPasswordAlert(selectedPackages, parent);
         } else {
-            backupService.backupPackageData(selectedPackages, contentUri, parent, password);
+            backupService.backupPackageData(selectedPackages, parent);
         }
     }
 
-    private void showEnterPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent) {
+    private void showEnterPasswordAlert(Set<String> selectedPackages, Activity parent) {
         final EditText passwordTextView = new EditText(parent);
         passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -97,9 +96,9 @@ class CreateBackupActivityController {
                     if (passwordTextView.getText().length() == 0) {
                         Toast.makeText(parent, "Please enter a password", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
-                        showEnterPasswordAlert(selectedPackages, contentUri, parent);
+                        showEnterPasswordAlert(selectedPackages, parent);
                     } else {
-                        showConfirmPasswordAlert(selectedPackages, contentUri, parent,
+                        showConfirmPasswordAlert(selectedPackages, parent,
                                 passwordTextView.getText().toString());
                     }
                 })
@@ -108,7 +107,7 @@ class CreateBackupActivityController {
                 .show();
     }
 
-    private void showConfirmPasswordAlert(Set<String> selectedPackages, Uri contentUri, Activity parent,
+    private void showConfirmPasswordAlert(Set<String> selectedPackages, Activity parent,
                                           String originalPassword) {
         final EditText passwordTextView = new EditText(parent);
         passwordTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -122,7 +121,7 @@ class CreateBackupActivityController {
 
                     if (originalPassword.equals(password)) {
                         SettingsManager.setBackupPassword(parent, password);
-                        backupService.backupPackageData(selectedPackages, contentUri, parent, password);
+                        backupService.backupPackageData(selectedPackages, parent);
 
                     } else {
                         new AlertDialog.Builder(parent)

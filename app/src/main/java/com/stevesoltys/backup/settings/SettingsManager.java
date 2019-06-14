@@ -10,6 +10,7 @@ public class SettingsManager {
 
     private static final String PREF_KEY_BACKUP_URI = "backupUri";
     private static final String PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword";
+    private static final String PREF_KEY_BACKUPS_SCHEDULED = "backupsScheduled";
 
     public static void setBackupFolderUri(Context context, Uri uri) {
         getDefaultSharedPreferences(context)
@@ -39,6 +40,18 @@ public class SettingsManager {
     @Nullable
     public static String getBackupPassword(Context context) {
         return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null);
+    }
+
+    public static void setBackupsScheduled(Context context) {
+        getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PREF_KEY_BACKUPS_SCHEDULED, true)
+                .apply();
+    }
+
+    @Nullable
+    public static Boolean areBackupsScheduled(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(PREF_KEY_BACKUPS_SCHEDULED, false);
     }
 
 }
