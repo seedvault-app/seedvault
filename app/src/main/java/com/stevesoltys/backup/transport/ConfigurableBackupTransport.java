@@ -14,6 +14,9 @@ import com.stevesoltys.backup.transport.component.RestoreComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderRestoreComponent;
 
+import static android.app.backup.BackupAgent.FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED;
+import static android.os.Build.VERSION.SDK_INT;
+
 /**
  * @author Steve Soltys
  */
@@ -50,6 +53,12 @@ public class ConfigurableBackupTransport extends BackupTransport {
     public String name() {
         // TODO: Make this class non-static in ConfigurableBackupTransportService and use Context and a ComponentName.
         return this.getClass().getName();
+    }
+
+    @Override
+    public int getTransportFlags() {
+        if (SDK_INT >= 28) return FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED;
+        return 0;
     }
 
     @Override
