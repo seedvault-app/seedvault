@@ -1,0 +1,32 @@
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.SwitchPreferenceCompat
+        app:icon="@drawable/ic_cloud_upload"
+        app:key="backup"
+        app:persistent="false"
+        app:title="@string/settings_backup" />
+
+    <androidx.preference.Preference
+        app:dependency="backup"
+        app:icon="@drawable/ic_storage"
+        app:key="backup_location"
+        app:selectable="false"
+        app:summary="@string/settings_backup_external_storage"
+        app:title="@string/settings_backup_location" />
+
+    <androidx.preference.SwitchPreferenceCompat
+        app:dependency="backup"
+        app:key="auto_restore"
+        app:persistent="false"
+        app:summary="@string/settings_auto_restore_summary"
+        app:title="@string/settings_auto_restore_title" />
+
+    <androidx.preference.Preference
+        app:allowDividerAbove="true"
+        app:allowDividerBelow="false"
+        app:dependency="backup"
+        app:icon="@drawable/ic_info_outline"
+        app:selectable="false"
+        app:summary="@string/settings_info" />
+
+</androidx.preference.PreferenceScreen>

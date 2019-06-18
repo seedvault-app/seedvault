@@ -4,11 +4,13 @@ import android.app.backup.BackupTransport;
 import android.app.backup.RestoreDescription;
 import android.app.backup.RestoreSet;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import com.stevesoltys.backup.settings.SettingsActivity;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 import com.stevesoltys.backup.transport.component.RestoreComponent;
 import com.stevesoltys.backup.transport.component.provider.ContentProviderBackupComponent;
@@ -27,11 +29,14 @@ public class ConfigurableBackupTransport extends BackupTransport {
 
     private static final String TAG = TRANSPORT_DIRECTORY_NAME;
 
+    private final Context context;
+
     private final BackupComponent backupComponent;
 
     private final RestoreComponent restoreComponent;
 
     ConfigurableBackupTransport(Context context) {
+        this.context = context;
         backupComponent = new ContentProviderBackupComponent(context);
         restoreComponent = new ContentProviderRestoreComponent(context);
     }
@@ -55,6 +60,11 @@ public class ConfigurableBackupTransport extends BackupTransport {
     public int getTransportFlags() {
         if (SDK_INT >= 28) return FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED;
         return 0;
+    }
+
+    @Override
+    public Intent dataManagementIntent() {
+        return new Intent(context, SettingsActivity.class);
     }
 
     @Override
