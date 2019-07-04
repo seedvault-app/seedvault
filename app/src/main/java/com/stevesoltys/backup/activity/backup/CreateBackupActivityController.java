@@ -17,10 +17,12 @@ import com.stevesoltys.backup.R;
 import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.service.PackageService;
 import com.stevesoltys.backup.service.backup.BackupService;
-import com.stevesoltys.backup.settings.SettingsManager;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
+import static com.stevesoltys.backup.settings.SettingsManagerKt.setBackupPassword;
 
 /**
  * @author Steve Soltys
@@ -69,7 +71,7 @@ class CreateBackupActivityController {
     }
 
     void onCreateBackupButtonClicked(Set<String> selectedPackages, Activity parent) {
-        String password = SettingsManager.getBackupPassword(parent);
+        String password = getBackupPassword(parent);
         if (password == null) {
             showEnterPasswordAlert(selectedPackages, parent);
         } else {
@@ -114,7 +116,7 @@ class CreateBackupActivityController {
                     String password = passwordTextView.getText().toString();
 
                     if (originalPassword.equals(password)) {
-                        SettingsManager.setBackupPassword(parent, password);
+                        setBackupPassword(parent, password);
                         backupService.backupPackageData(selectedPackages, parent);
 
                     } else {

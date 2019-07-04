@@ -11,7 +11,7 @@ import com.stevesoltys.backup.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.stevesoltys.backup.settings.SettingsManager.areBackupsScheduled;
+import static com.stevesoltys.backup.settings.SettingsManagerKt.areBackupsScheduled;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 

@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import androidx.lifecycle.AndroidViewModel
-import com.stevesoltys.backup.settings.SettingsManager.getBackupFolderUri
-import com.stevesoltys.backup.settings.SettingsManager.setBackupFolderUri
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 

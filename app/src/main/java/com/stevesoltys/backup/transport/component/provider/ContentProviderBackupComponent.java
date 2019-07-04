@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.stevesoltys.backup.security.CipherUtil;
 import com.stevesoltys.backup.security.KeyGenerator;
-import com.stevesoltys.backup.settings.SettingsManager;
 import com.stevesoltys.backup.transport.component.BackupComponent;
 
 import org.apache.commons.io.IOUtils;
@@ -42,6 +41,8 @@ import static android.provider.DocumentsContract.buildDocumentUriUsingTree;
 import static android.provider.DocumentsContract.createDocument;
 import static android.provider.DocumentsContract.getTreeDocumentId;
 import static com.stevesoltys.backup.activity.MainActivityController.DOCUMENT_MIME_TYPE;
+import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupFolderUri;
+import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
 import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_BACKUP_QUOTA;
 import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
 import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_INCREMENTAL_BACKUP_DIRECTORY;
@@ -286,13 +287,13 @@ public class ContentProviderBackupComponent implements BackupComponent {
             backupState.getOutputStream().write(backupState.getSalt());
             backupState.getOutputStream().closeEntry();
 
-            String password = requireNonNull(SettingsManager.getBackupPassword(context));
+            String password = requireNonNull(getBackupPassword(context));
             backupState.setSecretKey(KeyGenerator.generate(password, backupState.getSalt()));
         }
     }
 
     private void initializeOutputStream() throws IOException {
-        Uri folderUri = SettingsManager.getBackupFolderUri(context);
+        Uri folderUri = getBackupFolderUri(context);
         // TODO notify about failure with notification
         Uri fileUri = createBackupFile(folderUri);
 
