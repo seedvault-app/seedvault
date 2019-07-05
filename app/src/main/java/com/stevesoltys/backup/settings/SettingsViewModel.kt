@@ -10,6 +10,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private val app = application
 
+    fun recoveryCodeIsSet() = getBackupPassword(getApplication()) != null
     fun locationIsSet() = getBackupFolderUri(getApplication()) != null
 
     fun handleChooseFolderResult(result: Intent?) {

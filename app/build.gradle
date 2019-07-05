@@ -83,8 +83,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'commons-io:commons-io:2.6'
+    implementation 'io.github.novacrypto:BIP39:2019.01.27'
 
-    implementation "androidx.core:core-ktx:1.0.2"
+    implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.preference:preference-ktx:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }

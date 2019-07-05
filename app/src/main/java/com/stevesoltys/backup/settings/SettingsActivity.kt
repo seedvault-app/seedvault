@@ -13,9 +13,12 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE
 
 private val TAG = SettingsActivity::class.java.name
+
+const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
+const val REQUEST_CODE_RECOVERY_CODE = 2
+
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -31,9 +34,25 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        if (resultCode != RESULT_OK) {
+            Log.w(TAG, "Error in activity result: $requestCode")
+            finishAfterTransition()
+        }
+
+        if (requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE) {
+            viewModel.handleChooseFolderResult(result)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-        if (!viewModel.locationIsSet()) {
+        if (isFinishing) return
+
+        // check that backup is provisioned
+        if (!viewModel.recoveryCodeIsSet()) {
+            showRecoveryCodeActivity()
+        } else if (!viewModel.locationIsSet()) {
             showChooseFolderActivity()
         }
     }
@@ -64,15 +83,9 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (resultCode != RESULT_OK) {
-            Log.w(TAG, "Error in activity result: $requestCode")
-            return
-        }
-
-        if (requestCode == OPEN_DOCUMENT_TREE_REQUEST_CODE) {
-            viewModel.handleChooseFolderResult(result)
-        }
+    private fun showRecoveryCodeActivity() {
+        val intent = Intent(this, RecoveryCodeActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
     }
 
     private fun showChooseFolderActivity() {
@@ -82,7 +95,7 @@ class SettingsActivity : AppCompatActivity() {
         // TODO StringRes
         try {
             val documentChooser = createChooser(openTreeIntent, "Select the backup location")
-            startActivityForResult(documentChooser, OPEN_DOCUMENT_TREE_REQUEST_CODE)
+            startActivityForResult(documentChooser, REQUEST_CODE_OPEN_DOCUMENT_TREE)
         } catch (ex: ActivityNotFoundException) {
             Toast.makeText(this, "Please install a file manager.", LENGTH_LONG).show()
         }

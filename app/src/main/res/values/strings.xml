@@ -32,4 +32,27 @@
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data</string>
     <string name="settings_backup_now">Backup now</string>
 
+    <!-- Recovery Code -->
+    <string name="recovery_code_title">Recovery Code</string>
+    <string name="recovery_code_12_word_intro">You need your 12-word recovery code to restore backed up data.</string>
+    <string name="recovery_code_write_it_down">Write it down on paper now!</string>
+    <string name="recovery_code_confirm_button">Confirm Code</string>
+    <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
+    <string name="recovery_code_done_button">Done</string>
+    <string name="recovery_code_input_hint_1">Word 1</string>
+    <string name="recovery_code_input_hint_2">Word 2</string>
+    <string name="recovery_code_input_hint_3">Word 3</string>
+    <string name="recovery_code_input_hint_4">Word 4</string>
+    <string name="recovery_code_input_hint_5">Word 5</string>
+    <string name="recovery_code_input_hint_6">Word 6</string>
+    <string name="recovery_code_input_hint_7">Word 7</string>
+    <string name="recovery_code_input_hint_8">Word 8</string>
+    <string name="recovery_code_input_hint_9">Word 9</string>
+    <string name="recovery_code_input_hint_10">Word 10</string>
+    <string name="recovery_code_input_hint_11">Word 11</string>
+    <string name="recovery_code_input_hint_12">Word 12</string>
+    <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
+    <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
+    <string name="recovery_code_error_checksum_word">We are so sorry! An unexpected error occurred.</string>
+
 </resources>
