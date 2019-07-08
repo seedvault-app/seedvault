@@ -25,6 +25,7 @@ fun getBackupFolderUri(context: Context): Uri? {
  * This is insecure and not supposed to be part of a release,
  * but rather an intermediate step towards a generated passphrase.
  */
+@Deprecated("Replaced by KeyManager#storeBackupKey()")
 fun setBackupPassword(context: Context, password: String) {
     getDefaultSharedPreferences(context)
             .edit()
@@ -32,6 +33,7 @@ fun setBackupPassword(context: Context, password: String) {
             .apply()
 }
 
+@Deprecated("Replaced by KeyManager#getBackupKey()")
 fun getBackupPassword(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null)
 }
