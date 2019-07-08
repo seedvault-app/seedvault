@@ -1,24 +1,19 @@
 package com.stevesoltys.backup.settings
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.Intent.*
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
-import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.stevesoltys.backup.LiveEventHandler
 import com.stevesoltys.backup.R
 
 private val TAG = SettingsActivity::class.java.name
 
 const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
 const val REQUEST_CODE_RECOVERY_CODE = 2
-
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -30,18 +25,25 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        viewModel.onLocationSet.observeEvent(this, LiveEventHandler { wasEmptyBefore ->
+            if (wasEmptyBefore) showFragment(SettingsFragment())
+            else supportFragmentManager.popBackStack()
+        })
+        viewModel.chooseBackupLocation.observeEvent(this, LiveEventHandler { show ->
+            if (show) showFragment(BackupLocationFragment(), true)
+        })
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        if (savedInstanceState == null) showFragment(SettingsFragment())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
         if (resultCode != RESULT_OK) {
             Log.w(TAG, "Error in activity result: $requestCode")
             finishAfterTransition()
-        }
-
-        if (requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE) {
-            viewModel.handleChooseFolderResult(result)
+        } else {
+            super.onActivityResult(requestCode, resultCode, result)
         }
     }
 
@@ -53,34 +55,16 @@ class SettingsActivity : AppCompatActivity() {
         if (!viewModel.recoveryCodeIsSet()) {
             showRecoveryCodeActivity()
         } else if (!viewModel.locationIsSet()) {
-            showChooseFolderActivity()
+            showFragment(BackupLocationFragment())
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.settings_menu, menu)
-        if (resources.getBoolean(R.bool.show_restore_in_settings)) {
-            menu.findItem(R.id.action_restore).isVisible = true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when {
+        item.itemId == android.R.id.home -> {
+            onBackPressed()
+            true
         }
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when {
-            item.itemId == android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            item.itemId == R.id.action_backup -> {
-                Toast.makeText(this, "Not yet implemented", LENGTH_SHORT).show()
-                true
-            }
-            item.itemId == R.id.action_restore -> {
-                Toast.makeText(this, "Not yet implemented", LENGTH_SHORT).show()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun showRecoveryCodeActivity() {
@@ -88,17 +72,11 @@ class SettingsActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
     }
 
-    private fun showChooseFolderActivity() {
-        val openTreeIntent = Intent(ACTION_OPEN_DOCUMENT_TREE)
-        openTreeIntent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION)
-        // TODO StringRes
-        try {
-            val documentChooser = createChooser(openTreeIntent, "Select the backup location")
-            startActivityForResult(documentChooser, REQUEST_CODE_OPEN_DOCUMENT_TREE)
-        } catch (ex: ActivityNotFoundException) {
-            Toast.makeText(this, "Please install a file manager.", LENGTH_LONG).show()
-        }
+    private fun showFragment(f: Fragment, addToBackStack: Boolean = false) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, f)
+        if (addToBackStack) fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 }

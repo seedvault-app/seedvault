@@ -26,6 +26,8 @@
     <!-- Settings -->
     <string name="settings_backup">Backup my data</string>
     <string name="settings_backup_location">Backup location</string>
+    <string name="settings_backup_location_title">Backup Location</string>
+    <string name="settings_backup_location_info">Choose where to store your backups. More options might get added in the future.</string>
     <string name="settings_backup_external_storage">External Storage</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>

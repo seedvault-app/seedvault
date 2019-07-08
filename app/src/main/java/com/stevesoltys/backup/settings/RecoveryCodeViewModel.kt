@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.settings
 
 import android.app.Application
+import android.util.ByteStringUtils.toHexString
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.backup.LiveEvent
 import com.stevesoltys.backup.MutableLiveEvent
@@ -33,7 +34,8 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
     internal val confirmButtonClicked: LiveEvent<Boolean> = mConfirmButtonClicked
     internal fun onConfirmButtonClicked() = mConfirmButtonClicked.setEvent(true)
 
-    internal val recoveryCodeSaved = MutableLiveEvent<Boolean>()
+    private val mRecoveryCodeSaved = MutableLiveEvent<Boolean>()
+    internal val recoveryCodeSaved: LiveEvent<Boolean> = mRecoveryCodeSaved
 
     @Throws(WordNotFoundException::class, InvalidChecksumException::class)
     fun validateAndContinue(input: List<CharSequence>) {
@@ -47,7 +49,11 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
         val mnemonic = input.joinToString(" ")
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
         KeyManager.storeBackupKey(seed)
-        recoveryCodeSaved.setEvent(true)
+
+        // TODO remove once encryption/decryption uses key from KeyStore
+        setBackupPassword(getApplication(), toHexString(seed))
+
+        mRecoveryCodeSaved.setEvent(true)
     }
 
 }
