@@ -57,4 +57,10 @@
     <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
     <string name="recovery_code_error_checksum_word">We are so sorry! An unexpected error occurred.</string>
 
+    <!-- Notification -->
+    <string name="notification_channel_title">Backup Notification</string>
+    <string name="notification_title">Backup running</string>
+    <string name="notification_backup_result_complete">Backup complete</string>
+    <string name="notification_backup_result_error">Backup failed</string>
+
 </resources>

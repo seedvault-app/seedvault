@@ -8,12 +8,15 @@ import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.backup.LiveEvent
 import com.stevesoltys.backup.MutableLiveEvent
 import com.stevesoltys.backup.security.KeyManager
+import com.stevesoltys.backup.service.backup.requestFullBackup
+
+private val TAG = SettingsViewModel::class.java.name
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val app = application
 
-    private val mLocationWasSet = MutableLiveEvent<Boolean>()
+    private val locationWasSet = MutableLiveEvent<Boolean>()
     /**
      * Will be set to true if this is the initial location.
      * It will be false if an existing location was changed.
@@ -41,7 +44,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         setBackupFolderUri(app, folderUri)
 
         // notify the UI that the location has been set
-        mLocationWasSet.setEvent(wasEmptyBefore)
+        locationWasSet.setEvent(wasEmptyBefore)
     }
+
+    fun backupNow() = Thread { requestFullBackup(app) }.start()
 
 }

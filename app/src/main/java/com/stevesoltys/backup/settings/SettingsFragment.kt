@@ -1,33 +1,27 @@
 package com.stevesoltys.backup.settings
 
-import android.app.backup.IBackupManager
-import android.content.ContentResolver
+import android.content.Context.BACKUP_SERVICE
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
-import android.util.Log
-
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.TwoStatePreference
-
-import com.stevesoltys.backup.R
-
-import android.content.Context.BACKUP_SERVICE
-import android.os.ServiceManager.getService
 import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.TwoStatePreference
+import com.stevesoltys.backup.Backup
+import com.stevesoltys.backup.R
 
 private val TAG = SettingsFragment::class.java.name
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private lateinit var backupManager: IBackupManager
+    private val backupManager = Backup.backupManager
 
     private lateinit var viewModel: SettingsViewModel
 
@@ -37,8 +31,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         setHasOptionsMenu(true)
-
-        backupManager = IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE))
 
         viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
 
@@ -103,7 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when {
         item.itemId == R.id.action_backup -> {
-            Toast.makeText(requireContext(), "Not yet implemented", Toast.LENGTH_SHORT).show()
+            viewModel.backupNow()
             true
         }
         item.itemId == R.id.action_restore -> {

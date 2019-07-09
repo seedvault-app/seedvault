@@ -21,7 +21,7 @@ import static android.content.Intent.CATEGORY_OPENABLE;
 import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-import static com.stevesoltys.backup.Backup.JOB_ID_BACKGROUND_BACKUP;
+import static com.stevesoltys.backup.BackupKt.JOB_ID_BACKGROUND_BACKUP;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
 import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupFolderUri;
