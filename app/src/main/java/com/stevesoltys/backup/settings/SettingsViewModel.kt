@@ -4,13 +4,15 @@ import android.app.Application
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.LiveEvent
 import com.stevesoltys.backup.MutableLiveEvent
-import com.stevesoltys.backup.security.KeyManager
 import com.stevesoltys.backup.service.backup.requestFullBackup
+import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 
-private val TAG = SettingsViewModel::class.java.name
+private val TAG = SettingsViewModel::class.java.simpleName
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,7 +29,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     internal val chooseBackupLocation: LiveEvent<Boolean> = mChooseBackupLocation
     internal fun chooseBackupLocation() = mChooseBackupLocation.setEvent(true)
 
-    fun recoveryCodeIsSet() = KeyManager.hasBackupKey()
+    fun recoveryCodeIsSet() = Backup.keyManager.hasBackupKey()
     fun locationIsSet() = getBackupFolderUri(getApplication()) != null
 
     fun handleChooseFolderResult(result: Intent?) {
@@ -45,6 +47,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
         // notify the UI that the location has been set
         locationWasSet.setEvent(wasEmptyBefore)
+
+        // stop backup service to be sure the old location will get updated
+        app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
+
+        Log.d(TAG, "New storage location chosen: $folderUri")
     }
 
     fun backupNow() = Thread { requestFullBackup(app) }.start()

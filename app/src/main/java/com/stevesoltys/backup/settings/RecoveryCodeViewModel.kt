@@ -3,9 +3,9 @@ package com.stevesoltys.backup.settings
 import android.app.Application
 import android.util.ByteStringUtils.toHexString
 import androidx.lifecycle.AndroidViewModel
+import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.LiveEvent
 import com.stevesoltys.backup.MutableLiveEvent
-import com.stevesoltys.backup.security.KeyManager
 import io.github.novacrypto.bip39.*
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException
@@ -48,7 +48,7 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
         }
         val mnemonic = input.joinToString(" ")
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
-        KeyManager.storeBackupKey(seed)
+        Backup.keyManager.storeBackupKey(seed)
 
         // TODO remove once encryption/decryption uses key from KeyStore
         setBackupPassword(getApplication(), toHexString(seed))

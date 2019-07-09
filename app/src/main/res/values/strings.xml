@@ -26,6 +26,7 @@
     <!-- Settings -->
     <string name="settings_backup">Backup my data</string>
     <string name="settings_backup_location">Backup location</string>
+    <string name="settings_backup_location_picker">Choose backup location</string>
     <string name="settings_backup_location_title">Backup Location</string>
     <string name="settings_backup_location_info">Choose where to store your backups. More options might get added in the future.</string>
     <string name="settings_backup_external_storage">External Storage</string>

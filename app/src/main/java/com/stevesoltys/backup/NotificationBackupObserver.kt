@@ -3,7 +3,6 @@ package com.stevesoltys.backup
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_MIN
-import android.app.backup.BackupManager
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
@@ -13,12 +12,11 @@ import android.util.Log.isLoggable
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_LOW
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport
 
 private const val CHANNEL_ID = "NotificationBackupObserver"
 private const val NOTIFICATION_ID = 1
 
-private val TAG = NotificationBackupObserver::class.java.name
+private val TAG = NotificationBackupObserver::class.java.simpleName
 
 class NotificationBackupObserver(
         private val context: Context,
@@ -94,11 +92,11 @@ class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Backup finished. Status: $status")
         }
-        if (status == BackupManager.SUCCESS) getBackupTransport(context).backupFinished()
         nm.cancel(NOTIFICATION_ID)
     }
 
     private fun getAppName(packageId: String): CharSequence {
+        if (packageId == "@pm@") return packageId
         val appInfo = pm.getApplicationInfo(packageId, 0)
         return pm.getApplicationLabel(appInfo)
     }

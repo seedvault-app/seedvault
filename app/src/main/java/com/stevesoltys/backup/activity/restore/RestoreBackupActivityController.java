@@ -29,7 +29,8 @@ import java.util.zip.ZipInputStream;
 
 import libcore.io.IoUtils;
 
-import static com.stevesoltys.backup.transport.component.provider.ContentProviderBackupConstants.DEFAULT_FULL_BACKUP_DIRECTORY;
+import static com.stevesoltys.backup.transport.backup.plugins.DocumentsStorageKt.DIRECTORY_FULL_BACKUP;
+
 
 /**
  * @author Steve Soltys
@@ -84,7 +85,7 @@ class RestoreBackupActivityController {
         while ((zipEntry = inputStream.getNextEntry()) != null) {
             String zipEntryPath = zipEntry.getName();
 
-            if (zipEntryPath.startsWith(DEFAULT_FULL_BACKUP_DIRECTORY)) {
+            if (zipEntryPath.startsWith(DIRECTORY_FULL_BACKUP)) {
                 String fileName = new File(zipEntryPath).getName();
                 results.add(fileName);
             }
