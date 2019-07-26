@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+</resources>

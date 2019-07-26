@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
+    tools:showIn="@layout/fragment_recovery_code_input">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_1"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_2"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout3"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput3" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_3"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout4"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput4" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_4"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout5"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout3">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput5" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_5"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout6"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout4">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput6" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_6"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout5">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput7" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_7"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput8" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_8"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout7">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput9" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_9"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout8">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput10" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_10"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout9">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput11" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout11"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_11"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout10">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput12" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_12"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout11">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/wordInput12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</merge>
