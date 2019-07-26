@@ -32,7 +32,4 @@ LOCAL_CERTIFICATE := platform
 LOCAL_STATIC_JAVA_LIBRARIES := commons-io
 LOCAL_SRC_FILES := $(call all-java-files-under, java)
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
-LOCAL_STATIC_ANDROID_LIBRARIES := \
-	androidx.preference_preference \
-	androidx.lifecycle_lifecycle-extensions
 include $(BUILD_PACKAGE)
