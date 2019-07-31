@@ -17,19 +17,14 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE_TAGS := optional
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    commons-io:../../libs/commons-io-2.6.jar
-include $(BUILD_MULTI_PREBUILT)
 
-include $(CLEAR_VARS)
-LOCAL_PACKAGE_NAME := Backup
-LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := permissions_com.stevesoltys.backup.xml whitelist_com.stevesoltys.backup.xml
-LOCAL_PRIVILEGED_MODULE := true
-LOCAL_PRIVATE_PLATFORM_APIS := true
+backup_root := $(LOCAL_PATH)
+
+$(backup_root)/Backup.apk:
+	cd $(backup_root) && ./download.sh
+
+LOCAL_MODULE := Backup
+LOCAL_SRC_FILES := Backup.apk
 LOCAL_CERTIFICATE := platform
-LOCAL_STATIC_JAVA_LIBRARIES := commons-io
-LOCAL_SRC_FILES := $(call all-java-files-under, java)
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
-include $(BUILD_PACKAGE)
+LOCAL_MODULE_CLASS := APPS
+include $(BUILD_PREBUILT)
