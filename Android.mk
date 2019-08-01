@@ -28,5 +28,6 @@ LOCAL_SRC_FILES := Backup.apk
 LOCAL_CERTIFICATE := platform
 LOCAL_MODULE_CLASS := APPS
 LOCAL_PRIVILEGED_MODULE := true
+LOCAL_DEX_PREOPT := false
 LOCAL_REQUIRED_MODULES := permissions_com.stevesoltys.backup.xml whitelist_com.stevesoltys.backup.xml
 include $(BUILD_PREBUILT)
