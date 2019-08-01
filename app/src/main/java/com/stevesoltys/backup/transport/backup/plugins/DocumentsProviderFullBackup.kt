@@ -23,9 +23,9 @@ class DocumentsProviderFullBackup(
     }
 
     @Throws(IOException::class)
-    override fun cancelFullBackup(targetPackage: PackageInfo) {
-        val packageName = targetPackage.packageName
-        Log.i(TAG, "Deleting $packageName due to canceled backup...")
+    override fun removeDataOfPackage(packageInfo: PackageInfo) {
+        val packageName = packageInfo.packageName
+        Log.i(TAG, "Deleting $packageName...")
         val file = storage.defaultFullBackupDir?.findFile(packageName) ?: return
         if (!file.delete()) throw IOException("Failed to delete $packageName")
     }

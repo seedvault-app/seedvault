@@ -152,7 +152,7 @@ class FullBackup(
     }
 
     fun clearBackupData(packageInfo: PackageInfo) {
-        // TODO
+        plugin.removeDataOfPackage(packageInfo)
     }
 
     fun cancelFullBackup() {
@@ -160,7 +160,7 @@ class FullBackup(
         val state = this.state ?: throw AssertionError("No state when canceling")
         clearState()
         try {
-            plugin.cancelFullBackup(state.packageInfo)
+            plugin.removeDataOfPackage(state.packageInfo)
         } catch (e: IOException) {
             Log.w(TAG, "Error cancelling full backup for ${state.packageName}", e)
         }

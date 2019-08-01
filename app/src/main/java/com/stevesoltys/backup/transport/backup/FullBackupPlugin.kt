@@ -12,7 +12,10 @@ interface FullBackupPlugin {
     @Throws(IOException::class)
     fun getOutputStream(targetPackage: PackageInfo): OutputStream
 
+    /**
+     * Remove all data associated with the given package.
+     */
     @Throws(IOException::class)
-    fun cancelFullBackup(targetPackage: PackageInfo)
+    fun removeDataOfPackage(packageInfo: PackageInfo)
 
 }

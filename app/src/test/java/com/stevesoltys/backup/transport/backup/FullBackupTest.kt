@@ -175,10 +175,17 @@ internal class FullBackupTest : BackupTest() {
     }
 
     @Test
+    fun `clearBackupData delegates to plugin`() {
+        every { plugin.removeDataOfPackage(packageInfo) } just Runs
+
+        backup.clearBackupData(packageInfo)
+    }
+
+    @Test
     fun `cancel full backup runs ok`() {
         expectPerformFullBackup()
         expectClearState()
-        every { plugin.cancelFullBackup(packageInfo) } just Runs
+        every { plugin.removeDataOfPackage(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
         assertTrue(backup.hasState())
@@ -190,7 +197,7 @@ internal class FullBackupTest : BackupTest() {
     fun `cancel full backup ignores exception when calling plugin`() {
         expectPerformFullBackup()
         expectClearState()
-        every { plugin.cancelFullBackup(packageInfo) } throws IOException()
+        every { plugin.removeDataOfPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
         assertTrue(backup.hasState())
