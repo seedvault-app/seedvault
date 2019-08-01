@@ -48,16 +48,3 @@ fun setBackupPassword(context: Context, password: String) {
 fun getBackupPassword(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null)
 }
-
-@Deprecated("Our own scheduling will be removed")
-fun setBackupsScheduled(context: Context) {
-    getDefaultSharedPreferences(context)
-            .edit()
-            .putBoolean(PREF_KEY_BACKUPS_SCHEDULED, true)
-            .apply()
-}
-
-@Deprecated("Our own scheduling will be removed")
-fun areBackupsScheduled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(PREF_KEY_BACKUPS_SCHEDULED, false)
-}

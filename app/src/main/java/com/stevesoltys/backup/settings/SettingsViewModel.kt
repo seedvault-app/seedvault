@@ -9,8 +9,8 @@ import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.LiveEvent
 import com.stevesoltys.backup.MutableLiveEvent
-import com.stevesoltys.backup.service.backup.requestFullBackup
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
+import com.stevesoltys.backup.transport.requestBackup
 
 private val TAG = SettingsViewModel::class.java.simpleName
 
@@ -54,6 +54,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         Log.d(TAG, "New storage location chosen: $folderUri")
     }
 
-    fun backupNow() = Thread { requestFullBackup(app) }.start()
+    fun backupNow() = Thread { requestBackup(app) }.start()
 
 }

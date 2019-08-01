@@ -12,7 +12,7 @@ class KeyManagerTestImpl : KeyManager {
     }
 
     override fun storeBackupKey(seed: ByteArray) {
-        TODO("not implemented")
+        throw NotImplementedError("not implemented")
     }
 
     override fun hasBackupKey(): Boolean {
