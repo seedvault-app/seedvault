@@ -8,6 +8,7 @@ interface FullBackupPlugin {
 
     fun getQuota(): Long
 
+    // TODO consider using a salted hash for the package name to not leak it to the storage server
     @Throws(IOException::class)
     fun getOutputStream(targetPackage: PackageInfo): OutputStream
 

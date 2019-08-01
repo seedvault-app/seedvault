@@ -14,7 +14,9 @@
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- This is needed to retrieve the serial number of the device,
+         so we can store the backups for each device in a unique location -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".Backup"
@@ -35,7 +37,7 @@
 
         <activity
             android:name="com.stevesoltys.backup.activity.MainActivity"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name" />
 
         <activity
             android:name="com.stevesoltys.backup.activity.backup.CreateBackupActivity"

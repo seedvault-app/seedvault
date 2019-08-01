@@ -1,5 +1,6 @@
 package com.stevesoltys.backup.header
 
+import com.stevesoltys.backup.Utf8
 import com.stevesoltys.backup.assertContains
 import com.stevesoltys.backup.getRandomString
 import org.junit.jupiter.api.Assertions.*

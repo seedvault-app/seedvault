@@ -3,9 +3,9 @@ package com.stevesoltys.backup.transport.restore
 import android.app.backup.BackupDataOutput
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import com.stevesoltys.backup.encodeBase64
 import com.stevesoltys.backup.getRandomByteArray
 import com.stevesoltys.backup.header.UnsupportedVersionException
-import com.stevesoltys.backup.header.Utf8
 import com.stevesoltys.backup.header.VERSION
 import com.stevesoltys.backup.header.VersionHeader
 import io.mockk.*
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.io.InputStream
-import java.util.Base64.getUrlEncoder
 import kotlin.random.Random
 
 internal class KVRestoreTest : RestoreTest() {
@@ -24,10 +23,10 @@ internal class KVRestoreTest : RestoreTest() {
     private val restore = KVRestore(plugin, outputFactory, headerReader, crypto)
 
     private val key = "Restore Key"
-    private val key64 = getUrlEncoder().withoutPadding().encodeToString(key.toByteArray(Utf8))
+    private val key64 = key.encodeBase64()
     private val versionHeader = VersionHeader(VERSION, packageInfo.packageName, key)
     private val key2 = "Restore Key2"
-    private val key264 = getUrlEncoder().withoutPadding().encodeToString(key2.toByteArray(Utf8))
+    private val key264 = key2.encodeBase64()
     private val versionHeader2 = VersionHeader(VERSION, packageInfo.packageName, key2)
 
     @Test

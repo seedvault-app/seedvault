@@ -7,12 +7,12 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.crypto.Crypto
+import com.stevesoltys.backup.decodeBase64
 import com.stevesoltys.backup.header.HeaderReader
 import com.stevesoltys.backup.header.UnsupportedVersionException
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.util.*
-import java.util.Base64.getUrlDecoder
 
 private class KVRestoreState(
         internal val token: Long,
@@ -132,7 +132,7 @@ internal class KVRestore(
     }
 
     private class DecodedKey(internal val base64Key: String) : Comparable<DecodedKey> {
-        internal val key = String(getUrlDecoder().decode(base64Key))
+        internal val key = base64Key.decodeBase64()
 
         override fun compareTo(other: DecodedKey) = key.compareTo(other.key)
     }

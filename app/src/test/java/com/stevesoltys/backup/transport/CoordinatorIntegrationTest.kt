@@ -10,17 +10,16 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.backup.crypto.CipherFactoryImpl
 import com.stevesoltys.backup.crypto.CryptoImpl
 import com.stevesoltys.backup.crypto.KeyManagerTestImpl
-import com.stevesoltys.backup.transport.backup.*
+import com.stevesoltys.backup.encodeBase64
 import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
-import com.stevesoltys.backup.header.Utf8
+import com.stevesoltys.backup.transport.backup.*
 import com.stevesoltys.backup.transport.restore.*
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.util.*
 import kotlin.random.Random
 
 internal class CoordinatorIntegrationTest : TransportTest() {
@@ -53,9 +52,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
     private val key = "RestoreKey"
-    private val key64 = Base64.getUrlEncoder().withoutPadding().encodeToString(key.toByteArray(Utf8))
+    private val key64 = key.encodeBase64()
     private val key2 = "RestoreKey2"
-    private val key264 = Base64.getUrlEncoder().withoutPadding().encodeToString(key2.toByteArray(Utf8))
+    private val key264 = key2.encodeBase64()
 
     init {
         every { backupPlugin.kvBackupPlugin } returns kvBackupPlugin

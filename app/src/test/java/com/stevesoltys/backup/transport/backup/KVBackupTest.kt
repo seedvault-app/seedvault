@@ -2,9 +2,9 @@ package com.stevesoltys.backup.transport.backup
 
 import android.app.backup.BackupDataInput
 import android.app.backup.BackupTransport.*
+import com.stevesoltys.backup.Utf8
 import com.stevesoltys.backup.getRandomString
 import com.stevesoltys.backup.header.MAX_KEY_LENGTH_SIZE
-import com.stevesoltys.backup.header.Utf8
 import com.stevesoltys.backup.header.VersionHeader
 import io.mockk.Runs
 import io.mockk.every

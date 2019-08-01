@@ -5,12 +5,11 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.crypto.Crypto
+import com.stevesoltys.backup.encodeBase64
 import com.stevesoltys.backup.header.HeaderWriter
-import com.stevesoltys.backup.header.Utf8
 import com.stevesoltys.backup.header.VersionHeader
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
-import java.util.Base64.getUrlEncoder
 
 class KVBackupState(internal val packageName: String)
 
@@ -139,7 +138,7 @@ class KVBackup(
             }
             // encode key
             val key = changeSet.key
-            val base64Key = getUrlEncoder().withoutPadding().encodeToString(key.toByteArray(Utf8))
+            val base64Key = key.encodeBase64()
             val dataSize = changeSet.dataSize
 
             // read and encrypt value

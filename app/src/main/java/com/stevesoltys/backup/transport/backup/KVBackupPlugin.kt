@@ -11,6 +11,7 @@ interface KVBackupPlugin {
      */
     fun getQuota(): Long
 
+    // TODO consider using a salted hash for the package name (and key) to not leak it to the storage server
     /**
      * Return true if there are records stored for the given package.
      */

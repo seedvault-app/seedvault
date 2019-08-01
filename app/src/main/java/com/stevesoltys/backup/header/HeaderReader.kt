@@ -1,5 +1,6 @@
 package com.stevesoltys.backup.header
 
+import com.stevesoltys.backup.Utf8
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream

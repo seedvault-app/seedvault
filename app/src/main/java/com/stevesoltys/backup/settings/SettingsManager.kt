@@ -5,8 +5,8 @@ import android.net.Uri
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 
 private const val PREF_KEY_BACKUP_URI = "backupUri"
+private const val PREF_KEY_DEVICE_NAME = "deviceName"
 private const val PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword"
-private const val PREF_KEY_BACKUPS_SCHEDULED = "backupsScheduled"
 
 fun setBackupFolderUri(context: Context, uri: Uri) {
     getDefaultSharedPreferences(context)
@@ -19,6 +19,17 @@ fun getBackupFolderUri(context: Context): Uri? {
     val uriStr = getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_URI, null)
             ?: return null
     return Uri.parse(uriStr)
+}
+
+fun setDeviceName(context: Context, name: String) {
+    getDefaultSharedPreferences(context)
+            .edit()
+            .putString(PREF_KEY_DEVICE_NAME, name)
+            .apply()
+}
+
+fun getDeviceName(context: Context): String? {
+    return getDefaultSharedPreferences(context).getString(PREF_KEY_DEVICE_NAME, null)
 }
 
 /**
@@ -38,6 +49,7 @@ fun getBackupPassword(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null)
 }
 
+@Deprecated("Our own scheduling will be removed")
 fun setBackupsScheduled(context: Context) {
     getDefaultSharedPreferences(context)
             .edit()
@@ -45,6 +57,7 @@ fun setBackupsScheduled(context: Context) {
             .apply()
 }
 
+@Deprecated("Our own scheduling will be removed")
 fun areBackupsScheduled(context: Context): Boolean {
     return getDefaultSharedPreferences(context).getBoolean(PREF_KEY_BACKUPS_SCHEDULED, false)
 }

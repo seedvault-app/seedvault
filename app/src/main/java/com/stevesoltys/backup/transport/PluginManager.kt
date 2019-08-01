@@ -1,13 +1,13 @@
 package com.stevesoltys.backup.transport
 
 import android.content.Context
-import android.os.Build
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.crypto.CipherFactoryImpl
 import com.stevesoltys.backup.crypto.CryptoImpl
 import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
 import com.stevesoltys.backup.settings.getBackupFolderUri
+import com.stevesoltys.backup.settings.getDeviceName
 import com.stevesoltys.backup.transport.backup.BackupCoordinator
 import com.stevesoltys.backup.transport.backup.FullBackup
 import com.stevesoltys.backup.transport.backup.InputFactory
@@ -24,7 +24,7 @@ class PluginManager(context: Context) {
 
     // We can think about using an injection framework such as Dagger to simplify this.
 
-    private val storage = DocumentsStorage(context, getBackupFolderUri(context), getDeviceName())
+    private val storage = DocumentsStorage(context, getBackupFolderUri(context), getDeviceName(context)!!)
 
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
@@ -46,11 +46,5 @@ class PluginManager(context: Context) {
     private val fullRestore = FullRestore(restorePlugin.fullRestorePlugin, outputFactory, headerReader, crypto)
 
     internal val restoreCoordinator = RestoreCoordinator(restorePlugin, kvRestore, fullRestore)
-
-
-    private fun getDeviceName(): String {
-        // TODO add device specific unique ID to the end
-        return "${Build.MANUFACTURER} ${Build.MODEL}"
-    }
 
 }
