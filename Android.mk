@@ -27,4 +27,5 @@ LOCAL_MODULE := Backup
 LOCAL_SRC_FILES := Backup.apk
 LOCAL_CERTIFICATE := platform
 LOCAL_MODULE_CLASS := APPS
+LOCAL_REQUIRED_MODULES := permissions_com.stevesoltys.backup.xml whitelist_com.stevesoltys.backup.xml
 include $(BUILD_PREBUILT)
