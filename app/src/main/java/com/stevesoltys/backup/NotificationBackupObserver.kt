@@ -2,7 +2,7 @@ package com.stevesoltys.backup
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.NotificationManager.IMPORTANCE_MIN
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
@@ -25,7 +25,7 @@ class NotificationBackupObserver(
     private val pm = context.packageManager
     private val nm = context.getSystemService(NotificationManager::class.java).apply {
         val title = context.getString(R.string.notification_channel_title)
-        val channel = NotificationChannel(CHANNEL_ID, title, IMPORTANCE_MIN).apply {
+        val channel = NotificationChannel(CHANNEL_ID, title, IMPORTANCE_LOW).apply {
             enableVibration(false)
         }
         createNotificationChannel(channel)
