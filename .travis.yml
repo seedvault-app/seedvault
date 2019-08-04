@@ -25,6 +25,10 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
+before_deploy:
+  - git config --local user.name "Steve Soltys"
+  - git config --local user.email "github@stevesoltys.com"
+  - if ! [[ $TRAVIS_TAG ]]; then git tag $(git rev-parse --short HEAD); fi
 deploy:
   provider: releases
   api_key:
@@ -33,5 +37,5 @@ deploy:
     - app/build/outputs/apk/release/app-release-unsigned.apk
   on:
     repo: stevesoltys/backup
-    tags: true
+    all_branches: true
   skip_cleanup: true

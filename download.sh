@@ -4,7 +4,7 @@
 
 BASE_URL="https://github.com/stevesoltys/backup/releases"
 APK="app-release-unsigned.apk"
-VERSION="latest/download"
+VERSION=$(git rev-parse --short HEAD)
 TAG=$(git tag -l --points-at HEAD)
 
 if [ ! -z ${TAG} ]; then
