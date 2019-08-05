@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.backup.BackupProgress
+import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.IBackupObserver
 import android.content.Context
 import android.util.Log
@@ -14,7 +15,7 @@ import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_LOW
 
 private const val CHANNEL_ID = "NotificationBackupObserver"
-private const val NOTIFICATION_ID = 1
+private const val NOTIFICATION_ID = 1042
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
@@ -70,10 +71,11 @@ class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
-        val title = context.getString(
-                if (status == 0) R.string.notification_backup_result_complete
-                else R.string.notification_backup_result_error
-        )
+        val title = context.getString(when (status) {
+            0 -> R.string.notification_backup_result_complete
+            TRANSPORT_PACKAGE_REJECTED -> R.string.notification_backup_result_rejected
+            else -> R.string.notification_backup_result_error
+        })
         val notification = notificationBuilder.apply {
             setContentTitle(title)
             setContentText(getAppName(target))
