@@ -12,6 +12,7 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 28
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -108,4 +109,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
     testImplementation 'io.mockk:mockk:1.9.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
 }

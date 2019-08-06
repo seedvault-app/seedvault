@@ -21,7 +21,7 @@ class DocumentsProviderBackupPlugin(
     @Throws(IOException::class)
     override fun initializeDevice() {
         // get or create root backup dir
-        val rootDir = storage.rootBackupDir ?: throw IOException()
+        storage.rootBackupDir ?: throw IOException()
 
         // create backup folders
         val kvDir = storage.defaultKvBackupDir
