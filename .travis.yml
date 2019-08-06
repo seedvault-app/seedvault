@@ -25,10 +25,10 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
-before_deploy:
-  - git config --local user.name "Steve Soltys"
-  - git config --local user.email "github@stevesoltys.com"
-  - if ! [[ $TRAVIS_TAG ]]; then git tag $(git rev-parse --short HEAD); fi
+#before_deploy:
+#  - git config --local user.name "Steve Soltys"
+#  - git config --local user.email "github@stevesoltys.com"
+#  - if ! [[ $TRAVIS_TAG ]]; then git tag $(git rev-parse --short HEAD); fi
 deploy:
   provider: releases
   api_key:

@@ -21,7 +21,7 @@ include $(CLEAR_VARS)
 backup_root := $(LOCAL_PATH)
 
 $(backup_root)/Backup.apk:
-	cd $(backup_root) && ./download.sh
+    curl -L https://github.com/stevesoltys/backup/releases/download/76bb8cd/app-release-unsigned.apk > $(backup_root)/Backup.apk
 
 LOCAL_MODULE := Backup
 LOCAL_SRC_FILES := Backup.apk
