@@ -37,6 +37,15 @@ android {
         }
     }
 
+    sourceSets {
+        test {
+            java.srcDirs += "$projectDir/src/sharedTest/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/sharedTest/java"
+        }
+    }
+
     // optional signingConfigs
     def keystorePropertiesFile = rootProject.file("keystore.properties")
     if (keystorePropertiesFile.exists()) {

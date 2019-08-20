@@ -17,7 +17,7 @@ import kotlin.random.Random
 private const val filename = "test-file"
 
 @RunWith(AndroidJUnit4::class)
-class AndroidUnitTest {
+class DocumentsStorageTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val folderUri = getBackupFolderUri(context)

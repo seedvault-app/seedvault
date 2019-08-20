@@ -1,11 +1,9 @@
 package com.stevesoltys.backup
 
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.fail
 import kotlin.random.Random
 
 fun assertContains(stack: String?, needle: String) {
-    assertTrue(stack?.contains(needle) ?: fail())
+    if (stack?.contains(needle) != true) throw AssertionError()
 }
 
 fun getRandomByteArray(size: Int = Random.nextInt(1337)) = ByteArray(size).apply {
