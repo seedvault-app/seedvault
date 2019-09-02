@@ -7,6 +7,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.backup.BackupNotificationManager
 import com.stevesoltys.backup.crypto.CipherFactoryImpl
 import com.stevesoltys.backup.crypto.CryptoImpl
 import com.stevesoltys.backup.crypto.KeyManagerTestImpl
@@ -37,7 +38,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvBackup = KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
-    private val backup = BackupCoordinator(backupPlugin, kvBackup, fullBackup)
+    private val notificationManager = mockk<BackupNotificationManager>()
+    private val backup = BackupCoordinator(backupPlugin, kvBackup, fullBackup, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()

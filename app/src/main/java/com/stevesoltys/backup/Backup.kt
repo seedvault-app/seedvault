@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.backup.IBackupManager
 import android.content.Context.BACKUP_SERVICE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.net.Uri
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.util.Log
@@ -13,6 +14,8 @@ import com.stevesoltys.backup.crypto.KeyManagerImpl
 import com.stevesoltys.backup.settings.getDeviceName
 import com.stevesoltys.backup.settings.setDeviceName
 import io.github.novacrypto.hashing.Sha256.sha256Twice
+
+private const val URI_AUTHORITY_EXTERNAL_STORAGE = "com.android.externalstorage.documents"
 
 private val TAG = Backup::class.java.simpleName
 
@@ -29,6 +32,10 @@ class Backup : Application() {
         val keyManager: KeyManager by lazy {
             KeyManagerImpl()
         }
+    }
+
+    val notificationManager by lazy {
+        BackupNotificationManager(this)
     }
 
     override fun onCreate() {
@@ -53,3 +60,5 @@ class Backup : Application() {
     }
 
 }
+
+fun Uri.isOnExternalStorage() = authority == URI_AUTHORITY_EXTERNAL_STORAGE

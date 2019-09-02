@@ -36,8 +36,9 @@ class PluginManager(context: Context) {
     private val inputFactory = InputFactory()
     private val kvBackup = KVBackup(backupPlugin.kvBackupPlugin, inputFactory, headerWriter, crypto)
     private val fullBackup = FullBackup(backupPlugin.fullBackupPlugin, inputFactory, headerWriter, crypto)
+    private val notificationManager = (context.applicationContext as Backup).notificationManager
 
-    internal val backupCoordinator = BackupCoordinator(backupPlugin, kvBackup, fullBackup)
+    internal val backupCoordinator = BackupCoordinator(backupPlugin, kvBackup, fullBackup, notificationManager)
 
 
     private val restorePlugin = DocumentsProviderRestorePlugin(storage)

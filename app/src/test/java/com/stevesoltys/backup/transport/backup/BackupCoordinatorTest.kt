@@ -2,6 +2,7 @@ package com.stevesoltys.backup.transport.backup
 
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import com.stevesoltys.backup.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -17,8 +18,9 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
+    private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(plugin, kv, full)
+    private val backup = BackupCoordinator(plugin, kv, full, notificationManager)
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
@@ -33,6 +35,7 @@ internal class BackupCoordinatorTest: BackupTest() {
     @Test
     fun `device initialization fails`() {
         every { plugin.initializeDevice() } throws IOException()
+        every { notificationManager.onBackupError() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
 

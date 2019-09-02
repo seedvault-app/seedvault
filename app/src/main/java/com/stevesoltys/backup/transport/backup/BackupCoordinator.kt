@@ -5,6 +5,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.backup.BackupNotificationManager
 import java.io.IOException
 
 private val TAG = BackupCoordinator::class.java.simpleName
@@ -16,7 +17,8 @@ private val TAG = BackupCoordinator::class.java.simpleName
 class BackupCoordinator(
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
-        private val full: FullBackup) {
+        private val full: FullBackup,
+        private val nm: BackupNotificationManager) {
 
     private var calledInitialize = false
     private var calledClearBackupData = false
@@ -53,6 +55,7 @@ class BackupCoordinator(
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error initializing device", e)
+            nm.onBackupError()
             TRANSPORT_ERROR
         }
     }

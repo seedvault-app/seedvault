@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.LiveEventHandler
 import com.stevesoltys.backup.R
 
@@ -25,8 +26,8 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
-        viewModel.onLocationSet.observeEvent(this, LiveEventHandler { wasEmptyBefore ->
-            if (wasEmptyBefore) showFragment(SettingsFragment())
+        viewModel.onLocationSet.observeEvent(this, LiveEventHandler { initialSetUp ->
+            if (initialSetUp) showFragment(SettingsFragment())
             else supportFragmentManager.popBackStack()
         })
         viewModel.chooseBackupLocation.observeEvent(this, LiveEventHandler { show ->
@@ -54,8 +55,10 @@ class SettingsActivity : AppCompatActivity() {
         // check that backup is provisioned
         if (!viewModel.recoveryCodeIsSet()) {
             showRecoveryCodeActivity()
-        } else if (!viewModel.locationIsSet()) {
+        } else if (!viewModel.validLocationIsSet()) {
             showFragment(BackupLocationFragment())
+            // remove potential error notifications
+            (application as Backup).notificationManager.onBackupErrorSeen()
         }
     }
 
