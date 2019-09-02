@@ -110,6 +110,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     }
 
     override fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor): Int {
+        Log.w(TAG, "Warning: Legacy performFullBackup() method called.")
         return backupCoordinator.performFullBackup(targetPackage, fileDescriptor, 0)
     }
 

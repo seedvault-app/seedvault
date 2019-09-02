@@ -16,7 +16,6 @@ class DocumentsProviderFullBackup(
 
     @Throws(IOException::class)
     override fun getOutputStream(targetPackage: PackageInfo): OutputStream {
-        // TODO test file-size after overwriting bigger file
         val file = storage.defaultFullBackupDir?.createOrGetFile(targetPackage.packageName)
                 ?: throw IOException()
         return storage.getOutputStream(file)

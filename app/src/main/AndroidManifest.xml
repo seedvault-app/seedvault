@@ -48,7 +48,7 @@
             android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
 
         <service
-            android:name="com.stevesoltys.backup.transport.ConfigurableBackupTransportService"
+            android:name=".transport.ConfigurableBackupTransportService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.backup.TRANSPORT_HOST" />

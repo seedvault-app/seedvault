@@ -32,18 +32,6 @@ fun getDeviceName(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_DEVICE_NAME, null)
 }
 
-/**
- * This is insecure and not supposed to be part of a release,
- * but rather an intermediate step towards a generated passphrase.
- */
-@Deprecated("Replaced by KeyManager#storeBackupKey()")
-fun setBackupPassword(context: Context, password: String) {
-    getDefaultSharedPreferences(context)
-            .edit()
-            .putString(PREF_KEY_BACKUP_PASSWORD, password)
-            .apply()
-}
-
 @Deprecated("Replaced by KeyManager#getBackupKey()")
 fun getBackupPassword(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null)

@@ -46,7 +46,6 @@ class DocumentsProviderKVBackup(private val storage: DocumentsStorage) : KVBacku
     override fun getOutputStreamForRecord(packageInfo: PackageInfo, key: String): OutputStream {
         val packageFile = this.packageFile ?: throw AssertionError()
         packageFile.assertRightFile(packageInfo)
-        // TODO check what happens if we overwrite a bigger file
         val keyFile = packageFile.createOrGetFile(key)
         return storage.getOutputStream(keyFile)
     }

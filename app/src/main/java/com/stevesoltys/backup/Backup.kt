@@ -1,6 +1,5 @@
 package com.stevesoltys.backup
 
-import android.Manifest
 import android.Manifest.permission.READ_PHONE_STATE
 import android.app.Application
 import android.app.backup.IBackupManager
@@ -13,12 +12,7 @@ import com.stevesoltys.backup.crypto.KeyManager
 import com.stevesoltys.backup.crypto.KeyManagerImpl
 import com.stevesoltys.backup.settings.getDeviceName
 import com.stevesoltys.backup.settings.setDeviceName
-import io.github.novacrypto.hashing.Sha256
-import io.github.novacrypto.hashing.Sha256.sha256
 import io.github.novacrypto.hashing.Sha256.sha256Twice
-import java.lang.AssertionError
-
-const val JOB_ID_BACKGROUND_BACKUP = 1
 
 private val TAG = Backup::class.java.simpleName
 
