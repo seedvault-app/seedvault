@@ -46,7 +46,7 @@ internal class RestoreCoordinator(
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
     fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
-        if (state != null) throw IllegalStateException()
+        check(state == null)
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
         state = RestoreCoordinatorState(token, packages.iterator())
         return TRANSPORT_OK

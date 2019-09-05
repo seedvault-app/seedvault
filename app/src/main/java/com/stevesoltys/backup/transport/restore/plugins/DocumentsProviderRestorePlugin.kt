@@ -7,19 +7,26 @@ import com.stevesoltys.backup.transport.restore.FullRestorePlugin
 import com.stevesoltys.backup.transport.restore.KVRestorePlugin
 import com.stevesoltys.backup.transport.restore.RestorePlugin
 
-class DocumentsProviderRestorePlugin(
-        private val documentsStorage: DocumentsStorage) : RestorePlugin {
+class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : RestorePlugin {
 
     override val kvRestorePlugin: KVRestorePlugin by lazy {
-        DocumentsProviderKVRestorePlugin(documentsStorage)
+        DocumentsProviderKVRestorePlugin(storage)
     }
 
     override val fullRestorePlugin: FullRestorePlugin by lazy {
-        DocumentsProviderFullRestorePlugin(documentsStorage)
+        DocumentsProviderFullRestorePlugin(storage)
     }
 
     override fun getAvailableRestoreSets(): Array<RestoreSet>? {
-        return arrayOf(RestoreSet("default", "device", DEFAULT_RESTORE_SET_TOKEN))
+        val rootDir = storage.rootBackupDir ?: return null
+        val restoreSets = ArrayList<RestoreSet>()
+        for (file in rootDir.listFiles()) {
+            if (file.isDirectory && file.findFile(DEFAULT_RESTORE_SET_TOKEN.toString()) != null) {
+                // TODO include time of last backup
+                file.name?.let { restoreSets.add(RestoreSet(it, it, DEFAULT_RESTORE_SET_TOKEN)) }
+            }
+        }
+        return restoreSets.toTypedArray()
     }
 
     override fun getCurrentRestoreSet(): Long {
