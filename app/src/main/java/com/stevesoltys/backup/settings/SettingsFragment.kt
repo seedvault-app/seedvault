@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.settings
 
 import android.content.Context.BACKUP_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
@@ -17,6 +18,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.restore.RestoreActivity
 
 private val TAG = SettingsFragment::class.java.name
 
@@ -100,7 +102,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         item.itemId == R.id.action_restore -> {
-            Toast.makeText(requireContext(), "Not yet implemented", LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), RestoreActivity::class.java))
             true
         }
         else -> super.onOptionsItemSelected(item)

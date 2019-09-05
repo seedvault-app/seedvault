@@ -1,10 +1,9 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import com.stevesoltys.backup.LiveEventHandler
 import com.stevesoltys.backup.R
 
 class RecoveryCodeActivity : AppCompatActivity() {

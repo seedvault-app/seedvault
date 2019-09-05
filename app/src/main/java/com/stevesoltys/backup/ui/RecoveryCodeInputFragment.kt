@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui
 
 import android.os.Build
 import android.os.Bundle
@@ -57,7 +57,7 @@ class RecoveryCodeInputFragment : Fragment() {
     }
 
     private fun allFilledOut(input: List<CharSequence>): Boolean {
-        for (i in 0 until input.size) {
+        for (i in input.indices) {
             if (input[i].isNotEmpty()) continue
             showError(i, getString(R.string.recovery_code_error_empty_word))
             return false
@@ -96,7 +96,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     private fun debugPreFill() {
         val words = viewModel.wordList
-        for (i in 0 until words.size) {
+        for (i in words.indices) {
             getWordLayout(i).editText!!.setText(words[i])
         }
     }

@@ -1,10 +1,8 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.backup.Backup
-import com.stevesoltys.backup.LiveEvent
-import com.stevesoltys.backup.MutableLiveEvent
 import io.github.novacrypto.bip39.*
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException

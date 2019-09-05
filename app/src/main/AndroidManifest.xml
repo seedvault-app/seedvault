@@ -32,8 +32,19 @@
             android:exported="true" />
 
         <activity
-            android:name=".settings.RecoveryCodeActivity"
+            android:name=".ui.RecoveryCodeActivity"
             android:label="@string/recovery_code_title" />
+
+        <activity
+            android:name=".restore.RestoreActivity"
+            android:exported="true"
+            android:label="@string/restore_title"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="com.stevesoltys.backup.restore.RESTORE_BACKUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.stevesoltys.backup.activity.MainActivity"

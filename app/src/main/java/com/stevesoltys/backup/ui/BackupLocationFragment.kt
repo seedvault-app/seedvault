@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
@@ -12,8 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.stevesoltys.backup.R
-
-private val TAG = BackupLocationFragment::class.java.name
+import com.stevesoltys.backup.settings.SettingsViewModel
 
 class BackupLocationFragment : PreferenceFragmentCompat() {
 

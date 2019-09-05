@@ -29,6 +29,7 @@
     <string name="settings_backup_location_picker">Choose backup location</string>
     <string name="settings_backup_location_title">Backup Location</string>
     <string name="settings_backup_location_info">Choose where to store your backups. More options might get added in the future.</string>
+    <string name="settings_backup_location_invalid">The chosen location can not be used.</string>
     <string name="settings_backup_external_storage">External Storage</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
@@ -69,5 +70,12 @@
     <string name="notification_error_title">Backup Error</string>
     <string name="notification_error_text">A device backup failed to run.</string>
     <string name="notification_error_action">Fix</string>
+
+    <!-- Restore -->
+    <string name="restore_title">Restore from Backup</string>
+    <string name="restore_choose_restore_set">Choose a backup to restore</string>
+    <string name="restore_back">Don\'t restore</string>
+    <string name="restore_set_error">An error occurred loading the backups.</string>
+    <string name="restore_set_empty_result">No backups found at given location.</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
