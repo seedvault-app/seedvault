@@ -13,6 +13,7 @@ import java.security.SecureRandom
 import java.util.*
 
 internal const val WORD_NUM = 12
+internal const val WORD_LIST_SIZE = 2048
 
 class RecoveryCodeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -32,6 +33,8 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
 
     private val mRecoveryCodeSaved = MutableLiveEvent<Boolean>()
     internal val recoveryCodeSaved: LiveEvent<Boolean> = mRecoveryCodeSaved
+
+    internal var isRestore: Boolean = false
 
     @Throws(WordNotFoundException::class, InvalidChecksumException::class)
     fun validateAndContinue(input: List<CharSequence>) {

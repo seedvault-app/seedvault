@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
 
+internal const val INTENT_EXTRA_IS_RESTORE = "isRestore"
+
 class RecoveryCodeActivity : AppCompatActivity() {
 
     private lateinit var viewModel: RecoveryCodeViewModel
@@ -16,14 +18,9 @@ class RecoveryCodeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_recovery_code)
 
         viewModel = ViewModelProviders.of(this).get(RecoveryCodeViewModel::class.java)
+        viewModel.isRestore = isRestore()
         viewModel.confirmButtonClicked.observeEvent(this, LiveEventHandler { clicked ->
-            if (clicked) {
-                val tag = "Confirm"
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment, RecoveryCodeInputFragment(), tag)
-                        .addToBackStack(tag)
-                        .commit()
-            }
+            if (clicked) showInput(true)
         })
         viewModel.recoveryCodeSaved.observeEvent(this, LiveEventHandler { saved ->
             if (saved) {
@@ -35,9 +32,8 @@ class RecoveryCodeActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment, RecoveryCodeOutputFragment(), "Code")
-                    .commit()
+            if (viewModel.isRestore) showInput(false)
+            else showOutput()
         }
     }
 
@@ -49,6 +45,24 @@ class RecoveryCodeActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showOutput() {
+        supportFragmentManager.beginTransaction()
+                .add(R.id.fragment, RecoveryCodeOutputFragment(), "Code")
+                .commit()
+    }
+
+    private fun showInput(addToBackStack: Boolean) {
+        val tag = "Confirm"
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, RecoveryCodeInputFragment(), tag)
+        if (addToBackStack) fragmentTransaction.addToBackStack(tag)
+        fragmentTransaction.commit()
+    }
+
+    private fun isRestore(): Boolean {
+        return intent?.getBooleanExtra(INTENT_EXTRA_IS_RESTORE, false) ?: false
     }
 
 }

@@ -19,10 +19,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput2" />
@@ -40,10 +41,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout1">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput3" />
@@ -61,10 +63,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout2">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput4" />
@@ -82,10 +85,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout3">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput5" />
@@ -103,10 +107,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout4">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput6" />
@@ -124,10 +129,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout5">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput7" />
@@ -146,10 +152,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput8" />
@@ -167,10 +174,11 @@
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout7">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput9" />
@@ -188,10 +196,11 @@
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout8">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput10" />
@@ -209,10 +218,11 @@
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout9">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput11" />
@@ -230,10 +240,11 @@
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout10">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete"
             android:nextFocusForward="@+id/wordInput12" />
@@ -251,10 +262,11 @@
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
         app:layout_constraintTop_toBottomOf="@+id/wordLayout11">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:imeOptions="actionDone|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete" />
 

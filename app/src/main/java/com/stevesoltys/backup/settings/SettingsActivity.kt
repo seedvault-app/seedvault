@@ -14,6 +14,8 @@ class SettingsActivity : BackupActivity() {
 
     override fun getInitialFragment() = SettingsFragment()
 
+    override fun isRestoreOperation() = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         super.onCreate(savedInstanceState)

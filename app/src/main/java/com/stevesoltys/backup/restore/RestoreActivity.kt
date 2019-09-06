@@ -15,6 +15,8 @@ class RestoreActivity : BackupActivity() {
 
     override fun getInitialFragment() = RestoreSetFragment()
 
+    override fun isRestoreOperation() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(RestoreViewModel::class.java)
         super.onCreate(savedInstanceState)

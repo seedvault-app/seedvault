@@ -27,6 +27,8 @@ abstract class BackupActivity : AppCompatActivity() {
 
     protected abstract fun getInitialFragment(): Fragment
 
+    protected abstract fun isRestoreOperation(): Boolean
+
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +82,7 @@ abstract class BackupActivity : AppCompatActivity() {
 
     private fun showRecoveryCodeActivity() {
         val intent = Intent(this, RecoveryCodeActivity::class.java)
+        intent.putExtra(INTENT_EXTRA_IS_RESTORE, isRestoreOperation())
         startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
     }
 
