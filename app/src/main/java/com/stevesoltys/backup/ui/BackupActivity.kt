@@ -59,7 +59,9 @@ abstract class BackupActivity : AppCompatActivity() {
 
     @CallSuper
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (resultCode != RESULT_OK) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE) {
+            getViewModel().handleChooseFolderResult(result)
+        } else if (resultCode != RESULT_OK) {
             Log.w(TAG, "Error in activity result: $requestCode")
             finishAfterTransition()
         } else {

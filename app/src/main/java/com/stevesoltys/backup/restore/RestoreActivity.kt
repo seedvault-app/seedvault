@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.restore
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.ui.BackupActivity
@@ -20,7 +21,13 @@ class RestoreActivity : BackupActivity() {
 
         setContentView(R.layout.activity_fragment_container)
 
-        if (savedInstanceState == null) showFragment(getInitialFragment())
+        viewModel.chosenRestoreSet.observe(this, Observer { set ->
+            if (set != null) showFragment(RestoreProgressFragment())
+        })
+
+        if (savedInstanceState == null && viewModel.validLocationIsSet()) {
+            showFragment(getInitialFragment())
+        }
     }
 
     override fun onInvalidLocation() {

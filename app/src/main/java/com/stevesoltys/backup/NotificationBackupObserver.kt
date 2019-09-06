@@ -3,6 +3,7 @@ package com.stevesoltys.backup
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
@@ -62,10 +63,12 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
         nm.onBackupFinished()
     }
 
-    private fun getAppName(packageId: String): CharSequence {
-        if (packageId == "@pm@") return packageId
-        val appInfo = pm.getApplicationInfo(packageId, 0)
-        return pm.getApplicationLabel(appInfo)
-    }
+    private fun getAppName(packageId: String): CharSequence = getAppName(pm, packageId)
 
+}
+
+fun getAppName(pm: PackageManager, packageId: String): CharSequence {
+    if (packageId == "@pm@") return packageId
+    val appInfo = pm.getApplicationInfo(packageId, 0)
+    return pm.getApplicationLabel(appInfo)
 }

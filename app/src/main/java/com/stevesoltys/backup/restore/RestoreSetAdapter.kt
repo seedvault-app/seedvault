@@ -34,7 +34,7 @@ internal class RestoreSetAdapter(
         internal fun bind(item: RestoreSet) {
             v.setOnClickListener { listener.onRestoreSetClicked(item) }
             titleView.text = item.name
-            subtitleView.text = item.device
+            subtitleView.text = "Android Backup" // TODO change to backup date when available
         }
 
     }

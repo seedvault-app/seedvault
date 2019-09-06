@@ -62,3 +62,5 @@ class Backup : Application() {
 }
 
 fun Uri.isOnExternalStorage() = authority == URI_AUTHORITY_EXTERNAL_STORAGE
+
+fun isDebugBuild() = Build.TYPE == "userdebug"

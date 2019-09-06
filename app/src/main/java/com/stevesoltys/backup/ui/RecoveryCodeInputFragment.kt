@@ -1,6 +1,5 @@
 package com.stevesoltys.backup.ui
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.isDebugBuild
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import kotlinx.android.synthetic.main.fragment_recovery_code_input.*
@@ -37,7 +37,7 @@ class RecoveryCodeInputFragment : Fragment() {
         }
         doneButton.setOnClickListener { done() }
 
-        if (Build.TYPE == "userdebug") debugPreFill()
+        if (isDebugBuild()) debugPreFill()
     }
 
     private fun getInput(): List<CharSequence> = ArrayList<String>(WORD_NUM).apply {

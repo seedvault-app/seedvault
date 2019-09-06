@@ -13,6 +13,7 @@ import com.stevesoltys.backup.header.UnsupportedVersionException
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.util.*
+import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
         internal val token: Long,
@@ -85,6 +86,9 @@ internal class KVRestore(
             TRANSPORT_ERROR
         } catch (e: UnsupportedVersionException) {
             Log.e(TAG, "Unsupported version in backup: ${e.version}", e)
+            TRANSPORT_ERROR
+        } catch (e: AEADBadTagException) {
+            Log.e(TAG, "Decryption failed", e)
             TRANSPORT_ERROR
         } finally {
             this.state = null

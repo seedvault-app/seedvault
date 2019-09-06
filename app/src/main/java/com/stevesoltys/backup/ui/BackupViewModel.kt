@@ -23,10 +23,10 @@ abstract class BackupViewModel(protected val app: Application) : AndroidViewMode
      * Will be set to true if this is the initial location.
      * It will be false if an existing location was changed.
      */
-    internal val onLocationSet: LiveEvent<LocationResult> = locationWasSet
+    internal val onLocationSet: LiveEvent<LocationResult> get() = locationWasSet
 
     private val mChooseBackupLocation = MutableLiveEvent<Boolean>()
-    internal val chooseBackupLocation: LiveEvent<Boolean> = mChooseBackupLocation
+    internal val chooseBackupLocation: LiveEvent<Boolean> get() = mChooseBackupLocation
     internal fun chooseBackupLocation() = mChooseBackupLocation.setEvent(true)
 
     internal fun recoveryCodeIsSet() = Backup.keyManager.hasBackupKey()
@@ -52,11 +52,11 @@ abstract class BackupViewModel(protected val app: Application) : AndroidViewMode
             // store backup folder location in settings
             setBackupFolderUri(app, folderUri)
 
-            // notify the UI that the location has been set
-            locationWasSet.setEvent(LocationResult(true, initialSetUp))
-
             // stop backup service to be sure the old location will get updated
             app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
+
+            // notify the UI that the location has been set
+            locationWasSet.setEvent(LocationResult(true, initialSetUp))
 
             Log.d(TAG, "New storage location chosen: $folderUri")
         } else {

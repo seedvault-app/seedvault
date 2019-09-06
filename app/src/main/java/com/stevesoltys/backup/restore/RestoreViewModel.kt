@@ -6,6 +6,7 @@ import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.backup.Backup
@@ -16,7 +17,7 @@ import com.stevesoltys.backup.ui.BackupViewModel
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-class RestoreViewModel(app: Application) : BackupViewModel(app) {
+class RestoreViewModel(app: Application) : BackupViewModel(app), RestoreSetClickListener {
 
     private val backupManager = Backup.backupManager
 
@@ -27,8 +28,21 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
     private val mRestoreSets = MutableLiveData<RestoreSetResult>()
     internal val restoreSets: LiveData<RestoreSetResult> get() = mRestoreSets
 
+    private val mChosenRestoreSet = MutableLiveData<RestoreSet>()
+    internal val chosenRestoreSet: LiveData<RestoreSet> get() = mChosenRestoreSet
+
+    private var mNumPackages = MutableLiveData<Int>()
+    internal val numPackages: LiveData<Int> get() = mNumPackages
+
+    private val mRestoreProgress = MutableLiveData<RestoreProgress>()
+    internal val restoreProgress: LiveData<RestoreProgress> get() = mRestoreProgress
+
+    private val mRestoreFinished = MutableLiveData<Int>()
+    // Zero on success; a nonzero error code if the restore operation as a whole failed.
+    internal val restoreFinished: LiveData<Int> get() = mRestoreFinished
+
     override fun acceptBackupLocation(folderUri: Uri): Boolean {
-        // TODO
+        // TODO search if there's really a backup available in this location and see if we can decrypt it
         return true
     }
 
@@ -52,6 +66,14 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
         }
     }
 
+    override fun onRestoreSetClicked(set: RestoreSet) {
+        val session = this.session
+        check(session != null)
+        session.restoreAll(set.token, observer, monitor)
+
+        mChosenRestoreSet.value = set
+    }
+
     override fun onCleared() {
         super.onCleared()
         endSession()
@@ -63,7 +85,10 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
         observer = null
     }
 
+    @WorkerThread
     private inner class RestoreObserver : IRestoreObserver.Stub() {
+
+        private var correctedNow: Int = -1
 
         /**
          * Supply a list of the restore datasets available from the current transport.
@@ -76,7 +101,7 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
          */
         override fun restoreSetsAvailable(restoreSets: Array<out RestoreSet>?) {
             if (restoreSets == null || restoreSets.isEmpty()) {
-                mRestoreSets.value = RestoreSetResult(app.getString(R.string.restore_set_empty_result))
+                mRestoreSets.postValue(RestoreSetResult(app.getString(R.string.restore_set_empty_result)))
             } else {
                 mRestoreSets.postValue(RestoreSetResult(restoreSets))
             }
@@ -88,7 +113,7 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
          * @param numPackages The total number of packages being processed in this restore operation.
          */
         override fun restoreStarting(numPackages: Int) {
-            Log.e(TAG, "RESTORE STARTING $numPackages")
+            mNumPackages.postValue(numPackages)
         }
 
         /**
@@ -101,17 +126,22 @@ class RestoreViewModel(app: Application) : BackupViewModel(app) {
          * @param currentPackage The name of the package now being restored.
          */
         override fun onUpdate(nowBeingRestored: Int, currentPackage: String) {
-            Log.e(TAG, "RESTORE UPDATE $nowBeingRestored $currentPackage")
+            if (nowBeingRestored <= correctedNow) {
+                correctedNow += 1
+            } else {
+                correctedNow = nowBeingRestored
+            }
+            mRestoreProgress.postValue(RestoreProgress(correctedNow, currentPackage))
         }
 
         /**
          * The restore operation has completed.
          *
-         * @param error Zero on success; a nonzero error code if the restore operation
+         * @param result Zero on success; a nonzero error code if the restore operation
          *   as a whole failed.
          */
-        override fun restoreFinished(error: Int) {
-            Log.e(TAG, "RESTORE FINISHED $error")
+        override fun restoreFinished(result: Int) {
+            mRestoreFinished.postValue(result)
             endSession()
         }
 
@@ -129,3 +159,7 @@ internal class RestoreSetResult(
 
     internal fun hasError(): Boolean = errorMsg != null
 }
+
+internal class RestoreProgress(
+        internal val nowBeingRestored: Int,
+        internal val currentPackage: String)

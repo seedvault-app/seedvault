@@ -77,5 +77,11 @@
     <string name="restore_back">Don\'t restore</string>
     <string name="restore_set_error">An error occurred loading the backups.</string>
     <string name="restore_set_empty_result">No backups found at given location.</string>
+    <string name="restore_restoring">Restoring Backup</string>
+    <string name="restore_current_package">Restoring %s…</string>
+    <string name="restore_finished_success">Restore complete.</string>
+    <string name="restore_finished_error">An error occurred while restoring the backup.</string>
+    <string name="restore_finished_warning_only_installed">Note that we could only restore data for apps that are already installed.\n\nWhen you install more apps, we will try to restore their data and settings from this backup. So please do not delete it as long as it might still be needed.</string>
+    <string name="restore_finished_button">Finish</string>
 
 </resources>

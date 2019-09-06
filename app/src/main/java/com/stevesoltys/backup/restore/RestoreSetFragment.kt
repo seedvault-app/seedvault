@@ -2,7 +2,6 @@ package com.stevesoltys.backup.restore
 
 import android.app.backup.RestoreSet
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -14,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
 import kotlinx.android.synthetic.main.fragment_restore_set.*
 
-class RestoreSetFragment : Fragment(), RestoreSetClickListener {
+class RestoreSetFragment : Fragment() {
 
     private lateinit var viewModel: RestoreViewModel
 
@@ -34,7 +33,9 @@ class RestoreSetFragment : Fragment(), RestoreSetClickListener {
 
     override fun onStart() {
         super.onStart()
-        viewModel.loadRestoreSets()
+        if (viewModel.recoveryCodeIsSet() && viewModel.validLocationIsSet()) {
+            viewModel.loadRestoreSets()
+        }
     }
 
     private fun onRestoreSetsLoaded(result: RestoreSetResult) {
@@ -49,12 +50,8 @@ class RestoreSetFragment : Fragment(), RestoreSetClickListener {
             listView.visibility = VISIBLE
             progressBar.visibility = INVISIBLE
 
-            listView.adapter = RestoreSetAdapter(this, result.sets)
+            listView.adapter = RestoreSetAdapter(viewModel, result.sets)
         }
-    }
-
-    override fun onRestoreSetClicked(set: RestoreSet) {
-        Log.e("TEST", "RESTORE SET CLICKED: ${set.name} ${set.device} ${set.token}")
     }
 
 }
