@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
+import com.stevesoltys.backup.metadata.MetadataWriter
 import java.io.IOException
 
 private val TAG = BackupCoordinator::class.java.simpleName
@@ -18,6 +19,7 @@ class BackupCoordinator(
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
         private val full: FullBackup,
+        private val metadataWriter: MetadataWriter,
         private val nm: BackupNotificationManager) {
 
     private var calledInitialize = false
@@ -49,6 +51,7 @@ class BackupCoordinator(
         Log.i(TAG, "Initialize Device!")
         return try {
             plugin.initializeDevice()
+            writeBackupMetadata()
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
@@ -129,11 +132,11 @@ class BackupCoordinator(
 
     fun finishBackup(): Int = when {
         kv.hasState() -> {
-            if (full.hasState()) throw IllegalStateException()
+            check(!full.hasState())
             kv.finishBackup()
         }
         full.hasState() -> {
-            if (kv.hasState()) throw IllegalStateException()
+            check(!kv.hasState())
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -142,6 +145,12 @@ class BackupCoordinator(
             TRANSPORT_OK
         }
         else -> throw IllegalStateException()
+    }
+
+    @Throws(IOException::class)
+    private fun writeBackupMetadata() {
+        val outputStream = plugin.getMetadataOutputStream()
+        metadataWriter.write(outputStream)
     }
 
 }

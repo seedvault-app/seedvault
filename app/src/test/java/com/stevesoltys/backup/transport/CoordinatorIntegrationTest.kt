@@ -14,6 +14,7 @@ import com.stevesoltys.backup.crypto.KeyManagerTestImpl
 import com.stevesoltys.backup.encodeBase64
 import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
+import com.stevesoltys.backup.metadata.MetadataWriterImpl
 import com.stevesoltys.backup.transport.backup.*
 import com.stevesoltys.backup.transport.restore.*
 import io.mockk.*
@@ -32,6 +33,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
     private val cryptoImpl = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val metadataWriter = MetadataWriterImpl(cryptoImpl)
 
     private val backupPlugin = mockk<BackupPlugin>()
     private val kvBackupPlugin = mockk<KVBackupPlugin>()
@@ -39,7 +41,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val backup = BackupCoordinator(backupPlugin, kvBackup, fullBackup, notificationManager)
+    private val backup = BackupCoordinator(backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()

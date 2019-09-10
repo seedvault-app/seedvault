@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.transport.backup
 
 import java.io.IOException
+import java.io.OutputStream
 
 interface BackupPlugin {
 
@@ -13,6 +14,12 @@ interface BackupPlugin {
      */
     @Throws(IOException::class)
     fun initializeDevice()
+
+    /**
+     * Returns an [OutputStream] for writing backup metadata.
+     */
+    @Throws(IOException::class)
+    fun getMetadataOutputStream(): OutputStream
 
     /**
      * Returns the package name of the app that provides the backend storage

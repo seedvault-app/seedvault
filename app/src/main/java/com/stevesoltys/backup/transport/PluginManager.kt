@@ -6,6 +6,7 @@ import com.stevesoltys.backup.crypto.CipherFactoryImpl
 import com.stevesoltys.backup.crypto.CryptoImpl
 import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
+import com.stevesoltys.backup.metadata.MetadataWriterImpl
 import com.stevesoltys.backup.settings.getBackupFolderUri
 import com.stevesoltys.backup.settings.getDeviceName
 import com.stevesoltys.backup.transport.backup.BackupCoordinator
@@ -30,6 +31,7 @@ class PluginManager(context: Context) {
     private val headerReader = HeaderReaderImpl()
     private val cipherFactory = CipherFactoryImpl(Backup.keyManager)
     private val crypto = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val metadataWriter = MetadataWriterImpl(crypto)
 
 
     private val backupPlugin = DocumentsProviderBackupPlugin(storage, context.packageManager)
@@ -38,7 +40,7 @@ class PluginManager(context: Context) {
     private val fullBackup = FullBackup(backupPlugin.fullBackupPlugin, inputFactory, headerWriter, crypto)
     private val notificationManager = (context.applicationContext as Backup).notificationManager
 
-    internal val backupCoordinator = BackupCoordinator(backupPlugin, kvBackup, fullBackup, notificationManager)
+    internal val backupCoordinator = BackupCoordinator(backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
 
 
     private val restorePlugin = DocumentsProviderRestorePlugin(storage)

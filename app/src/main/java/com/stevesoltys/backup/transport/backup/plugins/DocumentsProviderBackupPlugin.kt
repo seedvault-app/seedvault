@@ -5,6 +5,7 @@ import com.stevesoltys.backup.transport.backup.BackupPlugin
 import com.stevesoltys.backup.transport.backup.FullBackupPlugin
 import com.stevesoltys.backup.transport.backup.KVBackupPlugin
 import java.io.IOException
+import java.io.OutputStream
 
 class DocumentsProviderBackupPlugin(
         private val storage: DocumentsStorage,
@@ -28,8 +29,16 @@ class DocumentsProviderBackupPlugin(
         val fullDir = storage.defaultFullBackupDir
 
         // wipe existing data
+        storage.getSetDir()?.findFile(FILE_BACKUP_METADATA)?.delete()
         kvDir?.deleteContents()
         fullDir?.deleteContents()
+    }
+
+    @Throws(IOException::class)
+    override fun getMetadataOutputStream(): OutputStream {
+        val setDir = storage.getSetDir() ?: throw IOException()
+        val metadataFile = setDir.createOrGetFile(FILE_BACKUP_METADATA)
+        return storage.getOutputStream(metadataFile)
     }
 
     override val providerPackageName: String? by lazy {

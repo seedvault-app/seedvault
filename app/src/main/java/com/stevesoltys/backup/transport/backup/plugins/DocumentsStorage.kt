@@ -12,6 +12,7 @@ import java.io.OutputStream
 
 const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
+const val FILE_BACKUP_METADATA = ".backup.metadata"
 private const val ROOT_DIR_NAME = ".AndroidBackup"
 private const val NO_MEDIA = ".nomedia"
 private const val MIME_TYPE = "application/octet-stream"
@@ -24,6 +25,7 @@ class DocumentsStorage(context: Context, parentFolder: Uri?, deviceName: String)
 
     internal val rootBackupDir: DocumentFile? by lazy {
         val folderUri = parentFolder ?: return@lazy null
+        // [fromTreeUri] should only return null when SDK_INT < 21
         val parent = DocumentFile.fromTreeUri(context, folderUri) ?: throw AssertionError()
         try {
             val rootDir = parent.createOrGetDirectory(ROOT_DIR_NAME)
@@ -73,7 +75,7 @@ class DocumentsStorage(context: Context, parentFolder: Uri?, deviceName: String)
         }
     }
 
-    private fun getSetDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile? {
+    fun getSetDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile? {
         if (token == DEFAULT_RESTORE_SET_TOKEN) return defaultSetDir
         return deviceDir?.findFile(token.toString())
     }
