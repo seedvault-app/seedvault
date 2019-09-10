@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.lifecycle.ViewModelProviders
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -99,7 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         item.itemId == R.id.action_restore -> {
-            Toast.makeText(requireContext(), "Not yet implemented", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Not yet implemented", LENGTH_SHORT).show()
             true
         }
         else -> super.onOptionsItemSelected(item)

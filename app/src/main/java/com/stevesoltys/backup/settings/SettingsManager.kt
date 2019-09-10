@@ -5,8 +5,8 @@ import android.net.Uri
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 
 private const val PREF_KEY_BACKUP_URI = "backupUri"
+private const val PREF_KEY_DEVICE_NAME = "deviceName"
 private const val PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword"
-private const val PREF_KEY_BACKUPS_SCHEDULED = "backupsScheduled"
 
 fun setBackupFolderUri(context: Context, uri: Uri) {
     getDefaultSharedPreferences(context)
@@ -21,30 +21,18 @@ fun getBackupFolderUri(context: Context): Uri? {
     return Uri.parse(uriStr)
 }
 
-/**
- * This is insecure and not supposed to be part of a release,
- * but rather an intermediate step towards a generated passphrase.
- */
-@Deprecated("Replaced by KeyManager#storeBackupKey()")
-fun setBackupPassword(context: Context, password: String) {
+fun setDeviceName(context: Context, name: String) {
     getDefaultSharedPreferences(context)
             .edit()
-            .putString(PREF_KEY_BACKUP_PASSWORD, password)
+            .putString(PREF_KEY_DEVICE_NAME, name)
             .apply()
+}
+
+fun getDeviceName(context: Context): String? {
+    return getDefaultSharedPreferences(context).getString(PREF_KEY_DEVICE_NAME, null)
 }
 
 @Deprecated("Replaced by KeyManager#getBackupKey()")
 fun getBackupPassword(context: Context): String? {
     return getDefaultSharedPreferences(context).getString(PREF_KEY_BACKUP_PASSWORD, null)
-}
-
-fun setBackupsScheduled(context: Context) {
-    getDefaultSharedPreferences(context)
-            .edit()
-            .putBoolean(PREF_KEY_BACKUPS_SCHEDULED, true)
-            .apply()
-}
-
-fun areBackupsScheduled(context: Context): Boolean {
-    return getDefaultSharedPreferences(context).getBoolean(PREF_KEY_BACKUPS_SCHEDULED, false)
 }

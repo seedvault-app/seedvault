@@ -1,8 +1,9 @@
+dist: trusty
 language: android
 android:
   components:
-  - build-tools-28.0.3
-  - android-28
+    - build-tools-28.0.3
+    - android-28
 
 licenses:
   - android-sdk-license-.+
@@ -18,6 +19,8 @@ before_install:
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+script: ./gradlew check
 
 cache:
   directories:

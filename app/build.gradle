@@ -12,6 +12,7 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 28
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -26,6 +27,23 @@ android {
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
+    }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+            testLogging {
+                events "passed", "skipped", "failed"
+            }
+        }
+    }
+
+    sourceSets {
+        test {
+            java.srcDirs += "$projectDir/src/sharedTest/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/sharedTest/java"
+        }
     }
 
     // optional signingConfigs
@@ -43,6 +61,7 @@ android {
             }
         }
         buildTypes.release.signingConfig = signingConfigs.release
+        buildTypes.debug.signingConfig = signingConfigs.release
     }
 }
 
@@ -70,15 +89,17 @@ preBuild.doLast {
     }
 }
 
+// To produce these binaries, in latest AOSP source tree, run
+// $ make
+def aospDeps = fileTree(include: [
+        // out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar
+        'android.jar',
+        // out/target/common/obj/JAVA_LIBRARIES/core-libart_intermediates/classes.jar
+        'libcore.jar'
+], dir: 'libs')
+
 dependencies {
-    // To produce these binaries, in latest AOSP source tree, run
-    // $ make
-    compileOnly fileTree(include: [
-            // out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar
-            'android.jar',
-            // out/target/common/obj/JAVA_LIBRARIES/core-libart_intermediates/classes.jar
-            'libcore.jar'
-    ], dir: 'libs')
+    compileOnly aospDeps
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -90,4 +111,14 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    lintChecks 'com.github.thirdegg:lint-rules:0.0.4-alpha'
+
+    testImplementation aospDeps
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+    testImplementation 'io.mockk:mockk:1.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
 }

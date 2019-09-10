@@ -1,41 +1,18 @@
 package com.stevesoltys.backup
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.NotificationManager.IMPORTANCE_MIN
-import android.app.backup.BackupManager
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
-import androidx.core.app.NotificationCompat.PRIORITY_LOW
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport
 
-private const val CHANNEL_ID = "NotificationBackupObserver"
-private const val NOTIFICATION_ID = 1
+private val TAG = NotificationBackupObserver::class.java.simpleName
 
-private val TAG = NotificationBackupObserver::class.java.name
-
-class NotificationBackupObserver(
-        private val context: Context,
-        private val userInitiated: Boolean) : IBackupObserver.Stub() {
+class NotificationBackupObserver(context: Context, private val userInitiated: Boolean) : IBackupObserver.Stub() {
 
     private val pm = context.packageManager
-    private val nm = context.getSystemService(NotificationManager::class.java).apply {
-        val title = context.getString(R.string.notification_channel_title)
-        val channel = NotificationChannel(CHANNEL_ID, title, IMPORTANCE_MIN).apply {
-            enableVibration(false)
-        }
-        createNotificationChannel(channel)
-    }
-    private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
-        setSmallIcon(R.drawable.ic_cloud_upload)
-        priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
-    }
+    private val nm = (context.applicationContext as Backup).notificationManager
 
     /**
      * This method could be called several times for packages with full data backup.
@@ -45,17 +22,13 @@ class NotificationBackupObserver(
      * @param backupProgress Current progress of backup for the package.
      */
     override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
-        val transferred = backupProgress.bytesTransferred
-        val expected = backupProgress.bytesExpected
+        val transferred = backupProgress.bytesTransferred.toInt()
+        val expected = backupProgress.bytesExpected.toInt()
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Update. Target: $currentBackupPackage, $transferred/$expected")
         }
-        val notification = notificationBuilder.apply {
-            setContentTitle(context.getString(R.string.notification_title))
-            setContentText(getAppName(currentBackupPackage))
-            setProgress(expected.toInt(), transferred.toInt(), false)
-        }.build()
-        nm.notify(NOTIFICATION_ID, notification)
+        val app = getAppName(currentBackupPackage)
+        nm.onBackupUpdate(app, transferred, expected, userInitiated)
     }
 
     /**
@@ -72,15 +45,7 @@ class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
-        val title = context.getString(
-                if (status == 0) R.string.notification_backup_result_complete
-                else R.string.notification_backup_result_error
-        )
-        val notification = notificationBuilder.apply {
-            setContentTitle(title)
-            setContentText(getAppName(target))
-        }.build()
-        nm.notify(NOTIFICATION_ID, notification)
+        nm.onBackupResult(getAppName(target), status, userInitiated)
     }
 
     /**
@@ -94,11 +59,11 @@ class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Backup finished. Status: $status")
         }
-        if (status == BackupManager.SUCCESS) getBackupTransport(context).backupFinished()
-        nm.cancel(NOTIFICATION_ID)
+        nm.onBackupFinished()
     }
 
     private fun getAppName(packageId: String): CharSequence {
+        if (packageId == "@pm@") return packageId
         val appInfo = pm.getApplicationInfo(packageId, 0)
         return pm.getApplicationLabel(appInfo)
     }

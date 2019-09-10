@@ -12,11 +12,8 @@ import com.stevesoltys.backup.activity.PopupWindowUtil;
 import com.stevesoltys.backup.activity.restore.RestorePopupWindowListener;
 import com.stevesoltys.backup.service.TransportService;
 import com.stevesoltys.backup.session.restore.RestoreSession;
-import com.stevesoltys.backup.transport.ConfigurableBackupTransport;
 
 import java.util.Set;
-
-import static com.stevesoltys.backup.transport.ConfigurableBackupTransportService.getBackupTransport;
 
 /**
  * @author Steve Soltys
@@ -28,8 +25,6 @@ public class RestoreService {
     private final TransportService transportService = new TransportService();
 
     public void restorePackages(Set<String> selectedPackages, Uri contentUri, Activity parent, String password) {
-        ConfigurableBackupTransport backupTransport = getBackupTransport(parent.getApplication());
-        backupTransport.prepareRestore(password, contentUri);
         try {
             PopupWindow popupWindow = PopupWindowUtil.showLoadingPopupWindow(parent);
             RestoreObserver restoreObserver = new RestoreObserver(parent, popupWindow, selectedPackages.size());

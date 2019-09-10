@@ -11,7 +11,6 @@ import com.stevesoltys.backup.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.stevesoltys.backup.settings.SettingsManagerKt.areBackupsScheduled;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -37,7 +36,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         automaticBackupsButton = findViewById(R.id.automatic_backups_button);
         automaticBackupsButton.setOnClickListener(this);
-        if (areBackupsScheduled(this)) automaticBackupsButton.setVisibility(GONE);
 
         changeLocationButton = findViewById(R.id.change_backup_location_button);
         changeLocationButton.setOnClickListener(this);

@@ -1,35 +1,26 @@
 package com.stevesoltys.backup.activity;
 
 import android.app.Activity;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
 import com.stevesoltys.backup.activity.backup.CreateBackupActivity;
 import com.stevesoltys.backup.activity.restore.RestoreBackupActivity;
-import com.stevesoltys.backup.service.backup.BackupJobService;
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService;
 
-import static android.app.job.JobInfo.NETWORK_TYPE_UNMETERED;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT_TREE;
 import static android.content.Intent.CATEGORY_OPENABLE;
 import static android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-import static com.stevesoltys.backup.BackupKt.JOB_ID_BACKGROUND_BACKUP;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
 import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupFolderUri;
 import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
 import static com.stevesoltys.backup.settings.SettingsManagerKt.setBackupFolderUri;
-import static com.stevesoltys.backup.settings.SettingsManagerKt.setBackupsScheduled;
-import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.DAYS;
 
 /**
  * @author Steve Soltys
@@ -89,24 +80,8 @@ public class MainActivityController {
             return false;
         }
 
-        // schedule backups
-        final ComponentName serviceName = new ComponentName(parent, BackupJobService.class);
-        JobInfo job = new JobInfo.Builder(JOB_ID_BACKGROUND_BACKUP, serviceName)
-                .setRequiredNetworkType(NETWORK_TYPE_UNMETERED)
-                .setRequiresBatteryNotLow(true)
-                .setRequiresStorageNotLow(true)  // TODO warn the user instead
-                .setPeriodic(DAYS.toMillis(1))
-                .setRequiresCharging(true)
-                .setPersisted(true)
-                .build();
-        JobScheduler scheduler = requireNonNull(parent.getSystemService(JobScheduler.class));
-        scheduler.schedule(job);
-
-        // remember that backups were scheduled
-        setBackupsScheduled(parent);
-
         // show Toast informing the user
-        Toast.makeText(parent, "Backups will run automatically now", Toast.LENGTH_SHORT).show();
+        Toast.makeText(parent, "REMOVED", Toast.LENGTH_SHORT).show();
 
         return true;
     }

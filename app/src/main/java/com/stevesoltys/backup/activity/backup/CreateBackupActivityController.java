@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
-import static com.stevesoltys.backup.settings.SettingsManagerKt.setBackupPassword;
 
 /**
  * @author Steve Soltys
@@ -116,7 +115,6 @@ class CreateBackupActivityController {
                     String password = passwordTextView.getText().toString();
 
                     if (originalPassword.equals(password)) {
-                        setBackupPassword(parent, password);
                         backupService.backupPackageData(selectedPackages, parent);
 
                     } else {
