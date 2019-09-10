@@ -15,7 +15,7 @@ internal class MetadataWriterDecoderTest {
     private val crypto = mockk<Crypto>()
 
     private val encoder = MetadataWriterImpl(crypto)
-    private val decoder = MetadataDecoderImpl()
+    private val decoder = MetadataReaderImpl(crypto)
 
     private val metadata = BackupMetadata(
             version = Random.nextBytes(1)[0],

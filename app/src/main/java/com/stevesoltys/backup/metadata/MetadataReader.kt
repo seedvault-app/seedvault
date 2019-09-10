@@ -1,20 +1,36 @@
 package com.stevesoltys.backup.metadata
 
+import androidx.annotation.VisibleForTesting
 import com.stevesoltys.backup.Utf8
+import com.stevesoltys.backup.crypto.Crypto
+import com.stevesoltys.backup.header.UnsupportedVersionException
+import com.stevesoltys.backup.header.VERSION
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
+import java.io.InputStream
 
-interface MetadataDecoder {
+interface MetadataReader {
 
-    @Throws(FormatException::class, SecurityException::class)
-    fun decode(bytes: ByteArray, expectedVersion: Byte, expectedToken: Long): BackupMetadata
+    @Throws(FormatException::class, SecurityException::class, UnsupportedVersionException::class, IOException::class)
+    fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata
 
 }
 
-class MetadataDecoderImpl : MetadataDecoder {
+class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
 
+    @Throws(FormatException::class, SecurityException::class, UnsupportedVersionException::class, IOException::class)
+    override fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata {
+        val version = inputStream.read().toByte()
+        if (version < 0) throw IOException()
+        if (version > VERSION) throw UnsupportedVersionException(version)
+        val metadataBytes = crypto.decryptSegment(inputStream)
+        return decode(metadataBytes, version, expectedToken)
+    }
+
+    @VisibleForTesting
     @Throws(FormatException::class, SecurityException::class)
-    override fun decode(bytes: ByteArray, expectedVersion: Byte, expectedToken: Long): BackupMetadata {
+    internal fun decode(bytes: ByteArray, expectedVersion: Byte, expectedToken: Long): BackupMetadata {
         // NOTE: We don't do extensive validation of the parsed input here,
         // because it was encrypted with authentication, so we should be able to trust it.
         //
@@ -28,7 +44,7 @@ class MetadataDecoderImpl : MetadataDecoder {
             }
             val token = json.getLong(JSON_TOKEN)
             if (token != expectedToken) {
-                throw SecurityException("Invalid token '$expectedVersion' in metadata, expected '$expectedToken'.")
+                throw SecurityException("Invalid token '$token' in metadata, expected '$expectedToken'.")
             }
             return BackupMetadata(
                     version = version,

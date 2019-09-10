@@ -1,11 +1,17 @@
 package com.stevesoltys.backup.transport.restore.plugins
 
-import android.app.backup.RestoreSet
+import android.util.Log
+import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.backup.metadata.EncryptedBackupMetadata
 import com.stevesoltys.backup.transport.DEFAULT_RESTORE_SET_TOKEN
 import com.stevesoltys.backup.transport.backup.plugins.DocumentsStorage
+import com.stevesoltys.backup.transport.backup.plugins.FILE_BACKUP_METADATA
 import com.stevesoltys.backup.transport.restore.FullRestorePlugin
 import com.stevesoltys.backup.transport.restore.KVRestorePlugin
 import com.stevesoltys.backup.transport.restore.RestorePlugin
+import java.io.IOException
+
+private val TAG = DocumentsProviderRestorePlugin::class.java.simpleName
 
 class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : RestorePlugin {
 
@@ -17,16 +23,28 @@ class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : Re
         DocumentsProviderFullRestorePlugin(storage)
     }
 
-    override fun getAvailableRestoreSets(): Array<RestoreSet>? {
+    override fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
-        val restoreSets = ArrayList<RestoreSet>()
+        val files = ArrayList<DocumentFile>()
         for (file in rootDir.listFiles()) {
-            if (file.isDirectory && file.findFile(DEFAULT_RESTORE_SET_TOKEN.toString()) != null) {
-                // TODO include time of last backup
-                file.name?.let { restoreSets.add(RestoreSet(it, it, DEFAULT_RESTORE_SET_TOKEN)) }
+            file.isDirectory || continue
+            val set = file.findFile(DEFAULT_RESTORE_SET_TOKEN.toString()) ?: continue
+            val metadata = set.findFile(FILE_BACKUP_METADATA) ?: continue
+            files.add(metadata)
+        }
+        val iterator = files.iterator()
+        return generateSequence {
+            if (!iterator.hasNext()) return@generateSequence null  // end sequence
+            val metadata = iterator.next()
+            val token = metadata.parentFile!!.name!!.toLong()
+            try {
+                val stream = storage.getInputStream(metadata)
+                EncryptedBackupMetadata(token, stream)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error getting InputStream for backup metadata.", e)
+                EncryptedBackupMetadata(token, true)
             }
         }
-        return restoreSets.toTypedArray()
     }
 
     override fun getCurrentRestoreSet(): Long {

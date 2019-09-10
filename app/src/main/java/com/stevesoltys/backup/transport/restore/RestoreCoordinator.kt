@@ -8,6 +8,10 @@ import android.app.backup.RestoreSet
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.backup.header.UnsupportedVersionException
+import com.stevesoltys.backup.metadata.FormatException
+import com.stevesoltys.backup.metadata.MetadataReader
+import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 private class RestoreCoordinatorState(
@@ -19,13 +23,45 @@ private val TAG = RestoreCoordinator::class.java.simpleName
 internal class RestoreCoordinator(
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
-        private val full: FullRestore) {
+        private val full: FullRestore,
+        private val metadataReader: MetadataReader) {
 
     private var state: RestoreCoordinatorState? = null
 
+    /**
+     * Get the set of all backups currently available over this transport.
+     *
+     * @return Descriptions of the set of restore images available for this device,
+     *   or null if an error occurred (the attempt should be rescheduled).
+     **/
     fun getAvailableRestoreSets(): Array<RestoreSet>? {
-        return plugin.getAvailableRestoreSets()
-                .apply { Log.i(TAG, "Got available restore sets: $this") }
+        val availableBackups = plugin.getAvailableBackups() ?: return null
+        val restoreSets = ArrayList<RestoreSet>()
+        for (encryptedMetadata in availableBackups) {
+            if (encryptedMetadata.error) continue
+            check(encryptedMetadata.inputStream != null)  // if there's no error, there must be a stream
+            try {
+                val metadata = metadataReader.readMetadata(encryptedMetadata.inputStream, encryptedMetadata.token)
+                val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
+                restoreSets.add(set)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error while getting restore sets", e)
+                return null
+            } catch (e: FormatException) {
+                Log.e(TAG, "Error while getting restore sets", e)
+                return null
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Error while getting restore sets", e)
+                return null
+            } catch (e: UnsupportedVersionException) {
+                Log.w(TAG, "Backup with unsupported version read", e)
+                continue
+            } finally {
+                closeQuietly(encryptedMetadata.inputStream)
+            }
+        }
+        Log.i(TAG, "Got available restore sets: $restoreSets")
+        return restoreSets.toTypedArray()
     }
 
     fun getCurrentRestoreSet(): Long {

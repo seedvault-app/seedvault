@@ -12,12 +12,12 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import kotlin.random.Random
 
 @TestInstance(PER_CLASS)
-class MetadataDecoderTest {
+class MetadataReaderTest {
 
     private val crypto = mockk<Crypto>()
 
     private val encoder = MetadataWriterImpl(crypto)
-    private val decoder = MetadataDecoderImpl()
+    private val decoder = MetadataReaderImpl(crypto)
 
     private val metadata = BackupMetadata(
             version = 1.toByte(),

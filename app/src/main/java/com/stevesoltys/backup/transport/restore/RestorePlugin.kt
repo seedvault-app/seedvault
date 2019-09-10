@@ -1,6 +1,6 @@
 package com.stevesoltys.backup.transport.restore
 
-import android.app.backup.RestoreSet
+import com.stevesoltys.backup.metadata.EncryptedBackupMetadata
 
 interface RestorePlugin {
 
@@ -11,10 +11,10 @@ interface RestorePlugin {
     /**
      * Get the set of all backups currently available for restore.
      *
-     * @return Descriptions of the set of restore images available for this device,
+     * @return metadata for the set of restore images available,
      * or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableRestoreSets(): Array<RestoreSet>?
+    fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
 
     /**
      * Get the identifying token of the backup set currently being stored from this device.
