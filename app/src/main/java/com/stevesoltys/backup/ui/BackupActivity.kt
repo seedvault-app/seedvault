@@ -9,7 +9,6 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 
 const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
@@ -27,13 +26,11 @@ abstract class BackupActivity : AppCompatActivity() {
 
     protected abstract fun getInitialFragment(): Fragment
 
-    protected abstract fun isRestoreOperation(): Boolean
-
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getViewModel().onLocationSet.observeEvent(this, LiveEventHandler { result ->
+        getViewModel().locationSet.observeEvent(this, LiveEventHandler { result ->
             if (result.validLocation) {
                 if (result.initialSetup) showFragment(getInitialFragment())
                 else supportFragmentManager.popBackStack()
@@ -42,21 +39,6 @@ abstract class BackupActivity : AppCompatActivity() {
         getViewModel().chooseBackupLocation.observeEvent(this, LiveEventHandler { show ->
             if (show) showFragment(BackupLocationFragment(), true)
         })
-    }
-
-    @CallSuper
-    override fun onStart() {
-        super.onStart()
-        if (isFinishing) return
-
-        // check that backup is provisioned
-        if (!getViewModel().recoveryCodeIsSet()) {
-            showRecoveryCodeActivity()
-        } else if (!getViewModel().validLocationIsSet()) {
-            showFragment(BackupLocationFragment())
-            // remove potential error notifications
-            (application as Backup).notificationManager.onBackupErrorSeen()
-        }
     }
 
     @CallSuper
@@ -80,9 +62,9 @@ abstract class BackupActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun showRecoveryCodeActivity() {
+    protected fun showRecoveryCodeActivity() {
         val intent = Intent(this, RecoveryCodeActivity::class.java)
-        intent.putExtra(INTENT_EXTRA_IS_RESTORE, isRestoreOperation())
+        intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
         startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
     }
 

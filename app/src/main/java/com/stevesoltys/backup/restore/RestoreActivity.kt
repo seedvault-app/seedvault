@@ -1,10 +1,14 @@
 package com.stevesoltys.backup.restore
 
 import android.os.Bundle
+import androidx.annotation.CallSuper
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.transport.backup.plugins.DIRECTORY_ROOT
 import com.stevesoltys.backup.ui.BackupActivity
+import com.stevesoltys.backup.ui.BackupLocationFragment
 import com.stevesoltys.backup.ui.BackupViewModel
 
 class RestoreActivity : BackupActivity() {
@@ -14,8 +18,6 @@ class RestoreActivity : BackupActivity() {
     override fun getViewModel(): BackupViewModel = viewModel
 
     override fun getInitialFragment() = RestoreSetFragment()
-
-    override fun isRestoreOperation() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(RestoreViewModel::class.java)
@@ -32,8 +34,25 @@ class RestoreActivity : BackupActivity() {
         }
     }
 
+    @CallSuper
+    override fun onStart() {
+        super.onStart()
+        if (isFinishing) return
+
+        // check that backup is provisioned
+        if (!viewModel.validLocationIsSet()) {
+            showFragment(BackupLocationFragment())
+        } else if (!viewModel.recoveryCodeIsSet()) {
+            showRecoveryCodeActivity()
+        }
+    }
+
     override fun onInvalidLocation() {
-        // TODO alert dialog?
+        AlertDialog.Builder(this)
+                .setTitle(getString(R.string.restore_invalid_location_title))
+                .setMessage(getString(R.string.restore_invalid_location_message, DIRECTORY_ROOT))
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
 }

@@ -4,22 +4,31 @@ import android.app.Application
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.session.backup.BackupMonitor
+import com.stevesoltys.backup.settings.setBackupFolderUri
+import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 import com.stevesoltys.backup.transport.TRANSPORT_ID
+import com.stevesoltys.backup.transport.backup.plugins.DIRECTORY_ROOT
+import com.stevesoltys.backup.transport.restore.plugins.DocumentsProviderRestorePlugin.Companion.getBackups
 import com.stevesoltys.backup.ui.BackupViewModel
+import com.stevesoltys.backup.ui.LocationResult
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
 class RestoreViewModel(app: Application) : BackupViewModel(app), RestoreSetClickListener {
 
     private val backupManager = Backup.backupManager
+
+    override val isRestoreOperation = true
 
     private var session: IRestoreSession? = null
     private var observer: RestoreObserver? = null
@@ -41,9 +50,39 @@ class RestoreViewModel(app: Application) : BackupViewModel(app), RestoreSetClick
     // Zero on success; a nonzero error code if the restore operation as a whole failed.
     internal val restoreFinished: LiveData<Int> get() = mRestoreFinished
 
-    override fun acceptBackupLocation(folderUri: Uri): Boolean {
-        // TODO search if there's really a backup available in this location and see if we can decrypt it
-        return true
+    override fun onLocationSet(folderUri: Uri, isInitialSetup: Boolean) {
+        if (hasBackup(folderUri)) {
+            // store backup folder location in settings
+            setBackupFolderUri(app, folderUri)
+
+            // stop backup service to be sure the old location will get updated
+            app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
+
+            Log.d(TAG, "New storage location chosen: $folderUri")
+
+            mLocationSet.setEvent(LocationResult(false, isInitialSetup))
+        } else {
+            Log.w(TAG, "Location was rejected: $folderUri")
+
+            // notify the UI that the location was invalid
+            mLocationSet.setEvent(LocationResult(false, isInitialSetup))
+        }
+    }
+
+    /**
+     * Searches if there's really a backup available in the given location.
+     * Returns true if at least one was found and false otherwise.
+     *
+     * This method is not plugin-agnostic and breaks encapsulation.
+     * It is specific to the (currently only) DocumentsProvider plugin.
+     *
+     * TODO maybe move this to the RestoreCoordinator once we can inject it
+     */
+    private fun hasBackup(folderUri: Uri): Boolean {
+        val parent = DocumentFile.fromTreeUri(app, folderUri) ?: throw AssertionError()
+        val rootDir = parent.findFile(DIRECTORY_ROOT) ?: return false
+        val backupSets = getBackups(rootDir)
+        return backupSets.isNotEmpty()
     }
 
     internal fun loadRestoreSets() {

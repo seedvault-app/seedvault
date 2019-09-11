@@ -25,41 +25,48 @@ class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : Re
 
     override fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
-        val files = ArrayList<Pair<Long, DocumentFile>>()
-        for (set in rootDir.listFiles()) {
-            if (!set.isDirectory || set.name == null) {
-                if (set.name != FILE_NO_MEDIA) {
-                    Log.w(TAG, "Found invalid backup set folder: ${set.name}")
-                }
-                continue
-            }
-            val token = try {
-                set.name!!.toLong()
-            } catch (e: NumberFormatException) {
-                Log.w(TAG, "Found invalid backup set folder: ${set.name}", e)
-                continue
-            }
-            val metadata = set.findFile(FILE_BACKUP_METADATA)
-            if (metadata == null) {
-                Log.w(TAG, "Missing metadata file in backup set folder: ${set.name}")
-            } else {
-                files.add(Pair(token, metadata))
-            }
-        }
-        val iterator = files.iterator()
+        val backupSets = getBackups(rootDir)
+        val iterator = backupSets.iterator()
         return generateSequence {
             if (!iterator.hasNext()) return@generateSequence null  // end sequence
-            val pair = iterator.next()
-            val token = pair.first
-            val metadata = pair.second
+            val backupSet = iterator.next()
             try {
-                val stream = storage.getInputStream(metadata)
-                EncryptedBackupMetadata(token, stream)
+                val stream = storage.getInputStream(backupSet.metadataFile)
+                EncryptedBackupMetadata(backupSet.token, stream)
             } catch (e: IOException) {
                 Log.e(TAG, "Error getting InputStream for backup metadata.", e)
-                EncryptedBackupMetadata(token)
+                EncryptedBackupMetadata(backupSet.token)
             }
         }
     }
 
+    companion object {
+        fun getBackups(rootDir: DocumentFile): List<BackupSet> {
+            val backupSets = ArrayList<BackupSet>()
+            for (set in rootDir.listFiles()) {
+                if (!set.isDirectory || set.name == null) {
+                    if (set.name != FILE_NO_MEDIA) {
+                        Log.w(TAG, "Found invalid backup set folder: ${set.name}")
+                    }
+                    continue
+                }
+                val token = try {
+                    set.name!!.toLong()
+                } catch (e: NumberFormatException) {
+                    Log.w(TAG, "Found invalid backup set folder: ${set.name}", e)
+                    continue
+                }
+                val metadata = set.findFile(FILE_BACKUP_METADATA)
+                if (metadata == null) {
+                    Log.w(TAG, "Missing metadata file in backup set folder: ${set.name}")
+                } else {
+                    backupSets.add(BackupSet(token, metadata))
+                }
+            }
+            return backupSets
+        }
+    }
+
 }
+
+class BackupSet(val token: Long, val metadataFile: DocumentFile)

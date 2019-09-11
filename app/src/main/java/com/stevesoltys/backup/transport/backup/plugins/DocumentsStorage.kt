@@ -10,11 +10,11 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+const val DIRECTORY_ROOT = ".AndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
 const val FILE_NO_MEDIA = ".nomedia"
-private const val ROOT_DIR_NAME = ".AndroidBackup"
 private const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
@@ -26,7 +26,7 @@ class DocumentsStorage(private val context: Context, parentFolder: Uri?, token: 
         // [fromTreeUri] should only return null when SDK_INT < 21
         val parent = DocumentFile.fromTreeUri(context, folderUri) ?: throw AssertionError()
         try {
-            val rootDir = parent.createOrGetDirectory(ROOT_DIR_NAME)
+            val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
             // create .nomedia file to prevent Android's MediaScanner from trying to index the backup
             rootDir.createOrGetFile(FILE_NO_MEDIA)
             rootDir
