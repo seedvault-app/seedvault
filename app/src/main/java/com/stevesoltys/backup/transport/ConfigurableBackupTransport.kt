@@ -13,7 +13,6 @@ import android.util.Log
 import com.stevesoltys.backup.settings.SettingsActivity
 
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
-const val DEFAULT_RESTORE_SET_TOKEN: Long = 1
 
 private const val TRANSPORT_DIRECTORY_NAME = "com.stevesoltys.backup.transport.ConfigurableBackupTransport"
 private val TAG = ConfigurableBackupTransport::class.java.simpleName

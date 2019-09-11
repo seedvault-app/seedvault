@@ -3,7 +3,6 @@ package com.stevesoltys.backup.metadata
 import androidx.annotation.VisibleForTesting
 import com.stevesoltys.backup.Utf8
 import com.stevesoltys.backup.crypto.Crypto
-import com.stevesoltys.backup.transport.DEFAULT_RESTORE_SET_TOKEN
 import org.json.JSONObject
 import java.io.IOException
 import java.io.OutputStream
@@ -11,7 +10,7 @@ import java.io.OutputStream
 interface MetadataWriter {
 
     @Throws(IOException::class)
-    fun write(outputStream: OutputStream, token: Long = DEFAULT_RESTORE_SET_TOKEN)
+    fun write(outputStream: OutputStream, token: Long)
 
 }
 

@@ -25,8 +25,8 @@ class DocumentsProviderBackupPlugin(
         storage.rootBackupDir ?: throw IOException()
 
         // create backup folders
-        val kvDir = storage.defaultKvBackupDir
-        val fullDir = storage.defaultFullBackupDir
+        val kvDir = storage.currentKvBackupDir
+        val fullDir = storage.currentFullBackupDir
 
         // wipe existing data
         storage.getSetDir()?.findFile(FILE_BACKUP_METADATA)?.delete()

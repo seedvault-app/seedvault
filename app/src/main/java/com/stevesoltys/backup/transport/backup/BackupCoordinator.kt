@@ -2,11 +2,13 @@ package com.stevesoltys.backup.transport.backup
 
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
 import com.stevesoltys.backup.metadata.MetadataWriter
+import com.stevesoltys.backup.settings.getBackupToken
 import java.io.IOException
 
 private val TAG = BackupCoordinator::class.java.simpleName
@@ -16,6 +18,7 @@ private val TAG = BackupCoordinator::class.java.simpleName
  * @author Torsten Grote
  */
 class BackupCoordinator(
+        private val context: Context,
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
         private val full: FullBackup,
@@ -51,7 +54,7 @@ class BackupCoordinator(
         Log.i(TAG, "Initialize Device!")
         return try {
             plugin.initializeDevice()
-            writeBackupMetadata()
+            writeBackupMetadata(getBackupToken(context))
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
@@ -148,9 +151,9 @@ class BackupCoordinator(
     }
 
     @Throws(IOException::class)
-    private fun writeBackupMetadata() {
+    private fun writeBackupMetadata(token: Long) {
         val outputStream = plugin.getMetadataOutputStream()
-        metadataWriter.write(outputStream)
+        metadataWriter.write(outputStream, token)
     }
 
 }

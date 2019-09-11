@@ -43,18 +43,18 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val backup = BackupCoordinator(backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
+    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore = FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
-    private val restore = RestoreCoordinator(restorePlugin, kvRestore, fullRestore, metadataReader)
+    private val restore = RestoreCoordinator(context, restorePlugin, kvRestore, fullRestore, metadataReader)
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
-    private val token = DEFAULT_RESTORE_SET_TOKEN
+    private val token = Random.nextLong()
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
     private val key = "RestoreKey"

@@ -16,7 +16,7 @@ class DocumentsProviderFullBackup(
 
     @Throws(IOException::class)
     override fun getOutputStream(targetPackage: PackageInfo): OutputStream {
-        val file = storage.defaultFullBackupDir?.createOrGetFile(targetPackage.packageName)
+        val file = storage.currentFullBackupDir?.createOrGetFile(targetPackage.packageName)
                 ?: throw IOException()
         return storage.getOutputStream(file)
     }
@@ -25,7 +25,7 @@ class DocumentsProviderFullBackup(
     override fun removeDataOfPackage(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         Log.i(TAG, "Deleting $packageName...")
-        val file = storage.defaultFullBackupDir?.findFile(packageName) ?: return
+        val file = storage.currentFullBackupDir?.findFile(packageName) ?: return
         if (!file.delete()) throw IOException("Failed to delete $packageName")
     }
 

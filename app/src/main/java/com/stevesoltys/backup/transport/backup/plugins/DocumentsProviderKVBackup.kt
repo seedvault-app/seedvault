@@ -15,7 +15,7 @@ class DocumentsProviderKVBackup(private val storage: DocumentsStorage) : KVBacku
 
     @Throws(IOException::class)
     override fun hasDataForPackage(packageInfo: PackageInfo): Boolean {
-        val packageFile = storage.defaultKvBackupDir?.findFile(packageInfo.packageName)
+        val packageFile = storage.currentKvBackupDir?.findFile(packageInfo.packageName)
                 ?: return false
         return packageFile.listFiles().isNotEmpty()
     }
@@ -30,7 +30,7 @@ class DocumentsProviderKVBackup(private val storage: DocumentsStorage) : KVBacku
     override fun removeDataOfPackage(packageInfo: PackageInfo) {
         // we cannot use the cached this.packageFile here,
         // because this can be called before [ensureRecordStorageForPackage]
-        val packageFile = storage.defaultKvBackupDir?.findFile(packageInfo.packageName) ?: return
+        val packageFile = storage.currentKvBackupDir?.findFile(packageInfo.packageName) ?: return
         packageFile.delete()
     }
 

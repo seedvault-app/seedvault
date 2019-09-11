@@ -10,9 +10,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
@@ -37,7 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
 
-        backup = findPreference("backup") as TwoStatePreference
+        backup = findPreference("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {
@@ -50,13 +49,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        val backupLocation = findPreference("backup_location")
+        val backupLocation = findPreference<Preference>("backup_location")!!
         backupLocation.setOnPreferenceClickListener {
             viewModel.chooseBackupLocation()
             true
         }
 
-        autoRestore = findPreference("auto_restore") as TwoStatePreference
+        autoRestore = findPreference("auto_restore")!!
         autoRestore.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {

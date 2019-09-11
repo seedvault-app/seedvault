@@ -5,12 +5,14 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.header.UnsupportedVersionException
 import com.stevesoltys.backup.metadata.FormatException
 import com.stevesoltys.backup.metadata.MetadataReader
+import com.stevesoltys.backup.settings.getBackupToken
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
@@ -21,6 +23,7 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
+        private val context: Context,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
         private val full: FullRestore,
@@ -64,8 +67,15 @@ internal class RestoreCoordinator(
         return restoreSets.toTypedArray()
     }
 
+    /**
+     * Get the identifying token of the backup set currently being stored from this device.
+     * This is used in the case of applications wishing to restore their last-known-good data.
+     *
+     * @return A token that can be used for restore,
+     * or 0 if there is no backup set available corresponding to the current device state.
+     */
     fun getCurrentRestoreSet(): Long {
-        return plugin.getCurrentRestoreSet()
+        return getBackupToken(context)
                 .apply { Log.i(TAG, "Got current restore set token: $this") }
     }
 

@@ -23,14 +23,14 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val metadataWriter = mockk<MetadataWriter>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(plugin, kv, full, metadataWriter, notificationManager)
+    private val backup = BackupCoordinator(context, plugin, kv, full, metadataWriter, notificationManager)
 
     private val metadataOutputStream = mockk<OutputStream>()
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
         every { plugin.initializeDevice() } just Runs
-        expectWritingMetadata()
+        expectWritingMetadata(0L)
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -116,9 +116,9 @@ internal class BackupCoordinatorTest: BackupTest() {
         assertEquals(result, backup.finishBackup())
     }
 
-    private fun expectWritingMetadata() {
+    private fun expectWritingMetadata(token: Long = this.token) {
         every { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataWriter.write(metadataOutputStream) } just Runs
+        every { metadataWriter.write(metadataOutputStream, token) } just Runs
     }
 
 }

@@ -16,13 +16,4 @@ interface RestorePlugin {
      **/
     fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
 
-    /**
-     * Get the identifying token of the backup set currently being stored from this device.
-     * This is used in the case of applications wishing to restore their last-known-good data.
-     *
-     * @return A token that can be used for restore,
-     * or 0 if there is no backup set available corresponding to the current device state.
-     */
-    fun getCurrentRestoreSet(): Long
-
 }
