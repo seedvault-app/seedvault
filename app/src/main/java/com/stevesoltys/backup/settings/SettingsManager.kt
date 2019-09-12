@@ -7,7 +7,6 @@ import java.util.*
 
 private const val PREF_KEY_BACKUP_URI = "backupUri"
 private const val PREF_KEY_BACKUP_TOKEN = "backupToken"
-private const val PREF_KEY_DEVICE_NAME = "deviceName"
 private const val PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword"
 
 fun setBackupFolderUri(context: Context, uri: Uri) {
@@ -39,17 +38,6 @@ fun getAndSaveNewBackupToken(context: Context): Long = Date().time.apply {
  */
 fun getBackupToken(context: Context): Long {
     return getDefaultSharedPreferences(context).getLong(PREF_KEY_BACKUP_TOKEN, 0L)
-}
-
-fun setDeviceName(context: Context, name: String) {
-    getDefaultSharedPreferences(context)
-            .edit()
-            .putString(PREF_KEY_DEVICE_NAME, name)
-            .apply()
-}
-
-fun getDeviceName(context: Context): String? {
-    return getDefaultSharedPreferences(context).getString(PREF_KEY_DEVICE_NAME, null)
 }
 
 @Deprecated("Replaced by KeyManager#getBackupKey()")

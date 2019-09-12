@@ -14,10 +14,6 @@
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
 
-    <!-- This is needed to retrieve the serial number of the device,
-         so we can store the backups for each device in a unique location -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <application
         android:name=".Backup"
         android:allowBackup="false"
