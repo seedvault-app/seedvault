@@ -10,7 +10,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.header.UnsupportedVersionException
-import com.stevesoltys.backup.metadata.FormatException
+import com.stevesoltys.backup.metadata.DecryptionFailedException
 import com.stevesoltys.backup.metadata.MetadataReader
 import com.stevesoltys.backup.settings.getBackupToken
 import libcore.io.IoUtils.closeQuietly
@@ -50,12 +50,12 @@ internal class RestoreCoordinator(
             } catch (e: IOException) {
                 Log.e(TAG, "Error while getting restore sets", e)
                 return null
-            } catch (e: FormatException) {
-                Log.e(TAG, "Error while getting restore sets", e)
-                return null
             } catch (e: SecurityException) {
                 Log.e(TAG, "Error while getting restore sets", e)
                 return null
+            } catch (e: DecryptionFailedException) {
+                Log.e(TAG, "Error while decrypting restore set", e)
+                continue
             } catch (e: UnsupportedVersionException) {
                 Log.w(TAG, "Backup with unsupported version read", e)
                 continue

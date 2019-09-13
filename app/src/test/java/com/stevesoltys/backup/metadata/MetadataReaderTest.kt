@@ -47,21 +47,21 @@ class MetadataReaderTest {
     }
 
     @Test
-    fun `malformed JSON throws FormatException`() {
-        assertThrows(FormatException::class.java) {
+    fun `malformed JSON throws SecurityException`() {
+        assertThrows(SecurityException::class.java) {
             decoder.decode("{".toByteArray(Utf8), metadata.version, metadata.token)
         }
     }
 
     @Test
-    fun `missing fields throws FormatException`() {
+    fun `missing fields throws SecurityException`() {
         val json = JSONObject()
         json.put(JSON_VERSION, metadata.version.toInt())
         json.put(JSON_TOKEN, metadata.token)
         json.put(JSON_ANDROID_VERSION, metadata.androidVersion)
         val jsonBytes = json.toString().toByteArray(Utf8)
 
-        assertThrows(FormatException::class.java) {
+        assertThrows(SecurityException::class.java) {
             decoder.decode(jsonBytes, metadata.version, metadata.token)
         }
     }

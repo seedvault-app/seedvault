@@ -47,9 +47,6 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
         } catch (e: InvalidWordCountException) {
             throw AssertionError(e)
         }
-
-        // TODO if (isRestore) check if we can decrypt a backup
-
         val mnemonic = input.joinToString(" ")
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
         Backup.keyManager.storeBackupKey(seed)

@@ -13,14 +13,14 @@ import javax.crypto.AEADBadTagException
 
 interface MetadataReader {
 
-    @Throws(FormatException::class, SecurityException::class, UnsupportedVersionException::class, IOException::class)
+    @Throws(SecurityException::class, DecryptionFailedException::class, UnsupportedVersionException::class, IOException::class)
     fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata
 
 }
 
 class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
 
-    @Throws(FormatException::class, SecurityException::class, UnsupportedVersionException::class, IOException::class)
+    @Throws(SecurityException::class, DecryptionFailedException::class, UnsupportedVersionException::class, IOException::class)
     override fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata {
         val version = inputStream.read().toByte()
         if (version < 0) throw IOException()
@@ -28,14 +28,13 @@ class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         val metadataBytes = try {
             crypto.decryptSegment(inputStream)
         } catch (e: AEADBadTagException) {
-            // TODO use yet another exception?
-            throw SecurityException(e)
+            throw DecryptionFailedException(e)
         }
         return decode(metadataBytes, version, expectedToken)
     }
 
     @VisibleForTesting
-    @Throws(FormatException::class, SecurityException::class)
+    @Throws(SecurityException::class)
     internal fun decode(bytes: ByteArray, expectedVersion: Byte, expectedToken: Long): BackupMetadata {
         // NOTE: We don't do extensive validation of the parsed input here,
         // because it was encrypted with authentication, so we should be able to trust it.
@@ -59,7 +58,7 @@ class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     deviceName = json.getString(JSON_DEVICE_NAME)
             )
         } catch (e: JSONException) {
-            throw FormatException(e)
+            throw SecurityException(e)
         }
     }
 
