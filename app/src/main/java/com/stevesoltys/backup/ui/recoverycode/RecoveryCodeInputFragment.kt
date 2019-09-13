@@ -32,6 +32,8 @@ class RecoveryCodeInputFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity()).get(RecoveryCodeViewModel::class.java)
 
+        if (viewModel.isRestore) introText.setText(R.string.recovery_code_input_intro)
+
         val adapter = getAdapter()
 
         for (i in 0 until WORD_NUM) {

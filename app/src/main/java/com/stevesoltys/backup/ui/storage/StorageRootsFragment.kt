@@ -53,6 +53,10 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
             titleView.text = getString(R.string.storage_fragment_restore_title)
             backView.visibility = VISIBLE
             backView.setOnClickListener { requireActivity().finishAfterTransition() }
+        } else {
+            warningIcon.visibility = VISIBLE
+            warningText.visibility = VISIBLE
+            divider.visibility = VISIBLE
         }
 
         listView.adapter = adapter

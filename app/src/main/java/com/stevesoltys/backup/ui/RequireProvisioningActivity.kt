@@ -12,6 +12,9 @@ const val REQUEST_CODE_BACKUP_LOCATION = 2
 const val REQUEST_CODE_RECOVERY_CODE = 3
 
 const val INTENT_EXTRA_IS_RESTORE = "isRestore"
+const val INTENT_EXTRA_IS_SETUP_WIZARD = "isSetupWizard"
+
+private const val ACTION_SETUP_WIZARD = "com.stevesoltys.backup.restore.RESTORE_BACKUP"
 
 private val TAG = RequireProvisioningActivity::class.java.name
 
@@ -20,6 +23,9 @@ private val TAG = RequireProvisioningActivity::class.java.name
  * before starting.
  */
 abstract class RequireProvisioningActivity : BackupActivity() {
+
+    protected val isSetupWizard: Boolean
+        get() = intent?.action == ACTION_SETUP_WIZARD
 
     protected abstract fun getViewModel(): RequireProvisioningViewModel
 
@@ -52,17 +58,15 @@ abstract class RequireProvisioningActivity : BackupActivity() {
     protected fun showStorageActivity() {
         val intent = Intent(this, StorageActivity::class.java)
         intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
+        intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
         startActivityForResult(intent, REQUEST_CODE_BACKUP_LOCATION)
     }
 
     protected fun showRecoveryCodeActivity() {
         val intent = Intent(this, RecoveryCodeActivity::class.java)
         intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
+        intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
         startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
-    }
-
-    protected fun isProvisioned(): Boolean {
-        return getViewModel().recoveryCodeIsSet() && getViewModel().validLocationIsSet()
     }
 
 }

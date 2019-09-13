@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.ui.BackupActivity
 import com.stevesoltys.backup.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.backup.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import com.stevesoltys.backup.ui.LiveEventHandler
 
 private val TAG = StorageActivity::class.java.name
@@ -20,6 +21,8 @@ class StorageActivity : BackupActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (isSetupWizard()) hideSystemUI()
 
         setContentView(R.layout.activity_fragment_container)
 
@@ -81,6 +84,10 @@ class StorageActivity : BackupActivity() {
 
     private fun isRestore(): Boolean {
         return intent?.getBooleanExtra(INTENT_EXTRA_IS_RESTORE, false) ?: false
+    }
+
+    private fun isSetupWizard(): Boolean {
+        return intent?.getBooleanExtra(INTENT_EXTRA_IS_SETUP_WIZARD, false) ?: false
     }
 
     private fun getCheckFragmentTitle() = if (viewModel.isRestoreOperation) {

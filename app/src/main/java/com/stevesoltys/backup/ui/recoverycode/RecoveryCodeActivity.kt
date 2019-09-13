@@ -2,18 +2,21 @@ package com.stevesoltys.backup.ui.recoverycode
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.ui.BackupActivity
 import com.stevesoltys.backup.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.backup.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import com.stevesoltys.backup.ui.LiveEventHandler
 
-class RecoveryCodeActivity : AppCompatActivity() {
+class RecoveryCodeActivity : BackupActivity() {
 
     private lateinit var viewModel: RecoveryCodeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (isSetupWizard()) hideSystemUI()
 
         setContentView(R.layout.activity_recovery_code)
 
@@ -61,6 +64,10 @@ class RecoveryCodeActivity : AppCompatActivity() {
 
     private fun isRestore(): Boolean {
         return intent?.getBooleanExtra(INTENT_EXTRA_IS_RESTORE, false) ?: false
+    }
+
+    private fun isSetupWizard(): Boolean {
+        return intent?.getBooleanExtra(INTENT_EXTRA_IS_SETUP_WIZARD, false) ?: false
     }
 
 }

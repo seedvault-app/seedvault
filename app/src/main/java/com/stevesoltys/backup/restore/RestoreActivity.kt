@@ -18,6 +18,8 @@ class RestoreActivity : RequireProvisioningActivity() {
         viewModel = ViewModelProviders.of(this).get(RestoreViewModel::class.java)
         super.onCreate(savedInstanceState)
 
+        if (isSetupWizard) hideSystemUI()
+
         setContentView(R.layout.activity_fragment_container)
 
         viewModel.chosenRestoreSet.observe(this, Observer { set ->
