@@ -1,8 +1,10 @@
-package com.stevesoltys.backup.ui
+package com.stevesoltys.backup.ui.recoverycode
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.backup.Backup
+import com.stevesoltys.backup.ui.LiveEvent
+import com.stevesoltys.backup.ui.MutableLiveEvent
 import io.github.novacrypto.bip39.*
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException
@@ -45,6 +47,9 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
         } catch (e: InvalidWordCountException) {
             throw AssertionError(e)
         }
+
+        // TODO if (isRestore) check if we can decrypt a backup
+
         val mnemonic = input.joinToString(" ")
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
         Backup.keyManager.storeBackupKey(seed)

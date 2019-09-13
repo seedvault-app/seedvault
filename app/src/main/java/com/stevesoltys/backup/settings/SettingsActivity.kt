@@ -5,17 +5,14 @@ import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.ui.BackupActivity
-import com.stevesoltys.backup.ui.BackupLocationFragment
-import com.stevesoltys.backup.ui.BackupViewModel
+import com.stevesoltys.backup.ui.RequireProvisioningActivity
+import com.stevesoltys.backup.ui.RequireProvisioningViewModel
 
-class SettingsActivity : BackupActivity() {
+class SettingsActivity : RequireProvisioningActivity() {
 
     private lateinit var viewModel: SettingsViewModel
 
-    override fun getViewModel(): BackupViewModel = viewModel
-
-    override fun getInitialFragment() = SettingsFragment()
+    override fun getViewModel(): RequireProvisioningViewModel = viewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
@@ -25,7 +22,7 @@ class SettingsActivity : BackupActivity() {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        if (savedInstanceState == null) showFragment(getInitialFragment())
+        if (savedInstanceState == null) showFragment(SettingsFragment())
     }
 
     @CallSuper
@@ -37,7 +34,7 @@ class SettingsActivity : BackupActivity() {
         if (!viewModel.recoveryCodeIsSet()) {
             showRecoveryCodeActivity()
         } else if (!viewModel.validLocationIsSet()) {
-            showFragment(BackupLocationFragment())
+            showStorageActivity()
             // remove potential error notifications
             (application as Backup).notificationManager.onBackupErrorSeen()
         }

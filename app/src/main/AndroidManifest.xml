@@ -14,6 +14,11 @@
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- This is needed to retrieve the available storage roots -->
+    <uses-permission
+        android:name="android.permission.MANAGE_DOCUMENTS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".Backup"
         android:allowBackup="false"
@@ -28,8 +33,18 @@
             android:exported="true" />
 
         <activity
-            android:name=".ui.RecoveryCodeActivity"
-            android:label="@string/recovery_code_title" />
+            android:name=".ui.storage.StorageActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.storage.PermissionGrantActivity"
+            android:exported="false"
+            android:permission="android.permission.MANAGE_DOCUMENTS" />
+
+        <activity
+            android:name=".ui.recoverycode.RecoveryCodeActivity"
+            android:label="@string/recovery_code_title"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".restore.RestoreActivity"

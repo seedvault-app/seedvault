@@ -36,7 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
 
-        backup = findPreference("backup")!!
+        backup = findPreference<TwoStatePreference>("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {
@@ -55,7 +55,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        autoRestore = findPreference("auto_restore")!!
+        autoRestore = findPreference<TwoStatePreference>("auto_restore")!!
         autoRestore.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {

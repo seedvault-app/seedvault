@@ -8,8 +8,7 @@ import android.os.Build
 import android.os.ServiceManager.getService
 import com.stevesoltys.backup.crypto.KeyManager
 import com.stevesoltys.backup.crypto.KeyManagerImpl
-
-private const val URI_AUTHORITY_EXTERNAL_STORAGE = "com.android.externalstorage.documents"
+import com.stevesoltys.backup.ui.storage.AUTHORITY_STORAGE
 
 /**
  * @author Steve Soltys
@@ -32,6 +31,7 @@ class Backup : Application() {
 
 }
 
-fun Uri.isOnExternalStorage() = authority == URI_AUTHORITY_EXTERNAL_STORAGE
+// TODO fix
+fun Uri.isOnExternalStorage() = authority == AUTHORITY_STORAGE
 
 fun isDebugBuild() = Build.TYPE == "userdebug"

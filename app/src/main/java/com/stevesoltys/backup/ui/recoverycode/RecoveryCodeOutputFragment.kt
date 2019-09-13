@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.ui
+package com.stevesoltys.backup.ui.recoverycode
 
 import android.content.res.Configuration
 import android.os.Bundle

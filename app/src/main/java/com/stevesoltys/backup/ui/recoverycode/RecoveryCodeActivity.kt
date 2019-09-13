@@ -1,12 +1,12 @@
-package com.stevesoltys.backup.ui
+package com.stevesoltys.backup.ui.recoverycode
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
-
-internal const val INTENT_EXTRA_IS_RESTORE = "isRestore"
+import com.stevesoltys.backup.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.backup.ui.LiveEventHandler
 
 class RecoveryCodeActivity : AppCompatActivity() {
 
@@ -28,8 +28,6 @@ class RecoveryCodeActivity : AppCompatActivity() {
                 finishAfterTransition()
             }
         })
-
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
             if (viewModel.isRestore) showInput(false)
