@@ -1,6 +1,6 @@
 package com.stevesoltys.backup.ui.recoverycode
 
-import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,12 +33,10 @@ class RecoveryCodeOutputFragment : Fragment() {
 
     private fun setGridParameters(list: RecyclerView) {
         val layoutManager = list.layoutManager as GridLayoutManager
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager.orientation = RecyclerView.VERTICAL
+        if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
             layoutManager.spanCount = 4
         } else {
-            layoutManager.orientation = RecyclerView.HORIZONTAL
-            layoutManager.spanCount = 6
+            layoutManager.spanCount = 2
         }
     }
 

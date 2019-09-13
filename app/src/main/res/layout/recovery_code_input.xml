@@ -13,36 +13,14 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_1"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout2"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout3"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
-            android:inputType="textAutoComplete"
-            android:nextFocusForward="@+id/wordInput2" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wordLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/recovery_code_input_hint_2"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout3"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout1">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/wordInput2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -58,35 +36,13 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_3"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout4"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout5"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout1">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
-            android:inputType="textAutoComplete"
-            android:nextFocusForward="@+id/wordInput4" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wordLayout4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/recovery_code_input_hint_4"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout5"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout3">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/wordInput4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -102,35 +58,13 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_5"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout6"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout7"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout4">
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout3">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
-            android:inputType="textAutoComplete"
-            android:nextFocusForward="@+id/wordInput6" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wordLayout6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/recovery_code_input_hint_6"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/wordLayout7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout5">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/wordInput6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -146,36 +80,13 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_7"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside">
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout9"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout5">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
-            android:inputType="textAutoComplete"
-            android:nextFocusForward="@+id/wordInput8" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wordLayout8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/recovery_code_input_hint_8"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout7">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/wordInput8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -191,35 +102,13 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_9"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout8">
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout11"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout7">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
-            android:inputType="textAutoComplete"
-            android:nextFocusForward="@+id/wordInput10" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/wordLayout10"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/recovery_code_input_hint_10"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout11"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout9">
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/wordInput10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -235,13 +124,124 @@
         android:layout_height="wrap_content"
         android:hint="@string/recovery_code_input_hint_11"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/wordLayout12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout10">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/wordLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout9">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_2"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/wordInput2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput4" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_4"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout2">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/wordInput4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput6" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_6"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout4">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/wordInput6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput8" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_8"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout6">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/wordInput8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:completionThreshold="1"
+            android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
+            android:inputType="textAutoComplete"
+            android:nextFocusForward="@+id/wordInput10" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/wordLayout10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/recovery_code_input_hint_10"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/wordLayout12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout8">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/wordInput10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:completionThreshold="1"
@@ -260,7 +260,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/wordLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/wordLayout11">
+        app:layout_constraintTop_toBottomOf="@+id/wordLayout10">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/wordInput12"
