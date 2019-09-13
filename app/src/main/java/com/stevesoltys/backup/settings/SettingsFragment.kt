@@ -29,6 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
+    private lateinit var backupLocation: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -49,7 +50,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        val backupLocation = findPreference<Preference>("backup_location")!!
+        backupLocation = findPreference<Preference>("backup_location")!!
         backupLocation.setOnPreferenceClickListener {
             viewModel.chooseBackupLocation()
             true
@@ -85,6 +86,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val resolver = requireContext().contentResolver
         autoRestore.isChecked = Settings.Secure.getInt(resolver, BACKUP_AUTO_RESTORE, 1) == 1
+
+        // TODO add time of last backup here
+        val storageName = getStorage(requireContext())?.name
+        backupLocation.summary = storageName ?: getString(R.string.settings_backup_location_none )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

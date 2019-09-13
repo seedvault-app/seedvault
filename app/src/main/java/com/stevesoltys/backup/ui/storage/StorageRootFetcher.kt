@@ -36,6 +36,10 @@ data class StorageRoot(
         internal val supportsEject: Boolean,
         internal val enabled: Boolean = true) {
 
+    internal val uri: Uri by lazy {
+        DocumentsContract.buildTreeDocumentUri(authority, documentId)
+    }
+
     fun isInternal(): Boolean {
         return authority == AUTHORITY_STORAGE && !supportsEject
     }

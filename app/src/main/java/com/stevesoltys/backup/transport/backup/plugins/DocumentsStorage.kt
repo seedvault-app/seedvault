@@ -2,9 +2,9 @@ package com.stevesoltys.backup.transport.backup.plugins
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.backup.settings.Storage
 import com.stevesoltys.backup.settings.getAndSaveNewBackupToken
 import java.io.IOException
 import java.io.InputStream
@@ -19,10 +19,10 @@ private const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 
-class DocumentsStorage(private val context: Context, parentFolder: Uri?, token: Long) {
+class DocumentsStorage(private val context: Context, storage: Storage?, token: Long) {
 
     internal val rootBackupDir: DocumentFile? by lazy {
-        val folderUri = parentFolder ?: return@lazy null
+        val folderUri = storage?.uri ?: return@lazy null
         // [fromTreeUri] should only return null when SDK_INT < 21
         val parent = DocumentFile.fromTreeUri(context, folderUri) ?: throw AssertionError()
         try {

@@ -31,7 +31,4 @@ class Backup : Application() {
 
 }
 
-// TODO fix
-fun Uri.isOnExternalStorage() = authority == AUTHORITY_STORAGE
-
 fun isDebugBuild() = Build.TYPE == "userdebug"

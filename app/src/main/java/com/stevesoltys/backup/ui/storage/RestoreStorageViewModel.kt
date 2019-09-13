@@ -1,13 +1,10 @@
 package com.stevesoltys.backup.ui.storage
 
 import android.app.Application
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.settings.setBackupFolderUri
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 import com.stevesoltys.backup.transport.backup.plugins.DIRECTORY_ROOT
 import com.stevesoltys.backup.transport.restore.plugins.DocumentsProviderRestorePlugin
 
@@ -19,13 +16,7 @@ internal class RestoreStorageViewModel(private val app: Application) : StorageVi
 
     override fun onLocationSet(uri: Uri) {
         if (hasBackup(uri)) {
-            // store backup folder location in settings
-            setBackupFolderUri(app, uri)
-
-            // stop backup service to be sure the old location will get updated
-            app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
-
-            Log.d(TAG, "New storage location chosen: $uri")
+            saveStorage(uri)
 
             mLocationChecked.setEvent(LocationResult())
         } else {

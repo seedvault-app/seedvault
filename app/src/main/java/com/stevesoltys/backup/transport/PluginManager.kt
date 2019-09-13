@@ -8,8 +8,8 @@ import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
 import com.stevesoltys.backup.metadata.MetadataReaderImpl
 import com.stevesoltys.backup.metadata.MetadataWriterImpl
-import com.stevesoltys.backup.settings.getBackupFolderUri
 import com.stevesoltys.backup.settings.getBackupToken
+import com.stevesoltys.backup.settings.getStorage
 import com.stevesoltys.backup.transport.backup.BackupCoordinator
 import com.stevesoltys.backup.transport.backup.FullBackup
 import com.stevesoltys.backup.transport.backup.InputFactory
@@ -26,7 +26,7 @@ class PluginManager(context: Context) {
 
     // We can think about using an injection framework such as Dagger to simplify this.
 
-    private val storage = DocumentsStorage(context, getBackupFolderUri(context), getBackupToken(context))
+    private val storage = DocumentsStorage(context, getStorage(context), getBackupToken(context))
 
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()

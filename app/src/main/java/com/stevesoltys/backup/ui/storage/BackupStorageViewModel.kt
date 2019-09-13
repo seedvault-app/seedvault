@@ -3,15 +3,12 @@ package com.stevesoltys.backup.ui.storage
 import android.app.Application
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.settings.getAndSaveNewBackupToken
-import com.stevesoltys.backup.settings.setBackupFolderUri
-import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 import com.stevesoltys.backup.transport.TRANSPORT_ID
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
@@ -21,18 +18,10 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
     override val isRestoreOperation = false
 
     override fun onLocationSet(uri: Uri) {
-        // store backup folder location in settings
-        setBackupFolderUri(app, uri)
-
-        // TODO also set the storage name
-
-        // stop backup service to be sure the old location will get updated
-        app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
+        saveStorage(uri)
 
         // use a new backup token
         getAndSaveNewBackupToken(app)
-
-        Log.d(TAG, "New storage location chosen: $uri")
 
         // initialize the new location
         val observer = InitializationObserver()

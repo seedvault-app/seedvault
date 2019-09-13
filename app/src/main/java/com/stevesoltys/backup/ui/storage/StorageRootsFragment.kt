@@ -3,7 +3,6 @@ package com.stevesoltys.backup.ui.storage
 import android.content.Intent
 import android.content.Intent.*
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -72,8 +71,9 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
     }
 
     override fun onClick(root: StorageRoot) {
+        viewModel.onStorageRootChosen(root)
         val intent = Intent(requireContext(), PermissionGrantActivity::class.java)
-        intent.data = DocumentsContract.buildTreeDocumentUri(root.authority, root.documentId)
+        intent.data = root.uri
         intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
                 FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION)
         startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT_TREE)
