@@ -3,6 +3,7 @@ package com.stevesoltys.backup.settings
 import android.content.Context
 import android.net.Uri
 import android.preference.PreferenceManager.getDefaultSharedPreferences
+import androidx.documentfile.provider.DocumentFile
 import java.util.*
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
@@ -14,8 +15,10 @@ private const val PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword"
 data class Storage(
         val uri: Uri,
         val name: String,
-        val ejectable: Boolean
-)
+        val ejectable: Boolean) {
+    fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
+            ?: throw AssertionError("Should only happen on API < 21.")
+}
 
 fun setStorage(context: Context, storage: Storage) {
     getDefaultSharedPreferences(context)

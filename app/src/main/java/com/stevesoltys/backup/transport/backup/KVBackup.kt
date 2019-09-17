@@ -27,11 +27,6 @@ class KVBackup(
 
     fun hasState() = state != null
 
-    fun requestBackupTime(): Long {
-        Log.i(TAG, "Request K/V backup time")
-        return 0
-    }
-
     fun getQuota(): Long = plugin.getQuota()
 
     fun performBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {

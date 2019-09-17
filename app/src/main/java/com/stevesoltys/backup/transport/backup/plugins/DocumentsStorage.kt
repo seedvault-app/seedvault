@@ -22,9 +22,7 @@ private val TAG = DocumentsStorage::class.java.simpleName
 class DocumentsStorage(private val context: Context, storage: Storage?, token: Long) {
 
     internal val rootBackupDir: DocumentFile? by lazy {
-        val folderUri = storage?.uri ?: return@lazy null
-        // [fromTreeUri] should only return null when SDK_INT < 21
-        val parent = DocumentFile.fromTreeUri(context, folderUri) ?: throw AssertionError()
+        val parent = storage?.getDocumentFile(context) ?: return@lazy null
         try {
             val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
             // create .nomedia file to prevent Android's MediaScanner from trying to index the backup

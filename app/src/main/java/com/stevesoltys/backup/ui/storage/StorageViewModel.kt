@@ -7,7 +7,6 @@ import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import android.net.Uri
 import android.util.Log
-import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,8 +40,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         internal fun validLocationIsSet(context: Context): Boolean {
             val storage = getStorage(context) ?: return false
             if (storage.ejectable) return true
-            val file = DocumentFile.fromTreeUri(context, storage.uri) ?: return false
-            return file.isDirectory
+            return storage.getDocumentFile(context).isDirectory
         }
     }
 

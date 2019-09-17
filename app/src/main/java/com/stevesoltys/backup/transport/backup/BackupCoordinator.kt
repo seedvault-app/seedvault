@@ -9,7 +9,9 @@ import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
 import com.stevesoltys.backup.metadata.MetadataWriter
 import com.stevesoltys.backup.settings.getBackupToken
+import com.stevesoltys.backup.settings.getStorage
 import java.io.IOException
+import java.util.concurrent.TimeUnit.MINUTES
 
 private val TAG = BackupCoordinator::class.java.simpleName
 
@@ -83,7 +85,20 @@ class BackupCoordinator(
     // Key/value incremental backup support
     //
 
-    fun requestBackupTime() = kv.requestBackupTime()
+    /**
+     * Verify that this is a suitable time for a key/value backup pass.
+     * This should return zero if a backup is reasonable right now, some positive value otherwise.
+     * This method will be called outside of the [performIncrementalBackup]/[finishBackup] pair.
+     *
+     * If this is not a suitable time for a backup, the transport should return a backoff delay,
+     * in milliseconds, after which the Backup Manager should try again.
+     *
+     * @return Zero if this is a suitable time for a backup pass, or a positive time delay
+     *   in milliseconds to suggest deferring the backup pass for a while.
+     */
+    fun requestBackupTime(): Long = getBackupBackoff().apply {
+        Log.i(TAG, "Request incremental backup time. Returned $this")
+    }
 
     fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int) =
             kv.performBackup(packageInfo, data, flags)
@@ -92,7 +107,22 @@ class BackupCoordinator(
     // Full backup
     //
 
-    fun requestFullBackupTime() = full.requestFullBackupTime()
+    /**
+     * Verify that this is a suitable time for a full-data backup pass.
+     * This should return zero if a backup is reasonable right now, some positive value otherwise.
+     * This method will be called outside of the [performFullBackup]/[finishBackup] pair.
+     *
+     * If this is not a suitable time for a backup, the transport should return a backoff delay,
+     * in milliseconds, after which the Backup Manager should try again.
+     *
+     * @return Zero if this is a suitable time for a backup pass, or a positive time delay
+     *   in milliseconds to suggest deferring the backup pass for a while.
+     *
+     * @see [requestBackupTime]
+     */
+    fun requestFullBackupTime(): Long = getBackupBackoff().apply {
+        Log.i(TAG, "Request full backup time. Returned $this")
+    }
 
     fun checkFullBackupSize(size: Long) = full.checkFullBackupSize(size)
 
@@ -154,6 +184,18 @@ class BackupCoordinator(
     private fun writeBackupMetadata(token: Long) {
         val outputStream = plugin.getMetadataOutputStream()
         metadataWriter.write(outputStream, token)
+    }
+
+    private fun getBackupBackoff(): Long {
+        val noBackoff = 0L
+        val defaultBackoff = MINUTES.toMillis(10)
+
+        // back off if there's no storage set
+        val storage = getStorage(context) ?: return defaultBackoff
+        // don't back off if storage is not ejectable or available right now
+        return if (!storage.ejectable || storage.getDocumentFile(context).isDirectory) noBackoff
+        // otherwise back off
+        else defaultBackoff
     }
 
 }

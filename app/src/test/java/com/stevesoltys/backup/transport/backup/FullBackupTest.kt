@@ -21,11 +21,6 @@ internal class FullBackupTest : BackupTest() {
     private val inputStream = mockk<FileInputStream>()
 
     @Test
-    fun `now is a good time for a backup`() {
-        assertEquals(0, backup.requestFullBackupTime())
-    }
-
-    @Test
     fun `has no initial state`() {
         assertFalse(backup.hasState())
     }
