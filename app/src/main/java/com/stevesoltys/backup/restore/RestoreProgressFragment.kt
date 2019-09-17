@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.getAppName
 import com.stevesoltys.backup.isDebugBuild
+import com.stevesoltys.backup.settings.getStorage
 import kotlinx.android.synthetic.main.fragment_restore_progress.*
 
 class RestoreProgressFragment : Fragment() {
@@ -32,29 +33,27 @@ class RestoreProgressFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(requireActivity()).get(RestoreViewModel::class.java)
 
-        viewModel.numPackages.observe(this, Observer { numPackages ->
-            progressBar.min = 0
-            progressBar.max = numPackages
-        })
-
         viewModel.chosenRestoreSet.observe(this, Observer { set ->
             backupNameView.text = set.device
         })
 
-        viewModel.restoreProgress.observe(this, Observer { progress ->
-            progressBar.progress = progress.nowBeingRestored
-            val appName = getAppName(requireActivity().packageManager, progress.currentPackage)
-            val displayName = if (isDebugBuild()) "$appName (${progress.currentPackage})" else appName
+        viewModel.restoreProgress.observe(this, Observer { currentPackage ->
+            val appName = getAppName(requireActivity().packageManager, currentPackage)
+            val displayName = if (isDebugBuild()) "$appName (${currentPackage})" else appName
             currentPackageView.text = getString(R.string.restore_current_package, displayName)
         })
 
         viewModel.restoreFinished.observe(this, Observer { finished ->
-            progressBarIndefinite.visibility = INVISIBLE
-            progressBar.progress = viewModel.numPackages.value ?: progressBar.max
+            progressBar.visibility = INVISIBLE
             button.visibility = VISIBLE
             if (finished == 0) {
                 // success
                 currentPackageView.text = getString(R.string.restore_finished_success)
+                warningView.text = if (getStorage(requireContext())?.ejectable == true) {
+                    getString(R.string.restore_finished_warning_only_installed, getString(R.string.restore_finished_warning_ejectable))
+                } else {
+                    getString(R.string.restore_finished_warning_only_installed, null)
+                }
                 warningView.visibility = VISIBLE
             } else {
                 // error

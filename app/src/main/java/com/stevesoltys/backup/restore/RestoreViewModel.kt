@@ -32,11 +32,8 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
     private val mChosenRestoreSet = MutableLiveData<RestoreSet>()
     internal val chosenRestoreSet: LiveData<RestoreSet> get() = mChosenRestoreSet
 
-    private var mNumPackages = MutableLiveData<Int>()
-    internal val numPackages: LiveData<Int> get() = mNumPackages
-
-    private val mRestoreProgress = MutableLiveData<RestoreProgress>()
-    internal val restoreProgress: LiveData<RestoreProgress> get() = mRestoreProgress
+    private val mRestoreProgress = MutableLiveData<String>()
+    internal val restoreProgress: LiveData<String> get() = mRestoreProgress
 
     private val mRestoreFinished = MutableLiveData<Int>()
     // Zero on success; a nonzero error code if the restore operation as a whole failed.
@@ -84,8 +81,6 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
     @WorkerThread
     private inner class RestoreObserver : IRestoreObserver.Stub() {
 
-        private var correctedNow: Int = -1
-
         /**
          * Supply a list of the restore datasets available from the current transport.
          * This method is invoked as a callback following the application's use of the
@@ -109,7 +104,7 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
          * @param numPackages The total number of packages being processed in this restore operation.
          */
         override fun restoreStarting(numPackages: Int) {
-            mNumPackages.postValue(numPackages)
+            // noop
         }
 
         /**
@@ -122,12 +117,8 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
          * @param currentPackage The name of the package now being restored.
          */
         override fun onUpdate(nowBeingRestored: Int, currentPackage: String) {
-            if (nowBeingRestored <= correctedNow) {
-                correctedNow += 1
-            } else {
-                correctedNow = nowBeingRestored
-            }
-            mRestoreProgress.postValue(RestoreProgress(correctedNow, currentPackage))
+            // nowBeingRestored reporting is buggy, so don't use it
+            mRestoreProgress.postValue(currentPackage)
         }
 
         /**
@@ -155,7 +146,3 @@ internal class RestoreSetResult(
 
     internal fun hasError(): Boolean = errorMsg != null
 }
-
-internal class RestoreProgress(
-        internal val nowBeingRestored: Int,
-        internal val currentPackage: String)

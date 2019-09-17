@@ -56,7 +56,7 @@
         tools:text="@string/restore_current_package" />
 
     <ProgressBar
-        android:id="@+id/progressBarIndefinite"
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,17 +66,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentPackageView" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarIndefinite"
-        tools:progress="50" />
-
     <TextView
         android:id="@+id/warningView"
         android:layout_width="0dp"
@@ -84,6 +73,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:textSize="18sp"
         android:text="@string/restore_finished_warning_only_installed"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"

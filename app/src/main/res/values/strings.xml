@@ -98,7 +98,8 @@
     <string name="restore_current_package">Restoring %s…</string>
     <string name="restore_finished_success">Restore complete.</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
-    <string name="restore_finished_warning_only_installed">Note that we could only restore data for apps that are already installed.\n\nWhen you install more apps, we will try to restore their data and settings from this backup. So please do not delete it as long as it might still be needed.</string>
+    <string name="restore_finished_warning_only_installed">Note that we could only restore data for apps that are already installed.\n\nWhen you install more apps, we will try to restore their data and settings from this backup. So please do not delete it as long as it might still be needed.%s</string>
+    <string name="restore_finished_warning_ejectable">\n\nPlease also ensure that the storage medium is plugged in when re-installing your apps.</string>
     <string name="restore_finished_button">Finish</string>
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
