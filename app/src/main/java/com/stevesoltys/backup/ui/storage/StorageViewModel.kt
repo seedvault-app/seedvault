@@ -2,18 +2,19 @@ package com.stevesoltys.backup.ui.storage
 
 import android.app.Application
 import android.content.Context
+import android.content.Context.USB_SERVICE
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.hardware.usb.UsbManager
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.settings.Storage
-import com.stevesoltys.backup.settings.getStorage
-import com.stevesoltys.backup.settings.setStorage
+import com.stevesoltys.backup.isMassStorage
+import com.stevesoltys.backup.settings.*
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 import com.stevesoltys.backup.ui.LiveEvent
 import com.stevesoltys.backup.ui.MutableLiveEvent
@@ -85,10 +86,28 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         val storage = Storage(uri, name, root.supportsEject)
         setStorage(app, storage)
 
+        if (storage.ejectable) {
+            val wasSaved = saveUsbDevice()
+            // reset stored flash drive, if we did not update it
+            if (!wasSaved) setFlashDrive(app, null)
+        }
+
         // stop backup service to be sure the old location will get updated
         app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
 
         Log.d(TAG, "New storage location saved: $uri")
+    }
+
+    private fun saveUsbDevice(): Boolean {
+        val manager = app.getSystemService(USB_SERVICE) as UsbManager
+        manager.deviceList.values.forEach { device ->
+            if (device.isMassStorage()) {
+                setFlashDrive(app, FlashDrive.from(device))
+                return true
+            }
+        }
+        Log.w(TAG, "No USB device found for ejectable storage.")
+        return false
     }
 
     override fun onCleared() {

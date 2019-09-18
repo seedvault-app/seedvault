@@ -7,7 +7,6 @@ import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
-import android.os.Build.VERSION.SDK_INT
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.settings.SettingsActivity
@@ -36,7 +35,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     }
 
     override fun getTransportFlags(): Int {
-        return if (SDK_INT >= 28) FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED else 0
+        return FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
     }
 
     override fun dataManagementIntent(): Intent {

@@ -103,7 +103,7 @@ internal class StorageRootFetcher(private val context: Context) {
         var cursor: Cursor? = null
         try {
             cursor = contentResolver.query(rootsUri, null, null, null, null)
-            while (cursor.moveToNext()) {
+            while (cursor!!.moveToNext()) {
                 val root = getStorageRoot(authority, cursor)
                 if (root != null) roots.add(root)
             }
@@ -198,7 +198,7 @@ internal class StorageRootFetcher(private val context: Context) {
         }
     }
 
-    private fun getPackageIcon(context: Context, authority: String?, icon: Int): Drawable? {
+    private fun getPackageIcon(context: Context, authority: String, icon: Int): Drawable? {
         if (icon != 0) {
             val pm = context.packageManager
             val info = pm.resolveContentProvider(authority, 0)
