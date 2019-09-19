@@ -43,7 +43,7 @@ class PackageService {
             Log.d(TAG, "Got ${packageList.size} packages: $packageList")
 
             // TODO why is this filtering out so much?
-            val eligibleApps = backupManager.filterAppsEligibleForBackup(packageList.toTypedArray())
+            val eligibleApps = backupManager.filterAppsEligibleForBackupForUser(UserHandle.myUserId(), packageList.toTypedArray())
 
             Log.d(TAG, "Filtering left ${eligibleApps.size} eligible packages: ${Arrays.toString(eligibleApps)}")
 

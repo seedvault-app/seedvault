@@ -1,7 +1,12 @@
 package com.stevesoltys.backup.session.restore;
 
-import android.app.backup.*;
+import android.app.backup.BackupManager;
+import android.app.backup.IBackupManager;
+import android.app.backup.IRestoreObserver;
+import android.app.backup.IRestoreSession;
+import android.app.backup.RestoreSet;
 import android.os.RemoteException;
+import android.os.UserHandle;
 
 import java.util.Set;
 
@@ -31,7 +36,7 @@ public class RestoreSession extends IRestoreObserver.Stub {
             return;
         }
 
-        restoreSession = backupManager.beginRestoreSession(null, null);
+        restoreSession = backupManager.beginRestoreSessionForUser(UserHandle.myUserId(), null, null);
 
         if (restoreSession == null) {
             stop(RestoreResult.FAILURE);
@@ -62,7 +67,7 @@ public class RestoreSession extends IRestoreObserver.Stub {
         if (restoreSets.length > 0) {
             RestoreSet restoreSet = restoreSets[0];
             String[] packageArray = packages.toArray(new String[0]);
-            int result = restoreSession.restoreSome(restoreSet.token, this, null, packageArray);
+            int result = restoreSession.restorePackages(restoreSet.token, this, packageArray, null);
 
             if (result != BackupManager.SUCCESS) {
                 stop(RestoreResult.FAILURE);
