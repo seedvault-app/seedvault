@@ -86,9 +86,9 @@ class SettingsManager(context: Context) {
     /**
      * Sets the last backup time to "now".
      */
-    fun saveNewBackupTime(millis: Long = Date().time) {
+    fun saveNewBackupTime() {
         prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, millis)
+                .putLong(PREF_KEY_BACKUP_TIME, Date().time)
                 .apply()
     }
 

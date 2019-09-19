@@ -10,6 +10,7 @@ import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.transport.TRANSPORT_ID
+import com.stevesoltys.backup.transport.requestBackup
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
 
@@ -18,7 +19,7 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
     override val isRestoreOperation = false
 
     override fun onLocationSet(uri: Uri) {
-        saveStorage(uri)
+        val isUsb = saveStorage(uri)
 
         // use a new backup token
         settingsManager.getAndSaveNewBackupToken()
@@ -26,6 +27,11 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
         // initialize the new location
         val observer = InitializationObserver()
         Backup.backupManager.initializeTransportsForUser(UserHandle.myUserId(), arrayOf(TRANSPORT_ID), observer)
+
+        // if storage is on USB and this is not SetupWizard, do a backup right away
+        if (isUsb && !isSetupWizard) Thread {
+            requestBackup(app)
+        }.start()
     }
 
     @WorkerThread

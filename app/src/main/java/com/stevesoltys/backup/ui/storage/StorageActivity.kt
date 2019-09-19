@@ -31,6 +31,7 @@ class StorageActivity : BackupActivity() {
         } else {
             ViewModelProviders.of(this).get(BackupStorageViewModel::class.java)
         }
+        viewModel.isSetupWizard = isSetupWizard()
 
         viewModel.locationSet.observeEvent(this, LiveEventHandler {
             showFragment(StorageCheckFragment.newInstance(getCheckFragmentTitle()), true)

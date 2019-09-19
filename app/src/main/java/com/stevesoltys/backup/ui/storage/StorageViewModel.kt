@@ -40,6 +40,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
     private val storageRootFetcher by lazy { StorageRootFetcher(app) }
     private var storageRoot: StorageRoot? = null
 
+    internal var isSetupWizard: Boolean = false
     abstract val isRestoreOperation: Boolean
 
     companion object {
@@ -79,9 +80,12 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         onLocationSet(uri)
     }
 
-    abstract fun onLocationSet(uri: Uri)
-
-    protected fun saveStorage(uri: Uri) {
+    /**
+     * Saves the storage behind the given [Uri] (and saved [storageRoot]).
+     *
+     * @return true if the storage is a USB flash drive, false otherwise.
+     */
+    protected fun saveStorage(uri: Uri): Boolean {
         // store backup storage location in settings
         val root = storageRoot ?: throw IllegalStateException()
         val name = if (root.isInternal()) {
@@ -109,6 +113,8 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
 
         Log.d(TAG, "New storage location saved: $uri")
+
+        return storage.isUsb
     }
 
     private fun saveUsbDevice(): Boolean {
@@ -122,6 +128,8 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         Log.e(TAG, "No USB device found even though we were expecting one.")
         return false
     }
+
+    abstract fun onLocationSet(uri: Uri)
 
     override fun onCleared() {
         storageRootFetcher.setRemovableStorageListener(null)
