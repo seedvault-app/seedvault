@@ -43,14 +43,14 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
+    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, settingsManager, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore = FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
-    private val restore = RestoreCoordinator(context, restorePlugin, kvRestore, fullRestore, metadataReader)
+    private val restore = RestoreCoordinator(settingsManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
@@ -91,6 +91,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key264) } returns bOutputStream2
+        every { settingsManager.saveNewBackupTime() } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -130,6 +131,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { settingsManager.saveNewBackupTime() } just Runs
 
         // perform backup to output stream
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))

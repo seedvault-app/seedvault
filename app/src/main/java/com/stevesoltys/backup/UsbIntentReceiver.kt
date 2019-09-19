@@ -13,9 +13,10 @@ import android.os.Handler
 import android.provider.DocumentsContract
 import android.util.Log
 import com.stevesoltys.backup.settings.FlashDrive
-import com.stevesoltys.backup.settings.getFlashDrive
 import com.stevesoltys.backup.transport.requestBackup
 import com.stevesoltys.backup.ui.storage.AUTHORITY_STORAGE
+import java.util.*
+import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
 
@@ -28,12 +29,17 @@ class UsbIntentReceiver : BroadcastReceiver() {
         Log.d(TAG, "New USB mass-storage device attached.")
         device.log()
 
-        val savedFlashDrive = getFlashDrive(context) ?: return
+        val settingsManager = (context.applicationContext as Backup).settingsManager
+        val savedFlashDrive = settingsManager.getFlashDrive() ?: return
         val attachedFlashDrive = FlashDrive.from(device)
         if (savedFlashDrive == attachedFlashDrive) {
-            Log.d(TAG, "Matches stored device, requesting backup...")
-            // TODO only if last backup older than 24h
-            startBackupOnceMounted(context)
+            Log.d(TAG, "Matches stored device, checking backup time...")
+            if (Date().time - settingsManager.getBackupTime() >= HOURS.toMillis(24)) {
+                Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
+                startBackupOnceMounted(context)
+            } else {
+                Log.d(TAG, "We have a recent backup, not requesting a new one.")
+            }
         }
     }
 

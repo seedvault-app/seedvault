@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.backup.settings.SettingsManager
 import com.stevesoltys.backup.settings.Storage
-import com.stevesoltys.backup.settings.getAndSaveNewBackupToken
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -19,7 +19,10 @@ private const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 
-class DocumentsStorage(private val context: Context, storage: Storage?, token: Long) {
+class DocumentsStorage(private val context: Context, private val settingsManager: SettingsManager) {
+
+    private val storage: Storage? = settingsManager.getStorage()
+    private val token: Long = settingsManager.getBackupToken()
 
     internal val rootBackupDir: DocumentFile? by lazy {
         val parent = storage?.getDocumentFile(context) ?: return@lazy null
@@ -36,7 +39,7 @@ class DocumentsStorage(private val context: Context, storage: Storage?, token: L
 
     private val currentToken: Long by lazy {
         if (token != 0L) token
-        else getAndSaveNewBackupToken(context).apply {
+        else settingsManager.getAndSaveNewBackupToken().apply {
             Log.d(TAG, "Using a fresh backup token: $this")
         }
     }

@@ -3,12 +3,11 @@ package com.stevesoltys.backup
 import android.app.Application
 import android.app.backup.IBackupManager
 import android.content.Context.BACKUP_SERVICE
-import android.net.Uri
 import android.os.Build
 import android.os.ServiceManager.getService
 import com.stevesoltys.backup.crypto.KeyManager
 import com.stevesoltys.backup.crypto.KeyManagerImpl
-import com.stevesoltys.backup.ui.storage.AUTHORITY_STORAGE
+import com.stevesoltys.backup.settings.SettingsManager
 
 /**
  * @author Steve Soltys
@@ -25,6 +24,9 @@ class Backup : Application() {
         }
     }
 
+    val settingsManager by lazy {
+        SettingsManager(this)
+    }
     val notificationManager by lazy {
         BackupNotificationManager(this)
     }

@@ -8,8 +8,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
 import com.stevesoltys.backup.metadata.MetadataWriter
-import com.stevesoltys.backup.settings.getBackupToken
-import com.stevesoltys.backup.settings.getStorage
+import com.stevesoltys.backup.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.MINUTES
 
@@ -25,6 +24,7 @@ class BackupCoordinator(
         private val kv: KVBackup,
         private val full: FullBackup,
         private val metadataWriter: MetadataWriter,
+        private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
 
     private var calledInitialize = false
@@ -56,7 +56,7 @@ class BackupCoordinator(
         Log.i(TAG, "Initialize Device!")
         return try {
             plugin.initializeDevice()
-            writeBackupMetadata(getBackupToken(context))
+            writeBackupMetadata(settingsManager.getBackupToken())
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
@@ -100,8 +100,11 @@ class BackupCoordinator(
         Log.i(TAG, "Request incremental backup time. Returned $this")
     }
 
-    fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int) =
-            kv.performBackup(packageInfo, data, flags)
+    fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+        val result = kv.performBackup(packageInfo, data, flags)
+        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
+        return result
+    }
 
     // ------------------------------------------------------------------------------------
     // Full backup
@@ -126,8 +129,11 @@ class BackupCoordinator(
 
     fun checkFullBackupSize(size: Long) = full.checkFullBackupSize(size)
 
-    fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int) =
-            full.performFullBackup(targetPackage, fileDescriptor, flags)
+    fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
+        val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
+        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
+        return result
+    }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
@@ -191,7 +197,7 @@ class BackupCoordinator(
         val defaultBackoff = MINUTES.toMillis(10)
 
         // back off if there's no storage set
-        val storage = getStorage(context) ?: return defaultBackoff
+        val storage = settingsManager.getStorage() ?: return defaultBackoff
         // don't back off if storage is not ejectable or available right now
         return if (!storage.ejectable || storage.getDocumentFile(context).isDirectory) noBackoff
         // otherwise back off

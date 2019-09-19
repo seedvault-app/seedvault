@@ -1,17 +1,14 @@
 package com.stevesoltys.backup.ui.storage
 
-import android.app.ActivityManager
 import android.app.Application
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.net.Uri
 import android.os.UserHandle
-import android.os.UserManager
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.settings.getAndSaveNewBackupToken
 import com.stevesoltys.backup.transport.TRANSPORT_ID
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
@@ -24,7 +21,7 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
         saveStorage(uri)
 
         // use a new backup token
-        getAndSaveNewBackupToken(app)
+        settingsManager.getAndSaveNewBackupToken()
 
         // initialize the new location
         val observer = InitializationObserver()

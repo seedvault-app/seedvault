@@ -21,8 +21,6 @@ import com.stevesoltys.backup.service.backup.BackupService;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
-
 /**
  * @author Steve Soltys
  */
@@ -70,12 +68,7 @@ class CreateBackupActivityController {
     }
 
     void onCreateBackupButtonClicked(Set<String> selectedPackages, Activity parent) {
-        String password = getBackupPassword(parent);
-        if (password == null) {
-            showEnterPasswordAlert(selectedPackages, parent);
-        } else {
-            backupService.backupPackageData(selectedPackages, parent);
-        }
+        backupService.backupPackageData(selectedPackages, parent);
     }
 
     private void showEnterPasswordAlert(Set<String> selectedPackages, Activity parent) {

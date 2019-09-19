@@ -8,8 +8,6 @@ import com.stevesoltys.backup.header.HeaderReaderImpl
 import com.stevesoltys.backup.header.HeaderWriterImpl
 import com.stevesoltys.backup.metadata.MetadataReaderImpl
 import com.stevesoltys.backup.metadata.MetadataWriterImpl
-import com.stevesoltys.backup.settings.getBackupToken
-import com.stevesoltys.backup.settings.getStorage
 import com.stevesoltys.backup.transport.backup.BackupCoordinator
 import com.stevesoltys.backup.transport.backup.FullBackup
 import com.stevesoltys.backup.transport.backup.InputFactory
@@ -24,9 +22,10 @@ import com.stevesoltys.backup.transport.restore.plugins.DocumentsProviderRestore
 
 class PluginManager(context: Context) {
 
-    // We can think about using an injection framework such as Dagger to simplify this.
+    // We can think about using an injection framework such as Dagger, Koin or Kodein to simplify this.
 
-    private val storage = DocumentsStorage(context, getStorage(context), getBackupToken(context))
+    private val settingsManager = (context.applicationContext as Backup).settingsManager
+    private val storage = DocumentsStorage(context, settingsManager)
 
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
@@ -42,7 +41,7 @@ class PluginManager(context: Context) {
     private val fullBackup = FullBackup(backupPlugin.fullBackupPlugin, inputFactory, headerWriter, crypto)
     private val notificationManager = (context.applicationContext as Backup).notificationManager
 
-    internal val backupCoordinator = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, notificationManager)
+    internal val backupCoordinator = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, settingsManager, notificationManager)
 
 
     private val restorePlugin = DocumentsProviderRestorePlugin(storage)
@@ -50,6 +49,6 @@ class PluginManager(context: Context) {
     private val kvRestore = KVRestore(restorePlugin.kvRestorePlugin, outputFactory, headerReader, crypto)
     private val fullRestore = FullRestore(restorePlugin.fullRestorePlugin, outputFactory, headerReader, crypto)
 
-    internal val restoreCoordinator = RestoreCoordinator(context, restorePlugin, kvRestore, fullRestore, metadataReader)
+    internal val restoreCoordinator = RestoreCoordinator(settingsManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
 }

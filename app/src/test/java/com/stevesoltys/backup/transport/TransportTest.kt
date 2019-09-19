@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
 import com.stevesoltys.backup.crypto.Crypto
+import com.stevesoltys.backup.settings.SettingsManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 abstract class TransportTest {
 
     protected val crypto = mockk<Crypto>()
+    protected val settingsManager = mockk<SettingsManager>()
     protected val context = mockk<Context>(relaxed = true)
 
     protected val packageInfo = PackageInfo().apply { packageName = "org.example" }

@@ -10,10 +10,10 @@ import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.getAppName
 import com.stevesoltys.backup.isDebugBuild
-import com.stevesoltys.backup.settings.getStorage
 import kotlinx.android.synthetic.main.fragment_restore_progress.*
 
 class RestoreProgressFragment : Fragment() {
@@ -49,7 +49,8 @@ class RestoreProgressFragment : Fragment() {
             if (finished == 0) {
                 // success
                 currentPackageView.text = getString(R.string.restore_finished_success)
-                warningView.text = if (getStorage(requireContext())?.ejectable == true) {
+                val settingsManager = (requireContext().applicationContext as Backup).settingsManager
+                warningView.text = if (settingsManager.getStorage()?.ejectable == true) {
                     getString(R.string.restore_finished_warning_only_installed, getString(R.string.restore_finished_warning_ejectable))
                 } else {
                     getString(R.string.restore_finished_warning_only_installed, null)

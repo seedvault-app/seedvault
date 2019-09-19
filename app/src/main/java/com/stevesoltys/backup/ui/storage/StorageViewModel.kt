@@ -12,9 +12,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.isMassStorage
-import com.stevesoltys.backup.settings.*
+import com.stevesoltys.backup.settings.FlashDrive
+import com.stevesoltys.backup.settings.Storage
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
 import com.stevesoltys.backup.ui.LiveEvent
 import com.stevesoltys.backup.ui.MutableLiveEvent
@@ -22,6 +24,8 @@ import com.stevesoltys.backup.ui.MutableLiveEvent
 private val TAG = StorageViewModel::class.java.simpleName
 
 internal abstract class StorageViewModel(private val app: Application) : AndroidViewModel(app), RemovableStorageListener {
+
+    protected val settingsManager = (app as Backup).settingsManager
 
     private val mStorageRoots = MutableLiveData<List<StorageRoot>>()
     internal val storageRoots: LiveData<List<StorageRoot>> get() = mStorageRoots
@@ -39,7 +43,8 @@ internal abstract class StorageViewModel(private val app: Application) : Android
 
     companion object {
         internal fun validLocationIsSet(context: Context): Boolean {
-            val storage = getStorage(context) ?: return false
+            val settingsManager = (context.applicationContext as Backup).settingsManager
+            val storage = settingsManager.getStorage() ?: return false
             if (storage.ejectable) return true
             return storage.getDocumentFile(context).isDirectory
         }
@@ -84,12 +89,15 @@ internal abstract class StorageViewModel(private val app: Application) : Android
             root.title
         }
         val storage = Storage(uri, name, root.supportsEject)
-        setStorage(app, storage)
+        settingsManager.setStorage(storage)
+
+        // reset time of last backup to "Never"
+        settingsManager.resetBackupTime()
 
         if (storage.ejectable) {
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
-            if (!wasSaved) setFlashDrive(app, null)
+            if (!wasSaved) settingsManager.setFlashDrive(null)
         }
 
         // stop backup service to be sure the old location will get updated
@@ -102,7 +110,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         val manager = app.getSystemService(USB_SERVICE) as UsbManager
         manager.deviceList.values.forEach { device ->
             if (device.isMassStorage()) {
-                setFlashDrive(app, FlashDrive.from(device))
+                settingsManager.setFlashDrive(FlashDrive.from(device))
                 return true
             }
         }

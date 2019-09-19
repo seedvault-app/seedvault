@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
 import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
+import android.text.format.DateUtils
+import android.text.format.DateUtils.*
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,6 +20,7 @@ import androidx.preference.TwoStatePreference
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.restore.RestoreActivity
+import java.util.*
 
 private val TAG = SettingsFragment::class.java.name
 
@@ -26,6 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private val backupManager = Backup.backupManager
 
     private lateinit var viewModel: SettingsViewModel
+    private lateinit var settingsManager: SettingsManager
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
@@ -36,6 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(true)
 
         viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
+        settingsManager = (requireContext().applicationContext as Backup).settingsManager
 
         backup = findPreference<TwoStatePreference>("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -74,7 +79,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onStart()
 
         // we need to re-set the title when returning to this fragment
-        requireActivity().setTitle(R.string.app_name)
+        val activity = requireActivity()
+        activity.setTitle(R.string.app_name)
 
         try {
             backup.isChecked = backupManager.isBackupEnabled
@@ -84,12 +90,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
             backup.isEnabled = false
         }
 
-        val resolver = requireContext().contentResolver
+        val resolver = activity.contentResolver
         autoRestore.isChecked = Settings.Secure.getInt(resolver, BACKUP_AUTO_RESTORE, 1) == 1
 
-        // TODO add time of last backup here
-        val storageName = getStorage(requireContext())?.name
-        backupLocation.summary = storageName ?: getString(R.string.settings_backup_location_none )
+        // get name of storage location
+        val storageName = settingsManager.getStorage()?.name
+                ?: getString(R.string.settings_backup_location_none)
+
+        // get time of last backup
+        val lastBackupInMillis = settingsManager.getBackupTime()
+        val lastBackup = if (lastBackupInMillis == 0L) {
+            getString(R.string.settings_backup_last_backup_never)
+        } else {
+            getRelativeTimeSpanString(lastBackupInMillis, Date().time, MINUTE_IN_MILLIS, 0)
+        }
+        backupLocation.summary = getString(R.string.settings_backup_location_summary, storageName, lastBackup)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
