@@ -100,6 +100,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         settingsManager.resetBackupTime()
 
         if (storage.isUsb) {
+            Log.d(TAG, "Selected storage is a removable USB device.")
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
             if (!wasSaved) settingsManager.setFlashDrive(null)
@@ -121,7 +122,9 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         val manager = app.getSystemService(USB_SERVICE) as UsbManager
         manager.deviceList.values.forEach { device ->
             if (device.isMassStorage()) {
-                settingsManager.setFlashDrive(FlashDrive.from(device))
+                val flashDrive = FlashDrive.from(device)
+                settingsManager.setFlashDrive(flashDrive)
+                Log.d(TAG, "Saved flash drive: $flashDrive")
                 return true
             }
         }

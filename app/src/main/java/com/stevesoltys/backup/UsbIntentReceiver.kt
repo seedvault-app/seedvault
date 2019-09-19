@@ -6,8 +6,7 @@ import android.content.Intent
 import android.database.ContentObserver
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbInterface
-import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED
-import android.hardware.usb.UsbManager.EXTRA_DEVICE
+import android.hardware.usb.UsbManager.*
 import android.net.Uri
 import android.os.Handler
 import android.provider.DocumentsContract
@@ -20,27 +19,33 @@ import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
 
-class UsbIntentReceiver : BroadcastReceiver() {
+class UsbIntentReceiver : UsbMonitor() {
 
-    override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != ACTION_USB_DEVICE_ATTACHED) return
-
-        val device = intent.extras?.getParcelable<UsbDevice>(EXTRA_DEVICE) ?: return
-        Log.d(TAG, "New USB mass-storage device attached.")
-        device.log()
-
+    override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
+        if (action != ACTION_USB_DEVICE_ATTACHED) return false
+        Log.d(TAG, "Checking if this is the current backup drive.")
         val settingsManager = (context.applicationContext as Backup).settingsManager
-        val savedFlashDrive = settingsManager.getFlashDrive() ?: return
+        val savedFlashDrive = settingsManager.getFlashDrive() ?: return false
         val attachedFlashDrive = FlashDrive.from(device)
-        if (savedFlashDrive == attachedFlashDrive) {
+        return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
             if (Date().time - settingsManager.getBackupTime() >= HOURS.toMillis(24)) {
                 Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
-                startBackupOnceMounted(context)
+                true
             } else {
                 Log.d(TAG, "We have a recent backup, not requesting a new one.")
+                false
             }
+        } else {
+            Log.d(TAG, "Different device attached, ignoring...")
+            false
         }
+    }
+
+    override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
+        Thread {
+            requestBackup(context)
+        }.start()
     }
 
 }
@@ -49,19 +54,34 @@ class UsbIntentReceiver : BroadcastReceiver() {
  * When we get the [ACTION_USB_DEVICE_ATTACHED] broadcast, the storage is not yet available.
  * So we need to use a ContentObserver to request a backup only once available.
  */
-private fun startBackupOnceMounted(context: Context) {
-    val rootsUri = DocumentsContract.buildRootsUri(AUTHORITY_STORAGE)
-    val contentResolver = context.contentResolver
-    val observer = object : ContentObserver(Handler()) {
-        override fun onChange(selfChange: Boolean, uri: Uri?) {
-            super.onChange(selfChange, uri)
-            Thread {
-                requestBackup(context)
-            }.start()
-            contentResolver.unregisterContentObserver(this)
+abstract class UsbMonitor : BroadcastReceiver() {
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action ?: return
+        if (intent.action == ACTION_USB_DEVICE_ATTACHED || intent.action == ACTION_USB_DEVICE_DETACHED) {
+            val device = intent.extras?.getParcelable<UsbDevice>(EXTRA_DEVICE) ?: return
+            Log.d(TAG, "New USB mass-storage device attached.")
+            device.log()
+
+            if (!shouldMonitorStatus(context, action, device)) return
+
+            val rootsUri = DocumentsContract.buildRootsUri(AUTHORITY_STORAGE)
+            val contentResolver = context.contentResolver
+            val observer = object : ContentObserver(Handler()) {
+                override fun onChange(selfChange: Boolean, uri: Uri?) {
+                    super.onChange(selfChange, uri)
+                    onStatusChanged(context, action, device)
+                    contentResolver.unregisterContentObserver(this)
+                }
+            }
+            contentResolver.registerContentObserver(rootsUri, true, observer)
         }
     }
-    contentResolver.registerContentObserver(rootsUri, true, observer)
+
+    abstract fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean
+
+    abstract fun onStatusChanged(context: Context, action: String, device: UsbDevice)
+
 }
 
 internal fun UsbDevice.isMassStorage(): Boolean {
