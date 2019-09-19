@@ -67,6 +67,9 @@ android {
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
+        if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+            options.compilerArgs.addAll(['--release', '8'])
+        }
         options.compilerArgs.add('-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar')
     }
 }
@@ -81,6 +84,7 @@ preBuild.doLast {
         parsedXml.component[1].remove(jdkNode)
 
         def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+        //noinspection GroovyResultOfObjectAllocationIgnored // the note gets inserted
         new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
         XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
 
@@ -101,7 +105,7 @@ def aospDeps = fileTree(include: [
 dependencies {
     compileOnly aospDeps
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'commons-io:commons-io:2.6'
     implementation 'io.github.novacrypto:BIP39:2019.01.27'
@@ -115,9 +119,9 @@ dependencies {
     lintChecks 'com.github.thirdegg:lint-rules:0.0.4-alpha'
 
     testImplementation aospDeps
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testImplementation 'io.mockk:mockk:1.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
