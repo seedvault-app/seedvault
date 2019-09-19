@@ -77,7 +77,7 @@ private fun UsbInterface.isMassStorage(): Boolean {
 
 private fun UsbDevice.log() {
     Log.d(TAG, "  name: $manufacturerName $productName")
-//    Log.d(TAG, "  serialNumber: $serialNumber")  // requires a permission since API 29
+    Log.d(TAG, "  serialNumber: $serialNumber")
     Log.d(TAG, "  productId: $productId")
     Log.d(TAG, "  vendorId: $vendorId")
     Log.d(TAG, "  isMassStorage: ${isMassStorage()}")

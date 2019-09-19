@@ -131,7 +131,7 @@ data class FlashDrive(
     companion object {
         fun from(device: UsbDevice) = FlashDrive(
                 name = "${device.manufacturerName} ${device.productName}",
-                serialNumber = "", // device.serialNumber requires a permission since API 29
+                serialNumber = device.serialNumber,
                 vendorId = device.vendorId,
                 productId = device.productId
         )

@@ -2,5 +2,6 @@
 <permissions>
     <privapp-permissions package="com.stevesoltys.backup">
         <permission name="android.permission.BACKUP"/>
+        <permission name="android.permission.MANAGE_USB"/>
     </privapp-permissions>
 </permissions>
