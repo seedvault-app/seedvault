@@ -9,7 +9,7 @@ import java.util.*
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
-private const val PREF_KEY_STORAGE_EJECTABLE = "storageEjectable"
+private const val PREF_KEY_STORAGE_IS_USB = "storageIsUsb"
 
 private const val PREF_KEY_FLASH_DRIVE_NAME = "flashDriveName"
 private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
@@ -28,7 +28,7 @@ class SettingsManager(context: Context) {
         prefs.edit()
                 .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
                 .putString(PREF_KEY_STORAGE_NAME, storage.name)
-                .putBoolean(PREF_KEY_STORAGE_EJECTABLE, storage.ejectable)
+                .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
                 .apply()
     }
 
@@ -36,8 +36,8 @@ class SettingsManager(context: Context) {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException()
-        val ejectable = prefs.getBoolean(PREF_KEY_STORAGE_EJECTABLE, false)
-        return Storage(uri, name, ejectable)
+        val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
+        return Storage(uri, name, isUsb)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
@@ -86,9 +86,9 @@ class SettingsManager(context: Context) {
     /**
      * Sets the last backup time to "now".
      */
-    fun saveNewBackupTime() {
+    fun saveNewBackupTime(millis: Long = Date().time) {
         prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, Date().time)
+                .putLong(PREF_KEY_BACKUP_TIME, millis)
                 .apply()
     }
 
@@ -118,7 +118,7 @@ class SettingsManager(context: Context) {
 data class Storage(
         val uri: Uri,
         val name: String,
-        val ejectable: Boolean) {
+        val isUsb: Boolean) {
     fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
             ?: throw AssertionError("Should only happen on API < 21.")
 }

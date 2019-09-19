@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
 import com.stevesoltys.backup.isMassStorage
+import com.stevesoltys.backup.settings.BackupManagerSettings
 import com.stevesoltys.backup.settings.FlashDrive
 import com.stevesoltys.backup.settings.Storage
 import com.stevesoltys.backup.transport.ConfigurableBackupTransportService
@@ -45,7 +46,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         internal fun validLocationIsSet(context: Context): Boolean {
             val settingsManager = (context.applicationContext as Backup).settingsManager
             val storage = settingsManager.getStorage() ?: return false
-            if (storage.ejectable) return true
+            if (storage.isUsb) return true
             return storage.getDocumentFile(context).isDirectory
         }
     }
@@ -88,16 +89,20 @@ internal abstract class StorageViewModel(private val app: Application) : Android
         } else {
             root.title
         }
-        val storage = Storage(uri, name, root.supportsEject)
+        val storage = Storage(uri, name, root.isUsb)
         settingsManager.setStorage(storage)
 
         // reset time of last backup to "Never"
         settingsManager.resetBackupTime()
 
-        if (storage.ejectable) {
+        if (storage.isUsb) {
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
             if (!wasSaved) settingsManager.setFlashDrive(null)
+            BackupManagerSettings.disableAutomaticBackups(app.contentResolver)
+        } else {
+            settingsManager.setFlashDrive(null)
+            BackupManagerSettings.enableAutomaticBackups(app.contentResolver)
         }
 
         // stop backup service to be sure the old location will get updated
@@ -114,7 +119,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
                 return true
             }
         }
-        Log.w(TAG, "No USB device found for ejectable storage.")
+        Log.e(TAG, "No USB device found even though we were expecting one.")
         return false
     }
 

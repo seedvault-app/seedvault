@@ -19,6 +19,11 @@
         android:name="android.permission.MANAGE_USB"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- This is needed to change system backup settings -->
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".Backup"
         android:allowBackup="false"

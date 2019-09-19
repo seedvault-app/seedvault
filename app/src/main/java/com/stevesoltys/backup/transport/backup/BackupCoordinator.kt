@@ -199,7 +199,7 @@ class BackupCoordinator(
         // back off if there's no storage set
         val storage = settingsManager.getStorage() ?: return defaultBackoff
         // don't back off if storage is not ejectable or available right now
-        return if (!storage.ejectable || storage.getDocumentFile(context).isDirectory) noBackoff
+        return if (!storage.isUsb || storage.getDocumentFile(context).isDirectory) noBackoff
         // otherwise back off
         else defaultBackoff
     }

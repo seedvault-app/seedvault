@@ -50,7 +50,7 @@ class RestoreProgressFragment : Fragment() {
                 // success
                 currentPackageView.text = getString(R.string.restore_finished_success)
                 val settingsManager = (requireContext().applicationContext as Backup).settingsManager
-                warningView.text = if (settingsManager.getStorage()?.ejectable == true) {
+                warningView.text = if (settingsManager.getStorage()?.isUsb == true) {
                     getString(R.string.restore_finished_warning_only_installed, getString(R.string.restore_finished_warning_ejectable))
                 } else {
                     getString(R.string.restore_finished_warning_only_installed, null)
