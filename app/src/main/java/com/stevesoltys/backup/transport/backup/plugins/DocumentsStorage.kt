@@ -100,7 +100,7 @@ class DocumentsStorage(private val context: Context, storage: Storage?, token: L
 
     @Throws(IOException::class)
     fun getOutputStream(file: DocumentFile): OutputStream {
-        return context.contentResolver.openOutputStream(file.uri) ?: throw IOException()
+        return context.contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
     }
 
 }
