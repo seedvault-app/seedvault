@@ -8,6 +8,7 @@ import android.os.UserHandle
 import android.util.Log
 import com.google.android.collect.Sets.newArraySet
 import com.stevesoltys.backup.Backup
+import com.stevesoltys.backup.MAGIC_PACKAGE_MANAGER
 import java.util.*
 
 private val TAG = PackageService::class.java.simpleName
@@ -49,7 +50,7 @@ class PackageService {
 
             // add magic @pm@ package (PACKAGE_MANAGER_SENTINEL) which holds package manager data
             val packageArray = eligibleApps.toMutableList()
-            packageArray.add("@pm@")
+            packageArray.add(MAGIC_PACKAGE_MANAGER)
 
             return packageArray.toTypedArray()
         }

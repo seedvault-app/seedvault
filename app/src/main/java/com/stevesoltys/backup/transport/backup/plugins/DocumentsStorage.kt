@@ -72,6 +72,8 @@ class DocumentsStorage(private val context: Context, private val settingsManager
         }
     }
 
+    fun getAuthority(): String? = storage?.uri?.authority
+
     fun getSetDir(token: Long = currentToken): DocumentFile? {
         if (token == currentToken) return currentSetDir
         return rootBackupDir?.findFile(token.toString())

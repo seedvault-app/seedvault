@@ -1,16 +1,16 @@
 package com.stevesoltys.backup.transport.backup
 
-import android.app.backup.BackupTransport.TRANSPORT_ERROR
-import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.*
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
+import com.stevesoltys.backup.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.backup.metadata.MetadataWriter
 import com.stevesoltys.backup.settings.SettingsManager
 import java.io.IOException
-import java.util.concurrent.TimeUnit.MINUTES
+import java.util.concurrent.TimeUnit.DAYS
 
 private val TAG = BackupCoordinator::class.java.simpleName
 
@@ -63,7 +63,8 @@ class BackupCoordinator(
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error initializing device", e)
-            nm.onBackupError()
+            // Show error notification if we were ready for backups
+            if (getBackupBackoff() == 0L) nm.onBackupError()
             TRANSPORT_ERROR
         }
     }
@@ -101,6 +102,12 @@ class BackupCoordinator(
     }
 
     fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+        // backups of package manager metadata do not respect backoff
+        // we need to reject them manually when now is not a good time for a backup
+        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
+            return TRANSPORT_PACKAGE_REJECTED
+        }
+
         val result = kv.performBackup(packageInfo, data, flags)
         if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
         return result
@@ -194,7 +201,7 @@ class BackupCoordinator(
 
     private fun getBackupBackoff(): Long {
         val noBackoff = 0L
-        val defaultBackoff = MINUTES.toMillis(10)
+        val defaultBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
         val storage = settingsManager.getStorage() ?: return defaultBackoff

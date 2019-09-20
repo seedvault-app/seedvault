@@ -2,8 +2,12 @@ package com.stevesoltys.backup.transport.backup
 
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.backup.BackupNotificationManager
+import com.stevesoltys.backup.getRandomString
 import com.stevesoltys.backup.metadata.MetadataWriter
+import com.stevesoltys.backup.settings.Storage
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -40,9 +44,33 @@ internal class BackupCoordinatorTest: BackupTest() {
     }
 
     @Test
-    fun `device initialization fails`() {
+    fun `error notification when device initialization fails`() {
+        val storage = Storage(Uri.EMPTY, getRandomString(), false)
+
         every { plugin.initializeDevice() } throws IOException()
+        every { settingsManager.getStorage() } returns storage
         every { notificationManager.onBackupError() } just Runs
+
+        assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
+
+        // finish will only be called when TRANSPORT_OK is returned, so it should throw
+        every { kv.hasState() } returns false
+        every { full.hasState() } returns false
+        assertThrows(IllegalStateException::class.java) {
+            backup.finishBackup()
+        }
+    }
+
+    @Test
+    fun `no error notification when device initialization fails on unplugged USB storage`() {
+        val storage = mockk<Storage>()
+        val documentFile = mockk<DocumentFile>()
+
+        every { plugin.initializeDevice() } throws IOException()
+        every { settingsManager.getStorage() } returns storage
+        every { storage.isUsb } returns true
+        every { storage.getDocumentFile(context) } returns documentFile
+        every { documentFile.isDirectory } returns false
 
         assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
 

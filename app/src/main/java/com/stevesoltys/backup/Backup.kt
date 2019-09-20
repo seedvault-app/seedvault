@@ -1,6 +1,7 @@
 package com.stevesoltys.backup
 
 import android.app.Application
+import android.app.backup.BackupManager.PACKAGE_MANAGER_SENTINEL
 import android.app.backup.IBackupManager
 import android.content.Context.BACKUP_SERVICE
 import android.os.Build
@@ -32,5 +33,7 @@ class Backup : Application() {
     }
 
 }
+
+const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
 
 fun isDebugBuild() = Build.TYPE == "userdebug"
