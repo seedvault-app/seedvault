@@ -25,12 +25,6 @@ LOCAL_SRC_FILES := $(LOCAL_MODULE)
 include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
-
-backup_root := $(LOCAL_PATH)
-
-$(backup_root)/Backup.apk:
-	cd $(backup_root) && ./download.sh
-
 LOCAL_MODULE := Backup
 LOCAL_SRC_FILES := Backup.apk
 LOCAL_CERTIFICATE := platform
