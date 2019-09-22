@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui.recoverycode
 
 import android.view.LayoutInflater
 import android.view.View

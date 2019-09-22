@@ -141,7 +141,7 @@ class KVBackup(
             val base64Key = key.encodeBase64()
             val dataSize = changeSet.dataSize
 
-            // read and encrypt value
+            // read value
             val value = if (dataSize >= 0) {
                 Log.v(TAG, "  Delta operation key $key   size $dataSize   key64 $base64Key")
                 val bytes = ByteArray(dataSize)

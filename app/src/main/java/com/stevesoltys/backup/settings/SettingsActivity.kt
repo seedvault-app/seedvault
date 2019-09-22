@@ -1,53 +1,31 @@
 package com.stevesoltys.backup.settings
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.Backup
-import com.stevesoltys.backup.LiveEventHandler
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.ui.RequireProvisioningActivity
+import com.stevesoltys.backup.ui.RequireProvisioningViewModel
 
-private val TAG = SettingsActivity::class.java.name
-
-const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
-const val REQUEST_CODE_RECOVERY_CODE = 2
-
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : RequireProvisioningActivity() {
 
     private lateinit var viewModel: SettingsViewModel
 
+    override fun getViewModel(): RequireProvisioningViewModel = viewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_settings)
-
-        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
-        viewModel.onLocationSet.observeEvent(this, LiveEventHandler { initialSetUp ->
-            if (initialSetUp) showFragment(SettingsFragment())
-            else supportFragmentManager.popBackStack()
-        })
-        viewModel.chooseBackupLocation.observeEvent(this, LiveEventHandler { show ->
-            if (show) showFragment(BackupLocationFragment(), true)
-        })
+        setContentView(R.layout.activity_fragment_container)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) showFragment(SettingsFragment())
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (resultCode != RESULT_OK) {
-            Log.w(TAG, "Error in activity result: $requestCode")
-            finishAfterTransition()
-        } else {
-            super.onActivityResult(requestCode, resultCode, result)
-        }
-    }
-
+    @CallSuper
     override fun onStart() {
         super.onStart()
         if (isFinishing) return
@@ -56,30 +34,10 @@ class SettingsActivity : AppCompatActivity() {
         if (!viewModel.recoveryCodeIsSet()) {
             showRecoveryCodeActivity()
         } else if (!viewModel.validLocationIsSet()) {
-            showFragment(BackupLocationFragment())
+            showStorageActivity()
             // remove potential error notifications
             (application as Backup).notificationManager.onBackupErrorSeen()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when {
-        item.itemId == android.R.id.home -> {
-            onBackPressed()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun showRecoveryCodeActivity() {
-        val intent = Intent(this, RecoveryCodeActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
-    }
-
-    private fun showFragment(f: Fragment, addToBackStack: Boolean = false) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, f)
-        if (addToBackStack) fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
     }
 
 }

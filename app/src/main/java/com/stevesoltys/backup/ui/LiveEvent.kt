@@ -1,9 +1,9 @@
-package com.stevesoltys.backup
+package com.stevesoltys.backup.ui
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.stevesoltys.backup.LiveEvent.ConsumableEvent
+import com.stevesoltys.backup.ui.LiveEvent.ConsumableEvent
 
 open class LiveEvent<T> : LiveData<ConsumableEvent<T>>() {
 

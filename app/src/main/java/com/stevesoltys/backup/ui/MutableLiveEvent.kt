@@ -1,4 +1,4 @@
-package com.stevesoltys.backup
+package com.stevesoltys.backup.ui
 
 class MutableLiveEvent<T> : LiveEvent<T>() {
 

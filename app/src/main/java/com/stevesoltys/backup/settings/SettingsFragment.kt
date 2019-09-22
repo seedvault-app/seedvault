@@ -1,6 +1,7 @@
 package com.stevesoltys.backup.settings
 
 import android.content.Context.BACKUP_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
@@ -9,14 +10,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.restore.RestoreActivity
 
 private val TAG = SettingsFragment::class.java.name
 
@@ -28,6 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
+    private lateinit var backupLocation: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -35,7 +37,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
 
-        backup = findPreference("backup") as TwoStatePreference
+        backup = findPreference<TwoStatePreference>("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {
@@ -48,13 +50,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        val backupLocation = findPreference("backup_location")
+        backupLocation = findPreference<Preference>("backup_location")!!
         backupLocation.setOnPreferenceClickListener {
             viewModel.chooseBackupLocation()
             true
         }
 
-        autoRestore = findPreference("auto_restore") as TwoStatePreference
+        autoRestore = findPreference<TwoStatePreference>("auto_restore")!!
         autoRestore.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {
@@ -84,6 +86,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val resolver = requireContext().contentResolver
         autoRestore.isChecked = Settings.Secure.getInt(resolver, BACKUP_AUTO_RESTORE, 1) == 1
+
+        // TODO add time of last backup here
+        val storageName = getStorage(requireContext())?.name
+        backupLocation.summary = storageName ?: getString(R.string.settings_backup_location_none )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -100,7 +106,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         item.itemId == R.id.action_restore -> {
-            Toast.makeText(requireContext(), "Not yet implemented", LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), RestoreActivity::class.java))
             true
         }
         else -> super.onOptionsItemSelected(item)

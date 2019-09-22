@@ -3,9 +3,12 @@ package com.stevesoltys.backup.transport.restore
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
-import android.app.backup.RestoreSet
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.backup.getRandomString
+import com.stevesoltys.backup.metadata.BackupMetadata
+import com.stevesoltys.backup.metadata.EncryptedBackupMetadata
+import com.stevesoltys.backup.metadata.MetadataReader
 import com.stevesoltys.backup.transport.TransportTest
 import io.mockk.Runs
 import io.mockk.every
@@ -14,6 +17,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.IOException
+import java.io.InputStream
 import kotlin.random.Random
 
 internal class RestoreCoordinatorTest : TransportTest() {
@@ -21,30 +25,39 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val plugin = mockk<RestorePlugin>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
+    private val metadataReader = mockk<MetadataReader>()
 
-    private val restore = RestoreCoordinator(plugin, kv, full)
+    private val restore = RestoreCoordinator(context, plugin, kv, full, metadataReader)
 
     private val token = Random.nextLong()
+    private val inputStream = mockk<InputStream>()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
 
     @Test
-    fun `getAvailableRestoreSets() delegates to plugin`() {
-        val restoreSets = Array(1) { RestoreSet() }
+    fun `getAvailableRestoreSets() builds set from plugin response`() {
+        val encryptedMetadata = EncryptedBackupMetadata(token, inputStream)
+        val metadata = BackupMetadata(
+                token = token,
+                androidVersion = Random.nextInt(),
+                deviceName = getRandomString())
 
-        every { plugin.getAvailableRestoreSets() } returns restoreSets
+        every { plugin.getAvailableBackups() } returns sequenceOf(encryptedMetadata, encryptedMetadata)
+        every { metadataReader.readMetadata(inputStream, token) } returns metadata
+        every { inputStream.close() } just Runs
 
-        assertEquals(restoreSets, restore.getAvailableRestoreSets())
+        val sets = restore.getAvailableRestoreSets() ?: fail()
+        assertEquals(2, sets.size)
+        assertEquals(metadata.deviceName, sets[0].device)
+        assertEquals(metadata.deviceName, sets[0].name)
+        assertEquals(metadata.token, sets[0].token)
     }
 
     @Test
     fun `getCurrentRestoreSet() delegates to plugin`() {
-        val currentRestoreSet = Random.nextLong()
-
-        every { plugin.getCurrentRestoreSet() } returns currentRestoreSet
-
-        assertEquals(currentRestoreSet, restore.getCurrentRestoreSet())
+        // We don't mock the SettingsManager, so the default value is returned here
+        assertEquals(0L, restore.getCurrentRestoreSet())
     }
 
     @Test

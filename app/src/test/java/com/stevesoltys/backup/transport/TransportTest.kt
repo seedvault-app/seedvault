@@ -1,5 +1,6 @@
 package com.stevesoltys.backup.transport
 
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
 import com.stevesoltys.backup.crypto.Crypto
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 abstract class TransportTest {
 
     protected val crypto = mockk<Crypto>()
+    protected val context = mockk<Context>(relaxed = true)
 
     protected val packageInfo = PackageInfo().apply { packageName = "org.example" }
 

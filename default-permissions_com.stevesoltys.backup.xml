@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<exceptions>
-    <exception package="com.stevesoltys.backup">
-        <permission name="android.permission.READ_PHONE_STATE" fixed="true"/>
-    </exception>
-</exceptions>

@@ -1,11 +1,12 @@
 package com.stevesoltys.backup.transport.backup
 
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.backup.transport.TransportTest
 import com.stevesoltys.backup.header.HeaderWriter
 import com.stevesoltys.backup.header.VersionHeader
+import com.stevesoltys.backup.transport.TransportTest
 import io.mockk.mockk
 import java.io.OutputStream
+import kotlin.random.Random
 
 internal abstract class BackupTest : TransportTest() {
 
@@ -14,6 +15,7 @@ internal abstract class BackupTest : TransportTest() {
     protected val data = mockk<ParcelFileDescriptor>()
     protected val outputStream = mockk<OutputStream>()
 
+    protected val token = Random.nextLong()
     protected val header = VersionHeader(packageName = packageInfo.packageName)
     protected val quota = 42L
 

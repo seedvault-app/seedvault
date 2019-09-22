@@ -2,33 +2,33 @@ package com.stevesoltys.backup.transport.backup.plugins
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.backup.transport.DEFAULT_RESTORE_SET_TOKEN
+import com.stevesoltys.backup.settings.Storage
+import com.stevesoltys.backup.settings.getAndSaveNewBackupToken
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+const val DIRECTORY_ROOT = ".AndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
-private const val ROOT_DIR_NAME = ".AndroidBackup"
-private const val NO_MEDIA = ".nomedia"
+const val FILE_BACKUP_METADATA = ".backup.metadata"
+const val FILE_NO_MEDIA = ".nomedia"
 private const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 
-class DocumentsStorage(context: Context, parentFolder: Uri?, deviceName: String) {
-
-    private val contentResolver = context.contentResolver
+class DocumentsStorage(private val context: Context, storage: Storage?, token: Long) {
 
     internal val rootBackupDir: DocumentFile? by lazy {
-        val folderUri = parentFolder ?: return@lazy null
+        val folderUri = storage?.uri ?: return@lazy null
+        // [fromTreeUri] should only return null when SDK_INT < 21
         val parent = DocumentFile.fromTreeUri(context, folderUri) ?: throw AssertionError()
         try {
-            val rootDir = parent.createOrGetDirectory(ROOT_DIR_NAME)
+            val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
             // create .nomedia file to prevent Android's MediaScanner from trying to index the backup
-            rootDir.createOrGetFile(NO_MEDIA)
+            rootDir.createOrGetFile(FILE_NO_MEDIA)
             rootDir
         } catch (e: IOException) {
             Log.e(TAG, "Error creating root backup dir.", e)
@@ -36,73 +36,71 @@ class DocumentsStorage(context: Context, parentFolder: Uri?, deviceName: String)
         }
     }
 
-    private val deviceDir: DocumentFile? by lazy {
+    private val currentToken: Long by lazy {
+        if (token != 0L) token
+        else getAndSaveNewBackupToken(context).apply {
+            Log.d(TAG, "Using a fresh backup token: $this")
+        }
+    }
+
+    private val currentSetDir: DocumentFile? by lazy {
+        val currentSetName = currentToken.toString()
         try {
-            rootBackupDir?.createOrGetDirectory(deviceName)
+            rootBackupDir?.createOrGetDirectory(currentSetName)
         } catch (e: IOException) {
             Log.e(TAG, "Error creating current restore set dir.", e)
             null
         }
     }
 
-    private val defaultSetDir: DocumentFile? by lazy {
-        val currentSetName = DEFAULT_RESTORE_SET_TOKEN.toString()
+    val currentFullBackupDir: DocumentFile? by lazy {
         try {
-            deviceDir?.createOrGetDirectory(currentSetName)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating current restore set dir.", e)
-            null
-        }
-    }
-
-    val defaultFullBackupDir: DocumentFile? by lazy {
-        try {
-            defaultSetDir?.createOrGetDirectory(DIRECTORY_FULL_BACKUP)
+            currentSetDir?.createOrGetDirectory(DIRECTORY_FULL_BACKUP)
         } catch (e: IOException) {
             Log.e(TAG, "Error creating full backup dir.", e)
             null
         }
     }
 
-    val defaultKvBackupDir: DocumentFile? by lazy {
+    val currentKvBackupDir: DocumentFile? by lazy {
         try {
-            defaultSetDir?.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
+            currentSetDir?.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
         } catch (e: IOException) {
             Log.e(TAG, "Error creating K/V backup dir.", e)
             null
         }
     }
 
-    private fun getSetDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile? {
-        if (token == DEFAULT_RESTORE_SET_TOKEN) return defaultSetDir
-        return deviceDir?.findFile(token.toString())
+    fun getSetDir(token: Long = currentToken): DocumentFile? {
+        if (token == currentToken) return currentSetDir
+        return rootBackupDir?.findFile(token.toString())
     }
 
-    fun getKVBackupDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile? {
-        if (token == DEFAULT_RESTORE_SET_TOKEN) return defaultKvBackupDir ?: throw IOException()
+    fun getKVBackupDir(token: Long = currentToken): DocumentFile? {
+        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
         return getSetDir(token)?.findFile(DIRECTORY_KEY_VALUE_BACKUP)
     }
 
     @Throws(IOException::class)
-    fun getOrCreateKVBackupDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile {
-        if (token == DEFAULT_RESTORE_SET_TOKEN) return defaultKvBackupDir ?: throw IOException()
+    fun getOrCreateKVBackupDir(token: Long = currentToken): DocumentFile {
+        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
         val setDir = getSetDir(token) ?: throw IOException()
         return setDir.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
     }
 
-    fun getFullBackupDir(token: Long = DEFAULT_RESTORE_SET_TOKEN): DocumentFile? {
-        if (token == DEFAULT_RESTORE_SET_TOKEN) return defaultFullBackupDir ?: throw IOException()
+    fun getFullBackupDir(token: Long = currentToken): DocumentFile? {
+        if (token == currentToken) return currentFullBackupDir ?: throw IOException()
         return getSetDir(token)?.findFile(DIRECTORY_FULL_BACKUP)
     }
 
     @Throws(IOException::class)
     fun getInputStream(file: DocumentFile): InputStream {
-        return contentResolver.openInputStream(file.uri) ?: throw IOException()
+        return context.contentResolver.openInputStream(file.uri) ?: throw IOException()
     }
 
     @Throws(IOException::class)
     fun getOutputStream(file: DocumentFile): OutputStream {
-        return contentResolver.openOutputStream(file.uri) ?: throw IOException()
+        return context.contentResolver.openOutputStream(file.uri) ?: throw IOException()
     }
 
 }

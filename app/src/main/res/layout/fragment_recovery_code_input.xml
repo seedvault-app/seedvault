@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".settings.RecoveryCodeInputFragment">
+        tools:context=".ui.recoverycode.RecoveryCodeInputFragment">
 
         <ImageView
             android:id="@+id/introIcon"

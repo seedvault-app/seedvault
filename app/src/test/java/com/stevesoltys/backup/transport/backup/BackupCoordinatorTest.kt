@@ -3,6 +3,7 @@ package com.stevesoltys.backup.transport.backup
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import com.stevesoltys.backup.BackupNotificationManager
+import com.stevesoltys.backup.metadata.MetadataWriter
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.io.IOException
+import java.io.OutputStream
 import kotlin.random.Random
 
 internal class BackupCoordinatorTest: BackupTest() {
@@ -18,13 +20,17 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
+    private val metadataWriter = mockk<MetadataWriter>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(plugin, kv, full, notificationManager)
+    private val backup = BackupCoordinator(context, plugin, kv, full, metadataWriter, notificationManager)
+
+    private val metadataOutputStream = mockk<OutputStream>()
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
         every { plugin.initializeDevice() } just Runs
+        expectWritingMetadata(0L)
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -108,6 +114,11 @@ internal class BackupCoordinatorTest: BackupTest() {
         every { full.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
+    }
+
+    private fun expectWritingMetadata(token: Long = this.token) {
+        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataWriter.write(metadataOutputStream, token) } just Runs
     }
 
 }

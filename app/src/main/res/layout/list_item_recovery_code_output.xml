@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="24dp"
     tools:showIn="@layout/fragment_recovery_code_output">
 
     <TextView

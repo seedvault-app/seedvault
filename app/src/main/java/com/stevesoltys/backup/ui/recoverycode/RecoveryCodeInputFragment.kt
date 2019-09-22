@@ -1,18 +1,21 @@
-package com.stevesoltys.backup.settings
+package com.stevesoltys.backup.ui.recoverycode
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.backup.R
+import com.stevesoltys.backup.isDebugBuild
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
+import io.github.novacrypto.bip39.wordlists.English
 import kotlinx.android.synthetic.main.fragment_recovery_code_input.*
 import kotlinx.android.synthetic.main.recovery_code_input.*
 
@@ -29,15 +32,29 @@ class RecoveryCodeInputFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity()).get(RecoveryCodeViewModel::class.java)
 
+        if (viewModel.isRestore) introText.setText(R.string.recovery_code_input_intro)
+
+        val adapter = getAdapter()
+
         for (i in 0 until WORD_NUM) {
             val wordLayout = getWordLayout(i)
-            wordLayout.editText!!.onFocusChangeListener = OnFocusChangeListener { _, focus ->
+            val editText = wordLayout.editText as AutoCompleteTextView
+            editText.onFocusChangeListener = OnFocusChangeListener { _, focus ->
                 if (!focus) wordLayout.isErrorEnabled = false
             }
+            editText.setAdapter(adapter)
         }
         doneButton.setOnClickListener { done() }
 
-        if (Build.TYPE == "userdebug") debugPreFill()
+        if (isDebugBuild() && !viewModel.isRestore) debugPreFill()
+    }
+
+    private fun getAdapter(): ArrayAdapter<String> {
+        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1)
+        for (i in 0 until WORD_LIST_SIZE) {
+            adapter.add(English.INSTANCE.getWord(i))
+        }
+        return adapter
     }
 
     private fun getInput(): List<CharSequence> = ArrayList<String>(WORD_NUM).apply {
@@ -57,7 +74,7 @@ class RecoveryCodeInputFragment : Fragment() {
     }
 
     private fun allFilledOut(input: List<CharSequence>): Boolean {
-        for (i in 0 until input.size) {
+        for (i in input.indices) {
             if (input[i].isNotEmpty()) continue
             showError(i, getString(R.string.recovery_code_error_empty_word))
             return false
@@ -96,7 +113,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     private fun debugPreFill() {
         val words = viewModel.wordList
-        for (i in 0 until words.size) {
+        for (i in words.indices) {
             getWordLayout(i).editText!!.setText(words[i])
         }
     }

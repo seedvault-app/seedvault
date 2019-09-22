@@ -5,9 +5,15 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.backup.header.UnsupportedVersionException
+import com.stevesoltys.backup.metadata.DecryptionFailedException
+import com.stevesoltys.backup.metadata.MetadataReader
+import com.stevesoltys.backup.settings.getBackupToken
+import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 private class RestoreCoordinatorState(
@@ -17,19 +23,59 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
+        private val context: Context,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
-        private val full: FullRestore) {
+        private val full: FullRestore,
+        private val metadataReader: MetadataReader) {
 
     private var state: RestoreCoordinatorState? = null
 
+    /**
+     * Get the set of all backups currently available over this transport.
+     *
+     * @return Descriptions of the set of restore images available for this device,
+     *   or null if an error occurred (the attempt should be rescheduled).
+     **/
     fun getAvailableRestoreSets(): Array<RestoreSet>? {
-        return plugin.getAvailableRestoreSets()
-                .apply { Log.i(TAG, "Got available restore sets: $this") }
+        val availableBackups = plugin.getAvailableBackups() ?: return null
+        val restoreSets = ArrayList<RestoreSet>()
+        for (encryptedMetadata in availableBackups) {
+            if (encryptedMetadata.error) continue
+            check(encryptedMetadata.inputStream != null)  // if there's no error, there must be a stream
+            try {
+                val metadata = metadataReader.readMetadata(encryptedMetadata.inputStream, encryptedMetadata.token)
+                val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
+                restoreSets.add(set)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error while getting restore sets", e)
+                return null
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Error while getting restore sets", e)
+                return null
+            } catch (e: DecryptionFailedException) {
+                Log.e(TAG, "Error while decrypting restore set", e)
+                continue
+            } catch (e: UnsupportedVersionException) {
+                Log.w(TAG, "Backup with unsupported version read", e)
+                continue
+            } finally {
+                closeQuietly(encryptedMetadata.inputStream)
+            }
+        }
+        Log.i(TAG, "Got available restore sets: $restoreSets")
+        return restoreSets.toTypedArray()
     }
 
+    /**
+     * Get the identifying token of the backup set currently being stored from this device.
+     * This is used in the case of applications wishing to restore their last-known-good data.
+     *
+     * @return A token that can be used for restore,
+     * or 0 if there is no backup set available corresponding to the current device state.
+     */
     fun getCurrentRestoreSet(): Long {
-        return plugin.getCurrentRestoreSet()
+        return getBackupToken(context)
                 .apply { Log.i(TAG, "Got current restore set token: $this") }
     }
 
@@ -46,7 +92,7 @@ internal class RestoreCoordinator(
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
     fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
-        if (state != null) throw IllegalStateException()
+        check(state == null)
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
         state = RestoreCoordinatorState(token, packages.iterator())
         return TRANSPORT_OK

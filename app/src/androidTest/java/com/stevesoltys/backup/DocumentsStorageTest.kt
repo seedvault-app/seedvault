@@ -3,7 +3,8 @@ package com.stevesoltys.backup
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.stevesoltys.backup.settings.getBackupFolderUri
+import com.stevesoltys.backup.settings.getBackupToken
+import com.stevesoltys.backup.settings.getStorage
 import com.stevesoltys.backup.transport.backup.plugins.DocumentsStorage
 import com.stevesoltys.backup.transport.backup.plugins.createOrGetFile
 import org.junit.After
@@ -20,9 +21,9 @@ private const val filename = "test-file"
 class DocumentsStorageTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val folderUri = getBackupFolderUri(context)
-    private val deviceName = "device name"
-    private val storage = DocumentsStorage(context, folderUri, deviceName)
+    private val token = getBackupToken(context)
+    private val folderUri = getStorage(context)
+    private val storage = DocumentsStorage(context, folderUri, token)
 
     private lateinit var file: DocumentFile
 

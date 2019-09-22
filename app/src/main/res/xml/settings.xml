@@ -10,7 +10,7 @@
         app:dependency="backup"
         app:icon="@drawable/ic_storage"
         app:key="backup_location"
-        app:summary="@string/settings_backup_external_storage"
+        app:summary="@string/settings_backup_location_none"
         app:title="@string/settings_backup_location" />
 
     <androidx.preference.SwitchPreferenceCompat
