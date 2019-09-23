@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.backup"
-    android:versionCode="5"
-    android:versionName="0.3.0">
+    android:versionCode="6"
+    android:versionName="1.0.0-alpha1">
 
     <uses-permission
         android:name="android.permission.BACKUP"
@@ -29,6 +29,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -61,18 +62,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.stevesoltys.backup.activity.MainActivity"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name="com.stevesoltys.backup.activity.backup.CreateBackupActivity"
-            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
-
-        <activity
-            android:name="com.stevesoltys.backup.activity.restore.RestoreBackupActivity"
-            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
 
         <service
             android:name=".transport.ConfigurableBackupTransportService"

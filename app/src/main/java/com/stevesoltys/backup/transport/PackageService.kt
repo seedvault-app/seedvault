@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.service
+package com.stevesoltys.backup.transport
 
 import android.content.pm.IPackageManager
 import android.content.pm.PackageInfo
@@ -27,7 +27,7 @@ private val IGNORED_PACKAGES = newArraySet(
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class PackageService {
+internal class PackageService {
 
     private val backupManager = Backup.backupManager
     private val packageManager: IPackageManager = IPackageManager.Stub.asInterface(getService("package"))

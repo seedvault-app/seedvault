@@ -2,7 +2,6 @@ package com.stevesoltys.backup.transport
 
 import android.app.Service
 import android.app.backup.BackupManager
-import android.app.backup.BackupTransport
 import android.content.Context
 import android.content.Context.BACKUP_SERVICE
 import android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP
@@ -15,8 +14,7 @@ import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.NotificationBackupObserver
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.service.PackageService
-import com.stevesoltys.backup.session.backup.BackupMonitor
+import com.stevesoltys.backup.BackupMonitor
 
 private val TAG = ConfigurableBackupTransportService::class.java.simpleName
 

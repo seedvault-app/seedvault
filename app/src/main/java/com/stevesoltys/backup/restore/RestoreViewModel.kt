@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.R
-import com.stevesoltys.backup.session.backup.BackupMonitor
+import com.stevesoltys.backup.BackupMonitor
 import com.stevesoltys.backup.transport.TRANSPORT_ID
 import com.stevesoltys.backup.ui.RequireProvisioningViewModel
 

@@ -1,27 +1,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">Backup</string>
 
-    <string name="create_backup_button">Create backup</string>
     <string name="restore_backup_button">Restore backup</string>
-    <string name="change_backup_location_button">Change backup location</string>
-
-    <string name="backup_success">Backup success</string>
-    <string name="backup_failure">Backup failure</string>
-    <string name="backup_cancelled">Backup cancelled</string>
-    <string name="backup_in_progress">Backup already in progress</string>
-
-    <string name="restore_button">Restore packages</string>
-    <string name="restore_success">Restore success</string>
-    <string name="restore_failure">Restore failure</string>
-    <string name="restore_cancelled">Restore cancelled</string>
-    <string name="restore_in_progress">Restore already in progress</string>
-
-    <string name="popup_cancel">Cancel</string>
-
-    <string name="unselect_all">Unselect all</string>
-    <string name="loading_backup">Loading backup…</string>
-    <string name="loading_packages">Loading packages…</string>
-    <string name="initializing">Initializing…</string>
 
     <!-- Settings -->
     <string name="settings_backup">Backup my data</string>

@@ -1,4 +1,4 @@
-package com.stevesoltys.backup.session.backup
+package com.stevesoltys.backup
 
 import android.app.backup.BackupManagerMonitor.*
 import android.app.backup.IBackupManagerMonitor
