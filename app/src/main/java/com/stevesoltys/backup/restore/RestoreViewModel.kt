@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
+import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -40,7 +41,7 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
     internal val restoreFinished: LiveData<Int> get() = mRestoreFinished
 
     internal fun loadRestoreSets() {
-        val session = this.session ?: backupManager.beginRestoreSession(null, TRANSPORT_ID)
+        val session = this.session ?: backupManager.beginRestoreSessionForUser(UserHandle.myUserId(), null, TRANSPORT_ID)
         this.session = session
 
         if (session == null) {

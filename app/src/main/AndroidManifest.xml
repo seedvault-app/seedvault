@@ -5,11 +5,6 @@
     android:versionCode="5"
     android:versionName="0.3.0">
 
-    <uses-sdk
-        android:minSdkVersion="26"
-        android:targetSdkVersion="28"
-        tools:ignore="GradleOverrides,OldTargetApi" />
-
     <uses-permission
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />

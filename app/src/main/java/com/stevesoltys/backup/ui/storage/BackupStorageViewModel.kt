@@ -1,9 +1,12 @@
 package com.stevesoltys.backup.ui.storage
 
+import android.app.ActivityManager
 import android.app.Application
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.net.Uri
+import android.os.UserHandle
+import android.os.UserManager
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
@@ -25,7 +28,7 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
 
         // initialize the new location
         val observer = InitializationObserver()
-        Backup.backupManager.initializeTransports(arrayOf(TRANSPORT_ID), observer)
+        Backup.backupManager.initializeTransportsForUser(UserHandle.myUserId(), arrayOf(TRANSPORT_ID), observer)
     }
 
     @WorkerThread
