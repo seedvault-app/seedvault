@@ -5,14 +5,13 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
-import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.header.UnsupportedVersionException
 import com.stevesoltys.backup.metadata.DecryptionFailedException
 import com.stevesoltys.backup.metadata.MetadataReader
-import com.stevesoltys.backup.settings.getBackupToken
+import com.stevesoltys.backup.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
@@ -23,7 +22,7 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
-        private val context: Context,
+        private val settingsManager: SettingsManager,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
         private val full: FullRestore,
@@ -75,7 +74,7 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
-        return getBackupToken(context)
+        return settingsManager.getBackupToken()
                 .apply { Log.i(TAG, "Got current restore set token: $this") }
     }
 

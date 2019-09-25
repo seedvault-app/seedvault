@@ -33,7 +33,7 @@ data class StorageRoot(
         internal val title: String,
         internal val summary: String?,
         internal val availableBytes: Long?,
-        internal val supportsEject: Boolean,
+        internal val isUsb: Boolean,
         internal val enabled: Boolean = true) {
 
     internal val uri: Uri by lazy {
@@ -41,7 +41,7 @@ data class StorageRoot(
     }
 
     fun isInternal(): Boolean {
-        return authority == AUTHORITY_STORAGE && !supportsEject
+        return authority == AUTHORITY_STORAGE && !isUsb
     }
 }
 
@@ -103,7 +103,7 @@ internal class StorageRootFetcher(private val context: Context) {
         var cursor: Cursor? = null
         try {
             cursor = contentResolver.query(rootsUri, null, null, null, null)
-            while (cursor.moveToNext()) {
+            while (cursor!!.moveToNext()) {
                 val root = getStorageRoot(authority, cursor)
                 if (root != null) roots.add(root)
             }
@@ -122,7 +122,6 @@ internal class StorageRootFetcher(private val context: Context) {
         if (!supportsCreate || !supportsIsChild) return null
         val rootId = cursor.getString(COLUMN_ROOT_ID)!!
         if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_HOME) return null
-        val supportsEject = flags and FLAG_SUPPORTS_EJECT != 0
         return StorageRoot(
                 authority = authority,
                 rootId = rootId,
@@ -131,13 +130,13 @@ internal class StorageRootFetcher(private val context: Context) {
                 title = cursor.getString(COLUMN_TITLE)!!,
                 summary = cursor.getString(COLUMN_SUMMARY),
                 availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES),
-                supportsEject = supportsEject
+                isUsb = flags and FLAG_REMOVABLE_USB != 0
         )
     }
 
     private fun checkOrAddUsbRoot(roots: ArrayList<StorageRoot>) {
         for (root in roots) {
-            if (root.authority == AUTHORITY_STORAGE && root.supportsEject) return
+            if (root.authority == AUTHORITY_STORAGE && root.isUsb) return
         }
         val root = StorageRoot(
                 authority = AUTHORITY_STORAGE,
@@ -147,7 +146,7 @@ internal class StorageRootFetcher(private val context: Context) {
                 title = context.getString(R.string.storage_fake_drive_title),
                 summary = context.getString(R.string.storage_fake_drive_summary),
                 availableBytes = null,
-                supportsEject = true,
+                isUsb = true,
                 enabled = false
         )
         roots.add(root)
@@ -198,7 +197,7 @@ internal class StorageRootFetcher(private val context: Context) {
         }
     }
 
-    private fun getPackageIcon(context: Context, authority: String?, icon: Int): Drawable? {
+    private fun getPackageIcon(context: Context, authority: String, icon: Int): Drawable? {
         if (icon != 0) {
             val pm = context.packageManager
             val info = pm.resolveContentProvider(authority, 0)

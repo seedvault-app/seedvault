@@ -36,11 +36,6 @@ class FullBackup(
 
     fun hasState() = state != null
 
-    fun requestFullBackupTime(): Long {
-        Log.i(TAG, "Request full backup time")
-        return 0
-    }
-
     fun getQuota(): Long = plugin.getQuota()
 
     fun checkFullBackupSize(size: Long): Int {

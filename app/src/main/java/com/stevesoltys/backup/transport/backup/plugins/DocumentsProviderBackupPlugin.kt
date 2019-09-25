@@ -42,7 +42,7 @@ class DocumentsProviderBackupPlugin(
     }
 
     override val providerPackageName: String? by lazy {
-        val authority = storage.rootBackupDir?.uri?.authority ?: return@lazy null
+        val authority = storage.getAuthority() ?: return@lazy null
         val providerInfo = packageManager.resolveContentProvider(authority, 0) ?: return@lazy null
         providerInfo.packageName
     }

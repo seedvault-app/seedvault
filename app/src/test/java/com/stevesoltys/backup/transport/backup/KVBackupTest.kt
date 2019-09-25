@@ -29,11 +29,6 @@ internal class KVBackupTest : BackupTest() {
     private val versionHeader = VersionHeader(packageName = packageInfo.packageName, key = key)
 
     @Test
-    fun `now is a good time for a backup`() {
-        assertEquals(0, backup.requestBackupTime())
-    }
-
-    @Test
     fun `has no initial state`() {
         assertFalse(backup.hasState())
     }

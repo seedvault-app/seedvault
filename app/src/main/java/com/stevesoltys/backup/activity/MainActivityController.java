@@ -18,8 +18,6 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_BACKUP_REQUEST_CODE;
 import static com.stevesoltys.backup.activity.MainActivity.OPEN_DOCUMENT_TREE_REQUEST_CODE;
-import static com.stevesoltys.backup.settings.SettingsManagerKt.getBackupPassword;
-import static com.stevesoltys.backup.settings.SettingsManagerKt.getStorage;
 
 /**
  * @author Steve Soltys
@@ -41,7 +39,7 @@ public class MainActivityController {
     }
 
     boolean isChangeBackupLocationButtonVisible(Activity parent) {
-        return getStorage(parent) != null;
+        return false;
     }
 
     private void showChooseFolderActivity(Activity parent, boolean continueToBackup) {
@@ -74,15 +72,8 @@ public class MainActivityController {
     }
 
     boolean onAutomaticBackupsButtonClicked(Activity parent) {
-        if (getStorage(parent) == null || getBackupPassword(parent) == null) {
-            Toast.makeText(parent, "Please make at least one manual backup first.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // show Toast informing the user
-        Toast.makeText(parent, "REMOVED", Toast.LENGTH_SHORT).show();
-
-        return true;
+        Toast.makeText(parent, "Please make at least one manual backup first.", Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     void onChangeBackupLocationButtonClicked(Activity parent) {

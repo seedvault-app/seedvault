@@ -1,15 +1,16 @@
 package com.stevesoltys.backup.transport.backup
 
-import android.app.backup.BackupTransport.TRANSPORT_ERROR
-import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.*
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.backup.BackupNotificationManager
+import com.stevesoltys.backup.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.backup.metadata.MetadataWriter
-import com.stevesoltys.backup.settings.getBackupToken
+import com.stevesoltys.backup.settings.SettingsManager
 import java.io.IOException
+import java.util.concurrent.TimeUnit.DAYS
 
 private val TAG = BackupCoordinator::class.java.simpleName
 
@@ -23,6 +24,7 @@ class BackupCoordinator(
         private val kv: KVBackup,
         private val full: FullBackup,
         private val metadataWriter: MetadataWriter,
+        private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
 
     private var calledInitialize = false
@@ -54,14 +56,15 @@ class BackupCoordinator(
         Log.i(TAG, "Initialize Device!")
         return try {
             plugin.initializeDevice()
-            writeBackupMetadata(getBackupToken(context))
+            writeBackupMetadata(settingsManager.getBackupToken())
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error initializing device", e)
-            nm.onBackupError()
+            // Show error notification if we were ready for backups
+            if (getBackupBackoff() == 0L) nm.onBackupError()
             TRANSPORT_ERROR
         }
     }
@@ -83,21 +86,61 @@ class BackupCoordinator(
     // Key/value incremental backup support
     //
 
-    fun requestBackupTime() = kv.requestBackupTime()
+    /**
+     * Verify that this is a suitable time for a key/value backup pass.
+     * This should return zero if a backup is reasonable right now, some positive value otherwise.
+     * This method will be called outside of the [performIncrementalBackup]/[finishBackup] pair.
+     *
+     * If this is not a suitable time for a backup, the transport should return a backoff delay,
+     * in milliseconds, after which the Backup Manager should try again.
+     *
+     * @return Zero if this is a suitable time for a backup pass, or a positive time delay
+     *   in milliseconds to suggest deferring the backup pass for a while.
+     */
+    fun requestBackupTime(): Long = getBackupBackoff().apply {
+        Log.i(TAG, "Request incremental backup time. Returned $this")
+    }
 
-    fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int) =
-            kv.performBackup(packageInfo, data, flags)
+    fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+        // backups of package manager metadata do not respect backoff
+        // we need to reject them manually when now is not a good time for a backup
+        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
+            return TRANSPORT_PACKAGE_REJECTED
+        }
+
+        val result = kv.performBackup(packageInfo, data, flags)
+        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
+        return result
+    }
 
     // ------------------------------------------------------------------------------------
     // Full backup
     //
 
-    fun requestFullBackupTime() = full.requestFullBackupTime()
+    /**
+     * Verify that this is a suitable time for a full-data backup pass.
+     * This should return zero if a backup is reasonable right now, some positive value otherwise.
+     * This method will be called outside of the [performFullBackup]/[finishBackup] pair.
+     *
+     * If this is not a suitable time for a backup, the transport should return a backoff delay,
+     * in milliseconds, after which the Backup Manager should try again.
+     *
+     * @return Zero if this is a suitable time for a backup pass, or a positive time delay
+     *   in milliseconds to suggest deferring the backup pass for a while.
+     *
+     * @see [requestBackupTime]
+     */
+    fun requestFullBackupTime(): Long = getBackupBackoff().apply {
+        Log.i(TAG, "Request full backup time. Returned $this")
+    }
 
     fun checkFullBackupSize(size: Long) = full.checkFullBackupSize(size)
 
-    fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int) =
-            full.performFullBackup(targetPackage, fileDescriptor, flags)
+    fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
+        val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
+        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
+        return result
+    }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
@@ -154,6 +197,18 @@ class BackupCoordinator(
     private fun writeBackupMetadata(token: Long) {
         val outputStream = plugin.getMetadataOutputStream()
         metadataWriter.write(outputStream, token)
+    }
+
+    private fun getBackupBackoff(): Long {
+        val noBackoff = 0L
+        val defaultBackoff = DAYS.toMillis(30)
+
+        // back off if there's no storage set
+        val storage = settingsManager.getStorage() ?: return defaultBackoff
+        // don't back off if storage is not ejectable or available right now
+        return if (!storage.isUsb || storage.getDocumentFile(context).isDirectory) noBackoff
+        // otherwise back off
+        else defaultBackoff
     }
 
 }

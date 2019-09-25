@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.backup.Backup
 import com.stevesoltys.backup.NotificationBackupObserver
+import com.stevesoltys.backup.R
 import com.stevesoltys.backup.service.PackageService
 import com.stevesoltys.backup.session.backup.BackupMonitor
 
@@ -50,7 +51,10 @@ class ConfigurableBackupTransportService : Service() {
 
 @WorkerThread
 fun requestBackup(context: Context) {
-    context.startService(Intent(context, ConfigurableBackupTransportService::class.java))
+    // show notification
+    val nm = (context.applicationContext as Backup).notificationManager
+    nm.onBackupUpdate(context.getString(R.string.notification_backup_starting), 0, 1, true)
+
     val observer = NotificationBackupObserver(context, true)
     val flags = FLAG_NON_INCREMENTAL_BACKUP or FLAG_USER_INITIATED
     val packages = PackageService().eligiblePackages

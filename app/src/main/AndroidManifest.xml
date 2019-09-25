@@ -14,6 +14,16 @@
         android:name="android.permission.MANAGE_DOCUMENTS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- This is needed to access the serial number of USB mass storage devices -->
+    <uses-permission
+        android:name="android.permission.MANAGE_USB"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- This is needed to change system backup settings -->
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".Backup"
         android:allowBackup="false"
@@ -71,6 +81,17 @@
                 <action android:name="android.backup.TRANSPORT_HOST" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".UsbIntentReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </receiver>
 
     </application>
 </manifest>

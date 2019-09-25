@@ -79,9 +79,9 @@ class BackupNotificationManager(private val context: Context) {
         val notification = errorBuilder.apply {
             setContentTitle(context.getString(R.string.notification_error_title))
             setContentText(context.getString(R.string.notification_error_text))
-            addAction(action)
             setOnlyAlertOnce(true)
             setAutoCancel(true)
+            mActions = arrayListOf(action)
         }.build()
         nm.notify(NOTIFICATION_ID_ERROR, notification)
     }
