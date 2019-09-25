@@ -16,10 +16,10 @@ cp $TRAVIS_BUILD_DIR/Android.mk .
 cp $TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release-unsigned.apk ./Backup.apk
 cp $TRAVIS_BUILD_DIR/permissions_com.stevesoltys.backup.xml .
 cp $TRAVIS_BUILD_DIR/whitelist_com.stevesoltys.backup.xml .
-cp $TRAVIS_BUILD_DIR/default-permissions_com.stevesoltys.backup.xml .
 
 git add .
-git commit -m "Travis build $TRAVIS_BUILD_NUMBER"
+git commit -m :'Travis build $TRAVIS_BUILD_NUMBER
+https://github.com/stevesoltys/backup/commit/$TRAVIS_COMMIT'
 git push origin $TRAVIS_BRANCH
 
 if [ ! -z ${TAG} ]; then
