@@ -18,8 +18,7 @@ cp $TRAVIS_BUILD_DIR/permissions_com.stevesoltys.backup.xml .
 cp $TRAVIS_BUILD_DIR/whitelist_com.stevesoltys.backup.xml .
 
 git add .
-git commit -m :'Travis build $TRAVIS_BUILD_NUMBER
-https://github.com/stevesoltys/backup/commit/$TRAVIS_COMMIT'
+git commit -m "Travis build $TRAVIS_BUILD_NUMBER" -m "https://github.com/stevesoltys/backup/commit/$TRAVIS_COMMIT"
 git push origin $TRAVIS_BRANCH
 
 if [ ! -z ${TAG} ]; then
