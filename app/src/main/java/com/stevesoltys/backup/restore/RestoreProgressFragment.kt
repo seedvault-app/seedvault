@@ -1,5 +1,6 @@
 package com.stevesoltys.backup.restore
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +65,10 @@ class RestoreProgressFragment : Fragment() {
             activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         })
 
-        button.setOnClickListener { requireActivity().finishAfterTransition() }
+        button.setOnClickListener {
+            requireActivity().setResult(RESULT_OK)
+            requireActivity().finishAfterTransition()
+        }
     }
 
 }
