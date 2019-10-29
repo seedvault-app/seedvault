@@ -37,6 +37,6 @@ deploy:
   script: ./deploy-prebuilt.sh
   skip_cleanup: true
   on:
-    repo: stevesoltys/backup
+    repo: stevesoltys/seedvault
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^(master|develop)$

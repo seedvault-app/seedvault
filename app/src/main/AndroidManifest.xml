@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.stevesoltys.backup"
+    package="com.stevesoltys.seedvault"
     android:versionCode="6"
     android:versionName="1.0.0-alpha1">
 
@@ -58,7 +58,7 @@
             android:label="@string/restore_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="com.stevesoltys.backup.restore.RESTORE_BACKUP" />
+                <action android:name="com.stevesoltys.seedvault.restore.RESTORE_BACKUP" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

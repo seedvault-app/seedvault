@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Backup</string>
+    <string name="app_name">Seedvault</string>
 
     <string name="restore_backup_button">Restore backup</string>
 
