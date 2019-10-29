@@ -1,5 +1,5 @@
-# Backup
-[![Build Status](https://travis-ci.com/stevesoltys/backup.svg?branch=master)](https://travis-ci.com/stevesoltys/backup)
+# Seedvault
+[![Build Status](https://travis-ci.com/stevesoltys/seedvault.svg?branch=master)](https://travis-ci.com/stevesoltys/seedvault)
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
@@ -9,7 +9,7 @@ A backup application for the [Android Open Source Project](https://source.androi
 - Password-based encryption.
 
 ## Getting Started
-- Check out [the wiki](https://github.com/stevesoltys/backup/wiki) for information on building the application with 
+- Check out [the wiki](https://github.com/stevesoltys/seedvault/wiki) for information on building the application with 
 AOSP.
 
 ## What makes this different?
@@ -17,7 +17,7 @@ This application is compiled with the operating system and does not require a ro
 internal APIs as `adb backup` and only requires the permission `android.permission.BACKUP` for this.
 
 ## Contributing
-Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/backup. 
+Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault. 
 
 ## Permissions
 
