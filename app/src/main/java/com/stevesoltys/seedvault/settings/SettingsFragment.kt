@@ -103,7 +103,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onStart()
 
         // we need to re-set the title when returning to this fragment
-        activity?.setTitle(R.string.app_name)
+        activity?.setTitle(R.string.backup)
 
         storage = settingsManager.getStorage()
         setBackupState()
@@ -137,6 +137,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         item.itemId == R.id.action_restore -> {
             startActivity(Intent(requireContext(), RestoreActivity::class.java))
+            true
+        }
+        item.itemId == R.id.action_about -> {
+            AboutDialogFragment().show(fragmentManager!!, AboutDialogFragment.TAG)
             true
         }
         else -> super.onOptionsItemSelected(item)
