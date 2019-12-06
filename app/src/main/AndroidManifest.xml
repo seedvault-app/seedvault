@@ -58,7 +58,7 @@
             android:label="@string/restore_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="com.stevesoltys.seedvault.restore.RESTORE_BACKUP" />
+                <action android:name="com.stevesoltys.seedvault.RESTORE_BACKUP" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

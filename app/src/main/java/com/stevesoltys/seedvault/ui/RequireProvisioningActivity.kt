@@ -14,7 +14,7 @@ const val REQUEST_CODE_RECOVERY_CODE = 3
 const val INTENT_EXTRA_IS_RESTORE = "isRestore"
 const val INTENT_EXTRA_IS_SETUP_WIZARD = "isSetupWizard"
 
-private const val ACTION_SETUP_WIZARD = "com.stevesoltys.seedvault.restore.RESTORE_BACKUP"
+private const val ACTION_SETUP_WIZARD = "com.stevesoltys.seedvault.RESTORE_BACKUP"
 
 private val TAG = RequireProvisioningActivity::class.java.name
 
