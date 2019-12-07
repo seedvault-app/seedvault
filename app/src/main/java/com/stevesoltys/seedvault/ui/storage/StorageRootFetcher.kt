@@ -49,10 +49,11 @@ internal interface RemovableStorageListener {
     fun onStorageChanged()
 }
 
-internal class StorageRootFetcher(private val context: Context) {
+internal class StorageRootFetcher(private val context: Context, private val isRestore: Boolean) {
 
     private val packageManager = context.packageManager
     private val contentResolver = context.contentResolver
+    private val whitelistedAuthorities = context.resources.getStringArray(R.array.storage_authority_whitelist)
 
     private var listener: RemovableStorageListener? = null
     private val observer = object : ContentObserver(Handler()) {
@@ -85,7 +86,7 @@ internal class StorageRootFetcher(private val context: Context) {
                 roots.addAll(getRoots(providerInfo))
             }
         }
-        checkOrAddUsbRoot(roots)
+        if (isAuthoritySupported(AUTHORITY_STORAGE)) checkOrAddUsbRoot(roots)
         return roots
     }
 
@@ -165,7 +166,15 @@ internal class StorageRootFetcher(private val context: Context) {
         } else if (authority == AUTHORITY_DOWNLOADS) {
             Log.w(TAG, "Not supporting $AUTHORITY_DOWNLOADS")
             false
+        } else if (!isAuthoritySupported(authority)) {
+            Log.w(TAG, "Authority $authority is not white-listed, ignoring...")
+            false
         } else true
+    }
+
+    private fun isAuthoritySupported(authority: String): Boolean {
+        // just restrict where to store backups, restoring can be more free for forward compatibility
+        return isRestore || whitelistedAuthorities.contains(authority)
     }
 
     private fun Cursor.getString(columnName: String): String? {

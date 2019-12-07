@@ -37,7 +37,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
     protected val mLocationChecked = MutableLiveEvent<LocationResult>()
     internal val locationChecked: LiveEvent<LocationResult> get() = mLocationChecked
 
-    private val storageRootFetcher by lazy { StorageRootFetcher(app) }
+    private val storageRootFetcher by lazy { StorageRootFetcher(app, isRestoreOperation) }
     private var storageRoot: StorageRoot? = null
 
     internal var isSetupWizard: Boolean = false
