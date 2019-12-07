@@ -1,6 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Seedvault</string>
+    <string name="backup">Backup</string>
 
     <string name="restore_backup_button">Restore backup</string>
 
@@ -25,7 +26,7 @@
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
     <string name="storage_fake_drive_title">USB Flash Drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
-    <string name="storage_available_bytes"><xliff:g id="size" example="1 GB">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
@@ -88,5 +89,13 @@
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
     <string name="storage_internal_warning_choose_other">Choose Other</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_summary">A backup application using Android\'s internal backup API.</string>
+    <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_source_code">Source Code: https://github.com/stevesoltys/seedvault</string>
 
 </resources>
