@@ -70,7 +70,9 @@ internal class StorageRootAdapter(
                 else -> summaryView.visibility = GONE
             }
             v.setOnClickListener {
-                if (!isRestore && item.isInternal()) {
+                if (item.overrideClickListener != null) {
+                    item.overrideClickListener.invoke()
+                } else if (!isRestore && item.isInternal()) {
                     showWarningDialog(v.context, item)
                 } else {
                     listener.onClick(item)

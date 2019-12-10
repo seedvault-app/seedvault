@@ -27,6 +27,9 @@
     <string name="storage_fake_drive_title">USB Flash Drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_fake_nextcloud_summary">Click to install</string>
+    <string name="storage_fake_nextcloud_summary_installed">Click to set up account</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>

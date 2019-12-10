@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.app.Application
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.backup.plugins.DIRECTORY_ROOT
@@ -14,19 +15,19 @@ internal class RestoreStorageViewModel(private val app: Application) : StorageVi
 
     override val isRestoreOperation = true
 
-    override fun onLocationSet(uri: Uri) {
+    override fun onLocationSet(uri: Uri) = Thread {
         if (hasBackup(uri)) {
             saveStorage(uri)
 
-            mLocationChecked.setEvent(LocationResult())
+            mLocationChecked.postEvent(LocationResult())
         } else {
             Log.w(TAG, "Location was rejected: $uri")
 
             // notify the UI that the location was invalid
             val errorMsg = app.getString(R.string.restore_invalid_location_message, DIRECTORY_ROOT)
-            mLocationChecked.setEvent(LocationResult(errorMsg))
+            mLocationChecked.postEvent(LocationResult(errorMsg))
         }
-    }
+    }.start()
 
     /**
      * Searches if there's really a backup available in the given location.
@@ -37,7 +38,11 @@ internal class RestoreStorageViewModel(private val app: Application) : StorageVi
      *
      * TODO maybe move this to the RestoreCoordinator once we can inject it
      */
+    @WorkerThread
     private fun hasBackup(folderUri: Uri): Boolean {
+        // FIXME This currently fails for NextCloud's DocumentsProvider,
+        //       if called right after setting up an account.
+        //       It requires three attempts to finally find existing backups.
         val parent = DocumentFile.fromTreeUri(app, folderUri) ?: throw AssertionError()
         val rootDir = parent.findFile(DIRECTORY_ROOT) ?: return false
         val backupSets = DocumentsProviderRestorePlugin.getBackups(rootDir)

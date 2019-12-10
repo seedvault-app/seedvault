@@ -17,8 +17,6 @@ import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import kotlinx.android.synthetic.main.fragment_storage_root.*
 
-private val TAG = StorageRootsFragment::class.java.simpleName
-
 internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
     companion object {
