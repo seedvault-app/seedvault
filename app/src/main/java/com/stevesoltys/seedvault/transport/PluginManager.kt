@@ -49,6 +49,6 @@ class PluginManager(context: Context) {
     private val kvRestore = KVRestore(restorePlugin.kvRestorePlugin, outputFactory, headerReader, crypto)
     private val fullRestore = FullRestore(restorePlugin.fullRestorePlugin, outputFactory, headerReader, crypto)
 
-    internal val restoreCoordinator = RestoreCoordinator(settingsManager, restorePlugin, kvRestore, fullRestore, metadataReader)
+    internal val restoreCoordinator = RestoreCoordinator(context, settingsManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
 }

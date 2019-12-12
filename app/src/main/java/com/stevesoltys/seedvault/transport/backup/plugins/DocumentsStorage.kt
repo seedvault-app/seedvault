@@ -1,14 +1,21 @@
 package com.stevesoltys.seedvault.transport.backup.plugins
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.database.ContentObserver
+import android.net.Uri
+import android.provider.DocumentsContract.*
+import android.provider.DocumentsContract.Document.*
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
+import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.concurrent.TimeUnit.MINUTES
 
 const val DIRECTORY_ROOT = ".AndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
@@ -125,4 +132,71 @@ fun DocumentFile.deleteContents() {
 
 fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
     if (name != packageInfo.packageName) throw AssertionError()
+}
+
+/**
+ * Works like [DocumentFile.listFiles] except that it waits until the DocumentProvider has a result.
+ * This prevents getting an empty list even though there are children to be listed.
+ */
+@Throws(IOException::class)
+fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
+    val resolver = context.contentResolver
+    val childrenUri = buildChildDocumentsUriUsingTree(uri, getDocumentId(uri))
+    val projection = arrayOf(COLUMN_DOCUMENT_ID, COLUMN_MIME_TYPE)
+    val result = ArrayList<DocumentFile>()
+
+    @SuppressLint("Recycle")  // gets closed in with(), only earlier exit when null
+    var cursor = resolver.query(childrenUri, projection, null, null, null)
+            ?: throw IOException()
+    val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
+    if (loading) {
+        Log.d(TAG, "Wait for children to get loaded...")
+        var loaded = false
+        cursor.registerContentObserver(object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean, uri: Uri?) {
+                Log.d(TAG, "Children loaded. Continue...")
+                loaded = true
+            }
+        })
+        val timeout = MINUTES.toMillis(2)
+        var time = 0
+        while (!loaded && time < timeout) {
+            Thread.sleep(50)
+            time += 50
+        }
+        if (time >= timeout) Log.w(TAG, "Timed out while waiting for children to load")
+        closeQuietly(cursor)
+        // do a new query after content was loaded
+        @SuppressLint("Recycle")  // gets closed after with block
+        cursor = resolver.query(childrenUri, projection, null, null, null)
+                ?: throw IOException()
+    }
+    with(cursor) {
+        while (moveToNext()) {
+            val documentId = getString(0)
+            val isDirectory = getString(1) == MIME_TYPE_DIR
+            val file = if (isDirectory) {
+                val treeUri = buildTreeDocumentUri(uri.authority, documentId)
+                DocumentFile.fromTreeUri(context, treeUri)!!
+            } else {
+                val documentUri = buildDocumentUriUsingTree(uri, documentId)
+                DocumentFile.fromSingleUri(context, documentUri)!!
+            }
+            result.add(file)
+        }
+    }
+    return result
+}
+
+fun DocumentFile.findFileBlocking(context: Context, displayName: String): DocumentFile? {
+    val files = try {
+        listFilesBlocking(context)
+    } catch (e: IOException) {
+        Log.e(TAG, "Error finding file blocking", e)
+        return null
+    }
+    for (doc in files) {
+        if (displayName == doc.name) return doc
+    }
+    return null
 }

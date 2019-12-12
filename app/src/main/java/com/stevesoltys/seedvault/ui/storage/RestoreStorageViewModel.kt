@@ -7,6 +7,7 @@ import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.backup.plugins.DIRECTORY_ROOT
+import com.stevesoltys.seedvault.transport.backup.plugins.findFileBlocking
 import com.stevesoltys.seedvault.transport.restore.plugins.DocumentsProviderRestorePlugin
 
 private val TAG = RestoreStorageViewModel::class.java.simpleName
@@ -40,12 +41,9 @@ internal class RestoreStorageViewModel(private val app: Application) : StorageVi
      */
     @WorkerThread
     private fun hasBackup(folderUri: Uri): Boolean {
-        // FIXME This currently fails for NextCloud's DocumentsProvider,
-        //       if called right after setting up an account.
-        //       It requires three attempts to finally find existing backups.
         val parent = DocumentFile.fromTreeUri(app, folderUri) ?: throw AssertionError()
-        val rootDir = parent.findFile(DIRECTORY_ROOT) ?: return false
-        val backupSets = DocumentsProviderRestorePlugin.getBackups(rootDir)
+        val rootDir = parent.findFileBlocking(app, DIRECTORY_ROOT) ?: return false
+        val backupSets = DocumentsProviderRestorePlugin.getBackups(app, rootDir)
         return backupSets.isNotEmpty()
     }
 
