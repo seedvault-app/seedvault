@@ -49,13 +49,13 @@ internal class RestoreCoordinator(
                 val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
                 restoreSets.add(set)
             } catch (e: IOException) {
-                Log.e(TAG, "Error while getting restore sets", e)
-                return null
+                Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
+                continue
             } catch (e: SecurityException) {
-                Log.e(TAG, "Error while getting restore sets", e)
+                Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
                 return null
             } catch (e: DecryptionFailedException) {
-                Log.e(TAG, "Error while decrypting restore set", e)
+                Log.e(TAG, "Error while decrypting restore set ${encryptedMetadata.token}", e)
                 continue
             } catch (e: UnsupportedVersionException) {
                 Log.w(TAG, "Backup with unsupported version read", e)
