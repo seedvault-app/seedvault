@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat.*
 import com.stevesoltys.seedvault.settings.SettingsActivity
+import java.util.*
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
 private const val CHANNEL_ID_ERROR = "NotificationError"
@@ -47,6 +48,7 @@ class BackupNotificationManager(private val context: Context) {
         val notification = observerBuilder.apply {
             setContentTitle(context.getString(R.string.notification_title))
             setContentText(app)
+            setWhen(Date().time)
             setProgress(expected, transferred, false)
             priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
         }.build()
@@ -62,6 +64,7 @@ class BackupNotificationManager(private val context: Context) {
         val notification = observerBuilder.apply {
             setContentTitle(title)
             setContentText(app)
+            setWhen(Date().time)
             priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
         }.build()
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
@@ -79,6 +82,7 @@ class BackupNotificationManager(private val context: Context) {
         val notification = errorBuilder.apply {
             setContentTitle(context.getString(R.string.notification_error_title))
             setContentText(context.getString(R.string.notification_error_text))
+            setWhen(Date().time)
             setOnlyAlertOnce(true)
             setAutoCancel(true)
             mActions = arrayListOf(action)
