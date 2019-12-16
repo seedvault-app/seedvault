@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import com.stevesoltys.seedvault.ui.LiveEventHandler
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 private val TAG = StorageActivity::class.java.name
 
@@ -27,9 +27,9 @@ class StorageActivity : BackupActivity() {
         setContentView(R.layout.activity_fragment_container)
 
         viewModel = if (isRestore()) {
-            ViewModelProviders.of(this).get(RestoreStorageViewModel::class.java)
+            getViewModel<RestoreStorageViewModel>()
         } else {
-            ViewModelProviders.of(this).get(BackupStorageViewModel::class.java)
+            getViewModel<BackupStorageViewModel>()
         }
         viewModel.isSetupWizard = isSetupWizard()
 

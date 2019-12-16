@@ -26,7 +26,7 @@ const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()
 
 private val TAG = FullBackup::class.java.simpleName
 
-class FullBackup(
+internal class FullBackup(
         private val plugin: FullBackupPlugin,
         private val inputFactory: InputFactory,
         private val headerWriter: HeaderWriter,

@@ -11,11 +11,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import kotlinx.android.synthetic.main.fragment_storage_root.*
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
 internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
@@ -42,9 +42,9 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = if (arguments!!.getBoolean(INTENT_EXTRA_IS_RESTORE)) {
-            ViewModelProviders.of(requireActivity()).get(RestoreStorageViewModel::class.java)
+            getSharedViewModel<RestoreStorageViewModel>()
         } else {
-            ViewModelProviders.of(requireActivity()).get(BackupStorageViewModel::class.java)
+            getSharedViewModel<BackupStorageViewModel>()
         }
 
         if (viewModel.isRestoreOperation) {

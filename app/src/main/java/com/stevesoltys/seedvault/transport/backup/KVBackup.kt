@@ -17,7 +17,7 @@ const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 
 private val TAG = KVBackup::class.java.simpleName
 
-class KVBackup(
+internal class KVBackup(
         private val plugin: KVBackupPlugin,
         private val inputFactory: InputFactory,
         private val headerWriter: HeaderWriter,

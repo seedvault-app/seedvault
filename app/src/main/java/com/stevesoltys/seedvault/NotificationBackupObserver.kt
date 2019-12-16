@@ -7,13 +7,15 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
-class NotificationBackupObserver(context: Context, private val userInitiated: Boolean) : IBackupObserver.Stub() {
+class NotificationBackupObserver(context: Context, private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
 
     private val pm = context.packageManager
-    private val nm = (context.applicationContext as Backup).notificationManager
+    private val nm: BackupNotificationManager by inject()
 
     /**
      * This method could be called several times for packages with full data backup.

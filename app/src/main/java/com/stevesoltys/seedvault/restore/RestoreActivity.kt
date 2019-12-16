@@ -3,19 +3,18 @@ package com.stevesoltys.seedvault.restore
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RestoreActivity : RequireProvisioningActivity() {
 
-    private lateinit var viewModel: RestoreViewModel
+    private val viewModel: RestoreViewModel by viewModel()
 
     override fun getViewModel(): RequireProvisioningViewModel = viewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(RestoreViewModel::class.java)
         super.onCreate(savedInstanceState)
 
         if (isSetupWizard) hideSystemUI()

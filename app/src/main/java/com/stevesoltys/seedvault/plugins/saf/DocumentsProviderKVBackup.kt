@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.backup.plugins
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.pm.PackageInfo
 import androidx.documentfile.provider.DocumentFile
@@ -7,7 +7,7 @@ import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import java.io.IOException
 import java.io.OutputStream
 
-class DocumentsProviderKVBackup(private val storage: DocumentsStorage) : KVBackupPlugin {
+internal class DocumentsProviderKVBackup(private val storage: DocumentsStorage) : KVBackupPlugin {
 
     private var packageFile: DocumentFile? = null
 

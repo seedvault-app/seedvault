@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.settings
 
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.Context.BACKUP_SERVICE
 import android.content.Intent
@@ -17,26 +18,25 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProviders
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
-import com.stevesoltys.seedvault.Backup
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.UsbMonitor
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.restore.RestoreActivity
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 private val TAG = SettingsFragment::class.java.name
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val backupManager = Backup.backupManager
-
-    private lateinit var viewModel: SettingsViewModel
-    private lateinit var settingsManager: SettingsManager
+    private val viewModel: SettingsViewModel by sharedViewModel()
+    private val settingsManager: SettingsManager by inject()
+    private val backupManager: IBackupManager by inject()
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
@@ -62,9 +62,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         setHasOptionsMenu(true)
-
-        viewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel::class.java)
-        settingsManager = (requireContext().applicationContext as Backup).settingsManager
 
         backup = findPreference<TwoStatePreference>("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->

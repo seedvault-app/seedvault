@@ -12,19 +12,23 @@ import android.os.Handler
 import android.provider.DocumentsContract
 import android.util.Log
 import com.stevesoltys.seedvault.settings.FlashDrive
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
 
-class UsbIntentReceiver : UsbMonitor() {
+class UsbIntentReceiver : UsbMonitor(), KoinComponent {
+
+    private val settingsManager by inject<SettingsManager>()
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false
         Log.d(TAG, "Checking if this is the current backup drive.")
-        val settingsManager = (context.applicationContext as Backup).settingsManager
         val savedFlashDrive = settingsManager.getFlashDrive() ?: return false
         val attachedFlashDrive = FlashDrive.from(device)
         return if (savedFlashDrive == attachedFlashDrive) {

@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
@@ -19,10 +18,11 @@ import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import io.github.novacrypto.bip39.wordlists.English
 import kotlinx.android.synthetic.main.fragment_recovery_code_input.*
 import kotlinx.android.synthetic.main.recovery_code_input.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RecoveryCodeInputFragment : Fragment() {
 
-    private lateinit var viewModel: RecoveryCodeViewModel
+    private val viewModel: RecoveryCodeViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,7 +31,6 @@ class RecoveryCodeInputFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity()).get(RecoveryCodeViewModel::class.java)
 
         if (viewModel.isRestore) {
             introText.setText(R.string.recovery_code_input_intro)

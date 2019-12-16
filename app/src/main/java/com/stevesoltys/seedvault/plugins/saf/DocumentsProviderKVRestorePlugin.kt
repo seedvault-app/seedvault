@@ -1,14 +1,12 @@
-package com.stevesoltys.seedvault.transport.restore.plugins
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.pm.PackageInfo
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.transport.backup.plugins.DocumentsStorage
-import com.stevesoltys.seedvault.transport.backup.plugins.assertRightFile
 import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import java.io.IOException
 import java.io.InputStream
 
-class DocumentsProviderKVRestorePlugin(private val storage: DocumentsStorage) : KVRestorePlugin {
+internal class DocumentsProviderKVRestorePlugin(private val storage: DocumentsStorage) : KVRestorePlugin {
 
     private var packageDir: DocumentFile? = null
 

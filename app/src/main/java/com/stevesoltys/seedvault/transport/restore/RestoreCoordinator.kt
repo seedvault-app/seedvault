@@ -5,7 +5,6 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
-import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -23,7 +22,6 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
-        private val context: Context,
         private val settingsManager: SettingsManager,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
@@ -39,7 +37,7 @@ internal class RestoreCoordinator(
      *   or null if an error occurred (the attempt should be rescheduled).
      **/
     fun getAvailableRestoreSets(): Array<RestoreSet>? {
-        val availableBackups = plugin.getAvailableBackups(context) ?: return null
+        val availableBackups = plugin.getAvailableBackups() ?: return null
         val restoreSets = ArrayList<RestoreSet>()
         for (encryptedMetadata in availableBackups) {
             if (encryptedMetadata.error) continue

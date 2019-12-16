@@ -2,7 +2,6 @@ package com.stevesoltys.seedvault.settings
 
 import android.content.ContentResolver
 import android.provider.Settings
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.DAYS
 
 private val SETTING = Settings.Secure.BACKUP_MANAGER_CONSTANTS

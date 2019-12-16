@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport
 
+import android.app.backup.IBackupManager
 import android.content.pm.IPackageManager
 import android.content.pm.PackageInfo
 import android.os.RemoteException
@@ -7,8 +8,9 @@ import android.os.ServiceManager.getService
 import android.os.UserHandle
 import android.util.Log
 import com.google.android.collect.Sets.newArraySet
-import com.stevesoltys.seedvault.Backup
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
 private val TAG = PackageService::class.java.simpleName
@@ -27,9 +29,9 @@ private val IGNORED_PACKAGES = newArraySet(
  * @author Steve Soltys
  * @author Torsten Grote
  */
-internal class PackageService {
+internal object PackageService : KoinComponent {
 
-    private val backupManager = Backup.backupManager
+    private val backupManager: IBackupManager by inject()
     private val packageManager: IPackageManager = IPackageManager.Stub.asInterface(getService("package"))
 
     val eligiblePackages: Array<String>

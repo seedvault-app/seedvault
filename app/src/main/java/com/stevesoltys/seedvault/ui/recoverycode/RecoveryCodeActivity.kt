@@ -2,16 +2,16 @@ package com.stevesoltys.seedvault.ui.recoverycode
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import com.stevesoltys.seedvault.ui.LiveEventHandler
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecoveryCodeActivity : BackupActivity() {
 
-    private lateinit var viewModel: RecoveryCodeViewModel
+    private val viewModel: RecoveryCodeViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,6 @@ class RecoveryCodeActivity : BackupActivity() {
 
         setContentView(R.layout.activity_recovery_code)
 
-        viewModel = ViewModelProviders.of(this).get(RecoveryCodeViewModel::class.java)
         viewModel.isRestore = isRestore()
         viewModel.confirmButtonClicked.observeEvent(this, LiveEventHandler { clicked ->
             if (clicked) showInput(true)

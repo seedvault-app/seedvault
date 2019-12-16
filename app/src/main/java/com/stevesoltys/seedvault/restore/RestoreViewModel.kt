@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.restore
 
 import android.app.Application
+import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
@@ -9,19 +10,24 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.stevesoltys.seedvault.Backup
-import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.BackupMonitor
+import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), RestoreSetClickListener {
+internal class RestoreViewModel(
+        app: Application,
+        settingsManager: SettingsManager,
+        keyManager: KeyManager,
+        private val backupManager: IBackupManager
+) : RequireProvisioningViewModel(app, settingsManager, keyManager), RestoreSetClickListener {
 
     override val isRestoreOperation = true
-
-    private val backupManager = Backup.backupManager
 
     private var session: IRestoreSession? = null
     private var observer: RestoreObserver? = null

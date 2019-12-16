@@ -2,20 +2,21 @@ package com.stevesoltys.seedvault.settings
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
-import androidx.lifecycle.ViewModelProviders
-import com.stevesoltys.seedvault.Backup
+import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : RequireProvisioningActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
+    private val notificationManager: BackupNotificationManager by inject()
 
     override fun getViewModel(): RequireProvisioningViewModel = viewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_fragment_container)
@@ -36,7 +37,7 @@ class SettingsActivity : RequireProvisioningActivity() {
         } else if (!viewModel.validLocationIsSet()) {
             showStorageActivity()
             // remove potential error notifications
-            (application as Backup).notificationManager.onBackupErrorSeen()
+            notificationManager.onBackupErrorSeen()
         }
     }
 

@@ -14,7 +14,7 @@ interface MetadataWriter {
 
 }
 
-class MetadataWriterImpl(private val crypto: Crypto): MetadataWriter {
+internal class MetadataWriterImpl(private val crypto: Crypto): MetadataWriter {
 
     @Throws(IOException::class)
     override fun write(outputStream: OutputStream, token: Long) {

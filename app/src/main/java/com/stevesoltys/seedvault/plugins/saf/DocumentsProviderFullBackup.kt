@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.backup.plugins
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.pm.PackageInfo
 import android.util.Log
@@ -9,7 +9,7 @@ import java.io.OutputStream
 
 private val TAG = DocumentsProviderFullBackup::class.java.simpleName
 
-class DocumentsProviderFullBackup(
+internal class DocumentsProviderFullBackup(
         private val storage: DocumentsStorage) : FullBackupPlugin {
 
     override fun getQuota() = DEFAULT_QUOTA_FULL_BACKUP

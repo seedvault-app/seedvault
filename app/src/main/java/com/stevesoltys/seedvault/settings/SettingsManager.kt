@@ -18,12 +18,12 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
 private const val PREF_KEY_BACKUP_TOKEN = "backupToken"
 private const val PREF_KEY_BACKUP_TIME = "backupTime"
-private const val PREF_KEY_BACKUP_PASSWORD = "backupLegacyPassword"
 
 class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
+    // FIXME Storage is currently plugin specific and not generic
     fun setStorage(storage: Storage) {
         prefs.edit()
                 .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
@@ -106,11 +106,6 @@ class SettingsManager(context: Context) {
      */
     fun getBackupTime(): Long {
         return prefs.getLong(PREF_KEY_BACKUP_TIME, 0L)
-    }
-
-    @Deprecated("Replaced by KeyManager#getBackupKey()")
-    fun getBackupPassword(): String? {
-        return prefs.getString(PREF_KEY_BACKUP_PASSWORD, null)
     }
 
 }

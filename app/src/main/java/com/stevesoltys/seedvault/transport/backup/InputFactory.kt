@@ -8,7 +8,7 @@ import java.io.InputStream
 /**
  * This class exists for easier testing, so we can mock it and return custom data inputs.
  */
-class InputFactory {
+internal class InputFactory {
 
     fun getBackupDataInput(inputFileDescriptor: ParcelFileDescriptor): BackupDataInput {
         return BackupDataInput(inputFileDescriptor.fileDescriptor)

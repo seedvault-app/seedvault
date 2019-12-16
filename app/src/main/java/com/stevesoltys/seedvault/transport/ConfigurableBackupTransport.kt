@@ -10,6 +10,10 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.settings.SettingsActivity
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
@@ -20,11 +24,10 @@ private val TAG = ConfigurableBackupTransport::class.java.simpleName
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class ConfigurableBackupTransport internal constructor(private val context: Context) : BackupTransport() {
+class ConfigurableBackupTransport internal constructor(private val context: Context) : BackupTransport(), KoinComponent {
 
-    private val pluginManager = PluginManager(context)
-    private val backupCoordinator = pluginManager.backupCoordinator
-    private val restoreCoordinator = pluginManager.restoreCoordinator
+    private val backupCoordinator by inject<BackupCoordinator>()
+    private val restoreCoordinator by inject<RestoreCoordinator>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME
