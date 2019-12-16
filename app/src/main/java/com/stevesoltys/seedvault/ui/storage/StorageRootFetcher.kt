@@ -3,6 +3,8 @@ package com.stevesoltys.seedvault.ui.storage
 import android.Manifest.permission.MANAGE_DOCUMENTS
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.GET_META_DATA
 import android.content.pm.ProviderInfo
 import android.database.ContentObserver
@@ -24,6 +26,10 @@ const val ROOT_ID_DEVICE = "primary"
 const val ROOT_ID_HOME = "home"
 
 const val AUTHORITY_DOWNLOADS = "com.android.providers.downloads.documents"
+const val AUTHORITY_NEXTCLOUD = "org.nextcloud.documents"
+
+private const val NEXTCLOUD_PACKAGE = "com.nextcloud.client"
+private const val NEXTCLOUD_ACTIVITY = "com.owncloud.android.authentication.AuthenticatorActivity"
 
 data class StorageRoot(
         internal val authority: String,
@@ -34,7 +40,8 @@ data class StorageRoot(
         internal val summary: String?,
         internal val availableBytes: Long?,
         internal val isUsb: Boolean,
-        internal val enabled: Boolean = true) {
+        internal val enabled: Boolean = true,
+        internal val overrideClickListener: (() -> Unit)? = null) {
 
     internal val uri: Uri by lazy {
         DocumentsContract.buildTreeDocumentUri(authority, documentId)
@@ -86,7 +93,8 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
                 roots.addAll(getRoots(providerInfo))
             }
         }
-        if (isAuthoritySupported(AUTHORITY_STORAGE)) checkOrAddUsbRoot(roots)
+        checkOrAddUsbRoot(roots)
+        checkOrAddNextCloudRoot(roots)
         return roots
     }
 
@@ -136,7 +144,10 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
     }
 
     private fun checkOrAddUsbRoot(roots: ArrayList<StorageRoot>) {
+        if (!isAuthoritySupported(AUTHORITY_STORAGE)) return
+
         for (root in roots) {
+            // return if we already have a USB storage root
             if (root.authority == AUTHORITY_STORAGE && root.isUsb) return
         }
         val root = StorageRoot(
@@ -149,6 +160,44 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
                 availableBytes = null,
                 isUsb = true,
                 enabled = false
+        )
+        roots.add(root)
+    }
+
+    private fun checkOrAddNextCloudRoot(roots: ArrayList<StorageRoot>) {
+        if (!isRestore) return
+
+        for (root in roots) {
+            // return if we already have a NextCloud storage root
+            if (root.authority == AUTHORITY_NEXTCLOUD) return
+        }
+        val intent = Intent().apply {
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
+            setClassName(NEXTCLOUD_PACKAGE, NEXTCLOUD_ACTIVITY)
+            // setting a nc:// Uri prevents FirstRunActivity to show
+            data = Uri.parse("nc://login/server:")
+            putExtra("onlyAdd", true)
+        }
+        val isInstalled = packageManager.resolveActivity(intent, 0) != null
+        val root = StorageRoot(
+                authority = AUTHORITY_NEXTCLOUD,
+                rootId = "fake",
+                documentId = "fake",
+                icon = getIcon(context, AUTHORITY_NEXTCLOUD, "fake", 0),
+                title = context.getString(R.string.storage_fake_nextcloud_title),
+                summary = context.getString(if (isInstalled) R.string.storage_fake_nextcloud_summary_installed else R.string.storage_fake_nextcloud_summary),
+                availableBytes = null,
+                isUsb = false,
+                enabled = true,
+                overrideClickListener = {
+                    if (isInstalled) context.startActivity(intent)
+                    else {
+                        val uri = Uri.parse("market://details?id=$NEXTCLOUD_PACKAGE")
+                        val i = Intent(ACTION_VIEW, uri)
+                        i.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(i)
+                    }
+                }
         )
         roots.add(root)
     }
@@ -202,6 +251,7 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
         return getPackageIcon(context, authority, icon) ?: when {
             authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> context.getDrawable(R.drawable.ic_phone_android)
             authority == AUTHORITY_STORAGE && rootId != ROOT_ID_HOME -> context.getDrawable(R.drawable.ic_usb)
+            authority == AUTHORITY_NEXTCLOUD -> context.getDrawable(R.drawable.nextcloud)
             else -> null
         }
     }

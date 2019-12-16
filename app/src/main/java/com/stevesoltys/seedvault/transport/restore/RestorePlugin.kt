@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.restore
 
+import android.content.Context
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 
 interface RestorePlugin {
@@ -14,6 +15,6 @@ interface RestorePlugin {
      * @return metadata for the set of restore images available,
      * or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
+    fun getAvailableBackups(context: Context): Sequence<EncryptedBackupMetadata>?
 
 }

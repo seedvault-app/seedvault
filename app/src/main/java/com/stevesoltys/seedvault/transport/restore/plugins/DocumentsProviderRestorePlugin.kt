@@ -1,11 +1,11 @@
 package com.stevesoltys.seedvault.transport.restore.plugins
 
+import android.content.Context
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
-import com.stevesoltys.seedvault.transport.backup.plugins.DocumentsStorage
-import com.stevesoltys.seedvault.transport.backup.plugins.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.transport.backup.plugins.FILE_NO_MEDIA
+import com.stevesoltys.seedvault.transport.backup.plugins.*
 import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
@@ -23,9 +23,9 @@ class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : Re
         DocumentsProviderFullRestorePlugin(storage)
     }
 
-    override fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>? {
+    override fun getAvailableBackups(context: Context): Sequence<EncryptedBackupMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
-        val backupSets = getBackups(rootDir)
+        val backupSets = getBackups(context, rootDir)
         val iterator = backupSets.iterator()
         return generateSequence {
             if (!iterator.hasNext()) return@generateSequence null  // end sequence
@@ -41,9 +41,17 @@ class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : Re
     }
 
     companion object {
-        fun getBackups(rootDir: DocumentFile): List<BackupSet> {
+        @WorkerThread
+        fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
             val backupSets = ArrayList<BackupSet>()
-            for (set in rootDir.listFiles()) {
+            val files = try {
+                // block until the DocumentsProvider has results
+                rootDir.listFilesBlocking(context)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error loading backups from storage", e)
+                return backupSets
+            }
+            for (set in files) {
                 if (!set.isDirectory || set.name == null) {
                     if (set.name != FILE_NO_MEDIA) {
                         Log.w(TAG, "Found invalid backup set folder: ${set.name}")
@@ -53,10 +61,11 @@ class DocumentsProviderRestorePlugin(private val storage: DocumentsStorage) : Re
                 val token = try {
                     set.name!!.toLong()
                 } catch (e: NumberFormatException) {
-                    Log.w(TAG, "Found invalid backup set folder: ${set.name}", e)
+                    Log.w(TAG, "Found invalid backup set folder: ${set.name}")
                     continue
                 }
-                val metadata = set.findFile(FILE_BACKUP_METADATA)
+                // block until children of set are available
+                val metadata = set.findFileBlocking(context, FILE_BACKUP_METADATA)
                 if (metadata == null) {
                     Log.w(TAG, "Missing metadata file in backup set folder: ${set.name}")
                 } else {
