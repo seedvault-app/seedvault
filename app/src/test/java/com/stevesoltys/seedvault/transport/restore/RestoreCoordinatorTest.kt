@@ -41,6 +41,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         val metadata = BackupMetadata(
                 token = token,
                 androidVersion = Random.nextInt(),
+                androidIncremental = getRandomString(),
                 deviceName = getRandomString())
 
         every { plugin.getAvailableBackups() } returns sequenceOf(encryptedMetadata, encryptedMetadata)

@@ -43,19 +43,45 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         // matches the authenticated version and token in the JSON.
         try {
             val json = JSONObject(bytes.toString(Utf8))
-            val version = json.getInt(JSON_VERSION).toByte()
+            // get backup metadata and check expectations
+            val meta = json.getJSONObject(JSON_METADATA)
+            val version = meta.getInt(JSON_METADATA_VERSION).toByte()
             if (version != expectedVersion) {
                 throw SecurityException("Invalid version '${version.toInt()}' in metadata, expected '${expectedVersion.toInt()}'.")
             }
-            val token = json.getLong(JSON_TOKEN)
+            val token = meta.getLong(JSON_METADATA_TOKEN)
             if (token != expectedToken) {
                 throw SecurityException("Invalid token '$token' in metadata, expected '$expectedToken'.")
+            }
+            // get package metadata
+            val packageMetadata: HashMap<String, PackageMetadata> = HashMap()
+            for (packageName in json.keys()) {
+                if (packageName == JSON_METADATA) continue
+                val p = json.getJSONObject(packageName)
+                val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
+                val pInstaller = p.optString(JSON_PACKAGE_INSTALLER, "")
+                val pSignatures = p.optJSONArray(JSON_PACKAGE_SIGNATURES)
+                val signatures = if (pSignatures == null) null else
+                    ArrayList<String>(pSignatures.length()).apply {
+                        for (i in (0 until pSignatures.length())) {
+                            add(pSignatures.getString(i))
+                        }
+                    }
+                packageMetadata[packageName] = PackageMetadata(
+                        time = p.getLong(JSON_PACKAGE_TIME),
+                        version = if (pVersion == 0L) null else pVersion,
+                        installer = if (pInstaller == "") null else pInstaller,
+                        signatures = signatures
+                )
             }
             return BackupMetadata(
                     version = version,
                     token = token,
-                    androidVersion = json.getInt(JSON_ANDROID_VERSION),
-                    deviceName = json.getString(JSON_DEVICE_NAME)
+                    time = meta.getLong(JSON_METADATA_TIME),
+                    androidVersion = meta.getInt(JSON_METADATA_SDK_INT),
+                    androidIncremental = meta.getString(JSON_METADATA_INCREMENTAL),
+                    deviceName = meta.getString(JSON_METADATA_NAME),
+                    packageMetadata = packageMetadata
             )
         } catch (e: JSONException) {
             throw SecurityException(e)

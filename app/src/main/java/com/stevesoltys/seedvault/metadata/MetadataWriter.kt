@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.metadata
 import androidx.annotation.VisibleForTesting
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.io.OutputStream
@@ -25,11 +26,24 @@ internal class MetadataWriterImpl(private val crypto: Crypto): MetadataWriter {
 
     @VisibleForTesting
     internal fun encode(metadata: BackupMetadata): ByteArray {
-        val json = JSONObject()
-        json.put(JSON_VERSION, metadata.version.toInt())
-        json.put(JSON_TOKEN, metadata.token)
-        json.put(JSON_ANDROID_VERSION, metadata.androidVersion)
-        json.put(JSON_DEVICE_NAME, metadata.deviceName)
+        val json = JSONObject().apply {
+            put(JSON_METADATA, JSONObject().apply {
+                put(JSON_METADATA_VERSION, metadata.version.toInt())
+                put(JSON_METADATA_TOKEN, metadata.token)
+                put(JSON_METADATA_TIME, metadata.time)
+                put(JSON_METADATA_SDK_INT, metadata.androidVersion)
+                put(JSON_METADATA_INCREMENTAL, metadata.androidIncremental)
+                put(JSON_METADATA_NAME, metadata.deviceName)
+            })
+        }
+        for ((packageName, packageMetadata) in metadata.packageMetadata) {
+            json.put(packageName, JSONObject().apply {
+                put(JSON_PACKAGE_TIME, packageMetadata.time)
+                packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
+                packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }
+                packageMetadata.signatures?.let { put(JSON_PACKAGE_SIGNATURES, JSONArray(it)) }
+            })
+        }
         return json.toString().toByteArray(Utf8)
     }
 

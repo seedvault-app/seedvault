@@ -17,7 +17,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.concurrent.TimeUnit.MINUTES
 
-const val DIRECTORY_ROOT = ".AndroidBackup"
+const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
