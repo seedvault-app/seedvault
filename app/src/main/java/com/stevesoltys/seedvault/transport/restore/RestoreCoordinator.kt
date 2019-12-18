@@ -10,8 +10,8 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
@@ -22,7 +22,7 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
-        private val settingsManager: SettingsManager,
+        private val metadataManager: MetadataManager,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
         private val full: FullRestore,
@@ -76,7 +76,7 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
-        return settingsManager.getBackupToken()
+        return metadataManager.getBackupToken()
                 .apply { Log.i(TAG, "Got current restore set token: $this") }
     }
 

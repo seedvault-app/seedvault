@@ -122,7 +122,7 @@ class MetadataReaderTest {
         assertNull(packageMetadata.signatures)
     }
 
-    private fun getMetadata(packageMetadata: Map<String, PackageMetadata> = HashMap()): BackupMetadata {
+    private fun getMetadata(packageMetadata: HashMap<String, PackageMetadata> = HashMap()): BackupMetadata {
         return BackupMetadata(
                 version = 1.toByte(),
                 token = Random.nextLong(),

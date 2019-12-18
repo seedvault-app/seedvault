@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.MetadataWriter
 import com.stevesoltys.seedvault.settings.Storage
 import io.mockk.Runs
 import io.mockk.every
@@ -24,18 +23,17 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
-    private val metadataWriter = mockk<MetadataWriter>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(context, plugin, kv, full, metadataWriter, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(context, plugin, kv, full, metadataManager, settingsManager, notificationManager)
 
     private val metadataOutputStream = mockk<OutputStream>()
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
         every { plugin.initializeDevice() } just Runs
-        every { settingsManager.getBackupToken() } returns token
-        expectWritingMetadata(token)
+        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onDeviceInitialization(metadataOutputStream) } just Runs
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -143,11 +141,6 @@ internal class BackupCoordinatorTest: BackupTest() {
         every { full.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
-    }
-
-    private fun expectWritingMetadata(token: Long = this.token) {
-        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataWriter.write(metadataOutputStream, token) } just Runs
     }
 
 }

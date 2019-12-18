@@ -66,7 +66,7 @@ internal class MetadataWriterDecoderTest {
         assertEquals(metadata, decoder.decode(encoder.encode(metadata), metadata.version, metadata.token))
     }
 
-    private fun getMetadata(packageMetadata: Map<String, PackageMetadata> = HashMap()): BackupMetadata {
+    private fun getMetadata(packageMetadata: HashMap<String, PackageMetadata> = HashMap()): BackupMetadata {
         return BackupMetadata(
                 version = Random.nextBytes(1)[0],
                 token = Random.nextLong(),

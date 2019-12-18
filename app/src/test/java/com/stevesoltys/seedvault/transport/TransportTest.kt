@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
 import io.mockk.mockk
@@ -16,6 +17,7 @@ abstract class TransportTest {
 
     protected val crypto = mockk<Crypto>()
     protected val settingsManager = mockk<SettingsManager>()
+    protected val metadataManager = mockk<MetadataManager>()
     protected val context = mockk<Context>(relaxed = true)
 
     protected val packageInfo = PackageInfo().apply { packageName = "org.example" }

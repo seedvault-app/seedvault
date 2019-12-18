@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.metadata
 
-import androidx.annotation.VisibleForTesting
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import org.json.JSONArray
@@ -9,23 +8,21 @@ import java.io.IOException
 import java.io.OutputStream
 
 interface MetadataWriter {
-
     @Throws(IOException::class)
-    fun write(outputStream: OutputStream, token: Long)
+    fun write(metadata: BackupMetadata, outputStream: OutputStream)
 
+    fun encode(metadata: BackupMetadata): ByteArray
 }
 
-internal class MetadataWriterImpl(private val crypto: Crypto): MetadataWriter {
+internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
 
     @Throws(IOException::class)
-    override fun write(outputStream: OutputStream, token: Long) {
-        val metadata = BackupMetadata(token = token)
+    override fun write(metadata: BackupMetadata, outputStream: OutputStream) {
         outputStream.write(ByteArray(1).apply { this[0] = metadata.version })
         crypto.encryptMultipleSegments(outputStream, encode(metadata))
     }
 
-    @VisibleForTesting
-    internal fun encode(metadata: BackupMetadata): ByteArray {
+    override fun encode(metadata: BackupMetadata): ByteArray {
         val json = JSONObject().apply {
             put(JSON_METADATA, JSONObject().apply {
                 put(JSON_METADATA_VERSION, metadata.version.toInt())

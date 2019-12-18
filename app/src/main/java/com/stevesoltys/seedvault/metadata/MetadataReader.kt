@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.metadata
 
-import androidx.annotation.VisibleForTesting
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
@@ -15,6 +14,9 @@ interface MetadataReader {
 
     @Throws(SecurityException::class, DecryptionFailedException::class, UnsupportedVersionException::class, IOException::class)
     fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata
+
+    @Throws(SecurityException::class)
+    fun decode(bytes: ByteArray, expectedVersion: Byte? = null, expectedToken: Long? = null): BackupMetadata
 
 }
 
@@ -33,9 +35,8 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         return decode(metadataBytes, version, expectedToken)
     }
 
-    @VisibleForTesting
     @Throws(SecurityException::class)
-    internal fun decode(bytes: ByteArray, expectedVersion: Byte, expectedToken: Long): BackupMetadata {
+    override fun decode(bytes: ByteArray, expectedVersion: Byte?, expectedToken: Long?): BackupMetadata {
         // NOTE: We don't do extensive validation of the parsed input here,
         // because it was encrypted with authentication, so we should be able to trust it.
         //
@@ -46,11 +47,11 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
             // get backup metadata and check expectations
             val meta = json.getJSONObject(JSON_METADATA)
             val version = meta.getInt(JSON_METADATA_VERSION).toByte()
-            if (version != expectedVersion) {
+            if (expectedVersion != null && version != expectedVersion) {
                 throw SecurityException("Invalid version '${version.toInt()}' in metadata, expected '${expectedVersion.toInt()}'.")
             }
             val token = meta.getLong(JSON_METADATA_TOKEN)
-            if (token != expectedToken) {
+            if (expectedToken != null && token != expectedToken) {
                 throw SecurityException("Invalid token '$token' in metadata, expected '$expectedToken'.")
             }
             // get package metadata

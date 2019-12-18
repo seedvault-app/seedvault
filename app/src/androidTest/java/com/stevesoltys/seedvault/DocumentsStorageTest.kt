@@ -3,9 +3,10 @@ package com.stevesoltys.seedvault
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.createOrGetFile
+import com.stevesoltys.seedvault.settings.SettingsManager
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
@@ -22,8 +23,9 @@ private const val filename = "test-file"
 class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val metadataManager by inject<MetadataManager>()
     private val settingsManager by inject<SettingsManager>()
-    private val storage = DocumentsStorage(context, settingsManager)
+    private val storage = DocumentsStorage(context, metadataManager, settingsManager)
 
     private lateinit var file: DocumentFile
 

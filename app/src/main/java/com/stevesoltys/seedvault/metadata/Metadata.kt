@@ -7,11 +7,11 @@ import java.io.InputStream
 data class BackupMetadata(
         internal val version: Byte = VERSION,
         internal val token: Long,
-        internal val time: Long = System.currentTimeMillis(),
+        internal var time: Long = 0L,
         internal val androidVersion: Int = Build.VERSION.SDK_INT,
         internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
         internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
-        internal val packageMetadata: Map<String, PackageMetadata> = HashMap()
+        internal val packageMetadata: HashMap<String, PackageMetadata> = HashMap()
 )
 
 internal const val JSON_METADATA = "@meta@"
@@ -23,7 +23,7 @@ internal const val JSON_METADATA_INCREMENTAL = "incremental"
 internal const val JSON_METADATA_NAME = "name"
 
 data class PackageMetadata(
-        internal val time: Long,
+        internal var time: Long,
         internal val version: Long? = null,
         internal val installer: String? = null,
         internal val signatures: List<String>? = null

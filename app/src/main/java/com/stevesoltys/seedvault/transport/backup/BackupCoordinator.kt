@@ -7,7 +7,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.metadata.MetadataWriter
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
@@ -23,7 +23,7 @@ internal class BackupCoordinator(
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
         private val full: FullBackup,
-        private val metadataWriter: MetadataWriter,
+        private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
 
@@ -56,7 +56,7 @@ internal class BackupCoordinator(
         Log.i(TAG, "Initialize Device!")
         return try {
             plugin.initializeDevice()
-            writeBackupMetadata(settingsManager.getBackupToken())
+            metadataManager.onDeviceInitialization(plugin.getMetadataOutputStream())
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
@@ -102,15 +102,15 @@ internal class BackupCoordinator(
     }
 
     fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+        val packageName = packageInfo.packageName
         // backups of package manager metadata do not respect backoff
         // we need to reject them manually when now is not a good time for a backup
-        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
+        if (packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
             return TRANSPORT_PACKAGE_REJECTED
         }
 
         val result = kv.performBackup(packageInfo, data, flags)
-        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
-        return result
+        return onPackageBackedUp(result, packageInfo)
     }
 
     // ------------------------------------------------------------------------------------
@@ -138,8 +138,7 @@ internal class BackupCoordinator(
 
     fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
         val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
-        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
-        return result
+        return onPackageBackedUp(result, targetPackage)
     }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
@@ -193,10 +192,17 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    @Throws(IOException::class)
-    private fun writeBackupMetadata(token: Long) {
-        val outputStream = plugin.getMetadataOutputStream()
-        metadataWriter.write(outputStream, token)
+    private fun onPackageBackedUp(result: Int, packageInfo: PackageInfo): Int {
+        if (result != TRANSPORT_OK) return result
+        val packageName = packageInfo.packageName
+        try {
+            val outputStream = plugin.getMetadataOutputStream()
+            metadataManager.onPackageBackedUp(packageName, outputStream)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while writing metadata for $packageName", e)
+            return TRANSPORT_PACKAGE_REJECTED
+        }
+        return result
     }
 
     private fun getBackupBackoff(): Long {

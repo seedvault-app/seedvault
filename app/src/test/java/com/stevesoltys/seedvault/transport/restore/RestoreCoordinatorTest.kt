@@ -27,7 +27,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
 
-    private val restore = RestoreCoordinator(settingsManager, plugin, kv, full, metadataReader)
+    private val restore = RestoreCoordinator(metadataManager, plugin, kv, full, metadataReader)
 
     private val token = Random.nextLong()
     private val inputStream = mockk<InputStream>()
@@ -57,7 +57,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getCurrentRestoreSet() delegates to plugin`() {
-        every { settingsManager.getBackupToken() } returns token
+        every { metadataManager.getBackupToken() } returns token
         assertEquals(token, restore.getCurrentRestoreSet())
     }
 

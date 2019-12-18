@@ -5,7 +5,6 @@ import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import java.util.*
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -15,9 +14,6 @@ private const val PREF_KEY_FLASH_DRIVE_NAME = "flashDriveName"
 private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
 private const val PREF_KEY_FLASH_DRIVE_VENDOR_ID = "flashDriveVendorId"
 private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
-
-private const val PREF_KEY_BACKUP_TOKEN = "backupToken"
-private const val PREF_KEY_BACKUP_TIME = "backupTime"
 
 class SettingsManager(context: Context) {
 
@@ -64,48 +60,6 @@ class SettingsManager(context: Context) {
         val vendorId = prefs.getInt(PREF_KEY_FLASH_DRIVE_VENDOR_ID, -1)
         val productId = prefs.getInt(PREF_KEY_FLASH_DRIVE_PRODUCT_ID, -1)
         return FlashDrive(name, serialNumber, vendorId, productId)
-    }
-
-    /**
-     * Generates and returns a new backup token while saving it as well.
-     * Subsequent calls to [getBackupToken] will return this new token once saved.
-     */
-    fun getAndSaveNewBackupToken(): Long = Date().time.apply {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TOKEN, this)
-                .apply()
-    }
-
-    /**
-     * Returns the current backup token or 0 if none exists.
-     */
-    fun getBackupToken(): Long {
-        return prefs.getLong(PREF_KEY_BACKUP_TOKEN, 0L)
-    }
-
-    /**
-     * Sets the last backup time to "now".
-     */
-    fun saveNewBackupTime() {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, Date().time)
-                .apply()
-    }
-
-    /**
-     * Sets the last backup time to "never".
-     */
-    fun resetBackupTime() {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, 0L)
-                .apply()
-    }
-
-    /**
-     * Returns the last backup time in unix epoch milli seconds.
-     */
-    fun getBackupTime(): Long {
-        return prefs.getLong(PREF_KEY_BACKUP_TIME, 0L)
     }
 
 }

@@ -96,9 +96,6 @@ internal abstract class StorageViewModel(
         val storage = Storage(uri, name, root.isUsb)
         settingsManager.setStorage(storage)
 
-        // reset time of last backup to "Never"
-        settingsManager.resetBackupTime()
-
         if (storage.isUsb) {
             Log.d(TAG, "Selected storage is a removable USB device.")
             val wasSaved = saveUsbDevice()

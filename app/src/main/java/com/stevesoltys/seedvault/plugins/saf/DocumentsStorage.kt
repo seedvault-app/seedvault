@@ -9,6 +9,7 @@ import android.provider.DocumentsContract.*
 import android.provider.DocumentsContract.Document.*
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import libcore.io.IoUtils.closeQuietly
@@ -28,10 +29,10 @@ private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
         private val context: Context,
-        private val settingsManager: SettingsManager) {
+        private val metadataManager: MetadataManager,
+        settingsManager: SettingsManager) {
 
     private val storage: Storage? = settingsManager.getStorage()
-    private val token: Long = settingsManager.getBackupToken()
 
     internal val rootBackupDir: DocumentFile? by lazy {
         val parent = storage?.getDocumentFile(context) ?: return@lazy null
@@ -47,10 +48,7 @@ internal class DocumentsStorage(
     }
 
     private val currentToken: Long by lazy {
-        if (token != 0L) token
-        else settingsManager.getAndSaveNewBackupToken().apply {
-            Log.d(TAG, "Using a fresh backup token: $this")
-        }
+        metadataManager.getBackupToken()
     }
 
     private val currentSetDir: DocumentFile? by lazy {
