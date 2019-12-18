@@ -43,7 +43,9 @@ internal class RestoreCoordinator(
         val restoreSets = ArrayList<RestoreSet>()
         for (encryptedMetadata in availableBackups) {
             if (encryptedMetadata.error) continue
-            check(encryptedMetadata.inputStream != null)  // if there's no error, there must be a stream
+            check(encryptedMetadata.inputStream != null) {
+                "No error when getting encrypted metadata, but stream is still missing."
+            }
             try {
                 val metadata = metadataReader.readMetadata(encryptedMetadata.inputStream, encryptedMetadata.token)
                 val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
@@ -93,7 +95,7 @@ internal class RestoreCoordinator(
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
     fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
-        check(state == null)
+        check(state == null) { "Started new restore with existing state" }
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
         state = RestoreCoordinatorState(token, packages.iterator())
         return TRANSPORT_OK
@@ -127,7 +129,7 @@ internal class RestoreCoordinator(
      */
     fun nextRestorePackage(): RestoreDescription? {
         Log.i(TAG, "Next restore package!")
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
 
         if (!state.packages.hasNext()) return NO_MORE_PACKAGES
         val packageInfo = state.packages.next()

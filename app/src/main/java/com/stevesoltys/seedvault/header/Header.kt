@@ -15,8 +15,12 @@ data class VersionHeader(
         internal val key: String? = null      // ?? bytes
 ) {
     init {
-        check(packageName.length <= MAX_PACKAGE_LENGTH_SIZE)
-        key?.let { check(key.length <= MAX_KEY_LENGTH_SIZE) }
+        check(packageName.length <= MAX_PACKAGE_LENGTH_SIZE) {
+            "Package $packageName has name longer than $MAX_PACKAGE_LENGTH_SIZE"
+        }
+        key?.let {
+            check(key.length <= MAX_KEY_LENGTH_SIZE) { "Key $key is longer than $MAX_KEY_LENGTH_SIZE" }
+        }
     }
 }
 
@@ -34,6 +38,8 @@ class SegmentHeader(
         internal val nonce: ByteArray         // 12 bytes
 ) {
     init {
-        check(nonce.size == IV_SIZE)
+        check(nonce.size == IV_SIZE) {
+            "Nonce size of ${nonce.size} is not the expected IV size of $IV_SIZE"
+        }
     }
 }

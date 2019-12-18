@@ -178,11 +178,11 @@ class BackupCoordinator(
 
     fun finishBackup(): Int = when {
         kv.hasState() -> {
-            check(!full.hasState())
+            check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
             kv.finishBackup()
         }
         full.hasState() -> {
-            check(!kv.hasState())
+            check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -190,7 +190,7 @@ class BackupCoordinator(
             calledClearBackupData = false
             TRANSPORT_OK
         }
-        else -> throw IllegalStateException()
+        else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
     @Throws(IOException::class)

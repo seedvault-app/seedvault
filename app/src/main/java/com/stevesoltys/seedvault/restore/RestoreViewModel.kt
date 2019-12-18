@@ -62,7 +62,7 @@ class RestoreViewModel(app: Application) : RequireProvisioningViewModel(app), Re
 
     override fun onRestoreSetClicked(set: RestoreSet) {
         val session = this.session
-        check(session != null)
+        check(session != null) { "Restore set clicked, but no session available" }
         session.restoreAll(set.token, observer, monitor)
 
         mChosenRestoreSet.value = set

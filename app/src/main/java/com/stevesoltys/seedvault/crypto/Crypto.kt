@@ -87,7 +87,9 @@ class CryptoImpl(
     override fun encryptSegment(outputStream: OutputStream, cleartext: ByteArray) {
         val cipher = cipherFactory.createEncryptionCipher()
 
-        check(cipher.getOutputSize(cleartext.size) <= MAX_SEGMENT_LENGTH)
+        check(cipher.getOutputSize(cleartext.size) <= MAX_SEGMENT_LENGTH) {
+            "Cipher's output size ${cipher.getOutputSize(cleartext.size)} is larger than maximum segment length ($MAX_SEGMENT_LENGTH)"
+        }
 
         val encrypted = cipher.doFinal(cleartext)
         val segmentHeader = SegmentHeader(encrypted.size.toShort(), cipher.iv)

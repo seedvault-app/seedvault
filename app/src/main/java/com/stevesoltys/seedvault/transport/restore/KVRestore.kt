@@ -55,7 +55,7 @@ internal class KVRestore(
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
     fun getRestoreData(data: ParcelFileDescriptor): Int {
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
 
         // The restore set is the concatenation of the individual record blobs,
         // each of which is a file in the package's directory.
