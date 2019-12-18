@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.HeaderWriterImpl
+import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataWriterImpl
 import com.stevesoltys.seedvault.transport.backup.*
@@ -119,6 +120,53 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { kvRestorePlugin.getInputStreamForRecord(token, packageInfo, key264) } returns rInputStream2
         every { backupDataOutput.writeEntityHeader(key2, appData2.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData2, appData2.size) } returns appData2.size
+
+        assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
+    }
+
+    @Test
+    fun `test key-value backup with huge value`() {
+        val value = CapturingSlot<ByteArray>()
+        val size = Random.nextInt(5) * MAX_SEGMENT_CLEARTEXT_LENGTH + Random.nextInt(0, 1337)
+        val appData = ByteArray(size).apply { Random.nextBytes(this) }
+        val bOutputStream = ByteArrayOutputStream()
+
+        // read one key/value record and write it to output stream
+        every { kvBackupPlugin.hasDataForPackage(packageInfo) } returns false
+        every { kvBackupPlugin.ensureRecordStorageForPackage(packageInfo) } just Runs
+        every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
+        every { backupDataInput.readNextHeader() } returns true andThen false
+        every { backupDataInput.key } returns key
+        every { backupDataInput.dataSize } returns appData.size
+        every { backupDataInput.readEntityData(capture(value), 0, appData.size) } answers {
+            appData.copyInto(value.captured) // write the app data into the passed ByteArray
+            appData.size
+        }
+        every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key64) } returns bOutputStream
+        every { settingsManager.saveNewBackupTime() } just Runs
+
+        // start and finish K/V backup
+        assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
+
+        // start restore
+        assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
+
+        // find data for K/V backup
+        every { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+
+        val restoreDescription = restore.nextRestorePackage() ?: fail()
+        assertEquals(packageInfo.packageName, restoreDescription.packageName)
+        assertEquals(RestoreDescription.TYPE_KEY_VALUE, restoreDescription.dataType)
+
+        // restore finds the backed up key and writes the decrypted value
+        val backupDataOutput = mockk<BackupDataOutput>()
+        val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
+        every { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64)
+        every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
+        every { kvRestorePlugin.getInputStreamForRecord(token, packageInfo, key64) } returns rInputStream
+        every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
+        every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
 
         assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
     }

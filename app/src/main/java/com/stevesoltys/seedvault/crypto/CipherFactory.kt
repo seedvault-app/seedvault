@@ -6,7 +6,7 @@ import javax.crypto.Cipher.ENCRYPT_MODE
 import javax.crypto.spec.GCMParameterSpec
 
 private const val CIPHER_TRANSFORMATION = "AES/GCM/NoPadding"
-private const val GCM_AUTHENTICATION_TAG_LENGTH = 128
+internal const val GCM_AUTHENTICATION_TAG_LENGTH = 128
 
 interface CipherFactory {
     fun createEncryptionCipher(): Cipher

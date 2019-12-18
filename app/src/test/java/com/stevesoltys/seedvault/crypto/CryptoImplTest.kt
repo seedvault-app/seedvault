@@ -7,11 +7,13 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import javax.crypto.Cipher
 import kotlin.random.Random
 
@@ -48,6 +50,14 @@ class CryptoImplTest {
         every { cipher.doFinal(ciphertext) } returns cleartext
 
         assertArrayEquals(cleartext, crypto.decryptSegment(inputStream))
+    }
+
+    @Test
+    fun `decrypting multiple segments on empty stream throws`() {
+        val inputStream = ByteArrayInputStream(ByteArray(0))
+        assertThrows(IOException::class.java) {
+            crypto.decryptMultipleSegments(inputStream)
+        }
     }
 
 }

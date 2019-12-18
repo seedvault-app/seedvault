@@ -142,7 +142,7 @@ internal class KVBackupTest : BackupTest() {
         writeHeaderAndEncrypt()
         every { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
-        every { crypto.encryptSegment(outputStream, any()) } throws IOException()
+        every { crypto.encryptMultipleSegments(outputStream, any()) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -205,7 +205,7 @@ internal class KVBackupTest : BackupTest() {
         every { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
         every { crypto.encryptHeader(outputStream, versionHeader) } just Runs
-        every { crypto.encryptSegment(outputStream, any()) } just Runs
+        every { crypto.encryptMultipleSegments(outputStream, any()) } just Runs
     }
 
 }

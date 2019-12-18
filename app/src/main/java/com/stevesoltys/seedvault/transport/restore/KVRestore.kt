@@ -124,7 +124,7 @@ internal class KVRestore(
         try {
             val version = headerReader.readVersion(inputStream)
             crypto.decryptHeader(inputStream, version, state.packageInfo.packageName, dKey.key)
-            val value = crypto.decryptSegment(inputStream)
+            val value = crypto.decryptMultipleSegments(inputStream)
             val size = value.size
             Log.v(TAG, "    ... key=${dKey.key} size=$size")
 

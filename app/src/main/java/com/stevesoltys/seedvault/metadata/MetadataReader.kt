@@ -26,7 +26,7 @@ class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         if (version < 0) throw IOException()
         if (version > VERSION) throw UnsupportedVersionException(version)
         val metadataBytes = try {
-            crypto.decryptSegment(inputStream)
+            crypto.decryptMultipleSegments(inputStream)
         } catch (e: AEADBadTagException) {
             throw DecryptionFailedException(e)
         }

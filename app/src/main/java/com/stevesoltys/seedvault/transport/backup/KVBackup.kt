@@ -102,7 +102,7 @@ class KVBackup(
                     val header = VersionHeader(packageName = packageInfo.packageName, key = op.key)
                     headerWriter.writeVersion(outputStream, header)
                     crypto.encryptHeader(outputStream, header)
-                    crypto.encryptSegment(outputStream, op.value)
+                    crypto.encryptMultipleSegments(outputStream, op.value)
                     outputStream.flush()
                     closeQuietly(outputStream)
                 }
