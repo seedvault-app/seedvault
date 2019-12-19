@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import java.io.*
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class MetadataManagerTest {
@@ -29,6 +30,7 @@ class MetadataManagerTest {
     private val manager = MetadataManager(context, clock, metadataWriter, metadataReader)
 
     private val time = 42L
+    private val packageName = getRandomString()
     private val initialMetadata = BackupMetadata(token = time)
     private val storageOutputStream = ByteArrayOutputStream()
     private val cacheOutputStream: FileOutputStream = mockk()
@@ -53,8 +55,48 @@ class MetadataManagerTest {
     }
 
     @Test
+    fun `test onApkBackedUp() with no prior package metadata`() {
+        val packageMetadata = PackageMetadata(
+                time = time + 1,
+                version = Random.nextLong(Long.MAX_VALUE),
+                installer = getRandomString(),
+                signatures = listOf("sig")
+        )
+
+        every { context.openFileInput(METADATA_CACHE_FILE) } throws FileNotFoundException()
+        every { clock.time() } returns time
+
+        manager.onApkBackedUp(packageName, packageMetadata)
+
+        assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
+    }
+
+    @Test
+    fun `test onApkBackedUp() with existing package metadata`() {
+        val cachedMetadata = initialMetadata.copy()
+        val packageMetadata = PackageMetadata(
+                time = time,
+                version = Random.nextLong(Long.MAX_VALUE),
+                installer = getRandomString(),
+                signatures = listOf("sig")
+        )
+        cachedMetadata.packageMetadata[packageName] = packageMetadata
+        val updatedPackageMetadata = PackageMetadata(
+                time = time + 1,
+                version = packageMetadata.version!! + 1,
+                installer = getRandomString(),
+                signatures = listOf("sig foo")
+        )
+
+        expectReadFromCache(cachedMetadata)
+
+        manager.onApkBackedUp(packageName, updatedPackageMetadata)
+
+        assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
+    }
+
+    @Test
     fun `test onPackageBackedUp()`() {
-        val packageName = getRandomString()
         val updatedMetadata = initialMetadata.copy()
         updatedMetadata.time = time
         updatedMetadata.packageMetadata[packageName] = PackageMetadata(time)
@@ -71,13 +113,13 @@ class MetadataManagerTest {
 
     @Test
     fun `test onPackageBackedUp() fails to write to storage`() {
-        val packageName = getRandomString()
+        val updateTime = time + 1
         val updatedMetadata = initialMetadata.copy()
-        updatedMetadata.time = time
-        updatedMetadata.packageMetadata[packageName] = PackageMetadata(time)
+        updatedMetadata.time = updateTime
+        updatedMetadata.packageMetadata[packageName] = PackageMetadata(updateTime)
 
         every { context.openFileInput(METADATA_CACHE_FILE) } throws FileNotFoundException()
-        every { clock.time() } returns time
+        every { clock.time() } returns time andThen updateTime
         every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
 
         try {
@@ -88,37 +130,46 @@ class MetadataManagerTest {
         }
 
         assertEquals(0L, manager.getLastBackupTime())  // time was reverted
-        // TODO also assert reverted PackageMetadata once possible
+        assertEquals(initialMetadata.packageMetadata[packageName], manager.getPackageMetadata(packageName))
     }
 
     @Test
     fun `test onPackageBackedUp() with filled cache`() {
         val cachedPackageName = getRandomString()
-        val packageName = getRandomString()
-        val byteArray = ByteArray(DEFAULT_BUFFER_SIZE)
 
-        val cachedMetadata = initialMetadata.copy(time = 23)
-        cachedMetadata.packageMetadata[cachedPackageName] = PackageMetadata(23)
-        cachedMetadata.packageMetadata[packageName] = PackageMetadata(23)
+        val cacheTime = time - 1
+        val cachedMetadata = initialMetadata.copy(time = cacheTime)
+        cachedMetadata.packageMetadata[cachedPackageName] = PackageMetadata(cacheTime)
+        cachedMetadata.packageMetadata[packageName] = PackageMetadata(cacheTime)
 
-        every { context.openFileInput(METADATA_CACHE_FILE) } returns cacheInputStream
-        every { cacheInputStream.available() } returns byteArray.size andThen 0
-        every { cacheInputStream.read(byteArray) } returns -1
-        every { metadataReader.decode(ByteArray(0)) } returns cachedMetadata
+        val updatedMetadata = cachedMetadata.copy(time = time)
+        cachedMetadata.packageMetadata[cachedPackageName] = PackageMetadata(time)
+        cachedMetadata.packageMetadata[packageName] = PackageMetadata(time)
+
+        expectReadFromCache(cachedMetadata)
         every { clock.time() } returns time
-        every { metadataWriter.write(cachedMetadata, storageOutputStream) } just Runs
-        expectWriteToCache(cachedMetadata)
+        every { metadataWriter.write(updatedMetadata, storageOutputStream) } just Runs
+        expectWriteToCache(updatedMetadata)
 
         manager.onPackageBackedUp(packageName, storageOutputStream)
 
         assertEquals(time, manager.getLastBackupTime())
-        // TODO also assert updated PackageMetadata once possible
+        assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))
+        assertEquals(PackageMetadata(time), manager.getPackageMetadata(packageName))
     }
 
     private fun expectWriteToCache(metadata: BackupMetadata) {
         every { metadataWriter.encode(metadata) } returns encodedMetadata
         every { context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE) } returns cacheOutputStream
         every { cacheOutputStream.write(encodedMetadata) } just Runs
+    }
+
+    private fun expectReadFromCache(metadata: BackupMetadata) {
+        val byteArray = ByteArray(DEFAULT_BUFFER_SIZE)
+        every { context.openFileInput(METADATA_CACHE_FILE) } returns cacheInputStream
+        every { cacheInputStream.available() } returns byteArray.size andThen 0
+        every { cacheInputStream.read(byteArray) } returns -1
+        every { metadataReader.decode(ByteArray(0)) } returns metadata
     }
 
 }

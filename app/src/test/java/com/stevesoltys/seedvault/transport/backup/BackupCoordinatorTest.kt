@@ -23,9 +23,10 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
+    private val apkBackup = mockk<ApkBackup>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(context, plugin, kv, full, metadataManager, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(context, plugin, kv, full, apkBackup, metadataManager, settingsManager, notificationManager)
 
     private val metadataOutputStream = mockk<OutputStream>()
 

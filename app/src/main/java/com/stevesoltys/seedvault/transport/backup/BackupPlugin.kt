@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.content.pm.PackageInfo
 import java.io.IOException
 import java.io.OutputStream
 
@@ -20,6 +21,12 @@ interface BackupPlugin {
      */
     @Throws(IOException::class)
     fun getMetadataOutputStream(): OutputStream
+
+    /**
+     * Returns an [OutputStream] for writing an APK to be backed up.
+     */
+    @Throws(IOException::class)
+    fun getApkOutputStream(packageInfo: PackageInfo): OutputStream
 
     /**
      * Returns the package name of the app that provides the backend storage

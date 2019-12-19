@@ -62,6 +62,11 @@ class SettingsManager(context: Context) {
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
 
+    fun backupApks(): Boolean {
+        // TODO
+        return true
+    }
+
 }
 
 data class Storage(

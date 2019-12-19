@@ -1,11 +1,14 @@
 package com.stevesoltys.seedvault.plugins.saf
 
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
 import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import java.io.IOException
 import java.io.OutputStream
+
+private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 
 internal class DocumentsProviderBackupPlugin(
         private val storage: DocumentsStorage,
@@ -39,6 +42,13 @@ internal class DocumentsProviderBackupPlugin(
         val setDir = storage.getSetDir() ?: throw IOException()
         val metadataFile = setDir.createOrGetFile(FILE_BACKUP_METADATA)
         return storage.getOutputStream(metadataFile)
+    }
+
+    @Throws(IOException::class)
+    override fun getApkOutputStream(packageInfo: PackageInfo): OutputStream {
+        val setDir = storage.getSetDir() ?: throw IOException()
+        val file = setDir.createOrGetFile("${packageInfo.packageName}.apk", MIME_TYPE_APK)
+        return storage.getOutputStream(file)
     }
 
     override val providerPackageName: String? by lazy {

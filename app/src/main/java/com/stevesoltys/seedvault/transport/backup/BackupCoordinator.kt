@@ -23,6 +23,7 @@ internal class BackupCoordinator(
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
         private val full: FullBackup,
+        private val apkBackup: ApkBackup,
         private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
@@ -196,6 +197,7 @@ internal class BackupCoordinator(
         if (result != TRANSPORT_OK) return result
         val packageName = packageInfo.packageName
         try {
+            apkBackup.backupApkIfNecessary(packageInfo) { plugin.getApkOutputStream(packageInfo) }
             val outputStream = plugin.getMetadataOutputStream()
             metadataManager.onPackageBackedUp(packageName, outputStream)
         } catch (e: IOException) {

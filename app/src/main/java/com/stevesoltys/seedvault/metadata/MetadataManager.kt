@@ -53,6 +53,27 @@ class MetadataManager(
     }
 
     /**
+     * Call this after an APK as been successfully written to backup storage.
+     * It will update the package's metadata, but NOT write it storage or internal cache.
+     * You still need to call [onPackageBackedUp] afterwards to write it out.
+     */
+    @Synchronized
+    fun onApkBackedUp(packageName: String, packageMetadata: PackageMetadata) {
+        metadata.packageMetadata[packageName]?.let {
+            check(it.time <= packageMetadata.time) {
+                "APK backup set time of $packageName backwards"
+            }
+            check(packageMetadata.version != null) {
+                "APK backup returned version null"
+            }
+            check(it.version == null || it.version < packageMetadata.version) {
+                "APK backup backed up the same or a smaller version: was ${it.version} is ${packageMetadata.version}"
+            }
+        }
+        metadata.packageMetadata[packageName] = packageMetadata
+    }
+
+    /**
      * Call this after a package has been backed up successfully.
      *
      * It updates the packages' metadata
@@ -90,6 +111,11 @@ class MetadataManager(
      */
     @Synchronized
     fun getLastBackupTime(): Long = metadata.time
+
+    @Synchronized
+    fun getPackageMetadata(packageName: String): PackageMetadata? {
+        return metadata.packageMetadata[packageName]?.copy()
+    }
 
     @Synchronized
     @VisibleForTesting

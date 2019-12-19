@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import kotlin.random.Random
 
 internal class CoordinatorIntegrationTest : TransportTest() {
@@ -41,8 +42,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvBackup = KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
+    private val apkBackup = mockk<ApkBackup>()
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataManager, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, apkBackup, metadataManager, settingsManager, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
@@ -91,6 +93,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key264) } returns bOutputStream2
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
@@ -143,7 +146,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key64) } returns bOutputStream
-        every { settingsManager.saveNewBackupTime() } just Runs
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns false
+        every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -179,6 +184,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
