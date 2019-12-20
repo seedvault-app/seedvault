@@ -40,7 +40,7 @@ class App : Application() {
         viewModel { RecoveryCodeViewModel(this@App, get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
-        viewModel { RestoreViewModel(this@App, get(), get(), get()) }
+        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get()) }
     }
 
     override fun onCreate() {

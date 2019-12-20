@@ -14,14 +14,15 @@ A backup application for the [Android Open Source Project](https://source.androi
 AOSP.
 
 ## What makes this different?
-This application is compiled with the operating system and does not require a rooted device for use. It uses the same 
-internal APIs as `adb backup` and requires a minimal number of permissions to achieve this.
+This application is compiled with the operating system and does not require a rooted device for use.
+It uses the same internal APIs as `adb backup` which is deprecated and thus needs a replacement.
 
 ## Permissions
 * `android.permission.BACKUP` to back up application data.
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots. 
 * `android.permission.MANAGE_USB` to access the serial number of USB mass storage devices.
 * `android.permission.WRITE_SECURE_SETTINGS` to change system backup settings.
+* `android.permission.INSTALL_PACKAGES` to re-install apps when restoring from backup.
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault. 

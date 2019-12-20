@@ -2,13 +2,16 @@ package com.stevesoltys.seedvault.transport.restore
 
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.IBackupManager
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import androidx.collection.LongSparseArray
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
@@ -29,6 +32,7 @@ internal class RestoreCoordinator(
         private val metadataReader: MetadataReader) {
 
     private var state: RestoreCoordinatorState? = null
+    private var backupMetadata: LongSparseArray<BackupMetadata>? = null
 
     /**
      * Get the set of all backups currently available over this transport.
@@ -39,6 +43,7 @@ internal class RestoreCoordinator(
     fun getAvailableRestoreSets(): Array<RestoreSet>? {
         val availableBackups = plugin.getAvailableBackups() ?: return null
         val restoreSets = ArrayList<RestoreSet>()
+        val metadataMap = LongSparseArray<BackupMetadata>()
         for (encryptedMetadata in availableBackups) {
             if (encryptedMetadata.error) continue
             check(encryptedMetadata.inputStream != null) {
@@ -46,6 +51,7 @@ internal class RestoreCoordinator(
             }
             try {
                 val metadata = metadataReader.readMetadata(encryptedMetadata.inputStream, encryptedMetadata.token)
+                metadataMap.put(encryptedMetadata.token, metadata)
                 val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
                 restoreSets.add(set)
             } catch (e: IOException) {
@@ -65,6 +71,7 @@ internal class RestoreCoordinator(
             }
         }
         Log.i(TAG, "Got available restore sets: $restoreSets")
+        this.backupMetadata = metadataMap
         return restoreSets.toTypedArray()
     }
 
@@ -197,6 +204,18 @@ internal class RestoreCoordinator(
      */
     fun finishRestore() {
         if (full.hasState()) full.finishRestore()
+    }
+
+    /**
+     * Call this after calling [IBackupManager.getAvailableRestoreTokenForUser]
+     * to retrieve additional [BackupMetadata] that is not available in [RestoreSet].
+     *
+     * It will also clear the saved metadata, so that subsequent calls will return null.
+     */
+    fun getAndClearBackupMetadata(): LongSparseArray<BackupMetadata>? {
+        val result = backupMetadata
+        backupMetadata = null
+        return result
     }
 
 }

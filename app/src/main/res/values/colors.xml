@@ -2,4 +2,5 @@
 <resources>
     <color name="accent">#99cc00</color>
     <color name="divider">#8A000000</color>
+    <color name="red">#D32F2F</color>
 </resources>

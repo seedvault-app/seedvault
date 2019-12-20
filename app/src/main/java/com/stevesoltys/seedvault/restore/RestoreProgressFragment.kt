@@ -8,20 +8,18 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.getAppName
 import com.stevesoltys.seedvault.isDebugBuild
-import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.android.synthetic.main.fragment_restore_progress.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RestoreProgressFragment : Fragment() {
 
     private val viewModel: RestoreViewModel by sharedViewModel()
-    private val settingsManager: SettingsManager by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,8 +32,8 @@ class RestoreProgressFragment : Fragment() {
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.chosenRestoreSet.observe(this, Observer { set ->
-            backupNameView.text = set.device
+        viewModel.chosenRestorableBackup.observe(this, Observer { restorableBackup ->
+            backupNameView.text = restorableBackup.name
         })
 
         viewModel.restoreProgress.observe(this, Observer { currentPackage ->
@@ -44,22 +42,14 @@ class RestoreProgressFragment : Fragment() {
             currentPackageView.text = getString(R.string.restore_current_package, displayName)
         })
 
-        viewModel.restoreFinished.observe(this, Observer { finished ->
+        viewModel.restoreBackupResult.observe(this, Observer { finished ->
             progressBar.visibility = INVISIBLE
             button.visibility = VISIBLE
-            if (finished == 0) {
-                // success
-                currentPackageView.text = getString(R.string.restore_finished_success)
-                warningView.text = if (settingsManager.getStorage()?.isUsb == true) {
-                    getString(R.string.restore_finished_warning_only_installed, getString(R.string.restore_finished_warning_ejectable))
-                } else {
-                    getString(R.string.restore_finished_warning_only_installed, null)
-                }
-                warningView.visibility = VISIBLE
+            if (finished.hasError()) {
+                currentPackageView.text = finished.errorMsg
+                currentPackageView.setTextColor(getColor(requireContext(), R.color.red))
             } else {
-                // error
-                currentPackageView.text = getString(R.string.restore_finished_error)
-                currentPackageView.setTextColor(warningView.textColors)
+                currentPackageView.text = getString(R.string.restore_finished_success)
             }
             activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         })
