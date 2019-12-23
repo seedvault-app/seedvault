@@ -47,3 +47,6 @@ gradle-app.setting
 
 ## Android
 gen/
+
+## Prebuilt
+Backup.apk

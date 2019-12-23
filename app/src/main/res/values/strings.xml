@@ -1,26 +1,104 @@
-<resources>
-    <string name="app_name">Backup</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="create_backup_button">Create backup</string>
+    <string name="app_name">Seedvault</string>
+    <string name="backup">Backup</string>
+
     <string name="restore_backup_button">Restore backup</string>
-    <string name="change_backup_location_button">Change backup location</string>
 
-    <string name="backup_success">Backup success</string>
-    <string name="backup_failure">Backup failure</string>
-    <string name="backup_cancelled">Backup cancelled</string>
-    <string name="backup_in_progress">Backup already in progress</string>
+    <!-- Settings -->
+    <string name="settings_backup">Backup my data</string>
+    <string name="settings_backup_location">Backup location</string>
+    <string name="settings_backup_location_picker">Choose backup location</string>
+    <string name="settings_backup_location_title">Backup Location</string>
+    <string name="settings_backup_location_invalid">The chosen location can not be used.</string>
+    <string name="settings_backup_location_none">None</string>
+    <string name="settings_backup_location_internal">Internal Storage</string>
+    <string name="settings_backup_last_backup_never">Never</string>
+    <string name="settings_backup_location_summary">%s · Last Backup %s</string>
+    <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
+    <string name="settings_auto_restore_title">Automatic restore</string>
+    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data</string>
+    <string name="settings_backup_now">Backup now</string>
 
-    <string name="restore_button">Restore packages</string>
-    <string name="restore_success">Restore success</string>
-    <string name="restore_failure">Restore failure</string>
-    <string name="restore_cancelled">Restore cancelled</string>
-    <string name="restore_in_progress">Restore already in progress</string>
+    <!-- Storage -->
+    <string name="storage_fragment_backup_title">Choose where to store backups</string>
+    <string name="storage_fragment_restore_title">Where to find your backups?</string>
+    <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
+    <string name="storage_fake_drive_title">USB Flash Drive</string>
+    <string name="storage_fake_drive_summary">Needs to be plugged in</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_fake_nextcloud_summary">Click to install</string>
+    <string name="storage_fake_nextcloud_summary_installed">Click to set up account</string>
+    <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
+    <string name="storage_check_fragment_restore_title">Looking for backups…</string>
+    <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
+    <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
+    <string name="storage_check_fragment_error_button">Back</string>
 
-    <string name="popup_cancel">Cancel</string>
+    <!-- Recovery Code -->
+    <string name="recovery_code_title">Recovery Code</string>
+    <string name="recovery_code_12_word_intro">You need your 12-word recovery code to restore backed up data.</string>
+    <string name="recovery_code_write_it_down">Write it down on paper now!</string>
+    <string name="recovery_code_confirm_button">Confirm Code</string>
+    <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
+    <string name="recovery_code_input_intro">Enter your 12-word recovery code that you wrote down when setting up backups.</string>
+    <string name="recovery_code_done_button">Done</string>
+    <string name="recovery_code_input_hint_1">Word 1</string>
+    <string name="recovery_code_input_hint_2">Word 2</string>
+    <string name="recovery_code_input_hint_3">Word 3</string>
+    <string name="recovery_code_input_hint_4">Word 4</string>
+    <string name="recovery_code_input_hint_5">Word 5</string>
+    <string name="recovery_code_input_hint_6">Word 6</string>
+    <string name="recovery_code_input_hint_7">Word 7</string>
+    <string name="recovery_code_input_hint_8">Word 8</string>
+    <string name="recovery_code_input_hint_9">Word 9</string>
+    <string name="recovery_code_input_hint_10">Word 10</string>
+    <string name="recovery_code_input_hint_11">Word 11</string>
+    <string name="recovery_code_input_hint_12">Word 12</string>
+    <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
+    <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
+    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words and try again!</string>
 
-    <string name="unselect_all">Unselect all</string>
-    <string name="loading_backup">Loading backup…</string>
-    <string name="loading_packages">Loading packages…</string>
-    <string name="initializing">Initializing…</string>
+    <!-- Notification -->
+    <string name="notification_channel_title">Backup Notification</string>
+    <string name="notification_title">Backup running</string>
+    <string name="notification_backup_starting">Starting Backup…</string>
+    <string name="notification_backup_result_complete">Backup complete</string>
+    <string name="notification_backup_result_rejected">Not backed up</string>
+    <string name="notification_backup_result_error">Backup failed</string>
+
+    <string name="notification_error_channel_title">Error Notification</string>
+    <string name="notification_error_title">Backup Error</string>
+    <string name="notification_error_text">A device backup failed to run.</string>
+    <string name="notification_error_action">Fix</string>
+
+    <!-- Restore -->
+    <string name="restore_title">Restore from Backup</string>
+    <string name="restore_choose_restore_set">Choose a backup to restore</string>
+    <string name="restore_back">Don\'t restore</string>
+    <string name="restore_invalid_location_title">No backups found</string>
+    <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
+    <string name="restore_set_error">An error occurred while loading the backups.</string>
+    <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
+    <string name="restore_restoring">Restoring Backup</string>
+    <string name="restore_current_package">Restoring %s…</string>
+    <string name="restore_finished_success">Restore complete.</string>
+    <string name="restore_finished_error">An error occurred while restoring the backup.</string>
+    <string name="restore_finished_warning_only_installed">Note that we could only restore data for apps that are already installed.\n\nWhen you install more apps, we will try to restore their data and settings from this backup. So please do not delete it as long as it might still be needed.%s</string>
+    <string name="restore_finished_warning_ejectable">\n\nPlease also ensure that the storage medium is plugged in when re-installing your apps.</string>
+    <string name="restore_finished_button">Finish</string>
+    <string name="storage_internal_warning_title">Warning</string>
+    <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
+    <string name="storage_internal_warning_choose_other">Choose Other</string>
+    <string name="storage_internal_warning_use_anyway">Use anyway</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_summary">A backup application using Android\'s internal backup API.</string>
+    <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_source_code">Source Code: https://github.com/stevesoltys/seedvault</string>
 
 </resources>

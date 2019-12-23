@@ -1,59 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.stevesoltys.backup"
-    android:versionCode="5"
-    android:versionName="0.3.0">
-
-    <uses-sdk
-        android:minSdkVersion="26"
-        android:targetSdkVersion="28"
-        tools:ignore="GradleOverrides,OldTargetApi" />
+    package="com.stevesoltys.seedvault"
+    android:versionCode="6"
+    android:versionName="1.0.0-alpha1">
 
     <uses-permission
         android:name="android.permission.BACKUP"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- This is needed to retrieve the available storage roots -->
+    <uses-permission
+        android:name="android.permission.MANAGE_DOCUMENTS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- This is needed to access the serial number of USB mass storage devices -->
+    <uses-permission
+        android:name="android.permission.MANAGE_USB"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- This is needed to change system backup settings -->
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".Backup"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:name=".App"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:allowBackup="false"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.stevesoltys.backup.activity.MainActivity"
-            android:label="@string/app_name">
+            android:name=".settings.SettingsActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ui.storage.StorageActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.storage.PermissionGrantActivity"
+            android:exported="false"
+            android:permission="android.permission.MANAGE_DOCUMENTS" />
+
+        <activity
+            android:name=".ui.recoverycode.RecoveryCodeActivity"
+            android:label="@string/recovery_code_title"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".restore.RestoreActivity"
+            android:exported="true"
+            android:label="@string/restore_title"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.stevesoltys.seedvault.RESTORE_BACKUP" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.stevesoltys.backup.activity.backup.CreateBackupActivity"
-            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
-
-        <activity
-            android:name="com.stevesoltys.backup.activity.restore.RestoreBackupActivity"
-            android:parentActivityName="com.stevesoltys.backup.activity.MainActivity" />
-
         <service
-            android:name="com.stevesoltys.backup.transport.ConfigurableBackupTransportService"
+            android:name=".transport.ConfigurableBackupTransportService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.backup.TRANSPORT_HOST" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".service.backup.BackupJobService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver
+            android:name=".UsbIntentReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </receiver>
 
     </application>
 </manifest>
