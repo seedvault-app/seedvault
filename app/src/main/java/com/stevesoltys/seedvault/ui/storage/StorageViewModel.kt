@@ -87,7 +87,7 @@ internal abstract class StorageViewModel(
      */
     protected fun saveStorage(uri: Uri): Boolean {
         // store backup storage location in settings
-        val root = storageRoot ?: throw IllegalStateException()
+        val root = storageRoot ?: throw IllegalStateException("no storage root")
         val name = if (root.isInternal()) {
             "${root.title} (${app.getString(R.string.settings_backup_location_internal)})"
         } else {

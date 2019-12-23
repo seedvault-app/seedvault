@@ -35,7 +35,7 @@ class SettingsManager(context: Context) {
     fun getStorage(): Storage? {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
-        val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException()
+        val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         return Storage(uri, name, isUsb)
     }

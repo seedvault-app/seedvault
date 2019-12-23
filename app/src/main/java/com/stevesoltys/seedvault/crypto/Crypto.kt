@@ -5,6 +5,8 @@ import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import javax.crypto.Cipher
+import kotlin.math.min
 
 /**
  * A backup stream starts with a version byte followed by an encrypted [VersionHeader].
@@ -51,6 +53,14 @@ interface Crypto {
     fun encryptSegment(outputStream: OutputStream, cleartext: ByteArray)
 
     /**
+     * Like [encryptSegment],
+     * but if the given cleartext [ByteArray] is larger than [MAX_SEGMENT_CLEARTEXT_LENGTH],
+     * multiple segments will be written.
+     */
+    @Throws(IOException::class)
+    fun encryptMultipleSegments(outputStream: OutputStream, cleartext: ByteArray)
+
+    /**
      * Reads and decrypts a [VersionHeader] from the given [InputStream]
      * and ensures that the expected version, package name and key match
      * what is found in the header.
@@ -69,6 +79,12 @@ interface Crypto {
      */
     @Throws(EOFException::class, IOException::class, SecurityException::class)
     fun decryptSegment(inputStream: InputStream): ByteArray
+
+    /**
+     * Like [decryptSegment], but decrypts multiple segments and does not throw [EOFException].
+     */
+    @Throws(IOException::class, SecurityException::class)
+    fun decryptMultipleSegments(inputStream: InputStream): ByteArray
 }
 
 internal class CryptoImpl(
@@ -87,9 +103,27 @@ internal class CryptoImpl(
     override fun encryptSegment(outputStream: OutputStream, cleartext: ByteArray) {
         val cipher = cipherFactory.createEncryptionCipher()
 
-        check(cipher.getOutputSize(cleartext.size) <= MAX_SEGMENT_LENGTH)
+        check(cipher.getOutputSize(cleartext.size) <= MAX_SEGMENT_LENGTH) {
+            "Cipher's output size ${cipher.getOutputSize(cleartext.size)} is larger than maximum segment length ($MAX_SEGMENT_LENGTH)"
+        }
+        encryptSegment(cipher, outputStream, cleartext)
+    }
 
-        val encrypted = cipher.doFinal(cleartext)
+    @Throws(IOException::class)
+    override fun encryptMultipleSegments(outputStream: OutputStream, cleartext: ByteArray) {
+        var end = 0
+        while (end < cleartext.size) {
+            val start = end
+            end = min(cleartext.size, start + MAX_SEGMENT_CLEARTEXT_LENGTH)
+            val segment = cleartext.copyOfRange(start, end)
+            val cipher = cipherFactory.createEncryptionCipher()
+            encryptSegment(cipher, outputStream, segment)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun encryptSegment(cipher: Cipher, outputStream: OutputStream, segment: ByteArray) {
+        val encrypted = cipher.doFinal(segment)
         val segmentHeader = SegmentHeader(encrypted.size.toShort(), cipher.iv)
         headerWriter.writeSegmentHeader(outputStream, segmentHeader)
         outputStream.write(encrypted)
@@ -119,8 +153,21 @@ internal class CryptoImpl(
         return decryptSegment(inputStream, MAX_SEGMENT_LENGTH)
     }
 
+    @Throws(IOException::class, SecurityException::class)
+    override fun decryptMultipleSegments(inputStream: InputStream): ByteArray {
+        var result = ByteArray(0)
+        while (true) {
+            try {
+                result += decryptSegment(inputStream, MAX_SEGMENT_LENGTH)
+            } catch (e: EOFException) {
+                if (result.isEmpty()) throw IOException(e)
+                return result
+            }
+        }
+    }
+
     @Throws(EOFException::class, IOException::class, SecurityException::class)
-    fun decryptSegment(inputStream: InputStream, maxSegmentLength: Int): ByteArray {
+    private fun decryptSegment(inputStream: InputStream, maxSegmentLength: Int): ByteArray {
         val segmentHeader = headerReader.readSegmentHeader(inputStream)
         if (segmentHeader.segmentLength > maxSegmentLength) {
             throw SecurityException("Segment length too long: ${segmentHeader.segmentLength} > $maxSegmentLength")

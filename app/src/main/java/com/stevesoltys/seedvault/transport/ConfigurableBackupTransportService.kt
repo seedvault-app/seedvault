@@ -35,7 +35,7 @@ class ConfigurableBackupTransportService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder {
-        val transport = this.transport ?: throw IllegalStateException()
+        val transport = this.transport ?: throw IllegalStateException("no transport in onBind()")
         return transport.binder.apply {
             Log.d(TAG, "Transport bound.")
         }

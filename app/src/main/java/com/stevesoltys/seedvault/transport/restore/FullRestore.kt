@@ -77,7 +77,7 @@ internal class FullRestore(
      */
     fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int {
         Log.i(TAG, "Get next full restore data chunk.")
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
         val packageName = state.packageInfo.packageName
 
         if (state.inputStream == null) {
@@ -103,9 +103,9 @@ internal class FullRestore(
     }
 
     private fun readInputStream(socket: ParcelFileDescriptor): Int = socket.use { fileDescriptor ->
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
         val packageName = state.packageInfo.packageName
-        val inputStream = state.inputStream ?: throw IllegalStateException()
+        val inputStream = state.inputStream ?: throw IllegalStateException("no stream")
         val outputStream = outputFactory.getOutputStream(fileDescriptor)
 
         try {
@@ -144,7 +144,7 @@ internal class FullRestore(
      * with no further attempts to restore app data.
      */
     fun abortFullRestore(): Int {
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
         Log.i(TAG, "Abort full restore of ${state.packageInfo.packageName}!")
 
         resetState()
@@ -156,7 +156,7 @@ internal class FullRestore(
      * freeing any resources and connections used during the restore process.
      */
     fun finishRestore() {
-        val state = this.state ?: throw IllegalStateException()
+        val state = this.state ?: throw IllegalStateException("no state")
         Log.i(TAG, "Finish restore of ${state.packageInfo.packageName}!")
 
         resetState()
