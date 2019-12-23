@@ -23,7 +23,13 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override fun initializeDevice() {
+    override fun initializeDevice(newToken: Long): Boolean {
+        // check if storage is already initialized
+        if (storage.isInitialized()) return false
+
+        // reset current storage
+        storage.reset(newToken)
+
         // get or create root backup dir
         storage.rootBackupDir ?: throw IOException()
 
@@ -35,6 +41,8 @@ internal class DocumentsProviderBackupPlugin(
         storage.getSetDir()?.findFile(FILE_BACKUP_METADATA)?.delete()
         kvDir?.deleteContents()
         fullDir?.deleteContents()
+
+        return true
     }
 
     @Throws(IOException::class)

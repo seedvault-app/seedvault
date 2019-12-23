@@ -33,11 +33,12 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 put(JSON_METADATA_NAME, metadata.deviceName)
             })
         }
-        for ((packageName, packageMetadata) in metadata.packageMetadata) {
+        for ((packageName, packageMetadata) in metadata.packageMetadataMap) {
             json.put(packageName, JSONObject().apply {
                 put(JSON_PACKAGE_TIME, packageMetadata.time)
                 packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
                 packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }
+                packageMetadata.sha256?.let { put(JSON_PACKAGE_SHA256, it) }
                 packageMetadata.signatures?.let { put(JSON_PACKAGE_SIGNATURES, JSONArray(it)) }
             })
         }

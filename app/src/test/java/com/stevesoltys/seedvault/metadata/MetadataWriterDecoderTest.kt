@@ -40,6 +40,7 @@ internal class MetadataWriterDecoderTest {
                     time = Random.nextLong(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
+                    sha256 = getRandomString(),
                     signatures = listOf(getRandomString(), getRandomString())))
         }
         val metadata = getMetadata(packages)
@@ -53,12 +54,14 @@ internal class MetadataWriterDecoderTest {
                     time = Random.nextLong(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
+                    sha256 = getRandomString(),
                     signatures = listOf(getRandomString())
             ))
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
+                    sha256 = getRandomString(),
                     signatures = listOf(getRandomString(), getRandomString())
             ))
         }
@@ -74,7 +77,7 @@ internal class MetadataWriterDecoderTest {
                 androidVersion = Random.nextInt(),
                 androidIncremental = getRandomString(),
                 deviceName = getRandomString(),
-                packageMetadata = packageMetadata
+                packageMetadataMap = packageMetadata
         )
     }
 

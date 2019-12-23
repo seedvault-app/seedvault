@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -24,6 +25,7 @@ internal class BackupCoordinator(
         private val kv: KVBackup,
         private val full: FullBackup,
         private val apkBackup: ApkBackup,
+        private val clock: Clock,
         private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
@@ -48,7 +50,7 @@ internal class BackupCoordinator(
      * for example, if there is no current live data-set at all,
      * or there is no authenticated account under which to store the data remotely -
      * the transport should return [TRANSPORT_OK] here
-     * and treat the initializeDevice() / finishBackup() pair as a graceful no-op.
+     * and treat the [initializeDevice] / [finishBackup] pair as a graceful no-op.
      *
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
@@ -56,8 +58,13 @@ internal class BackupCoordinator(
     fun initializeDevice(): Int {
         Log.i(TAG, "Initialize Device!")
         return try {
-            plugin.initializeDevice()
-            metadataManager.onDeviceInitialization(plugin.getMetadataOutputStream())
+            val token = clock.time()
+            if (plugin.initializeDevice(token)) {
+                Log.d(TAG, "Resetting backup metadata...")
+                metadataManager.onDeviceInitialization(token, plugin.getMetadataOutputStream())
+            } else {
+                Log.d(TAG, "Storage was already initialized, doing no-op")
+            }
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true

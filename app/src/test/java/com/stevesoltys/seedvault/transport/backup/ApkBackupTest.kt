@@ -5,14 +5,11 @@ import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
+import android.util.PackageUtils
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -32,12 +29,17 @@ internal class ApkBackupTest : BackupTest() {
     private val apkBackup = ApkBackup(pm, clock, settingsManager, metadataManager)
 
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
+    private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
     private val sigs = arrayOf(Signature(signatureBytes))
     private val packageMetadata = PackageMetadata(
             time = Random.nextLong(),
             version = packageInfo.longVersionCode - 1,
-            signatures = listOf("A5BYxvLAy0ksUzsKTRTvd8wPeKvMztUofYShogEc-4E")
+            signatures = listOf("AwIB")
     )
+
+    init {
+        mockkStatic(PackageUtils::class)
+    }
 
     @Test
     fun `does not back up @pm@`() {
@@ -96,7 +98,7 @@ internal class ApkBackupTest : BackupTest() {
 
     @Test
     fun `test successful APK backup`(@TempDir tmpDir: Path) {
-        val apkBytes = getRandomByteArray()
+        val apkBytes = byteArrayOf(0x04, 0x05, 0x06)
         val tmpFile = File(tmpDir.toAbsolutePath().toString())
         packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
             assertTrue(createNewFile())
@@ -107,6 +109,7 @@ internal class ApkBackupTest : BackupTest() {
                 time = Random.nextLong(),
                 version = packageInfo.longVersionCode,
                 installer = getRandomString(),
+                sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
                 signatures = packageMetadata.signatures
         )
 
@@ -123,6 +126,7 @@ internal class ApkBackupTest : BackupTest() {
     private fun expectChecks(packageMetadata: PackageMetadata = this.packageMetadata) {
         every { settingsManager.backupApks() } returns true
         every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns packageMetadata
+        every { PackageUtils.computeSha256DigestBytes(signatureBytes) } returns signatureHash
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns sigs
     }

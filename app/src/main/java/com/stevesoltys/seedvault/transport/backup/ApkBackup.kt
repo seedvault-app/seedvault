@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.content.pm.SigningInfo
 import android.util.Log
+import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
@@ -18,7 +19,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 private val TAG = ApkBackup::class.java.simpleName
 
@@ -45,22 +45,22 @@ class ApkBackup(
             return false
         }
 
-        // get cached metadata about package
-        val packageMetadata = metadataManager.getPackageMetadata(packageName)
-                ?: PackageMetadata(time = clock.time())
-
-        // TODO remove when adding support in [signaturesChanged]
+        // TODO remove when adding support for packages with multiple signers
         if (packageInfo.signingInfo.hasMultipleSigners()) {
             Log.e(TAG, "Package $packageName has multiple signers. Not backing it up.")
             return false
         }
 
         // get signatures
-        val signatures = getSignatures(packageInfo.signingInfo)
+        val signatures = packageInfo.signingInfo.getSignatures()
         if (signatures.isEmpty()) {
             Log.e(TAG, "Package $packageName has no signatures. Not backing it up.")
             return false
         }
+
+        // get cached metadata about package
+        val packageMetadata = metadataManager.getPackageMetadata(packageName)
+                ?: PackageMetadata(time = clock.time())
 
         // get version codes
         val version = packageInfo.longVersionCode
@@ -84,12 +84,20 @@ class ApkBackup(
             throw IOException(e)
         }
 
-        // copy the APK to the storage's output
+        // copy the APK to the storage's output and calculate SHA-256 hash while at it
+        val messageDigest = MessageDigest.getInstance("SHA-256")
         streamGetter.invoke().use { outputStream ->
             inputStream.use { inputStream ->
-                inputStream.copyTo(outputStream)
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                var bytes = inputStream.read(buffer)
+                while (bytes >= 0) {
+                    outputStream.write(buffer, 0, bytes)
+                    messageDigest.update(buffer, 0, bytes)
+                    bytes = inputStream.read(buffer)
+                }
             }
         }
+        val sha256 = messageDigest.digest().encodeBase64()
         Log.d(TAG, "Backed up new APK of $packageName with version $version.")
 
         // update the metadata
@@ -98,44 +106,37 @@ class ApkBackup(
                 time = clock.time(),
                 version = version,
                 installer = installer,
+                sha256 = sha256,
                 signatures = signatures
         )
         metadataManager.onApkBackedUp(packageName, updatedMetadata)
         return true
     }
 
-    private fun getSignatures(signingInfo: SigningInfo): List<String> {
-        val signatures = ArrayList<String>()
-        if (signingInfo.hasMultipleSigners()) {
-            for (sig in signingInfo.apkContentsSigners) {
-                signatures.add(hashSignature(sig).encodeBase64())
-            }
-        } else {
-            for (sig in signingInfo.signingCertificateHistory) {
-                signatures.add(hashSignature(sig).encodeBase64())
-            }
-        }
-        return signatures
-    }
-
-    private fun hashSignature(signature: Signature): ByteArray {
-        try {
-            val digest = MessageDigest.getInstance("SHA-256")
-            digest.update(signature.toByteArray())
-            return digest.digest()
-        } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "No SHA-256 algorithm found!", e)
-            throw AssertionError(e)
-        }
-    }
-
     private fun signaturesChanged(packageMetadata: PackageMetadata, signatures: List<String>): Boolean {
         // no signatures in package metadata counts as them not having changed
         if (packageMetadata.signatures == null) return false
-        // TODO this is probably more complicated, need to verify
-        //      1. multiple signers: need to match all signatures in list
-        //      2. single signer (with or without history): the intersection of both lists must not be empty.
+        // TODO to support multiple signers check if lists differ
         return packageMetadata.signatures.intersect(signatures).isEmpty()
     }
 
+}
+
+/**
+ * Returns a list of Base64 encoded SHA-256 signature hashes.
+ */
+fun SigningInfo.getSignatures(): List<String> {
+    return if (hasMultipleSigners()) {
+        apkContentsSigners.map { signature ->
+            hashSignature(signature).encodeBase64()
+        }
+    } else {
+        signingCertificateHistory.map { signature ->
+            hashSignature(signature).encodeBase64()
+        }
+    }
+}
+
+private fun hashSignature(signature: Signature): ByteArray {
+    return computeSha256DigestBytes(signature.toByteArray()) ?: throw AssertionError()
 }

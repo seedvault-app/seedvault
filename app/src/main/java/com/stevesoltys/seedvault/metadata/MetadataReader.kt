@@ -55,12 +55,13 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                 throw SecurityException("Invalid token '$token' in metadata, expected '$expectedToken'.")
             }
             // get package metadata
-            val packageMetadata: HashMap<String, PackageMetadata> = HashMap()
+            val packageMetadataMap = PackageMetadataMap()
             for (packageName in json.keys()) {
                 if (packageName == JSON_METADATA) continue
                 val p = json.getJSONObject(packageName)
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
                 val pInstaller = p.optString(JSON_PACKAGE_INSTALLER, "")
+                val pSha256 = p.optString(JSON_PACKAGE_SHA256)
                 val pSignatures = p.optJSONArray(JSON_PACKAGE_SIGNATURES)
                 val signatures = if (pSignatures == null) null else
                     ArrayList<String>(pSignatures.length()).apply {
@@ -68,10 +69,11 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                             add(pSignatures.getString(i))
                         }
                     }
-                packageMetadata[packageName] = PackageMetadata(
+                packageMetadataMap[packageName] = PackageMetadata(
                         time = p.getLong(JSON_PACKAGE_TIME),
                         version = if (pVersion == 0L) null else pVersion,
                         installer = if (pInstaller == "") null else pInstaller,
+                        sha256 = if (pSha256 == "") null else pSha256,
                         signatures = signatures
                 )
             }
@@ -82,7 +84,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     androidVersion = meta.getInt(JSON_METADATA_SDK_INT),
                     androidIncremental = meta.getString(JSON_METADATA_INCREMENTAL),
                     deviceName = meta.getString(JSON_METADATA_NAME),
-                    packageMetadata = packageMetadata
+                    packageMetadataMap = packageMetadataMap
             )
         } catch (e: JSONException) {
             throw SecurityException(e)

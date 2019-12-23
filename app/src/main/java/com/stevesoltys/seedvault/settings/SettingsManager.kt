@@ -5,6 +5,7 @@ import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import java.util.concurrent.atomic.AtomicBoolean
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -19,6 +20,8 @@ class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
+    private var isStorageChanging: AtomicBoolean = AtomicBoolean(false)
+
     // FIXME Storage is currently plugin specific and not generic
     fun setStorage(storage: Storage) {
         prefs.edit()
@@ -26,6 +29,7 @@ class SettingsManager(context: Context) {
                 .putString(PREF_KEY_STORAGE_NAME, storage.name)
                 .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
                 .apply()
+        isStorageChanging.set(true)
     }
 
     fun getStorage(): Storage? {
@@ -34,6 +38,10 @@ class SettingsManager(context: Context) {
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         return Storage(uri, name, isUsb)
+    }
+
+    fun getAndResetIsStorageChanging(): Boolean {
+        return isStorageChanging.getAndSet(false)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {

@@ -26,15 +26,27 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val apkBackup = mockk<ApkBackup>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(context, plugin, kv, full, apkBackup, metadataManager, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(context, plugin, kv, full, apkBackup, clock, metadataManager, settingsManager, notificationManager)
 
     private val metadataOutputStream = mockk<OutputStream>()
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
-        every { plugin.initializeDevice() } just Runs
+        every { clock.time() } returns token
+        every { plugin.initializeDevice(token) } returns true // TODO test when false
         every { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onDeviceInitialization(metadataOutputStream) } just Runs
+        every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
+        every { kv.hasState() } returns false
+        every { full.hasState() } returns false
+
+        assertEquals(TRANSPORT_OK, backup.initializeDevice())
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
+    }
+
+    @Test
+    fun `device initialization does no-op when already initialized`() {
+        every { clock.time() } returns token
+        every { plugin.initializeDevice(token) } returns false
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -46,7 +58,8 @@ internal class BackupCoordinatorTest: BackupTest() {
     fun `error notification when device initialization fails`() {
         val storage = Storage(Uri.EMPTY, getRandomString(), false)
 
-        every { plugin.initializeDevice() } throws IOException()
+        every { clock.time() } returns token
+        every { plugin.initializeDevice(token) } throws IOException()
         every { settingsManager.getStorage() } returns storage
         every { notificationManager.onBackupError() } just Runs
 
@@ -65,7 +78,8 @@ internal class BackupCoordinatorTest: BackupTest() {
         val storage = mockk<Storage>()
         val documentFile = mockk<DocumentFile>()
 
-        every { plugin.initializeDevice() } throws IOException()
+        every { clock.time() } returns token
+        every { plugin.initializeDevice(token) } throws IOException()
         every { settingsManager.getStorage() } returns storage
         every { storage.isUsb } returns true
         every { storage.getDocumentFile(context) } returns documentFile

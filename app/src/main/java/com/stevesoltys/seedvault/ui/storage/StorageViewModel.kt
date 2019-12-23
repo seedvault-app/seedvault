@@ -18,7 +18,6 @@ import com.stevesoltys.seedvault.settings.BackupManagerSettings
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
-import com.stevesoltys.seedvault.transport.ConfigurableBackupTransportService
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 
@@ -106,9 +105,6 @@ internal abstract class StorageViewModel(
             settingsManager.setFlashDrive(null)
             BackupManagerSettings.enableAutomaticBackups(app.contentResolver)
         }
-
-        // stop backup service to be sure the old location will get updated
-        app.stopService(Intent(app, ConfigurableBackupTransportService::class.java))
 
         Log.d(TAG, "New storage location saved: $uri")
 

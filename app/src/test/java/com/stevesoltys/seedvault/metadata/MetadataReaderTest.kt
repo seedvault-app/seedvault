@@ -84,6 +84,7 @@ class MetadataReaderTest {
                     time = Random.nextLong(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
+                    sha256 = getRandomString(),
                     signatures = listOf(getRandomString(), getRandomString())
             ))
         }
@@ -98,6 +99,7 @@ class MetadataReaderTest {
         json.put("org.example", JSONObject().apply {
             put(JSON_PACKAGE_VERSION, Random.nextLong())
             put(JSON_PACKAGE_INSTALLER, getRandomString())
+            put(JSON_PACKAGE_SHA256, getRandomString())
             put(JSON_PACKAGE_SIGNATURES, JSONArray(listOf(getRandomString(), getRandomString())))
         })
         val jsonBytes = json.toString().toByteArray(Utf8)
@@ -115,8 +117,8 @@ class MetadataReaderTest {
         val jsonBytes = json.toString().toByteArray(Utf8)
         val result = decoder.decode(jsonBytes, metadata.version, metadata.token)
 
-        assertEquals(1, result.packageMetadata.size)
-        val packageMetadata = result.packageMetadata.getOrElse("org.example") { fail() }
+        assertEquals(1, result.packageMetadataMap.size)
+        val packageMetadata = result.packageMetadataMap.getOrElse("org.example") { fail() }
         assertNull(packageMetadata.version)
         assertNull(packageMetadata.installer)
         assertNull(packageMetadata.signatures)
@@ -130,7 +132,7 @@ class MetadataReaderTest {
                 androidVersion = Random.nextInt(),
                 androidIncremental = getRandomString(),
                 deviceName = getRandomString(),
-                packageMetadata = packageMetadata
+                packageMetadataMap = packageMetadata
         )
     }
 

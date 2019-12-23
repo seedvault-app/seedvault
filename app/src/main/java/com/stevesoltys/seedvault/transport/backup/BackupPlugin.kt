@@ -12,9 +12,12 @@ interface BackupPlugin {
 
     /**
      * Initialize the storage for this device, erasing all stored data.
+     *
+     * @return true if the device needs initialization or
+     * false if the device was initialized already and initialization should be a no-op.
      */
     @Throws(IOException::class)
-    fun initializeDevice()
+    fun initializeDevice(newToken: Long): Boolean
 
     /**
      * Returns an [OutputStream] for writing backup metadata.

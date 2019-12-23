@@ -28,10 +28,8 @@ class MetadataManager(
                 field = try {
                     getMetadataFromCache() ?: throw IOException()
                 } catch (e: IOException) {
-                    // create new default metadata
-                    // Attention: If this happens due to a read error, we will overwrite remote metadata
-                    Log.w(TAG, "Creating new metadata...")
-                    BackupMetadata(token = clock.time())
+                    // If this happens, it is hard to recover from this. Let's hope it never does.
+                    throw AssertionError("Error reading metadata from cache", e)
                 }
             }
             return field
@@ -40,14 +38,13 @@ class MetadataManager(
     /**
      * Call this when initializing a new device.
      *
-     * A new backup token will be generated.
-     * Existing [BackupMetadata] will be cleared
+     * Existing [BackupMetadata] will be cleared, use the given new token,
      * and written encrypted to the given [OutputStream] as well as the internal cache.
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onDeviceInitialization(metadataOutputStream: OutputStream) {
-        metadata = BackupMetadata(token = clock.time())
+    fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
+        metadata = BackupMetadata(token = token)
         metadataWriter.write(metadata, metadataOutputStream)
         writeMetadataToCache()
     }
@@ -59,7 +56,7 @@ class MetadataManager(
      */
     @Synchronized
     fun onApkBackedUp(packageName: String, packageMetadata: PackageMetadata) {
-        metadata.packageMetadata[packageName]?.let {
+        metadata.packageMetadataMap[packageName]?.let {
             check(it.time <= packageMetadata.time) {
                 "APK backup set time of $packageName backwards"
             }
@@ -70,7 +67,7 @@ class MetadataManager(
                 "APK backup backed up the same or a smaller version: was ${it.version} is ${packageMetadata.version}"
             }
         }
-        metadata.packageMetadata[packageName] = packageMetadata
+        metadata.packageMetadataMap[packageName] = packageMetadata
     }
 
     /**
@@ -85,22 +82,28 @@ class MetadataManager(
         val oldMetadata = metadata.copy()
         val now = clock.time()
         metadata.time = now
-        if (metadata.packageMetadata.containsKey(packageName)) {
-            metadata.packageMetadata[packageName]?.time = now
+        if (metadata.packageMetadataMap.containsKey(packageName)) {
+            metadata.packageMetadataMap[packageName]?.time = now
         } else {
-            metadata.packageMetadata[packageName] = PackageMetadata(time = now)
+            metadata.packageMetadataMap[packageName] = PackageMetadata(time = now)
         }
         try {
             metadataWriter.write(metadata, metadataOutputStream)
         } catch (e: IOException) {
             Log.w(TAG, "Error writing metadata to storage", e)
             // revert metadata and do not write it to cache
+            // TODO also revert changes made by last [onApkBackedUp]
             metadata = oldMetadata
             throw IOException(e)
         }
         writeMetadataToCache()
     }
 
+    /**
+     * Returns the current backup token.
+     *
+     * If the token is 0L, it is not yet initialized and must not be used for anything.
+     */
     @Synchronized
     fun getBackupToken(): Long = metadata.token
 
@@ -114,7 +117,7 @@ class MetadataManager(
 
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {
-        return metadata.packageMetadata[packageName]?.copy()
+        return metadata.packageMetadataMap[packageName]?.copy()
     }
 
     @Synchronized
@@ -129,7 +132,7 @@ class MetadataManager(
             return null
         } catch (e: FileNotFoundException) {
             Log.d(TAG, "Cached metadata not found, creating...")
-            return null
+            return uninitializedMetadata
         }
     }
 
