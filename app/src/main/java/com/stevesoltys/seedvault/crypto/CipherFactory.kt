@@ -13,7 +13,7 @@ interface CipherFactory {
     fun createDecryptionCipher(iv: ByteArray): Cipher
 }
 
-class CipherFactoryImpl(private val keyManager: KeyManager) : CipherFactory {
+internal class CipherFactoryImpl(private val keyManager: KeyManager) : CipherFactory {
 
     override fun createEncryptionCipher(): Cipher {
         return Cipher.getInstance(CIPHER_TRANSFORMATION).apply {

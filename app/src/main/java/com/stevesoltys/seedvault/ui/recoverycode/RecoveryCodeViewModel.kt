@@ -1,8 +1,8 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
-import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.stevesoltys.seedvault.Backup
+import com.stevesoltys.seedvault.App
+import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import io.github.novacrypto.bip39.*
@@ -17,7 +17,7 @@ import java.util.*
 internal const val WORD_NUM = 12
 internal const val WORD_LIST_SIZE = 2048
 
-class RecoveryCodeViewModel(application: Application) : AndroidViewModel(application) {
+class RecoveryCodeViewModel(app: App, private val keyManager: KeyManager) : AndroidViewModel(app) {
 
     internal val wordList: List<CharSequence> by lazy {
         val items: ArrayList<CharSequence> = ArrayList(WORD_NUM)
@@ -49,7 +49,7 @@ class RecoveryCodeViewModel(application: Application) : AndroidViewModel(applica
         }
         val mnemonic = input.joinToString(" ")
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
-        Backup.keyManager.storeBackupKey(seed)
+        keyManager.storeBackupKey(seed)
 
         mRecoveryCodeSaved.setEvent(true)
     }

@@ -8,7 +8,7 @@ import java.io.OutputStream
 /**
  * This class exists for easier testing, so we can mock it and return custom data outputs.
  */
-class OutputFactory {
+internal class OutputFactory {
 
     fun getBackupDataOutput(outputFileDescriptor: ParcelFileDescriptor): BackupDataOutput {
         return BackupDataOutput(outputFileDescriptor.fileDescriptor)

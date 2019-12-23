@@ -18,7 +18,7 @@ private val TAG = BackupCoordinator::class.java.simpleName
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class BackupCoordinator(
+internal class BackupCoordinator(
         private val context: Context,
         private val plugin: BackupPlugin,
         private val kv: KVBackup,

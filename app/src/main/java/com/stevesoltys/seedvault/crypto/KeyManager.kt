@@ -35,7 +35,7 @@ interface KeyManager {
     fun getBackupKey(): SecretKey
 }
 
-class KeyManagerImpl : KeyManager {
+internal class KeyManagerImpl : KeyManager {
 
     private val keyStore by lazy {
         KeyStore.getInstance(ANDROID_KEY_STORE).apply {

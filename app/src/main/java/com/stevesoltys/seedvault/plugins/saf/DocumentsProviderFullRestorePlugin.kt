@@ -1,12 +1,11 @@
-package com.stevesoltys.seedvault.transport.restore.plugins
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.pm.PackageInfo
-import com.stevesoltys.seedvault.transport.backup.plugins.DocumentsStorage
 import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import java.io.IOException
 import java.io.InputStream
 
-class DocumentsProviderFullRestorePlugin(
+internal class DocumentsProviderFullRestorePlugin(
         private val documentsStorage: DocumentsStorage) : FullRestorePlugin {
 
     @Throws(IOException::class)

@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport.restore
 
-import android.content.Context
+import android.net.Uri
+import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 
 interface RestorePlugin {
@@ -15,6 +16,15 @@ interface RestorePlugin {
      * @return metadata for the set of restore images available,
      * or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableBackups(context: Context): Sequence<EncryptedBackupMetadata>?
+    fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
+
+    /**
+     * Searches if there's really a backup available in the given location.
+     * Returns true if at least one was found and false otherwise.
+     *
+     * FIXME: Passing a Uri is maybe too plugin-specific?
+     */
+    @WorkerThread
+    fun hasBackup(uri: Uri): Boolean
 
 }

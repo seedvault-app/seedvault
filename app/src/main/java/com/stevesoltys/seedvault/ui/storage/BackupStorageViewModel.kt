@@ -2,19 +2,23 @@ package com.stevesoltys.seedvault.ui.storage
 
 import android.app.Application
 import android.app.backup.BackupProgress
+import android.app.backup.IBackupManager
 import android.app.backup.IBackupObserver
 import android.net.Uri
 import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.Backup
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.requestBackup
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
 
-internal class BackupStorageViewModel(private val app: Application) : StorageViewModel(app) {
+internal class BackupStorageViewModel(
+        private val app: Application,
+        private val backupManager: IBackupManager,
+        settingsManager: SettingsManager) : StorageViewModel(app, settingsManager) {
 
     override val isRestoreOperation = false
 
@@ -26,7 +30,7 @@ internal class BackupStorageViewModel(private val app: Application) : StorageVie
 
         // initialize the new location
         val observer = InitializationObserver()
-        Backup.backupManager.initializeTransportsForUser(UserHandle.myUserId(), arrayOf(TRANSPORT_ID), observer)
+        backupManager.initializeTransportsForUser(UserHandle.myUserId(), arrayOf(TRANSPORT_ID), observer)
 
         // if storage is on USB and this is not SetupWizard, do a backup right away
         if (isUsb && !isSetupWizard) Thread {

@@ -3,23 +3,26 @@ package com.stevesoltys.seedvault
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.stevesoltys.seedvault.transport.backup.plugins.DocumentsStorage
-import com.stevesoltys.seedvault.transport.backup.plugins.createOrGetFile
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
+import com.stevesoltys.seedvault.plugins.saf.createOrGetFile
 import org.junit.After
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import kotlin.random.Random
 
 private const val filename = "test-file"
 
 @RunWith(AndroidJUnit4::class)
-class DocumentsStorageTest {
+class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val settingsManager = (context.applicationContext as Backup).settingsManager
+    private val settingsManager by inject<SettingsManager>()
     private val storage = DocumentsStorage(context, settingsManager)
 
     private lateinit var file: DocumentFile

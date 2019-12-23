@@ -9,13 +9,13 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.stevesoltys.seedvault.R
 import kotlinx.android.synthetic.main.fragment_restore_set.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RestoreSetFragment : Fragment() {
 
-    private lateinit var viewModel: RestoreViewModel
+    private val viewModel: RestoreViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -24,7 +24,6 @@ class RestoreSetFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity()).get(RestoreViewModel::class.java)
 
         viewModel.restoreSets.observe(this, Observer { result -> onRestoreSetsLoaded(result) })
 

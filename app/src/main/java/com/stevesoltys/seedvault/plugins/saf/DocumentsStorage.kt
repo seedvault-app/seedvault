@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.backup.plugins
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -26,7 +26,9 @@ private const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 
-class DocumentsStorage(private val context: Context, private val settingsManager: SettingsManager) {
+internal class DocumentsStorage(
+        private val context: Context,
+        private val settingsManager: SettingsManager) {
 
     private val storage: Storage? = settingsManager.getStorage()
     private val token: Long = settingsManager.getBackupToken()

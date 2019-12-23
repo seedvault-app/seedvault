@@ -18,7 +18,7 @@ interface MetadataReader {
 
 }
 
-class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
+internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
 
     @Throws(SecurityException::class, DecryptionFailedException::class, UnsupportedVersionException::class, IOException::class)
     override fun readMetadata(inputStream: InputStream, expectedToken: Long): BackupMetadata {

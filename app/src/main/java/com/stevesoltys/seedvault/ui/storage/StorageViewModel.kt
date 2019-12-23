@@ -12,11 +12,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.stevesoltys.seedvault.Backup
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.settings.BackupManagerSettings
 import com.stevesoltys.seedvault.settings.FlashDrive
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.transport.ConfigurableBackupTransportService
 import com.stevesoltys.seedvault.ui.LiveEvent
@@ -24,9 +24,10 @@ import com.stevesoltys.seedvault.ui.MutableLiveEvent
 
 private val TAG = StorageViewModel::class.java.simpleName
 
-internal abstract class StorageViewModel(private val app: Application) : AndroidViewModel(app), RemovableStorageListener {
-
-    protected val settingsManager = (app as Backup).settingsManager
+internal abstract class StorageViewModel(
+        private val app: Application,
+        protected val settingsManager: SettingsManager
+) : AndroidViewModel(app), RemovableStorageListener {
 
     private val mStorageRoots = MutableLiveData<List<StorageRoot>>()
     internal val storageRoots: LiveData<List<StorageRoot>> get() = mStorageRoots
@@ -44,8 +45,7 @@ internal abstract class StorageViewModel(private val app: Application) : Android
     abstract val isRestoreOperation: Boolean
 
     companion object {
-        internal fun validLocationIsSet(context: Context): Boolean {
-            val settingsManager = (context.applicationContext as Backup).settingsManager
+        internal fun validLocationIsSet(context: Context, settingsManager: SettingsManager): Boolean {
             val storage = settingsManager.getStorage() ?: return false
             if (storage.isUsb) return true
             return storage.getDocumentFile(context).isDirectory

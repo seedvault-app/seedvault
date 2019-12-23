@@ -71,7 +71,7 @@ interface Crypto {
     fun decryptSegment(inputStream: InputStream): ByteArray
 }
 
-class CryptoImpl(
+internal class CryptoImpl(
         private val cipherFactory: CipherFactory,
         private val headerWriter: HeaderWriter,
         private val headerReader: HeaderReader) : Crypto {

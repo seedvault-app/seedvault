@@ -17,7 +17,7 @@ internal const val JSON_TOKEN = "token"
 internal const val JSON_ANDROID_VERSION = "androidVersion"
 internal const val JSON_DEVICE_NAME = "deviceName"
 
-class DecryptionFailedException(cause: Throwable) : Exception(cause)
+internal class DecryptionFailedException(cause: Throwable) : Exception(cause)
 
 class EncryptedBackupMetadata private constructor(val token: Long, val inputStream: InputStream?, val error: Boolean) {
     constructor(token: Long, inputStream: InputStream) : this(token, inputStream, false)
