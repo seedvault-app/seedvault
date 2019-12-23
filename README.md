@@ -27,4 +27,4 @@ internal APIs as `adb backup` and requires a minimal number of permissions to ac
 Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault. 
 
 ## License
-This application is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).
