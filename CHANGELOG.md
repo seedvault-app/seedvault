@@ -1,3 +1,17 @@
+## [1.0.0-alpha1] - 2019-12-14
+### Added
+- Automatic daily backups that run in the background.
+- User friendly UI for creating and restoring backups.
+- Support to backing up to and restoring from removable storage.
+
+### Updated
+- Application can now be configured in the settings app.
+- BIP39 is now used for key generation.
+
+### Notes
+- This contains breaking changes, any backups made prior to this release can no longer be restored.
+- Application can no longer be built in the Android source tree. It must be built using Gradle and binaries can now be found here: https://github.com/stevesoltys/seedvault-prebuilt
+
 ## [0.3.0] - 2019-03-14
 ### Fixed
 - Transport encryption. Some of the application data was not included during encryption.
