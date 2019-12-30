@@ -7,6 +7,8 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import java.util.concurrent.atomic.AtomicBoolean
 
+internal const val PREF_KEY_BACKUP_APK = "backup_apk"
+
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
 private const val PREF_KEY_STORAGE_IS_USB = "storageIsUsb"
@@ -71,8 +73,7 @@ class SettingsManager(context: Context) {
     }
 
     fun backupApks(): Boolean {
-        // TODO
-        return true
+        return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)
     }
 
 }

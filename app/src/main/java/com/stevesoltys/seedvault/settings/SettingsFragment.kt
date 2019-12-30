@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
@@ -40,6 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
+    private lateinit var apkBackup: TwoStatePreference
     private lateinit var backupLocation: Preference
 
     private var menuBackupNow: MenuItem? = null
@@ -93,6 +95,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 autoRestore.isChecked = !enabled
                 return@OnPreferenceChangeListener false
             }
+        }
+
+        apkBackup = findPreference(PREF_KEY_BACKUP_APK)!!
+        apkBackup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
+            val enable = newValue as Boolean
+            if (enable) return@OnPreferenceChangeListener true
+            AlertDialog.Builder(requireContext())
+                    .setIcon(R.drawable.ic_warning)
+                    .setTitle(R.string.settings_backup_apk_dialog_title)
+                    .setMessage(R.string.settings_backup_apk_dialog_message)
+                    .setPositiveButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
+                        apkBackup.isChecked = enable
+                        dialog.dismiss()
+                    }
+                    .show()
+            return@OnPreferenceChangeListener false
         }
 
         viewModel.lastBackupTime.observe(this, Observer { time -> setBackupLocationSummary(time) })
