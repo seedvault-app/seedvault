@@ -17,7 +17,8 @@
     <string name="settings_backup_location_summary">%1$s · Last Backup %2$s</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
-    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data</string>
+    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
+    <string name="settings_auto_restore_summary_usb">Note: Your USB flash drive needs to be plugged in for this to work.</string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
     <string name="settings_backup_apk_dialog_title">Really disable app backup?</string>
