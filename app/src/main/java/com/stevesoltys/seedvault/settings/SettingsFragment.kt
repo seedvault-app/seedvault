@@ -180,9 +180,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         activity?.contentResolver?.let {
             autoRestore.isChecked = Settings.Secure.getInt(it, BACKUP_AUTO_RESTORE, 1) == 1
         }
+        val storage = this.storage
         if (storage?.isUsb == true) {
             autoRestore.summary = getString(R.string.settings_auto_restore_summary) + "\n\n" +
-                    getString(R.string.settings_auto_restore_summary_usb)
+                    getString(R.string.settings_auto_restore_summary_usb, storage.name)
         } else {
             autoRestore.setSummary(R.string.settings_auto_restore_summary)
         }

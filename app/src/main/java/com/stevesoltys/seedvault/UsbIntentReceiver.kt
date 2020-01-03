@@ -23,6 +23,7 @@ private val TAG = UsbIntentReceiver::class.java.simpleName
 
 class UsbIntentReceiver : UsbMonitor() {
 
+    // using KoinComponent would crash robolectric tests :(
     private val settingsManager: SettingsManager by lazy { get().koin.get<SettingsManager>() }
     private val metadataManager: MetadataManager by lazy { get().koin.get<MetadataManager>() }
 

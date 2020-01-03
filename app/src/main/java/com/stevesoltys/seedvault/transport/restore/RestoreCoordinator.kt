@@ -6,16 +6,20 @@ import android.app.backup.IBackupManager
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.*
 import android.app.backup.RestoreSet
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.collection.LongSparseArray
+import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
+import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
@@ -32,7 +36,10 @@ private class RestoreCoordinatorState(
 private val TAG = RestoreCoordinator::class.java.simpleName
 
 internal class RestoreCoordinator(
+        private val context: Context,
+        private val settingsManager: SettingsManager,
         private val metadataManager: MetadataManager,
+        private val notificationManager: BackupNotificationManager,
         private val plugin: RestorePlugin,
         private val kv: KVRestore,
         private val full: FullRestore,
@@ -113,7 +120,19 @@ internal class RestoreCoordinator(
 
         // If there's only one package to restore (Auto Restore feature), add it to the state
         val pmPackageInfo = if (packages.size == 2 && packages[0].packageName == MAGIC_PACKAGE_MANAGER) {
-            Log.d(TAG, "Optimize for single package restore of ${packages[1].packageName}")
+            val pmPackageName = packages[1].packageName
+            Log.d(TAG, "Optimize for single package restore of $pmPackageName")
+            // check if the backup is on removable storage that is not plugged in
+            if (isStorageRemovableAndNotAvailable()) {
+                // check if we even have a backup of that app
+                if (metadataManager.getPackageMetadata(pmPackageName) != null) {
+                    // remind user to plug in storage device
+                    val storageName = settingsManager.getStorage()?.name
+                            ?: context.getString(R.string.settings_backup_location_none)
+                    notificationManager.onRemovableStorageNotAvailableForRestore(pmPackageName, storageName)
+                }
+                return TRANSPORT_ERROR
+            }
             packages[1]
         } else null
 
@@ -244,5 +263,11 @@ internal class RestoreCoordinator(
     }
 
     fun isFailedPackage(packageName: String) = packageName in failedPackages
+
+    // TODO this is plugin specific, needs to be factored out when supporting different plugins
+    private fun isStorageRemovableAndNotAvailable(): Boolean {
+        val storage = settingsManager.getStorage() ?: return false
+        return storage.isUsb && !storage.getDocumentFile(context).isDirectory
+    }
 
 }

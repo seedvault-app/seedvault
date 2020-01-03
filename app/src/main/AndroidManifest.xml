@@ -29,6 +29,10 @@
         android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- This is needed when using auto-restore with removable storage
+         to allow the user to uninstall an app when storage was not plugged in during install -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -85,6 +89,14 @@
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
+        </receiver>
+
+        <receiver
+            android:name=".restore.RestoreErrorBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
+            </intent-filter>
         </receiver>
 
     </application>

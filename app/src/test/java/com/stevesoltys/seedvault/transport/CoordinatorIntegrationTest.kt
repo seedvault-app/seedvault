@@ -53,7 +53,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore = FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
-    private val restore = RestoreCoordinator(metadataManager, restorePlugin, kvRestore, fullRestore, metadataReader)
+    private val restore = RestoreCoordinator(context, settingsManager, metadataManager, notificationManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
