@@ -6,6 +6,9 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.ANCESTRAL_RECORD_KEY
+import com.stevesoltys.seedvault.GLOBAL_METADATA_KEY
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.decodeBase64
 import com.stevesoltys.seedvault.header.HeaderReader
@@ -17,7 +20,11 @@ import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
         internal val token: Long,
-        internal val packageInfo: PackageInfo)
+        internal val packageInfo: PackageInfo,
+        /**
+         * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
+         */
+        internal val pmPackageInfo: PackageInfo?)
 
 private val TAG = KVRestore::class.java.simpleName
 
@@ -42,9 +49,11 @@ internal class KVRestore(
      *
      * It is possible that the system decides to not restore the package.
      * Then a new state will be initialized right away without calling other methods.
+     *
+     * @param pmPackageInfo single optional [PackageInfo] to optimize restore of @pm@
      */
-    fun initializeState(token: Long, packageInfo: PackageInfo) {
-        state = KVRestoreState(token, packageInfo)
+    fun initializeState(token: Long, packageInfo: PackageInfo, pmPackageInfo: PackageInfo? = null) {
+        state = KVRestoreState(token, packageInfo, pmPackageInfo)
     }
 
     /**
@@ -111,8 +120,15 @@ internal class KVRestore(
         // Decode the key filenames into keys then sort lexically by key
         val contents = ArrayList<DecodedKey>()
         for (recordKey in records) contents.add(DecodedKey(recordKey))
-        contents.sort()
-        return contents
+        // remove keys that are not needed for single package @pm@ restore
+        val pmPackageName = state?.pmPackageInfo?.packageName
+        val sortedKeys = if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && pmPackageName != null) {
+            val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
+            Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
+            contents.filterTo(ArrayList()) { it.key in keys }
+        } else contents
+        sortedKeys.sort()
+        return sortedKeys
     }
 
     /**

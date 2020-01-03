@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.collection.LongSparseArray
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
@@ -21,7 +22,12 @@ import java.io.IOException
 private class RestoreCoordinatorState(
         internal val token: Long,
         internal val packages: Iterator<PackageInfo>,
-        internal var currentPackage: String? = null)
+        /**
+         * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
+         */
+        internal val pmPackageInfo: PackageInfo?) {
+    internal var currentPackage: String? = null
+}
 
 private val TAG = RestoreCoordinator::class.java.simpleName
 
@@ -104,7 +110,14 @@ internal class RestoreCoordinator(
     fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
         check(state == null) { "Started new restore with existing state" }
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
-        state = RestoreCoordinatorState(token, packages.iterator())
+
+        // If there's only one package to restore (Auto Restore feature), add it to the state
+        val pmPackageInfo = if (packages.size == 2 && packages[0].packageName == MAGIC_PACKAGE_MANAGER) {
+            Log.d(TAG, "Optimize for single package restore of ${packages[1].packageName}")
+            packages[1]
+        } else null
+
+        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo)
         failedPackages.clear()
         return TRANSPORT_OK
     }
@@ -148,7 +161,7 @@ internal class RestoreCoordinator(
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(state.token, packageInfo)
+                    kv.initializeState(state.token, packageInfo, state.pmPackageInfo)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
@@ -174,7 +187,7 @@ internal class RestoreCoordinator(
     /**
      * Get the data for the application returned by [nextRestorePackage],
      * if that method reported [TYPE_KEY_VALUE] as its delivery type.
-     * If the package has only TYPE_FULL_STREAM data, then this method will return an error.
+     * If the package has only [TYPE_FULL_STREAM] data, then this method will return an error.
      *
      * @param data An open, writable file into which the key/value backup data should be stored.
      * @return the same error codes as [startRestore].
