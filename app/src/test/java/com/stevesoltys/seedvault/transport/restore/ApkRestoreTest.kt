@@ -143,7 +143,7 @@ internal class ApkRestoreTest : RestoreTest() {
     @Test
     fun `test successful run`(@TempDir tmpDir: Path) = runBlocking {
         val installResult = MutableInstallResult(1).apply {
-            put(packageName, ApkRestoreResult(progress = 1, total = 1, status = SUCCEEDED))
+            put(packageName, ApkRestoreResult(packageName, progress = 1, total = 1, status = SUCCEEDED))
         }
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())

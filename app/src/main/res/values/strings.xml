@@ -92,7 +92,8 @@
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring Backup</string>
     <string name="restore_current_package">Restoring %s…</string>
-    <string name="restore_finished_success">Restore complete.</string>
+    <string name="restore_magic_package">System Package Manager</string>
+    <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
     <string name="restore_finished_button">Finish</string>
     <string name="storage_internal_warning_title">Warning</string>

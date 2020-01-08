@@ -72,5 +72,5 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
 fun getAppName(pm: PackageManager, packageId: String): CharSequence {
     if (packageId == MAGIC_PACKAGE_MANAGER) return packageId
     val appInfo = pm.getApplicationInfo(packageId, 0)
-    return pm.getApplicationLabel(appInfo)
+    return pm.getApplicationLabel(appInfo) ?: packageId
 }
