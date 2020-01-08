@@ -89,6 +89,7 @@
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
     <string name="restore_installing_packages">Re-installing Apps</string>
+    <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring Backup</string>
     <string name="restore_current_package">Restoring %s…</string>
     <string name="restore_finished_success">Restore complete.</string>

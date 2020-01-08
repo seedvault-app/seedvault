@@ -40,7 +40,7 @@ internal class ApkRestore(
         val installResult = MutableInstallResult(total)
         packages.forEach { (packageName, _) ->
             progress++
-            installResult[packageName] = ApkRestoreResult(progress, total, QUEUED)
+            installResult[packageName] = ApkRestoreResult(packageName, progress, total, QUEUED)
         }
         emit(installResult)
 
@@ -155,12 +155,17 @@ internal class MutableInstallResult(initialCapacity: Int) : ConcurrentHashMap<St
 }
 
 internal data class ApkRestoreResult(
+        val packageName: CharSequence,
         val progress: Int,
         val total: Int,
         val status: ApkRestoreStatus,
         val name: CharSequence? = null,
         val icon: Drawable? = null
-)
+) : Comparable<ApkRestoreResult> {
+    override fun compareTo(other: ApkRestoreResult): Int {
+        return other.progress.compareTo(progress)
+    }
+}
 
 internal enum class ApkRestoreStatus {
     QUEUED, IN_PROGRESS, SUCCEEDED, FAILED

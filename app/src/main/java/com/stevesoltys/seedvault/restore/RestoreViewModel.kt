@@ -70,6 +70,9 @@ internal class RestoreViewModel(
         getInstallResult(backup)
     }
 
+    private val mNextButtonEnabled = MutableLiveData<Boolean>().apply { value = false }
+    internal val nextButtonEnabled: LiveData<Boolean> = mNextButtonEnabled
+
     private val mRestoreProgress = MutableLiveData<String>()
     internal val restoreProgress: LiveData<String> get() = mRestoreProgress
 
@@ -125,11 +128,18 @@ internal class RestoreViewModel(
                     Log.d(TAG, "Exception in InstallResult Flow", e)
                 }.onCompletion { e ->
                     Log.d(TAG, "Completed InstallResult Flow", e)
-                    mDisplayFragment.postEvent(RESTORE_BACKUP)
-                    startRestore(restorableBackup.token)
+                    mNextButtonEnabled.postValue(true)
                 }
                 .flowOn(ioDispatcher)
                 .asLiveData()
+    }
+
+    internal fun onNextClicked() {
+        mDisplayFragment.postEvent(RESTORE_BACKUP)
+        val token = mChosenRestorableBackup.value?.token ?: throw AssertionError()
+        viewModelScope.launch(ioDispatcher) {
+            startRestore(token)
+        }
     }
 
     @WorkerThread

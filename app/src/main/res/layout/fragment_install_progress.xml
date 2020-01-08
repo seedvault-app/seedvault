@@ -54,40 +54,30 @@
         app:layout_constraintTop_toBottomOf="@+id/titleView"
         tools:text="Pixel 2 XL" />
 
-    <ImageView
-        android:id="@+id/currentPackageImageView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backupNameView"
-        tools:ignore="ContentDescription"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/currentPackageView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/appList"
         android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backupNameView"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/list_item_app_status" />
+
+    <Button
+        android:id="@+id/nextButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:gravity="center_horizontal"
-        android:textColor="?android:textColorSecondary"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:text="@string/restore_next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentPackageImageView"
-        tools:text="@string/restore_current_package" />
-
-    <ProgressBar
-        android:id="@+id/roundProgressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentPackageView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
