@@ -189,11 +189,18 @@ internal class RestoreViewModel(
                 } else {
                     val restorableBackups = restoreSets.mapNotNull { set ->
                         val metadata = backupMetadata[set.token]
-                        if (metadata == null) {
-                            Log.e(TAG, "RestoreCoordinator#getAndClearBackupMetadata() has no metadata for token ${set.token}.")
-                            null
-                        } else {
-                            RestorableBackup(set, metadata)
+                        when {
+                            metadata == null -> {
+                                Log.e(TAG, "RestoreCoordinator#getAndClearBackupMetadata() has no metadata for token ${set.token}.")
+                                null
+                            }
+                            metadata.time == 0L -> {
+                                Log.d(TAG, "Ignoring RestoreSet with no last backup time: ${set.token}.")
+                                null
+                            }
+                            else -> {
+                                RestorableBackup(set, metadata)
+                            }
                         }
                     }
                     RestoreSetResult(restorableBackups)
