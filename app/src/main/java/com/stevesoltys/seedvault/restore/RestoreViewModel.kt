@@ -15,8 +15,10 @@ import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.BackupMonitor
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.*
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -35,6 +37,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -73,8 +76,12 @@ internal class RestoreViewModel(
     private val mNextButtonEnabled = MutableLiveData<Boolean>().apply { value = false }
     internal val nextButtonEnabled: LiveData<Boolean> = mNextButtonEnabled
 
-    private val mRestoreProgress = MutableLiveData<String>()
-    internal val restoreProgress: LiveData<String> get() = mRestoreProgress
+    private val mRestoreProgress = MutableLiveData<LinkedList<AppRestoreResult>>().apply {
+        value = LinkedList<AppRestoreResult>().apply {
+            add(AppRestoreResult(MAGIC_PACKAGE_MANAGER, IN_PROGRESS))
+        }
+    }
+    internal val restoreProgress: LiveData<LinkedList<AppRestoreResult>> get() = mRestoreProgress
 
     private val mRestoreBackupResult = MutableLiveData<RestoreBackupResult>()
     internal val restoreBackupResult: LiveData<RestoreBackupResult> get() = mRestoreBackupResult
@@ -164,7 +171,46 @@ internal class RestoreViewModel(
         }
     }
 
-    fun isFailedPackage(packageName: String) = restoreCoordinator.isFailedPackage(packageName)
+    @WorkerThread
+    // this should be called one package at a time and never concurrently for different packages
+    private fun onRestoreStarted(packageName: String) {
+        // list is never null and always has at least one package
+        val list = mRestoreProgress.value!!
+
+        // check previous package first and change status
+        updateLatestPackage(list)
+        // add current package
+        list.addFirst(AppRestoreResult(packageName, IN_PROGRESS))
+        mRestoreProgress.postValue(list)
+    }
+
+    private fun updateLatestPackage(list: LinkedList<AppRestoreResult>) {
+        val latestResult = list[0]
+        if (restoreCoordinator.isFailedPackage(latestResult.packageName)) {
+            list[0] = latestResult.copy(status = FAILED)
+        } else {
+            list[0] = latestResult.copy(status = SUCCEEDED)
+        }
+    }
+
+    @WorkerThread
+    private fun onRestoreComplete(result: RestoreBackupResult) {
+        // update status of latest package
+        val list = mRestoreProgress.value!!
+        updateLatestPackage(list)
+
+        // add missing packages as failed
+        val seenPackages = list.map { it.packageName }
+        val restorableBackup = chosenRestorableBackup.value!!
+        val expectedPackages = restorableBackup.packageMetadataMap.keys
+        expectedPackages.removeAll(seenPackages)
+        for (packageName: String in expectedPackages) {
+            list.add(AppRestoreResult(packageName, FAILED))
+        }
+        mRestoreProgress.postValue(list)
+
+        mRestoreBackupResult.postValue(result)
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -189,7 +235,7 @@ internal class RestoreViewModel(
          *   the current device. If no applicable datasets exist, restoreSets will be null.
          */
         override fun restoreSetsAvailable(restoreSets: Array<out RestoreSet>?) {
-            check (continuation != null) { "Getting restore sets without continuation" }
+            check(continuation != null) { "Getting restore sets without continuation" }
 
             val result = if (restoreSets == null || restoreSets.isEmpty()) {
                 RestoreSetResult(app.getString(R.string.restore_set_empty_result))
@@ -241,7 +287,7 @@ internal class RestoreViewModel(
          */
         override fun onUpdate(nowBeingRestored: Int, currentPackage: String) {
             // nowBeingRestored reporting is buggy, so don't use it
-            mRestoreProgress.postValue(currentPackage)
+            onRestoreStarted(currentPackage)
         }
 
         /**
@@ -255,7 +301,7 @@ internal class RestoreViewModel(
                     if (result == 0) null
                     else app.getString(R.string.restore_finished_error)
             )
-            mRestoreBackupResult.postValue(restoreResult)
+            onRestoreComplete(restoreResult)
             closeSession()
         }
 

@@ -55,6 +55,9 @@ class InstallProgressFragment : Fragment() {
     }
 
     private fun onInstallResult(installResult: InstallResult) {
+        // skip this screen, if there are no apps to install
+        if (installResult.isEmpty()) viewModel.onNextClicked()
+
         val result = installResult.filterValues { it.status != QUEUED }
         val position = layoutManager.findFirstVisibleItemPosition()
         adapter.update(result.values)
