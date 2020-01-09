@@ -164,6 +164,8 @@ internal class RestoreViewModel(
         }
     }
 
+    fun isFailedPackage(packageName: String) = restoreCoordinator.isFailedPackage(packageName)
+
     override fun onCleared() {
         super.onCleared()
         closeSession()

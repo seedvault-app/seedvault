@@ -53,20 +53,23 @@ class RestoreProgressFragment : Fragment() {
 
         viewModel.restoreProgress.observe(this, Observer { currentPackage ->
             stayScrolledAtTop {
+                val latest = adapter.getLatest()
+                if (viewModel.isFailedPackage(latest.packageName)) {
+                    adapter.setLatestFailed()
+                }
                 adapter.add(AppRestoreResult(currentPackage, true))
             }
         })
 
         viewModel.restoreBackupResult.observe(this, Observer { finished ->
-            val list = adapter.setComplete()
+            val seenPackages = adapter.setComplete()
             stayScrolledAtTop {
                 // add missing packages as failed
                 val restorableBackup = viewModel.chosenRestorableBackup.value!!
                 val expectedPackages = restorableBackup.packageMetadataMap.keys
+                expectedPackages.removeAll(seenPackages)
                 for (packageName: String in expectedPackages) {
-                    if (AppRestoreResult(packageName, true) !in list) {
-                        adapter.add(AppRestoreResult(packageName, false))
-                    }
+                    adapter.add(AppRestoreResult(packageName, false))
                 }
             }
 

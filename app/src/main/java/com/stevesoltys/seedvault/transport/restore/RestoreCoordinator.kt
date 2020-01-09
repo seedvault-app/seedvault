@@ -20,7 +20,8 @@ import java.io.IOException
 
 private class RestoreCoordinatorState(
         internal val token: Long,
-        internal val packages: Iterator<PackageInfo>)
+        internal val packages: Iterator<PackageInfo>,
+        internal var currentPackage: String? = null)
 
 private val TAG = RestoreCoordinator::class.java.simpleName
 
@@ -33,6 +34,7 @@ internal class RestoreCoordinator(
 
     private var state: RestoreCoordinatorState? = null
     private var backupMetadata: LongSparseArray<BackupMetadata>? = null
+    private val failedPackages = ArrayList<String>()
 
     /**
      * Get the set of all backups currently available over this transport.
@@ -103,6 +105,7 @@ internal class RestoreCoordinator(
         check(state == null) { "Started new restore with existing state" }
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
         state = RestoreCoordinatorState(token, packages.iterator())
+        failedPackages.clear()
         return TRANSPORT_OK
     }
 
@@ -146,11 +149,13 @@ internal class RestoreCoordinator(
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
                     kv.initializeState(state.token, packageInfo)
+                    state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
                     full.initializeState(state.token, packageInfo)
+                    state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }
                 else -> {
@@ -160,6 +165,7 @@ internal class RestoreCoordinator(
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error finding restore data for $packageName.", e)
+            failedPackages.add(packageName)
             return null
         }
         return RestoreDescription(packageName, type)
@@ -174,7 +180,12 @@ internal class RestoreCoordinator(
      * @return the same error codes as [startRestore].
      */
     fun getRestoreData(data: ParcelFileDescriptor): Int {
-        return kv.getRestoreData(data)
+        return kv.getRestoreData(data).apply {
+            if (this != TRANSPORT_OK) {
+                // add current package to failed ones
+                state?.currentPackage?.let { failedPackages.add(it) }
+            }
+        }
     }
 
     /**
@@ -195,6 +206,7 @@ internal class RestoreCoordinator(
      * or will call [finishRestore] to shut down the restore operation.
      */
     fun abortFullRestore(): Int {
+        state?.currentPackage?.let { failedPackages.add(it) }
         return full.abortFullRestore()
     }
 
@@ -217,5 +229,7 @@ internal class RestoreCoordinator(
         backupMetadata = null
         return result
     }
+
+    fun isFailedPackage(packageName: String) = packageName in failedPackages
 
 }

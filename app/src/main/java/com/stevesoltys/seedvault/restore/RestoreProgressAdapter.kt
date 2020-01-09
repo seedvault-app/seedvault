@@ -35,16 +35,25 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
         holder.bind(items[position], position == 0)
     }
 
+    fun getLatest(): AppRestoreResult {
+        return items[0]
+    }
+
+    fun setLatestFailed() {
+        items[0] = AppRestoreResult(items[0].packageName, false)
+        notifyItemChanged(0, items[0])
+    }
+
     fun add(item: AppRestoreResult) {
         items.addFirst(item)
         notifyItemInserted(0)
         notifyItemRangeChanged(1, items.size - 1)
     }
 
-    fun setComplete(): LinkedList<AppRestoreResult> {
+    fun setComplete(): List<String> {
         isComplete = true
         notifyItemChanged(0)
-        return items
+        return items.map { it.packageName }
     }
 
     inner class PackageViewHolder(v: View) : ViewHolder(v) {
