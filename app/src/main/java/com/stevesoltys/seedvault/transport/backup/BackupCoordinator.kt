@@ -116,9 +116,7 @@ internal class BackupCoordinator(
         if (packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
             return TRANSPORT_PACKAGE_REJECTED
         }
-
-        val result = kv.performBackup(packageInfo, data, flags)
-        return onPackageBackedUp(result, packageInfo)
+        return kv.performBackup(packageInfo, data, flags)
     }
 
     // ------------------------------------------------------------------------------------
@@ -145,12 +143,24 @@ internal class BackupCoordinator(
     fun checkFullBackupSize(size: Long) = full.checkFullBackupSize(size)
 
     fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
-        val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
-        return onPackageBackedUp(result, targetPackage)
+        return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
+    /**
+     * Tells the transport to cancel the currently-ongoing full backup operation.
+     * This will happen between [performFullBackup] and [finishBackup]
+     * if the OS needs to abort the backup operation for any reason,
+     * such as a crash in the application undergoing backup.
+     *
+     * When it receives this call,
+     * the transport should discard any partial archive that it has stored so far.
+     * If possible it should also roll back to the previous known-good archive in its data store.
+     *
+     * If the transport receives this callback, it will *not* receive a call to [finishBackup].
+     * It needs to tear down any ongoing backup state here.
+     */
     fun cancelFullBackup() = full.cancelFullBackup()
 
     // Clear and Finish
@@ -186,10 +196,12 @@ internal class BackupCoordinator(
     fun finishBackup(): Int = when {
         kv.hasState() -> {
             check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
+            onPackageBackedUp(kv.getCurrentPackage()!!)  // not-null because we have state
             kv.finishBackup()
         }
         full.hasState() -> {
             check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
+            onPackageBackedUp(full.getCurrentPackage()!!)  // not-null because we have state
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -200,8 +212,7 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    private fun onPackageBackedUp(result: Int, packageInfo: PackageInfo): Int {
-        if (result != TRANSPORT_OK) return result
+    private fun onPackageBackedUp(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         try {
             apkBackup.backupApkIfNecessary(packageInfo) { plugin.getApkOutputStream(packageInfo) }
@@ -209,9 +220,7 @@ internal class BackupCoordinator(
             metadataManager.onPackageBackedUp(packageName, outputStream)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
-            return TRANSPORT_PACKAGE_REJECTED
         }
-        return result
     }
 
     private fun getBackupBackoff(): Long {

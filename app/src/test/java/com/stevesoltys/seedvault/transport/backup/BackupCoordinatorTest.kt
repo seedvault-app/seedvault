@@ -142,6 +142,8 @@ internal class BackupCoordinatorTest: BackupTest() {
 
         every { kv.hasState() } returns true
         every { full.hasState() } returns false
+        every { kv.getCurrentPackage() } returns packageInfo
+        expectApkBackupAndMetadataWrite()
         every { kv.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
@@ -153,9 +155,17 @@ internal class BackupCoordinatorTest: BackupTest() {
 
         every { kv.hasState() } returns false
         every { full.hasState() } returns true
+        every { full.getCurrentPackage() } returns packageInfo
+        expectApkBackupAndMetadataWrite()
         every { full.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
+    }
+
+    private fun expectApkBackupAndMetadataWrite() {
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
+        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
     }
 
 }

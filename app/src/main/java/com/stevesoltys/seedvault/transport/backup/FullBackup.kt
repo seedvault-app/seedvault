@@ -36,6 +36,8 @@ internal class FullBackup(
 
     fun hasState() = state != null
 
+    fun getCurrentPackage() = state?.packageInfo
+
     fun getQuota(): Long = plugin.getQuota()
 
     fun checkFullBackupSize(size: Long): Int {
@@ -97,6 +99,9 @@ internal class FullBackup(
         // create new state
         val inputStream = inputFactory.getInputStream(socket)
         state = FullBackupState(targetPackage, socket, inputStream, outputStream)
+
+        // TODO store this is clearable lamdba and only run it when we actually get data
+        //      this is to avoid unnecessary disk I/O
 
         // store version header
         val state = this.state ?: throw AssertionError()
