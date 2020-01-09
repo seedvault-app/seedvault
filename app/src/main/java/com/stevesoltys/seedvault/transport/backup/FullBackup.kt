@@ -17,7 +17,8 @@ private class FullBackupState(
         internal val packageInfo: PackageInfo,
         internal val inputFileDescriptor: ParcelFileDescriptor,
         internal val inputStream: InputStream,
-        internal val outputStream: OutputStream) {
+        internal var outputStreamInit: (() -> OutputStream)?) {
+    internal var outputStream: OutputStream? = null
     internal val packageName: String = packageInfo.packageName
     internal var size: Long = 0
 }
@@ -88,43 +89,30 @@ internal class FullBackup(
         if (state != null) throw AssertionError()
         Log.i(TAG, "Perform full backup for ${targetPackage.packageName}.")
 
-        // get OutputStream to write backup data into
-        val outputStream = try {
-            plugin.getOutputStream(targetPackage)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error getting OutputStream for full backup of ${targetPackage.packageName}", e)
-            return backupError(TRANSPORT_ERROR)
-        }
-
         // create new state
         val inputStream = inputFactory.getInputStream(socket)
-        state = FullBackupState(targetPackage, socket, inputStream, outputStream)
-
-        // TODO store this is clearable lamdba and only run it when we actually get data
-        //      this is to avoid unnecessary disk I/O
-
-        // store version header
-        val state = this.state ?: throw AssertionError()
-        val header = VersionHeader(packageName = state.packageName)
-        try {
-            headerWriter.writeVersion(state.outputStream, header)
-            crypto.encryptHeader(state.outputStream, header)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error writing backup header", e)
-            return backupError(TRANSPORT_ERROR)
-        }
+        state = FullBackupState(targetPackage, socket, inputStream) {
+            Log.d(TAG, "Initializing OutputStream for ${targetPackage.packageName}.")
+            // get OutputStream to write backup data into
+            val outputStream = try {
+                plugin.getOutputStream(targetPackage)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error getting OutputStream for full backup of ${targetPackage.packageName}", e)
+                throw(e)
+            }
+            // store version header
+            val state = this.state ?: throw AssertionError()
+            val header = VersionHeader(packageName = state.packageName)
+            try {
+                headerWriter.writeVersion(outputStream, header)
+                crypto.encryptHeader(outputStream, header)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error writing backup header", e)
+                throw(e)
+            }
+            outputStream
+        }  // this lambda is only called before we actually write backup data the first time
         return TRANSPORT_OK
-    }
-
-    /**
-     * Method to reset state,
-     * because [finishBackup] is not called
-     * when we don't return [TRANSPORT_OK] from [performFullBackup].
-     */
-    private fun backupError(result: Int): Int {
-        Log.i(TAG, "Resetting state because of full backup error.")
-        state = null
-        return result
     }
 
     fun sendBackupData(numBytes: Int): Int {
@@ -142,8 +130,18 @@ internal class FullBackup(
         Log.i(TAG, "Send full backup data of $numBytes bytes.")
 
         return try {
+            // get output stream or initialize it, if it does not yet exist
+            check((state.outputStream != null) xor (state.outputStreamInit != null)) { "No OutputStream xor no StreamGetter" }
+            val outputStream = state.outputStream ?: {
+                val stream = state.outputStreamInit!!.invoke()  // not-null due to check above
+                state.outputStream = stream
+                stream
+            }.invoke()
+            state.outputStreamInit = null  // the stream init lambda is not needed beyond that point
+
+            // read backup data, encrypt it and write it to output stream
             val payload = IOUtils.readFully(state.inputStream, numBytes)
-            crypto.encryptSegment(state.outputStream, payload)
+            crypto.encryptSegment(outputStream, payload)
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error handling backup data for ${state.packageName}: ", e)
@@ -151,6 +149,7 @@ internal class FullBackup(
         }
     }
 
+    @Throws(IOException::class)
     fun clearBackupData(packageInfo: PackageInfo) {
         plugin.removeDataOfPackage(packageInfo)
     }
@@ -158,12 +157,12 @@ internal class FullBackup(
     fun cancelFullBackup() {
         Log.i(TAG, "Cancel full backup")
         val state = this.state ?: throw AssertionError("No state when canceling")
-        clearState()
         try {
             plugin.removeDataOfPackage(state.packageInfo)
         } catch (e: IOException) {
             Log.w(TAG, "Error cancelling full backup for ${state.packageName}", e)
         }
+        clearState()
         // TODO roll back to the previous known-good archive
     }
 
@@ -175,7 +174,7 @@ internal class FullBackup(
     private fun clearState(): Int {
         val state = this.state ?: throw AssertionError("Trying to clear empty state.")
         return try {
-            state.outputStream.flush()
+            state.outputStream?.flush()
             closeQuietly(state.outputStream)
             closeQuietly(state.inputStream)
             closeQuietly(state.inputFileDescriptor)
