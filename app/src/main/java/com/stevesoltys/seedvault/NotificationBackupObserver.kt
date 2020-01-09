@@ -4,6 +4,7 @@ import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
@@ -71,6 +72,10 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
 
 fun getAppName(pm: PackageManager, packageId: String): CharSequence {
     if (packageId == MAGIC_PACKAGE_MANAGER) return packageId
-    val appInfo = pm.getApplicationInfo(packageId, 0)
-    return pm.getApplicationLabel(appInfo) ?: packageId
+    return try {
+        val appInfo = pm.getApplicationInfo(packageId, 0)
+        pm.getApplicationLabel(appInfo) ?: packageId
+    } catch (e: NameNotFoundException) {
+        packageId
+    }
 }

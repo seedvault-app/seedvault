@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore
 
+import android.content.pm.PackageManager.NameNotFoundException
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -18,7 +19,9 @@ import java.util.*
 
 internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 
-    private val items = LinkedList<String>().apply { add(MAGIC_PACKAGE_MANAGER) }
+    private val items = LinkedList<AppRestoreResult>().apply {
+        add(AppRestoreResult(MAGIC_PACKAGE_MANAGER, true))
+    }
     private var isComplete = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PackageViewHolder {
@@ -32,15 +35,16 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
         holder.bind(items[position], position == 0)
     }
 
-    fun add(packageName: String) {
-        items.addFirst(packageName)
+    fun add(item: AppRestoreResult) {
+        items.addFirst(item)
         notifyItemInserted(0)
         notifyItemRangeChanged(1, items.size - 1)
     }
 
-    fun setComplete() {
+    fun setComplete(): LinkedList<AppRestoreResult> {
         isComplete = true
         notifyItemChanged(0)
+        return items
     }
 
     inner class PackageViewHolder(v: View) : ViewHolder(v) {
@@ -52,22 +56,23 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
         private val appStatus: ImageView = v.findViewById(R.id.appStatus)
         private val progressBar: ProgressBar = v.findViewById(R.id.progressBar)
 
-        init {
-            appStatus.setImageResource(R.drawable.ic_check_green)
-        }
-
-        fun bind(item: String, isLast: Boolean) {
-            if (item == MAGIC_PACKAGE_MANAGER) {
-                appIcon.setImageDrawable(pm.getApplicationIcon("android"))
+        fun bind(item: AppRestoreResult, isLatest: Boolean) {
+            if (item.packageName == MAGIC_PACKAGE_MANAGER) {
+                appIcon.setImageResource(R.drawable.ic_launcher_default)
                 appName.text = context.getString(R.string.restore_magic_package)
             } else {
-                appIcon.setImageDrawable(pm.getApplicationIcon(item))
-                appName.text = getAppName(pm, item)
+                try {
+                    appIcon.setImageDrawable(pm.getApplicationIcon(item.packageName))
+                } catch (e: NameNotFoundException) {
+                    appIcon.setImageResource(R.drawable.ic_launcher_default)
+                }
+                appName.text = getAppName(pm, item.packageName)
             }
-            if (isLast && !isComplete) {
+            if (isLatest && !isComplete) {
                 appStatus.visibility = INVISIBLE
                 progressBar.visibility = VISIBLE
             } else {
+                appStatus.setImageResource(if (item.success) R.drawable.ic_check_green else R.drawable.ic_cancel_red)
                 appStatus.visibility = VISIBLE
                 progressBar.visibility = INVISIBLE
             }
@@ -76,3 +81,5 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
     }
 
 }
+
+data class AppRestoreResult(val packageName: String, val success: Boolean)

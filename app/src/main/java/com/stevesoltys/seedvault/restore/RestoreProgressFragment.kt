@@ -52,14 +52,24 @@ class RestoreProgressFragment : Fragment() {
         })
 
         viewModel.restoreProgress.observe(this, Observer { currentPackage ->
-            // TODO maybe check against metadata and add packages that weren't called as failed in the end
-            val position = layoutManager.findFirstVisibleItemPosition()
-            adapter.add(currentPackage)
-            if (position == 0) layoutManager.scrollToPosition(0)
+            stayScrolledAtTop {
+                adapter.add(AppRestoreResult(currentPackage, true))
+            }
         })
 
         viewModel.restoreBackupResult.observe(this, Observer { finished ->
-            adapter.setComplete()
+            val list = adapter.setComplete()
+            stayScrolledAtTop {
+                // add missing packages as failed
+                val restorableBackup = viewModel.chosenRestorableBackup.value!!
+                val expectedPackages = restorableBackup.packageMetadataMap.keys
+                for (packageName: String in expectedPackages) {
+                    if (AppRestoreResult(packageName, true) !in list) {
+                        adapter.add(AppRestoreResult(packageName, false))
+                    }
+                }
+            }
+
             button.isEnabled = true
             if (finished.hasError()) {
                 backupNameView.text = finished.errorMsg
@@ -69,6 +79,12 @@ class RestoreProgressFragment : Fragment() {
             }
             activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         })
+    }
+
+    private fun stayScrolledAtTop(add: () -> Unit) {
+        val position = layoutManager.findFirstVisibleItemPosition()
+        add.invoke()
+        if (position == 0) layoutManager.scrollToPosition(0)
     }
 
 }
