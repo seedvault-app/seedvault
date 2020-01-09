@@ -205,7 +205,7 @@ internal class RestoreViewModel(
         val expectedPackages = restorableBackup.packageMetadataMap.keys
         expectedPackages.removeAll(seenPackages)
         for (packageName: String in expectedPackages) {
-            list.add(AppRestoreResult(packageName, FAILED))
+            list.addFirst(AppRestoreResult(packageName, FAILED))
         }
         mRestoreProgress.postValue(list)
 

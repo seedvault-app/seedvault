@@ -28,9 +28,6 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
     override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
         val transferred = backupProgress.bytesTransferred.toInt()
         val expected = backupProgress.bytesExpected.toInt()
-        if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Update. Target: $currentBackupPackage, $transferred/$expected")
-        }
         val app = getAppName(currentBackupPackage)
         nm.onBackupUpdate(app, transferred, expected, userInitiated)
     }

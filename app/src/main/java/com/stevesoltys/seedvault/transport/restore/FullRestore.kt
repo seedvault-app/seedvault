@@ -76,7 +76,6 @@ internal class FullRestore(
      * that aborts all further restore operations on the current dataset.
      */
     fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int {
-        Log.i(TAG, "Get next full restore data chunk.")
         val state = this.state ?: throw IllegalStateException("no state")
         val packageName = state.packageInfo.packageName
 

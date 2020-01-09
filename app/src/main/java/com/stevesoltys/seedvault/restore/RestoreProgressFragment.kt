@@ -29,12 +29,15 @@ class RestoreProgressFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        titleView.setText(R.string.restore_restoring)
+
         appList.apply {
             layoutManager = this@RestoreProgressFragment.layoutManager
             adapter = this@RestoreProgressFragment.adapter
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
 
+        button.setText(R.string.restore_finished_button)
         button.setOnClickListener {
             requireActivity().setResult(RESULT_OK)
             requireActivity().finishAfterTransition()
@@ -49,10 +52,12 @@ class RestoreProgressFragment : Fragment() {
 
         viewModel.chosenRestorableBackup.observe(this, Observer { restorableBackup ->
             backupNameView.text = restorableBackup.name
+            progressBar.max = restorableBackup.packageMetadataMap.size
         })
 
         viewModel.restoreProgress.observe(this, Observer { list ->
             stayScrolledAtTop { adapter.update(list) }
+            progressBar.progress = list.size
         })
 
         viewModel.restoreBackupResult.observe(this, Observer { finished ->

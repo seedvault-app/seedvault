@@ -127,8 +127,6 @@ internal class FullBackup(
             return TRANSPORT_QUOTA_EXCEEDED
         }
 
-        Log.i(TAG, "Send full backup data of $numBytes bytes.")
-
         return try {
             // get output stream or initialize it, if it does not yet exist
             check((state.outputStream != null) xor (state.outputStreamInit != null)) { "No OutputStream xor no StreamGetter" }

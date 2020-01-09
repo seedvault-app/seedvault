@@ -13,8 +13,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
 import com.stevesoltys.seedvault.transport.restore.InstallResult
 import com.stevesoltys.seedvault.transport.restore.getInProgress
-import kotlinx.android.synthetic.main.fragment_install_progress.*
-import kotlinx.android.synthetic.main.fragment_restore_progress.backupNameView
+import kotlinx.android.synthetic.main.fragment_restore_progress.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class InstallProgressFragment : Fragment() {
@@ -26,16 +25,19 @@ class InstallProgressFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_install_progress, container, false)
+        return inflater.inflate(R.layout.fragment_restore_progress, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        titleView.setText(R.string.restore_installing_packages)
+
         appList.apply {
             layoutManager = this@InstallProgressFragment.layoutManager
             adapter = this@InstallProgressFragment.adapter
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
-        nextButton.setOnClickListener { viewModel.onNextClicked() }
+        button.setText(R.string.restore_next)
+        button.setOnClickListener { viewModel.onNextClicked() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -50,7 +52,7 @@ class InstallProgressFragment : Fragment() {
         })
 
         viewModel.nextButtonEnabled.observe(this, Observer { enabled ->
-            nextButton.isEnabled = enabled
+            button.isEnabled = enabled
         })
     }
 
