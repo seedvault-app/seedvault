@@ -5,6 +5,7 @@ import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
+import android.content.pm.PackageManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
@@ -18,6 +19,8 @@ import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.getAppName
+import com.stevesoltys.seedvault.metadata.PackageState.*
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.*
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
@@ -78,7 +81,7 @@ internal class RestoreViewModel(
 
     private val mRestoreProgress = MutableLiveData<LinkedList<AppRestoreResult>>().apply {
         value = LinkedList<AppRestoreResult>().apply {
-            add(AppRestoreResult(MAGIC_PACKAGE_MANAGER, IN_PROGRESS))
+            add(AppRestoreResult(MAGIC_PACKAGE_MANAGER, getAppName(app, MAGIC_PACKAGE_MANAGER), IN_PROGRESS))
         }
     }
     internal val restoreProgress: LiveData<LinkedList<AppRestoreResult>> get() = mRestoreProgress
@@ -180,16 +183,36 @@ internal class RestoreViewModel(
         // check previous package first and change status
         updateLatestPackage(list)
         // add current package
-        list.addFirst(AppRestoreResult(packageName, IN_PROGRESS))
+        list.addFirst(AppRestoreResult(packageName, getAppName(app, packageName), IN_PROGRESS))
         mRestoreProgress.postValue(list)
     }
 
+    @WorkerThread
     private fun updateLatestPackage(list: LinkedList<AppRestoreResult>) {
         val latestResult = list[0]
         if (restoreCoordinator.isFailedPackage(latestResult.packageName)) {
-            list[0] = latestResult.copy(status = FAILED)
+            list[0] = latestResult.copy(status = getFailedStatus(latestResult.packageName))
         } else {
             list[0] = latestResult.copy(status = SUCCEEDED)
+        }
+    }
+
+    @WorkerThread
+    private fun getFailedStatus(packageName: String, restorableBackup: RestorableBackup = chosenRestorableBackup.value!!): AppRestoreStatus {
+        val metadata = restorableBackup.packageMetadataMap[packageName] ?: return FAILED
+        return when (metadata.state) {
+            NO_DATA -> FAILED_NO_DATA
+            NOT_ALLOWED -> FAILED_NOT_ALLOWED
+            QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
+            UNKNOWN_ERROR -> FAILED
+            APK_AND_DATA -> {
+                try {
+                    app.packageManager.getPackageInfo(packageName, 0)
+                    FAILED
+                } catch (e: PackageManager.NameNotFoundException) {
+                    FAILED_NOT_INSTALLED
+                }
+            }
         }
     }
 
@@ -205,7 +228,9 @@ internal class RestoreViewModel(
         val expectedPackages = restorableBackup.packageMetadataMap.keys
         expectedPackages.removeAll(seenPackages)
         for (packageName: String in expectedPackages) {
-            list.addFirst(AppRestoreResult(packageName, FAILED))
+            // TODO don't add if it was a NO_DATA system app
+            val failedStatus = getFailedStatus(packageName, restorableBackup)
+            list.addFirst(AppRestoreResult(packageName, getAppName(app, packageName), failedStatus))
         }
         mRestoreProgress.postValue(list)
 

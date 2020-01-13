@@ -92,6 +92,10 @@
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring Backup</string>
     <string name="restore_magic_package">System Package Manager</string>
+    <string name="restore_app_no_data">App reported no data for backup</string>
+    <string name="restore_app_not_allowed">Data backup was not allowed</string>
+    <string name="restore_app_not_installed">App not installed</string>
+    <string name="restore_app_quota_exceeded">Backup quota exceeded</string>
     <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
     <string name="restore_finished_button">Finish</string>
