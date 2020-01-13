@@ -45,7 +45,7 @@ internal class FullBackup(
         Log.i(TAG, "Check full backup size of $size bytes.")
         return when {
             size <= 0 -> TRANSPORT_PACKAGE_REJECTED
-            size > plugin.getQuota() -> TRANSPORT_QUOTA_EXCEEDED
+            size > getQuota() -> TRANSPORT_QUOTA_EXCEEDED
             else -> TRANSPORT_OK
         }
     }

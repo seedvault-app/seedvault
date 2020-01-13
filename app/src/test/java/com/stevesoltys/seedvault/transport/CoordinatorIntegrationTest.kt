@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.HeaderWriterImpl
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.transport.backup.*
 import com.stevesoltys.seedvault.transport.restore.*
 import io.mockk.*
@@ -23,7 +24,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.OutputStream
 import kotlin.random.Random
 
 internal class CoordinatorIntegrationTest : TransportTest() {
@@ -59,6 +59,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
     private val metadataOutputStream = ByteArrayOutputStream()
+    private val packageMetadata = PackageMetadata(time = 0L)
     private val key = "RestoreKey"
     private val key64 = key.encodeBase64()
     private val key2 = "RestoreKey2"
@@ -93,8 +94,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key264) } returns bOutputStream2
-        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns packageMetadata
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onApkBackedUp(packageInfo.packageName, packageMetadata, metadataOutputStream) } just Runs
         every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
@@ -146,7 +148,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key64) } returns bOutputStream
-        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns false
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns null
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
@@ -184,8 +186,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
-        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns packageMetadata
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onApkBackedUp(packageInfo.packageName, packageMetadata, metadataOutputStream) } just Runs
         every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
 
         // perform backup to output stream

@@ -4,6 +4,7 @@ import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.metadata.PackageState.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -59,8 +60,14 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
             for (packageName in json.keys()) {
                 if (packageName == JSON_METADATA) continue
                 val p = json.getJSONObject(packageName)
+                val pState = when(p.optString(JSON_PACKAGE_STATE)) {
+                    "" -> APK_AND_DATA
+                    QUOTA_EXCEEDED.name -> QUOTA_EXCEEDED
+                    NO_DATA.name -> NO_DATA
+                    else -> UNKNOWN_ERROR
+                }
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
-                val pInstaller = p.optString(JSON_PACKAGE_INSTALLER, "")
+                val pInstaller = p.optString(JSON_PACKAGE_INSTALLER)
                 val pSha256 = p.optString(JSON_PACKAGE_SHA256)
                 val pSignatures = p.optJSONArray(JSON_PACKAGE_SIGNATURES)
                 val signatures = if (pSignatures == null) null else
@@ -71,6 +78,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     }
                 packageMetadataMap[packageName] = PackageMetadata(
                         time = p.getLong(JSON_PACKAGE_TIME),
+                        state = pState,
                         version = if (pVersion == 0L) null else pVersion,
                         installer = if (pInstaller == "") null else pInstaller,
                         sha256 = if (pSha256 == "") null else pSha256,

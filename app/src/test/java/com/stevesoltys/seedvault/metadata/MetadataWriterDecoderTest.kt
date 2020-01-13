@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.metadata
 
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.PackageState.*
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -27,7 +28,7 @@ internal class MetadataWriterDecoderTest {
     fun `encoded metadata matches decoded metadata (with package, no apk info)`() {
         val time = Random.nextLong()
         val packages = HashMap<String, PackageMetadata>().apply {
-            put(getRandomString(), PackageMetadata(time))
+            put(getRandomString(), PackageMetadata(time, APK_AND_DATA))
         }
         val metadata = getMetadata(packages)
         assertEquals(metadata, decoder.decode(encoder.encode(metadata), metadata.version, metadata.token))
@@ -38,6 +39,7 @@ internal class MetadataWriterDecoderTest {
         val packages = HashMap<String, PackageMetadata>().apply {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
+                    state = APK_AND_DATA,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -52,6 +54,7 @@ internal class MetadataWriterDecoderTest {
         val packages = HashMap<String, PackageMetadata>().apply {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
+                    state = QUOTA_EXCEEDED,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -59,6 +62,7 @@ internal class MetadataWriterDecoderTest {
             ))
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
+                    state = NO_DATA,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),

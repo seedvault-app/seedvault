@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
@@ -44,22 +45,21 @@ class MetadataManager(
     @Synchronized
     @Throws(IOException::class)
     fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
-        metadata = BackupMetadata(token = token)
-        metadataWriter.write(metadata, metadataOutputStream)
-        writeMetadataToCache()
+        modifyMetadata(metadataOutputStream) {
+            metadata = BackupMetadata(token = token)
+        }
     }
 
     /**
-     * Call this after an APK as been successfully written to backup storage.
-     * It will update the package's metadata, but NOT write it storage or internal cache.
-     * You still need to call [onPackageBackedUp] afterwards to write it out.
+     * Call this after a package's APK has been backed up successfully.
+     *
+     * It updates the packages' metadata
+     * and writes it encrypted to the given [OutputStream] as well as the internal cache.
      */
     @Synchronized
-    fun onApkBackedUp(packageName: String, packageMetadata: PackageMetadata) {
+    @Throws(IOException::class)
+    fun onApkBackedUp(packageName: String, packageMetadata: PackageMetadata, metadataOutputStream: OutputStream) {
         metadata.packageMetadataMap[packageName]?.let {
-            check(it.time <= packageMetadata.time) {
-                "APK backup set time of $packageName backwards"
-            }
             check(packageMetadata.version != null) {
                 "APK backup returned version null"
             }
@@ -67,7 +67,16 @@ class MetadataManager(
                 "APK backup backed up the same or a smaller version: was ${it.version} is ${packageMetadata.version}"
             }
         }
-        metadata.packageMetadataMap[packageName] = packageMetadata
+        modifyMetadata(metadataOutputStream) {
+            val oldPackageMetadata = metadata.packageMetadataMap[packageName]
+                    ?: PackageMetadata()
+            metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
+                    version = packageMetadata.version,
+                    installer = packageMetadata.installer,
+                    sha256 = packageMetadata.sha256,
+                    signatures = packageMetadata.signatures
+            )
+        }
     }
 
     /**
@@ -79,24 +88,56 @@ class MetadataManager(
     @Synchronized
     @Throws(IOException::class)
     fun onPackageBackedUp(packageName: String, metadataOutputStream: OutputStream) {
-        val oldMetadata = metadata.copy()
-        val now = clock.time()
-        metadata.time = now
-        if (metadata.packageMetadataMap.containsKey(packageName)) {
-            metadata.packageMetadataMap[packageName]?.time = now
-        } else {
-            metadata.packageMetadataMap[packageName] = PackageMetadata(time = now)
+        modifyMetadata(metadataOutputStream) {
+            val now = clock.time()
+            metadata.time = now
+            if (metadata.packageMetadataMap.containsKey(packageName)) {
+                metadata.packageMetadataMap[packageName]!!.time = now
+                metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA
+            } else {
+                metadata.packageMetadataMap[packageName] = PackageMetadata(
+                        time = now,
+                        state = APK_AND_DATA
+                )
+            }
         }
+    }
+
+    /**
+     * Call this after a package data backup failed.
+     *
+     * It updates the packages' metadata
+     * and writes it encrypted to the given [OutputStream] as well as the internal cache.
+     */
+    @Synchronized
+    @Throws(IOException::class)
+    internal fun onPackageBackupError(packageName: String, packageState: PackageState, metadataOutputStream: OutputStream) {
+        check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
+        modifyMetadata(metadataOutputStream) {
+            if (metadata.packageMetadataMap.containsKey(packageName)) {
+                metadata.packageMetadataMap[packageName]!!.state = packageState
+            } else {
+                metadata.packageMetadataMap[packageName] = PackageMetadata(
+                        time = 0L,
+                        state = packageState
+                )
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun modifyMetadata(metadataOutputStream: OutputStream, modFun: () -> Unit) {
+        val oldMetadata = metadata.copy()
         try {
+            modFun.invoke()
             metadataWriter.write(metadata, metadataOutputStream)
+            writeMetadataToCache()
         } catch (e: IOException) {
             Log.w(TAG, "Error writing metadata to storage", e)
             // revert metadata and do not write it to cache
-            // TODO also revert changes made by last [onApkBackedUp]
             metadata = oldMetadata
             throw IOException(e)
         }
-        writeMetadataToCache()
     }
 
     /**

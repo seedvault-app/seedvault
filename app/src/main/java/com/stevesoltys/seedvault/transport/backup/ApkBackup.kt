@@ -8,7 +8,6 @@ import android.content.pm.Signature
 import android.content.pm.SigningInfo
 import android.util.Log
 import android.util.PackageUtils.computeSha256DigestBytes
-import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -24,43 +23,50 @@ private val TAG = ApkBackup::class.java.simpleName
 
 class ApkBackup(
         private val pm: PackageManager,
-        private val clock: Clock,
         private val settingsManager: SettingsManager,
         private val metadataManager: MetadataManager) {
 
+    /**
+     * Checks if a new APK needs to get backed up,
+     * because the version code or the signatures have changed.
+     * Only if an APK needs a backup, an [OutputStream] is obtained from the given streamGetter
+     * and the APK binary written to it.
+     *
+     * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
+     */
     @Throws(IOException::class)
-    fun backupApkIfNecessary(packageInfo: PackageInfo, streamGetter: () -> OutputStream): Boolean {
+    fun backupApkIfNecessary(packageInfo: PackageInfo, streamGetter: () -> OutputStream): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
-        if (packageName == MAGIC_PACKAGE_MANAGER) return false
+        if (packageName == MAGIC_PACKAGE_MANAGER) return null
 
         // do not back up when setting is not enabled
-        if (!settingsManager.backupApks()) return false
+        if (!settingsManager.backupApks()) return null
 
         // do not back up system apps that haven't been updated
         val isSystemApp = packageInfo.applicationInfo.flags and FLAG_SYSTEM != 0
         val isUpdatedSystemApp = packageInfo.applicationInfo.flags and FLAG_UPDATED_SYSTEM_APP != 0
         if (isSystemApp && !isUpdatedSystemApp) {
             Log.d(TAG, "Package $packageName is vanilla system app. Not backing it up.")
-            return false
+            return null
         }
 
         // TODO remove when adding support for packages with multiple signers
         if (packageInfo.signingInfo.hasMultipleSigners()) {
             Log.e(TAG, "Package $packageName has multiple signers. Not backing it up.")
-            return false
+            return null
         }
 
         // get signatures
         val signatures = packageInfo.signingInfo.getSignatures()
         if (signatures.isEmpty()) {
             Log.e(TAG, "Package $packageName has no signatures. Not backing it up.")
-            return false
+            return null
         }
 
         // get cached metadata about package
         val packageMetadata = metadataManager.getPackageMetadata(packageName)
-                ?: PackageMetadata(time = clock.time())
+                ?: PackageMetadata()
 
         // get version codes
         val version = packageInfo.longVersionCode
@@ -69,7 +75,7 @@ class ApkBackup(
         // do not backup if we have the version already and signatures did not change
         if (version <= backedUpVersion && !signaturesChanged(packageMetadata, signatures)) {
             Log.d(TAG, "Package $packageName with version $version already has a backup ($backedUpVersion) with the same signature. Not backing it up.")
-            return false
+            return null
         }
 
         // get an InputStream for the APK
@@ -100,17 +106,13 @@ class ApkBackup(
         val sha256 = messageDigest.digest().encodeBase64()
         Log.d(TAG, "Backed up new APK of $packageName with version $version.")
 
-        // update the metadata
-        val installer = pm.getInstallerPackageName(packageName)
-        val updatedMetadata = PackageMetadata(
-                time = clock.time(),
+        // return updated metadata
+        return PackageMetadata(
                 version = version,
-                installer = installer,
+                installer = pm.getInstallerPackageName(packageName),
                 sha256 = sha256,
                 signatures = signatures
         )
-        metadataManager.onApkBackedUp(packageName, updatedMetadata)
-        return true
     }
 
     private fun signaturesChanged(packageMetadata: PackageMetadata, signatures: List<String>): Boolean {

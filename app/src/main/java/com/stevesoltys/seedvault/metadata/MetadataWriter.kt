@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.metadata
 
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -36,6 +37,9 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
         for ((packageName, packageMetadata) in metadata.packageMetadataMap) {
             json.put(packageName, JSONObject().apply {
                 put(JSON_PACKAGE_TIME, packageMetadata.time)
+                if (packageMetadata.state != APK_AND_DATA) {
+                    put(JSON_PACKAGE_STATE, packageMetadata.state.name)
+                }
                 packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
                 packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }
                 packageMetadata.sha256?.let { put(JSON_PACKAGE_SHA256, it) }

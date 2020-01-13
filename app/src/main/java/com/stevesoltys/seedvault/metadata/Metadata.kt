@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.metadata
 
 import android.os.Build
 import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import java.io.InputStream
 
 typealias PackageMetadataMap = HashMap<String, PackageMetadata>
@@ -24,8 +25,33 @@ internal const val JSON_METADATA_SDK_INT = "sdk_int"
 internal const val JSON_METADATA_INCREMENTAL = "incremental"
 internal const val JSON_METADATA_NAME = "name"
 
+enum class PackageState {
+    /**
+     * Both, the APK and the package's data was backed up.
+     * This is the expected state of all user-installed packages.
+     */
+    APK_AND_DATA,
+    /**
+     * Package data could not get backed up, because the app exceeded the allowed quota.
+     */
+    QUOTA_EXCEEDED,
+    /**
+     * Package data could not get backed up, because the app reported no data to back up.
+     */
+    NO_DATA,
+    /**
+     * Package data could not get backed up, because an error occurred during backup.
+     */
+    UNKNOWN_ERROR,
+}
+
 data class PackageMetadata(
-        internal var time: Long,
+        /**
+         * The timestamp in milliseconds of the last app data backup.
+         * It is 0 if there never was a data backup.
+         */
+        internal var time: Long = 0L,
+        internal var state: PackageState = UNKNOWN_ERROR,
         internal val version: Long? = null,
         internal val installer: String? = null,
         internal val sha256: String? = null,
@@ -37,6 +63,7 @@ data class PackageMetadata(
 }
 
 internal const val JSON_PACKAGE_TIME = "time"
+internal const val JSON_PACKAGE_STATE = "state"
 internal const val JSON_PACKAGE_VERSION = "version"
 internal const val JSON_PACKAGE_INSTALLER = "installer"
 internal const val JSON_PACKAGE_SHA256 = "sha256"

@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -46,8 +47,8 @@ class MetadataManagerTest {
     @Test
     fun `test onDeviceInitialization()`() {
         every { clock.time() } returns time
-        every { metadataWriter.write(initialMetadata, storageOutputStream) } just Runs
-        expectWriteToCache(initialMetadata)
+        expectReadFromCache()
+        expectModifyMetadata(initialMetadata)
 
         manager.onDeviceInitialization(token, storageOutputStream)
 
@@ -58,15 +59,16 @@ class MetadataManagerTest {
     @Test
     fun `test onApkBackedUp() with no prior package metadata`() {
         val packageMetadata = PackageMetadata(
-                time = time + 1,
+                time = 0L,
                 version = Random.nextLong(Long.MAX_VALUE),
                 installer = getRandomString(),
                 signatures = listOf("sig")
         )
 
         expectReadFromCache()
+        expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageName, packageMetadata)
+        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
 
         assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
     }
@@ -81,15 +83,16 @@ class MetadataManagerTest {
         )
         initialMetadata.packageMetadataMap[packageName] = packageMetadata
         val updatedPackageMetadata = PackageMetadata(
-                time = time + 1,
+                time = time,
                 version = packageMetadata.version!! + 1,
                 installer = getRandomString(),
                 signatures = listOf("sig foo")
         )
 
         expectReadFromCache()
+        expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageName, updatedPackageMetadata)
+        manager.onApkBackedUp(packageName, updatedPackageMetadata, storageOutputStream)
 
         assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
     }
@@ -102,8 +105,7 @@ class MetadataManagerTest {
 
         expectReadFromCache()
         every { clock.time() } returns time
-        every { metadataWriter.write(updatedMetadata, storageOutputStream) } just Runs
-        expectWriteToCache(updatedMetadata)
+        expectModifyMetadata(updatedMetadata)
 
         manager.onPackageBackedUp(packageName, storageOutputStream)
 
@@ -142,19 +144,18 @@ class MetadataManagerTest {
         cachedMetadata.packageMetadataMap[packageName] = PackageMetadata(cacheTime)
 
         val updatedMetadata = cachedMetadata.copy(time = time)
-        cachedMetadata.packageMetadataMap[cachedPackageName] = PackageMetadata(time)
-        cachedMetadata.packageMetadataMap[packageName] = PackageMetadata(time)
+        updatedMetadata.packageMetadataMap[cachedPackageName] = PackageMetadata(time)
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(time, state = APK_AND_DATA)
 
         expectReadFromCache()
         every { clock.time() } returns time
-        every { metadataWriter.write(updatedMetadata, storageOutputStream) } just Runs
-        expectWriteToCache(updatedMetadata)
+        expectModifyMetadata(updatedMetadata)
 
         manager.onPackageBackedUp(packageName, storageOutputStream)
 
         assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))
-        assertEquals(PackageMetadata(time), manager.getPackageMetadata(packageName))
+        assertEquals(updatedMetadata.packageMetadataMap[packageName], manager.getPackageMetadata(packageName))
     }
 
     @Test
@@ -181,7 +182,8 @@ class MetadataManagerTest {
         assertEquals(initialMetadata.token, manager.getBackupToken())
     }
 
-    private fun expectWriteToCache(metadata: BackupMetadata) {
+    private fun expectModifyMetadata(metadata: BackupMetadata) {
+        every { metadataWriter.write(metadata, storageOutputStream) } just Runs
         every { metadataWriter.encode(metadata) } returns encodedMetadata
         every { context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE) } returns cacheOutputStream
         every { cacheOutputStream.write(encodedMetadata) } just Runs

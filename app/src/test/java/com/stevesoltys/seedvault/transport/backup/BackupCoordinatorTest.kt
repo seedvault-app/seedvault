@@ -1,16 +1,16 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.TRANSPORT_ERROR
-import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.*
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.settings.Storage
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ import java.io.IOException
 import java.io.OutputStream
 import kotlin.random.Random
 
-internal class BackupCoordinatorTest: BackupTest() {
+internal class BackupCoordinatorTest : BackupTest() {
 
     private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVBackup>()
@@ -29,6 +29,9 @@ internal class BackupCoordinatorTest: BackupTest() {
     private val backup = BackupCoordinator(context, plugin, kv, full, apkBackup, clock, metadataManager, settingsManager, notificationManager)
 
     private val metadataOutputStream = mockk<OutputStream>()
+    private val fileDescriptor: ParcelFileDescriptor = mockk()
+    private val packageMetadata: PackageMetadata = mockk()
+    private val storage = Storage(Uri.EMPTY, getRandomString(), false)
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() {
@@ -56,8 +59,6 @@ internal class BackupCoordinatorTest: BackupTest() {
 
     @Test
     fun `error notification when device initialization fails`() {
-        val storage = Storage(Uri.EMPTY, getRandomString(), false)
-
         every { clock.time() } returns token
         every { plugin.initializeDevice(token) } throws IOException()
         every { settingsManager.getStorage() } returns storage
@@ -143,7 +144,8 @@ internal class BackupCoordinatorTest: BackupTest() {
         every { kv.hasState() } returns true
         every { full.hasState() } returns false
         every { kv.getCurrentPackage() } returns packageInfo
-        expectApkBackupAndMetadataWrite()
+        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
         every { kv.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
@@ -156,16 +158,74 @@ internal class BackupCoordinatorTest: BackupTest() {
         every { kv.hasState() } returns false
         every { full.hasState() } returns true
         every { full.getCurrentPackage() } returns packageInfo
-        expectApkBackupAndMetadataWrite()
+        every { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
         every { full.finishBackup() } returns result
 
         assertEquals(result, backup.finishBackup())
     }
 
+    @Test
+    fun `metadata does not get updated when no APK was backed up`() {
+        every { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns null
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
+    }
+
+    @Test
+    fun `app exceeding quota gets cancelled and reason written to metadata`() {
+        every { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        expectApkBackupAndMetadataWrite()
+        every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1) } returns TRANSPORT_QUOTA_EXCEEDED
+        every { full.getCurrentPackage() } returns packageInfo
+        every { metadataManager.onPackageBackupError(packageInfo.packageName, QUOTA_EXCEEDED, metadataOutputStream) } just Runs
+        every { full.cancelFullBackup() } just Runs
+        every { settingsManager.getStorage() } returns storage
+
+        assertEquals(TRANSPORT_OK,
+                backup.performFullBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(DEFAULT_QUOTA_FULL_BACKUP,
+                backup.getBackupQuota(packageInfo.packageName, true))
+        assertEquals(TRANSPORT_QUOTA_EXCEEDED,
+                backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1))
+        backup.cancelFullBackup()
+        assertEquals(0L, backup.requestFullBackupTime())
+
+        verify(exactly = 1) {
+            metadataManager.onPackageBackupError(packageInfo.packageName, QUOTA_EXCEEDED, metadataOutputStream)
+        }
+    }
+
+    @Test
+    fun `app with no data gets cancelled and reason written to metadata`() {
+        every { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        expectApkBackupAndMetadataWrite()
+        every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
+        every { full.getCurrentPackage() } returns packageInfo
+        every { metadataManager.onPackageBackupError(packageInfo.packageName, NO_DATA, metadataOutputStream) } just Runs
+        every { full.cancelFullBackup() } just Runs
+        every { settingsManager.getStorage() } returns storage
+
+        assertEquals(TRANSPORT_OK,
+                backup.performFullBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(DEFAULT_QUOTA_FULL_BACKUP,
+                backup.getBackupQuota(packageInfo.packageName, true))
+        assertEquals(TRANSPORT_PACKAGE_REJECTED, backup.checkFullBackupSize(0))
+        backup.cancelFullBackup()
+        assertEquals(0L, backup.requestFullBackupTime())
+
+        verify(exactly = 1) {
+            metadataManager.onPackageBackupError(packageInfo.packageName, NO_DATA, metadataOutputStream)
+        }
+    }
+
     private fun expectApkBackupAndMetadataWrite() {
-        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns true
+        every { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns packageMetadata
         every { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
+        every { metadataManager.onApkBackedUp(packageInfo.packageName, packageMetadata, metadataOutputStream) } just Runs
     }
 
 }

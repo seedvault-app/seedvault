@@ -3,6 +3,8 @@ package com.stevesoltys.seedvault.metadata
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import io.mockk.mockk
 import org.json.JSONArray
 import org.json.JSONObject
@@ -82,6 +84,7 @@ class MetadataReaderTest {
         val packageMetadata = HashMap<String, PackageMetadata>().apply {
             put("org.example", PackageMetadata(
                     time = Random.nextLong(),
+                    state = QUOTA_EXCEEDED,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -109,6 +112,22 @@ class MetadataReaderTest {
     }
 
     @Test
+    fun `package metadata unknown state gets mapped to error`() {
+        val json = JSONObject(metadataByteArray.toString(Utf8))
+        json.put("org.example", JSONObject().apply {
+            put(JSON_PACKAGE_TIME, Random.nextLong())
+            put(JSON_PACKAGE_STATE, getRandomString())
+            put(JSON_PACKAGE_VERSION, Random.nextLong())
+            put(JSON_PACKAGE_INSTALLER, getRandomString())
+            put(JSON_PACKAGE_SHA256, getRandomString())
+            put(JSON_PACKAGE_SIGNATURES, JSONArray(listOf(getRandomString(), getRandomString())))
+        })
+        val jsonBytes = json.toString().toByteArray(Utf8)
+        val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
+        assertEquals(UNKNOWN_ERROR, metadata.packageMetadataMap["org.example"]!!.state)
+    }
+
+    @Test
     fun `package metadata can only include time`() {
         val json = JSONObject(metadataByteArray.toString(Utf8))
         json.put("org.example", JSONObject().apply {
@@ -124,7 +143,7 @@ class MetadataReaderTest {
         assertNull(packageMetadata.signatures)
     }
 
-    private fun getMetadata(packageMetadata: HashMap<String, PackageMetadata> = HashMap()): BackupMetadata {
+    private fun getMetadata(packageMetadata: PackageMetadataMap = PackageMetadataMap()): BackupMetadata {
         return BackupMetadata(
                 version = 1.toByte(),
                 token = Random.nextLong(),
