@@ -45,14 +45,14 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does not back up @pm@`() {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
-        assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
     fun `does not back up when setting disabled`() {
         every { settingsManager.backupApks() } returns false
 
-        assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
@@ -61,7 +61,7 @@ internal class ApkBackupTest : BackupTest() {
 
         every { settingsManager.backupApks() } returns true
 
-        assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
@@ -73,7 +73,7 @@ internal class ApkBackupTest : BackupTest() {
 
         expectChecks(packageMetadata)
 
-        assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
@@ -83,7 +83,7 @@ internal class ApkBackupTest : BackupTest() {
         expectChecks()
 
         assertThrows(IOException::class.java) {
-            assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+            assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
         }
     }
 
@@ -94,7 +94,7 @@ internal class ApkBackupTest : BackupTest() {
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns emptyArray()
 
-        assertNull(apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
@@ -120,7 +120,7 @@ internal class ApkBackupTest : BackupTest() {
         every { pm.getInstallerPackageName(packageInfo.packageName) } returns updatedMetadata.installer
         every { metadataManager.onApkBackedUp(packageInfo.packageName, updatedMetadata, outputStream) } just Runs
 
-        assertEquals(updatedMetadata, apkBackup.backupApkIfNecessary(packageInfo, streamGetter))
+        assertEquals(updatedMetadata, apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
     }
 

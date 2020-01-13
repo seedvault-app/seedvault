@@ -64,6 +64,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     "" -> APK_AND_DATA
                     QUOTA_EXCEEDED.name -> QUOTA_EXCEEDED
                     NO_DATA.name -> NO_DATA
+                    NOT_ALLOWED.name -> NOT_ALLOWED
                     else -> UNKNOWN_ERROR
                 }
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)

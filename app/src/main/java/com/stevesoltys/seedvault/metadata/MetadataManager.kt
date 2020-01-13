@@ -7,6 +7,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
@@ -67,10 +68,16 @@ class MetadataManager(
                 "APK backup backed up the same or a smaller version: was ${it.version} is ${packageMetadata.version}"
             }
         }
+        val oldPackageMetadata = metadata.packageMetadataMap[packageName]
+                ?: PackageMetadata()
+        // only allow state change if backup of this package is not allowed
+        val newState = if (packageMetadata.state == NOT_ALLOWED)
+            packageMetadata.state
+        else
+            oldPackageMetadata.state
         modifyMetadata(metadataOutputStream) {
-            val oldPackageMetadata = metadata.packageMetadataMap[packageName]
-                    ?: PackageMetadata()
             metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
+                    state = newState,
                     version = packageMetadata.version,
                     installer = packageMetadata.installer,
                     sha256 = packageMetadata.sha256,

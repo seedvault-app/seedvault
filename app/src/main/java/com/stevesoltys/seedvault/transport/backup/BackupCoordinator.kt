@@ -28,6 +28,7 @@ internal class BackupCoordinator(
         private val full: FullBackup,
         private val apkBackup: ApkBackup,
         private val clock: Clock,
+        private val packageService: PackageService,
         private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
@@ -115,10 +116,14 @@ internal class BackupCoordinator(
     fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
         cancelReason = UNKNOWN_ERROR
         val packageName = packageInfo.packageName
-        // backups of package manager metadata do not respect backoff
-        // we need to reject them manually when now is not a good time for a backup
-        if (packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
-            return TRANSPORT_PACKAGE_REJECTED
+        if (packageName == MAGIC_PACKAGE_MANAGER) {
+            // backups of package manager metadata do not respect backoff
+            // we need to reject them manually when now is not a good time for a backup
+            if (getBackupBackoff() != 0L) {
+                return TRANSPORT_PACKAGE_REJECTED
+            }
+            // hook in here to back up APKs of apps that are otherwise not allowed for backup
+            backUpNotAllowedPackages()
         }
         val result = kv.performBackup(packageInfo, data, flags)
         return backUpApk(result, packageInfo)
@@ -238,10 +243,22 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    private fun backUpApk(result: Int, packageInfo: PackageInfo): Int {
+    private fun backUpNotAllowedPackages() {
+        Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
+        packageService.notAllowedPackages.forEach { optOutPackageInfo ->
+            try {
+                backUpApk(0, optOutPackageInfo, NOT_ALLOWED)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error backing up opt-out APK of ${optOutPackageInfo.packageName}", e)
+            }
+        }
+    }
+
+    private fun backUpApk(result: Int, packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR): Int {
         val packageName = packageInfo.packageName
+        if (packageName == MAGIC_PACKAGE_MANAGER) return result
         return try {
-            apkBackup.backupApkIfNecessary(packageInfo) {
+            apkBackup.backupApkIfNecessary(packageInfo, packageState) {
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
                 val outputStream = plugin.getMetadataOutputStream()

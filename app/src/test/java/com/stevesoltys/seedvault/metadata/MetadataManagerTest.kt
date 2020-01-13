@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.*
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -95,6 +95,40 @@ class MetadataManagerTest {
         manager.onApkBackedUp(packageName, updatedPackageMetadata, storageOutputStream)
 
         assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
+    }
+
+    @Test
+    fun `test onApkBackedUp() limits state changes`() {
+        var version = Random.nextLong(Long.MAX_VALUE)
+        var packageMetadata = PackageMetadata(
+                version = version,
+                installer = getRandomString(),
+                signatures = listOf("sig")
+        )
+
+        expectReadFromCache()
+        expectModifyMetadata(initialMetadata)
+        val oldState = UNKNOWN_ERROR
+
+        // state doesn't change for APK_AND_DATA
+        packageMetadata = packageMetadata.copy(version = ++version, state = APK_AND_DATA)
+        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
+
+        // state doesn't change for QUOTA_EXCEEDED
+        packageMetadata = packageMetadata.copy(version = ++version, state = QUOTA_EXCEEDED)
+        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
+
+        // state doesn't change for NO_DATA
+        packageMetadata = packageMetadata.copy(version = ++version, state = NO_DATA)
+        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
+
+        // state DOES change for NOT_ALLOWED
+        packageMetadata = packageMetadata.copy(version = ++version, state = NOT_ALLOWED)
+        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        assertEquals(packageMetadata.copy(state = NOT_ALLOWED), manager.getPackageMetadata(packageName))
     }
 
     @Test

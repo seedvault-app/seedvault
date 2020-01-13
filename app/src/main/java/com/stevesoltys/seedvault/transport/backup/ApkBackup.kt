@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
 import java.io.FileNotFoundException
@@ -35,7 +36,7 @@ class ApkBackup(
      * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
      */
     @Throws(IOException::class)
-    fun backupApkIfNecessary(packageInfo: PackageInfo, streamGetter: () -> OutputStream): PackageMetadata? {
+    fun backupApkIfNecessary(packageInfo: PackageInfo, packageState: PackageState, streamGetter: () -> OutputStream): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) return null
@@ -108,6 +109,7 @@ class ApkBackup(
 
         // return updated metadata
         return PackageMetadata(
+                state = packageState,
                 version = version,
                 installer = pm.getInstallerPackageName(packageName),
                 sha256 = sha256,

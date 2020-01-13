@@ -1,17 +1,18 @@
-package com.stevesoltys.seedvault.transport
+package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.IBackupManager
 import android.content.pm.IPackageManager
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.RemoteException
 import android.os.ServiceManager.getService
 import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
+import androidx.annotation.WorkerThread
 import com.google.android.collect.Sets.newArraySet
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 private val TAG = PackageService::class.java.simpleName
 
@@ -30,15 +31,19 @@ private val IGNORED_PACKAGES = newArraySet(
  * @author Steve Soltys
  * @author Torsten Grote
  */
-internal object PackageService : KoinComponent {
+internal class PackageService(
+        private val packageManager: PackageManager,
+        private val backupManager: IBackupManager) {
 
-    private val backupManager: IBackupManager by inject()
-    private val packageManager: IPackageManager = IPackageManager.Stub.asInterface(getService("package"))
+    // TODO This can probably be removed and PackageManager#getInstalledPackages() used instead
+    private val packageManagerService: IPackageManager = IPackageManager.Stub.asInterface(getService("package"))
+    private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
+        @WorkerThread
         @Throws(RemoteException::class)
         get() {
-            val packages: List<PackageInfo> = packageManager.getInstalledPackages(0, UserHandle.USER_SYSTEM).list as List<PackageInfo>
+            val packages: List<PackageInfo> = packageManagerService.getInstalledPackages(0, UserHandle.USER_SYSTEM).list as List<PackageInfo>
             val packageList = packages
                     .map { packageInfo -> packageInfo.packageName }
                     .filter { packageName -> !IGNORED_PACKAGES.contains(packageName) }
@@ -53,7 +58,7 @@ internal object PackageService : KoinComponent {
             }
 
             // TODO why is this filtering out so much?
-            val eligibleApps = backupManager.filterAppsEligibleForBackupForUser(UserHandle.myUserId(), packageList.toTypedArray())
+            val eligibleApps = backupManager.filterAppsEligibleForBackupForUser(myUserId, packageList.toTypedArray())
 
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
@@ -68,6 +73,21 @@ internal object PackageService : KoinComponent {
             packageArray.add(MAGIC_PACKAGE_MANAGER)
 
             return packageArray.toTypedArray()
+        }
+
+    val notAllowedPackages: List<PackageInfo>
+        @WorkerThread
+        get() {
+            val installed = packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
+            val installedArray = installed.map { packageInfo ->
+                packageInfo.packageName
+            }.toTypedArray()
+
+            val eligible = backupManager.filterAppsEligibleForBackupForUser(myUserId, installedArray)
+
+            return installed.filter { packageInfo ->
+                packageInfo.packageName !in eligible
+            }
         }
 
 }

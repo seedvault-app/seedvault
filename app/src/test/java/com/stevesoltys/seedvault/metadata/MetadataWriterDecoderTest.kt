@@ -50,7 +50,7 @@ internal class MetadataWriterDecoderTest {
     }
 
     @Test
-    fun `encoded metadata matches decoded metadata (two full packages)`() {
+    fun `encoded metadata matches decoded metadata (three full packages)`() {
         val packages = HashMap<String, PackageMetadata>().apply {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
@@ -63,6 +63,14 @@ internal class MetadataWriterDecoderTest {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = NO_DATA,
+                    version = Random.nextLong(),
+                    installer = getRandomString(),
+                    sha256 = getRandomString(),
+                    signatures = listOf(getRandomString(), getRandomString())
+            ))
+            put(getRandomString(), PackageMetadata(
+                    time = 0L,
+                    state = NOT_ALLOWED,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),

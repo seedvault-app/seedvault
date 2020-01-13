@@ -40,6 +40,11 @@ enum class PackageState {
      */
     NO_DATA,
     /**
+     * Package data could not get backed up, because it was not allowed.
+     * Most often, this is a manifest opt-out, but it could also be a disabled or system-user app.
+     */
+    NOT_ALLOWED,
+    /**
      * Package data could not get backed up, because an error occurred during backup.
      */
     UNKNOWN_ERROR,
