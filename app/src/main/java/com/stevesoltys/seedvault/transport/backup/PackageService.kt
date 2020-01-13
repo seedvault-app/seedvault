@@ -1,31 +1,19 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.IBackupManager
-import android.content.pm.IPackageManager
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.RemoteException
-import android.os.ServiceManager.getService
 import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
-import com.google.android.collect.Sets.newArraySet
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 
 private val TAG = PackageService::class.java.simpleName
 
 private const val LOG_MAX_PACKAGES = 100
-private val IGNORED_PACKAGES = newArraySet(
-        "com.android.externalstorage",
-        "com.android.providers.downloads.ui",
-        "com.android.providers.downloads",
-        "com.android.providers.media",
-        "com.android.providers.calendar",
-        "com.android.providers.contacts",
-        "com.stevesoltys.seedvault"
-)
 
 /**
  * @author Steve Soltys
@@ -35,30 +23,25 @@ internal class PackageService(
         private val packageManager: PackageManager,
         private val backupManager: IBackupManager) {
 
-    // TODO This can probably be removed and PackageManager#getInstalledPackages() used instead
-    private val packageManagerService: IPackageManager = IPackageManager.Stub.asInterface(getService("package"))
     private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
         @WorkerThread
         @Throws(RemoteException::class)
         get() {
-            val packages: List<PackageInfo> = packageManagerService.getInstalledPackages(0, UserHandle.USER_SYSTEM).list as List<PackageInfo>
-            val packageList = packages
+            val packages = packageManager.getInstalledPackages(0)
                     .map { packageInfo -> packageInfo.packageName }
-                    .filter { packageName -> !IGNORED_PACKAGES.contains(packageName) }
                     .sorted()
 
             // log packages
             if (Log.isLoggable(TAG, INFO)) {
-                Log.i(TAG, "Got ${packageList.size} packages:")
-                packageList.chunked(LOG_MAX_PACKAGES).forEach {
+                Log.i(TAG, "Got ${packages.size} packages:")
+                packages.chunked(LOG_MAX_PACKAGES).forEach {
                     Log.i(TAG, it.toString())
                 }
             }
 
-            // TODO why is this filtering out so much?
-            val eligibleApps = backupManager.filterAppsEligibleForBackupForUser(myUserId, packageList.toTypedArray())
+            val eligibleApps = backupManager.filterAppsEligibleForBackupForUser(myUserId, packages.toTypedArray())
 
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
@@ -87,7 +70,7 @@ internal class PackageService(
 
             return installed.filter { packageInfo ->
                 packageInfo.packageName !in eligible
-            }
+            }.sortedBy { it.packageName }
         }
 
 }
