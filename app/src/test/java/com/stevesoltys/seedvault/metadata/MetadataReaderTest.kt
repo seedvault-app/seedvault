@@ -128,6 +128,17 @@ class MetadataReaderTest {
     }
 
     @Test
+    fun `package metadata missing system gets mapped to false`() {
+        val json = JSONObject(metadataByteArray.toString(Utf8))
+        json.put("org.example", JSONObject().apply {
+            put(JSON_PACKAGE_TIME, Random.nextLong())
+        })
+        val jsonBytes = json.toString().toByteArray(Utf8)
+        val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
+        assertFalse(metadata.packageMetadataMap["org.example"]!!.system)
+    }
+
+    @Test
     fun `package metadata can only include time`() {
         val json = JSONObject(metadataByteArray.toString(Utf8))
         json.put("org.example", JSONObject().apply {

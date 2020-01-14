@@ -1,7 +1,5 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.content.pm.ApplicationInfo.FLAG_SYSTEM
-import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
@@ -10,9 +8,7 @@ import android.util.Log
 import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
-import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageState
+import com.stevesoltys.seedvault.metadata.*
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
 import java.io.FileNotFoundException
@@ -45,9 +41,7 @@ class ApkBackup(
         if (!settingsManager.backupApks()) return null
 
         // do not back up system apps that haven't been updated
-        val isSystemApp = packageInfo.applicationInfo.flags and FLAG_SYSTEM != 0
-        val isUpdatedSystemApp = packageInfo.applicationInfo.flags and FLAG_UPDATED_SYSTEM_APP != 0
-        if (isSystemApp && !isUpdatedSystemApp) {
+        if (packageInfo.isSystemApp() && !packageInfo.isUpdatedSystemApp()) {
             Log.d(TAG, "Package $packageName is vanilla system app. Not backing it up.")
             return null
         }

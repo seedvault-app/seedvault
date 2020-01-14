@@ -1,13 +1,13 @@
 package com.stevesoltys.seedvault.transport.restore
 
 import android.content.Context
-import android.content.pm.PackageManager.GET_SIGNATURES
-import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+import android.content.pm.PackageManager.*
 import android.graphics.drawable.Drawable
 import android.util.Log
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -123,6 +123,20 @@ internal class ApkRestore(
 
         installResult.update(packageName) { it.copy(status = IN_PROGRESS, name = name, icon = icon) }
         emit(installResult)
+
+        // ensure system apps are actually installed and newer system apps as well
+        if (metadata.system) {
+            try {
+                val installedPackageInfo = pm.getPackageInfo(packageName, 0)
+                // metadata.version is not null, because here hasApk() must be true
+                val isOlder = metadata.version!! <= installedPackageInfo.longVersionCode
+                if (isOlder || !installedPackageInfo.isSystemApp()) throw NameNotFoundException()
+            } catch (e: NameNotFoundException) {
+                Log.w(TAG, "Not installing $packageName because older or not a system app here.")
+                fail(installResult, packageName)
+                return@flow
+            }
+        }
 
         // install APK and emit updates from it
         apkInstaller.install(cachedApk, packageName, metadata.installer, installResult).collect { result ->

@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.transport.restore
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.ApplicationInfo.*
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import com.stevesoltys.seedvault.getRandomString
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.file.Path
+import java.util.logging.Logger.getLogger
 import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
@@ -171,6 +175,62 @@ internal class ApkRestoreTest : RestoreTest() {
                 2 -> {
                     val result = value[packageName] ?: fail()
                     assertEquals(SUCCEEDED, result.status)
+                }
+                else -> fail()
+            }
+            i++
+        }
+    }
+
+    @Test
+    fun `test system apps only get reinstalled when older system apps exist`(@TempDir tmpDir: Path) = runBlocking {
+        val packageMetadata = this@ApkRestoreTest.packageMetadata.copy(system = true)
+        packageMetadataMap[packageName] = packageMetadata
+        packageInfo.applicationInfo = mockk()
+        val installedPackageInfo: PackageInfo = mockk()
+        val willFail = Random.nextBoolean()
+        installedPackageInfo.applicationInfo = ApplicationInfo().apply {
+            // will not fail when app really is a system app
+            flags = if (willFail) FLAG_INSTALLED else FLAG_SYSTEM or FLAG_UPDATED_SYSTEM_APP
+        }
+
+        every { strictContext.cacheDir } returns File(tmpDir.toString())
+        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every { pm.loadItemIcon(packageInfo.applicationInfo, packageInfo.applicationInfo) } returns icon
+        every { packageInfo.applicationInfo.loadIcon(pm) } returns icon
+        every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
+        every { pm.getPackageInfo(packageName, 0) } returns installedPackageInfo
+        every { installedPackageInfo.longVersionCode } returns packageMetadata.version!! - 1
+        if (!willFail) {
+            val installResult = MutableInstallResult(1).apply {
+                put(packageName, ApkRestoreResult(packageName, progress = 1, total = 1, status = SUCCEEDED))
+            }
+            every { apkInstaller.install(any(), packageName, installerName, any()) } returns flowOf(installResult)
+        }
+
+        var i = 0
+        apkRestore.restore(token, packageMetadataMap).collect { value ->
+            when (i) {
+                0 -> {
+                    val result = value[packageName] ?: fail()
+                    assertEquals(QUEUED, result.status)
+                    assertEquals(1, result.progress)
+                    assertEquals(1, result.total)
+                }
+                1 -> {
+                    val result = value[packageName] ?: fail()
+                    assertEquals(IN_PROGRESS, result.status)
+                    assertEquals(appName, result.name)
+                    assertEquals(icon, result.icon)
+                }
+                2 -> {
+                    val result = value[packageName] ?: fail()
+                    if (willFail) {
+                        assertEquals(FAILED, result.status)
+                    } else {
+                        assertEquals(SUCCEEDED, result.status)
+                    }
                 }
                 else -> fail()
             }

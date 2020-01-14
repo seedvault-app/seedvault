@@ -55,6 +55,7 @@ internal class MetadataWriterDecoderTest {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = QUOTA_EXCEEDED,
+                    system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -63,6 +64,7 @@ internal class MetadataWriterDecoderTest {
             put(getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = NO_DATA,
+                    system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -71,6 +73,7 @@ internal class MetadataWriterDecoderTest {
             put(getRandomString(), PackageMetadata(
                     time = 0L,
                     state = NOT_ALLOWED,
+                    system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),

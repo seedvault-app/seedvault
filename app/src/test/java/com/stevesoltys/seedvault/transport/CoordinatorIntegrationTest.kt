@@ -98,8 +98,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key264) } returns bOutputStream2
         every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns packageMetadata
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onApkBackedUp(packageInfo.packageName, packageMetadata, metadataOutputStream) } just Runs
-        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
+        every { metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream) } just Runs
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -152,7 +152,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key64) } returns bOutputStream
         every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -190,8 +190,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns packageMetadata
         every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onApkBackedUp(packageInfo.packageName, packageMetadata, metadataOutputStream) } just Runs
-        every { metadataManager.onPackageBackedUp(packageInfo.packageName, metadataOutputStream) } just Runs
+        every { metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream) } just Runs
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // perform backup to output stream
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))

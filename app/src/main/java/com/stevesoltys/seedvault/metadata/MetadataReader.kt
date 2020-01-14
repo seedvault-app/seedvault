@@ -67,6 +67,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     NOT_ALLOWED.name -> NOT_ALLOWED
                     else -> UNKNOWN_ERROR
                 }
+                val pSystem = p.optBoolean(JSON_PACKAGE_SYSTEM, false)
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
                 val pInstaller = p.optString(JSON_PACKAGE_INSTALLER)
                 val pSha256 = p.optString(JSON_PACKAGE_SHA256)
@@ -80,6 +81,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                 packageMetadataMap[packageName] = PackageMetadata(
                         time = p.getLong(JSON_PACKAGE_TIME),
                         state = pState,
+                        system = pSystem,
                         version = if (pVersion == 0L) null else pVersion,
                         installer = if (pInstaller == "") null else pInstaller,
                         sha256 = if (pSha256 == "") null else pSha256,

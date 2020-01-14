@@ -2,6 +2,10 @@ package com.stevesoltys.seedvault.metadata
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.pm.ApplicationInfo
+import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
+import android.content.pm.ApplicationInfo.FLAG_SYSTEM
+import android.content.pm.PackageInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.getRandomByteArray
@@ -33,6 +37,10 @@ class MetadataManagerTest {
     private val time = 42L
     private val token = Random.nextLong()
     private val packageName = getRandomString()
+    private val packageInfo = PackageInfo().apply {
+        packageName = this@MetadataManagerTest.packageName
+        applicationInfo = ApplicationInfo().apply { flags = FLAG_ALLOW_BACKUP }
+    }
     private val initialMetadata = BackupMetadata(token = token)
     private val storageOutputStream = ByteArrayOutputStream()
     private val cacheOutputStream: FileOutputStream = mockk()
@@ -68,9 +76,27 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
 
         assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
+    }
+
+    @Test
+    fun `test onApkBackedUp() sets system metadata`() {
+        packageInfo.applicationInfo = ApplicationInfo().apply { flags = FLAG_SYSTEM }
+        val packageMetadata = PackageMetadata(
+                time = 0L,
+                version = Random.nextLong(Long.MAX_VALUE),
+                installer = getRandomString(),
+                signatures = listOf("sig")
+        )
+
+        expectReadFromCache()
+        expectModifyMetadata(initialMetadata)
+
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+
+        assertEquals(packageMetadata.copy(system = true), manager.getPackageMetadata(packageName))
     }
 
     @Test
@@ -92,7 +118,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageName, updatedPackageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, updatedPackageMetadata, storageOutputStream)
 
         assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
     }
@@ -112,53 +138,60 @@ class MetadataManagerTest {
 
         // state doesn't change for APK_AND_DATA
         packageMetadata = packageMetadata.copy(version = ++version, state = APK_AND_DATA)
-        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
         assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
 
         // state doesn't change for QUOTA_EXCEEDED
         packageMetadata = packageMetadata.copy(version = ++version, state = QUOTA_EXCEEDED)
-        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
         assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
 
         // state doesn't change for NO_DATA
         packageMetadata = packageMetadata.copy(version = ++version, state = NO_DATA)
-        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
         assertEquals(packageMetadata.copy(state = oldState), manager.getPackageMetadata(packageName))
 
         // state DOES change for NOT_ALLOWED
         packageMetadata = packageMetadata.copy(version = ++version, state = NOT_ALLOWED)
-        manager.onApkBackedUp(packageName, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
         assertEquals(packageMetadata.copy(state = NOT_ALLOWED), manager.getPackageMetadata(packageName))
     }
 
     @Test
     fun `test onPackageBackedUp()`() {
-        val updatedMetadata = initialMetadata.copy()
-        updatedMetadata.time = time
-        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(time)
+        packageInfo.applicationInfo.flags = FLAG_SYSTEM
+        val updatedMetadata = initialMetadata.copy(
+                time = time,
+                packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
+        )
+        val packageMetadata = PackageMetadata(time)
+        updatedMetadata.packageMetadataMap[packageName] = packageMetadata
 
         expectReadFromCache()
         every { clock.time() } returns time
-        expectModifyMetadata(updatedMetadata)
+        expectModifyMetadata(initialMetadata)
 
-        manager.onPackageBackedUp(packageName, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, storageOutputStream)
 
+        assertEquals(packageMetadata.copy(state = APK_AND_DATA, system = true), manager.getPackageMetadata(packageName))
         assertEquals(time, manager.getLastBackupTime())
     }
 
     @Test
     fun `test onPackageBackedUp() fails to write to storage`() {
         val updateTime = time + 1
-        val updatedMetadata = initialMetadata.copy()
-        updatedMetadata.time = updateTime
-        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(updateTime)
+        val updatedMetadata = initialMetadata.copy(
+                time = updateTime,
+                packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
+        )
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(updateTime, APK_AND_DATA)
 
         expectReadFromCache()
         every { clock.time() } returns updateTime
         every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
 
         try {
-            manager.onPackageBackedUp(packageName, storageOutputStream)
+            manager.onPackageBackedUp(packageInfo, storageOutputStream)
             fail()
         } catch (e: IOException) {
             // expected
@@ -185,7 +218,7 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackedUp(packageName, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, storageOutputStream)
 
         assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))

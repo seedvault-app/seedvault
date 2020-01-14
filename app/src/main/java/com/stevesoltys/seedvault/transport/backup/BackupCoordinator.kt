@@ -11,6 +11,7 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
@@ -262,7 +263,7 @@ internal class BackupCoordinator(
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
                 val outputStream = plugin.getMetadataOutputStream()
-                metadataManager.onApkBackedUp(packageName, packageMetadata, outputStream)
+                metadataManager.onApkBackedUp(packageInfo, packageMetadata, outputStream)
             }
             result
         } catch (e: IOException) {
@@ -275,17 +276,19 @@ internal class BackupCoordinator(
         val packageName = packageInfo.packageName
         try {
             val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackedUp(packageName, outputStream)
+            metadataManager.onPackageBackedUp(packageInfo, outputStream)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }
     }
 
     private fun onPackageBackupError(packageInfo: PackageInfo) {
+        // don't bother with system apps that have no data
+        if (cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
             val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackupError(packageName, cancelReason, outputStream)
+            metadataManager.onPackageBackupError(packageInfo, cancelReason, outputStream)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }

@@ -57,6 +57,7 @@ data class PackageMetadata(
          */
         internal var time: Long = 0L,
         internal var state: PackageState = UNKNOWN_ERROR,
+        internal val system: Boolean = false,
         internal val version: Long? = null,
         internal val installer: String? = null,
         internal val sha256: String? = null,
@@ -69,6 +70,7 @@ data class PackageMetadata(
 
 internal const val JSON_PACKAGE_TIME = "time"
 internal const val JSON_PACKAGE_STATE = "state"
+internal const val JSON_PACKAGE_SYSTEM = "system"
 internal const val JSON_PACKAGE_VERSION = "version"
 internal const val JSON_PACKAGE_INSTALLER = "installer"
 internal const val JSON_PACKAGE_SHA256 = "sha256"

@@ -118,7 +118,7 @@ internal class ApkBackupTest : BackupTest() {
         expectChecks()
         every { streamGetter.invoke() } returns apkOutputStream
         every { pm.getInstallerPackageName(packageInfo.packageName) } returns updatedMetadata.installer
-        every { metadataManager.onApkBackedUp(packageInfo.packageName, updatedMetadata, outputStream) } just Runs
+        every { metadataManager.onApkBackedUp(packageInfo, updatedMetadata, outputStream) } just Runs
 
         assertEquals(updatedMetadata, apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())

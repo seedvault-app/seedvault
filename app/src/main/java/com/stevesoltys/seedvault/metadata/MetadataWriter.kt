@@ -40,6 +40,9 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 if (packageMetadata.state != APK_AND_DATA) {
                     put(JSON_PACKAGE_STATE, packageMetadata.state.name)
                 }
+                if (packageMetadata.system) {
+                    put(JSON_PACKAGE_SYSTEM, packageMetadata.system)
+                }
                 packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
                 packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }
                 packageMetadata.sha256?.let { put(JSON_PACKAGE_SHA256, it) }

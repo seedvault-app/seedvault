@@ -2,10 +2,14 @@ package com.stevesoltys.seedvault.metadata
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.pm.ApplicationInfo.FLAG_SYSTEM
+import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import java.io.FileNotFoundException
@@ -59,7 +63,8 @@ class MetadataManager(
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onApkBackedUp(packageName: String, packageMetadata: PackageMetadata, metadataOutputStream: OutputStream) {
+    fun onApkBackedUp(packageInfo: PackageInfo, packageMetadata: PackageMetadata, metadataOutputStream: OutputStream) {
+        val packageName = packageInfo.packageName
         metadata.packageMetadataMap[packageName]?.let {
             check(packageMetadata.version != null) {
                 "APK backup returned version null"
@@ -78,6 +83,7 @@ class MetadataManager(
         modifyMetadata(metadataOutputStream) {
             metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
                     state = newState,
+                    system = packageInfo.isSystemApp(),
                     version = packageMetadata.version,
                     installer = packageMetadata.installer,
                     sha256 = packageMetadata.sha256,
@@ -94,7 +100,8 @@ class MetadataManager(
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onPackageBackedUp(packageName: String, metadataOutputStream: OutputStream) {
+    fun onPackageBackedUp(packageInfo: PackageInfo, metadataOutputStream: OutputStream) {
+        val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
             val now = clock.time()
             metadata.time = now
@@ -104,7 +111,8 @@ class MetadataManager(
             } else {
                 metadata.packageMetadataMap[packageName] = PackageMetadata(
                         time = now,
-                        state = APK_AND_DATA
+                        state = APK_AND_DATA,
+                        system = packageInfo.isSystemApp()
                 )
             }
         }
@@ -118,15 +126,17 @@ class MetadataManager(
      */
     @Synchronized
     @Throws(IOException::class)
-    internal fun onPackageBackupError(packageName: String, packageState: PackageState, metadataOutputStream: OutputStream) {
+    internal fun onPackageBackupError(packageInfo: PackageInfo, packageState: PackageState, metadataOutputStream: OutputStream) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
+        val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
             if (metadata.packageMetadataMap.containsKey(packageName)) {
                 metadata.packageMetadataMap[packageName]!!.state = packageState
             } else {
                 metadata.packageMetadataMap[packageName] = PackageMetadata(
                         time = 0L,
-                        state = packageState
+                        state = packageState,
+                        system = packageInfo.isSystemApp()
                 )
             }
         }
@@ -193,4 +203,14 @@ class MetadataManager(
         }
     }
 
+}
+
+fun PackageInfo.isSystemApp(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
+    return applicationInfo.flags and FLAG_SYSTEM != 0
+}
+
+fun PackageInfo.isUpdatedSystemApp(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
+    return applicationInfo.flags and FLAG_UPDATED_SYSTEM_APP != 0
 }
