@@ -5,8 +5,14 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.database.ContentObserver
 import android.net.Uri
-import android.provider.DocumentsContract.*
-import android.provider.DocumentsContract.Document.*
+import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
+import android.provider.DocumentsContract.Document.COLUMN_MIME_TYPE
+import android.provider.DocumentsContract.Document.MIME_TYPE_DIR
+import android.provider.DocumentsContract.EXTRA_LOADING
+import android.provider.DocumentsContract.buildChildDocumentsUriUsingTree
+import android.provider.DocumentsContract.buildDocumentUriUsingTree
+import android.provider.DocumentsContract.buildTreeDocumentUri
+import android.provider.DocumentsContract.getDocumentId
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.metadata.MetadataManager

@@ -8,7 +8,11 @@ import android.util.Log
 import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
-import com.stevesoltys.seedvault.metadata.*
+import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.metadata.PackageState
+import com.stevesoltys.seedvault.metadata.isSystemApp
+import com.stevesoltys.seedvault.metadata.isUpdatedSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
 import java.io.FileNotFoundException

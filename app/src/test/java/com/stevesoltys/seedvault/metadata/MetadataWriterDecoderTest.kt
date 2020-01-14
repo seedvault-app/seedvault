@@ -2,7 +2,10 @@ package com.stevesoltys.seedvault.metadata
 
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

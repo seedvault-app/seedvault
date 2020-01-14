@@ -3,7 +3,9 @@ package com.stevesoltys.seedvault.restore
 import android.content.pm.PackageManager.NameNotFoundException
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -13,7 +15,13 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.*
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_INSTALLED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.restore.RestoreProgressAdapter.PackageViewHolder
 import java.util.*
 

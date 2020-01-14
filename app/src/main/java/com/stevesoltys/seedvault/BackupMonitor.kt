@@ -1,6 +1,8 @@
 package com.stevesoltys.seedvault
 
-import android.app.backup.BackupManagerMonitor.*
+import android.app.backup.BackupManagerMonitor.EXTRA_LOG_EVENT_CATEGORY
+import android.app.backup.BackupManagerMonitor.EXTRA_LOG_EVENT_ID
+import android.app.backup.BackupManagerMonitor.EXTRA_LOG_EVENT_PACKAGE_NAME
 import android.app.backup.IBackupManagerMonitor
 import android.os.Bundle
 import android.util.Log

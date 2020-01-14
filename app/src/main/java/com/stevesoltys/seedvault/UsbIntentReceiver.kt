@@ -6,7 +6,9 @@ import android.content.Intent
 import android.database.ContentObserver
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbInterface
-import android.hardware.usb.UsbManager.*
+import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED
+import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED
+import android.hardware.usb.UsbManager.EXTRA_DEVICE
 import android.net.Uri
 import android.os.Handler
 import android.provider.DocumentsContract

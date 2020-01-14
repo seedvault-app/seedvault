@@ -8,7 +8,11 @@ import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verifyAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

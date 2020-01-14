@@ -1,7 +1,9 @@
 package com.stevesoltys.seedvault.ui.storage
 
 import android.content.Intent
-import android.content.Intent.*
+import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

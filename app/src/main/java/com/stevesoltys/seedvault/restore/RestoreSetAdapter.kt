@@ -1,6 +1,8 @@
 package com.stevesoltys.seedvault.restore
 
-import android.text.format.DateUtils.*
+import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
+import android.text.format.DateUtils.HOUR_IN_MILLIS
+import android.text.format.DateUtils.getRelativeTimeSpanString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

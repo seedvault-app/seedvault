@@ -2,14 +2,20 @@ package com.stevesoltys.seedvault
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.NotificationManager.*
+import android.app.NotificationManager.IMPORTANCE_DEFAULT
+import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
-import androidx.core.app.NotificationCompat.*
+import androidx.core.app.NotificationCompat.Action
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
+import androidx.core.app.NotificationCompat.PRIORITY_HIGH
+import androidx.core.app.NotificationCompat.PRIORITY_LOW
 import com.stevesoltys.seedvault.restore.ACTION_RESTORE_ERROR_UNINSTALL
 import com.stevesoltys.seedvault.restore.EXTRA_PACKAGE_NAME
 import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL

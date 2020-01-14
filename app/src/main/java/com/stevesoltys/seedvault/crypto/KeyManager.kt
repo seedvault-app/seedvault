@@ -1,7 +1,10 @@
 package com.stevesoltys.seedvault.crypto
 
 import android.os.Build.VERSION.SDK_INT
-import android.security.keystore.KeyProperties.*
+import android.security.keystore.KeyProperties.BLOCK_MODE_GCM
+import android.security.keystore.KeyProperties.ENCRYPTION_PADDING_NONE
+import android.security.keystore.KeyProperties.PURPOSE_DECRYPT
+import android.security.keystore.KeyProperties.PURPOSE_ENCRYPT
 import android.security.keystore.KeyProtection
 import java.security.KeyStore
 import java.security.KeyStore.SecretKeyEntry

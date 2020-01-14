@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.transport.restore
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.NO_MORE_DATA
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
@@ -9,7 +12,11 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.EOFException

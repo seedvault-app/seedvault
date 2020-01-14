@@ -2,10 +2,18 @@ package com.stevesoltys.seedvault.transport.restore
 
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.Intent.FLAG_RECEIVER_FOREGROUND
+import android.content.IntentFilter
+import android.content.IntentSender
 import android.content.pm.PackageInstaller
-import android.content.pm.PackageInstaller.*
+import android.content.pm.PackageInstaller.EXTRA_PACKAGE_NAME
+import android.content.pm.PackageInstaller.EXTRA_STATUS
+import android.content.pm.PackageInstaller.EXTRA_STATUS_MESSAGE
+import android.content.pm.PackageInstaller.STATUS_SUCCESS
+import android.content.pm.PackageInstaller.SessionParams
 import android.content.pm.PackageInstaller.SessionParams.MODE_FULL_INSTALL
 import android.content.pm.PackageManager
 import android.util.Log

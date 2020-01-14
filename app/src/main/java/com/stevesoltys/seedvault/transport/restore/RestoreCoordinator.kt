@@ -4,7 +4,9 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.IBackupManager
 import android.app.backup.RestoreDescription
-import android.app.backup.RestoreDescription.*
+import android.app.backup.RestoreDescription.NO_MORE_PACKAGES
+import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
+import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo

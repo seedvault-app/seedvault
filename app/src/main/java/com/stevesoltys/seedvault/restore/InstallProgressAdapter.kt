@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreResult
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.*
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
 
 internal class InstallProgressAdapter : Adapter<AppViewHolder>() {
 

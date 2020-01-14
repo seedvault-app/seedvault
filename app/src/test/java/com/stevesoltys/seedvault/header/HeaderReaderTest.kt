@@ -3,7 +3,9 @@ package com.stevesoltys.seedvault.header
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.assertContains
 import com.stevesoltys.seedvault.getRandomString
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS

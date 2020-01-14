@@ -1,7 +1,11 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.BackupDataInput
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.FLAG_INCREMENTAL
+import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+import android.app.backup.BackupTransport.TRANSPORT_OK
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
@@ -10,7 +14,9 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.util.*

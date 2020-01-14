@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
+import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -9,9 +12,16 @@ import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.settings.Storage
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

@@ -1,7 +1,9 @@
 package com.stevesoltys.seedvault.transport.restore
 
 import android.content.Context
-import android.content.pm.PackageManager.*
+import android.content.pm.PackageManager.GET_SIGNATURES
+import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+import android.content.pm.PackageManager.NameNotFoundException
 import android.graphics.drawable.Drawable
 import android.util.Log
 import com.stevesoltys.seedvault.encodeBase64
@@ -9,7 +11,9 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.transport.backup.getSignatures
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.*
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.collect
