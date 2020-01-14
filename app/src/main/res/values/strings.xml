@@ -70,10 +70,13 @@
     <!-- Notification -->
     <string name="notification_channel_title">Backup Notification</string>
     <string name="notification_title">Backup running</string>
-    <string name="notification_backup_starting">Starting Backup…</string>
     <string name="notification_backup_result_complete">Backup complete</string>
     <string name="notification_backup_result_rejected">Not backed up</string>
     <string name="notification_backup_result_error">Backup failed</string>
+
+    <string name="notification_success_title">Backup finished</string>
+    <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
+    <string name="notification_failed_title">Backup failed</string>
 
     <string name="notification_error_channel_title">Error Notification</string>
     <string name="notification_error_title">Backup Error</string>

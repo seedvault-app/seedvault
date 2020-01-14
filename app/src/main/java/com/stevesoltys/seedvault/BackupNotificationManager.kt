@@ -63,6 +63,8 @@ class BackupNotificationManager(private val context: Context) {
         val notification = observerBuilder.apply {
             setContentTitle(context.getString(R.string.notification_title))
             setContentText(app)
+            setOngoing(true)
+            setShowWhen(false)
             setWhen(System.currentTimeMillis())
             setProgress(expected, transferred, false)
             priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
@@ -79,14 +81,33 @@ class BackupNotificationManager(private val context: Context) {
         val notification = observerBuilder.apply {
             setContentTitle(title)
             setContentText(app)
+            setOngoing(true)
+            setShowWhen(false)
             setWhen(System.currentTimeMillis())
             priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
         }.build()
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
-    fun onBackupFinished() {
-        nm.cancel(NOTIFICATION_ID_OBSERVER)
+    fun onBackupFinished(success: Boolean, notBackedUp: Int?, userInitiated: Boolean) {
+        if (!userInitiated) {
+            nm.cancel(NOTIFICATION_ID_OBSERVER)
+            return
+        }
+        val titleRes = if (success) R.string.notification_success_title else R.string.notification_failed_title
+        val contentText = if (notBackedUp == null) null else {
+            context.getString(R.string.notification_success_num_not_backed_up, notBackedUp)
+        }
+        val notification = observerBuilder.apply {
+            setContentTitle(context.getString(titleRes))
+            setContentText(contentText)
+            setOngoing(false)
+            setShowWhen(true)
+            setWhen(System.currentTimeMillis())
+            setProgress(0, 0, false)
+            priority = PRIORITY_LOW
+        }.build()
+        nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
     fun onBackupError() {
