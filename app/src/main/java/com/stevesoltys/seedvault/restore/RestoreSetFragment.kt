@@ -1,12 +1,12 @@
 package com.stevesoltys.seedvault.restore
 
-import android.app.backup.RestoreSet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.stevesoltys.seedvault.R
@@ -25,7 +25,10 @@ class RestoreSetFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.restoreSets.observe(this, Observer { result -> onRestoreSetsLoaded(result) })
+        // decryption will fail when the device is locked, so keep the screen on to prevent locking
+        requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
+
+        viewModel.restoreSetResults.observe(this, Observer { result -> onRestoreResultsLoaded(result) })
 
         backView.setOnClickListener { requireActivity().finishAfterTransition() }
     }
@@ -37,24 +40,24 @@ class RestoreSetFragment : Fragment() {
         }
     }
 
-    private fun onRestoreSetsLoaded(result: RestoreSetResult) {
-        if (result.hasError()) {
+    private fun onRestoreResultsLoaded(results: RestoreSetResult) {
+        if (results.hasError()) {
             errorView.visibility = VISIBLE
             listView.visibility = INVISIBLE
             progressBar.visibility = INVISIBLE
 
-            errorView.text = result.errorMsg
+            errorView.text = results.errorMsg
         } else {
             errorView.visibility = INVISIBLE
             listView.visibility = VISIBLE
             progressBar.visibility = INVISIBLE
 
-            listView.adapter = RestoreSetAdapter(viewModel, result.sets)
+            listView.adapter = RestoreSetAdapter(viewModel, results.restorableBackups)
         }
     }
 
 }
 
-internal interface RestoreSetClickListener {
-    fun onRestoreSetClicked(set: RestoreSet)
+internal interface RestorableBackupClickListener {
+    fun onRestorableBackupClicked(restorableBackup: RestorableBackup)
 }

@@ -9,7 +9,9 @@ import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
+import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.InputStream
 
 private val TAG = DocumentsProviderRestorePlugin::class.java.simpleName
 
@@ -82,6 +84,13 @@ internal class DocumentsProviderRestorePlugin(
             }
         }
         return backupSets
+    }
+
+    @Throws(IOException::class)
+    override fun getApkInputStream(token: Long, packageName: String): InputStream {
+        val setDir = storage.getSetDir(token) ?: throw IOException()
+        val file = setDir.findFile("$packageName.apk") ?: throw FileNotFoundException()
+        return storage.getInputStream(file)
     }
 
 }

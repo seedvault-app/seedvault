@@ -1,11 +1,14 @@
 package com.stevesoltys.seedvault.plugins.saf
 
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
 import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import java.io.IOException
 import java.io.OutputStream
+
+private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 
 internal class DocumentsProviderBackupPlugin(
         private val storage: DocumentsStorage,
@@ -20,7 +23,13 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override fun initializeDevice() {
+    override fun initializeDevice(newToken: Long): Boolean {
+        // check if storage is already initialized
+        if (storage.isInitialized()) return false
+
+        // reset current storage
+        storage.reset(newToken)
+
         // get or create root backup dir
         storage.rootBackupDir ?: throw IOException()
 
@@ -32,6 +41,8 @@ internal class DocumentsProviderBackupPlugin(
         storage.getSetDir()?.findFile(FILE_BACKUP_METADATA)?.delete()
         kvDir?.deleteContents()
         fullDir?.deleteContents()
+
+        return true
     }
 
     @Throws(IOException::class)
@@ -39,6 +50,13 @@ internal class DocumentsProviderBackupPlugin(
         val setDir = storage.getSetDir() ?: throw IOException()
         val metadataFile = setDir.createOrGetFile(FILE_BACKUP_METADATA)
         return storage.getOutputStream(metadataFile)
+    }
+
+    @Throws(IOException::class)
+    override fun getApkOutputStream(packageInfo: PackageInfo): OutputStream {
+        val setDir = storage.getSetDir() ?: throw IOException()
+        val file = setDir.createOrGetFile("${packageInfo.packageName}.apk", MIME_TYPE_APK)
+        return storage.getOutputStream(file)
     }
 
     override val providerPackageName: String? by lazy {

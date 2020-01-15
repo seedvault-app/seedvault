@@ -13,6 +13,7 @@ android {
         minSdkVersion 29
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments disableAnalytics: 'true'
     }
 
     buildTypes {
@@ -34,6 +35,9 @@ android {
             testLogging {
                 events "passed", "skipped", "failed"
             }
+        }
+        unitTests {
+            includeAndroidResources = true
         }
     }
 
@@ -115,14 +119,20 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     lintChecks 'com.github.thirdegg:lint-rules:0.0.4-alpha'
 
+    def junit_version = "5.5.2"
     testImplementation aospDeps
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'org.robolectric:robolectric:4.3.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation 'io.mockk:mockk:1.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit_version"
 
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'

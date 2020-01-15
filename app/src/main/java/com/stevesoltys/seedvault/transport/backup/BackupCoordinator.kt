@@ -6,8 +6,12 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.metadata.MetadataWriter
+import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.metadata.PackageState
+import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
@@ -23,12 +27,16 @@ internal class BackupCoordinator(
         private val plugin: BackupPlugin,
         private val kv: KVBackup,
         private val full: FullBackup,
-        private val metadataWriter: MetadataWriter,
+        private val apkBackup: ApkBackup,
+        private val clock: Clock,
+        private val packageService: PackageService,
+        private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager,
         private val nm: BackupNotificationManager) {
 
     private var calledInitialize = false
     private var calledClearBackupData = false
+    private var cancelReason: PackageState = UNKNOWN_ERROR
 
     // ------------------------------------------------------------------------------------
     // Transport initialization and quota
@@ -47,7 +55,7 @@ internal class BackupCoordinator(
      * for example, if there is no current live data-set at all,
      * or there is no authenticated account under which to store the data remotely -
      * the transport should return [TRANSPORT_OK] here
-     * and treat the initializeDevice() / finishBackup() pair as a graceful no-op.
+     * and treat the [initializeDevice] / [finishBackup] pair as a graceful no-op.
      *
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
@@ -55,8 +63,13 @@ internal class BackupCoordinator(
     fun initializeDevice(): Int {
         Log.i(TAG, "Initialize Device!")
         return try {
-            plugin.initializeDevice()
-            writeBackupMetadata(settingsManager.getBackupToken())
+            val token = clock.time()
+            if (plugin.initializeDevice(token)) {
+                Log.d(TAG, "Resetting backup metadata...")
+                metadataManager.onDeviceInitialization(token, plugin.getMetadataOutputStream())
+            } else {
+                Log.d(TAG, "Storage was already initialized, doing no-op")
+            }
             // [finishBackup] will only be called when we return [TRANSPORT_OK] here
             // so we remember that we initialized successfully
             calledInitialize = true
@@ -102,15 +115,19 @@ internal class BackupCoordinator(
     }
 
     fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
-        // backups of package manager metadata do not respect backoff
-        // we need to reject them manually when now is not a good time for a backup
-        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
-            return TRANSPORT_PACKAGE_REJECTED
+        cancelReason = UNKNOWN_ERROR
+        val packageName = packageInfo.packageName
+        if (packageName == MAGIC_PACKAGE_MANAGER) {
+            // backups of package manager metadata do not respect backoff
+            // we need to reject them manually when now is not a good time for a backup
+            if (getBackupBackoff() != 0L) {
+                return TRANSPORT_PACKAGE_REJECTED
+            }
+            // hook in here to back up APKs of apps that are otherwise not allowed for backup
+            backUpNotAllowedPackages()
         }
-
         val result = kv.performBackup(packageInfo, data, flags)
-        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
-        return result
+        return backUpApk(result, packageInfo)
     }
 
     // ------------------------------------------------------------------------------------
@@ -134,17 +151,41 @@ internal class BackupCoordinator(
         Log.i(TAG, "Request full backup time. Returned $this")
     }
 
-    fun checkFullBackupSize(size: Long) = full.checkFullBackupSize(size)
+    fun checkFullBackupSize(size: Long): Int {
+        val result = full.checkFullBackupSize(size)
+        if (result == TRANSPORT_PACKAGE_REJECTED) cancelReason = NO_DATA
+        else if (result == TRANSPORT_QUOTA_EXCEEDED) cancelReason = QUOTA_EXCEEDED
+        return result
+    }
 
     fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
+        cancelReason = UNKNOWN_ERROR
         val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
-        if (result == TRANSPORT_OK) settingsManager.saveNewBackupTime()
-        return result
+        return backUpApk(result, targetPackage)
     }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
-    fun cancelFullBackup() = full.cancelFullBackup()
+    /**
+     * Tells the transport to cancel the currently-ongoing full backup operation.
+     * This will happen between [performFullBackup] and [finishBackup]
+     * if the OS needs to abort the backup operation for any reason,
+     * such as a crash in the application undergoing backup.
+     *
+     * When it receives this call,
+     * the transport should discard any partial archive that it has stored so far.
+     * If possible it should also roll back to the previous known-good archive in its data store.
+     *
+     * If the transport receives this callback, it will *not* receive a call to [finishBackup].
+     * It needs to tear down any ongoing backup state here.
+     */
+    fun cancelFullBackup() {
+        val packageInfo = full.getCurrentPackage()
+                ?: throw AssertionError("Cancelling full backup, but no current package")
+        Log.i(TAG, "Cancel full backup of ${packageInfo.packageName} because of $cancelReason")
+        onPackageBackupError(packageInfo)
+        full.cancelFullBackup()
+    }
 
     // Clear and Finish
 
@@ -176,13 +217,23 @@ internal class BackupCoordinator(
         return TRANSPORT_OK
     }
 
+    /**
+     * Finish sending application data to the backup destination.
+     * This must be called after [performIncrementalBackup], [performFullBackup], or [clearBackupData]
+     * to ensure that all data is sent and the operation properly finalized.
+     * Only when this method returns true can a backup be assumed to have succeeded.
+     *
+     * @return the same error codes as [performIncrementalBackup] or [performFullBackup].
+     */
     fun finishBackup(): Int = when {
         kv.hasState() -> {
             check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
+            onPackageBackedUp(kv.getCurrentPackage()!!)  // not-null because we have state
             kv.finishBackup()
         }
         full.hasState() -> {
             check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
+            onPackageBackedUp(full.getCurrentPackage()!!)  // not-null because we have state
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -193,10 +244,54 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    @Throws(IOException::class)
-    private fun writeBackupMetadata(token: Long) {
-        val outputStream = plugin.getMetadataOutputStream()
-        metadataWriter.write(outputStream, token)
+    private fun backUpNotAllowedPackages() {
+        Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
+        packageService.notAllowedPackages.forEach { optOutPackageInfo ->
+            try {
+                backUpApk(0, optOutPackageInfo, NOT_ALLOWED)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error backing up opt-out APK of ${optOutPackageInfo.packageName}", e)
+            }
+        }
+    }
+
+    private fun backUpApk(result: Int, packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR): Int {
+        val packageName = packageInfo.packageName
+        if (packageName == MAGIC_PACKAGE_MANAGER) return result
+        return try {
+            apkBackup.backupApkIfNecessary(packageInfo, packageState) {
+                plugin.getApkOutputStream(packageInfo)
+            }?.let { packageMetadata ->
+                val outputStream = plugin.getMetadataOutputStream()
+                metadataManager.onApkBackedUp(packageInfo, packageMetadata, outputStream)
+            }
+            result
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
+            TRANSPORT_PACKAGE_REJECTED
+        }
+    }
+
+    private fun onPackageBackedUp(packageInfo: PackageInfo) {
+        val packageName = packageInfo.packageName
+        try {
+            val outputStream = plugin.getMetadataOutputStream()
+            metadataManager.onPackageBackedUp(packageInfo, outputStream)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while writing metadata for $packageName", e)
+        }
+    }
+
+    private fun onPackageBackupError(packageInfo: PackageInfo) {
+        // don't bother with system apps that have no data
+        if (cancelReason == NO_DATA && packageInfo.isSystemApp()) return
+        val packageName = packageInfo.packageName
+        try {
+            val outputStream = plugin.getMetadataOutputStream()
+            metadataManager.onPackageBackupError(packageInfo, cancelReason, outputStream)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while writing metadata for $packageName", e)
+        }
     }
 
     private fun getBackupBackoff(): Long {

@@ -14,10 +14,16 @@
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal Storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
-    <string name="settings_backup_location_summary">%s · Last Backup %s</string>
+    <string name="settings_backup_location_summary">%1$s · Last Backup %2$s</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data</string>
+    <string name="settings_backup_apk_title">App backup</string>
+    <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
+    <string name="settings_backup_apk_dialog_title">Really disable app backup?</string>
+    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically.\n\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
+    <string name="settings_backup_apk_dialog_cancel">Cancel</string>
+    <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_now">Backup now</string>
 
     <!-- Storage -->
@@ -76,17 +82,22 @@
     <!-- Restore -->
     <string name="restore_title">Restore from Backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
+    <string name="restore_restore_set_times">Last Backup %1$s · First %2$s.</string>
     <string name="restore_back">Don\'t restore</string>
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
+    <string name="restore_installing_packages">Re-installing Apps</string>
+    <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring Backup</string>
-    <string name="restore_current_package">Restoring %s…</string>
-    <string name="restore_finished_success">Restore complete.</string>
+    <string name="restore_magic_package">System Package Manager</string>
+    <string name="restore_app_no_data">App reported no data for backup</string>
+    <string name="restore_app_not_allowed">Data backup was not allowed</string>
+    <string name="restore_app_not_installed">App not installed</string>
+    <string name="restore_app_quota_exceeded">Backup quota exceeded</string>
+    <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
-    <string name="restore_finished_warning_only_installed">Note that we could only restore data for apps that are already installed.\n\nWhen you install more apps, we will try to restore their data and settings from this backup. So please do not delete it as long as it might still be needed.%s</string>
-    <string name="restore_finished_warning_ejectable">\n\nPlease also ensure that the storage medium is plugged in when re-installing your apps.</string>
     <string name="restore_finished_button">Finish</string>
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>

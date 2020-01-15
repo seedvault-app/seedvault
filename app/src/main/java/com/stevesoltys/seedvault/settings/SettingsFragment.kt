@@ -18,6 +18,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -28,7 +30,6 @@ import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.*
 
 private val TAG = SettingsFragment::class.java.name
 
@@ -40,6 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
+    private lateinit var apkBackup: TwoStatePreference
     private lateinit var backupLocation: Preference
 
     private var menuBackupNow: MenuItem? = null
@@ -94,6 +96,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 return@OnPreferenceChangeListener false
             }
         }
+
+        apkBackup = findPreference(PREF_KEY_BACKUP_APK)!!
+        apkBackup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
+            val enable = newValue as Boolean
+            if (enable) return@OnPreferenceChangeListener true
+            AlertDialog.Builder(requireContext())
+                    .setIcon(R.drawable.ic_warning)
+                    .setTitle(R.string.settings_backup_apk_dialog_title)
+                    .setMessage(R.string.settings_backup_apk_dialog_message)
+                    .setPositiveButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
+                        apkBackup.isChecked = enable
+                        dialog.dismiss()
+                    }
+                    .show()
+            return@OnPreferenceChangeListener false
+        }
+
+        viewModel.lastBackupTime.observe(this, Observer { time -> setBackupLocationSummary(time) })
     }
 
     override fun onStart() {
@@ -105,8 +128,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         storage = settingsManager.getStorage()
         setBackupState()
         setAutoRestoreState()
-        setBackupLocationSummary()
         setMenuItemStates()
+        viewModel.updateLastBackupTime()
 
         if (storage?.isUsb == true) context?.registerReceiver(usbReceiver, usbFilter)
     }
@@ -159,16 +182,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun setBackupLocationSummary() {
+    private fun setBackupLocationSummary(lastBackupInMillis: Long) {
         // get name of storage location
         val storageName = storage?.name ?: getString(R.string.settings_backup_location_none)
 
-        // get time of last backup
-        val lastBackupInMillis = settingsManager.getBackupTime()
+        // set time of last backup
         val lastBackup = if (lastBackupInMillis == 0L) {
             getString(R.string.settings_backup_last_backup_never)
         } else {
-            getRelativeTimeSpanString(lastBackupInMillis, Date().time, MINUTE_IN_MILLIS, 0)
+            getRelativeTimeSpanString(lastBackupInMillis, System.currentTimeMillis(), MINUTE_IN_MILLIS, 0)
         }
         backupLocation.summary = getString(R.string.settings_backup_location_summary, storageName, lastBackup)
     }

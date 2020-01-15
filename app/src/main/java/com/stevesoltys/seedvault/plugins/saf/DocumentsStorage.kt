@@ -9,6 +9,7 @@ import android.provider.DocumentsContract.*
 import android.provider.DocumentsContract.Document.*
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import libcore.io.IoUtils.closeQuietly
@@ -17,7 +18,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.concurrent.TimeUnit.MINUTES
 
-const val DIRECTORY_ROOT = ".AndroidBackup"
+const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
@@ -28,57 +29,92 @@ private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
         private val context: Context,
+        private val metadataManager: MetadataManager,
         private val settingsManager: SettingsManager) {
 
-    private val storage: Storage? = settingsManager.getStorage()
-    private val token: Long = settingsManager.getBackupToken()
-
-    internal val rootBackupDir: DocumentFile? by lazy {
-        val parent = storage?.getDocumentFile(context) ?: return@lazy null
-        try {
-            val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
-            // create .nomedia file to prevent Android's MediaScanner from trying to index the backup
-            rootDir.createOrGetFile(FILE_NO_MEDIA)
-            rootDir
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating root backup dir.", e)
-            null
+    internal var storage: Storage? = null
+        get() {
+            if (field == null) field = settingsManager.getStorage()
+            return field
         }
+
+    internal var rootBackupDir: DocumentFile? = null
+        get() {
+            if (field == null) {
+                val parent = storage?.getDocumentFile(context) ?: return null
+                field = try {
+                    val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
+                    // create .nomedia file to prevent Android's MediaScanner from trying to index the backup
+                    rootDir.createOrGetFile(FILE_NO_MEDIA)
+                    rootDir
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error creating root backup dir.", e)
+                    null
+                }
+            }
+            return field
+        }
+
+    private var currentToken: Long = 0L
+        get() {
+            if (field == 0L) field = metadataManager.getBackupToken()
+            return field
+        }
+
+    private var currentSetDir: DocumentFile? = null
+        get() {
+            if (field == null) {
+                if (currentToken == 0L) return null
+                field = try {
+                    rootBackupDir?.createOrGetDirectory(currentToken.toString())
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error creating current restore set dir.", e)
+                    null
+                }
+            }
+            return field
+        }
+
+    var currentFullBackupDir: DocumentFile? = null
+        get() {
+            if (field == null) {
+                field = try {
+                    currentSetDir?.createOrGetDirectory(DIRECTORY_FULL_BACKUP)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error creating full backup dir.", e)
+                    null
+                }
+            }
+            return field
+        }
+
+    var currentKvBackupDir: DocumentFile? = null
+        get() {
+            if (field == null) {
+                field = try {
+                    currentSetDir?.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error creating K/V backup dir.", e)
+                    null
+                }
+            }
+            return field
+        }
+
+    fun isInitialized(): Boolean {
+        if (settingsManager.getAndResetIsStorageChanging()) return false  // storage location has changed
+        val kvEmpty = currentKvBackupDir?.listFiles()?.isEmpty() ?: false
+        val fullEmpty = currentFullBackupDir?.listFiles()?.isEmpty() ?: false
+        return kvEmpty && fullEmpty
     }
 
-    private val currentToken: Long by lazy {
-        if (token != 0L) token
-        else settingsManager.getAndSaveNewBackupToken().apply {
-            Log.d(TAG, "Using a fresh backup token: $this")
-        }
-    }
-
-    private val currentSetDir: DocumentFile? by lazy {
-        val currentSetName = currentToken.toString()
-        try {
-            rootBackupDir?.createOrGetDirectory(currentSetName)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating current restore set dir.", e)
-            null
-        }
-    }
-
-    val currentFullBackupDir: DocumentFile? by lazy {
-        try {
-            currentSetDir?.createOrGetDirectory(DIRECTORY_FULL_BACKUP)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating full backup dir.", e)
-            null
-        }
-    }
-
-    val currentKvBackupDir: DocumentFile? by lazy {
-        try {
-            currentSetDir?.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error creating K/V backup dir.", e)
-            null
-        }
+    fun reset(newToken: Long) {
+        storage = null
+        currentToken = newToken
+        rootBackupDir = null
+        currentSetDir = null
+        currentKvBackupDir = null
+        currentFullBackupDir = null
     }
 
     fun getAuthority(): String? = storage?.uri?.authority

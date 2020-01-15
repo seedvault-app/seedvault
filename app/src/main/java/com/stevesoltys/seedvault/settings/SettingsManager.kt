@@ -5,7 +5,9 @@ import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
+
+internal const val PREF_KEY_BACKUP_APK = "backup_apk"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -16,12 +18,11 @@ private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
 private const val PREF_KEY_FLASH_DRIVE_VENDOR_ID = "flashDriveVendorId"
 private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
-private const val PREF_KEY_BACKUP_TOKEN = "backupToken"
-private const val PREF_KEY_BACKUP_TIME = "backupTime"
-
 class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+    private var isStorageChanging: AtomicBoolean = AtomicBoolean(false)
 
     // FIXME Storage is currently plugin specific and not generic
     fun setStorage(storage: Storage) {
@@ -30,6 +31,7 @@ class SettingsManager(context: Context) {
                 .putString(PREF_KEY_STORAGE_NAME, storage.name)
                 .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
                 .apply()
+        isStorageChanging.set(true)
     }
 
     fun getStorage(): Storage? {
@@ -38,6 +40,10 @@ class SettingsManager(context: Context) {
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         return Storage(uri, name, isUsb)
+    }
+
+    fun getAndResetIsStorageChanging(): Boolean {
+        return isStorageChanging.getAndSet(false)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
@@ -66,46 +72,8 @@ class SettingsManager(context: Context) {
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
 
-    /**
-     * Generates and returns a new backup token while saving it as well.
-     * Subsequent calls to [getBackupToken] will return this new token once saved.
-     */
-    fun getAndSaveNewBackupToken(): Long = Date().time.apply {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TOKEN, this)
-                .apply()
-    }
-
-    /**
-     * Returns the current backup token or 0 if none exists.
-     */
-    fun getBackupToken(): Long {
-        return prefs.getLong(PREF_KEY_BACKUP_TOKEN, 0L)
-    }
-
-    /**
-     * Sets the last backup time to "now".
-     */
-    fun saveNewBackupTime() {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, Date().time)
-                .apply()
-    }
-
-    /**
-     * Sets the last backup time to "never".
-     */
-    fun resetBackupTime() {
-        prefs.edit()
-                .putLong(PREF_KEY_BACKUP_TIME, 0L)
-                .apply()
-    }
-
-    /**
-     * Returns the last backup time in unix epoch milli seconds.
-     */
-    fun getBackupTime(): Long {
-        return prefs.getLong(PREF_KEY_BACKUP_TIME, 0L)
+    fun backupApks(): Boolean {
+        return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)
     }
 
 }

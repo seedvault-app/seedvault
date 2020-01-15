@@ -3,7 +3,7 @@ package com.stevesoltys.seedvault
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
@@ -12,9 +12,10 @@ import org.koin.core.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
-class NotificationBackupObserver(context: Context, private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
+class NotificationBackupObserver(
+        private val context: Context,
+        private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
 
-    private val pm = context.packageManager
     private val nm: BackupNotificationManager by inject()
 
     /**
@@ -27,9 +28,6 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
     override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
         val transferred = backupProgress.bytesTransferred.toInt()
         val expected = backupProgress.bytesExpected.toInt()
-        if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Update. Target: $currentBackupPackage, $transferred/$expected")
-        }
         val app = getAppName(currentBackupPackage)
         nm.onBackupUpdate(app, transferred, expected, userInitiated)
     }
@@ -65,12 +63,16 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
         nm.onBackupFinished()
     }
 
-    private fun getAppName(packageId: String): CharSequence = getAppName(pm, packageId)
+    private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
 
 }
 
-fun getAppName(pm: PackageManager, packageId: String): CharSequence {
-    if (packageId == MAGIC_PACKAGE_MANAGER) return packageId
-    val appInfo = pm.getApplicationInfo(packageId, 0)
-    return pm.getApplicationLabel(appInfo)
+fun getAppName(context: Context, packageId: String): CharSequence {
+    if (packageId == MAGIC_PACKAGE_MANAGER) return context.getString(R.string.restore_magic_package)
+    return try {
+        val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
+        context.packageManager.getApplicationLabel(appInfo) ?: packageId
+    } catch (e: NameNotFoundException) {
+        packageId
+    }
 }
