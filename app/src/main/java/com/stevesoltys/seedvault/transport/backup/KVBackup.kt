@@ -1,6 +1,10 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.FLAG_INCREMENTAL
+import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log

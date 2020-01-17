@@ -2,14 +2,19 @@ package com.stevesoltys.seedvault.transport.restore
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.content.pm.ApplicationInfo.*
+import android.content.pm.ApplicationInfo.FLAG_INSTALLED
+import android.content.pm.ApplicationInfo.FLAG_SYSTEM
+import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.*
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
+import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +29,6 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.file.Path
-import java.util.logging.Logger.getLogger
 import kotlin.random.Random
 
 @ExperimentalCoroutinesApi

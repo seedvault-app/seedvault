@@ -17,7 +17,8 @@
     <string name="settings_backup_location_summary">%1$s · Last Backup %2$s</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
-    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data</string>
+    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
+    <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
     <string name="settings_backup_apk_dialog_title">Really disable app backup?</string>
@@ -69,15 +70,23 @@
     <!-- Notification -->
     <string name="notification_channel_title">Backup Notification</string>
     <string name="notification_title">Backup running</string>
-    <string name="notification_backup_starting">Starting Backup…</string>
     <string name="notification_backup_result_complete">Backup complete</string>
     <string name="notification_backup_result_rejected">Not backed up</string>
     <string name="notification_backup_result_error">Backup failed</string>
+
+    <string name="notification_success_title">Backup finished</string>
+    <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
+    <string name="notification_failed_title">Backup failed</string>
 
     <string name="notification_error_channel_title">Error Notification</string>
     <string name="notification_error_title">Backup Error</string>
     <string name="notification_error_text">A device backup failed to run.</string>
     <string name="notification_error_action">Fix</string>
+
+    <string name="notification_restore_error_channel_title">Auto Restore Flash Drive Error</string>
+    <string name="notification_restore_error_title">Could not restore data for %1$s</string>
+    <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
+    <string name="notification_restore_error_action">Uninstall App</string>
 
     <!-- Restore -->
     <string name="restore_title">Restore from Backup</string>

@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
+import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
@@ -10,7 +13,10 @@ import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException

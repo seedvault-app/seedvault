@@ -179,6 +179,13 @@ class MetadataManager(
     }
 
     @Synchronized
+    fun getPackagesNumNotBackedUp(): Int {
+        return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
+            !packageMetadata.system && packageMetadata.state != APK_AND_DATA
+        }.count()
+    }
+
+    @Synchronized
     @VisibleForTesting
     private fun getMetadataFromCache(): BackupMetadata? {
         try {

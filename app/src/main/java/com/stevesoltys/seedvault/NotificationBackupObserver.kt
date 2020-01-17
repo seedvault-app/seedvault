@@ -7,6 +7,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -14,9 +15,18 @@ private val TAG = NotificationBackupObserver::class.java.simpleName
 
 class NotificationBackupObserver(
         private val context: Context,
+        private val expectedPackages: Int,
         private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
+    private val metadataManager: MetadataManager by inject()
+    private var currentPackage: String? = null
+    private var numPackages: Int = 0
+
+    init {
+        // we need to show this manually as [onUpdate] isn't called for first @pm@ package
+        nm.onBackupUpdate(getAppName(MAGIC_PACKAGE_MANAGER), 0, expectedPackages, userInitiated)
+    }
 
     /**
      * This method could be called several times for packages with full data backup.
@@ -26,10 +36,7 @@ class NotificationBackupObserver(
      * @param backupProgress Current progress of backup for the package.
      */
     override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
-        val transferred = backupProgress.bytesTransferred.toInt()
-        val expected = backupProgress.bytesExpected.toInt()
-        val app = getAppName(currentBackupPackage)
-        nm.onBackupUpdate(app, transferred, expected, userInitiated)
+        showProgressNotification(currentBackupPackage)
     }
 
     /**
@@ -46,7 +53,8 @@ class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
-        nm.onBackupResult(getAppName(target), status, userInitiated)
+        // often [onResult] gets called right away without any [onUpdate] call
+        showProgressNotification(target)
     }
 
     /**
@@ -58,9 +66,23 @@ class NotificationBackupObserver(
      */
     override fun backupFinished(status: Int) {
         if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Backup finished. Status: $status")
+            Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
         }
-        nm.onBackupFinished()
+        val success = status == 0
+        val notBackedUp = if (success) metadataManager.getPackagesNumNotBackedUp() else null
+        nm.onBackupFinished(success, notBackedUp, userInitiated)
+    }
+
+    private fun showProgressNotification(packageName: String) {
+        if (currentPackage == packageName) return
+
+        if (isLoggable(TAG, INFO)) {
+            Log.i(TAG, "Showing progress notification for $currentPackage $numPackages/$expectedPackages")
+        }
+        currentPackage = packageName
+        val app = getAppName(packageName)
+        numPackages += 1
+        nm.onBackupUpdate(app, numPackages, expectedPackages, userInitiated)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)

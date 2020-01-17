@@ -14,7 +14,16 @@ import android.net.Uri
 import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.PROVIDER_INTERFACE
-import android.provider.DocumentsContract.Root.*
+import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
+import android.provider.DocumentsContract.Root.COLUMN_DOCUMENT_ID
+import android.provider.DocumentsContract.Root.COLUMN_FLAGS
+import android.provider.DocumentsContract.Root.COLUMN_ICON
+import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
+import android.provider.DocumentsContract.Root.COLUMN_SUMMARY
+import android.provider.DocumentsContract.Root.COLUMN_TITLE
+import android.provider.DocumentsContract.Root.FLAG_REMOVABLE_USB
+import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_CREATE
+import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD
 import android.util.Log
 import com.stevesoltys.seedvault.R
 import java.lang.Long.parseLong

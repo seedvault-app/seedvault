@@ -10,7 +10,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -21,7 +25,11 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)

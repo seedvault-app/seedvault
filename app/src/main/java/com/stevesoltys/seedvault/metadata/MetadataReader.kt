@@ -4,7 +4,11 @@ import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.metadata.PackageState.*
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException

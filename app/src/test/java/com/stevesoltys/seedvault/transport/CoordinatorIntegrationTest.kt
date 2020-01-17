@@ -18,10 +18,31 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.transport.backup.*
-import com.stevesoltys.seedvault.transport.restore.*
-import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import com.stevesoltys.seedvault.transport.backup.ApkBackup
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.DEFAULT_QUOTA_FULL_BACKUP
+import com.stevesoltys.seedvault.transport.backup.FullBackup
+import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
+import com.stevesoltys.seedvault.transport.backup.InputFactory
+import com.stevesoltys.seedvault.transport.backup.KVBackup
+import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
+import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.transport.restore.FullRestore
+import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
+import com.stevesoltys.seedvault.transport.restore.KVRestore
+import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
+import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import com.stevesoltys.seedvault.transport.restore.RestorePlugin
+import io.mockk.CapturingSlot
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -53,7 +74,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore = FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
-    private val restore = RestoreCoordinator(metadataManager, restorePlugin, kvRestore, fullRestore, metadataReader)
+    private val restore = RestoreCoordinator(context, settingsManager, metadataManager, notificationManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
