@@ -5,11 +5,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.stevesoltys.seedvault.R
@@ -18,8 +14,9 @@ import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.ui.AppViewHolder
 
-internal class InstallProgressAdapter : Adapter<AppViewHolder>() {
+internal class InstallProgressAdapter : Adapter<AppInstallViewHolder>() {
 
     private val items = SortedList<ApkRestoreResult>(ApkRestoreResult::class.java, object : SortedListAdapterCallback<ApkRestoreResult>(this) {
         override fun areItemsTheSame(item1: ApkRestoreResult, item2: ApkRestoreResult) = item1.packageName == item2.packageName
@@ -27,14 +24,14 @@ internal class InstallProgressAdapter : Adapter<AppViewHolder>() {
         override fun compare(item1: ApkRestoreResult, item2: ApkRestoreResult) = item1.compareTo(item2)
     })
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppInstallViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.list_item_app_status, parent, false)
-        return AppViewHolder(v)
+        return AppInstallViewHolder(v)
     }
 
     override fun getItemCount() = items.size()
 
-    override fun onBindViewHolder(holder: AppViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AppInstallViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
@@ -43,12 +40,7 @@ internal class InstallProgressAdapter : Adapter<AppViewHolder>() {
     }
 }
 
-internal class AppViewHolder(v: View) : ViewHolder(v) {
-
-    private val appIcon: ImageView = v.findViewById(R.id.appIcon)
-    private val appName: TextView = v.findViewById(R.id.appName)
-    private val appStatus: ImageView = v.findViewById(R.id.appStatus)
-    private val progressBar: ProgressBar = v.findViewById(R.id.progressBar)
+internal class AppInstallViewHolder(v: View) : AppViewHolder(v) {
 
     fun bind(item: ApkRestoreResult) {
         appIcon.setImageDrawable(item.icon)
