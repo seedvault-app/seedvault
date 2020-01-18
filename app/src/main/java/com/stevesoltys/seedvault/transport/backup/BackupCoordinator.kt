@@ -6,6 +6,7 @@ import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.BackupNotificationManager
@@ -94,7 +95,20 @@ internal class BackupCoordinator(
         return targetPackage.packageName != plugin.providerPackageName
     }
 
+    /**
+     * Ask the transport about current quota for backup size of the package.
+     *
+     * @param packageName ID of package to provide the quota.
+     * @param isFullBackup If set, transport should return limit for full data backup,
+     *                      otherwise for key-value backup.
+     * @return Current limit on backup size in bytes.
+     */
     fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
+        // try to back up APK here as later methods are sometimes not called called
+        val pm = context.packageManager
+        backUpApk(pm.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
+
+        // report back quota
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")
         val quota = if (isFullBackup) full.getQuota() else kv.getQuota()
         Log.i(TAG, "Reported quota of $quota bytes.")
@@ -132,8 +146,7 @@ internal class BackupCoordinator(
             // hook in here to back up APKs of apps that are otherwise not allowed for backup
             backUpNotAllowedPackages()
         }
-        val result = kv.performBackup(packageInfo, data, flags)
-        return backUpApk(result, packageInfo)
+        return kv.performBackup(packageInfo, data, flags)
     }
 
     // ------------------------------------------------------------------------------------
@@ -166,8 +179,7 @@ internal class BackupCoordinator(
 
     fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
         cancelReason = UNKNOWN_ERROR
-        val result = full.performFullBackup(targetPackage, fileDescriptor, flags)
-        return backUpApk(result, targetPackage)
+        return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 
     fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
@@ -254,27 +266,24 @@ internal class BackupCoordinator(
         Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
         packageService.notAllowedPackages.forEach { optOutPackageInfo ->
             try {
-                backUpApk(0, optOutPackageInfo, NOT_ALLOWED)
+                backUpApk(optOutPackageInfo, NOT_ALLOWED)
             } catch (e: IOException) {
                 Log.e(TAG, "Error backing up opt-out APK of ${optOutPackageInfo.packageName}", e)
             }
         }
     }
 
-    private fun backUpApk(result: Int, packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR): Int {
+    private fun backUpApk(packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR) {
         val packageName = packageInfo.packageName
-        if (packageName == MAGIC_PACKAGE_MANAGER) return result
-        return try {
+        try {
             apkBackup.backupApkIfNecessary(packageInfo, packageState) {
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
                 val outputStream = plugin.getMetadataOutputStream()
                 metadataManager.onApkBackedUp(packageInfo, packageMetadata, outputStream)
             }
-            result
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
-            TRANSPORT_PACKAGE_REJECTED
         }
     }
 

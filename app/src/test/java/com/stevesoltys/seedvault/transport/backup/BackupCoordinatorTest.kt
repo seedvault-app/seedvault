@@ -113,6 +113,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val isFullBackup = Random.nextBoolean()
         val quota = Random.nextLong()
 
+        expectApkBackupAndMetadataWrite()
         if (isFullBackup) {
             every { full.getQuota() } returns quota
         } else {
@@ -264,9 +265,9 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     private fun expectApkBackupAndMetadataWrite() {
-        every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns packageMetadata
+        every { apkBackup.backupApkIfNecessary(any(), UNKNOWN_ERROR, any()) } returns packageMetadata
         every { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream) } just Runs
+        every { metadataManager.onApkBackedUp(any(), packageMetadata, metadataOutputStream) } just Runs
     }
 
 }

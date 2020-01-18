@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.crypto
 
-import android.os.Build.VERSION.SDK_INT
 import android.security.keystore.KeyProperties.BLOCK_MODE_GCM
 import android.security.keystore.KeyProperties.ENCRYPTION_PADDING_NONE
 import android.security.keystore.KeyProperties.PURPOSE_DECRYPT
@@ -48,7 +47,7 @@ internal class KeyManagerImpl : KeyManager {
 
     override fun storeBackupKey(seed: ByteArray) {
         if (seed.size < KEY_SIZE_BYTES) throw IllegalArgumentException()
-        // TODO check if using first 256 of 512 bytes produced by PBKDF2WithHmacSHA512 is safe!
+        // TODO check if using first 256 of 512 bits produced by PBKDF2WithHmacSHA512 is safe!
         val secretKeySpec = SecretKeySpec(seed, 0, KEY_SIZE_BYTES, "AES")
         val ksEntry = SecretKeyEntry(secretKeySpec)
         keyStore.setEntry(KEY_ALIAS, ksEntry, getKeyProtection())
@@ -68,7 +67,7 @@ internal class KeyManagerImpl : KeyManager {
                 .setEncryptionPaddings(ENCRYPTION_PADDING_NONE)
                 .setRandomizedEncryptionRequired(true)
         // unlocking is required only for decryption, so when restoring from backup
-        if (SDK_INT >= 28) builder.setUnlockedDeviceRequired(true)
+        builder.setUnlockedDeviceRequired(true)
         return builder.build()
     }
 
