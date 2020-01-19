@@ -7,7 +7,6 @@ import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
@@ -19,6 +18,7 @@ import androidx.core.app.NotificationCompat.PRIORITY_LOW
 import com.stevesoltys.seedvault.restore.ACTION_RESTORE_ERROR_UNINSTALL
 import com.stevesoltys.seedvault.restore.EXTRA_PACKAGE_NAME
 import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
+import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
@@ -78,23 +78,6 @@ class BackupNotificationManager(private val context: Context) {
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
-    fun onBackupResult(app: CharSequence, status: Int, userInitiated: Boolean) {
-        val title = context.getString(when (status) {
-            0 -> R.string.notification_backup_result_complete
-            TRANSPORT_PACKAGE_REJECTED -> R.string.notification_backup_result_rejected
-            else -> R.string.notification_backup_result_error
-        })
-        val notification = observerBuilder.apply {
-            setContentTitle(title)
-            setContentText(app)
-            setOngoing(true)
-            setShowWhen(false)
-            setWhen(System.currentTimeMillis())
-            priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
-        }.build()
-        nm.notify(NOTIFICATION_ID_OBSERVER, notification)
-    }
-
     fun onBackupFinished(success: Boolean, notBackedUp: Int?, userInitiated: Boolean) {
         if (!userInitiated) {
             nm.cancel(NOTIFICATION_ID_OBSERVER)
@@ -104,11 +87,19 @@ class BackupNotificationManager(private val context: Context) {
         val contentText = if (notBackedUp == null) null else {
             context.getString(R.string.notification_success_num_not_backed_up, notBackedUp)
         }
+        val iconRes = if (success) R.drawable.ic_cloud_done else R.drawable.ic_cloud_error
+        val intent = Intent(context, SettingsActivity::class.java).apply {
+            action = ACTION_APP_STATUS_LIST
+        }
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         val notification = observerBuilder.apply {
             setContentTitle(context.getString(titleRes))
             setContentText(contentText)
             setOngoing(false)
             setShowWhen(true)
+            setAutoCancel(true)
+            setSmallIcon(iconRes)
+            setContentIntent(pendingIntent)
             setWhen(System.currentTimeMillis())
             setProgress(0, 0, false)
             priority = PRIORITY_LOW

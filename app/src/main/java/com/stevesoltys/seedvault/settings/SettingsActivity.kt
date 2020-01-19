@@ -2,6 +2,9 @@ package com.stevesoltys.seedvault.settings
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
@@ -9,7 +12,9 @@ import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : RequireProvisioningActivity() {
+internal const val ACTION_APP_STATUS_LIST = "com.stevesoltys.seedvault.APP_STATUS_LIST"
+
+class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmentCallback {
 
     private val viewModel: SettingsViewModel by viewModel()
     private val notificationManager: BackupNotificationManager by inject()
@@ -23,7 +28,11 @@ class SettingsActivity : RequireProvisioningActivity() {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        if (savedInstanceState == null) showFragment(SettingsFragment())
+        if (intent?.action == ACTION_APP_STATUS_LIST) {
+            showFragment(AppStatusFragment())
+        } else if (savedInstanceState == null) {
+            showFragment(SettingsFragment())
+        }
     }
 
     @CallSuper
@@ -39,6 +48,16 @@ class SettingsActivity : RequireProvisioningActivity() {
             // remove potential error notifications
             notificationManager.onBackupErrorSeen()
         }
+    }
+
+    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+        fragment.setTargetFragment(caller, 0)
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, fragment)
+                .addToBackStack(null)
+                .commit()
+        return true
     }
 
 }

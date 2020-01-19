@@ -8,6 +8,9 @@ import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
@@ -37,6 +40,7 @@ class MetadataManager(
                     // If this happens, it is hard to recover from this. Let's hope it never does.
                     throw AssertionError("Error reading metadata from cache", e)
                 }
+                mLastBackupTime.postValue(field.time)
             }
             return field
         }
@@ -155,6 +159,7 @@ class MetadataManager(
             metadata = oldMetadata
             throw IOException(e)
         }
+        mLastBackupTime.postValue(metadata.time)
     }
 
     /**
@@ -171,7 +176,10 @@ class MetadataManager(
      * Note that this might be a blocking I/O call.
      */
     @Synchronized
-    fun getLastBackupTime(): Long = metadata.time
+    fun getLastBackupTime(): Long = mLastBackupTime.value ?: metadata.time
+
+    private val mLastBackupTime = MutableLiveData<Long>()
+    internal val lastBackupTime: LiveData<Long> = mLastBackupTime.distinctUntilChanged()
 
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {
