@@ -56,7 +56,7 @@ internal class AppInstallViewHolder(v: View) : AppViewHolder(v) {
                 progressBar.visibility = INVISIBLE
             }
             FAILED -> {
-                appStatus.setImageResource(R.drawable.ic_cancel_red)
+                appStatus.setImageResource(R.drawable.ic_error_red)
                 appStatus.visibility = VISIBLE
                 progressBar.visibility = INVISIBLE
             }

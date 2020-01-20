@@ -43,13 +43,9 @@ internal open class AppViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             appInfo.visibility = GONE
             when (status) {
                 SUCCEEDED -> appStatus.setImageResource(R.drawable.ic_check_green)
-                FAILED -> appStatus.setImageResource(R.drawable.ic_cancel_red)
+                FAILED -> appStatus.setImageResource(R.drawable.ic_error_red)
                 else -> {
-                    when (status) {
-                        FAILED_NO_DATA -> appStatus.setImageResource(R.drawable.ic_radio_button_unchecked_yellow)
-                        FAILED_NOT_ALLOWED -> appStatus.setImageResource(R.drawable.ic_block_yellow)
-                        else -> appStatus.setImageResource(R.drawable.ic_error_yellow)
-                    }
+                    appStatus.setImageResource(R.drawable.ic_warning_yellow)
                     appInfo.text = status.getInfo()
                     appInfo.visibility = VISIBLE
                 }
