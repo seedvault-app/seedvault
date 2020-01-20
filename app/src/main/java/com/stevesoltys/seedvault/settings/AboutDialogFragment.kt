@@ -23,6 +23,7 @@ class AboutDialogFragment : DialogFragment() {
         val linkMovementMethod = LinkMovementMethod.getInstance()
         licenseView.movementMethod = linkMovementMethod
         authorView.movementMethod = linkMovementMethod
+        designView.movementMethod = linkMovementMethod
         sponsorView.movementMethod = linkMovementMethod
     }
 
