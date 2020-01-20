@@ -3,8 +3,10 @@ package com.stevesoltys.seedvault.settings
 import android.app.Application
 import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
+import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -46,6 +48,9 @@ class SettingsViewModel(
 
     private val mAppStatusList = switchMap(lastBackupTime) { getAppStatusResult() }
     internal val appStatusList: LiveData<AppStatusResult> = mAppStatusList
+
+    private val mAppEditMode = MutableLiveData<Boolean>()
+    internal val appEditMode: LiveData<Boolean> = mAppEditMode
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -91,6 +96,7 @@ class SettingsViewModel(
                     }
                     AppStatus(
                             packageName = it.packageName,
+                            enabled = settingsManager.isBackupEnabled(it.packageName),
                             icon = icon,
                             name = getAppName(app, it.packageName).toString(),
                             time = time,
@@ -100,6 +106,16 @@ class SettingsViewModel(
         val oldList = mAppStatusList.value?.appStatusList ?: emptyList()
         val diff = calculateDiff(AppStatusDiff(oldList, list))
         emit(AppStatusResult(list, diff))
+    }
+
+    @UiThread
+    fun setEditMode(enabled: Boolean) {
+        mAppEditMode.value = enabled
+    }
+
+    @UiThread
+    fun onAppStatusToggled(status: AppStatus) {
+        settingsManager.onAppBackupStatusChanged(status)
     }
 
 }

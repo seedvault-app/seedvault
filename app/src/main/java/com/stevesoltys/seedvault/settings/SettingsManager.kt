@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.settings
 import android.content.Context
 import android.hardware.usb.UsbDevice
 import android.net.Uri
+import androidx.annotation.UiThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import java.util.concurrent.atomic.AtomicBoolean
@@ -18,11 +19,17 @@ private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
 private const val PREF_KEY_FLASH_DRIVE_VENDOR_ID = "flashDriveVendorId"
 private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
+private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
+
 class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private var isStorageChanging: AtomicBoolean = AtomicBoolean(false)
+
+    private val blacklistedApps: HashSet<String> by lazy {
+        prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()).toHashSet()
+    }
 
     // FIXME Storage is currently plugin specific and not generic
     fun setStorage(storage: Storage) {
@@ -74,6 +81,15 @@ class SettingsManager(context: Context) {
 
     fun backupApks(): Boolean {
         return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)
+    }
+
+    fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
+
+    @UiThread
+    fun onAppBackupStatusChanged(status: AppStatus) {
+        if (status.enabled) blacklistedApps.remove(status.packageName)
+        else blacklistedApps.add(status.packageName)
+        prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
     }
 
 }
