@@ -24,7 +24,7 @@ private val TAG = RequireProvisioningActivity::class.java.name
  */
 abstract class RequireProvisioningActivity : BackupActivity() {
 
-    protected val isSetupWizard: Boolean
+    private val isSetupWizard: Boolean
         get() = intent?.action == ACTION_SETUP_WIZARD
 
     protected abstract fun getViewModel(): RequireProvisioningViewModel
