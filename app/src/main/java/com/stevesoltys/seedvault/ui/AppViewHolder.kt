@@ -8,6 +8,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
@@ -21,18 +22,26 @@ import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 
 
-internal open class AppViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+internal open class AppViewHolder(protected val v: View) : RecyclerView.ViewHolder(v) {
 
     protected val context: Context = v.context
     protected val pm: PackageManager = context.packageManager
 
+    protected val clickableBackground = v.background!!
     protected val appIcon: ImageView = v.findViewById(R.id.appIcon)
     protected val appName: TextView = v.findViewById(R.id.appName)
     protected val appInfo: TextView = v.findViewById(R.id.appInfo)
     protected val appStatus: ImageView = v.findViewById(R.id.appStatus)
     protected val progressBar: ProgressBar = v.findViewById(R.id.progressBar)
+    protected val switchView: Switch = v.findViewById(R.id.switchView)
+
+    init {
+        // don't use clickable background by default
+        v.background = null
+    }
 
     protected fun setStatus(status: AppRestoreStatus) {
+        v.background = null
         if (status == IN_PROGRESS) {
             appInfo.visibility = GONE
             appStatus.visibility = INVISIBLE
@@ -43,13 +52,9 @@ internal open class AppViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             appInfo.visibility = GONE
             when (status) {
                 SUCCEEDED -> appStatus.setImageResource(R.drawable.ic_check_green)
-                FAILED -> appStatus.setImageResource(R.drawable.ic_cancel_red)
+                FAILED -> appStatus.setImageResource(R.drawable.ic_error_red)
                 else -> {
-                    when (status) {
-                        FAILED_NO_DATA -> appStatus.setImageResource(R.drawable.ic_radio_button_unchecked_yellow)
-                        FAILED_NOT_ALLOWED -> appStatus.setImageResource(R.drawable.ic_block_yellow)
-                        else -> appStatus.setImageResource(R.drawable.ic_error_yellow)
-                    }
+                    appStatus.setImageResource(R.drawable.ic_warning_yellow)
                     appInfo.text = status.getInfo()
                     appInfo.visibility = VISIBLE
                 }

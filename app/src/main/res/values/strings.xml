@@ -27,6 +27,7 @@
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_status_title">App backup status</string>
     <string name="settings_backup_status_summary">Last Backup: %1$s</string>
+    <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
 
     <!-- Storage -->
@@ -120,6 +121,7 @@
     <string name="about_summary">A backup application using Android\'s internal backup API.</string>
     <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_source_code">Source Code: https://github.com/stevesoltys/seedvault</string>
 

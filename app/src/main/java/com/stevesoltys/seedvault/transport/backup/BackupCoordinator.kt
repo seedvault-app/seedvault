@@ -90,9 +90,13 @@ internal class BackupCoordinator(
     }
 
     fun isAppEligibleForBackup(targetPackage: PackageInfo, @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean): Boolean {
+        val packageName = targetPackage.packageName
+        // Check that the app is not blacklisted by the user
+        val enabled = settingsManager.isBackupEnabled(packageName)
+        if (!enabled) Log.w(TAG, "Backup of $packageName disabled by user.")
         // We need to exclude the DocumentsProvider used to store backup data.
         // Otherwise, it gets killed when we back it up, terminating our backup.
-        return targetPackage.packageName != plugin.providerPackageName
+        return enabled && targetPackage.packageName != plugin.providerPackageName
     }
 
     /**
@@ -104,9 +108,10 @@ internal class BackupCoordinator(
      * @return Current limit on backup size in bytes.
      */
     fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
-        // try to back up APK here as later methods are sometimes not called called
-        val pm = context.packageManager
-        backUpApk(pm.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
+        if (packageName != MAGIC_PACKAGE_MANAGER) {
+            // try to back up APK here as later methods are sometimes not called called
+            backUpApk(context.packageManager.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
+        }
 
         // report back quota
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")

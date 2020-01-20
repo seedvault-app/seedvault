@@ -23,7 +23,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.io.OutputStream
@@ -120,6 +122,20 @@ internal class BackupCoordinatorTest : BackupTest() {
             every { kv.getQuota() } returns quota
         }
         assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, isFullBackup))
+    }
+
+    @Test
+    fun `isAppEligibleForBackup() exempts plugin provider and blacklisted apps`() {
+        every {
+            settingsManager.isBackupEnabled(packageInfo.packageName)
+        } returns true andThen false andThen true
+        every {
+            plugin.providerPackageName
+        } returns packageInfo.packageName andThen "new.package" andThen "new.package"
+
+        assertFalse(backup.isAppEligibleForBackup(packageInfo, true))
+        assertFalse(backup.isAppEligibleForBackup(packageInfo, true))
+        assertTrue(backup.isAppEligibleForBackup(packageInfo, true))
     }
 
     @Test
