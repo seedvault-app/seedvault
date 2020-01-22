@@ -5,6 +5,7 @@ import android.view.MenuItem
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import com.stevesoltys.seedvault.ui.LiveEventHandler
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -14,6 +15,8 @@ class RecoveryCodeActivity : BackupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (isSetupWizard()) hideSystemUI()
 
         setContentView(R.layout.activity_recovery_code)
 
@@ -60,6 +63,10 @@ class RecoveryCodeActivity : BackupActivity() {
 
     private fun isRestore(): Boolean {
         return intent?.getBooleanExtra(INTENT_EXTRA_IS_RESTORE, false) ?: false
+    }
+
+    private fun isSetupWizard(): Boolean {
+        return intent?.getBooleanExtra(INTENT_EXTRA_IS_SETUP_WIZARD, false) ?: false
     }
 
 }
