@@ -53,20 +53,9 @@ class BackupNotificationManager(private val context: Context) {
         return NotificationChannel(CHANNEL_ID_RESTORE_ERROR, title, IMPORTANCE_HIGH)
     }
 
-    private val observerBuilder = Builder(context, CHANNEL_ID_OBSERVER).apply {
-        setSmallIcon(R.drawable.ic_cloud_upload)
-    }
-
-    private val errorBuilder = Builder(context, CHANNEL_ID_ERROR).apply {
-        setSmallIcon(R.drawable.ic_cloud_error)
-    }
-
-    private val restoreErrorBuilder = Builder(context, CHANNEL_ID_RESTORE_ERROR).apply {
-        setSmallIcon(R.drawable.ic_cloud_error)
-    }
-
     fun onBackupUpdate(app: CharSequence, transferred: Int, expected: Int, userInitiated: Boolean) {
-        val notification = observerBuilder.apply {
+        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
+            setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
             setContentText(app)
             setOngoing(true)
@@ -92,13 +81,13 @@ class BackupNotificationManager(private val context: Context) {
             action = ACTION_APP_STATUS_LIST
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        val notification = observerBuilder.apply {
+        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
+            setSmallIcon(iconRes)
             setContentTitle(context.getString(titleRes))
             setContentText(contentText)
             setOngoing(false)
             setShowWhen(true)
             setAutoCancel(true)
-            setSmallIcon(iconRes)
             setContentIntent(pendingIntent)
             setWhen(System.currentTimeMillis())
             setProgress(0, 0, false)
@@ -112,7 +101,8 @@ class BackupNotificationManager(private val context: Context) {
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         val actionText = context.getString(R.string.notification_error_action)
         val action = Action(R.drawable.ic_storage, actionText, pendingIntent)
-        val notification = errorBuilder.apply {
+        val notification = Builder(context, CHANNEL_ID_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
             setContentTitle(context.getString(R.string.notification_error_title))
             setContentText(context.getString(R.string.notification_error_text))
             setWhen(System.currentTimeMillis())
@@ -141,7 +131,8 @@ class BackupNotificationManager(private val context: Context) {
         val pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_UNINSTALL, intent, FLAG_UPDATE_CURRENT)
         val actionText = context.getString(R.string.notification_restore_error_action)
         val action = Action(R.drawable.ic_warning, actionText, pendingIntent)
-        val notification = restoreErrorBuilder.apply {
+        val notification = Builder(context, CHANNEL_ID_RESTORE_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
             setContentTitle(context.getString(R.string.notification_restore_error_title, appName))
             setContentText(context.getString(R.string.notification_restore_error_text, storageName))
             setWhen(System.currentTimeMillis())
