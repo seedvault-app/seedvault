@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="6"
+    android:versionCode="7"
     android:versionName="1.0.0">
 
     <uses-permission
@@ -18,7 +18,7 @@
     <uses-permission
         android:name="android.permission.MANAGE_USB"
         tools:ignore="ProtectedPermissions" />
-
+g
     <!-- This is needed to change system backup settings -->
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
