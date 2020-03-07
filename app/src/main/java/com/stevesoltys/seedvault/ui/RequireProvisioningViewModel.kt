@@ -8,7 +8,7 @@ import com.stevesoltys.seedvault.ui.storage.StorageViewModel
 
 abstract class RequireProvisioningViewModel(
         protected val app: Application,
-        private val settingsManager: SettingsManager,
+        protected val settingsManager: SettingsManager,
         private val keyManager: KeyManager
 ) : AndroidViewModel(app) {
 

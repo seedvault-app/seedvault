@@ -3,19 +3,30 @@ package com.stevesoltys.seedvault
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
-class NotificationBackupObserver(context: Context, private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
+class NotificationBackupObserver(
+        private val context: Context,
+        private val expectedPackages: Int,
+        private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
 
-    private val pm = context.packageManager
     private val nm: BackupNotificationManager by inject()
+    private val metadataManager: MetadataManager by inject()
+    private var currentPackage: String? = null
+    private var numPackages: Int = 0
+
+    init {
+        // we need to show this manually as [onUpdate] isn't called for first @pm@ package
+        nm.onBackupUpdate(getAppName(MAGIC_PACKAGE_MANAGER), 0, expectedPackages, userInitiated)
+    }
 
     /**
      * This method could be called several times for packages with full data backup.
@@ -25,13 +36,7 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
      * @param backupProgress Current progress of backup for the package.
      */
     override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
-        val transferred = backupProgress.bytesTransferred.toInt()
-        val expected = backupProgress.bytesExpected.toInt()
-        if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Update. Target: $currentBackupPackage, $transferred/$expected")
-        }
-        val app = getAppName(currentBackupPackage)
-        nm.onBackupUpdate(app, transferred, expected, userInitiated)
+        showProgressNotification(currentBackupPackage)
     }
 
     /**
@@ -48,7 +53,8 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
-        nm.onBackupResult(getAppName(target), status, userInitiated)
+        // often [onResult] gets called right away without any [onUpdate] call
+        showProgressNotification(target)
     }
 
     /**
@@ -60,17 +66,35 @@ class NotificationBackupObserver(context: Context, private val userInitiated: Bo
      */
     override fun backupFinished(status: Int) {
         if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Backup finished. Status: $status")
+            Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
         }
-        nm.onBackupFinished()
+        val success = status == 0
+        val notBackedUp = if (success) metadataManager.getPackagesNumNotBackedUp() else null
+        nm.onBackupFinished(success, notBackedUp, userInitiated)
     }
 
-    private fun getAppName(packageId: String): CharSequence = getAppName(pm, packageId)
+    private fun showProgressNotification(packageName: String) {
+        if (currentPackage == packageName) return
+
+        if (isLoggable(TAG, INFO)) {
+            Log.i(TAG, "Showing progress notification for $currentPackage $numPackages/$expectedPackages")
+        }
+        currentPackage = packageName
+        val app = getAppName(packageName)
+        numPackages += 1
+        nm.onBackupUpdate(app, numPackages, expectedPackages, userInitiated)
+    }
+
+    private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
 
 }
 
-fun getAppName(pm: PackageManager, packageId: String): CharSequence {
-    if (packageId == MAGIC_PACKAGE_MANAGER) return packageId
-    val appInfo = pm.getApplicationInfo(packageId, 0)
-    return pm.getApplicationLabel(appInfo)
+fun getAppName(context: Context, packageId: String): CharSequence {
+    if (packageId == MAGIC_PACKAGE_MANAGER) return context.getString(R.string.restore_magic_package)
+    return try {
+        val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
+        context.packageManager.getApplicationLabel(appInfo) ?: packageId
+    } catch (e: NameNotFoundException) {
+        packageId
+    }
 }

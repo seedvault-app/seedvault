@@ -1,6 +1,8 @@
 package com.stevesoltys.seedvault.restore
 
-import android.app.backup.RestoreSet
+import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
+import android.text.format.DateUtils.HOUR_IN_MILLIS
+import android.text.format.DateUtils.getRelativeTimeSpanString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +13,8 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreSetAdapter.RestoreSetViewHolder
 
 internal class RestoreSetAdapter(
-        private val listener: RestoreSetClickListener,
-        private val items: Array<out RestoreSet>) : Adapter<RestoreSetViewHolder>() {
+        private val listener: RestorableBackupClickListener,
+        private val items: List<RestorableBackup>) : Adapter<RestoreSetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestoreSetViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -31,10 +33,18 @@ internal class RestoreSetAdapter(
         private val titleView = v.findViewById<TextView>(R.id.titleView)
         private val subtitleView = v.findViewById<TextView>(R.id.subtitleView)
 
-        internal fun bind(item: RestoreSet) {
-            v.setOnClickListener { listener.onRestoreSetClicked(item) }
+        internal fun bind(item: RestorableBackup) {
+            v.setOnClickListener { listener.onRestorableBackupClicked(item) }
             titleView.text = item.name
-            subtitleView.text = "Android Backup" // TODO change to backup date when available
+
+            val lastBackup = getRelativeTime(item.time)
+            val setup = getRelativeTime(item.token)
+            subtitleView.text = v.context.getString(R.string.restore_restore_set_times, lastBackup, setup)
+        }
+
+        private fun getRelativeTime(time: Long): CharSequence {
+            val now = System.currentTimeMillis()
+            return getRelativeTimeSpanString(time, now, HOUR_IN_MILLIS, FORMAT_ABBREV_RELATIVE)
         }
 
     }

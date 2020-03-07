@@ -16,11 +16,33 @@ import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.HeaderWriterImpl
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
-import com.stevesoltys.seedvault.metadata.MetadataWriterImpl
-import com.stevesoltys.seedvault.transport.backup.*
-import com.stevesoltys.seedvault.transport.restore.*
-import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.transport.backup.ApkBackup
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.DEFAULT_QUOTA_FULL_BACKUP
+import com.stevesoltys.seedvault.transport.backup.FullBackup
+import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
+import com.stevesoltys.seedvault.transport.backup.InputFactory
+import com.stevesoltys.seedvault.transport.backup.KVBackup
+import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
+import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.transport.restore.FullRestore
+import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
+import com.stevesoltys.seedvault.transport.restore.KVRestore
+import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
+import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import com.stevesoltys.seedvault.transport.restore.RestorePlugin
+import io.mockk.CapturingSlot
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -35,7 +57,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
     private val cryptoImpl = CryptoImpl(cipherFactory, headerWriter, headerReader)
-    private val metadataWriter = MetadataWriterImpl(cryptoImpl)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
 
     private val backupPlugin = mockk<BackupPlugin>()
@@ -43,21 +64,25 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvBackup = KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
+    private val apkBackup = mockk<ApkBackup>()
+    private val packageService:PackageService = mockk()
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, metadataWriter, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(context, backupPlugin, kvBackup, fullBackup, apkBackup, clock, packageService, metadataManager, settingsManager, notificationManager)
 
     private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore = FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
-    private val restore = RestoreCoordinator(settingsManager, restorePlugin, kvRestore, fullRestore, metadataReader)
+    private val restore = RestoreCoordinator(context, settingsManager, metadataManager, notificationManager, restorePlugin, kvRestore, fullRestore, metadataReader)
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
     private val token = Random.nextLong()
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
+    private val metadataOutputStream = ByteArrayOutputStream()
+    private val packageMetadata = PackageMetadata(time = 0L)
     private val key = "RestoreKey"
     private val key64 = key.encodeBase64()
     private val key2 = "RestoreKey2"
@@ -92,7 +117,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key264) } returns bOutputStream2
-        every { settingsManager.saveNewBackupTime() } just Runs
+        every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns packageMetadata
+        every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream) } just Runs
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -143,7 +171,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.size
         }
         every { kvBackupPlugin.getOutputStreamForRecord(packageInfo, key64) } returns bOutputStream
-        every { settingsManager.saveNewBackupTime() } just Runs
+        every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
+        every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -179,7 +209,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
-        every { settingsManager.saveNewBackupTime() } just Runs
+        every { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns packageMetadata
+        every { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream) } just Runs
+        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // perform backup to output stream
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))

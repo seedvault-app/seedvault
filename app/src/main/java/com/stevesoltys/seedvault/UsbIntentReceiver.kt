@@ -6,25 +6,28 @@ import android.content.Intent
 import android.database.ContentObserver
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbInterface
-import android.hardware.usb.UsbManager.*
+import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED
+import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED
+import android.hardware.usb.UsbManager.EXTRA_DEVICE
 import android.net.Uri
 import android.os.Handler
 import android.provider.DocumentsContract
 import android.util.Log
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
-import org.koin.core.KoinComponent
-import org.koin.core.inject
-import java.util.*
+import org.koin.core.context.GlobalContext.get
 import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
 
-class UsbIntentReceiver : UsbMonitor(), KoinComponent {
+class UsbIntentReceiver : UsbMonitor() {
 
-    private val settingsManager by inject<SettingsManager>()
+    // using KoinComponent would crash robolectric tests :(
+    private val settingsManager: SettingsManager by lazy { get().koin.get<SettingsManager>() }
+    private val metadataManager: MetadataManager by lazy { get().koin.get<MetadataManager>() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false
@@ -33,7 +36,7 @@ class UsbIntentReceiver : UsbMonitor(), KoinComponent {
         val attachedFlashDrive = FlashDrive.from(device)
         return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
-            if (Date().time - settingsManager.getBackupTime() >= HOURS.toMillis(24)) {
+            if (System.currentTimeMillis() - metadataManager.getLastBackupTime() >= HOURS.toMillis(24)) {
                 Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
                 true
             } else {

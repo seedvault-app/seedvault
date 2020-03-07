@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.transport.restore
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.NO_MORE_DATA
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -76,7 +79,6 @@ internal class FullRestore(
      * that aborts all further restore operations on the current dataset.
      */
     fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int {
-        Log.i(TAG, "Get next full restore data chunk.")
         val state = this.state ?: throw IllegalStateException("no state")
         val packageName = state.packageInfo.packageName
 

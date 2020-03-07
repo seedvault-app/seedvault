@@ -9,11 +9,11 @@ import android.os.ServiceManager.getService
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.metadataModule
+import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import com.stevesoltys.seedvault.transport.backup.backupModule
-import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
@@ -33,13 +33,14 @@ class App : Application() {
     private val appModule = module {
         single { SettingsManager(this@App) }
         single { BackupNotificationManager(this@App) }
+        single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
 
-        viewModel { SettingsViewModel(this@App, get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
-        viewModel { RestoreViewModel(this@App, get(), get(), get()) }
+        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get()) }
     }
 
     override fun onCreate() {
@@ -62,5 +63,7 @@ class App : Application() {
 }
 
 const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
+const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
+const val GLOBAL_METADATA_KEY = "@meta@"
 
 fun isDebugBuild() = Build.TYPE == "userdebug"

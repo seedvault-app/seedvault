@@ -2,8 +2,10 @@ package com.stevesoltys.seedvault.restore
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
-import androidx.lifecycle.Observer
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
+import com.stevesoltys.seedvault.ui.LiveEventHandler
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,8 +23,12 @@ class RestoreActivity : RequireProvisioningActivity() {
 
         setContentView(R.layout.activity_fragment_container)
 
-        viewModel.chosenRestoreSet.observe(this, Observer { set ->
-            if (set != null) showFragment(RestoreProgressFragment())
+        viewModel.displayFragment.observeEvent(this, LiveEventHandler { fragment ->
+            when (fragment) {
+                RESTORE_APPS -> showFragment(InstallProgressFragment())
+                RESTORE_BACKUP -> showFragment(RestoreProgressFragment())
+                else -> throw AssertionError()
+            }
         })
 
         if (savedInstanceState == null) {

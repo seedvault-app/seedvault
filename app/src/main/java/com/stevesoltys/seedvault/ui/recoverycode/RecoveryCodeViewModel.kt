@@ -5,11 +5,15 @@ import com.stevesoltys.seedvault.App
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
-import io.github.novacrypto.bip39.*
+import io.github.novacrypto.bip39.JavaxPBKDF2WithHmacSHA512
+import io.github.novacrypto.bip39.MnemonicGenerator
+import io.github.novacrypto.bip39.MnemonicValidator
+import io.github.novacrypto.bip39.SeedCalculator
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException
 import io.github.novacrypto.bip39.Validation.UnexpectedWhiteSpaceException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
+import io.github.novacrypto.bip39.Words
 import io.github.novacrypto.bip39.wordlists.English
 import java.security.SecureRandom
 import java.util.*

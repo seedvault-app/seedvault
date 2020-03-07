@@ -1,6 +1,12 @@
 package com.stevesoltys.seedvault.crypto
 
-import com.stevesoltys.seedvault.header.*
+import com.stevesoltys.seedvault.header.HeaderReader
+import com.stevesoltys.seedvault.header.HeaderWriter
+import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
+import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
+import com.stevesoltys.seedvault.header.MAX_VERSION_HEADER_SIZE
+import com.stevesoltys.seedvault.header.SegmentHeader
+import com.stevesoltys.seedvault.header.VersionHeader
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream

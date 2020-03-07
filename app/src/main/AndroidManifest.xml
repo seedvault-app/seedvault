@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="6"
-    android:versionName="1.0.0-alpha1">
+    android:versionCode="7"
+    android:versionName="1.0.0">
 
     <uses-permission
         android:name="android.permission.BACKUP"
@@ -18,11 +18,20 @@
     <uses-permission
         android:name="android.permission.MANAGE_USB"
         tools:ignore="ProtectedPermissions" />
-
+g
     <!-- This is needed to change system backup settings -->
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
+
+    <!-- This is needed to re-install backed-up packages when restoring from backup -->
+    <uses-permission
+        android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- This is needed when using auto-restore with removable storage
+         to allow the user to uninstall an app when storage was not plugged in during install -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
         android:name=".App"
@@ -80,6 +89,14 @@
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
+        </receiver>
+
+        <receiver
+            android:name=".restore.RestoreErrorBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
+            </intent-filter>
         </receiver>
 
     </application>

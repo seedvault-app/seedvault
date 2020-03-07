@@ -1,6 +1,10 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.*
+import android.app.backup.BackupTransport.FLAG_INCREMENTAL
+import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
+import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -11,7 +15,7 @@ import com.stevesoltys.seedvault.header.VersionHeader
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
-class KVBackupState(internal val packageName: String)
+class KVBackupState(internal val packageInfo: PackageInfo)
 
 const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 
@@ -26,6 +30,8 @@ internal class KVBackup(
     private var state: KVBackupState? = null
 
     fun hasState() = state != null
+
+    fun getCurrentPackage() = state?.packageInfo
 
     fun getQuota(): Long = plugin.getQuota()
 
@@ -48,7 +54,7 @@ internal class KVBackup(
 
         // initialize state
         if (this.state != null) throw AssertionError()
-        this.state = KVBackupState(packageInfo.packageName)
+        this.state = KVBackupState(packageInfo)
 
         // check if we have existing data for the given package
         val hasDataForPackage = try {
@@ -162,7 +168,7 @@ internal class KVBackup(
     }
 
     fun finishBackup(): Int {
-        Log.i(TAG, "Finish K/V Backup of ${state!!.packageName}")
+        Log.i(TAG, "Finish K/V Backup of ${state!!.packageInfo.packageName}")
         state = null
         return TRANSPORT_OK
     }
@@ -172,7 +178,7 @@ internal class KVBackup(
      * because [finishBackup] is not called when we don't return [TRANSPORT_OK].
      */
     private fun backupError(result: Int): Int {
-        Log.i(TAG, "Resetting state because of K/V Backup error of ${state!!.packageName}")
+        Log.i(TAG, "Resetting state because of K/V Backup error of ${state!!.packageInfo.packageName}")
         state = null
         return result
     }
