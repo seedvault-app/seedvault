@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
     android:versionCode="6"
-    android:versionName="1.0.0-alpha1">
+    android:versionName="1.0.0">
 
     <uses-permission
         android:name="android.permission.BACKUP"

@@ -1,3 +1,16 @@
+## [1.0.0] - 2020-03-07
+
+## Added
+- APK backup and restore support with the option to toggle them off.
+- Note to auto-restore setting in case removable storage is used.
+- UX for showing which packages were restored and which failed.
+- Show heads-up notification when auto-restore fails due to removed storage.
+- Show list of apps and their backup status.
+- Support for excluding apps from backups.
+
+## Fixed
+- Device initialization and generation of new backup tokens.
+
 ## [1.0.0-alpha1] - 2019-12-14
 ### Added
 - Automatic daily backups that run in the background.
