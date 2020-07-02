@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Seedvault</string>
+    <string name="app_name" translatable="false">Seedvault</string>
     <string name="backup">Backup</string>
 
     <string name="restore_backup_button">Restore backup</string>
@@ -9,10 +9,10 @@
     <string name="settings_backup">Backup my data</string>
     <string name="settings_backup_location">Backup location</string>
     <string name="settings_backup_location_picker">Choose backup location</string>
-    <string name="settings_backup_location_title">Backup Location</string>
+    <string name="settings_backup_location_title">Backup location</string>
     <string name="settings_backup_location_invalid">The chosen location can not be used.</string>
     <string name="settings_backup_location_none">None</string>
-    <string name="settings_backup_location_internal">Internal Storage</string>
+    <string name="settings_backup_location_internal">Internal storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
@@ -26,7 +26,7 @@
     <string name="settings_backup_apk_dialog_cancel">Cancel</string>
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_status_title">App backup status</string>
-    <string name="settings_backup_status_summary">Last Backup: %1$s</string>
+    <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
 
@@ -34,10 +34,10 @@
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
-    <string name="storage_fake_drive_title">USB Flash Drive</string>
+    <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_fake_nextcloud_title" translatable="false">Nextcloud</string>
     <string name="storage_fake_nextcloud_summary">Click to install</string>
     <string name="storage_fake_nextcloud_summary_installed">Click to set up account</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
@@ -47,10 +47,10 @@
     <string name="storage_check_fragment_error_button">Back</string>
 
     <!-- Recovery Code -->
-    <string name="recovery_code_title">Recovery Code</string>
+    <string name="recovery_code_title">Recovery code</string>
     <string name="recovery_code_12_word_intro">You need your 12-word recovery code to restore backed up data.</string>
     <string name="recovery_code_write_it_down">Write it down on paper now!</string>
-    <string name="recovery_code_confirm_button">Confirm Code</string>
+    <string name="recovery_code_confirm_button">Confirm code</string>
     <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
     <string name="recovery_code_input_intro">Enter your 12-word recovery code that you wrote down when setting up backups.</string>
     <string name="recovery_code_done_button">Done</string>
@@ -71,7 +71,7 @@
     <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words and try again!</string>
 
     <!-- Notification -->
-    <string name="notification_channel_title">Backup Notification</string>
+    <string name="notification_channel_title">Backup notification</string>
     <string name="notification_title">Backup running</string>
     <string name="notification_backup_result_complete">Backup complete</string>
     <string name="notification_backup_result_rejected">Not backed up</string>
@@ -81,29 +81,29 @@
     <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
     <string name="notification_failed_title">Backup failed</string>
 
-    <string name="notification_error_channel_title">Error Notification</string>
-    <string name="notification_error_title">Backup Error</string>
+    <string name="notification_error_channel_title">Error notification</string>
+    <string name="notification_error_title">Backup error</string>
     <string name="notification_error_text">A device backup failed to run.</string>
     <string name="notification_error_action">Fix</string>
 
-    <string name="notification_restore_error_channel_title">Auto Restore Flash Drive Error</string>
+    <string name="notification_restore_error_channel_title">Auto restore flash drive error</string>
     <string name="notification_restore_error_title">Could not restore data for %1$s</string>
     <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
-    <string name="notification_restore_error_action">Uninstall App</string>
+    <string name="notification_restore_error_action">Uninstall app</string>
 
     <!-- Restore -->
-    <string name="restore_title">Restore from Backup</string>
+    <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
-    <string name="restore_restore_set_times">Last Backup %1$s · First %2$s.</string>
+    <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
     <string name="restore_back">Don\'t restore</string>
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
-    <string name="restore_installing_packages">Re-installing Apps</string>
+    <string name="restore_installing_packages">Re-installing apps</string>
     <string name="restore_next">Next</string>
-    <string name="restore_restoring">Restoring Backup</string>
-    <string name="restore_magic_package">System Package Manager</string>
+    <string name="restore_restoring">Restoring backup</string>
+    <string name="restore_magic_package">System package manager</string>
     <string name="restore_app_no_data">App reported no data for backup</string>
     <string name="restore_app_not_allowed">App doesn\'t allow backup</string>
     <string name="restore_app_not_installed">App not installed</string>
@@ -113,7 +113,7 @@
     <string name="restore_finished_button">Finish</string>
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
-    <string name="storage_internal_warning_choose_other">Choose Other</string>
+    <string name="storage_internal_warning_choose_other">Choose other</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
 
     <!-- About -->
