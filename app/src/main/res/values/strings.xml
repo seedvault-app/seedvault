@@ -112,7 +112,7 @@
     <string name="restore_finished_error">Could not restore the backup.</string>
     <string name="restore_finished_button">Finish</string>
     <string name="storage_internal_warning_title">Warning</string>
-    <string name="storage_internal_warning_message">You have chosen internal storage for your backup, and it will not help you if your phone is lost or broken.</string>
+    <string name="notification_error_text">Could not perform backup.</string>
     <string name="storage_internal_warning_choose_other">Choose \"Other\"</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
 
