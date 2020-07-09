@@ -6,14 +6,21 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.stevesoltys.seedvault.R
-import kotlinx.android.synthetic.main.fragment_storage_check.*
 
 private const val TITLE = "title"
 private const val ERROR_MSG = "errorMsg"
 
 class StorageCheckFragment : Fragment() {
+
+    private lateinit var titleView: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var errorView: TextView
+    private lateinit var backButton: Button
 
     companion object {
         fun newInstance(title: String, errorMsg: String? = null): StorageCheckFragment {
@@ -28,7 +35,14 @@ class StorageCheckFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_storage_check, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_storage_check, container, false)
+
+        titleView = v.findViewById(R.id.titleView)
+        progressBar = v.findViewById(R.id.progressBar)
+        errorView = v.findViewById(R.id.errorView)
+        backButton = v.findViewById(R.id.backButton)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
