@@ -8,25 +8,63 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment
+import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import io.github.novacrypto.bip39.wordlists.English
-import kotlinx.android.synthetic.main.fragment_recovery_code_input.*
-import kotlinx.android.synthetic.main.recovery_code_input.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RecoveryCodeInputFragment : Fragment() {
 
     private val viewModel: RecoveryCodeViewModel by sharedViewModel()
 
+    private lateinit var introText: TextView
+    private lateinit var doneButton: Button
+    private lateinit var backView: TextView
+    private lateinit var wordLayout1: TextInputLayout
+    private lateinit var wordLayout2: TextInputLayout
+    private lateinit var wordLayout3: TextInputLayout
+    private lateinit var wordLayout4: TextInputLayout
+    private lateinit var wordLayout5: TextInputLayout
+    private lateinit var wordLayout6: TextInputLayout
+    private lateinit var wordLayout7: TextInputLayout
+    private lateinit var wordLayout8: TextInputLayout
+    private lateinit var wordLayout9: TextInputLayout
+    private lateinit var wordLayout10: TextInputLayout
+    private lateinit var wordLayout11: TextInputLayout
+    private lateinit var wordLayout12: TextInputLayout
+    private lateinit var wordList: ConstraintLayout
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
+
+        introText = v.findViewById(R.id.introText)
+        doneButton = v.findViewById(R.id.doneButton)
+        backView = v.findViewById(R.id.backView)
+        wordLayout1 = v.findViewById(R.id.wordLayout1)
+        wordLayout2 = v.findViewById(R.id.wordLayout2)
+        wordLayout3 = v.findViewById(R.id.wordLayout3)
+        wordLayout4 = v.findViewById(R.id.wordLayout4)
+        wordLayout5 = v.findViewById(R.id.wordLayout5)
+        wordLayout6 = v.findViewById(R.id.wordLayout6)
+        wordLayout7 = v.findViewById(R.id.wordLayout7)
+        wordLayout8 = v.findViewById(R.id.wordLayout8)
+        wordLayout9 = v.findViewById(R.id.wordLayout9)
+        wordLayout10 = v.findViewById(R.id.wordLayout10)
+        wordLayout11 = v.findViewById(R.id.wordLayout11)
+        wordLayout12 = v.findViewById(R.id.wordLayout12)
+        wordList = v.findViewById(R.id.wordList)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

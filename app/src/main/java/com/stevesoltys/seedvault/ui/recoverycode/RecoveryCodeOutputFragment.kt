@@ -5,20 +5,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import kotlinx.android.synthetic.main.fragment_recovery_code_output.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RecoveryCodeOutputFragment : Fragment() {
 
     private val viewModel: RecoveryCodeViewModel by sharedViewModel()
 
+    private lateinit var wordList: RecyclerView
+    private lateinit var confirmCodeButton: Button
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
+
+        wordList = v.findViewById(R.id.wordList)
+        confirmCodeButton = v.findViewById(R.id.confirmCodeButton)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
