@@ -83,7 +83,7 @@
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>
-    <string name="notification_error_text">One device was not backed up.</string>
+    <string name="notification_error_text">Could not perform backup.</string>
     <string name="notification_error_action">Fix</string>
 
     <string name="notification_restore_error_channel_title">Could not auto restore from flash drive</string>
