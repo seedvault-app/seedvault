@@ -7,19 +7,33 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import kotlinx.android.synthetic.main.fragment_restore_set.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RestoreSetFragment : Fragment() {
 
     private val viewModel: RestoreViewModel by sharedViewModel()
 
+    private lateinit var listView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var errorView: TextView
+    private lateinit var backView: TextView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_restore_set, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_restore_set, container, false)
+
+        listView = v.findViewById(R.id.listView)
+        progressBar = v.findViewById(R.id.progressBar)
+        errorView = v.findViewById(R.id.errorView)
+        backView = v.findViewById(R.id.backView)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

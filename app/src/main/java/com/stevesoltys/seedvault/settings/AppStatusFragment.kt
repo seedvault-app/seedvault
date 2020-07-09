@@ -9,11 +9,12 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import kotlinx.android.synthetic.main.fragment_app_status.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 internal interface AppStatusToggleListener {
@@ -26,12 +27,20 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
 
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = AppStatusAdapter(this)
+
     private lateinit var appEditMenuItem: MenuItem
+    private lateinit var list: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_app_status, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
+
+        progressBar = v.findViewById(R.id.progressBar)
+        list = v.findViewById(R.id.list)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
