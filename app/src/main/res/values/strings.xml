@@ -14,7 +14,7 @@
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
-    <string name="settings_info">All backups are encrypted by your device. To restore one you need your 12-word recovery code.</string>
+    <string name="settings_info">All backups are encrypted by your device, to be restored by your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
     <string name="settings_auto_restore_summary">When recovering an app, also include settings and data.</string>
     <string name="settings_auto_restore_summary_usb">Your %1$s must to be plugged in first.</string>
