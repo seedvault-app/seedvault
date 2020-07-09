@@ -79,7 +79,7 @@
 
     <string name="notification_success_title">Done</string>
     <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
-    <string name="notification_failed_title">That didn\'t go well</string>
+    <string name="notification_failed_title">Could not perform backup</string>
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>
