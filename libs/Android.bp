@@ -1,0 +1,84 @@
+android_library_import {
+    name: "seedvault-lib-androidx-core-ktx",
+    aars: ["core-ktx-1.1.0.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-androidx-lifecycle-livedata-core-ktx",
+    aars: ["lifecycle-livedata-core-ktx-2.3.0-alpha05.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-androidx-lifecycle-livedata-ktx",
+    aars: ["lifecycle-livedata-ktx-2.3.0-alpha05.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-androidx-lifecycle-viewmodel-ktx",
+    aars: ["lifecycle-viewmodel-ktx-2.1.0.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-koin-android",
+    aars: ["koin-android-2.0.1.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-koin-androidx-viewmodel",
+    aars: ["koin-androidx-viewmodel-2.0.1.aar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-commons-io",
+    host_supported: true,
+    jars: ["commons-io-2.6.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-koin-core",
+    host_supported: true,
+    jars: ["koin-core-2.0.1.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-kotlinx-coroutines-android",
+    host_supported: true,
+    jars: ["kotlinx-coroutines-android-1.1.1.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-kotlinx-coroutines-core",
+    host_supported: true,
+    jars: ["kotlinx-coroutines-core-1.3.0.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-novacrypto-bip39",
+    host_supported: true,
+    jars: ["BIP39-2019.01.27.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-novacrypto-sha256",
+    host_supported: true,
+    jars: ["SHA256-2019.01.27.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-novacrypto-toruntime",
+    host_supported: true,
+    jars: ["ToRuntime-0.9.0.jar"],
+    sdk_version: "current",
+}

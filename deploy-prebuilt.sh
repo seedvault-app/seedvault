@@ -12,7 +12,7 @@ git clone --quiet $REPO_URL
 cd seedvault-prebuilt
 git checkout $TRAVIS_BRANCH || git checkout -b $TRAVIS_BRANCH
 rm -Rf ./*
-cp $TRAVIS_BUILD_DIR/Android.mk .
+cp $TRAVIS_BUILD_DIR/Android.mk.prebuilt ./Android.mk
 cp $TRAVIS_BUILD_DIR/app/build/outputs/apk/release/app-release-unsigned.apk ./Seedvault.apk
 cp $TRAVIS_BUILD_DIR/permissions_com.stevesoltys.seedvault.xml .
 cp $TRAVIS_BUILD_DIR/whitelist_com.stevesoltys.seedvault.xml .
