@@ -108,6 +108,9 @@ def aospDeps = fileTree(include: [
         'libcore.jar'
 ], dir: 'libs')
 
+// If the dependencies below are updated please make sure to update the
+// prebuilt libraries and Android.bp in the top `libs` folder to reflect that.
+// You can copy these libraries from ~/.gradle/caches/modules-2
 dependencies {
     compileOnly aospDeps
 
