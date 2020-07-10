@@ -1,0 +1,69 @@
+//
+// Copyright (C) 2018 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+android_app {
+    name: "Seedvault",
+    srcs: [
+        "app/src/main/java/**/*.kt",
+        "app/src/main/java/**/*.java",
+    ],
+    resource_dirs: [
+        "app/src/main/res",
+    ],
+    static_libs: [
+        "com.google.android.material_material",
+        "androidx.core_core",
+        "androidx.preference_preference",
+        "androidx.lifecycle_lifecycle-extensions",
+        "androidx-constraintlayout_constraintlayout",
+        "seedvault-lib-androidx-core-ktx",
+        "seedvault-lib-androidx-lifecycle-livedata-core-ktx",
+        "seedvault-lib-androidx-lifecycle-livedata-ktx",
+        "seedvault-lib-androidx-lifecycle-viewmodel-ktx",
+        "seedvault-lib-koin-android",
+        "seedvault-lib-koin-androidx-viewmodel",
+        "seedvault-lib-commons-io",
+        "seedvault-lib-koin-core",
+        "seedvault-lib-kotlinx-coroutines-android",
+        "seedvault-lib-kotlinx-coroutines-core",
+        "seedvault-lib-novacrypto-bip39",
+        "seedvault-lib-novacrypto-sha256",
+        "seedvault-lib-novacrypto-toruntime"
+    ],
+    manifest: "app/src/main/AndroidManifest.xml",
+
+    platform_apis: true,
+    certificate: "platform",
+    privileged: true,
+    required: [
+        "privapp_whitelist_com.stevesoltys.backup",
+        "com.stevesoltys.backup_whitelist"
+    ]
+}
+
+prebuilt_etc {
+    name: "privapp_whitelist_com.stevesoltys.backup",
+    sub_dir: "permissions",
+    src: "permissions_com.stevesoltys.seedvault.xml",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
+    name: "com.stevesoltys.backup_whitelist",
+    sub_dir: "sysconfig",
+    src: "whitelist_com.stevesoltys.seedvault.xml",
+    filename_from_src: true,
+}
