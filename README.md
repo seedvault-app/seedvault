@@ -9,6 +9,9 @@ A backup application for the [Android Open Source Project](https://source.androi
 - User-friendly encryption using a mnemonic phrase (BIP39).
 - Automatic daily backups that run in the background.
 
+## Requirements
+- Android 10 or higher
+
 ## Getting Started
 - Check out [the wiki](https://github.com/stevesoltys/seedvault/wiki) for information on building the application with 
 AOSP.
