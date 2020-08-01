@@ -77,7 +77,7 @@
     <string name="notification_backup_result_rejected">Could not perform backup</string>
     <string name="notification_backup_result_error">Try again</string>
 
-    <string name="notification_success_title">Done</string>
+    <string name="notification_success_title">Backup done</string>
     <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
     <string name="notification_failed_title">Could not perform backup</string>
 
