@@ -16,7 +16,7 @@
     <string name="settings_backup_last_backup_never">Never</string>
     <string name="settings_info">All backups are encrypted by your device, to be restored by your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
-    <string name="settings_auto_restore_summary">When installing a previously installed app, recover its settings and data.</string>
+    <string name="settings_auto_restore_summary">When installing a previously uninstalled app, recover its settings and data.</string>
     <string name="settings_auto_restore_summary_usb">Your %1$s must to be plugged in first.</string>
     <string name="settings_category_app_data_backup">App data backup</string>
     <string name="settings_backup_apk_title">App backup</string>
