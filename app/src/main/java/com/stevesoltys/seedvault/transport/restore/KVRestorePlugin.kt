@@ -15,6 +15,8 @@ interface KVRestorePlugin {
     /**
      * Return all record keys for the given token and package.
      *
+     * Note: Implementations might expect that you call [hasDataForPackage] before.
+     *
      * For file-based plugins, this is usually a list of file names in the package directory.
      */
     @Throws(IOException::class)
@@ -23,6 +25,8 @@ interface KVRestorePlugin {
     /**
      * Return an [InputStream] for the given token, package and key
      * which will provide the record's encrypted value.
+     *
+     * Note: Implementations might expect that you call [hasDataForPackage] before.
      */
     @Throws(IOException::class)
     fun getInputStreamForRecord(token: Long, packageInfo: PackageInfo, key: String): InputStream
