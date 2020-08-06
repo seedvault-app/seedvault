@@ -204,6 +204,7 @@ fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
         })
         val timeout = MINUTES.toMillis(2)
         var time = 0
+        // TODO replace loop with callback flow or something similar
         while (!loaded && time < timeout) {
             Thread.sleep(50)
             time += 50

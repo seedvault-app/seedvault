@@ -53,7 +53,7 @@ internal class DocumentsProviderRestorePlugin(
     }
 
     @WorkerThread
-    fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
+    private fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
         val backupSets = ArrayList<BackupSet>()
         val files = try {
             // block until the DocumentsProvider has results

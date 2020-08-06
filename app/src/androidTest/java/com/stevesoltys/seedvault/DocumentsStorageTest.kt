@@ -2,7 +2,7 @@ package com.stevesoltys.seedvault
 
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.createOrGetFile
