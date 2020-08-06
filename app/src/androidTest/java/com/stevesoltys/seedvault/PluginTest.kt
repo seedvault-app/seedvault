@@ -62,6 +62,47 @@ class PluginTest : KoinComponent {
         assertNotNull(backupPlugin.providerPackageName)
     }
 
+    /**
+     * This test initializes the storage three times while creating two new restore sets.
+     *
+     * If this is run against a Nextcloud storage backend,
+     * it has a high chance of getting a loading cursor in the underlying queries
+     * that needs to get re-queried to get real results.
+     */
+    @Test
+    fun testInitializationAndRestoreSets() {
+        // no backups available initially
+        assertEquals(0, restorePlugin.getAvailableBackups()?.toList()?.size)
+        val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
+        assertFalse(restorePlugin.hasBackup(uri))
+
+        // define storage changing state for later
+        every {
+            mockedSettingsManager.getAndResetIsStorageChanging()
+        } returns true andThen true andThen false
+
+        // device needs initialization, because new and storage is changing
+        assertTrue(backupPlugin.initializeDevice(newToken = token))
+
+        // write metadata (needed for backup to be recognized)
+        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
+
+        // one backup available now
+        assertEquals(1, restorePlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(restorePlugin.hasBackup(uri))
+
+        // initializing again (while changing storage) does add a restore set
+        assertTrue(backupPlugin.initializeDevice(newToken = token + 1))
+        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
+        assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(restorePlugin.hasBackup(uri))
+
+        // initializing again (without changing storage) doesn't change number of restore sets
+        assertFalse(backupPlugin.initializeDevice(newToken = token + 2))
+        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
+        assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
+    }
+
     @Test
     fun testMetadataWriteRead() {
         every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true andThen false
