@@ -9,10 +9,12 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verifyAll
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -20,6 +22,7 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestoreTest : RestoreTest() {
 
     private val plugin = mockk<KVRestorePlugin>()
@@ -34,10 +37,10 @@ internal class KVRestoreTest : RestoreTest() {
     private val versionHeader2 = VersionHeader(VERSION, packageInfo.packageName, key2)
 
     @Test
-    fun `hasDataForPackage() delegates to plugin`() {
+    fun `hasDataForPackage() delegates to plugin`() = runBlocking {
         val result = Random.nextBoolean()
 
-        every { plugin.hasDataForPackage(token, packageInfo) } returns result
+        coEvery { plugin.hasDataForPackage(token, packageInfo) } returns result
 
         assertEquals(result, restore.hasDataForPackage(token, packageInfo))
     }

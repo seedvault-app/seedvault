@@ -40,7 +40,7 @@ internal class KVRestore(
      * Return true if there are records stored for the given package.
      */
     @Throws(IOException::class)
-    fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
+    suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
         return plugin.hasDataForPackage(token, packageInfo)
     }
 

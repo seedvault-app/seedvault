@@ -21,7 +21,7 @@ private class FullBackupState(
         internal val packageInfo: PackageInfo,
         internal val inputFileDescriptor: ParcelFileDescriptor,
         internal val inputStream: InputStream,
-        internal var outputStreamInit: (() -> OutputStream)?) {
+        internal var outputStreamInit: (suspend () -> OutputStream)?) {
     internal var outputStream: OutputStream? = null
     internal val packageName: String = packageInfo.packageName
     internal var size: Long = 0
@@ -31,6 +31,7 @@ const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()
 
 private val TAG = FullBackup::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
         private val plugin: FullBackupPlugin,
         private val inputFactory: InputFactory,
@@ -89,7 +90,7 @@ internal class FullBackup(
      * [TRANSPORT_OK] to indicate that the OS may proceed with delivering backup data;
      * [TRANSPORT_ERROR] to indicate an error that precludes performing a backup at this time.
      */
-    fun performFullBackup(targetPackage: PackageInfo, socket: ParcelFileDescriptor, @Suppress("UNUSED_PARAMETER") flags: Int = 0): Int {
+    suspend fun performFullBackup(targetPackage: PackageInfo, socket: ParcelFileDescriptor, @Suppress("UNUSED_PARAMETER") flags: Int = 0): Int {
         if (state != null) throw AssertionError()
         Log.i(TAG, "Perform full backup for ${targetPackage.packageName}.")
 
@@ -119,7 +120,7 @@ internal class FullBackup(
         return TRANSPORT_OK
     }
 
-    fun sendBackupData(numBytes: Int): Int {
+    suspend fun sendBackupData(numBytes: Int): Int {
         val state = this.state
                 ?: throw AssertionError("Attempted sendBackupData before performFullBackup")
 
@@ -134,11 +135,11 @@ internal class FullBackup(
         return try {
             // get output stream or initialize it, if it does not yet exist
             check((state.outputStream != null) xor (state.outputStreamInit != null)) { "No OutputStream xor no StreamGetter" }
-            val outputStream = state.outputStream ?: {
-                val stream = state.outputStreamInit!!.invoke()  // not-null due to check above
+            val outputStream = state.outputStream ?: suspend {
+                val stream = state.outputStreamInit!!()  // not-null due to check above
                 state.outputStream = stream
                 stream
-            }.invoke()
+            }()
             state.outputStreamInit = null  // the stream init lambda is not needed beyond that point
 
             // read backup data, encrypt it and write it to output stream
