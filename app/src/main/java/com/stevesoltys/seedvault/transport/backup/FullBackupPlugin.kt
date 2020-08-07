@@ -10,7 +10,7 @@ interface FullBackupPlugin {
 
     // TODO consider using a salted hash for the package name to not leak it to the storage server
     @Throws(IOException::class)
-    fun getOutputStream(targetPackage: PackageInfo): OutputStream
+    suspend fun getOutputStream(targetPackage: PackageInfo): OutputStream
 
     /**
      * Remove all data associated with the given package.

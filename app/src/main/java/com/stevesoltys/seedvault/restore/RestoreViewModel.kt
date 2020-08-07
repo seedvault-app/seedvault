@@ -296,7 +296,8 @@ internal class RestoreViewModel(
                             }
                         }
                     }
-                    RestoreSetResult(restorableBackups)
+                    if (restorableBackups.isEmpty()) RestoreSetResult(app.getString(R.string.restore_set_empty_result))
+                    else RestoreSetResult(restorableBackups)
                 }
             }
             continuation.resume(result)

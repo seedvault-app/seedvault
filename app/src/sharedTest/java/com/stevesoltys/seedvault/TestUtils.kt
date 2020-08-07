@@ -1,5 +1,11 @@
 package com.stevesoltys.seedvault
 
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
+import java.io.InputStream
+import java.io.OutputStream
 import kotlin.random.Random
 
 fun assertContains(stack: String?, needle: String) {
@@ -43,4 +49,25 @@ fun ByteArray.toIntString(): String {
         str += String.format("%02d ", b)
     }
     return str
+}
+
+fun OutputStream.writeAndClose(data: ByteArray) = use {
+    it.write(data)
+}
+
+fun assertReadEquals(data: ByteArray, inputStream: InputStream?) = inputStream?.use {
+    assertArrayEquals(data, it.readBytes())
+} ?: error("no input stream")
+
+fun <T : Throwable> coAssertThrows(clazz: Class<T>, block: suspend () -> Unit) {
+    var thrown = false
+    try {
+        runBlocking {
+            block()
+        }
+    } catch (e: Throwable) {
+        assertEquals(clazz, e.javaClass)
+        thrown = true
+    }
+    if (!thrown) fail("Exception was not thrown: " + clazz.name)
 }

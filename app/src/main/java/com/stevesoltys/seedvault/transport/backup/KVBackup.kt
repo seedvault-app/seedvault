@@ -21,6 +21,7 @@ const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 
 private val TAG = KVBackup::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackup(
         private val plugin: KVBackupPlugin,
         private val inputFactory: InputFactory,
@@ -35,7 +36,7 @@ internal class KVBackup(
 
     fun getQuota(): Long = plugin.getQuota()
 
-    fun performBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+    suspend fun performBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
         val isIncremental = flags and FLAG_INCREMENTAL != 0
         val isNonIncremental = flags and FLAG_NON_INCREMENTAL != 0
         val packageName = packageInfo.packageName
@@ -91,7 +92,7 @@ internal class KVBackup(
         return storeRecords(packageInfo, data)
     }
 
-    private fun storeRecords(packageInfo: PackageInfo, data: ParcelFileDescriptor): Int {
+    private suspend fun storeRecords(packageInfo: PackageInfo, data: ParcelFileDescriptor): Int {
         // apply the delta operations
         for (result in parseBackupStream(data)) {
             if (result is Result.Error) {

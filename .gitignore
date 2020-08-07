@@ -7,7 +7,8 @@ hs_err_pid*
 ## Intellij
 out/
 lib/
-.idea/
+.idea/*
+!.idea/runConfigurations*
 *.ipr
 *.iws
 *.iml

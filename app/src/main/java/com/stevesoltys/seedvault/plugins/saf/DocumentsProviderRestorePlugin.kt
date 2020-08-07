@@ -15,6 +15,8 @@ import java.io.InputStream
 
 private val TAG = DocumentsProviderRestorePlugin::class.java.simpleName
 
+@WorkerThread
+@Suppress("BlockingMethodInNonBlockingContext")  // all methods do I/O
 internal class DocumentsProviderRestorePlugin(
         private val context: Context,
         private val storage: DocumentsStorage) : RestorePlugin {
@@ -27,15 +29,15 @@ internal class DocumentsProviderRestorePlugin(
         DocumentsProviderFullRestorePlugin(storage)
     }
 
-    @WorkerThread
-    override fun hasBackup(uri: Uri): Boolean {
+    @Throws(IOException::class)
+    override suspend fun hasBackup(uri: Uri): Boolean {
         val parent = DocumentFile.fromTreeUri(context, uri) ?: throw AssertionError()
         val rootDir = parent.findFileBlocking(context, DIRECTORY_ROOT) ?: return false
         val backupSets = getBackups(context, rootDir)
         return backupSets.isNotEmpty()
     }
 
-    override fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>? {
+    override suspend fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
         val backupSets = getBackups(context, rootDir)
         val iterator = backupSets.iterator()
@@ -52,8 +54,7 @@ internal class DocumentsProviderRestorePlugin(
         }
     }
 
-    @WorkerThread
-    private fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
+    private suspend fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
         val backupSets = ArrayList<BackupSet>()
         val files = try {
             // block until the DocumentsProvider has results
@@ -76,7 +77,12 @@ internal class DocumentsProviderRestorePlugin(
                 continue
             }
             // block until children of set are available
-            val metadata = set.findFileBlocking(context, FILE_BACKUP_METADATA)
+            val metadata = try {
+                set.findFileBlocking(context, FILE_BACKUP_METADATA)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error reading metadata file in backup set folder: ${set.name}", e)
+                null
+            }
             if (metadata == null) {
                 Log.w(TAG, "Missing metadata file in backup set folder: ${set.name}")
             } else {
@@ -87,7 +93,7 @@ internal class DocumentsProviderRestorePlugin(
     }
 
     @Throws(IOException::class)
-    override fun getApkInputStream(token: Long, packageName: String): InputStream {
+    override suspend fun getApkInputStream(token: Long, packageName: String): InputStream {
         val setDir = storage.getSetDir(token) ?: throw IOException()
         val file = setDir.findFile("$packageName.apk") ?: throw FileNotFoundException()
         return storage.getInputStream(file)

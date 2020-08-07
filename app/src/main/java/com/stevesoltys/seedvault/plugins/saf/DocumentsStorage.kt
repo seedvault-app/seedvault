@@ -1,10 +1,13 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE", "BlockingMethodInNonBlockingContext")
+
 package com.stevesoltys.seedvault.plugins.saf
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.database.ContentObserver
+import android.database.Cursor
 import android.net.Uri
+import android.os.FileUtils.closeQuietly
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import android.provider.DocumentsContract.Document.COLUMN_MIME_TYPE
 import android.provider.DocumentsContract.Document.MIME_TYPE_DIR
@@ -14,15 +17,19 @@ import android.provider.DocumentsContract.buildDocumentUriUsingTree
 import android.provider.DocumentsContract.buildTreeDocumentUri
 import android.provider.DocumentsContract.getDocumentId
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
-import libcore.io.IoUtils.closeQuietly
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.concurrent.TimeUnit.MINUTES
+import kotlin.coroutines.resume
 
 const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
 const val DIRECTORY_FULL_BACKUP = "full"
@@ -36,7 +43,10 @@ private val TAG = DocumentsStorage::class.java.simpleName
 internal class DocumentsStorage(
         private val context: Context,
         private val metadataManager: MetadataManager,
-        private val settingsManager: SettingsManager) {
+        private val settingsManager: SettingsManager
+) {
+
+    private val contentResolver = context.contentResolver
 
     internal var storage: Storage? = null
         get() {
@@ -45,20 +55,22 @@ internal class DocumentsStorage(
         }
 
     internal var rootBackupDir: DocumentFile? = null
-        get() {
+        get() = runBlocking {
             if (field == null) {
-                val parent = storage?.getDocumentFile(context) ?: return null
+                val parent = storage?.getDocumentFile(context)
+                        ?: return@runBlocking null
                 field = try {
-                    val rootDir = parent.createOrGetDirectory(DIRECTORY_ROOT)
-                    // create .nomedia file to prevent Android's MediaScanner from trying to index the backup
-                    rootDir.createOrGetFile(FILE_NO_MEDIA)
-                    rootDir
+                    parent.createOrGetDirectory(context, DIRECTORY_ROOT).apply {
+                        // create .nomedia file to prevent Android's MediaScanner
+                        // from trying to index the backup
+                        createOrGetFile(context, FILE_NO_MEDIA)
+                    }
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating root backup dir.", e)
                     null
                 }
             }
-            return field
+            field
         }
 
     private var currentToken: Long = 0L
@@ -68,47 +80,47 @@ internal class DocumentsStorage(
         }
 
     private var currentSetDir: DocumentFile? = null
-        get() {
+        get() = runBlocking {
             if (field == null) {
-                if (currentToken == 0L) return null
+                if (currentToken == 0L) return@runBlocking null
                 field = try {
-                    rootBackupDir?.createOrGetDirectory(currentToken.toString())
+                    rootBackupDir?.createOrGetDirectory(context, currentToken.toString())
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating current restore set dir.", e)
                     null
                 }
             }
-            return field
+            field
         }
 
     var currentFullBackupDir: DocumentFile? = null
-        get() {
+        get() = runBlocking {
             if (field == null) {
                 field = try {
-                    currentSetDir?.createOrGetDirectory(DIRECTORY_FULL_BACKUP)
+                    currentSetDir?.createOrGetDirectory(context, DIRECTORY_FULL_BACKUP)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating full backup dir.", e)
                     null
                 }
             }
-            return field
+            field
         }
 
     var currentKvBackupDir: DocumentFile? = null
-        get() {
+        get() = runBlocking {
             if (field == null) {
                 field = try {
-                    currentSetDir?.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
+                    currentSetDir?.createOrGetDirectory(context, DIRECTORY_KEY_VALUE_BACKUP)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating K/V backup dir.", e)
                     null
                 }
             }
-            return field
+            field
         }
 
     fun isInitialized(): Boolean {
-        if (settingsManager.getAndResetIsStorageChanging()) return false  // storage location has changed
+        if (settingsManager.getAndResetIsStorageChanging()) return false // storage location has changed
         val kvEmpty = currentKvBackupDir?.listFiles()?.isEmpty() ?: false
         val fullEmpty = currentFullBackupDir?.listFiles()?.isEmpty() ?: false
         return kvEmpty && fullEmpty
@@ -125,48 +137,61 @@ internal class DocumentsStorage(
 
     fun getAuthority(): String? = storage?.uri?.authority
 
-    fun getSetDir(token: Long = currentToken): DocumentFile? {
+    @Throws(IOException::class)
+    suspend fun getSetDir(token: Long = currentToken): DocumentFile? {
         if (token == currentToken) return currentSetDir
-        return rootBackupDir?.findFile(token.toString())
-    }
-
-    fun getKVBackupDir(token: Long = currentToken): DocumentFile? {
-        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
-        return getSetDir(token)?.findFile(DIRECTORY_KEY_VALUE_BACKUP)
+        return rootBackupDir?.findFileBlocking(context, token.toString())
     }
 
     @Throws(IOException::class)
-    fun getOrCreateKVBackupDir(token: Long = currentToken): DocumentFile {
+    suspend fun getKVBackupDir(token: Long = currentToken): DocumentFile? {
         if (token == currentToken) return currentKvBackupDir ?: throw IOException()
-        val setDir = getSetDir(token) ?: throw IOException()
-        return setDir.createOrGetDirectory(DIRECTORY_KEY_VALUE_BACKUP)
+        return getSetDir(token)?.findFileBlocking(context, DIRECTORY_KEY_VALUE_BACKUP)
     }
 
-    fun getFullBackupDir(token: Long = currentToken): DocumentFile? {
+    @Throws(IOException::class)
+    suspend fun getOrCreateKVBackupDir(token: Long = currentToken): DocumentFile {
+        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
+        val setDir = getSetDir(token) ?: throw IOException()
+        return setDir.createOrGetDirectory(context, DIRECTORY_KEY_VALUE_BACKUP)
+    }
+
+    @Throws(IOException::class)
+    suspend fun getFullBackupDir(token: Long = currentToken): DocumentFile? {
         if (token == currentToken) return currentFullBackupDir ?: throw IOException()
-        return getSetDir(token)?.findFile(DIRECTORY_FULL_BACKUP)
+        return getSetDir(token)?.findFileBlocking(context, DIRECTORY_FULL_BACKUP)
     }
 
     @Throws(IOException::class)
     fun getInputStream(file: DocumentFile): InputStream {
-        return context.contentResolver.openInputStream(file.uri) ?: throw IOException()
+        return contentResolver.openInputStream(file.uri) ?: throw IOException()
     }
 
     @Throws(IOException::class)
     fun getOutputStream(file: DocumentFile): OutputStream {
-        return context.contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
+        return contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
     }
 
 }
 
+/**
+ * Checks if a file exists and if not, creates it.
+ *
+ * If we were trying to create it right away, some providers create "filename (1)".
+ */
 @Throws(IOException::class)
-fun DocumentFile.createOrGetFile(name: String, mimeType: String = MIME_TYPE): DocumentFile {
-    return findFile(name) ?: createFile(mimeType, name) ?: throw IOException()
+internal suspend fun DocumentFile.createOrGetFile(context: Context, name: String, mimeType: String = MIME_TYPE): DocumentFile {
+    return findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
+        check(this.name == name) { "File named ${this.name}, but should be $name" }
+    } ?: throw IOException()
 }
 
+/**
+ * Checks if a directory already exists and if not, creates it.
+ */
 @Throws(IOException::class)
-fun DocumentFile.createOrGetDirectory(name: String): DocumentFile {
-    return findFile(name) ?: createDirectory(name) ?: throw IOException()
+suspend fun DocumentFile.createOrGetDirectory(context: Context, name: String): DocumentFile {
+    return findFileBlocking(context, name) ?: createDirectory(name) ?: throw IOException()
 }
 
 @Throws(IOException::class)
@@ -183,43 +208,22 @@ fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
  * This prevents getting an empty list even though there are children to be listed.
  */
 @Throws(IOException::class)
-fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
+suspend fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
     val resolver = context.contentResolver
     val childrenUri = buildChildDocumentsUriUsingTree(uri, getDocumentId(uri))
     val projection = arrayOf(COLUMN_DOCUMENT_ID, COLUMN_MIME_TYPE)
     val result = ArrayList<DocumentFile>()
 
-    @SuppressLint("Recycle")  // gets closed in with(), only earlier exit when null
-    var cursor = resolver.query(childrenUri, projection, null, null, null)
-            ?: throw IOException()
-    val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
-    if (loading) {
-        Log.d(TAG, "Wait for children to get loaded...")
-        var loaded = false
-        cursor.registerContentObserver(object : ContentObserver(null) {
-            override fun onChange(selfChange: Boolean, uri: Uri?) {
-                Log.d(TAG, "Children loaded. Continue...")
-                loaded = true
-            }
-        })
-        val timeout = MINUTES.toMillis(2)
-        var time = 0
-        // TODO replace loop with callback flow or something similar
-        while (!loaded && time < timeout) {
-            Thread.sleep(50)
-            time += 50
+    try {
+        getLoadedCursor {
+            resolver.query(childrenUri, projection, null, null, null)
         }
-        if (time >= timeout) Log.w(TAG, "Timed out while waiting for children to load")
-        closeQuietly(cursor)
-        // do a new query after content was loaded
-        @SuppressLint("Recycle")  // gets closed after with block
-        cursor = resolver.query(childrenUri, projection, null, null, null)
-                ?: throw IOException()
-    }
-    with(cursor) {
-        while (moveToNext()) {
-            val documentId = getString(0)
-            val isDirectory = getString(1) == MIME_TYPE_DIR
+    } catch (e: TimeoutCancellationException) {
+        throw IOException(e)
+    }.use { cursor ->
+        while (cursor.moveToNext()) {
+            val documentId = cursor.getString(0)
+            val isDirectory = cursor.getString(1) == MIME_TYPE_DIR
             val file = if (isDirectory) {
                 val treeUri = buildTreeDocumentUri(uri.authority, documentId)
                 DocumentFile.fromTreeUri(context, treeUri)!!
@@ -233,7 +237,14 @@ fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
     return result
 }
 
-fun DocumentFile.findFileBlocking(context: Context, displayName: String): DocumentFile? {
+/**
+ * Same as [DocumentFile.findFile] only that it re-queries when the first result was stale.
+ *
+ * Most documents providers including Nextcloud are listing the full directory content
+ * when querying for a specific file in a directory,
+ * so there is no point in trying to optimize the query by not listing all children.
+ */
+suspend fun DocumentFile.findFileBlocking(context: Context, displayName: String): DocumentFile? {
     val files = try {
         listFilesBlocking(context)
     } catch (e: IOException) {
@@ -244,4 +255,46 @@ fun DocumentFile.findFileBlocking(context: Context, displayName: String): Docume
         if (displayName == doc.name) return doc
     }
     return null
+}
+
+/**
+ * Returns a cursor for the given query while ensuring that the cursor was loaded.
+ *
+ * When the SAF backend is a cloud storage provider (e.g. Nextcloud),
+ * it can happen that the query returns an outdated (e.g. empty) cursor
+ * which will only be updated in response to this query.
+ *
+ * See: https://commonsware.com/blog/2019/12/14/scoped-storage-stories-listfiles-woe.html
+ *
+ * This method uses a [suspendCancellableCoroutine] to wait for the result of a [ContentObserver]
+ * registered on the cursor in case the cursor is still loading ([EXTRA_LOADING]).
+ * If the cursor is not loading, it will be returned right away.
+ *
+ * @param timeout an optional time-out in milliseconds
+ * @throws TimeoutCancellationException if there was no result before the time-out
+ * @throws IOException if the query returns null
+ */
+@VisibleForTesting
+@Throws(IOException::class, TimeoutCancellationException::class)
+internal suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?) = withTimeout(timeout) {
+    suspendCancellableCoroutine<Cursor> { cont ->
+        val cursor = query() ?: throw IOException()
+        cont.invokeOnCancellation { closeQuietly(cursor) }
+        val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
+        if (loading) {
+            Log.d(TAG, "Wait for children to get loaded...")
+            cursor.registerContentObserver(object : ContentObserver(null) {
+                override fun onChange(selfChange: Boolean, uri: Uri?) {
+                    Log.d(TAG, "Children loaded. Continue...")
+                    closeQuietly(cursor)
+                    val newCursor = query()
+                    if (newCursor == null) cont.cancel(IOException("query returned no results"))
+                    else cont.resume(newCursor)
+                }
+            })
+        } else {
+            // not loading, return cursor right away
+            cont.resume(cursor)
+        }
+    }
 }

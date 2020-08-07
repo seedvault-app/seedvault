@@ -17,19 +17,19 @@ interface BackupPlugin {
      * false if the device was initialized already and initialization should be a no-op.
      */
     @Throws(IOException::class)
-    fun initializeDevice(newToken: Long): Boolean
+    suspend fun initializeDevice(newToken: Long): Boolean
 
     /**
      * Returns an [OutputStream] for writing backup metadata.
      */
     @Throws(IOException::class)
-    fun getMetadataOutputStream(): OutputStream
+    suspend fun getMetadataOutputStream(): OutputStream
 
     /**
      * Returns an [OutputStream] for writing an APK to be backed up.
      */
     @Throws(IOException::class)
-    fun getApkOutputStream(packageInfo: PackageInfo): OutputStream
+    suspend fun getApkOutputStream(packageInfo: PackageInfo): OutputStream
 
     /**
      * Returns the package name of the app that provides the backend storage

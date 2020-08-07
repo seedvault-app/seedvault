@@ -36,7 +36,7 @@ class ApkBackup(
      * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
      */
     @Throws(IOException::class)
-    fun backupApkIfNecessary(packageInfo: PackageInfo, packageState: PackageState, streamGetter: () -> OutputStream): PackageMetadata? {
+    suspend fun backupApkIfNecessary(packageInfo: PackageInfo, packageState: PackageState, streamGetter: suspend () -> OutputStream): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) return null

@@ -37,6 +37,7 @@ private class RestoreCoordinatorState(
 
 private val TAG = RestoreCoordinator::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinator(
         private val context: Context,
         private val settingsManager: SettingsManager,
@@ -57,7 +58,7 @@ internal class RestoreCoordinator(
      * @return Descriptions of the set of restore images available for this device,
      *   or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableRestoreSets(): Array<RestoreSet>? {
+    suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
         val availableBackups = plugin.getAvailableBackups() ?: return null
         val restoreSets = ArrayList<RestoreSet>()
         val metadataMap = LongSparseArray<BackupMetadata>()
@@ -169,7 +170,7 @@ internal class RestoreCoordinator(
      * or [NO_MORE_PACKAGES] to indicate that no more packages can be restored in this session;
      * or null to indicate a transport-level error.
      */
-    fun nextRestorePackage(): RestoreDescription? {
+    suspend fun nextRestorePackage(): RestoreDescription? {
         Log.i(TAG, "Next restore package!")
         val state = this.state ?: throw IllegalStateException("no state")
 
@@ -228,7 +229,7 @@ internal class RestoreCoordinator(
      * After this method returns zero, the system will then call [nextRestorePackage]
      * to begin the restore process for the next application, and the sequence begins again.
      */
-    fun getNextFullRestoreDataChunk(outputFileDescriptor: ParcelFileDescriptor): Int {
+    suspend fun getNextFullRestoreDataChunk(outputFileDescriptor: ParcelFileDescriptor): Int {
         return full.getNextFullRestoreDataChunk(outputFileDescriptor)
     }
 
