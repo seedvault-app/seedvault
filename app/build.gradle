@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
 
     compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '29.0.2'  // adapt in .travis.yaml if changed here
 
     defaultConfig {
         minSdkVersion 29
@@ -128,9 +128,9 @@ dependencies {
 
     lintChecks 'com.github.thirdegg:lint-rules:0.0.4-alpha'
 
-    def junit_version = "5.5.2"
+    def junit_version = "5.5.2"  // careful, upgrading this can change a Cipher's IV size in tests!?
     def mockk_version = "1.10.0"
-    testImplementation aospDeps
+    testImplementation aospDeps  // anything less fails tests run with gradlew
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'org.robolectric:robolectric:4.3.1'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"

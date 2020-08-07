@@ -10,7 +10,7 @@ internal class DocumentsProviderKVRestorePlugin(private val storage: DocumentsSt
 
     private var packageDir: DocumentFile? = null
 
-    override fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
+    override suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
         return try {
             val backupDir = storage.getKVBackupDir(token) ?: return false
             // remember package file for subsequent operations

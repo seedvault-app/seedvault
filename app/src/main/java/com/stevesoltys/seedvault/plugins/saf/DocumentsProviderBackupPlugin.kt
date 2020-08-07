@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.plugins.saf
 
+import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
@@ -11,19 +12,21 @@ import java.io.OutputStream
 private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 
 internal class DocumentsProviderBackupPlugin(
-        private val storage: DocumentsStorage,
-        packageManager: PackageManager) : BackupPlugin {
+        private val context: Context,
+        private val storage: DocumentsStorage) : BackupPlugin {
+
+    private val packageManager: PackageManager = context.packageManager
 
     override val kvBackupPlugin: KVBackupPlugin by lazy {
-        DocumentsProviderKVBackup(storage)
+        DocumentsProviderKVBackup(storage, context)
     }
 
     override val fullBackupPlugin: FullBackupPlugin by lazy {
-        DocumentsProviderFullBackup(storage)
+        DocumentsProviderFullBackup(storage, context)
     }
 
     @Throws(IOException::class)
-    override fun initializeDevice(newToken: Long): Boolean {
+    override suspend fun initializeDevice(newToken: Long): Boolean {
         // check if storage is already initialized
         if (storage.isInitialized()) return false
 
@@ -46,16 +49,16 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override fun getMetadataOutputStream(): OutputStream {
+    override suspend fun getMetadataOutputStream(): OutputStream {
         val setDir = storage.getSetDir() ?: throw IOException()
-        val metadataFile = setDir.createOrGetFile(FILE_BACKUP_METADATA)
+        val metadataFile = setDir.createOrGetFile(context, FILE_BACKUP_METADATA)
         return storage.getOutputStream(metadataFile)
     }
 
     @Throws(IOException::class)
-    override fun getApkOutputStream(packageInfo: PackageInfo): OutputStream {
+    override suspend fun getApkOutputStream(packageInfo: PackageInfo): OutputStream {
         val setDir = storage.getSetDir() ?: throw IOException()
-        val file = setDir.createOrGetFile("${packageInfo.packageName}.apk", MIME_TYPE_APK)
+        val file = setDir.createOrGetFile(context, "${packageInfo.packageName}.apk", MIME_TYPE_APK)
         return storage.getOutputStream(file)
     }
 

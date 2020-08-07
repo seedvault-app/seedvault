@@ -7,6 +7,6 @@ import org.koin.dsl.module
 
 val documentsProviderModule = module {
     single { DocumentsStorage(androidContext(), get(), get()) }
-    single<BackupPlugin> { DocumentsProviderBackupPlugin(get(), androidContext().packageManager) }
+    single<BackupPlugin> { DocumentsProviderBackupPlugin(androidContext(), get()) }
     single<RestorePlugin> { DocumentsProviderRestorePlugin(androidContext(), get()) }
 }

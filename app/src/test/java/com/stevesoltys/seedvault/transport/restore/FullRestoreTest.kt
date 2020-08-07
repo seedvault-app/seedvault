@@ -4,18 +4,20 @@ import android.app.backup.BackupTransport.NO_MORE_DATA
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
+import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -23,6 +25,7 @@ import java.io.EOFException
 import java.io.IOException
 import kotlin.random.Random
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestoreTest : RestoreTest() {
 
     private val plugin = mockk<FullRestorePlugin>()
@@ -38,9 +41,9 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `hasDataForPackage() delegates to plugin`() {
+    fun `hasDataForPackage() delegates to plugin`() = runBlocking {
         val result = Random.nextBoolean()
-        every { plugin.hasDataForPackage(token, packageInfo) } returns result
+        coEvery { plugin.hasDataForPackage(token, packageInfo) } returns result
         assertEquals(result, restore.hasDataForPackage(token, packageInfo))
     }
 
@@ -54,45 +57,45 @@ internal class FullRestoreTest : RestoreTest() {
     @Test
     fun `getting chunks without initializing state throws`() {
         assertFalse(restore.hasState())
-        assertThrows(IllegalStateException::class.java) {
+        coAssertThrows(IllegalStateException::class.java) {
             restore.getNextFullRestoreDataChunk(fileDescriptor)
         }
     }
 
     @Test
-    fun `getting InputStream for package when getting first chunk throws`() {
+    fun `getting InputStream for package when getting first chunk throws`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.getInputStreamForPackage(token, packageInfo) } throws IOException()
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
     }
 
     @Test
-    fun `reading version header when getting first chunk throws`() {
+    fun `reading version header when getting first chunk throws`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } throws IOException()
 
         assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
     }
 
     @Test
-    fun `reading unsupported version when getting first chunk`() {
+    fun `reading unsupported version when getting first chunk`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } throws UnsupportedVersionException(unsupportedVersion)
 
         assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
     }
 
     @Test
-    fun `decrypting version header when getting first chunk throws`() {
+    fun `decrypting version header when getting first chunk throws`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
         every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } throws IOException()
 
@@ -100,10 +103,10 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `decrypting version header when getting first chunk throws security exception`() {
+    fun `decrypting version header when getting first chunk throws security exception`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
         every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } throws SecurityException()
 
@@ -111,7 +114,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `decrypting segment throws IOException`() {
+    fun `decrypting segment throws IOException`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
         initInputStream()
@@ -124,7 +127,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `decrypting segment throws EOFException`() {
+    fun `decrypting segment throws EOFException`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
         initInputStream()
@@ -137,7 +140,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `full chunk gets encrypted`() {
+    fun `full chunk gets encrypted`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
         initInputStream()
@@ -151,7 +154,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `aborting full restore closes stream, resets state`() {
+    fun `aborting full restore closes stream, resets state`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
         initInputStream()
@@ -166,7 +169,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     private fun initInputStream() {
-        every { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
         every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } returns versionHeader
     }

@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
@@ -18,10 +19,12 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.transport.TransportTest
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -32,6 +35,7 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
@@ -57,7 +61,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val storageName = getRandomString()
 
     @Test
-    fun `getAvailableRestoreSets() builds set from plugin response`() {
+    fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
         val encryptedMetadata = EncryptedBackupMetadata(token, inputStream)
         val metadata = BackupMetadata(
                 token = token,
@@ -65,7 +69,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
                 androidIncremental = getRandomString(),
                 deviceName = getRandomString())
 
-        every { plugin.getAvailableBackups() } returns sequenceOf(encryptedMetadata, encryptedMetadata)
+        coEvery { plugin.getAvailableBackups() } returns sequenceOf(encryptedMetadata, encryptedMetadata)
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { inputStream.close() } just Runs
 
@@ -137,16 +141,16 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `nextRestorePackage() throws without startRestore()`() {
-        assertThrows(IllegalStateException::class.javaObjectType) {
+        coAssertThrows(IllegalStateException::class.javaObjectType) {
             restore.nextRestorePackage()
         }
     }
 
     @Test
-    fun `nextRestorePackage() returns KV description and takes precedence`() {
+    fun `nextRestorePackage() returns KV description and takes precedence`() = runBlocking {
         restore.startRestore(token, packageInfoArray)
 
-        every { kv.hasDataForPackage(token, packageInfo) } returns true
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
         every { kv.initializeState(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
@@ -154,11 +158,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `nextRestorePackage() returns full description if no KV data found`() {
+    fun `nextRestorePackage() returns full description if no KV data found`() = runBlocking {
         restore.startRestore(token, packageInfoArray)
 
-        every { kv.hasDataForPackage(token, packageInfo) } returns false
-        every { full.hasDataForPackage(token, packageInfo) } returns true
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
+        coEvery { full.hasDataForPackage(token, packageInfo) } returns true
         every { full.initializeState(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_FULL_STREAM)
@@ -166,27 +170,27 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `nextRestorePackage() returns NO_MORE_PACKAGES if data found`() {
+    fun `nextRestorePackage() returns NO_MORE_PACKAGES if data found`() = runBlocking {
         restore.startRestore(token, packageInfoArray)
 
-        every { kv.hasDataForPackage(token, packageInfo) } returns false
-        every { full.hasDataForPackage(token, packageInfo) } returns false
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
+        coEvery { full.hasDataForPackage(token, packageInfo) } returns false
 
         assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
     }
 
     @Test
-    fun `nextRestorePackage() returns all packages from startRestore()`() {
+    fun `nextRestorePackage() returns all packages from startRestore()`() = runBlocking {
         restore.startRestore(token, packageInfoArray2)
 
-        every { kv.hasDataForPackage(token, packageInfo) } returns true
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
         every { kv.initializeState(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
-        every { kv.hasDataForPackage(token, packageInfo2) } returns false
-        every { full.hasDataForPackage(token, packageInfo2) } returns true
+        coEvery { kv.hasDataForPackage(token, packageInfo2) } returns false
+        coEvery { full.hasDataForPackage(token, packageInfo2) } returns true
         every { full.initializeState(token, packageInfo2) } just Runs
 
         val expected2 = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
@@ -196,20 +200,20 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `when kv#hasDataForPackage() throws return null`() {
+    fun `when kv#hasDataForPackage() throws return null`() = runBlocking {
         restore.startRestore(token, packageInfoArray)
 
-        every { kv.hasDataForPackage(token, packageInfo) } throws IOException()
+        coEvery { kv.hasDataForPackage(token, packageInfo) } throws IOException()
 
         assertNull(restore.nextRestorePackage())
     }
 
     @Test
-    fun `when full#hasDataForPackage() throws return null`() {
+    fun `when full#hasDataForPackage() throws return null`() = runBlocking {
         restore.startRestore(token, packageInfoArray)
 
-        every { kv.hasDataForPackage(token, packageInfo) } returns false
-        every { full.hasDataForPackage(token, packageInfo) } throws IOException()
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
+        coEvery { full.hasDataForPackage(token, packageInfo) } throws IOException()
 
         assertNull(restore.nextRestorePackage())
     }
@@ -225,11 +229,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `getNextFullRestoreDataChunk() delegates to Full`() {
+    fun `getNextFullRestoreDataChunk() delegates to Full`() = runBlocking {
         val data = mockk<ParcelFileDescriptor>()
         val result = Random.nextInt()
 
-        every { full.getNextFullRestoreDataChunk(data) } returns result
+        coEvery { full.getNextFullRestoreDataChunk(data) } returns result
 
         assertEquals(result, restore.getNextFullRestoreDataChunk(data))
     }
