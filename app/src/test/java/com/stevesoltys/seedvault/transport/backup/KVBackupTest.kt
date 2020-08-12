@@ -54,7 +54,7 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `incremental backup with no data gets rejected`() = runBlocking {
-        every { plugin.hasDataForPackage(packageInfo) } returns false
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns false
 
         assertEquals(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED, backup.performBackup(packageInfo, data, FLAG_INCREMENTAL))
         assertFalse(backup.hasState())
@@ -62,7 +62,7 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `check for existing data throws exception`() = runBlocking {
-        every { plugin.hasDataForPackage(packageInfo) } throws IOException()
+        coEvery { plugin.hasDataForPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -71,7 +71,7 @@ internal class KVBackupTest : BackupTest() {
     @Test
     fun `non-incremental backup with data clears old data first`() = runBlocking {
         singleRecordBackup(true)
-        every { plugin.removeDataOfPackage(packageInfo) } just Runs
+        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL))
         assertTrue(backup.hasState())
@@ -82,7 +82,7 @@ internal class KVBackupTest : BackupTest() {
     @Test
     fun `ignoring exception when clearing data when non-incremental backup has data`() = runBlocking {
         singleRecordBackup(true)
-        every { plugin.removeDataOfPackage(packageInfo) } throws IOException()
+        coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL))
         assertTrue(backup.hasState())
@@ -92,7 +92,7 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `ensuring storage throws exception`() = runBlocking {
-        every { plugin.hasDataForPackage(packageInfo) } returns false
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns false
         coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
@@ -194,7 +194,7 @@ internal class KVBackupTest : BackupTest() {
     }
 
     private fun initPlugin(hasDataForPackage: Boolean = false) {
-        every { plugin.hasDataForPackage(packageInfo) } returns hasDataForPackage
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns hasDataForPackage
         coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } just Runs
     }
 

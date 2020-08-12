@@ -41,9 +41,9 @@ private const val MIME_TYPE = "application/octet-stream"
 private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
-        private val context: Context,
-        private val metadataManager: MetadataManager,
-        private val settingsManager: SettingsManager
+    private val context: Context,
+    private val metadataManager: MetadataManager,
+    private val settingsManager: SettingsManager
 ) {
 
     private val contentResolver = context.contentResolver
@@ -58,7 +58,7 @@ internal class DocumentsStorage(
         get() = runBlocking {
             if (field == null) {
                 val parent = storage?.getDocumentFile(context)
-                        ?: return@runBlocking null
+                    ?: return@runBlocking null
                 field = try {
                     parent.createOrGetDirectory(context, DIRECTORY_ROOT).apply {
                         // create .nomedia file to prevent Android's MediaScanner
@@ -180,7 +180,11 @@ internal class DocumentsStorage(
  * If we were trying to create it right away, some providers create "filename (1)".
  */
 @Throws(IOException::class)
-internal suspend fun DocumentFile.createOrGetFile(context: Context, name: String, mimeType: String = MIME_TYPE): DocumentFile {
+internal suspend fun DocumentFile.createOrGetFile(
+    context: Context,
+    name: String,
+    mimeType: String = MIME_TYPE
+): DocumentFile {
     return findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
         check(this.name == name) { "File named ${this.name}, but should be $name" }
     } ?: throw IOException()
@@ -276,25 +280,26 @@ suspend fun DocumentFile.findFileBlocking(context: Context, displayName: String)
  */
 @VisibleForTesting
 @Throws(IOException::class, TimeoutCancellationException::class)
-internal suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?) = withTimeout(timeout) {
-    suspendCancellableCoroutine<Cursor> { cont ->
-        val cursor = query() ?: throw IOException()
-        cont.invokeOnCancellation { closeQuietly(cursor) }
-        val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
-        if (loading) {
-            Log.d(TAG, "Wait for children to get loaded...")
-            cursor.registerContentObserver(object : ContentObserver(null) {
-                override fun onChange(selfChange: Boolean, uri: Uri?) {
-                    Log.d(TAG, "Children loaded. Continue...")
-                    closeQuietly(cursor)
-                    val newCursor = query()
-                    if (newCursor == null) cont.cancel(IOException("query returned no results"))
-                    else cont.resume(newCursor)
-                }
-            })
-        } else {
-            // not loading, return cursor right away
-            cont.resume(cursor)
+internal suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?) =
+    withTimeout(timeout) {
+        suspendCancellableCoroutine<Cursor> { cont ->
+            val cursor = query() ?: throw IOException()
+            cont.invokeOnCancellation { closeQuietly(cursor) }
+            val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
+            if (loading) {
+                Log.d(TAG, "Wait for children to get loaded...")
+                cursor.registerContentObserver(object : ContentObserver(null) {
+                    override fun onChange(selfChange: Boolean, uri: Uri?) {
+                        Log.d(TAG, "Children loaded. Continue...")
+                        closeQuietly(cursor)
+                        val newCursor = query()
+                        if (newCursor == null) cont.cancel(IOException("query returned no results"))
+                        else cont.resume(newCursor)
+                    }
+                })
+            } else {
+                // not loading, return cursor right away
+                cont.resume(cursor)
+            }
         }
     }
-}

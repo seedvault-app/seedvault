@@ -11,9 +11,11 @@ import java.io.OutputStream
 
 private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderBackupPlugin(
-        private val context: Context,
-        private val storage: DocumentsStorage) : BackupPlugin {
+    private val context: Context,
+    private val storage: DocumentsStorage
+) : BackupPlugin {
 
     private val packageManager: PackageManager = context.packageManager
 
@@ -41,7 +43,7 @@ internal class DocumentsProviderBackupPlugin(
         val fullDir = storage.currentFullBackupDir
 
         // wipe existing data
-        storage.getSetDir()?.findFile(FILE_BACKUP_METADATA)?.delete()
+        storage.getSetDir()?.findFileBlocking(context, FILE_BACKUP_METADATA)?.delete()
         kvDir?.deleteContents()
         fullDir?.deleteContents()
 

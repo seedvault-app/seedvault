@@ -33,16 +33,17 @@ private val TAG = BackupCoordinator::class.java.simpleName
 @WorkerThread // entire class should always be accessed from a worker thread, so blocking is ok
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupCoordinator(
-        private val context: Context,
-        private val plugin: BackupPlugin,
-        private val kv: KVBackup,
-        private val full: FullBackup,
-        private val apkBackup: ApkBackup,
-        private val clock: Clock,
-        private val packageService: PackageService,
-        private val metadataManager: MetadataManager,
-        private val settingsManager: SettingsManager,
-        private val nm: BackupNotificationManager) {
+    private val context: Context,
+    private val plugin: BackupPlugin,
+    private val kv: KVBackup,
+    private val full: FullBackup,
+    private val apkBackup: ApkBackup,
+    private val clock: Clock,
+    private val packageService: PackageService,
+    private val metadataManager: MetadataManager,
+    private val settingsManager: SettingsManager,
+    private val nm: BackupNotificationManager
+) {
 
     private var calledInitialize = false
     private var calledClearBackupData = false
@@ -92,7 +93,10 @@ internal class BackupCoordinator(
         }
     }
 
-    fun isAppEligibleForBackup(targetPackage: PackageInfo, @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean): Boolean {
+    fun isAppEligibleForBackup(
+        targetPackage: PackageInfo,
+        @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean
+    ): Boolean {
         val packageName = targetPackage.packageName
         // Check that the app is not blacklisted by the user
         val enabled = settingsManager.isBackupEnabled(packageName)
@@ -142,7 +146,11 @@ internal class BackupCoordinator(
         Log.i(TAG, "Request incremental backup time. Returned $this")
     }
 
-    suspend fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+    suspend fun performIncrementalBackup(
+        packageInfo: PackageInfo,
+        data: ParcelFileDescriptor,
+        flags: Int
+    ): Int {
         cancelReason = UNKNOWN_ERROR
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) {
@@ -185,7 +193,11 @@ internal class BackupCoordinator(
         return result
     }
 
-    suspend fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
+    suspend fun performFullBackup(
+        targetPackage: PackageInfo,
+        fileDescriptor: ParcelFileDescriptor,
+        flags: Int
+    ): Int {
         cancelReason = UNKNOWN_ERROR
         return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
@@ -207,7 +219,7 @@ internal class BackupCoordinator(
      */
     suspend fun cancelFullBackup() {
         val packageInfo = full.getCurrentPackage()
-                ?: throw AssertionError("Cancelling full backup, but no current package")
+            ?: throw AssertionError("Cancelling full backup, but no current package")
         Log.i(TAG, "Cancel full backup of ${packageInfo.packageName} because of $cancelReason")
         onPackageBackupError(packageInfo)
         full.cancelFullBackup()
@@ -224,7 +236,7 @@ internal class BackupCoordinator(
      *
      * @return the same error codes as [performFullBackup].
      */
-    fun clearBackupData(packageInfo: PackageInfo): Int {
+    suspend fun clearBackupData(packageInfo: PackageInfo): Int {
         val packageName = packageInfo.packageName
         Log.i(TAG, "Clear Backup Data of $packageName.")
         try {
@@ -254,12 +266,12 @@ internal class BackupCoordinator(
     suspend fun finishBackup(): Int = when {
         kv.hasState() -> {
             check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
-            onPackageBackedUp(kv.getCurrentPackage()!!)  // not-null because we have state
+            onPackageBackedUp(kv.getCurrentPackage()!!) // not-null because we have state
             kv.finishBackup()
         }
         full.hasState() -> {
             check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
-            onPackageBackedUp(full.getCurrentPackage()!!)  // not-null because we have state
+            onPackageBackedUp(full.getCurrentPackage()!!) // not-null because we have state
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -281,7 +293,10 @@ internal class BackupCoordinator(
         }
     }
 
-    private suspend fun backUpApk(packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR) {
+    private suspend fun backUpApk(
+        packageInfo: PackageInfo,
+        packageState: PackageState = UNKNOWN_ERROR
+    ) {
         val packageName = packageInfo.packageName
         try {
             apkBackup.backupApkIfNecessary(packageInfo, packageState) {

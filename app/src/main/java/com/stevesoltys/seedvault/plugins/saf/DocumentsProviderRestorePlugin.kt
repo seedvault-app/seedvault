@@ -16,17 +16,18 @@ import java.io.InputStream
 private val TAG = DocumentsProviderRestorePlugin::class.java.simpleName
 
 @WorkerThread
-@Suppress("BlockingMethodInNonBlockingContext")  // all methods do I/O
+@Suppress("BlockingMethodInNonBlockingContext") // all methods do I/O
 internal class DocumentsProviderRestorePlugin(
-        private val context: Context,
-        private val storage: DocumentsStorage) : RestorePlugin {
+    private val context: Context,
+    private val storage: DocumentsStorage
+) : RestorePlugin {
 
     override val kvRestorePlugin: KVRestorePlugin by lazy {
-        DocumentsProviderKVRestorePlugin(storage)
+        DocumentsProviderKVRestorePlugin(context, storage)
     }
 
     override val fullRestorePlugin: FullRestorePlugin by lazy {
-        DocumentsProviderFullRestorePlugin(storage)
+        DocumentsProviderFullRestorePlugin(context, storage)
     }
 
     @Throws(IOException::class)
@@ -42,7 +43,7 @@ internal class DocumentsProviderRestorePlugin(
         val backupSets = getBackups(context, rootDir)
         val iterator = backupSets.iterator()
         return generateSequence {
-            if (!iterator.hasNext()) return@generateSequence null  // end sequence
+            if (!iterator.hasNext()) return@generateSequence null // end sequence
             val backupSet = iterator.next()
             try {
                 val stream = storage.getInputStream(backupSet.metadataFile)
@@ -64,18 +65,9 @@ internal class DocumentsProviderRestorePlugin(
             return backupSets
         }
         for (set in files) {
-            if (!set.isDirectory || set.name == null) {
-                if (set.name != FILE_NO_MEDIA) {
-                    Log.w(TAG, "Found invalid backup set folder: ${set.name}")
-                }
-                continue
-            }
-            val token = try {
-                set.name!!.toLong()
-            } catch (e: NumberFormatException) {
-                Log.w(TAG, "Found invalid backup set folder: ${set.name}")
-                continue
-            }
+            // get current token from set or continue to next file/set
+            val token = set.getTokenOrNull() ?: continue
+
             // block until children of set are available
             val metadata = try {
                 set.findFileBlocking(context, FILE_BACKUP_METADATA)
@@ -92,10 +84,26 @@ internal class DocumentsProviderRestorePlugin(
         return backupSets
     }
 
+    private fun DocumentFile.getTokenOrNull(): Long? {
+        if (!isDirectory || name == null) {
+            if (name != FILE_NO_MEDIA) {
+                Log.w(TAG, "Found invalid backup set folder: $name")
+            }
+            return null
+        }
+        return try {
+            name!!.toLong()
+        } catch (e: NumberFormatException) {
+            Log.w(TAG, "Found invalid backup set folder: $name")
+            null
+        }
+    }
+
     @Throws(IOException::class)
     override suspend fun getApkInputStream(token: Long, packageName: String): InputStream {
         val setDir = storage.getSetDir(token) ?: throw IOException()
-        val file = setDir.findFile("$packageName.apk") ?: throw FileNotFoundException()
+        val file =
+            setDir.findFileBlocking(context, "$packageName.apk") ?: throw FileNotFoundException()
         return storage.getInputStream(file)
     }
 
