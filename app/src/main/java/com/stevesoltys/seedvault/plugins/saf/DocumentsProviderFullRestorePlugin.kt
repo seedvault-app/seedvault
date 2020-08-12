@@ -10,7 +10,7 @@ internal class DocumentsProviderFullRestorePlugin(
 
     @Throws(IOException::class)
     override fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
-        val backupDir = documentsStorage.getFullBackupDir(token) ?: throw IOException()
+        val backupDir = documentsStorage.getFullBackupDir(token) ?: return false
         return backupDir.findFile(packageInfo.packageName) != null
     }
 

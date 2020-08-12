@@ -49,6 +49,7 @@ class SettingsManager(context: Context) {
         return Storage(uri, name, isUsb)
     }
 
+    // TODO find a better solution for this hack abusing the settings manager
     fun getAndResetIsStorageChanging(): Boolean {
         return isStorageChanging.getAndSet(false)
     }
