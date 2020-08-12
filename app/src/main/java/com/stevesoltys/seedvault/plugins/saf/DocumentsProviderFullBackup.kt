@@ -10,24 +10,27 @@ import java.io.OutputStream
 
 private val TAG = DocumentsProviderFullBackup::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderFullBackup(
-        private val storage: DocumentsStorage,
-        private val context: Context) : FullBackupPlugin {
+    private val storage: DocumentsStorage,
+    private val context: Context
+) : FullBackupPlugin {
 
     override fun getQuota() = DEFAULT_QUOTA_FULL_BACKUP
 
     @Throws(IOException::class)
     override suspend fun getOutputStream(targetPackage: PackageInfo): OutputStream {
         val file = storage.currentFullBackupDir?.createOrGetFile(context, targetPackage.packageName)
-                ?: throw IOException()
+            ?: throw IOException()
         return storage.getOutputStream(file)
     }
 
     @Throws(IOException::class)
-    override fun removeDataOfPackage(packageInfo: PackageInfo) {
+    override suspend fun removeDataOfPackage(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         Log.i(TAG, "Deleting $packageName...")
-        val file = storage.currentFullBackupDir?.findFile(packageName) ?: return
+        val file = storage.currentFullBackupDir?.findFileBlocking(context, packageName)
+            ?: return
         if (!file.delete()) throw IOException("Failed to delete $packageName")
     }
 

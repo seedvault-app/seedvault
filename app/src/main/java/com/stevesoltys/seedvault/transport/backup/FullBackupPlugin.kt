@@ -16,6 +16,6 @@ interface FullBackupPlugin {
      * Remove all data associated with the given package.
      */
     @Throws(IOException::class)
-    fun removeDataOfPackage(packageInfo: PackageInfo)
+    suspend fun removeDataOfPackage(packageInfo: PackageInfo)
 
 }

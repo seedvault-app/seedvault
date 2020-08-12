@@ -44,7 +44,16 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
 
-    private val restore = RestoreCoordinator(context, settingsManager, metadataManager, notificationManager, plugin, kv, full, metadataReader)
+    private val restore = RestoreCoordinator(
+        context,
+        settingsManager,
+        metadataManager,
+        notificationManager,
+        plugin,
+        kv,
+        full,
+        metadataReader
+    )
 
     private val token = Random.nextLong()
     private val inputStream = mockk<InputStream>()
@@ -219,11 +228,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `getRestoreData() delegates to KV`() {
+    fun `getRestoreData() delegates to KV`() = runBlocking {
         val data = mockk<ParcelFileDescriptor>()
         val result = Random.nextInt()
 
-        every { kv.getRestoreData(data) } returns result
+        coEvery { kv.getRestoreData(data) } returns result
 
         assertEquals(result, restore.getRestoreData(data))
     }

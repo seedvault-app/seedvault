@@ -44,7 +44,18 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val packageService: PackageService = mockk()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = BackupCoordinator(context, plugin, kv, full, apkBackup, clock, packageService, metadataManager, settingsManager, notificationManager)
+    private val backup = BackupCoordinator(
+        context,
+        plugin,
+        kv,
+        full,
+        apkBackup,
+        clock,
+        packageService,
+        metadataManager,
+        settingsManager,
+        notificationManager
+    )
 
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
@@ -93,26 +104,27 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `no error notification when device initialization fails on unplugged USB storage`() = runBlocking {
-        val storage = mockk<Storage>()
-        val documentFile = mockk<DocumentFile>()
+    fun `no error notification when device initialization fails on unplugged USB storage`() =
+        runBlocking {
+            val storage = mockk<Storage>()
+            val documentFile = mockk<DocumentFile>()
 
-        every { clock.time() } returns token
-        coEvery { plugin.initializeDevice(token) } throws IOException()
-        every { settingsManager.getStorage() } returns storage
-        every { storage.isUsb } returns true
-        every { storage.getDocumentFile(context) } returns documentFile
-        every { documentFile.isDirectory } returns false
+            every { clock.time() } returns token
+            coEvery { plugin.initializeDevice(token) } throws IOException()
+            every { settingsManager.getStorage() } returns storage
+            every { storage.isUsb } returns true
+            every { storage.getDocumentFile(context) } returns documentFile
+            every { documentFile.isDirectory } returns false
 
-        assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
+            assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
 
-        // finish will only be called when TRANSPORT_OK is returned, so it should throw
-        every { kv.hasState() } returns false
-        every { full.hasState() } returns false
-        coAssertThrows(IllegalStateException::class.java) {
-            backup.finishBackup()
+            // finish will only be called when TRANSPORT_OK is returned, so it should throw
+            every { kv.hasState() } returns false
+            every { full.hasState() } returns false
+            coAssertThrows(IllegalStateException::class.java) {
+                backup.finishBackup()
+            }
         }
-    }
 
     @Test
     fun `getBackupQuota() delegates to right plugin`() = runBlocking {
@@ -143,24 +155,24 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `clearing KV backup data throws`() {
-        every { kv.clearBackupData(packageInfo) } throws IOException()
+    fun `clearing KV backup data throws`() = runBlocking {
+        coEvery { kv.clearBackupData(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
     }
 
     @Test
-    fun `clearing full backup data throws`() {
-        every { kv.clearBackupData(packageInfo) } just Runs
-        every { full.clearBackupData(packageInfo) } throws IOException()
+    fun `clearing full backup data throws`() = runBlocking {
+        coEvery { kv.clearBackupData(packageInfo) } just Runs
+        coEvery { full.clearBackupData(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
     }
 
     @Test
     fun `clearing backup data succeeds`() = runBlocking {
-        every { kv.clearBackupData(packageInfo) } just Runs
-        every { full.clearBackupData(packageInfo) } just Runs
+        coEvery { kv.clearBackupData(packageInfo) } just Runs
+        coEvery { full.clearBackupData(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.clearBackupData(packageInfo))
 
@@ -213,16 +225,28 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         every { full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1) } returns TRANSPORT_QUOTA_EXCEEDED
         every { full.getCurrentPackage() } returns packageInfo
-        every { metadataManager.onPackageBackupError(packageInfo, QUOTA_EXCEEDED, metadataOutputStream) } just Runs
-        every { full.cancelFullBackup() } just Runs
+        every {
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                QUOTA_EXCEEDED,
+                metadataOutputStream
+            )
+        } just Runs
+        coEvery { full.cancelFullBackup() } just Runs
         every { settingsManager.getStorage() } returns storage
 
-        assertEquals(TRANSPORT_OK,
-                backup.performFullBackup(packageInfo, fileDescriptor, 0))
-        assertEquals(DEFAULT_QUOTA_FULL_BACKUP,
-                backup.getBackupQuota(packageInfo.packageName, true))
-        assertEquals(TRANSPORT_QUOTA_EXCEEDED,
-                backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1))
+        assertEquals(
+            TRANSPORT_OK,
+            backup.performFullBackup(packageInfo, fileDescriptor, 0)
+        )
+        assertEquals(
+            DEFAULT_QUOTA_FULL_BACKUP,
+            backup.getBackupQuota(packageInfo.packageName, true)
+        )
+        assertEquals(
+            TRANSPORT_QUOTA_EXCEEDED,
+            backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
+        )
         backup.cancelFullBackup()
         assertEquals(0L, backup.requestFullBackupTime())
 
@@ -238,14 +262,24 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
         every { full.getCurrentPackage() } returns packageInfo
-        every { metadataManager.onPackageBackupError(packageInfo, NO_DATA, metadataOutputStream) } just Runs
-        every { full.cancelFullBackup() } just Runs
+        every {
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                NO_DATA,
+                metadataOutputStream
+            )
+        } just Runs
+        coEvery { full.cancelFullBackup() } just Runs
         every { settingsManager.getStorage() } returns storage
 
-        assertEquals(TRANSPORT_OK,
-                backup.performFullBackup(packageInfo, fileDescriptor, 0))
-        assertEquals(DEFAULT_QUOTA_FULL_BACKUP,
-                backup.getBackupQuota(packageInfo.packageName, true))
+        assertEquals(
+            TRANSPORT_OK,
+            backup.performFullBackup(packageInfo, fileDescriptor, 0)
+        )
+        assertEquals(
+            DEFAULT_QUOTA_FULL_BACKUP,
+            backup.getBackupQuota(packageInfo.packageName, true)
+        )
         assertEquals(TRANSPORT_PACKAGE_REJECTED, backup.checkFullBackupSize(0))
         backup.cancelFullBackup()
         assertEquals(0L, backup.requestFullBackupTime())
@@ -259,24 +293,44 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `not allowed apps get their APKs backed up during @pm@ backup`() = runBlocking {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
         val notAllowedPackages = listOf(
-                PackageInfo().apply { packageName = "org.example.1" },
-                PackageInfo().apply { packageName = "org.example.2" }
+            PackageInfo().apply { packageName = "org.example.1" },
+            PackageInfo().apply { packageName = "org.example.2" }
         )
         val packageMetadata: PackageMetadata = mockk()
 
-        every { settingsManager.getStorage() } returns storage  // to check for removable storage
+        every { settingsManager.getStorage() } returns storage // to check for removable storage
         every { packageService.notAllowedPackages } returns notAllowedPackages
         // no backup needed
-        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any()) } returns null
+        coEvery {
+            apkBackup.backupApkIfNecessary(
+                notAllowedPackages[0],
+                NOT_ALLOWED,
+                any()
+            )
+        } returns null
         // was backed up, get new packageMetadata
-        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[1], NOT_ALLOWED, any()) } returns packageMetadata
+        coEvery {
+            apkBackup.backupApkIfNecessary(
+                notAllowedPackages[1],
+                NOT_ALLOWED,
+                any()
+            )
+        } returns packageMetadata
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onApkBackedUp(notAllowedPackages[1], packageMetadata, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onApkBackedUp(
+                notAllowedPackages[1],
+                packageMetadata,
+                metadataOutputStream
+            )
+        } just Runs
         // do actual @pm@ backup
         coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
 
-        assertEquals(TRANSPORT_OK,
-                backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(
+            TRANSPORT_OK,
+            backup.performIncrementalBackup(packageInfo, fileDescriptor, 0)
+        )
 
         coVerify {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())
@@ -285,9 +339,21 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     private fun expectApkBackupAndMetadataWrite() {
-        coEvery { apkBackup.backupApkIfNecessary(any(), UNKNOWN_ERROR, any()) } returns packageMetadata
+        coEvery {
+            apkBackup.backupApkIfNecessary(
+                any(),
+                UNKNOWN_ERROR,
+                any()
+            )
+        } returns packageMetadata
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
-        every { metadataManager.onApkBackedUp(any(), packageMetadata, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onApkBackedUp(
+                any(),
+                packageMetadata,
+                metadataOutputStream
+            )
+        } just Runs
     }
 
 }
