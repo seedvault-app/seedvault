@@ -8,9 +8,10 @@ import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import java.io.IOException
 import java.io.OutputStream
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderKVBackup(
-        private val storage: DocumentsStorage,
-        private val context: Context
+    private val storage: DocumentsStorage,
+    private val context: Context
 ) : KVBackupPlugin {
 
     private var packageFile: DocumentFile? = null
@@ -18,8 +19,9 @@ internal class DocumentsProviderKVBackup(
     override fun getQuota(): Long = DEFAULT_QUOTA_KEY_VALUE_BACKUP
 
     @Throws(IOException::class)
-    override fun hasDataForPackage(packageInfo: PackageInfo): Boolean {
-        val packageFile = storage.currentKvBackupDir?.findFile(packageInfo.packageName)
+    override suspend fun hasDataForPackage(packageInfo: PackageInfo): Boolean {
+        val packageFile =
+            storage.currentKvBackupDir?.findFileBlocking(context, packageInfo.packageName)
                 ?: return false
         return packageFile.listFiles().isNotEmpty()
     }
@@ -27,27 +29,31 @@ internal class DocumentsProviderKVBackup(
     @Throws(IOException::class)
     override suspend fun ensureRecordStorageForPackage(packageInfo: PackageInfo) {
         // remember package file for subsequent operations
-        packageFile = storage.getOrCreateKVBackupDir().createOrGetDirectory(context, packageInfo.packageName)
+        packageFile =
+            storage.getOrCreateKVBackupDir().createOrGetDirectory(context, packageInfo.packageName)
     }
 
     @Throws(IOException::class)
-    override fun removeDataOfPackage(packageInfo: PackageInfo) {
+    override suspend fun removeDataOfPackage(packageInfo: PackageInfo) {
         // we cannot use the cached this.packageFile here,
         // because this can be called before [ensureRecordStorageForPackage]
-        val packageFile = storage.currentKvBackupDir?.findFile(packageInfo.packageName) ?: return
+        val packageFile = storage.currentKvBackupDir?.findFileBlocking(context, packageInfo.packageName) ?: return
         packageFile.delete()
     }
 
     @Throws(IOException::class)
-    override fun deleteRecord(packageInfo: PackageInfo, key: String) {
+    override suspend fun deleteRecord(packageInfo: PackageInfo, key: String) {
         val packageFile = this.packageFile ?: throw AssertionError()
         packageFile.assertRightFile(packageInfo)
-        val keyFile = packageFile.findFile(key) ?: return
+        val keyFile = packageFile.findFileBlocking(context, key) ?: return
         keyFile.delete()
     }
 
     @Throws(IOException::class)
-    override suspend fun getOutputStreamForRecord(packageInfo: PackageInfo, key: String): OutputStream {
+    override suspend fun getOutputStreamForRecord(
+        packageInfo: PackageInfo,
+        key: String
+    ): OutputStream {
         val packageFile = this.packageFile ?: throw AssertionError()
         packageFile.assertRightFile(packageInfo)
         val keyFile = packageFile.createOrGetFile(context, key)

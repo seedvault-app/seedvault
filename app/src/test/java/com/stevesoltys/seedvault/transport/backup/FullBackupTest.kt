@@ -199,8 +199,8 @@ internal class FullBackupTest : BackupTest() {
     }
 
     @Test
-    fun `clearBackupData delegates to plugin`() {
-        every { plugin.removeDataOfPackage(packageInfo) } just Runs
+    fun `clearBackupData delegates to plugin`() = runBlocking {
+        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
 
         backup.clearBackupData(packageInfo)
     }
@@ -210,7 +210,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         expectClearState()
-        every { plugin.removeDataOfPackage(packageInfo) } just Runs
+        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
         assertTrue(backup.hasState())
@@ -223,7 +223,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         expectClearState()
-        every { plugin.removeDataOfPackage(packageInfo) } throws IOException()
+        coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
         assertTrue(backup.hasState())

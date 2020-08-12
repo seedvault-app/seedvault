@@ -18,14 +18,16 @@ import org.koin.core.inject
 
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
-private const val TRANSPORT_DIRECTORY_NAME = "com.stevesoltys.seedvault.transport.ConfigurableBackupTransport"
+private const val TRANSPORT_DIRECTORY_NAME =
+    "com.stevesoltys.seedvault.transport.ConfigurableBackupTransport"
 private val TAG = ConfigurableBackupTransport::class.java.simpleName
 
 /**
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class ConfigurableBackupTransport internal constructor(private val context: Context) : BackupTransport(), KoinComponent {
+class ConfigurableBackupTransport internal constructor(private val context: Context) :
+    BackupTransport(), KoinComponent {
 
     private val backupCoordinator by inject<BackupCoordinator>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
@@ -62,7 +64,10 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         backupCoordinator.initializeDevice()
     }
 
-    override fun isAppEligibleForBackup(targetPackage: PackageInfo, isFullBackup: Boolean): Boolean {
+    override fun isAppEligibleForBackup(
+        targetPackage: PackageInfo,
+        isFullBackup: Boolean
+    ): Boolean {
         return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
     }
 
@@ -70,8 +75,8 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         backupCoordinator.getBackupQuota(packageName, isFullBackup)
     }
 
-    override fun clearBackupData(packageInfo: PackageInfo): Int {
-        return backupCoordinator.clearBackupData(packageInfo)
+    override fun clearBackupData(packageInfo: PackageInfo): Int = runBlocking {
+        backupCoordinator.clearBackupData(packageInfo)
     }
 
     override fun finishBackup(): Int = runBlocking {
@@ -86,11 +91,18 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return backupCoordinator.requestBackupTime()
     }
 
-    override fun performBackup(packageInfo: PackageInfo, inFd: ParcelFileDescriptor, flags: Int): Int = runBlocking {
+    override fun performBackup(
+        packageInfo: PackageInfo,
+        inFd: ParcelFileDescriptor,
+        flags: Int
+    ): Int = runBlocking {
         backupCoordinator.performIncrementalBackup(packageInfo, inFd, flags)
     }
 
-    override fun performBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor): Int {
+    override fun performBackup(
+        targetPackage: PackageInfo,
+        fileDescriptor: ParcelFileDescriptor
+    ): Int {
         Log.w(TAG, "Warning: Legacy performBackup() method called.")
         return performBackup(targetPackage, fileDescriptor, 0)
     }
@@ -107,11 +119,18 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return backupCoordinator.checkFullBackupSize(size)
     }
 
-    override fun performFullBackup(targetPackage: PackageInfo, socket: ParcelFileDescriptor, flags: Int): Int = runBlocking {
+    override fun performFullBackup(
+        targetPackage: PackageInfo,
+        socket: ParcelFileDescriptor,
+        flags: Int
+    ): Int = runBlocking {
         backupCoordinator.performFullBackup(targetPackage, socket, flags)
     }
 
-    override fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor): Int = runBlocking {
+    override fun performFullBackup(
+        targetPackage: PackageInfo,
+        fileDescriptor: ParcelFileDescriptor
+    ): Int = runBlocking {
         Log.w(TAG, "Warning: Legacy performFullBackup() method called.")
         backupCoordinator.performFullBackup(targetPackage, fileDescriptor, 0)
     }
@@ -148,8 +167,8 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         restoreCoordinator.nextRestorePackage()
     }
 
-    override fun getRestoreData(outputFileDescriptor: ParcelFileDescriptor): Int {
-        return restoreCoordinator.getRestoreData(outputFileDescriptor)
+    override fun getRestoreData(outputFileDescriptor: ParcelFileDescriptor): Int = runBlocking {
+        restoreCoordinator.getRestoreData(outputFileDescriptor)
     }
 
     override fun abortFullRestore(): Int {
