@@ -7,6 +7,8 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderBackupPlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
+import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH
+import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
@@ -25,8 +27,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import java.io.IOException
 import kotlin.random.Random
-
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -48,7 +50,7 @@ class PluginTest : KoinComponent {
     fun setup() {
         every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
         storage.rootBackupDir?.deleteContents()
-                ?: error("Select a storage location in the app first!")
+            ?: error("Select a storage location in the app first!")
     }
 
     @After
@@ -162,7 +164,7 @@ class PluginTest : KoinComponent {
         // define key/value pair records
         val record1 = Pair(getRandomBase64(23), getRandomByteArray(1337))
         val record2 = Pair(getRandomBase64(42), getRandomByteArray(42 * 1024))
-        val record3 = Pair(getRandomBase64(255), getRandomByteArray(5 * 1024 * 1024))
+        val record3 = Pair(getRandomBase64(128), getRandomByteArray(5 * 1024 * 1024))
 
         // write first record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
@@ -177,7 +179,10 @@ class PluginTest : KoinComponent {
         var records = kvRestore.listRecords(token, packageInfo)
         assertEquals(1, records.size)
         assertEquals(record1.first, records[0])
-        assertReadEquals(record1.second, kvRestore.getInputStreamForRecord(token, packageInfo, record1.first))
+        assertReadEquals(
+            record1.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
+        )
 
         // write second and third record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
@@ -187,9 +192,18 @@ class PluginTest : KoinComponent {
         // all records for package are found and returned properly
         records = kvRestore.listRecords(token, packageInfo)
         assertEquals(listOf(record1.first, record2.first, record3.first).sorted(), records.sorted())
-        assertReadEquals(record1.second, kvRestore.getInputStreamForRecord(token, packageInfo, record1.first))
-        assertReadEquals(record2.second, kvRestore.getInputStreamForRecord(token, packageInfo, record2.first))
-        assertReadEquals(record3.second, kvRestore.getInputStreamForRecord(token, packageInfo, record3.first))
+        assertReadEquals(
+            record1.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
+        )
+        assertReadEquals(
+            record2.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record2.first)
+        )
+        assertReadEquals(
+            record3.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record3.first)
+        )
 
         // delete record3 and ensure that the other two are still found
         kvBackup.deleteRecord(packageInfo, record3.first)
@@ -211,13 +225,17 @@ class PluginTest : KoinComponent {
         // initialize storage with given token
         initStorage(token)
 
+        // FIXME get Nextcloud to have the same limit
+        val max = if (isNextcloud()) MAX_KEY_LENGTH_NEXTCLOUD else MAX_KEY_LENGTH
+
         // define record with maximum key length and one above the maximum
-        val recordMax = Pair(getRandomBase64(255), getRandomByteArray(1024))
-        val recordOver = Pair(getRandomBase64(256), getRandomByteArray(1024))
+        val recordMax = Pair(getRandomBase64(max), getRandomByteArray(1024))
+        val recordOver = Pair(getRandomBase64(max + 1), getRandomByteArray(1024))
 
         // write max record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
-        kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first).writeAndClose(recordMax.second)
+        kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first)
+            .writeAndClose(recordMax.second)
 
         // max record is found correctly
         assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
@@ -226,8 +244,17 @@ class PluginTest : KoinComponent {
 
         // write exceeding key length record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
-        coAssertThrows(IllegalStateException::class.java) {
-            kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first).writeAndClose(recordOver.second)
+        if (isNextcloud()) {
+            // Nextcloud simply refuses to write long filenames
+            coAssertThrows(IOException::class.java) {
+                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
+                    .writeAndClose(recordOver.second)
+            }
+        } else {
+            coAssertThrows(IllegalStateException::class.java) {
+                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
+                    .writeAndClose(recordOver.second)
+            }
         }
     }
 
@@ -276,6 +303,10 @@ class PluginTest : KoinComponent {
     private fun initStorage(token: Long) = runBlocking {
         every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true
         assertTrue(backupPlugin.initializeDevice(newToken = token))
+    }
+
+    private fun isNextcloud(): Boolean {
+        return backupPlugin.providerPackageName == "com.nextcloud.client"
     }
 
 }

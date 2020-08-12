@@ -54,7 +54,7 @@ class DocumentsStorageTest : KoinComponent {
     fun setup() = runBlocking {
         assertNotNull("Select a storage location in the app first!", storage.rootBackupDir)
         file = storage.rootBackupDir?.createOrGetFile(context, filename)
-                ?: throw RuntimeException("Could not create test file")
+            ?: error("Could not create test file")
     }
 
     @After
