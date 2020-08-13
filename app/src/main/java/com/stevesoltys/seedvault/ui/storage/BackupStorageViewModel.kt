@@ -24,6 +24,7 @@ internal class BackupStorageViewModel(
 
     override fun onLocationSet(uri: Uri) {
         val isUsb = saveStorage(uri)
+        settingsManager.forceStorageInitialization()
 
         // initialize the new location, will also generate a new backup token
         val observer = InitializationObserver()
