@@ -21,25 +21,25 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 
 private val TAG = SettingsViewModel::class.java.simpleName
 
 class SettingsViewModel(
-        app: Application,
-        settingsManager: SettingsManager,
-        keyManager: KeyManager,
-        private val metadataManager: MetadataManager
+    app: Application,
+    settingsManager: SettingsManager,
+    keyManager: KeyManager,
+    private val metadataManager: MetadataManager
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     override val isRestoreOperation = false

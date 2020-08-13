@@ -9,8 +9,8 @@ import android.util.Log
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.transport.backup.getSignatures
+import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
