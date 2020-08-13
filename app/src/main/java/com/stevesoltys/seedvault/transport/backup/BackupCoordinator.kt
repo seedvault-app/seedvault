@@ -77,7 +77,9 @@ internal class BackupCoordinator(
             val token = clock.time()
             if (plugin.initializeDevice(token)) {
                 Log.d(TAG, "Resetting backup metadata...")
-                metadataManager.onDeviceInitialization(token, plugin.getMetadataOutputStream())
+                plugin.getMetadataOutputStream().use {
+                    metadataManager.onDeviceInitialization(token, it)
+                }
             } else {
                 Log.d(TAG, "Storage was already initialized, doing no-op")
             }
@@ -302,8 +304,9 @@ internal class BackupCoordinator(
             apkBackup.backupApkIfNecessary(packageInfo, packageState) {
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
-                val outputStream = plugin.getMetadataOutputStream()
-                metadataManager.onApkBackedUp(packageInfo, packageMetadata, outputStream)
+                plugin.getMetadataOutputStream().use {
+                    metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
@@ -313,8 +316,9 @@ internal class BackupCoordinator(
     private suspend fun onPackageBackedUp(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         try {
-            val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackedUp(packageInfo, outputStream)
+            plugin.getMetadataOutputStream().use {
+                metadataManager.onPackageBackedUp(packageInfo, it)
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }
@@ -325,8 +329,9 @@ internal class BackupCoordinator(
         if (cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
-            val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackupError(packageInfo, cancelReason, outputStream)
+            plugin.getMetadataOutputStream().use {
+                metadataManager.onPackageBackupError(packageInfo, cancelReason, it)
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }

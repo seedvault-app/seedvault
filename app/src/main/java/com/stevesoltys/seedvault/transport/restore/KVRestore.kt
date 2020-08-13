@@ -143,10 +143,8 @@ internal class KVRestore(
         state: KVRestoreState,
         dKey: DecodedKey,
         out: BackupDataOutput
-    ) {
-        val inputStream =
-            plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
-        try {
+    ) = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
+        .use { inputStream ->
             val version = headerReader.readVersion(inputStream)
             crypto.decryptHeader(inputStream, version, state.packageInfo.packageName, dKey.key)
             val value = crypto.decryptMultipleSegments(inputStream)
@@ -155,10 +153,8 @@ internal class KVRestore(
 
             out.writeEntityHeader(dKey.key, size)
             out.writeEntityData(value, size)
-        } finally {
-            closeQuietly(inputStream)
+            Unit
         }
-    }
 
     private class DecodedKey(internal val base64Key: String) : Comparable<DecodedKey> {
         internal val key = base64Key.decodeBase64()

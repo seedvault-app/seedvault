@@ -15,13 +15,14 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
-import java.util.*
+import java.util.Base64
 import kotlin.random.Random
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -56,7 +57,10 @@ internal class KVBackupTest : BackupTest() {
     fun `incremental backup with no data gets rejected`() = runBlocking {
         coEvery { plugin.hasDataForPackage(packageInfo) } returns false
 
-        assertEquals(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED, backup.performBackup(packageInfo, data, FLAG_INCREMENTAL))
+        assertEquals(
+            TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
+            backup.performBackup(packageInfo, data, FLAG_INCREMENTAL)
+        )
         assertFalse(backup.hasState())
     }
 
@@ -80,15 +84,19 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `ignoring exception when clearing data when non-incremental backup has data`() = runBlocking {
-        singleRecordBackup(true)
-        coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
+    fun `ignoring exception when clearing data when non-incremental backup has data`() =
+        runBlocking {
+            singleRecordBackup(true)
+            coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
+            assertEquals(
+                TRANSPORT_OK,
+                backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL)
+            )
+            assertTrue(backup.hasState())
+            assertEquals(TRANSPORT_OK, backup.finishBackup())
+            assertFalse(backup.hasState())
+        }
 
     @Test
     fun `ensuring storage throws exception`() = runBlocking {
@@ -139,9 +147,12 @@ internal class KVBackupTest : BackupTest() {
         getDataInput(listOf(true))
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test
@@ -152,9 +163,12 @@ internal class KVBackupTest : BackupTest() {
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
         every { crypto.encryptMultipleSegments(outputStream, any()) } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test
@@ -164,9 +178,12 @@ internal class KVBackupTest : BackupTest() {
         writeHeaderAndEncrypt()
         every { outputStream.write(value) } just Runs
         every { outputStream.flush() } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test

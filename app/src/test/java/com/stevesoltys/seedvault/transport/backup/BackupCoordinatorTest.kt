@@ -70,9 +70,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.initializeDevice())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
+
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -137,7 +140,10 @@ internal class BackupCoordinatorTest : BackupTest() {
         } else {
             every { kv.getQuota() } returns quota
         }
+        every { metadataOutputStream.close() } just Runs
         assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, isFullBackup))
+
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -192,8 +198,11 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
         every { kv.finishBackup() } returns result
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(result, backup.finishBackup())
+
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -206,8 +215,11 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
         every { full.finishBackup() } returns result
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(result, backup.finishBackup())
+
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -234,6 +246,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
         every { settingsManager.getStorage() } returns storage
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(
             TRANSPORT_OK,
@@ -253,6 +266,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         verify(exactly = 1) {
             metadataManager.onPackageBackupError(packageInfo, QUOTA_EXCEEDED, metadataOutputStream)
         }
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -271,6 +285,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
         every { settingsManager.getStorage() } returns storage
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(
             TRANSPORT_OK,
@@ -287,6 +302,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         verify(exactly = 1) {
             metadataManager.onPackageBackupError(packageInfo, NO_DATA, metadataOutputStream)
         }
+        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -326,6 +342,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         // do actual @pm@ backup
         coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        every { metadataOutputStream.close() } just Runs
 
         assertEquals(
             TRANSPORT_OK,
@@ -335,6 +352,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         coVerify {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())
             apkBackup.backupApkIfNecessary(notAllowedPackages[1], NOT_ALLOWED, any())
+            metadataOutputStream.close()
         }
     }
 
