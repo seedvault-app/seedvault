@@ -32,6 +32,7 @@ internal class DocumentsProviderBackupPlugin(
         // check if storage is already initialized
         if (storage.isInitialized()) return false
 
+        // TODO consider not creating new RestoreSets, but continue working within the existing one.
         // reset current storage
         storage.reset(newToken)
 

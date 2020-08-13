@@ -1,11 +1,13 @@
 package com.stevesoltys.seedvault.settings
 
+import android.app.backup.RestoreSet
 import android.content.Context
 import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
 import java.util.concurrent.ConcurrentSkipListSet
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -44,7 +46,6 @@ class SettingsManager(context: Context) {
             .putString(PREF_KEY_STORAGE_NAME, storage.name)
             .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
             .apply()
-        isStorageChanging.set(true)
     }
 
     fun getStorage(): Storage? {
@@ -56,7 +57,21 @@ class SettingsManager(context: Context) {
         return Storage(uri, name, isUsb)
     }
 
-    // TODO find a better solution for this hack abusing the settings manager
+    /**
+     * When [ConfigurableBackupTransport.initializeDevice] we try to avoid deleting all stored data,
+     * as this gets frequently called after network errors by SAF cloud providers.
+     *
+     * This method allows us to force a re-initialization of the underlying storage root
+     * when we change to a new storage provider.
+     * Currently, this causes us to create a new [RestoreSet].
+     *
+     * As part of the initialization, [getAndResetIsStorageChanging] should get called
+     * to prevent future calls from causing re-initializations.
+     */
+    fun forceStorageInitialization() {
+        isStorageChanging.set(true)
+    }
+
     fun getAndResetIsStorageChanging(): Boolean {
         return isStorageChanging.getAndSet(false)
     }
