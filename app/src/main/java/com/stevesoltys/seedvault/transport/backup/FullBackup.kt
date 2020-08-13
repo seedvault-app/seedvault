@@ -149,7 +149,7 @@ internal class FullBackup(
                 "No OutputStream xor no StreamGetter"
             }
             val outputStream = state.outputStream ?: suspend {
-                val stream = state.outputStreamInit!!()  // not-null due to check above
+                val stream = state.outputStreamInit!!() // not-null due to check above
                 state.outputStream = stream
                 stream
             }()

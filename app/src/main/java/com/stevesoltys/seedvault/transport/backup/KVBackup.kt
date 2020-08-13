@@ -114,15 +114,26 @@ internal class KVBackup(
                     plugin.deleteRecord(packageInfo, op.base64Key)
                 } else {
                     val outputStream = plugin.getOutputStreamForRecord(packageInfo, op.base64Key)
-                    val header = VersionHeader(packageName = packageInfo.packageName, key = op.key)
-                    headerWriter.writeVersion(outputStream, header)
-                    crypto.encryptHeader(outputStream, header)
-                    crypto.encryptMultipleSegments(outputStream, op.value)
-                    outputStream.flush()
-                    closeQuietly(outputStream)
+                    try {
+                        val header = VersionHeader(
+                            packageName = packageInfo.packageName,
+                            key = op.key
+                        )
+                        headerWriter.writeVersion(outputStream, header)
+                        crypto.encryptHeader(outputStream, header)
+                        crypto.encryptMultipleSegments(outputStream, op.value)
+                        outputStream.flush()
+                    } finally {
+                        closeQuietly(outputStream)
+                    }
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Unable to update base64Key file for base64Key ${op.base64Key}", e)
+                // Returning something more forgiving such as TRANSPORT_PACKAGE_REJECTED
+                // will still make the entire backup fail.
+                // TODO However, TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED might buy us a retry,
+                //  we would just need to be careful not to create an infinite loop
+                //  for permanent errors.
                 return backupError(TRANSPORT_ERROR)
             }
         }
@@ -141,7 +152,7 @@ internal class KVBackup(
         return generateSequence {
             // read the next header or end the sequence in case of error or no more headers
             try {
-                if (!changeSet.readNextHeader()) return@generateSequence null  // end the sequence
+                if (!changeSet.readNextHeader()) return@generateSequence null // end the sequence
             } catch (e: IOException) {
                 Log.e(TAG, "Error reading next header", e)
                 return@generateSequence Result.Error(e)
