@@ -46,7 +46,10 @@ class SettingsViewModel(
 
     internal val lastBackupTime = metadataManager.lastBackupTime
 
-    private val mAppStatusList = switchMap(lastBackupTime) { getAppStatusResult() }
+    private val mAppStatusList = switchMap(lastBackupTime) {
+        // updates app list when lastBackupTime changes
+        getAppStatusResult()
+    }
     internal val appStatusList: LiveData<AppStatusResult> = mAppStatusList
 
     private val mAppEditMode = MutableLiveData<Boolean>()
@@ -63,46 +66,46 @@ class SettingsViewModel(
         Thread { requestBackup(app) }.start()
     }
 
-    private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData(Dispatchers.Main) {
+    private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData {
         val pm = app.packageManager
         val locale = Locale.getDefault()
         val list = pm.getInstalledPackages(0)
-                .filter { !it.isSystemApp() }
-                .map {
-                    val icon = if (it.packageName == MAGIC_PACKAGE_MANAGER) {
+            .filter { !it.isSystemApp() }
+            .map {
+                val icon = if (it.packageName == MAGIC_PACKAGE_MANAGER) {
+                    getDrawable(app, R.drawable.ic_launcher_default)!!
+                } else {
+                    try {
+                        pm.getApplicationIcon(it.packageName)
+                    } catch (e: NameNotFoundException) {
                         getDrawable(app, R.drawable.ic_launcher_default)!!
-                    } else {
-                        try {
-                            pm.getApplicationIcon(it.packageName)
-                        } catch (e: NameNotFoundException) {
-                            getDrawable(app, R.drawable.ic_launcher_default)!!
-                        }
                     }
-                    val metadata = metadataManager.getPackageMetadata(it.packageName)
-                    val time = metadata?.time ?: 0
-                    val status = when (metadata?.state) {
-                        null -> {
-                            Log.w(TAG, "No metadata available for: ${it.packageName}")
-                            FAILED
-                        }
-                        NO_DATA -> FAILED_NO_DATA
-                        NOT_ALLOWED -> FAILED_NOT_ALLOWED
-                        QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
-                        UNKNOWN_ERROR -> FAILED
-                        APK_AND_DATA -> SUCCEEDED
+                }
+                val metadata = metadataManager.getPackageMetadata(it.packageName)
+                val time = metadata?.time ?: 0
+                val status = when (metadata?.state) {
+                    null -> {
+                        Log.w(TAG, "No metadata available for: ${it.packageName}")
+                        FAILED
                     }
-                    if (metadata?.hasApk() == false) {
-                        Log.w(TAG, "No APK stored for: ${it.packageName}")
-                    }
-                    AppStatus(
-                            packageName = it.packageName,
-                            enabled = settingsManager.isBackupEnabled(it.packageName),
-                            icon = icon,
-                            name = getAppName(app, it.packageName).toString(),
-                            time = time,
-                            status = status
-                    )
-                }.sortedBy { it.name.toLowerCase(locale) }
+                    NO_DATA -> FAILED_NO_DATA
+                    NOT_ALLOWED -> FAILED_NOT_ALLOWED
+                    QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
+                    UNKNOWN_ERROR -> FAILED
+                    APK_AND_DATA -> SUCCEEDED
+                }
+                if (metadata?.hasApk() == false) {
+                    Log.w(TAG, "No APK stored for: ${it.packageName}")
+                }
+                AppStatus(
+                    packageName = it.packageName,
+                    enabled = settingsManager.isBackupEnabled(it.packageName),
+                    icon = icon,
+                    name = getAppName(app, it.packageName).toString(),
+                    time = time,
+                    status = status
+                )
+            }.sortedBy { it.name.toLowerCase(locale) }
         val oldList = mAppStatusList.value?.appStatusList ?: emptyList()
         val diff = calculateDiff(AppStatusDiff(oldList, list))
         emit(AppStatusResult(list, diff))
