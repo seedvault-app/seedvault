@@ -19,7 +19,6 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
