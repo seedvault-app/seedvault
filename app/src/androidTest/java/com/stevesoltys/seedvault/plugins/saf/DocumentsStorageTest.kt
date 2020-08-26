@@ -119,6 +119,49 @@ class DocumentsStorageTest : KoinComponent {
     }
 
     @Test
+    fun testCreateTwoFiles() = runBlocking {
+        val mimeType = "application/octet-stream"
+        val dir = storage.rootBackupDir!!
+
+        // create test file
+        val name1 = getRandomBase64(Random.nextInt(1, 10))
+        val file1 = requireNotNull(dir.createFile(mimeType, name1))
+        assertTrue(file1.exists())
+        assertEquals(name1, file1.name)
+        assertEquals(0L, file1.length())
+
+        assertReadEquals(getRandomByteArray(0), context.contentResolver.openInputStream(file1.uri))
+
+        // write some data into it
+        val data1 = getRandomByteArray(5 * 1024 * 1024)
+        context.contentResolver.openOutputStream(file1.uri)!!.writeAndClose(data1)
+        assertEquals(data1.size.toLong(), file1.length())
+
+        // data should still be there
+        assertReadEquals(data1, context.contentResolver.openInputStream(file1.uri))
+
+        // create test file
+        val name2 = getRandomBase64(Random.nextInt(1, 10))
+        val file2 = requireNotNull(dir.createFile(mimeType, name2))
+        assertTrue(file2.exists())
+        assertEquals(name2, file2.name)
+
+        // write some data into it
+        val data2 = getRandomByteArray(12 * 1024 * 1024)
+        context.contentResolver.openOutputStream(file2.uri)!!.writeAndClose(data2)
+        assertEquals(data2.size.toLong(), file2.length())
+
+        // data should still be there
+        assertReadEquals(data2, context.contentResolver.openInputStream(file2.uri))
+
+        // delete files again
+        file1.delete()
+        file2.delete()
+        assertFalse(file1.exists())
+        assertFalse(file2.exists())
+    }
+
+    @Test
     fun testGetLoadedCursor() = runBlocking {
         // empty cursor extras are like not loading, returns same cursor right away
         val cursor1: Cursor = mockk()
