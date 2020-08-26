@@ -315,7 +315,18 @@ internal class BackupCoordinatorTest : BackupTest() {
         val packageMetadata: PackageMetadata = mockk()
 
         every { settingsManager.getStorage() } returns storage // to check for removable storage
+        // do actual @pm@ backup
+        coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        // now check if we have opt-out apps that we need to back up APKs for
         every { packageService.notAllowedPackages } returns notAllowedPackages
+        // update notification
+        every {
+            notificationManager.onOptOutAppBackup(
+                notAllowedPackages[0].packageName,
+                1,
+                notAllowedPackages.size
+            )
+        } just Runs
         // no backup needed
         coEvery {
             apkBackup.backupApkIfNecessary(
@@ -324,6 +335,14 @@ internal class BackupCoordinatorTest : BackupTest() {
                 any()
             )
         } returns null
+        // update notification
+        every {
+            notificationManager.onOptOutAppBackup(
+                notAllowedPackages[1].packageName,
+                2,
+                notAllowedPackages.size
+            )
+        } just Runs
         // was backed up, get new packageMetadata
         coEvery {
             apkBackup.backupApkIfNecessary(
@@ -340,8 +359,6 @@ internal class BackupCoordinatorTest : BackupTest() {
                 metadataOutputStream
             )
         } just Runs
-        // do actual @pm@ backup
-        coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
         every { metadataOutputStream.close() } just Runs
 
         assertEquals(
