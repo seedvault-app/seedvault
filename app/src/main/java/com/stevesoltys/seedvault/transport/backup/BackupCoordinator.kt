@@ -160,10 +160,13 @@ internal class BackupCoordinator(
             if (getBackupBackoff() != 0L) {
                 return TRANSPORT_PACKAGE_REJECTED
             }
+        }
+        val result = kv.performBackup(packageInfo, data, flags)
+        if (result == TRANSPORT_OK && packageName == MAGIC_PACKAGE_MANAGER) {
             // hook in here to back up APKs of apps that are otherwise not allowed for backup
             backUpNotAllowedPackages()
         }
-        return kv.performBackup(packageInfo, data, flags)
+        return result
     }
 
     // ------------------------------------------------------------------------------------
@@ -285,8 +288,10 @@ internal class BackupCoordinator(
 
     private suspend fun backUpNotAllowedPackages() {
         Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
-        packageService.notAllowedPackages.forEach { optOutPackageInfo ->
+        val notAllowedPackages = packageService.notAllowedPackages
+        notAllowedPackages.forEachIndexed { i, optOutPackageInfo ->
             try {
+                nm.onOptOutAppBackup(optOutPackageInfo.packageName, i + 1, notAllowedPackages.size)
                 backUpApk(optOutPackageInfo, NOT_ALLOWED)
             } catch (e: IOException) {
                 Log.e(TAG, "Error backing up opt-out APK of ${optOutPackageInfo.packageName}", e)

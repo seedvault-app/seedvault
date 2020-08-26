@@ -61,15 +61,15 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val headerReader = HeaderReaderImpl()
     private val cryptoImpl = CryptoImpl(cipherFactory, headerWriter, headerReader)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
+    private val notificationManager = mockk<BackupNotificationManager>()
 
     private val backupPlugin = mockk<BackupPlugin>()
     private val kvBackupPlugin = mockk<KVBackupPlugin>()
-    private val kvBackup = KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl)
+    private val kvBackup = KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl, notificationManager)
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
     private val apkBackup = mockk<ApkBackup>()
     private val packageService: PackageService = mockk()
-    private val notificationManager = mockk<BackupNotificationManager>()
     private val backup = BackupCoordinator(
         context,
         backupPlugin,

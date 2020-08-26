@@ -53,8 +53,9 @@ class ConfigurableBackupTransportService : Service() {
 fun requestBackup(context: Context) {
     val packageService: PackageService = get().koin.get()
     val packages = packageService.eligiblePackages
+    val optOutPackages = packageService.notAllowedPackages
 
-    val observer = NotificationBackupObserver(context, packages.size, true)
+    val observer = NotificationBackupObserver(context, packages.size, optOutPackages.size, true)
     val result = try {
         val backupManager: IBackupManager = get().koin.get()
         backupManager.requestBackup(packages, observer, BackupMonitor(), FLAG_USER_INITIATED)
