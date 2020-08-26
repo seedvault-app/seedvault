@@ -126,7 +126,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    lintChecks 'com.github.thirdegg:lint-rules:0.0.4-alpha'
+    lintChecks 'com.github.thirdegg:lint-rules:0.0.5-alpha'
 
     def junit_version = "5.5.2"  // careful, upgrading this can change a Cipher's IV size in tests!?
     def mockk_version = "1.10.0"

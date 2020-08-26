@@ -141,11 +141,18 @@ class PluginTest : KoinComponent {
         initStorage(token)
 
         // write random bytes as APK
-        val apk = getRandomByteArray(1337)
-        backupPlugin.getApkOutputStream(packageInfo).writeAndClose(apk)
+        val apk1 = getRandomByteArray(1337 * 1024)
+        backupPlugin.getApkOutputStream(packageInfo).writeAndClose(apk1)
 
         // assert that read APK bytes match what was written
-        assertReadEquals(apk, restorePlugin.getApkInputStream(token, packageInfo.packageName))
+        assertReadEquals(apk1, restorePlugin.getApkInputStream(token, packageInfo.packageName))
+
+        // write random bytes as another APK
+        val apk2 = getRandomByteArray(23 * 1024 * 1024)
+        backupPlugin.getApkOutputStream(packageInfo2).writeAndClose(apk2)
+
+        // assert that read APK bytes match what was written
+        assertReadEquals(apk2, restorePlugin.getApkInputStream(token, packageInfo2.packageName))
     }
 
     @Test
@@ -226,11 +233,14 @@ class PluginTest : KoinComponent {
         initStorage(token)
 
         // FIXME get Nextcloud to have the same limit
+        //  Since Nextcloud is using WebDAV and that seems to have undefined lower file name limits
+        //  we might have to lower our maximum to accommodate for that.
         val max = if (isNextcloud()) MAX_KEY_LENGTH_NEXTCLOUD else MAX_KEY_LENGTH
+        val maxOver = if (isNextcloud()) max + 10 else max + 1
 
         // define record with maximum key length and one above the maximum
         val recordMax = Pair(getRandomBase64(max), getRandomByteArray(1024))
-        val recordOver = Pair(getRandomBase64(max + 1), getRandomByteArray(1024))
+        val recordOver = Pair(getRandomBase64(maxOver), getRandomByteArray(1024))
 
         // write max record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
@@ -306,7 +316,7 @@ class PluginTest : KoinComponent {
     }
 
     private fun isNextcloud(): Boolean {
-        return backupPlugin.providerPackageName == "com.nextcloud.client"
+        return backupPlugin.providerPackageName?.startsWith("com.nextcloud") ?: false
     }
 
 }
