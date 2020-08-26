@@ -11,8 +11,6 @@ import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.metadata.isSystemApp
-import com.stevesoltys.seedvault.metadata.isUpdatedSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
 import java.io.FileNotFoundException
@@ -23,9 +21,10 @@ import java.security.MessageDigest
 private val TAG = ApkBackup::class.java.simpleName
 
 class ApkBackup(
-        private val pm: PackageManager,
-        private val settingsManager: SettingsManager,
-        private val metadataManager: MetadataManager) {
+    private val pm: PackageManager,
+    private val settingsManager: SettingsManager,
+    private val metadataManager: MetadataManager
+) {
 
     /**
      * Checks if a new APK needs to get backed up,
@@ -36,7 +35,11 @@ class ApkBackup(
      * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
      */
     @Throws(IOException::class)
-    fun backupApkIfNecessary(packageInfo: PackageInfo, packageState: PackageState, streamGetter: () -> OutputStream): PackageMetadata? {
+    suspend fun backupApkIfNecessary(
+        packageInfo: PackageInfo,
+        packageState: PackageState,
+        streamGetter: suspend () -> OutputStream
+    ): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) return null
@@ -45,7 +48,7 @@ class ApkBackup(
         if (!settingsManager.backupApks()) return null
 
         // do not back up system apps that haven't been updated
-        if (packageInfo.isSystemApp() && !packageInfo.isUpdatedSystemApp()) {
+        if (packageInfo.isNotUpdatedSystemApp()) {
             Log.d(TAG, "Package $packageName is vanilla system app. Not backing it up.")
             return null
         }
@@ -65,15 +68,19 @@ class ApkBackup(
 
         // get cached metadata about package
         val packageMetadata = metadataManager.getPackageMetadata(packageName)
-                ?: PackageMetadata()
+            ?: PackageMetadata()
 
         // get version codes
         val version = packageInfo.longVersionCode
-        val backedUpVersion = packageMetadata.version ?: 0L  // no version will cause backup
+        val backedUpVersion = packageMetadata.version ?: 0L // no version will cause backup
 
         // do not backup if we have the version already and signatures did not change
         if (version <= backedUpVersion && !signaturesChanged(packageMetadata, signatures)) {
-            Log.d(TAG, "Package $packageName with version $version already has a backup ($backedUpVersion) with the same signature. Not backing it up.")
+            Log.d(
+                TAG,
+                "Package $packageName with version $version already has a backup ($backedUpVersion)" +
+                        " with the same signature. Not backing it up."
+            )
             return null
         }
 
@@ -91,7 +98,7 @@ class ApkBackup(
 
         // copy the APK to the storage's output and calculate SHA-256 hash while at it
         val messageDigest = MessageDigest.getInstance("SHA-256")
-        streamGetter.invoke().use { outputStream ->
+        streamGetter().use { outputStream ->
             inputStream.use { inputStream ->
                 val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                 var bytes = inputStream.read(buffer)
@@ -107,15 +114,18 @@ class ApkBackup(
 
         // return updated metadata
         return PackageMetadata(
-                state = packageState,
-                version = version,
-                installer = pm.getInstallerPackageName(packageName),
-                sha256 = sha256,
-                signatures = signatures
+            state = packageState,
+            version = version,
+            installer = pm.getInstallerPackageName(packageName),
+            sha256 = sha256,
+            signatures = signatures
         )
     }
 
-    private fun signaturesChanged(packageMetadata: PackageMetadata, signatures: List<String>): Boolean {
+    private fun signaturesChanged(
+        packageMetadata: PackageMetadata,
+        signatures: List<String>
+    ): Boolean {
         // no signatures in package metadata counts as them not having changed
         if (packageMetadata.signatures == null) return false
         // TODO to support multiple signers check if lists differ

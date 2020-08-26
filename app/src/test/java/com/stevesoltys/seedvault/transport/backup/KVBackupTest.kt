@@ -11,17 +11,21 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VersionHeader
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
-import java.util.*
+import java.util.Base64
 import kotlin.random.Random
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackupTest : BackupTest() {
 
     private val plugin = mockk<KVBackupPlugin>()
@@ -40,7 +44,7 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `simple backup with one record`() {
+    fun `simple backup with one record`() = runBlocking {
         singleRecordBackup()
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0))
@@ -50,25 +54,28 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `incremental backup with no data gets rejected`() {
-        every { plugin.hasDataForPackage(packageInfo) } returns false
+    fun `incremental backup with no data gets rejected`() = runBlocking {
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns false
 
-        assertEquals(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED, backup.performBackup(packageInfo, data, FLAG_INCREMENTAL))
+        assertEquals(
+            TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
+            backup.performBackup(packageInfo, data, FLAG_INCREMENTAL)
+        )
         assertFalse(backup.hasState())
     }
 
     @Test
-    fun `check for existing data throws exception`() {
-        every { plugin.hasDataForPackage(packageInfo) } throws IOException()
+    fun `check for existing data throws exception`() = runBlocking {
+        coEvery { plugin.hasDataForPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
     }
 
     @Test
-    fun `non-incremental backup with data clears old data first`() {
+    fun `non-incremental backup with data clears old data first`() = runBlocking {
         singleRecordBackup(true)
-        every { plugin.removeDataOfPackage(packageInfo) } just Runs
+        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL))
         assertTrue(backup.hasState())
@@ -77,27 +84,31 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `ignoring exception when clearing data when non-incremental backup has data`() {
-        singleRecordBackup(true)
-        every { plugin.removeDataOfPackage(packageInfo) } throws IOException()
+    fun `ignoring exception when clearing data when non-incremental backup has data`() =
+        runBlocking {
+            singleRecordBackup(true)
+            coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
+            assertEquals(
+                TRANSPORT_OK,
+                backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL)
+            )
+            assertTrue(backup.hasState())
+            assertEquals(TRANSPORT_OK, backup.finishBackup())
+            assertFalse(backup.hasState())
+        }
 
     @Test
-    fun `ensuring storage throws exception`() {
-        every { plugin.hasDataForPackage(packageInfo) } returns false
-        every { plugin.ensureRecordStorageForPackage(packageInfo) } throws IOException()
+    fun `ensuring storage throws exception`() = runBlocking {
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns false
+        coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
     }
 
     @Test
-    fun `exception while reading next header`() {
+    fun `exception while reading next header`() = runBlocking {
         initPlugin(false)
         createBackupDataInput()
         every { dataInput.readNextHeader() } throws IOException()
@@ -107,7 +118,7 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `exception while reading value`() {
+    fun `exception while reading value`() = runBlocking {
         initPlugin(false)
         createBackupDataInput()
         every { dataInput.readNextHeader() } returns true
@@ -120,7 +131,7 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `no data records`() {
+    fun `no data records`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(false))
 
@@ -131,43 +142,52 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `exception while writing version header`() {
+    fun `exception while writing version header`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
-        every { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
+        coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test
-    fun `exception while writing encrypted value to output stream`() {
+    fun `exception while writing encrypted value to output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
         writeHeaderAndEncrypt()
-        every { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
+        coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
         every { crypto.encryptMultipleSegments(outputStream, any()) } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test
-    fun `exception while flushing output stream`() {
+    fun `exception while flushing output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
         writeHeaderAndEncrypt()
         every { outputStream.write(value) } just Runs
         every { outputStream.flush() } throws IOException()
+        every { outputStream.close() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
+
+        verify { outputStream.close() }
     }
 
     @Test
-    fun `ignoring exception while closing output stream`() {
+    fun `ignoring exception while closing output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true, false))
         writeHeaderAndEncrypt()
@@ -191,8 +211,8 @@ internal class KVBackupTest : BackupTest() {
     }
 
     private fun initPlugin(hasDataForPackage: Boolean = false) {
-        every { plugin.hasDataForPackage(packageInfo) } returns hasDataForPackage
-        every { plugin.ensureRecordStorageForPackage(packageInfo) } just Runs
+        coEvery { plugin.hasDataForPackage(packageInfo) } returns hasDataForPackage
+        coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } just Runs
     }
 
     private fun createBackupDataInput() {
@@ -208,7 +228,7 @@ internal class KVBackupTest : BackupTest() {
     }
 
     private fun writeHeaderAndEncrypt() {
-        every { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
+        coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
         every { crypto.encryptHeader(outputStream, versionHeader) } just Runs
         every { crypto.encryptMultipleSegments(outputStream, any()) } just Runs

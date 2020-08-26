@@ -7,17 +7,19 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderBackupPlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
+import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH
+import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,12 +27,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.IOException
 import kotlin.random.Random
 
-
 @RunWith(AndroidJUnit4::class)
+@Suppress("BlockingMethodInNonBlockingContext")
 class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -38,7 +39,7 @@ class PluginTest : KoinComponent {
     private val settingsManager: SettingsManager by inject()
     private val mockedSettingsManager: SettingsManager = mockk()
     private val storage = DocumentsStorage(context, metadataManager, mockedSettingsManager)
-    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(storage, context.packageManager)
+    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(context, storage)
     private val restorePlugin: RestorePlugin = DocumentsProviderRestorePlugin(context, storage)
 
     private val token = Random.nextLong()
@@ -49,7 +50,7 @@ class PluginTest : KoinComponent {
     fun setup() {
         every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
         storage.rootBackupDir?.deleteContents()
-                ?: error("Select a storage location in the app first!")
+            ?: error("Select a storage location in the app first!")
     }
 
     @After
@@ -70,7 +71,7 @@ class PluginTest : KoinComponent {
      * that needs to get re-queried to get real results.
      */
     @Test
-    fun testInitializationAndRestoreSets() {
+    fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
         assertEquals(0, restorePlugin.getAvailableBackups()?.toList()?.size)
         val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
@@ -104,7 +105,7 @@ class PluginTest : KoinComponent {
     }
 
     @Test
-    fun testMetadataWriteRead() {
+    fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
         every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true andThen false
         assertTrue(backupPlugin.initializeDevice(newToken = token))
 
@@ -120,7 +121,7 @@ class PluginTest : KoinComponent {
         assertFalse(availableBackups[0].error)
 
         // read metadata matches what was written earlier
-        assertEquals(metadata, availableBackups[0].inputStream)
+        assertReadEquals(metadata, availableBackups[0].inputStream)
 
         // initializing again (without changing storage) keeps restore set with same token
         assertFalse(backupPlugin.initializeDevice(newToken = token + 1))
@@ -131,11 +132,11 @@ class PluginTest : KoinComponent {
         assertFalse(availableBackups[0].error)
 
         // metadata hasn't changed
-        assertEquals(metadata, availableBackups[0].inputStream)
+        assertReadEquals(metadata, availableBackups[0].inputStream)
     }
 
     @Test
-    fun testApkWriteRead() {
+    fun testApkWriteRead() = runBlocking {
         // initialize storage with given token
         initStorage(token)
 
@@ -144,11 +145,11 @@ class PluginTest : KoinComponent {
         backupPlugin.getApkOutputStream(packageInfo).writeAndClose(apk)
 
         // assert that read APK bytes match what was written
-        assertEquals(apk, restorePlugin.getApkInputStream(token, packageInfo.packageName))
+        assertReadEquals(apk, restorePlugin.getApkInputStream(token, packageInfo.packageName))
     }
 
     @Test
-    fun testKvBackupRestore() {
+    fun testKvBackupRestore() = runBlocking {
         // define shortcuts
         val kvBackup = backupPlugin.kvBackupPlugin
         val kvRestore = restorePlugin.kvRestorePlugin
@@ -163,7 +164,7 @@ class PluginTest : KoinComponent {
         // define key/value pair records
         val record1 = Pair(getRandomBase64(23), getRandomByteArray(1337))
         val record2 = Pair(getRandomBase64(42), getRandomByteArray(42 * 1024))
-        val record3 = Pair(getRandomBase64(255), getRandomByteArray(5 * 1024 * 1024))
+        val record3 = Pair(getRandomBase64(128), getRandomByteArray(5 * 1024 * 1024))
 
         // write first record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
@@ -178,7 +179,10 @@ class PluginTest : KoinComponent {
         var records = kvRestore.listRecords(token, packageInfo)
         assertEquals(1, records.size)
         assertEquals(record1.first, records[0])
-        assertEquals(record1.second, kvRestore.getInputStreamForRecord(token, packageInfo, record1.first))
+        assertReadEquals(
+            record1.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
+        )
 
         // write second and third record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
@@ -188,9 +192,18 @@ class PluginTest : KoinComponent {
         // all records for package are found and returned properly
         records = kvRestore.listRecords(token, packageInfo)
         assertEquals(listOf(record1.first, record2.first, record3.first).sorted(), records.sorted())
-        assertEquals(record1.second, kvRestore.getInputStreamForRecord(token, packageInfo, record1.first))
-        assertEquals(record2.second, kvRestore.getInputStreamForRecord(token, packageInfo, record2.first))
-        assertEquals(record3.second, kvRestore.getInputStreamForRecord(token, packageInfo, record3.first))
+        assertReadEquals(
+            record1.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
+        )
+        assertReadEquals(
+            record2.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record2.first)
+        )
+        assertReadEquals(
+            record3.second,
+            kvRestore.getInputStreamForRecord(token, packageInfo, record3.first)
+        )
 
         // delete record3 and ensure that the other two are still found
         kvBackup.deleteRecord(packageInfo, record3.first)
@@ -204,7 +217,7 @@ class PluginTest : KoinComponent {
     }
 
     @Test
-    fun testMaxKvKeyLength() {
+    fun testMaxKvKeyLength() = runBlocking {
         // define shortcuts
         val kvBackup = backupPlugin.kvBackupPlugin
         val kvRestore = restorePlugin.kvRestorePlugin
@@ -212,31 +225,41 @@ class PluginTest : KoinComponent {
         // initialize storage with given token
         initStorage(token)
 
+        // FIXME get Nextcloud to have the same limit
+        val max = if (isNextcloud()) MAX_KEY_LENGTH_NEXTCLOUD else MAX_KEY_LENGTH
+
         // define record with maximum key length and one above the maximum
-        val recordMax = Pair(getRandomBase64(255), getRandomByteArray(1024))
-        val recordOver = Pair(getRandomBase64(256), getRandomByteArray(1024))
+        val recordMax = Pair(getRandomBase64(max), getRandomByteArray(1024))
+        val recordOver = Pair(getRandomBase64(max + 1), getRandomByteArray(1024))
 
         // write max record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
-        kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first).writeAndClose(recordMax.second)
+        kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first)
+            .writeAndClose(recordMax.second)
 
         // max record is found correctly
         assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        var records = kvRestore.listRecords(token, packageInfo)
+        val records = kvRestore.listRecords(token, packageInfo)
         assertEquals(listOf(recordMax.first), records)
 
         // write exceeding key length record
         kvBackup.ensureRecordStorageForPackage(packageInfo)
-        kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first).writeAndClose(recordOver.second)
-
-        // exceeding record gets truncated
-        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        records = kvRestore.listRecords(token, packageInfo)
-        assertNotEquals(listOf(recordMax.first, recordOver.first).sorted(), records.sorted())
+        if (isNextcloud()) {
+            // Nextcloud simply refuses to write long filenames
+            coAssertThrows(IOException::class.java) {
+                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
+                    .writeAndClose(recordOver.second)
+            }
+        } else {
+            coAssertThrows(IllegalStateException::class.java) {
+                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
+                    .writeAndClose(recordOver.second)
+            }
+        }
     }
 
     @Test
-    fun testFullBackupRestore() {
+    fun testFullBackupRestore() = runBlocking {
         // define shortcuts
         val fullBackup = backupPlugin.fullBackupPlugin
         val fullRestore = restorePlugin.fullRestorePlugin
@@ -257,13 +280,13 @@ class PluginTest : KoinComponent {
         assertFalse(fullRestore.hasDataForPackage(token + 1, packageInfo))
 
         // restore data matches backed up data
-        assertEquals(data, fullRestore.getInputStreamForPackage(token, packageInfo))
+        assertReadEquals(data, fullRestore.getInputStreamForPackage(token, packageInfo))
 
         // write and check data for second package
         val data2 = getRandomByteArray(5 * 1024 * 1024)
         fullBackup.getOutputStream(packageInfo2).writeAndClose(data2)
         assertTrue(fullRestore.hasDataForPackage(token, packageInfo2))
-        assertEquals(data2, fullRestore.getInputStreamForPackage(token, packageInfo2))
+        assertReadEquals(data2, fullRestore.getInputStreamForPackage(token, packageInfo2))
 
         // remove data of first package again and ensure that no more data is found
         fullBackup.removeDataOfPackage(packageInfo)
@@ -277,17 +300,13 @@ class PluginTest : KoinComponent {
         assertFalse(fullRestore.hasDataForPackage(token, packageInfo2))
     }
 
-    private fun initStorage(token: Long) {
+    private fun initStorage(token: Long) = runBlocking {
         every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true
         assertTrue(backupPlugin.initializeDevice(newToken = token))
     }
 
-    private fun OutputStream.writeAndClose(data: ByteArray) = use {
-        it.write(data)
+    private fun isNextcloud(): Boolean {
+        return backupPlugin.providerPackageName == "com.nextcloud.client"
     }
-
-    private fun assertEquals(data: ByteArray, inputStream: InputStream?) = inputStream?.use {
-        assertArrayEquals(data, it.readBytes())
-    } ?: error("no input stream")
 
 }

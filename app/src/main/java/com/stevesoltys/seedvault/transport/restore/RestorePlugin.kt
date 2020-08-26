@@ -18,7 +18,7 @@ interface RestorePlugin {
      * @return metadata for the set of restore images available,
      * or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
+    suspend fun getAvailableBackups(): Sequence<EncryptedBackupMetadata>?
 
     /**
      * Searches if there's really a backup available in the given location.
@@ -27,12 +27,13 @@ interface RestorePlugin {
      * FIXME: Passing a Uri is maybe too plugin-specific?
      */
     @WorkerThread
-    fun hasBackup(uri: Uri): Boolean
+    @Throws(IOException::class)
+    suspend fun hasBackup(uri: Uri): Boolean
 
     /**
      * Returns an [InputStream] for the given token, for reading an APK that is to be restored.
      */
     @Throws(IOException::class)
-    fun getApkInputStream(token: Long, packageName: String): InputStream
+    suspend fun getApkInputStream(token: Long, packageName: String): InputStream
 
 }

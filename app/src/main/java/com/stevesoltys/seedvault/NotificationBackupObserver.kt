@@ -14,9 +14,10 @@ import org.koin.core.inject
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
 class NotificationBackupObserver(
-        private val context: Context,
-        private val expectedPackages: Int,
-        private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
+    private val context: Context,
+    private val expectedPackages: Int,
+    private val userInitiated: Boolean
+) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
     private val metadataManager: MetadataManager by inject()
@@ -25,6 +26,12 @@ class NotificationBackupObserver(
 
     init {
         // we need to show this manually as [onUpdate] isn't called for first @pm@ package
+        // TODO consider showing something else for MAGIC_PACKAGE_MANAGER,
+        //  because we also back up APKs at the beginning and this can take quite some time.
+        //  Therefore, also consider showing a more fine-grained progress bar
+        //  by (roughly) doubling the number [expectedPackages] (probably -3)
+        //  and calling back here from KvBackup and ApkBackup to update progress.
+        //  We will also need to take [PackageService#notAllowedPackages] into account.
         nm.onBackupUpdate(getAppName(MAGIC_PACKAGE_MANAGER), 0, expectedPackages, userInitiated)
     }
 
@@ -77,7 +84,9 @@ class NotificationBackupObserver(
         if (currentPackage == packageName) return
 
         if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Showing progress notification for $currentPackage $numPackages/$expectedPackages")
+            "Showing progress notification for $currentPackage $numPackages/$expectedPackages".let {
+                Log.i(TAG, it)
+            }
         }
         currentPackage = packageName
         val app = getAppName(packageName)

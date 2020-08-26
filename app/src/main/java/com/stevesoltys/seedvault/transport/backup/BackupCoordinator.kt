@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
@@ -18,7 +19,6 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.metadata.isSystemApp
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
@@ -29,17 +29,20 @@ private val TAG = BackupCoordinator::class.java.simpleName
  * @author Steve Soltys
  * @author Torsten Grote
  */
+@WorkerThread // entire class should always be accessed from a worker thread, so blocking is ok
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupCoordinator(
-        private val context: Context,
-        private val plugin: BackupPlugin,
-        private val kv: KVBackup,
-        private val full: FullBackup,
-        private val apkBackup: ApkBackup,
-        private val clock: Clock,
-        private val packageService: PackageService,
-        private val metadataManager: MetadataManager,
-        private val settingsManager: SettingsManager,
-        private val nm: BackupNotificationManager) {
+    private val context: Context,
+    private val plugin: BackupPlugin,
+    private val kv: KVBackup,
+    private val full: FullBackup,
+    private val apkBackup: ApkBackup,
+    private val clock: Clock,
+    private val packageService: PackageService,
+    private val metadataManager: MetadataManager,
+    private val settingsManager: SettingsManager,
+    private val nm: BackupNotificationManager
+) {
 
     private var calledInitialize = false
     private var calledClearBackupData = false
@@ -67,13 +70,15 @@ internal class BackupCoordinator(
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
      */
-    fun initializeDevice(): Int {
+    suspend fun initializeDevice(): Int {
         Log.i(TAG, "Initialize Device!")
         return try {
             val token = clock.time()
             if (plugin.initializeDevice(token)) {
                 Log.d(TAG, "Resetting backup metadata...")
-                metadataManager.onDeviceInitialization(token, plugin.getMetadataOutputStream())
+                plugin.getMetadataOutputStream().use {
+                    metadataManager.onDeviceInitialization(token, it)
+                }
             } else {
                 Log.d(TAG, "Storage was already initialized, doing no-op")
             }
@@ -89,7 +94,10 @@ internal class BackupCoordinator(
         }
     }
 
-    fun isAppEligibleForBackup(targetPackage: PackageInfo, @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean): Boolean {
+    fun isAppEligibleForBackup(
+        targetPackage: PackageInfo,
+        @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean
+    ): Boolean {
         val packageName = targetPackage.packageName
         // Check that the app is not blacklisted by the user
         val enabled = settingsManager.isBackupEnabled(packageName)
@@ -107,7 +115,7 @@ internal class BackupCoordinator(
      *                      otherwise for key-value backup.
      * @return Current limit on backup size in bytes.
      */
-    fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
+    suspend fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         if (packageName != MAGIC_PACKAGE_MANAGER) {
             // try to back up APK here as later methods are sometimes not called called
             backUpApk(context.packageManager.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
@@ -139,7 +147,11 @@ internal class BackupCoordinator(
         Log.i(TAG, "Request incremental backup time. Returned $this")
     }
 
-    fun performIncrementalBackup(packageInfo: PackageInfo, data: ParcelFileDescriptor, flags: Int): Int {
+    suspend fun performIncrementalBackup(
+        packageInfo: PackageInfo,
+        data: ParcelFileDescriptor,
+        flags: Int
+    ): Int {
         cancelReason = UNKNOWN_ERROR
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) {
@@ -182,12 +194,16 @@ internal class BackupCoordinator(
         return result
     }
 
-    fun performFullBackup(targetPackage: PackageInfo, fileDescriptor: ParcelFileDescriptor, flags: Int): Int {
+    suspend fun performFullBackup(
+        targetPackage: PackageInfo,
+        fileDescriptor: ParcelFileDescriptor,
+        flags: Int
+    ): Int {
         cancelReason = UNKNOWN_ERROR
         return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 
-    fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
+    suspend fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
     /**
      * Tells the transport to cancel the currently-ongoing full backup operation.
@@ -202,9 +218,9 @@ internal class BackupCoordinator(
      * If the transport receives this callback, it will *not* receive a call to [finishBackup].
      * It needs to tear down any ongoing backup state here.
      */
-    fun cancelFullBackup() {
+    suspend fun cancelFullBackup() {
         val packageInfo = full.getCurrentPackage()
-                ?: throw AssertionError("Cancelling full backup, but no current package")
+            ?: throw AssertionError("Cancelling full backup, but no current package")
         Log.i(TAG, "Cancel full backup of ${packageInfo.packageName} because of $cancelReason")
         onPackageBackupError(packageInfo)
         full.cancelFullBackup()
@@ -221,7 +237,7 @@ internal class BackupCoordinator(
      *
      * @return the same error codes as [performFullBackup].
      */
-    fun clearBackupData(packageInfo: PackageInfo): Int {
+    suspend fun clearBackupData(packageInfo: PackageInfo): Int {
         val packageName = packageInfo.packageName
         Log.i(TAG, "Clear Backup Data of $packageName.")
         try {
@@ -248,15 +264,15 @@ internal class BackupCoordinator(
      *
      * @return the same error codes as [performIncrementalBackup] or [performFullBackup].
      */
-    fun finishBackup(): Int = when {
+    suspend fun finishBackup(): Int = when {
         kv.hasState() -> {
             check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
-            onPackageBackedUp(kv.getCurrentPackage()!!)  // not-null because we have state
+            onPackageBackedUp(kv.getCurrentPackage()!!) // not-null because we have state
             kv.finishBackup()
         }
         full.hasState() -> {
             check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
-            onPackageBackedUp(full.getCurrentPackage()!!)  // not-null because we have state
+            onPackageBackedUp(full.getCurrentPackage()!!) // not-null because we have state
             full.finishBackup()
         }
         calledInitialize || calledClearBackupData -> {
@@ -267,7 +283,7 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    private fun backUpNotAllowedPackages() {
+    private suspend fun backUpNotAllowedPackages() {
         Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
         packageService.notAllowedPackages.forEach { optOutPackageInfo ->
             try {
@@ -278,37 +294,43 @@ internal class BackupCoordinator(
         }
     }
 
-    private fun backUpApk(packageInfo: PackageInfo, packageState: PackageState = UNKNOWN_ERROR) {
+    private suspend fun backUpApk(
+        packageInfo: PackageInfo,
+        packageState: PackageState = UNKNOWN_ERROR
+    ) {
         val packageName = packageInfo.packageName
         try {
             apkBackup.backupApkIfNecessary(packageInfo, packageState) {
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
-                val outputStream = plugin.getMetadataOutputStream()
-                metadataManager.onApkBackedUp(packageInfo, packageMetadata, outputStream)
+                plugin.getMetadataOutputStream().use {
+                    metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
         }
     }
 
-    private fun onPackageBackedUp(packageInfo: PackageInfo) {
+    private suspend fun onPackageBackedUp(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         try {
-            val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackedUp(packageInfo, outputStream)
+            plugin.getMetadataOutputStream().use {
+                metadataManager.onPackageBackedUp(packageInfo, it)
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }
     }
 
-    private fun onPackageBackupError(packageInfo: PackageInfo) {
+    private suspend fun onPackageBackupError(packageInfo: PackageInfo) {
         // don't bother with system apps that have no data
         if (cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
-            val outputStream = plugin.getMetadataOutputStream()
-            metadataManager.onPackageBackupError(packageInfo, cancelReason, outputStream)
+            plugin.getMetadataOutputStream().use {
+                metadataManager.onPackageBackupError(packageInfo, cancelReason, it)
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }

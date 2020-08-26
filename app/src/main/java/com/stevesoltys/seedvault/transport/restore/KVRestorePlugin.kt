@@ -10,7 +10,7 @@ interface KVRestorePlugin {
      * Return true if there is data stored for the given package.
      */
     @Throws(IOException::class)
-    fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean
+    suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean
 
     /**
      * Return all record keys for the given token and package.
@@ -29,6 +29,6 @@ interface KVRestorePlugin {
      * Note: Implementations might expect that you call [hasDataForPackage] before.
      */
     @Throws(IOException::class)
-    fun getInputStreamForRecord(token: Long, packageInfo: PackageInfo, key: String): InputStream
+    suspend fun getInputStreamForRecord(token: Long, packageInfo: PackageInfo, key: String): InputStream
 
 }

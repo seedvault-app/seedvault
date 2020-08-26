@@ -18,10 +18,11 @@ import java.io.InputStream
 import java.io.OutputStream
 
 private class FullBackupState(
-        internal val packageInfo: PackageInfo,
-        internal val inputFileDescriptor: ParcelFileDescriptor,
-        internal val inputStream: InputStream,
-        internal var outputStreamInit: (() -> OutputStream)?) {
+    internal val packageInfo: PackageInfo,
+    internal val inputFileDescriptor: ParcelFileDescriptor,
+    internal val inputStream: InputStream,
+    internal var outputStreamInit: (suspend () -> OutputStream)?
+) {
     internal var outputStream: OutputStream? = null
     internal val packageName: String = packageInfo.packageName
     internal var size: Long = 0
@@ -31,11 +32,13 @@ const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()
 
 private val TAG = FullBackup::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-        private val plugin: FullBackupPlugin,
-        private val inputFactory: InputFactory,
-        private val headerWriter: HeaderWriter,
-        private val crypto: Crypto) {
+    private val plugin: FullBackupPlugin,
+    private val inputFactory: InputFactory,
+    private val headerWriter: HeaderWriter,
+    private val crypto: Crypto
+) {
 
     private var state: FullBackupState? = null
 
@@ -89,7 +92,11 @@ internal class FullBackup(
      * [TRANSPORT_OK] to indicate that the OS may proceed with delivering backup data;
      * [TRANSPORT_ERROR] to indicate an error that precludes performing a backup at this time.
      */
-    fun performFullBackup(targetPackage: PackageInfo, socket: ParcelFileDescriptor, @Suppress("UNUSED_PARAMETER") flags: Int = 0): Int {
+    suspend fun performFullBackup(
+        targetPackage: PackageInfo,
+        socket: ParcelFileDescriptor,
+        @Suppress("UNUSED_PARAMETER") flags: Int = 0
+    ): Int {
         if (state != null) throw AssertionError()
         Log.i(TAG, "Perform full backup for ${targetPackage.packageName}.")
 
@@ -101,7 +108,9 @@ internal class FullBackup(
             val outputStream = try {
                 plugin.getOutputStream(targetPackage)
             } catch (e: IOException) {
-                Log.e(TAG, "Error getting OutputStream for full backup of ${targetPackage.packageName}", e)
+                "Error getting OutputStream for full backup of ${targetPackage.packageName}".let {
+                    Log.e(TAG, it, e)
+                }
                 throw(e)
             }
             // store version header
@@ -115,31 +124,36 @@ internal class FullBackup(
                 throw(e)
             }
             outputStream
-        }  // this lambda is only called before we actually write backup data the first time
+        } // this lambda is only called before we actually write backup data the first time
         return TRANSPORT_OK
     }
 
-    fun sendBackupData(numBytes: Int): Int {
+    suspend fun sendBackupData(numBytes: Int): Int {
         val state = this.state
-                ?: throw AssertionError("Attempted sendBackupData before performFullBackup")
+            ?: throw AssertionError("Attempted sendBackupData before performFullBackup")
 
         // check if size fits quota
         state.size += numBytes
         val quota = plugin.getQuota()
         if (state.size > quota) {
-            Log.w(TAG, "Full backup of additional $numBytes exceeds quota of $quota with ${state.size}.")
+            Log.w(
+                TAG,
+                "Full backup of additional $numBytes exceeds quota of $quota with ${state.size}."
+            )
             return TRANSPORT_QUOTA_EXCEEDED
         }
 
         return try {
             // get output stream or initialize it, if it does not yet exist
-            check((state.outputStream != null) xor (state.outputStreamInit != null)) { "No OutputStream xor no StreamGetter" }
-            val outputStream = state.outputStream ?: {
-                val stream = state.outputStreamInit!!.invoke()  // not-null due to check above
+            check((state.outputStream != null) xor (state.outputStreamInit != null)) {
+                "No OutputStream xor no StreamGetter"
+            }
+            val outputStream = state.outputStream ?: suspend {
+                val stream = state.outputStreamInit!!() // not-null due to check above
                 state.outputStream = stream
                 stream
-            }.invoke()
-            state.outputStreamInit = null  // the stream init lambda is not needed beyond that point
+            }()
+            state.outputStreamInit = null // the stream init lambda is not needed beyond that point
 
             // read backup data, encrypt it and write it to output stream
             val payload = IOUtils.readFully(state.inputStream, numBytes)
@@ -152,11 +166,11 @@ internal class FullBackup(
     }
 
     @Throws(IOException::class)
-    fun clearBackupData(packageInfo: PackageInfo) {
+    suspend fun clearBackupData(packageInfo: PackageInfo) {
         plugin.removeDataOfPackage(packageInfo)
     }
 
-    fun cancelFullBackup() {
+    suspend fun cancelFullBackup() {
         Log.i(TAG, "Cancel full backup")
         val state = this.state ?: throw AssertionError("No state when canceling")
         try {
