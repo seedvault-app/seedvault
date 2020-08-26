@@ -8,6 +8,8 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderWriter
@@ -26,7 +28,8 @@ internal class KVBackup(
     private val plugin: KVBackupPlugin,
     private val inputFactory: InputFactory,
     private val headerWriter: HeaderWriter,
-    private val crypto: Crypto
+    private val crypto: Crypto,
+    private val nm: BackupNotificationManager
 ) {
 
     private var state: KVBackupState? = null
@@ -101,32 +104,29 @@ internal class KVBackup(
     }
 
     private suspend fun storeRecords(packageInfo: PackageInfo, data: ParcelFileDescriptor): Int {
+        val backupSequence: Iterable<Result<KVOperation>>
+        val pmRecordNumber: Int?
+        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER) {
+            // Since the package manager has many small keys to store,
+            // and this can be slow, especially on cloud-based storage,
+            // we get the entire data set first, so we can show progress notifications.
+            val list = parseBackupStream(data).toList()
+            backupSequence = list
+            pmRecordNumber = list.size
+        } else {
+            backupSequence = parseBackupStream(data).asIterable()
+            pmRecordNumber = null
+        }
         // apply the delta operations
-        for (result in parseBackupStream(data)) {
+        var i = 1
+        for (result in backupSequence) {
             if (result is Result.Error) {
                 Log.e(TAG, "Exception reading backup input", result.exception)
                 return backupError(TRANSPORT_ERROR)
             }
             val op = (result as Result.Ok).result
             try {
-                if (op.value == null) {
-                    Log.e(TAG, "Deleting record with base64Key ${op.base64Key}")
-                    plugin.deleteRecord(packageInfo, op.base64Key)
-                } else {
-                    val outputStream = plugin.getOutputStreamForRecord(packageInfo, op.base64Key)
-                    try {
-                        val header = VersionHeader(
-                            packageName = packageInfo.packageName,
-                            key = op.key
-                        )
-                        headerWriter.writeVersion(outputStream, header)
-                        crypto.encryptHeader(outputStream, header)
-                        crypto.encryptMultipleSegments(outputStream, op.value)
-                        outputStream.flush()
-                    } finally {
-                        closeQuietly(outputStream)
-                    }
-                }
+                storeRecord(packageInfo, op, i++, pmRecordNumber)
             } catch (e: IOException) {
                 Log.e(TAG, "Unable to update base64Key file for base64Key ${op.base64Key}", e)
                 // Returning something more forgiving such as TRANSPORT_PACKAGE_REJECTED
@@ -138,6 +138,38 @@ internal class KVBackup(
             }
         }
         return TRANSPORT_OK
+    }
+
+    @Throws(IOException::class)
+    private suspend fun storeRecord(
+        packageInfo: PackageInfo,
+        op: KVOperation,
+        currentNum: Int,
+        pmRecordNumber: Int?
+    ) {
+        // update notification for package manager backup
+        if (pmRecordNumber != null) {
+            nm.onPmKvBackup(op.key, currentNum, pmRecordNumber)
+        }
+        // check if record should get deleted
+        if (op.value == null) {
+            Log.e(TAG, "Deleting record with base64Key ${op.base64Key}")
+            plugin.deleteRecord(packageInfo, op.base64Key)
+        } else {
+            val outputStream = plugin.getOutputStreamForRecord(packageInfo, op.base64Key)
+            try {
+                val header = VersionHeader(
+                    packageName = packageInfo.packageName,
+                    key = op.key
+                )
+                headerWriter.writeVersion(outputStream, header)
+                crypto.encryptHeader(outputStream, header)
+                crypto.encryptMultipleSegments(outputStream, op.value)
+                outputStream.flush()
+            } finally {
+                closeQuietly(outputStream)
+            }
+        }
     }
 
     /**
@@ -206,12 +238,12 @@ internal class KVBackup(
     }
 
     private class KVOperation(
-        internal val key: String,
-        internal val base64Key: String,
+        val key: String,
+        val base64Key: String,
         /**
          * value is null when this is a deletion operation
          */
-        internal val value: ByteArray?
+        val value: ByteArray?
     )
 
     private sealed class Result<out T> {

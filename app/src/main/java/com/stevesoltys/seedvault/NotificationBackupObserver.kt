@@ -16,6 +16,7 @@ private val TAG = NotificationBackupObserver::class.java.simpleName
 class NotificationBackupObserver(
     private val context: Context,
     private val expectedPackages: Int,
+    expectedOptOutPackages: Int,
     private val userInitiated: Boolean
 ) : IBackupObserver.Stub(), KoinComponent {
 
@@ -25,19 +26,17 @@ class NotificationBackupObserver(
     private var numPackages: Int = 0
 
     init {
-        // we need to show this manually as [onUpdate] isn't called for first @pm@ package
-        // TODO consider showing something else for MAGIC_PACKAGE_MANAGER,
-        //  because we also back up APKs at the beginning and this can take quite some time.
-        //  Therefore, also consider showing a more fine-grained progress bar
-        //  by (roughly) doubling the number [expectedPackages] (probably -3)
-        //  and calling back here from KvBackup and ApkBackup to update progress.
-        //  We will also need to take [PackageService#notAllowedPackages] into account.
-        nm.onBackupUpdate(getAppName(MAGIC_PACKAGE_MANAGER), 0, expectedPackages, userInitiated)
+        // Inform the notification manager that a backup has started
+        // and inform about the expected numbers, so it can compute a total.
+        nm.onBackupStarted(expectedPackages, expectedOptOutPackages, userInitiated)
     }
 
     /**
      * This method could be called several times for packages with full data backup.
      * It will tell how much of backup data is already saved and how much is expected.
+     *
+     * Note that this will not be called for [MAGIC_PACKAGE_MANAGER]
+     * which is usually the first package to get backed up.
      *
      * @param currentBackupPackage The name of the package that now being backed up.
      * @param backupProgress Current progress of backup for the package.
@@ -91,7 +90,7 @@ class NotificationBackupObserver(
         currentPackage = packageName
         val app = getAppName(packageName)
         numPackages += 1
-        nm.onBackupUpdate(app, numPackages, expectedPackages, userInitiated)
+        nm.onBackupUpdate(app, numPackages, userInitiated)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
@@ -99,7 +98,9 @@ class NotificationBackupObserver(
 }
 
 fun getAppName(context: Context, packageId: String): CharSequence {
-    if (packageId == MAGIC_PACKAGE_MANAGER) return context.getString(R.string.restore_magic_package)
+    if (packageId == MAGIC_PACKAGE_MANAGER || packageId.startsWith("@")) {
+        return context.getString(R.string.restore_magic_package)
+    }
     return try {
         val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
         context.packageManager.getApplicationLabel(appInfo) ?: packageId

@@ -10,6 +10,7 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.NameNotFoundException
+import android.util.Log
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
@@ -28,6 +29,8 @@ private const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_ERROR = 2
 private const val NOTIFICATION_ID_RESTORE_ERROR = 3
 
+private val TAG = BackupNotificationManager::class.java.simpleName
+
 class BackupNotificationManager(private val context: Context) {
 
     private val nm = context.getSystemService(NotificationManager::class.java)!!.apply {
@@ -35,6 +38,9 @@ class BackupNotificationManager(private val context: Context) {
         createNotificationChannel(getErrorChannel())
         createNotificationChannel(getRestoreErrorChannel())
     }
+    private var expectedApps: Int? = null
+    private var expectedOptOutApps: Int? = null
+    private var expectedPmRecords: Int? = null
 
     private fun getObserverChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_channel_title)
@@ -53,11 +59,92 @@ class BackupNotificationManager(private val context: Context) {
         return NotificationChannel(CHANNEL_ID_RESTORE_ERROR, title, IMPORTANCE_HIGH)
     }
 
-    fun onBackupUpdate(app: CharSequence, transferred: Int, expected: Int, userInitiated: Boolean) {
+    /**
+     * Call this right after starting a backup.
+     *
+     * We can not know [expectedPmRecords] here, because this number varies between backup runs
+     * and is only known when the system tells us to update [MAGIC_PACKAGE_MANAGER].
+     */
+    fun onBackupStarted(
+        expectedPackages: Int,
+        expectedOptOutPackages: Int,
+        userInitiated: Boolean
+    ) {
+        updateBackupNotification(
+            contentText = "", // This passes quickly, no need to show something here
+            transferred = 0,
+            expected = expectedPackages,
+            userInitiated = userInitiated
+        )
+        expectedApps = expectedPackages
+        expectedOptOutApps = expectedOptOutPackages
+    }
+
+    /**
+     * This is expected to get called before [onOptOutAppBackup] and [onBackupUpdate].
+     */
+    fun onPmKvBackup(packageName: String, transferred: Int, expected: Int) {
+        if (expectedApps == null) {
+            Log.d(TAG, "Expected number of apps unknown. Not showing @pm@ notification.")
+            return
+        }
+        val appName = getAppName(context, packageName)
+        val contentText = context.getString(R.string.notification_content_package_manager, appName)
+        val addend = (expectedOptOutApps ?: 0) + (expectedApps ?: 0)
+        updateBackupNotification(
+            contentText = contentText,
+            transferred = transferred,
+            expected = expected + addend,
+            userInitiated = false
+        )
+        expectedPmRecords = expected
+    }
+
+    /**
+     * This should get called after [onPmKvBackup], but before [onBackupUpdate].
+     */
+    fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
+        if (expectedApps == null) {
+            Log.d(TAG, "Expected number of apps unknown. Not showing APK notification.")
+            return
+        }
+        val appName = getAppName(context, packageName)
+        val contentText = context.getString(R.string.notification_content_opt_out_app, appName)
+        updateBackupNotification(
+            contentText = contentText,
+            transferred = transferred + (expectedPmRecords ?: 0),
+            expected = expected + (expectedApps ?: 0) + (expectedPmRecords ?: 0),
+            userInitiated = false
+        )
+        expectedOptOutApps = expected
+    }
+
+    /**
+     * In the series of notification updates,
+     * this type is is expected to get called after [onOptOutAppBackup] and [onPmKvBackup].
+     */
+    fun onBackupUpdate(app: CharSequence, transferred: Int, userInitiated: Boolean) {
+        val expected = expectedApps ?: error("expectedApps is null")
+        val addend = (expectedOptOutApps ?: 0) + (expectedPmRecords ?: 0)
+        updateBackupNotification(
+            contentText = app,
+            transferred = transferred + addend,
+            expected = expected + addend,
+            userInitiated = userInitiated
+        )
+    }
+
+    private fun updateBackupNotification(
+        contentText: CharSequence,
+        transferred: Int,
+        expected: Int,
+        userInitiated: Boolean
+    ) {
+        Log.i(TAG, "$transferred/$expected $contentText")
         val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
-            setContentText(app)
+            setContentText(contentText)
             setOngoing(true)
             setShowWhen(false)
             setWhen(System.currentTimeMillis())
@@ -72,13 +159,14 @@ class BackupNotificationManager(private val context: Context) {
             nm.cancel(NOTIFICATION_ID_OBSERVER)
             return
         }
-        val titleRes = if (success) R.string.notification_success_title else R.string.notification_failed_title
+        val titleRes =
+            if (success) R.string.notification_success_title else R.string.notification_failed_title
         val contentText = if (notBackedUp == null) null else {
             context.getString(R.string.notification_success_num_not_backed_up, notBackedUp)
         }
         val iconRes = if (success) R.drawable.ic_cloud_done else R.drawable.ic_cloud_error
         val intent = Intent(context, SettingsActivity::class.java).apply {
-            action = ACTION_APP_STATUS_LIST
+            if (success) action = ACTION_APP_STATUS_LIST
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
         val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
@@ -94,6 +182,10 @@ class BackupNotificationManager(private val context: Context) {
             priority = PRIORITY_LOW
         }.build()
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
+        // reset number of expected apps
+        expectedOptOutApps = null
+        expectedPmRecords = null
+        expectedApps = null
     }
 
     fun onBackupError() {
@@ -128,7 +220,8 @@ class BackupNotificationManager(private val context: Context) {
             setPackage(context.packageName)
             putExtra(EXTRA_PACKAGE_NAME, packageName)
         }
-        val pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_UNINSTALL, intent, FLAG_UPDATE_CURRENT)
+        val pendingIntent =
+            PendingIntent.getBroadcast(context, REQUEST_CODE_UNINSTALL, intent, FLAG_UPDATE_CURRENT)
         val actionText = context.getString(R.string.notification_restore_error_action)
         val action = Action(R.drawable.ic_warning, actionText, pendingIntent)
         val notification = Builder(context, CHANNEL_ID_RESTORE_ERROR).apply {
