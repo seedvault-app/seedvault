@@ -10,7 +10,7 @@ import java.io.IOException
 import java.io.OutputStream
 
 const val MAX_KEY_LENGTH = 255
-const val MAX_KEY_LENGTH_NEXTCLOUD = 228
+const val MAX_KEY_LENGTH_NEXTCLOUD = 225
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderKVBackup(
@@ -59,7 +59,7 @@ internal class DocumentsProviderKVBackup(
         packageInfo: PackageInfo,
         key: String
     ): OutputStream {
-        check(key.length < MAX_KEY_LENGTH) {
+        check(key.length <= MAX_KEY_LENGTH) {
             "Key $key for ${packageInfo.packageName} is too long: ${key.length} chars."
         }
         if (key.length > MAX_KEY_LENGTH_NEXTCLOUD) {
