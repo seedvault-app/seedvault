@@ -204,7 +204,9 @@ fun DocumentFile.deleteContents() {
 }
 
 fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
-    if (name != packageInfo.packageName) throw AssertionError()
+    if (name != packageInfo.packageName) {
+        throw AssertionError("Expected ${packageInfo.packageName}, but got $name")
+    }
 }
 
 /**
