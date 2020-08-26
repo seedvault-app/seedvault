@@ -6,6 +6,8 @@ import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.content.pm.PackageInfo
+import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
@@ -16,6 +18,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -30,8 +33,9 @@ internal class KVBackupTest : BackupTest() {
 
     private val plugin = mockk<KVBackupPlugin>()
     private val dataInput = mockk<BackupDataInput>()
+    private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = KVBackup(plugin, inputFactory, headerWriter, crypto)
+    private val backup = KVBackup(plugin, inputFactory, headerWriter, crypto, notificationManager)
 
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val key64 = Base64.getEncoder().encodeToString(key.toByteArray(Utf8))
@@ -51,6 +55,49 @@ internal class KVBackupTest : BackupTest() {
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
+    }
+
+    @Test
+    fun `@pm@ backup shows notification`() = runBlocking {
+        // init plugin and give back two keys
+        initPlugin(true, pmPackageInfo)
+        createBackupDataInput()
+        every { dataInput.readNextHeader() } returnsMany listOf(true, true, false)
+        every { dataInput.key } returnsMany listOf("key1", "key2")
+        // we don't care about values, so just use the same one always
+        every { dataInput.dataSize } returns value.size
+        every { dataInput.readEntityData(any(), 0, value.size) } returns value.size
+
+        // store first record and show notification for it
+        every { notificationManager.onPmKvBackup("key1", 1, 2) } just Runs
+        coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5MQ") } returns outputStream
+        val versionHeader1 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key1")
+        every { headerWriter.writeVersion(outputStream, versionHeader1) } just Runs
+        every { crypto.encryptHeader(outputStream, versionHeader1) } just Runs
+
+        // store second record and show notification for it
+        every { notificationManager.onPmKvBackup("key2", 2, 2) } just Runs
+        coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5Mg") } returns outputStream
+        val versionHeader2 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key2")
+        every { headerWriter.writeVersion(outputStream, versionHeader2) } just Runs
+        every { crypto.encryptHeader(outputStream, versionHeader2) } just Runs
+
+        // encrypt to and close output stream
+        every { crypto.encryptMultipleSegments(outputStream, any()) } just Runs
+        every { outputStream.write(value) } just Runs
+        every { outputStream.flush() } just Runs
+        every { outputStream.close() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performBackup(pmPackageInfo, data, 0))
+        assertTrue(backup.hasState())
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
+        assertFalse(backup.hasState())
+
+        // verify that notifications were shown
+        verifyOrder {
+            notificationManager.onPmKvBackup("key1", 1, 2)
+            notificationManager.onPmKvBackup("key2", 2, 2)
+        }
     }
 
     @Test
@@ -210,9 +257,9 @@ internal class KVBackupTest : BackupTest() {
         every { outputStream.close() } just Runs
     }
 
-    private fun initPlugin(hasDataForPackage: Boolean = false) {
-        coEvery { plugin.hasDataForPackage(packageInfo) } returns hasDataForPackage
-        coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } just Runs
+    private fun initPlugin(hasDataForPackage: Boolean = false, pi: PackageInfo = packageInfo) {
+        coEvery { plugin.hasDataForPackage(pi) } returns hasDataForPackage
+        coEvery { plugin.ensureRecordStorageForPackage(pi) } just Runs
     }
 
     private fun createBackupDataInput() {
