@@ -9,7 +9,7 @@ import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata

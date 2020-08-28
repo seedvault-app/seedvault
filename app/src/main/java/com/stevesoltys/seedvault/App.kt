@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
@@ -36,7 +37,7 @@ class App : Application() {
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }

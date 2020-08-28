@@ -2,16 +2,19 @@ package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.IBackupManager
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
+import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.GET_INSTRUMENTATION
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
+import com.stevesoltys.seedvault.BuildConfig.APPLICATION_ID
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 
 private val TAG = PackageService::class.java.simpleName
@@ -68,8 +71,9 @@ internal class PackageService(
             // because the package info is used by [ApkBackup] which needs signing info.
             return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
                 .filter { packageInfo ->
-                    !packageInfo.isBackupAllowed() && // only apps that do not allow backup
-                            !packageInfo.isNotUpdatedSystemApp() // and are not vanilla system apps
+                    packageInfo.doesNotGetBackedUp() && // only apps that do not allow backup
+                            !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
+                            packageInfo.packageName != APPLICATION_ID // not this app
                 }.sortedBy { packageInfo ->
                     packageInfo.packageName
                 }.also { notAllowed ->
@@ -81,12 +85,54 @@ internal class PackageService(
                 }
         }
 
+    /**
+     * A list of non-system apps (without instrumentation test apps).
+     */
+    val userApps: List<PackageInfo>
+        @WorkerThread
+        get() {
+            return packageManager.getInstalledPackages(GET_INSTRUMENTATION)
+                .filter { it.isUserVisible() }
+        }
+
+    val expectedAppTotals: ExpectedAppTotals
+        @WorkerThread
+        get() {
+            var appsTotal = 0
+            var appsOptOut = 0
+            packageManager.getInstalledPackages(GET_INSTRUMENTATION).forEach { packageInfo ->
+                if (packageInfo.isUserVisible()) {
+                    appsTotal++
+                    if (packageInfo.doesNotGetBackedUp()) {
+                        appsOptOut++
+                    }
+                }
+            }
+            return ExpectedAppTotals(appsTotal, appsOptOut)
+        }
+
     private fun logPackages(packages: List<String>) {
         packages.chunked(LOG_MAX_PACKAGES).forEach {
             Log.i(TAG, it.toString())
         }
     }
 
+}
+
+internal data class ExpectedAppTotals(
+    /**
+     * The total number of non-system apps eligible for backup.
+     */
+    val appsTotal: Int,
+    /**
+     * The number of non-system apps that has opted-out of backup.
+     */
+    val appsOptOut: Int
+)
+
+internal fun PackageInfo.isUserVisible(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
+    return !isNotUpdatedSystemApp() && instrumentation == null && packageName != APPLICATION_ID
 }
 
 internal fun PackageInfo.isSystemApp(): Boolean {
@@ -105,7 +151,8 @@ internal fun PackageInfo.isNotUpdatedSystemApp(): Boolean {
     return isSystemApp && !isUpdatedSystemApp
 }
 
-internal fun PackageInfo.isBackupAllowed(): Boolean {
-    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+internal fun PackageInfo.doesNotGetBackedUp(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
+    return applicationInfo.flags and FLAG_ALLOW_BACKUP == 0 && // does not allow backup
+            applicationInfo.flags and FLAG_STOPPED != 0 // is stopped
 }
