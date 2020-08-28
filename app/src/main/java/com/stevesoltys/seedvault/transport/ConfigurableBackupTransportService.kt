@@ -13,8 +13,8 @@ import android.os.RemoteException
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupMonitor
-import com.stevesoltys.seedvault.BackupNotificationManager
-import com.stevesoltys.seedvault.NotificationBackupObserver
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import org.koin.core.context.GlobalContext.get
 
@@ -53,9 +53,9 @@ class ConfigurableBackupTransportService : Service() {
 fun requestBackup(context: Context) {
     val packageService: PackageService = get().koin.get()
     val packages = packageService.eligiblePackages
-    val optOutPackages = packageService.notAllowedPackages
+    val appTotals = packageService.expectedAppTotals
 
-    val observer = NotificationBackupObserver(context, packages.size, optOutPackages.size, true)
+    val observer = NotificationBackupObserver(context, packages.size, appTotals, true)
     val result = try {
         val backupManager: IBackupManager = get().koin.get()
         backupManager.requestBackup(packages, observer, BackupMonitor(), FLAG_USER_INITIATED)
