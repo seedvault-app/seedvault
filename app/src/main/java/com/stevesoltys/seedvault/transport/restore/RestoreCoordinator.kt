@@ -13,7 +13,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.collection.LongSparseArray
-import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.header.UnsupportedVersionException

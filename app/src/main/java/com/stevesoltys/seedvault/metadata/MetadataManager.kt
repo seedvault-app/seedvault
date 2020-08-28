@@ -12,6 +12,7 @@ import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -196,9 +197,12 @@ class MetadataManager(
     }
 
     @Synchronized
-    fun getPackagesNumNotBackedUp(): Int {
+    fun getPackagesNumBackedUp(): Int {
         return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
-            !packageMetadata.system && packageMetadata.state != APK_AND_DATA
+            !packageMetadata.system && ( // ignore system apps
+                    packageMetadata.state == APK_AND_DATA || // either full success
+                            packageMetadata.state == NO_DATA // or apps that simply had no data
+                    )
         }.count()
     }
 

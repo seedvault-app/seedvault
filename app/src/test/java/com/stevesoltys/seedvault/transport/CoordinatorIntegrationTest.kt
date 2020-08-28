@@ -7,7 +7,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl

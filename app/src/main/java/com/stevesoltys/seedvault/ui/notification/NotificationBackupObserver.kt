@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault
+package com.stevesoltys.seedvault.ui.notification
 
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
@@ -7,16 +7,19 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
-class NotificationBackupObserver(
+internal class NotificationBackupObserver(
     private val context: Context,
     private val expectedPackages: Int,
-    expectedOptOutPackages: Int,
+    appTotals: ExpectedAppTotals,
     private val userInitiated: Boolean
 ) : IBackupObserver.Stub(), KoinComponent {
 
@@ -28,7 +31,7 @@ class NotificationBackupObserver(
     init {
         // Inform the notification manager that a backup has started
         // and inform about the expected numbers, so it can compute a total.
-        nm.onBackupStarted(expectedPackages, expectedOptOutPackages, userInitiated)
+        nm.onBackupStarted(expectedPackages, appTotals, userInitiated)
     }
 
     /**
@@ -75,8 +78,8 @@ class NotificationBackupObserver(
             Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
         }
         val success = status == 0
-        val notBackedUp = if (success) metadataManager.getPackagesNumNotBackedUp() else null
-        nm.onBackupFinished(success, notBackedUp, userInitiated)
+        val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
+        nm.onBackupFinished(success, numBackedUp, userInitiated)
     }
 
     private fun showProgressNotification(packageName: String) {

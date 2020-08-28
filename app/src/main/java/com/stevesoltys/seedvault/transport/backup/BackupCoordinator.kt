@@ -10,7 +10,7 @@ import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.MetadataManager
