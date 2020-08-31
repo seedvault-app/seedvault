@@ -20,7 +20,7 @@ interface KVRestorePlugin {
      * For file-based plugins, this is usually a list of file names in the package directory.
      */
     @Throws(IOException::class)
-    fun listRecords(token: Long, packageInfo: PackageInfo): List<String>
+    suspend fun listRecords(token: Long, packageInfo: PackageInfo): List<String>
 
     /**
      * Return an [InputStream] for the given token, package and key

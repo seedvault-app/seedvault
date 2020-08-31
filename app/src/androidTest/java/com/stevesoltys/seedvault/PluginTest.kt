@@ -3,8 +3,11 @@ package com.stevesoltys.seedvault
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderBackupPlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderFullBackup
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderFullRestorePlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVBackup
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH
@@ -12,6 +15,10 @@ import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
+import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
+import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
+import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.every
 import io.mockk.mockk
@@ -35,27 +42,41 @@ import kotlin.random.Random
 class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val metadataManager: MetadataManager by inject()
     private val settingsManager: SettingsManager by inject()
     private val mockedSettingsManager: SettingsManager = mockk()
-    private val storage = DocumentsStorage(context, metadataManager, mockedSettingsManager)
-    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(context, storage)
-    private val restorePlugin: RestorePlugin = DocumentsProviderRestorePlugin(context, storage)
+    private val storage = DocumentsStorage(context, mockedSettingsManager)
+
+    private val kvBackupPlugin: KVBackupPlugin = DocumentsProviderKVBackup(context, storage)
+    private val fullBackupPlugin: FullBackupPlugin = DocumentsProviderFullBackup(context, storage)
+    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(
+        context,
+        storage,
+        kvBackupPlugin,
+        fullBackupPlugin
+    )
+
+    private val kvRestorePlugin: KVRestorePlugin =
+        DocumentsProviderKVRestorePlugin(context, storage)
+    private val fullRestorePlugin: FullRestorePlugin =
+        DocumentsProviderFullRestorePlugin(context, storage)
+    private val restorePlugin: RestorePlugin =
+        DocumentsProviderRestorePlugin(context, storage, kvRestorePlugin, fullRestorePlugin)
 
     private val token = Random.nextLong()
     private val packageInfo = PackageInfoBuilder.newBuilder().setPackageName("org.example").build()
     private val packageInfo2 = PackageInfoBuilder.newBuilder().setPackageName("net.example").build()
 
     @Before
-    fun setup() {
+    fun setup() = runBlocking {
         every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
-        storage.rootBackupDir?.deleteContents()
+        storage.rootBackupDir?.deleteContents(context)
             ?: error("Select a storage location in the app first!")
     }
 
     @After
-    fun tearDown() {
-        storage.rootBackupDir?.deleteContents()
+    fun tearDown() = runBlocking {
+        storage.rootBackupDir?.deleteContents(context)
+        Unit
     }
 
     @Test
@@ -77,13 +98,12 @@ class PluginTest : KoinComponent {
         val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
         assertFalse(restorePlugin.hasBackup(uri))
 
-        // define storage changing state for later
-        every {
-            mockedSettingsManager.getAndResetIsStorageChanging()
-        } returns true andThen true andThen false
+        // prepare returned tokens requested when initializing device
+        every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
 
-        // device needs initialization, because new and storage is changing
-        assertTrue(backupPlugin.initializeDevice(newToken = token))
+        // start new restore set and initialize device afterwards
+        backupPlugin.startNewRestoreSet(token)
+        backupPlugin.initializeDevice()
 
         // write metadata (needed for backup to be recognized)
         backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
@@ -92,22 +112,29 @@ class PluginTest : KoinComponent {
         assertEquals(1, restorePlugin.getAvailableBackups()?.toList()?.size)
         assertTrue(restorePlugin.hasBackup(uri))
 
-        // initializing again (while changing storage) does add a restore set
-        assertTrue(backupPlugin.initializeDevice(newToken = token + 1))
+        // initializing again (with another restore set) does add a restore set
+        backupPlugin.startNewRestoreSet(token + 1)
+        backupPlugin.initializeDevice()
         backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
         assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
         assertTrue(restorePlugin.hasBackup(uri))
 
-        // initializing again (without changing storage) doesn't change number of restore sets
-        assertFalse(backupPlugin.initializeDevice(newToken = token + 2))
+        // initializing again (without new restore set) doesn't change number of restore sets
+        backupPlugin.initializeDevice()
         backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
         assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
+
+        // ensure that the new backup dirs exist
+        assertTrue(storage.currentKvBackupDir!!.exists())
+        assertTrue(storage.currentFullBackupDir!!.exists())
     }
 
     @Test
     fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
-        every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true andThen false
-        assertTrue(backupPlugin.initializeDevice(newToken = token))
+        every { mockedSettingsManager.getToken() } returns token
+
+        backupPlugin.startNewRestoreSet(token)
+        backupPlugin.initializeDevice()
 
         // write metadata
         val metadata = getRandomByteArray()
@@ -124,7 +151,8 @@ class PluginTest : KoinComponent {
         assertReadEquals(metadata, availableBackups[0].inputStream)
 
         // initializing again (without changing storage) keeps restore set with same token
-        assertFalse(backupPlugin.initializeDevice(newToken = token + 1))
+        backupPlugin.initializeDevice()
+        backupPlugin.getMetadataOutputStream().writeAndClose(metadata)
         availableBackups = restorePlugin.getAvailableBackups()?.toList()
         check(availableBackups != null)
         assertEquals(1, availableBackups.size)
@@ -311,8 +339,8 @@ class PluginTest : KoinComponent {
     }
 
     private fun initStorage(token: Long) = runBlocking {
-        every { mockedSettingsManager.getAndResetIsStorageChanging() } returns true
-        assertTrue(backupPlugin.initializeDevice(newToken = token))
+        every { mockedSettingsManager.getToken() } returns token
+        backupPlugin.initializeDevice()
     }
 
     private fun isNextcloud(): Boolean {

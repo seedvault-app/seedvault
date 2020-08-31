@@ -14,41 +14,34 @@ private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderBackupPlugin(
     private val context: Context,
-    private val storage: DocumentsStorage
+    private val storage: DocumentsStorage,
+    override val kvBackupPlugin: KVBackupPlugin,
+    override val fullBackupPlugin: FullBackupPlugin
 ) : BackupPlugin {
 
     private val packageManager: PackageManager = context.packageManager
 
-    override val kvBackupPlugin: KVBackupPlugin by lazy {
-        DocumentsProviderKVBackup(storage, context)
-    }
-
-    override val fullBackupPlugin: FullBackupPlugin by lazy {
-        DocumentsProviderFullBackup(storage, context)
-    }
-
     @Throws(IOException::class)
-    override suspend fun initializeDevice(newToken: Long): Boolean {
-        // check if storage is already initialized
-        if (storage.isInitialized()) return false
-
-        // TODO consider not creating new RestoreSets, but continue working within the existing one.
+    override suspend fun startNewRestoreSet(token: Long) {
         // reset current storage
-        storage.reset(newToken)
+        storage.reset(token)
 
         // get or create root backup dir
         storage.rootBackupDir ?: throw IOException()
+    }
+
+    @Throws(IOException::class)
+    override suspend fun initializeDevice() {
+        // wipe existing data
+        storage.getSetDir()?.deleteContents(context)
+
+        // reset storage without new token, so folders get recreated
+        // otherwise stale DocumentFiles will hang around
+        storage.reset(null)
 
         // create backup folders
-        val kvDir = storage.currentKvBackupDir
-        val fullDir = storage.currentFullBackupDir
-
-        // wipe existing data
-        storage.getSetDir()?.findFileBlocking(context, FILE_BACKUP_METADATA)?.delete()
-        kvDir?.deleteContents()
-        fullDir?.deleteContents()
-
-        return true
+        storage.currentKvBackupDir ?: throw IOException()
+        storage.currentFullBackupDir ?: throw IOException()
     }
 
     @Throws(IOException::class)
