@@ -4,13 +4,13 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
+import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -20,6 +20,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
 
@@ -53,6 +54,19 @@ internal class BackupCoordinator(
     //
 
     /**
+     * Starts a new [RestoreSet] with a new token (the current unix epoch in milliseconds).
+     * Call this at least once before calling [initializeDevice]
+     * which must be called after this method to properly initialize the backup transport.
+     */
+    @Throws(IOException::class)
+    suspend fun startNewRestoreSet() {
+        val token = clock.time()
+        Log.i(TAG, "Starting new RestoreSet with token $token...")
+        settingsManager.setNewToken(token)
+        plugin.startNewRestoreSet(token)
+    }
+
+    /**
      * Initialize the storage for this device, erasing all stored data.
      * The transport may send the request immediately, or may buffer it.
      * After this is called,
@@ -70,28 +84,27 @@ internal class BackupCoordinator(
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
      */
-    suspend fun initializeDevice(): Int {
-        Log.i(TAG, "Initialize Device!")
-        return try {
-            val token = clock.time()
-            if (plugin.initializeDevice(token)) {
-                Log.d(TAG, "Resetting backup metadata...")
-                plugin.getMetadataOutputStream().use {
-                    metadataManager.onDeviceInitialization(token, it)
-                }
-            } else {
-                Log.d(TAG, "Storage was already initialized, doing no-op")
+    suspend fun initializeDevice(): Int = try {
+        val token = settingsManager.getToken()
+        if (token == null) {
+            Log.i(TAG, "No RestoreSet started, initialization is no-op.")
+        } else {
+            Log.i(TAG, "Initialize Device!")
+            plugin.initializeDevice()
+            Log.d(TAG, "Resetting backup metadata for token $token...")
+            plugin.getMetadataOutputStream().use {
+                metadataManager.onDeviceInitialization(token, it)
             }
-            // [finishBackup] will only be called when we return [TRANSPORT_OK] here
-            // so we remember that we initialized successfully
-            calledInitialize = true
-            TRANSPORT_OK
-        } catch (e: IOException) {
-            Log.e(TAG, "Error initializing device", e)
-            // Show error notification if we were ready for backups
-            if (getBackupBackoff() == 0L) nm.onBackupError()
-            TRANSPORT_ERROR
         }
+        // [finishBackup] will only be called when we return [TRANSPORT_OK] here
+        // so we remember that we initialized successfully
+        calledInitialize = true
+        TRANSPORT_OK
+    } catch (e: IOException) {
+        Log.e(TAG, "Error initializing device", e)
+        // Show error notification if we were ready for backups
+        if (getBackupBackoff() == 0L) nm.onBackupError()
+        TRANSPORT_ERROR
     }
 
     fun isAppEligibleForBackup(

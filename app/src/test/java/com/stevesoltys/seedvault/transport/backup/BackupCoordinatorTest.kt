@@ -8,7 +8,6 @@ import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
@@ -18,6 +17,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -63,9 +63,18 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val storage = Storage(Uri.EMPTY, getRandomString(), false)
 
     @Test
-    fun `device initialization succeeds and delegates to plugin`() = runBlocking {
+    fun `starting a new restore set works as expected`() = runBlocking {
         every { clock.time() } returns token
-        coEvery { plugin.initializeDevice(token) } returns true // TODO test when false
+        every { settingsManager.setNewToken(token) } just Runs
+        coEvery { plugin.startNewRestoreSet(token) } just Runs
+
+        backup.startNewRestoreSet()
+    }
+
+    @Test
+    fun `device initialization succeeds and delegates to plugin`() = runBlocking {
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.initializeDevice() } just Runs
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
         every { kv.hasState() } returns false
@@ -79,9 +88,8 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `device initialization does no-op when already initialized`() = runBlocking {
-        every { clock.time() } returns token
-        coEvery { plugin.initializeDevice(token) } returns false
+    fun `device initialization does no-op when no token available`() = runBlocking {
+        every { settingsManager.getToken() } returns null
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -91,8 +99,8 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `error notification when device initialization fails`() = runBlocking {
-        every { clock.time() } returns token
-        coEvery { plugin.initializeDevice(token) } throws IOException()
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.initializeDevice() } throws IOException()
         every { settingsManager.getStorage() } returns storage
         every { notificationManager.onBackupError() } just Runs
 
@@ -112,8 +120,8 @@ internal class BackupCoordinatorTest : BackupTest() {
             val storage = mockk<Storage>()
             val documentFile = mockk<DocumentFile>()
 
-            every { clock.time() } returns token
-            coEvery { plugin.initializeDevice(token) } throws IOException()
+            every { settingsManager.getToken() } returns token
+            coEvery { plugin.initializeDevice() } throws IOException()
             every { settingsManager.getStorage() } returns storage
             every { storage.isUsb } returns true
             every { storage.getDocumentFile(context) } returns documentFile

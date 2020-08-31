@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.backup.RestoreSet
 import android.content.pm.PackageInfo
 import java.io.IOException
 import java.io.OutputStream
@@ -11,13 +12,18 @@ interface BackupPlugin {
     val fullBackupPlugin: FullBackupPlugin
 
     /**
-     * Initialize the storage for this device, erasing all stored data.
+     * Start a new [RestoreSet] with the given token.
      *
-     * @return true if the device needs initialization or
-     * false if the device was initialized already and initialization should be a no-op.
+     * This is typically followed by a call to [initializeDevice].
      */
     @Throws(IOException::class)
-    suspend fun initializeDevice(newToken: Long): Boolean
+    suspend fun startNewRestoreSet(token: Long)
+
+    /**
+     * Initialize the storage for this device, erasing all stored data in the current [RestoreSet].
+     */
+    @Throws(IOException::class)
+    suspend fun initializeDevice()
 
     /**
      * Returns an [OutputStream] for writing backup metadata.
