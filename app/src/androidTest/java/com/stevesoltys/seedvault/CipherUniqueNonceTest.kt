@@ -1,8 +1,8 @@
 package com.stevesoltys.seedvault
 
 import android.util.Log
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.runner.AndroidJUnit4
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import org.junit.Assert.assertTrue

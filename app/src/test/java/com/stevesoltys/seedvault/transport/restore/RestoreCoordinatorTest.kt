@@ -9,7 +9,6 @@ import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
@@ -18,6 +17,7 @@ import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -91,7 +91,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getCurrentRestoreSet() delegates to plugin`() {
-        every { metadataManager.getBackupToken() } returns token
+        every { settingsManager.getToken() } returns token
         assertEquals(token, restore.getCurrentRestoreSet())
     }
 

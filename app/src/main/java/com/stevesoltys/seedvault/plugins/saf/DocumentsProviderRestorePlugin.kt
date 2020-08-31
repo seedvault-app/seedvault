@@ -19,16 +19,10 @@ private val TAG = DocumentsProviderRestorePlugin::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext") // all methods do I/O
 internal class DocumentsProviderRestorePlugin(
     private val context: Context,
-    private val storage: DocumentsStorage
+    private val storage: DocumentsStorage,
+    override val kvRestorePlugin: KVRestorePlugin,
+    override val fullRestorePlugin: FullRestorePlugin
 ) : RestorePlugin {
-
-    override val kvRestorePlugin: KVRestorePlugin by lazy {
-        DocumentsProviderKVRestorePlugin(context, storage)
-    }
-
-    override val fullRestorePlugin: FullRestorePlugin by lazy {
-        DocumentsProviderFullRestorePlugin(context, storage)
-    }
 
     @Throws(IOException::class)
     override suspend fun hasBackup(uri: Uri): Boolean {
