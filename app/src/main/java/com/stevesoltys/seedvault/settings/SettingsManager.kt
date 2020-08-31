@@ -1,16 +1,15 @@
 package com.stevesoltys.seedvault.settings
 
-import android.app.backup.RestoreSet
 import android.content.Context
 import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
-import java.util.concurrent.atomic.AtomicBoolean
 
+internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
@@ -28,7 +27,8 @@ class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
-    private var isStorageChanging: AtomicBoolean = AtomicBoolean(false)
+    @Volatile
+    private var token: Long? = null
 
     /**
      * This gets accessed by non-UI threads when saving with [PreferenceManager]
@@ -37,6 +37,21 @@ class SettingsManager(context: Context) {
      */
     private val blacklistedApps: MutableSet<String> by lazy {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
+    }
+
+    fun getToken(): Long? = token ?: {
+        val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
+        if (value == 0L) null else value
+    }()
+
+    /**
+     * Sets a new RestoreSet token.
+     * Should only be called by the [BackupCoordinator]
+     * to ensure that related work is performed after moving to a new token.
+     */
+    fun setNewToken(newToken: Long) {
+        prefs.edit().putLong(PREF_KEY_TOKEN, newToken).apply()
+        token = newToken
     }
 
     // FIXME Storage is currently plugin specific and not generic
@@ -55,25 +70,6 @@ class SettingsManager(context: Context) {
             ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         return Storage(uri, name, isUsb)
-    }
-
-    /**
-     * When [ConfigurableBackupTransport.initializeDevice] we try to avoid deleting all stored data,
-     * as this gets frequently called after network errors by SAF cloud providers.
-     *
-     * This method allows us to force a re-initialization of the underlying storage root
-     * when we change to a new storage provider.
-     * Currently, this causes us to create a new [RestoreSet].
-     *
-     * As part of the initialization, [getAndResetIsStorageChanging] should get called
-     * to prevent future calls from causing re-initializations.
-     */
-    fun forceStorageInitialization() {
-        isStorageChanging.set(true)
-    }
-
-    fun getAndResetIsStorageChanging(): Boolean {
-        return isStorageChanging.getAndSet(false)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {

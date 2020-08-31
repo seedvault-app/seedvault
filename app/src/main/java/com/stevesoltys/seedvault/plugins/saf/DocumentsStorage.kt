@@ -1,4 +1,4 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "BlockingMethodInNonBlockingContext")
+@file:Suppress("BlockingMethodInNonBlockingContext")
 
 package com.stevesoltys.seedvault.plugins.saf
 
@@ -9,17 +9,13 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.FileUtils.closeQuietly
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
-import android.provider.DocumentsContract.Document.COLUMN_MIME_TYPE
-import android.provider.DocumentsContract.Document.MIME_TYPE_DIR
 import android.provider.DocumentsContract.EXTRA_LOADING
 import android.provider.DocumentsContract.buildChildDocumentsUriUsingTree
 import android.provider.DocumentsContract.buildDocumentUriUsingTree
-import android.provider.DocumentsContract.buildTreeDocumentUri
 import android.provider.DocumentsContract.getDocumentId
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import kotlinx.coroutines.TimeoutCancellationException
@@ -42,7 +38,6 @@ private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
     private val context: Context,
-    private val metadataManager: MetadataManager,
     private val settingsManager: SettingsManager
 ) {
 
@@ -73,9 +68,9 @@ internal class DocumentsStorage(
             field
         }
 
-    private var currentToken: Long = 0L
+    private var currentToken: Long? = null
         get() {
-            if (field == 0L) field = metadataManager.getBackupToken()
+            if (field == null) field = settingsManager.getToken()
             return field
         }
 
@@ -119,14 +114,10 @@ internal class DocumentsStorage(
             field
         }
 
-    fun isInitialized(): Boolean {
-        if (settingsManager.getAndResetIsStorageChanging()) return false // storage location has changed
-        val kvEmpty = currentKvBackupDir?.listFiles()?.isEmpty() ?: false
-        val fullEmpty = currentFullBackupDir?.listFiles()?.isEmpty() ?: false
-        return kvEmpty && fullEmpty
-    }
-
-    fun reset(newToken: Long) {
+    /**
+     * Resets this storage abstraction, forcing it to re-fetch cached values on next access.
+     */
+    fun reset(newToken: Long?) {
         storage = null
         currentToken = newToken
         rootBackupDir = null
@@ -138,26 +129,28 @@ internal class DocumentsStorage(
     fun getAuthority(): String? = storage?.uri?.authority
 
     @Throws(IOException::class)
-    suspend fun getSetDir(token: Long = currentToken): DocumentFile? {
+    suspend fun getSetDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
         if (token == currentToken) return currentSetDir
         return rootBackupDir?.findFileBlocking(context, token.toString())
     }
 
     @Throws(IOException::class)
-    suspend fun getKVBackupDir(token: Long = currentToken): DocumentFile? {
+    suspend fun getKVBackupDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
         if (token == currentToken) return currentKvBackupDir ?: throw IOException()
         return getSetDir(token)?.findFileBlocking(context, DIRECTORY_KEY_VALUE_BACKUP)
     }
 
     @Throws(IOException::class)
-    suspend fun getOrCreateKVBackupDir(token: Long = currentToken): DocumentFile {
+    suspend fun getOrCreateKVBackupDir(
+        token: Long = currentToken ?: error("no token")
+    ): DocumentFile {
         if (token == currentToken) return currentKvBackupDir ?: throw IOException()
         val setDir = getSetDir(token) ?: throw IOException()
         return setDir.createOrGetDirectory(context, DIRECTORY_KEY_VALUE_BACKUP)
     }
 
     @Throws(IOException::class)
-    suspend fun getFullBackupDir(token: Long = currentToken): DocumentFile? {
+    suspend fun getFullBackupDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
         if (token == currentToken) return currentFullBackupDir ?: throw IOException()
         return getSetDir(token)?.findFileBlocking(context, DIRECTORY_FULL_BACKUP)
     }
@@ -195,12 +188,14 @@ internal suspend fun DocumentFile.createOrGetFile(
  */
 @Throws(IOException::class)
 suspend fun DocumentFile.createOrGetDirectory(context: Context, name: String): DocumentFile {
-    return findFileBlocking(context, name) ?: createDirectory(name) ?: throw IOException()
+    return findFileBlocking(context, name) ?: createDirectory(name)?.apply {
+        check(this.name == name) { "Directory named ${this.name}, but should be $name" }
+    } ?: throw IOException()
 }
 
 @Throws(IOException::class)
-fun DocumentFile.deleteContents() {
-    for (file in listFiles()) file.delete()
+suspend fun DocumentFile.deleteContents(context: Context) {
+    for (file in listFilesBlocking(context)) file.delete()
 }
 
 fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
@@ -214,10 +209,10 @@ fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
  * This prevents getting an empty list even though there are children to be listed.
  */
 @Throws(IOException::class)
-suspend fun DocumentFile.listFilesBlocking(context: Context): ArrayList<DocumentFile> {
+suspend fun DocumentFile.listFilesBlocking(context: Context): List<DocumentFile> {
     val resolver = context.contentResolver
     val childrenUri = buildChildDocumentsUriUsingTree(uri, getDocumentId(uri))
-    val projection = arrayOf(COLUMN_DOCUMENT_ID, COLUMN_MIME_TYPE)
+    val projection = arrayOf(COLUMN_DOCUMENT_ID)
     val result = ArrayList<DocumentFile>()
 
     try {
@@ -229,18 +224,31 @@ suspend fun DocumentFile.listFilesBlocking(context: Context): ArrayList<Document
     }.use { cursor ->
         while (cursor.moveToNext()) {
             val documentId = cursor.getString(0)
-            val isDirectory = cursor.getString(1) == MIME_TYPE_DIR
-            val file = if (isDirectory) {
-                val treeUri = buildTreeDocumentUri(uri.authority, documentId)
-                DocumentFile.fromTreeUri(context, treeUri)!!
-            } else {
-                val documentUri = buildDocumentUriUsingTree(uri, documentId)
-                DocumentFile.fromSingleUri(context, documentUri)!!
-            }
-            result.add(file)
+            val documentUri = buildDocumentUriUsingTree(uri, documentId)
+            result.add(getTreeDocumentFile(this, context, documentUri))
         }
     }
     return result
+}
+
+/**
+ * An extremely dirty reflection hack to instantiate a TreeDocumentFile with a parent.
+ *
+ * All other public ways to get a TreeDocumentFile only work from [Uri]s
+ * (e.g. [DocumentFile.fromTreeUri]) and always set parent to null.
+ *
+ * We have a test for this method to ensure CI will alert us when this reflection breaks.
+ * Also, [DocumentFile] is part of AndroidX, so we control the dependency and notice when it fails.
+ */
+@VisibleForTesting
+internal fun getTreeDocumentFile(parent: DocumentFile, context: Context, uri: Uri): DocumentFile {
+    @SuppressWarnings("MagicNumber")
+    val constructor = parent.javaClass.declaredConstructors.find {
+        it.name == "androidx.documentfile.provider.TreeDocumentFile" && it.parameterCount == 3
+    }
+    check(constructor != null) { "Could not find constructor for TreeDocumentFile" }
+    constructor.isAccessible = true
+    return constructor.newInstance(parent, context, uri) as DocumentFile
 }
 
 /**
