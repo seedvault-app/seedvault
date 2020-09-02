@@ -24,7 +24,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.BACKUP` to back up application data.
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots. 
 * `android.permission.MANAGE_USB` to access the serial number of USB mass storage devices.
-* `android.permission.WRITE_SECURE_SETTINGS` to change system backup settings.
+* `android.permission.WRITE_SECURE_SETTINGS` to change system backup settings and enable call log backup.
 * `android.permission.INSTALL_PACKAGES` to re-install apps when restoring from backup.
 
 ## Contributing
