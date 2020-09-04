@@ -19,8 +19,7 @@ private val TAG = NotificationBackupObserver::class.java.simpleName
 internal class NotificationBackupObserver(
     private val context: Context,
     private val expectedPackages: Int,
-    appTotals: ExpectedAppTotals,
-    private val userInitiated: Boolean
+    appTotals: ExpectedAppTotals
 ) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
@@ -31,7 +30,7 @@ internal class NotificationBackupObserver(
     init {
         // Inform the notification manager that a backup has started
         // and inform about the expected numbers, so it can compute a total.
-        nm.onBackupStarted(expectedPackages, appTotals, userInitiated)
+        nm.onBackupStarted(expectedPackages, appTotals)
     }
 
     /**
@@ -79,7 +78,7 @@ internal class NotificationBackupObserver(
         }
         val success = status == 0
         val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
-        nm.onBackupFinished(success, numBackedUp, userInitiated)
+        nm.onBackupFinished(success, numBackedUp)
     }
 
     private fun showProgressNotification(packageName: String) {
@@ -93,7 +92,7 @@ internal class NotificationBackupObserver(
         currentPackage = packageName
         val app = getAppName(packageName)
         numPackages += 1
-        nm.onBackupUpdate(app, numPackages, userInitiated)
+        nm.onBackupUpdate(app, numPackages)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
