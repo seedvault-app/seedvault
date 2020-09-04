@@ -166,6 +166,12 @@ internal class RestoreViewModel(
     private suspend fun startRestore(token: Long) {
         Log.d(TAG, "Starting new restore session to restore backup $token")
 
+        // if we had no token before (i.e. restore from setup wizard),
+        // use the token of the current restore set from now on
+        if (settingsManager.getToken() == null) {
+            settingsManager.setNewToken(token)
+        }
+
         // we need to start a new session and retrieve the restore sets before starting the restore
         val restoreSetResult = getAvailableRestoreSets()
         if (restoreSetResult.hasError()) {
