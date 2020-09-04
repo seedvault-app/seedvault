@@ -199,6 +199,8 @@ class MetadataManager(
 
     @Synchronized
     fun getPackagesNumBackedUp(): Int {
+        // FIXME we are under-reporting packages here,
+        //  because we have no way to also include upgraded system apps
         return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
             !packageMetadata.system && ( // ignore system apps
                     packageMetadata.state == APK_AND_DATA || // either full success
