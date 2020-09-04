@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.IBackupManager
+import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
@@ -14,7 +15,6 @@ import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.BuildConfig.APPLICATION_ID
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 
 private val TAG = PackageService::class.java.simpleName
@@ -26,10 +26,11 @@ private const val LOG_MAX_PACKAGES = 100
  * @author Torsten Grote
  */
 internal class PackageService(
-    private val packageManager: PackageManager,
+    private val context: Context,
     private val backupManager: IBackupManager
 ) {
 
+    private val packageManager: PackageManager = context.packageManager
     private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
@@ -73,7 +74,7 @@ internal class PackageService(
                 .filter { packageInfo ->
                     packageInfo.doesNotGetBackedUp() && // only apps that do not allow backup
                             !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
-                            packageInfo.packageName != APPLICATION_ID // not this app
+                            packageInfo.packageName != context.packageName // not this app
                 }.sortedBy { packageInfo ->
                     packageInfo.packageName
                 }.also { notAllowed ->
@@ -92,7 +93,7 @@ internal class PackageService(
         @WorkerThread
         get() {
             return packageManager.getInstalledPackages(GET_INSTRUMENTATION)
-                .filter { it.isUserVisible() }
+                .filter { it.isUserVisible(context) }
         }
 
     val expectedAppTotals: ExpectedAppTotals
@@ -101,7 +102,7 @@ internal class PackageService(
             var appsTotal = 0
             var appsOptOut = 0
             packageManager.getInstalledPackages(GET_INSTRUMENTATION).forEach { packageInfo ->
-                if (packageInfo.isUserVisible()) {
+                if (packageInfo.isUserVisible(context)) {
                     appsTotal++
                     if (packageInfo.doesNotGetBackedUp()) {
                         appsOptOut++
@@ -130,9 +131,9 @@ internal data class ExpectedAppTotals(
     val appsOptOut: Int
 )
 
-internal fun PackageInfo.isUserVisible(): Boolean {
+internal fun PackageInfo.isUserVisible(context: Context): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return !isNotUpdatedSystemApp() && instrumentation == null && packageName != APPLICATION_ID
+    return !isNotUpdatedSystemApp() && instrumentation == null && packageName != context.packageName
 }
 
 internal fun PackageInfo.isSystemApp(): Boolean {

@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import androidx.core.app.NotificationCompat.PRIORITY_LOW
-import com.stevesoltys.seedvault.BuildConfig.APPLICATION_ID
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.ACTION_RESTORE_ERROR_UNINSTALL
@@ -207,7 +206,7 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun hasActiveBackupNotifications(): Boolean {
         nm.activeNotifications.forEach {
-            if (it.packageName == APPLICATION_ID &&
+            if (it.packageName == context.packageName &&
                 (it.id == NOTIFICATION_ID_OBSERVER || it.id == NOTIFICATION_ID_BACKGROUND)
             ) return true
         }
