@@ -3,6 +3,8 @@ package com.stevesoltys.seedvault.settings
 import android.app.Application
 import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.LiveData
@@ -29,6 +31,7 @@ import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +43,7 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
+    private val notificationManager: BackupNotificationManager,
     private val metadataManager: MetadataManager,
     private val packageService: PackageService
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
@@ -65,7 +69,11 @@ internal class SettingsViewModel(
     }
 
     internal fun backupNow() {
-        Thread { requestBackup(app) }.start()
+        if (notificationManager.hasActiveBackupNotifications()) {
+            Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
+        } else {
+            Thread { requestBackup(app) }.start()
+        }
     }
 
     private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData {

@@ -37,7 +37,7 @@ class App : Application() {
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
