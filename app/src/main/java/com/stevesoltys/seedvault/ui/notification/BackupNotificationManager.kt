@@ -31,6 +31,7 @@ private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
 private const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_ERROR = 2
 private const val NOTIFICATION_ID_RESTORE_ERROR = 3
+private const val NOTIFICATION_ID_BACKGROUND = 4
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -71,14 +72,12 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onBackupStarted(
         expectedPackages: Int,
-        appTotals: ExpectedAppTotals,
-        userInitiated: Boolean
+        appTotals: ExpectedAppTotals
     ) {
         updateBackupNotification(
             infoText = "", // This passes quickly, no need to show something here
             transferred = 0,
-            expected = expectedPackages,
-            userInitiated = userInitiated
+            expected = expectedPackages
         )
         expectedApps = expectedPackages
         expectedOptOutApps = appTotals.appsOptOut
@@ -89,57 +88,55 @@ internal class BackupNotificationManager(private val context: Context) {
      * This is expected to get called before [onOptOutAppBackup] and [onBackupUpdate].
      */
     fun onPmKvBackup(packageName: String, transferred: Int, expected: Int) {
+        val text = "@pm@ record for $packageName"
         if (expectedApps == null) {
-            Log.d(TAG, "Expected number of apps unknown. Not showing @pm@ notification.")
-            return
+            updateBackgroundBackupNotification(text)
+        } else {
+            val addend = (expectedOptOutApps ?: 0) + (expectedApps ?: 0)
+            updateBackupNotification(
+                infoText = text,
+                transferred = transferred,
+                expected = expected + addend
+            )
+            expectedPmRecords = expected
         }
-        val addend = (expectedOptOutApps ?: 0) + (expectedApps ?: 0)
-        updateBackupNotification(
-            infoText = "@pm@ record for $packageName",
-            transferred = transferred,
-            expected = expected + addend,
-            userInitiated = false
-        )
-        expectedPmRecords = expected
     }
 
     /**
      * This should get called after [onPmKvBackup], but before [onBackupUpdate].
      */
     fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
+        val text = "Opt-out APK for $packageName"
         if (expectedApps == null) {
-            Log.d(TAG, "Expected number of apps unknown. Not showing APK notification.")
-            return
+            updateBackgroundBackupNotification(text)
+        } else {
+            updateBackupNotification(
+                infoText = text,
+                transferred = transferred + (expectedPmRecords ?: 0),
+                expected = expected + (expectedApps ?: 0) + (expectedPmRecords ?: 0)
+            )
+            expectedOptOutApps = expected
         }
-        updateBackupNotification(
-            infoText = "Opt-out APK for $packageName",
-            transferred = transferred + (expectedPmRecords ?: 0),
-            expected = expected + (expectedApps ?: 0) + (expectedPmRecords ?: 0),
-            userInitiated = false
-        )
-        expectedOptOutApps = expected
     }
 
     /**
      * In the series of notification updates,
      * this type is is expected to get called after [onOptOutAppBackup] and [onPmKvBackup].
      */
-    fun onBackupUpdate(app: CharSequence, transferred: Int, userInitiated: Boolean) {
+    fun onBackupUpdate(app: CharSequence, transferred: Int) {
         val expected = expectedApps ?: error("expectedApps is null")
         val addend = (expectedOptOutApps ?: 0) + (expectedPmRecords ?: 0)
         updateBackupNotification(
             infoText = app,
             transferred = transferred + addend,
-            expected = expected + addend,
-            userInitiated = userInitiated
+            expected = expected + addend
         )
     }
 
     private fun updateBackupNotification(
         infoText: CharSequence,
         transferred: Int,
-        expected: Int,
-        userInitiated: Boolean
+        expected: Int
     ) {
         @Suppress("MagicNumber")
         val percentage = (transferred.toFloat() / expected) * 100
@@ -149,22 +146,33 @@ internal class BackupNotificationManager(private val context: Context) {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
             setContentText(percentageStr)
-            setTicker(infoText)
             setOngoing(true)
             setShowWhen(false)
             setWhen(System.currentTimeMillis())
             setProgress(expected, transferred, false)
-            priority = if (userInitiated) PRIORITY_DEFAULT else PRIORITY_LOW
+            priority = PRIORITY_DEFAULT
         }.build()
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
-    fun onBackupFinished(success: Boolean, numBackedUp: Int?, userInitiated: Boolean) {
-        if (!userInitiated) {
-            // don't show permanent finished notification if backup was not triggered by user
-            nm.cancel(NOTIFICATION_ID_OBSERVER)
-            return
-        }
+    private fun updateBackgroundBackupNotification(infoText: CharSequence) {
+        Log.i(TAG, "$infoText")
+        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
+            setSmallIcon(R.drawable.ic_cloud_upload)
+            setContentTitle(context.getString(R.string.notification_title))
+            setShowWhen(false)
+            setWhen(System.currentTimeMillis())
+            setProgress(0, 0, true)
+            priority = PRIORITY_LOW
+        }.build()
+        nm.notify(NOTIFICATION_ID_BACKGROUND, notification)
+    }
+
+    fun onBackupBackgroundFinished() {
+        nm.cancel(NOTIFICATION_ID_BACKGROUND)
+    }
+
+    fun onBackupFinished(success: Boolean, numBackedUp: Int?) {
         val titleRes =
             if (success) R.string.notification_success_title else R.string.notification_failed_title
         val total = expectedAppTotals?.appsTotal
