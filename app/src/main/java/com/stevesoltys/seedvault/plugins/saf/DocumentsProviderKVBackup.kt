@@ -14,8 +14,8 @@ const val MAX_KEY_LENGTH_NEXTCLOUD = 225
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderKVBackup(
-    private val storage: DocumentsStorage,
-    private val context: Context
+    private val context: Context,
+    private val storage: DocumentsStorage
 ) : KVBackupPlugin {
 
     private var packageFile: DocumentFile? = null
@@ -27,7 +27,7 @@ internal class DocumentsProviderKVBackup(
         val packageFile =
             storage.currentKvBackupDir?.findFileBlocking(context, packageInfo.packageName)
                 ?: return false
-        return packageFile.listFiles().isNotEmpty()
+        return packageFile.listFilesBlocking(context).isNotEmpty()
     }
 
     @Throws(IOException::class)

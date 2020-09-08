@@ -13,7 +13,6 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.collection.LongSparseArray
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
@@ -22,18 +21,19 @@ import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 private class RestoreCoordinatorState(
-    internal val token: Long,
-    internal val packages: Iterator<PackageInfo>,
+    val token: Long,
+    val packages: Iterator<PackageInfo>,
     /**
      * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
      */
-    internal val pmPackageInfo: PackageInfo?
+    val pmPackageInfo: PackageInfo?
 ) {
-    internal var currentPackage: String? = null
+    var currentPackage: String? = null
 }
 
 private val TAG = RestoreCoordinator::class.java.simpleName
@@ -106,8 +106,9 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
-        return metadataManager.getBackupToken()
-            .apply { Log.i(TAG, "Got current restore set token: $this") }
+        return (settingsManager.getToken() ?: 0L).apply {
+            Log.i(TAG, "Got current restore set token: $this")
+        }
     }
 
     /**

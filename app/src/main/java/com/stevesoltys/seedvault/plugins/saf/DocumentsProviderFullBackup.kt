@@ -12,8 +12,8 @@ private val TAG = DocumentsProviderFullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderFullBackup(
-    private val storage: DocumentsStorage,
-    private val context: Context
+    private val context: Context,
+    private val storage: DocumentsStorage
 ) : FullBackupPlugin {
 
     override fun getQuota() = DEFAULT_QUOTA_FULL_BACKUP
