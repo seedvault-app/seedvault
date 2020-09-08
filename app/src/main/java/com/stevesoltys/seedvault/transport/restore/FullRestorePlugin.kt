@@ -10,9 +10,9 @@ interface FullRestorePlugin {
      * Return true if there is data stored for the given package.
      */
     @Throws(IOException::class)
-    fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean
+    suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean
 
     @Throws(IOException::class)
-    fun getInputStreamForPackage(token: Long, packageInfo: PackageInfo): InputStream
+    suspend fun getInputStreamForPackage(token: Long, packageInfo: PackageInfo): InputStream
 
 }

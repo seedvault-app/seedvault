@@ -76,9 +76,10 @@
     <string name="notification_backup_result_complete">Backup complete</string>
     <string name="notification_backup_result_rejected">Not backed up</string>
     <string name="notification_backup_result_error">Backup failed</string>
+    <string name="notification_backup_already_running">Backup already in progress</string>
 
     <string name="notification_success_title">Backup finished</string>
-    <string name="notification_success_num_not_backed_up">%1$d apps could not get backed up</string>
+    <string name="notification_success_text">%1$d of %2$d apps backed up. Tap to learn more.</string>
     <string name="notification_failed_title">Backup failed</string>
 
     <string name="notification_error_channel_title">Error notification</string>
@@ -104,6 +105,8 @@
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring backup</string>
     <string name="restore_magic_package">System package manager</string>
+    <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
+    <string name="restore_app_not_eligible">Not yet backed up</string>
     <string name="restore_app_no_data">App reported no data for backup</string>
     <string name="restore_app_not_allowed">App doesn\'t allow backup</string>
     <string name="restore_app_not_installed">App not installed</string>

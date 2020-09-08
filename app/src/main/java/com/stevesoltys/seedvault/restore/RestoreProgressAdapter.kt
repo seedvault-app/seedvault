@@ -10,7 +10,7 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreProgressAdapter.PackageViewHolder
 import com.stevesoltys.seedvault.ui.AppViewHolder
-import java.util.*
+import java.util.LinkedList
 
 internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 
@@ -50,7 +50,7 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
         }
     }
 
-    inner class PackageViewHolder(v: View) : AppViewHolder(v) {
+    class PackageViewHolder(v: View) : AppViewHolder(v) {
         fun bind(item: AppRestoreResult) {
             appName.text = item.name
             if (item.packageName == MAGIC_PACKAGE_MANAGER) {
@@ -71,6 +71,7 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 enum class AppRestoreStatus {
     IN_PROGRESS,
     SUCCEEDED,
+    NOT_ELIGIBLE,
     FAILED,
     FAILED_NO_DATA,
     FAILED_NOT_ALLOWED,

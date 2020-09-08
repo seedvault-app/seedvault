@@ -15,24 +15,27 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
-import java.util.*
+import java.util.ArrayList
 import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
-        internal val token: Long,
-        internal val packageInfo: PackageInfo,
-        /**
-         * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
-         */
-        internal val pmPackageInfo: PackageInfo?)
+    internal val token: Long,
+    internal val packageInfo: PackageInfo,
+    /**
+     * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
+     */
+    internal val pmPackageInfo: PackageInfo?
+)
 
 private val TAG = KVRestore::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestore(
-        private val plugin: KVRestorePlugin,
-        private val outputFactory: OutputFactory,
-        private val headerReader: HeaderReader,
-        private val crypto: Crypto) {
+    private val plugin: KVRestorePlugin,
+    private val outputFactory: OutputFactory,
+    private val headerReader: HeaderReader,
+    private val crypto: Crypto
+) {
 
     private var state: KVRestoreState? = null
 
@@ -40,7 +43,7 @@ internal class KVRestore(
      * Return true if there are records stored for the given package.
      */
     @Throws(IOException::class)
-    fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
+    suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
         return plugin.hasDataForPackage(token, packageInfo)
     }
 
@@ -63,7 +66,7 @@ internal class KVRestore(
      * @return One of [TRANSPORT_OK]
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
-    fun getRestoreData(data: ParcelFileDescriptor): Int {
+    suspend fun getRestoreData(data: ParcelFileDescriptor): Int {
         val state = this.state ?: throw IllegalStateException("no state")
 
         // The restore set is the concatenation of the individual record blobs,
@@ -109,7 +112,7 @@ internal class KVRestore(
      * Return a list of the records (represented by key files) in the given directory,
      * sorted lexically by the Base64-decoded key file name, not by the on-disk filename.
      */
-    private fun getSortedKeys(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
+    private suspend fun getSortedKeys(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
         val records: List<String> = try {
             plugin.listRecords(token, packageInfo)
         } catch (e: IOException) {
@@ -122,11 +125,12 @@ internal class KVRestore(
         for (recordKey in records) contents.add(DecodedKey(recordKey))
         // remove keys that are not needed for single package @pm@ restore
         val pmPackageName = state?.pmPackageInfo?.packageName
-        val sortedKeys = if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && pmPackageName != null) {
-            val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
-            Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
-            contents.filterTo(ArrayList()) { it.key in keys }
-        } else contents
+        val sortedKeys =
+            if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && pmPackageName != null) {
+                val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
+                Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
+                contents.filterTo(ArrayList()) { it.key in keys }
+            } else contents
         sortedKeys.sort()
         return sortedKeys
     }
@@ -135,9 +139,12 @@ internal class KVRestore(
      * Read the encrypted value for the given key and write it to the given [BackupDataOutput].
      */
     @Throws(IOException::class, UnsupportedVersionException::class, SecurityException::class)
-    private fun readAndWriteValue(state: KVRestoreState, dKey: DecodedKey, out: BackupDataOutput) {
-        val inputStream = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
-        try {
+    private suspend fun readAndWriteValue(
+        state: KVRestoreState,
+        dKey: DecodedKey,
+        out: BackupDataOutput
+    ) = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
+        .use { inputStream ->
             val version = headerReader.readVersion(inputStream)
             crypto.decryptHeader(inputStream, version, state.packageInfo.packageName, dKey.key)
             val value = crypto.decryptMultipleSegments(inputStream)
@@ -146,10 +153,8 @@ internal class KVRestore(
 
             out.writeEntityHeader(dKey.key, size)
             out.writeEntityData(value, size)
-        } finally {
-            closeQuietly(inputStream)
+            Unit
         }
-    }
 
     private class DecodedKey(internal val base64Key: String) : Comparable<DecodedKey> {
         internal val key = base64Key.decodeBase64()

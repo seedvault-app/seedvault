@@ -19,7 +19,7 @@ import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.getAppName
+import com.stevesoltys.seedvault.ui.notification.getAppName
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
@@ -166,6 +166,12 @@ internal class RestoreViewModel(
     private suspend fun startRestore(token: Long) {
         Log.d(TAG, "Starting new restore session to restore backup $token")
 
+        // if we had no token before (i.e. restore from setup wizard),
+        // use the token of the current restore set from now on
+        if (settingsManager.getToken() == null) {
+            settingsManager.setNewToken(token)
+        }
+
         // we need to start a new session and retrieve the restore sets before starting the restore
         val restoreSetResult = getAvailableRestoreSets()
         if (restoreSetResult.hasError()) {
@@ -296,7 +302,8 @@ internal class RestoreViewModel(
                             }
                         }
                     }
-                    RestoreSetResult(restorableBackups)
+                    if (restorableBackups.isEmpty()) RestoreSetResult(app.getString(R.string.restore_set_empty_result))
+                    else RestoreSetResult(restorableBackups)
                 }
             }
             continuation.resume(result)
