@@ -112,7 +112,7 @@ internal class KVRestore(
      * Return a list of the records (represented by key files) in the given directory,
      * sorted lexically by the Base64-decoded key file name, not by the on-disk filename.
      */
-    private fun getSortedKeys(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
+    private suspend fun getSortedKeys(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
         val records: List<String> = try {
             plugin.listRecords(token, packageInfo)
         } catch (e: IOException) {

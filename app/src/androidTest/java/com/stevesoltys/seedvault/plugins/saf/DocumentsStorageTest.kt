@@ -45,7 +45,7 @@ class DocumentsStorageTest : KoinComponent {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val metadataManager by inject<MetadataManager>()
     private val settingsManager by inject<SettingsManager>()
-    private val storage = DocumentsStorage(context, metadataManager, settingsManager)
+    private val storage = DocumentsStorage(context, settingsManager)
 
     private val filename = getRandomBase64()
     private lateinit var file: DocumentFile
@@ -96,6 +96,7 @@ class DocumentsStorageTest : KoinComponent {
         val foundFile = storage.rootBackupDir!!.findFileBlocking(context, file.name!!)
         assertNotNull(foundFile)
         assertEquals(filename, foundFile!!.name)
+        assertEquals(storage.rootBackupDir!!.uri, foundFile.parentFile?.uri)
     }
 
     @Test

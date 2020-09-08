@@ -7,7 +7,6 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
@@ -35,6 +34,7 @@ import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -186,7 +186,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
         val rInputStream2 = ByteArrayInputStream(bOutputStream2.toByteArray())
-        every { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64, key264)
+        coEvery { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64, key264)
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
         coEvery {
             kvRestorePlugin.getInputStreamForRecord(
@@ -255,7 +255,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // restore finds the backed up key and writes the decrypted value
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
-        every { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64)
+        coEvery { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64)
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
         coEvery {
             kvRestorePlugin.getInputStreamForRecord(

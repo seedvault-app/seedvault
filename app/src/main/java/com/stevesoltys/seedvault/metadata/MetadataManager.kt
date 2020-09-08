@@ -178,6 +178,7 @@ class MetadataManager(
      * If the token is 0L, it is not yet initialized and must not be used for anything.
      */
     @Synchronized
+    @Deprecated("Responsibility for current token moved to SettingsManager", ReplaceWith("settingsManager.getToken()"))
     fun getBackupToken(): Long = metadata.token
 
     /**

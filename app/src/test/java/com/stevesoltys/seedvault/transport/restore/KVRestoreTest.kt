@@ -56,7 +56,7 @@ internal class KVRestoreTest : RestoreTest() {
     fun `listing records throws`() = runBlocking {
         restore.initializeState(token, packageInfo)
 
-        every { plugin.listRecords(token, packageInfo) } throws IOException()
+        coEvery { plugin.listRecords(token, packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
     }
@@ -208,7 +208,7 @@ internal class KVRestoreTest : RestoreTest() {
     }
 
     private fun getRecordsAndOutput(recordKeys: List<String> = listOf(key64)) {
-        every { plugin.listRecords(token, packageInfo) } returns recordKeys
+        coEvery { plugin.listRecords(token, packageInfo) } returns recordKeys
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns output
     }
 

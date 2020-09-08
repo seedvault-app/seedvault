@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.settings
 
 import android.app.Application
 import android.content.pm.PackageManager.NameNotFoundException
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
@@ -36,6 +37,8 @@ import com.stevesoltys.seedvault.ui.notification.getAppName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
+
+private const val USER_FULL_DATA_BACKUP_AWARE = "user_full_data_backup_aware"
 
 private val TAG = SettingsViewModel::class.java.simpleName
 
@@ -127,6 +130,20 @@ internal class SettingsViewModel(
     @UiThread
     fun onAppStatusToggled(status: AppStatus) {
         settingsManager.onAppBackupStatusChanged(status)
+    }
+
+    /**
+     * Ensures that the call log will be included in backups.
+     *
+     * An AOSP code search found that call log backups get disabled if [USER_FULL_DATA_BACKUP_AWARE]
+     * is not set. This method sets this flag, if it is not already set.
+     * No other apps were found to check for this, so this should affect only call log.
+     */
+    fun enableCallLogBackup() {
+        // first check if the flag is already set
+        if (Settings.Secure.getInt(app.contentResolver, USER_FULL_DATA_BACKUP_AWARE, 0) == 0) {
+            Settings.Secure.putInt(app.contentResolver, USER_FULL_DATA_BACKUP_AWARE, 1)
+        }
     }
 
 }

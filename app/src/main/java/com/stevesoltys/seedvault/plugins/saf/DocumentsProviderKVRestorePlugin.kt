@@ -26,10 +26,11 @@ internal class DocumentsProviderKVRestorePlugin(
         }
     }
 
-    override fun listRecords(token: Long, packageInfo: PackageInfo): List<String> {
+    @Throws(IOException::class)
+    override suspend fun listRecords(token: Long, packageInfo: PackageInfo): List<String> {
         val packageDir = this.packageDir ?: throw AssertionError()
         packageDir.assertRightFile(packageInfo)
-        return packageDir.listFiles()
+        return packageDir.listFilesBlocking(context)
             .filter { file -> file.name != null }
             .map { file -> file.name!! }
     }
