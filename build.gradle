@@ -3,7 +3,9 @@
 buildscript {
 
     // 1.3.21 Android 10
-    // 1.3.72 AOSP master (2020-08)
+    // 1.3.61 Android 11
+    // Check:
+    // https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-11.0.0_r3/build.txt
     ext.kotlin_version = '1.3.61'
 
     repositories {
@@ -11,8 +13,7 @@ buildscript {
         google()
     }
     dependencies {
-        // newer versions require us to remove targetSdkVersion from Manifest
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
