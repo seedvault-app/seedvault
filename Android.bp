@@ -29,6 +29,8 @@ android_app {
         "androidx.preference_preference",
         "androidx.lifecycle_lifecycle-extensions",
         "androidx-constraintlayout_constraintlayout",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
         "seedvault-lib-androidx-core-ktx",
         "seedvault-lib-androidx-lifecycle-livedata-core-ktx",
         "seedvault-lib-androidx-lifecycle-livedata-ktx",
@@ -37,8 +39,6 @@ android_app {
         "seedvault-lib-koin-androidx-viewmodel",
         "seedvault-lib-commons-io",
         "seedvault-lib-koin-core",
-        "seedvault-lib-kotlinx-coroutines-android",
-        "seedvault-lib-kotlinx-coroutines-core",
         "seedvault-lib-novacrypto-bip39",
         "seedvault-lib-novacrypto-sha256",
         "seedvault-lib-novacrypto-toruntime"
