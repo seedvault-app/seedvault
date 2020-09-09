@@ -26,6 +26,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import org.robolectric.annotation.Config
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -34,6 +35,7 @@ import java.io.IOException
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [29]) // robolectric does not support 30, yet
 class MetadataManagerTest {
 
     private val context: Context = mockk()
