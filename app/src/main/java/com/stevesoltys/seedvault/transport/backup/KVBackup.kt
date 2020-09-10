@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.backup.BackupTransport.FLAG_DATA_NOT_CHANGED
 import android.app.backup.BackupTransport.FLAG_INCREMENTAL
 import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
@@ -8,12 +9,12 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
@@ -45,11 +46,15 @@ internal class KVBackup(
         data: ParcelFileDescriptor,
         flags: Int
     ): Int {
+        val dataNotChanged = flags and FLAG_DATA_NOT_CHANGED != 0
         val isIncremental = flags and FLAG_INCREMENTAL != 0
         val isNonIncremental = flags and FLAG_NON_INCREMENTAL != 0
         val packageName = packageInfo.packageName
 
         when {
+            dataNotChanged -> {
+                Log.i(TAG, "No K/V backup data has changed for $packageName")
+            }
             isIncremental -> {
                 Log.i(TAG, "Performing incremental K/V backup for $packageName")
             }
@@ -64,6 +69,9 @@ internal class KVBackup(
         // initialize state
         if (this.state != null) throw AssertionError()
         this.state = KVBackupState(packageInfo)
+
+        // no need for backup when no data has changed
+        if (dataNotChanged) return TRANSPORT_OK
 
         // check if we have existing data for the given package
         val hasDataForPackage = try {
