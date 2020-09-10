@@ -11,10 +11,12 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -30,10 +32,11 @@ import java.nio.file.Path
 import kotlin.random.Random
 
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackupTest : BackupTest() {
 
     private val pm: PackageManager = mockk()
-    private val streamGetter: () -> OutputStream = mockk()
+    private val streamGetter: suspend () -> OutputStream = mockk()
 
     private val apkBackup = ApkBackup(pm, settingsManager, metadataManager)
 
@@ -51,20 +54,20 @@ internal class ApkBackupTest : BackupTest() {
     }
 
     @Test
-    fun `does not back up @pm@`() {
+    fun `does not back up @pm@`() = runBlocking {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
-    fun `does not back up when setting disabled`() {
+    fun `does not back up when setting disabled`() = runBlocking {
         every { settingsManager.backupApks() } returns false
 
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
     @Test
-    fun `does not back up system apps`() {
+    fun `does not back up system apps`() = runBlocking {
         packageInfo.applicationInfo.flags = FLAG_SYSTEM
 
         every { settingsManager.backupApks() } returns true
@@ -73,7 +76,7 @@ internal class ApkBackupTest : BackupTest() {
     }
 
     @Test
-    fun `does not back up the same version`() {
+    fun `does not back up the same version`() = runBlocking {
         packageInfo.applicationInfo.flags = FLAG_UPDATED_SYSTEM_APP
         val packageMetadata = packageMetadata.copy(
                 version = packageInfo.longVersionCode
@@ -91,12 +94,14 @@ internal class ApkBackupTest : BackupTest() {
         expectChecks()
 
         assertThrows(IOException::class.java) {
-            assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
+            runBlocking {
+                assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
+            }
         }
     }
 
     @Test
-    fun `do not accept empty signature`() {
+    fun `do not accept empty signature`() = runBlocking {
         every { settingsManager.backupApks() } returns true
         every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns packageMetadata
         every { sigInfo.hasMultipleSigners() } returns false
@@ -106,7 +111,7 @@ internal class ApkBackupTest : BackupTest() {
     }
 
     @Test
-    fun `test successful APK backup`(@TempDir tmpDir: Path) {
+    fun `test successful APK backup`(@TempDir tmpDir: Path) = runBlocking {
         val apkBytes = byteArrayOf(0x04, 0x05, 0x06)
         val tmpFile = File(tmpDir.toAbsolutePath().toString())
         packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
@@ -124,7 +129,7 @@ internal class ApkBackupTest : BackupTest() {
         )
 
         expectChecks()
-        every { streamGetter.invoke() } returns apkOutputStream
+        coEvery { streamGetter.invoke() } returns apkOutputStream
         every { pm.getInstallerPackageName(packageInfo.packageName) } returns updatedMetadata.installer
         every { metadataManager.onApkBackedUp(packageInfo, updatedMetadata, outputStream) } just Runs
 

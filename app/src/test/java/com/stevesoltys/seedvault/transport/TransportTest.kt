@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.SigningInfo
 import android.util.Log
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -35,6 +36,9 @@ abstract class TransportTest {
             flags = FLAG_ALLOW_BACKUP or FLAG_INSTALLED
         }
         signingInfo = sigInfo
+    }
+    protected val pmPackageInfo = PackageInfo().apply {
+        packageName = MAGIC_PACKAGE_MANAGER
     }
 
     init {

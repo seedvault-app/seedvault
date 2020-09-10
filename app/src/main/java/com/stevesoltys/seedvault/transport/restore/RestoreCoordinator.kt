@@ -13,7 +13,6 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.collection.LongSparseArray
-import com.stevesoltys.seedvault.BackupNotificationManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
@@ -22,30 +21,34 @@ import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 private class RestoreCoordinatorState(
-        internal val token: Long,
-        internal val packages: Iterator<PackageInfo>,
-        /**
-         * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
-         */
-        internal val pmPackageInfo: PackageInfo?) {
-    internal var currentPackage: String? = null
+    val token: Long,
+    val packages: Iterator<PackageInfo>,
+    /**
+     * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
+     */
+    val pmPackageInfo: PackageInfo?
+) {
+    var currentPackage: String? = null
 }
 
 private val TAG = RestoreCoordinator::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinator(
-        private val context: Context,
-        private val settingsManager: SettingsManager,
-        private val metadataManager: MetadataManager,
-        private val notificationManager: BackupNotificationManager,
-        private val plugin: RestorePlugin,
-        private val kv: KVRestore,
-        private val full: FullRestore,
-        private val metadataReader: MetadataReader) {
+    private val context: Context,
+    private val settingsManager: SettingsManager,
+    private val metadataManager: MetadataManager,
+    private val notificationManager: BackupNotificationManager,
+    private val plugin: RestorePlugin,
+    private val kv: KVRestore,
+    private val full: FullRestore,
+    private val metadataReader: MetadataReader
+) {
 
     private var state: RestoreCoordinatorState? = null
     private var backupMetadata: LongSparseArray<BackupMetadata>? = null
@@ -57,7 +60,7 @@ internal class RestoreCoordinator(
      * @return Descriptions of the set of restore images available for this device,
      *   or null if an error occurred (the attempt should be rescheduled).
      **/
-    fun getAvailableRestoreSets(): Array<RestoreSet>? {
+    suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
         val availableBackups = plugin.getAvailableBackups() ?: return null
         val restoreSets = ArrayList<RestoreSet>()
         val metadataMap = LongSparseArray<BackupMetadata>()
@@ -67,7 +70,10 @@ internal class RestoreCoordinator(
                 "No error when getting encrypted metadata, but stream is still missing."
             }
             try {
-                val metadata = metadataReader.readMetadata(encryptedMetadata.inputStream, encryptedMetadata.token)
+                val metadata = metadataReader.readMetadata(
+                    encryptedMetadata.inputStream,
+                    encryptedMetadata.token
+                )
                 metadataMap.put(encryptedMetadata.token, metadata)
                 val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
                 restoreSets.add(set)
@@ -100,8 +106,9 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
-        return metadataManager.getBackupToken()
-                .apply { Log.i(TAG, "Got current restore set token: $this") }
+        return (settingsManager.getToken() ?: 0L).apply {
+            Log.i(TAG, "Got current restore set token: $this")
+        }
     }
 
     /**
@@ -121,22 +128,26 @@ internal class RestoreCoordinator(
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
 
         // If there's only one package to restore (Auto Restore feature), add it to the state
-        val pmPackageInfo = if (packages.size == 2 && packages[0].packageName == MAGIC_PACKAGE_MANAGER) {
-            val pmPackageName = packages[1].packageName
-            Log.d(TAG, "Optimize for single package restore of $pmPackageName")
-            // check if the backup is on removable storage that is not plugged in
-            if (isStorageRemovableAndNotAvailable()) {
-                // check if we even have a backup of that app
-                if (metadataManager.getPackageMetadata(pmPackageName) != null) {
-                    // remind user to plug in storage device
-                    val storageName = settingsManager.getStorage()?.name
+        val pmPackageInfo =
+            if (packages.size == 2 && packages[0].packageName == MAGIC_PACKAGE_MANAGER) {
+                val pmPackageName = packages[1].packageName
+                Log.d(TAG, "Optimize for single package restore of $pmPackageName")
+                // check if the backup is on removable storage that is not plugged in
+                if (isStorageRemovableAndNotAvailable()) {
+                    // check if we even have a backup of that app
+                    if (metadataManager.getPackageMetadata(pmPackageName) != null) {
+                        // remind user to plug in storage device
+                        val storageName = settingsManager.getStorage()?.name
                             ?: context.getString(R.string.settings_backup_location_none)
-                    notificationManager.onRemovableStorageNotAvailableForRestore(pmPackageName, storageName)
+                        notificationManager.onRemovableStorageNotAvailableForRestore(
+                            pmPackageName,
+                            storageName
+                        )
+                    }
+                    return TRANSPORT_ERROR
                 }
-                return TRANSPORT_ERROR
-            }
-            packages[1]
-        } else null
+                packages[1]
+            } else null
 
         state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo)
         failedPackages.clear()
@@ -169,7 +180,7 @@ internal class RestoreCoordinator(
      * or [NO_MORE_PACKAGES] to indicate that no more packages can be restored in this session;
      * or null to indicate a transport-level error.
      */
-    fun nextRestorePackage(): RestoreDescription? {
+    suspend fun nextRestorePackage(): RestoreDescription? {
         Log.i(TAG, "Next restore package!")
         val state = this.state ?: throw IllegalStateException("no state")
 
@@ -213,7 +224,7 @@ internal class RestoreCoordinator(
      * @param data An open, writable file into which the key/value backup data should be stored.
      * @return the same error codes as [startRestore].
      */
-    fun getRestoreData(data: ParcelFileDescriptor): Int {
+    suspend fun getRestoreData(data: ParcelFileDescriptor): Int {
         return kv.getRestoreData(data).apply {
             if (this != TRANSPORT_OK) {
                 // add current package to failed ones
@@ -228,7 +239,7 @@ internal class RestoreCoordinator(
      * After this method returns zero, the system will then call [nextRestorePackage]
      * to begin the restore process for the next application, and the sequence begins again.
      */
-    fun getNextFullRestoreDataChunk(outputFileDescriptor: ParcelFileDescriptor): Int {
+    suspend fun getNextFullRestoreDataChunk(outputFileDescriptor: ParcelFileDescriptor): Int {
         return full.getNextFullRestoreDataChunk(outputFileDescriptor)
     }
 

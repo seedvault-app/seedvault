@@ -16,7 +16,7 @@ interface KVBackupPlugin {
      * Return true if there are records stored for the given package.
      */
     @Throws(IOException::class)
-    fun hasDataForPackage(packageInfo: PackageInfo): Boolean
+    suspend fun hasDataForPackage(packageInfo: PackageInfo): Boolean
 
     /**
      * This marks the beginning of a backup operation.
@@ -25,25 +25,25 @@ interface KVBackupPlugin {
      * E.g. file-based plugins should a create a directory for the package, if none exists.
      */
     @Throws(IOException::class)
-    fun ensureRecordStorageForPackage(packageInfo: PackageInfo)
+    suspend fun ensureRecordStorageForPackage(packageInfo: PackageInfo)
 
     /**
      * Return an [OutputStream] for the given package and key
      * which will receive the record's encrypted value.
      */
     @Throws(IOException::class)
-    fun getOutputStreamForRecord(packageInfo: PackageInfo, key: String): OutputStream
+    suspend fun getOutputStreamForRecord(packageInfo: PackageInfo, key: String): OutputStream
 
     /**
      * Delete the record for the given package identified by the given key.
      */
     @Throws(IOException::class)
-    fun deleteRecord(packageInfo: PackageInfo, key: String)
+    suspend fun deleteRecord(packageInfo: PackageInfo, key: String)
 
     /**
      * Remove all data associated with the given package.
      */
     @Throws(IOException::class)
-    fun removeDataOfPackage(packageInfo: PackageInfo)
+    suspend fun removeDataOfPackage(packageInfo: PackageInfo)
 
 }

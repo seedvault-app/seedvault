@@ -10,13 +10,16 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
-import kotlinx.android.synthetic.main.fragment_storage_root.*
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
 internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
@@ -32,12 +35,29 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
     }
 
     private lateinit var viewModel: StorageViewModel
+    private lateinit var titleView: TextView
+    private lateinit var warningIcon: ImageView
+    private lateinit var warningText: TextView
+    private lateinit var divider: View
+    private lateinit var listView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var backView: TextView
 
     private val adapter by lazy { StorageRootAdapter(viewModel.isRestoreOperation, this) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_storage_root, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
+
+        titleView = v.findViewById(R.id.titleView)
+        warningIcon = v.findViewById(R.id.warningIcon)
+        warningText = v.findViewById(R.id.warningText)
+        divider = v.findViewById(R.id.divider)
+        listView = v.findViewById(R.id.listView)
+        progressBar = v.findViewById(R.id.progressBar)
+        backView = v.findViewById(R.id.backView)
+
+        return v
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

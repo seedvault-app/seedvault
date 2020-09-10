@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault
+package com.stevesoltys.seedvault.ui.notification
 
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
@@ -7,16 +7,20 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 
-class NotificationBackupObserver(
-        private val context: Context,
-        private val expectedPackages: Int,
-        private val userInitiated: Boolean) : IBackupObserver.Stub(), KoinComponent {
+internal class NotificationBackupObserver(
+    private val context: Context,
+    private val expectedPackages: Int,
+    appTotals: ExpectedAppTotals
+) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
     private val metadataManager: MetadataManager by inject()
@@ -24,13 +28,17 @@ class NotificationBackupObserver(
     private var numPackages: Int = 0
 
     init {
-        // we need to show this manually as [onUpdate] isn't called for first @pm@ package
-        nm.onBackupUpdate(getAppName(MAGIC_PACKAGE_MANAGER), 0, expectedPackages, userInitiated)
+        // Inform the notification manager that a backup has started
+        // and inform about the expected numbers, so it can compute a total.
+        nm.onBackupStarted(expectedPackages, appTotals)
     }
 
     /**
      * This method could be called several times for packages with full data backup.
      * It will tell how much of backup data is already saved and how much is expected.
+     *
+     * Note that this will not be called for [MAGIC_PACKAGE_MANAGER]
+     * which is usually the first package to get backed up.
      *
      * @param currentBackupPackage The name of the package that now being backed up.
      * @param backupProgress Current progress of backup for the package.
@@ -69,20 +77,22 @@ class NotificationBackupObserver(
             Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
         }
         val success = status == 0
-        val notBackedUp = if (success) metadataManager.getPackagesNumNotBackedUp() else null
-        nm.onBackupFinished(success, notBackedUp, userInitiated)
+        val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
+        nm.onBackupFinished(success, numBackedUp)
     }
 
     private fun showProgressNotification(packageName: String) {
         if (currentPackage == packageName) return
 
         if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Showing progress notification for $currentPackage $numPackages/$expectedPackages")
+            "Showing progress notification for $currentPackage $numPackages/$expectedPackages".let {
+                Log.i(TAG, it)
+            }
         }
         currentPackage = packageName
         val app = getAppName(packageName)
         numPackages += 1
-        nm.onBackupUpdate(app, numPackages, expectedPackages, userInitiated)
+        nm.onBackupUpdate(app, numPackages)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
@@ -90,7 +100,9 @@ class NotificationBackupObserver(
 }
 
 fun getAppName(context: Context, packageId: String): CharSequence {
-    if (packageId == MAGIC_PACKAGE_MANAGER) return context.getString(R.string.restore_magic_package)
+    if (packageId == MAGIC_PACKAGE_MANAGER || packageId.startsWith("@")) {
+        return context.getString(R.string.restore_magic_package)
+    }
     return try {
         val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
         context.packageManager.getApplicationLabel(appInfo) ?: packageId

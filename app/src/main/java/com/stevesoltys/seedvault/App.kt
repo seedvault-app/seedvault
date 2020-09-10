@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.ServiceManager.getService
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
 import com.stevesoltys.seedvault.restore.RestoreViewModel
@@ -15,9 +16,11 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -36,9 +39,9 @@ class App : Application() {
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get()) }
-        viewModel { BackupStorageViewModel(this@App, get(), get()) }
+        viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get()) }
     }
@@ -48,7 +51,8 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(listOf(
+            modules(
+                listOf(
                     cryptoModule,
                     headerModule,
                     metadataModule,
@@ -56,7 +60,25 @@ class App : Application() {
                     backupModule,
                     restoreModule,
                     appModule
-            ))
+                )
+            )
+        }
+        migrateTokenFromMetadataToSettingsManager()
+    }
+
+    private val settingsManager: SettingsManager by inject()
+    private val metadataManager: MetadataManager by inject()
+
+    /**
+     * The responsibility for the current token was moved to the [SettingsManager]
+     * in the end of 2020.
+     * This method migrates the token for existing installs and can be removed
+     * after sufficient time has passed.
+     */
+    private fun migrateTokenFromMetadataToSettingsManager() {
+        val token = metadataManager.getBackupToken()
+        if (token != 0L && settingsManager.getToken() == null) {
+            settingsManager.setNewToken(token)
         }
     }
 

@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +32,7 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.random.Random
 
+@Suppress("BlockingMethodInNonBlockingContext")
 @ExperimentalCoroutinesApi
 internal class ApkRestoreTest : RestoreTest() {
 
@@ -71,7 +73,7 @@ internal class ApkRestoreTest : RestoreTest() {
         val packageMetadataMap: PackageMetadataMap = hashMapOf(packageName to packageMetadata)
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
 
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
             when (index) {
@@ -96,7 +98,7 @@ internal class ApkRestoreTest : RestoreTest() {
         packageInfo.packageName = getRandomString()
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
 
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
@@ -119,7 +121,7 @@ internal class ApkRestoreTest : RestoreTest() {
     @Test
     fun `test apkInstaller throws exceptions`(@TempDir tmpDir: Path) = runBlocking {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every { pm.loadItemIcon(packageInfo.applicationInfo, packageInfo.applicationInfo) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
@@ -155,7 +157,7 @@ internal class ApkRestoreTest : RestoreTest() {
         }
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every { pm.loadItemIcon(packageInfo.applicationInfo, packageInfo.applicationInfo) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
@@ -199,7 +201,7 @@ internal class ApkRestoreTest : RestoreTest() {
         }
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every { pm.loadItemIcon(packageInfo.applicationInfo, packageInfo.applicationInfo) } returns icon
         every { packageInfo.applicationInfo.loadIcon(pm) } returns icon

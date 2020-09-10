@@ -13,10 +13,12 @@ import android.os.RemoteException
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupMonitor
-import com.stevesoltys.seedvault.BackupNotificationManager
-import com.stevesoltys.seedvault.NotificationBackupObserver
 import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
+import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext.get
+import org.koin.core.inject
 
 private val TAG = ConfigurableBackupTransportService::class.java.simpleName
 
@@ -24,9 +26,11 @@ private val TAG = ConfigurableBackupTransportService::class.java.simpleName
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class ConfigurableBackupTransportService : Service() {
+class ConfigurableBackupTransportService : Service(), KoinComponent {
 
     private var transport: ConfigurableBackupTransport? = null
+
+    private val notificationManager: BackupNotificationManager by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -43,6 +47,7 @@ class ConfigurableBackupTransportService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        notificationManager.onBackupBackgroundFinished()
         transport = null
         Log.d(TAG, "Service destroyed.")
     }
@@ -53,8 +58,9 @@ class ConfigurableBackupTransportService : Service() {
 fun requestBackup(context: Context) {
     val packageService: PackageService = get().koin.get()
     val packages = packageService.eligiblePackages
+    val appTotals = packageService.expectedAppTotals
 
-    val observer = NotificationBackupObserver(context, packages.size, true)
+    val observer = NotificationBackupObserver(context, packages.size, appTotals)
     val result = try {
         val backupManager: IBackupManager = get().koin.get()
         backupManager.requestBackup(packages, observer, BackupMonitor(), FLAG_USER_INITIATED)

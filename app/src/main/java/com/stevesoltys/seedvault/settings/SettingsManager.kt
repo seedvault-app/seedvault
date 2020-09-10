@@ -6,8 +6,10 @@ import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import java.util.concurrent.atomic.AtomicBoolean
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import java.util.concurrent.ConcurrentSkipListSet
 
+internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
@@ -25,49 +27,66 @@ class SettingsManager(context: Context) {
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
-    private var isStorageChanging: AtomicBoolean = AtomicBoolean(false)
+    @Volatile
+    private var token: Long? = null
 
-    private val blacklistedApps: HashSet<String> by lazy {
-        prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()).toHashSet()
+    /**
+     * This gets accessed by non-UI threads when saving with [PreferenceManager]
+     * and when [isBackupEnabled] is called during a backup run.
+     * Therefore, it is implemented with a thread-safe [ConcurrentSkipListSet].
+     */
+    private val blacklistedApps: MutableSet<String> by lazy {
+        ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
+    }
+
+    fun getToken(): Long? = token ?: {
+        val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
+        if (value == 0L) null else value
+    }()
+
+    /**
+     * Sets a new RestoreSet token.
+     * Should only be called by the [BackupCoordinator]
+     * to ensure that related work is performed after moving to a new token.
+     */
+    fun setNewToken(newToken: Long) {
+        prefs.edit().putLong(PREF_KEY_TOKEN, newToken).apply()
+        token = newToken
     }
 
     // FIXME Storage is currently plugin specific and not generic
     fun setStorage(storage: Storage) {
         prefs.edit()
-                .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
-                .putString(PREF_KEY_STORAGE_NAME, storage.name)
-                .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
-                .apply()
-        isStorageChanging.set(true)
+            .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
+            .putString(PREF_KEY_STORAGE_NAME, storage.name)
+            .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
+            .apply()
     }
 
     fun getStorage(): Storage? {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
-        val name = prefs.getString(PREF_KEY_STORAGE_NAME, null) ?: throw IllegalStateException("no storage name")
+        val name = prefs.getString(PREF_KEY_STORAGE_NAME, null)
+            ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         return Storage(uri, name, isUsb)
-    }
-
-    fun getAndResetIsStorageChanging(): Boolean {
-        return isStorageChanging.getAndSet(false)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
         if (usb == null) {
             prefs.edit()
-                    .remove(PREF_KEY_FLASH_DRIVE_NAME)
-                    .remove(PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER)
-                    .remove(PREF_KEY_FLASH_DRIVE_VENDOR_ID)
-                    .remove(PREF_KEY_FLASH_DRIVE_PRODUCT_ID)
-                    .apply()
+                .remove(PREF_KEY_FLASH_DRIVE_NAME)
+                .remove(PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER)
+                .remove(PREF_KEY_FLASH_DRIVE_VENDOR_ID)
+                .remove(PREF_KEY_FLASH_DRIVE_PRODUCT_ID)
+                .apply()
         } else {
             prefs.edit()
-                    .putString(PREF_KEY_FLASH_DRIVE_NAME, usb.name)
-                    .putString(PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER, usb.serialNumber)
-                    .putInt(PREF_KEY_FLASH_DRIVE_VENDOR_ID, usb.vendorId)
-                    .putInt(PREF_KEY_FLASH_DRIVE_PRODUCT_ID, usb.productId)
-                    .apply()
+                .putString(PREF_KEY_FLASH_DRIVE_NAME, usb.name)
+                .putString(PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER, usb.serialNumber)
+                .putInt(PREF_KEY_FLASH_DRIVE_VENDOR_ID, usb.vendorId)
+                .putInt(PREF_KEY_FLASH_DRIVE_PRODUCT_ID, usb.productId)
+                .apply()
         }
     }
 
@@ -95,24 +114,26 @@ class SettingsManager(context: Context) {
 }
 
 data class Storage(
-        val uri: Uri,
-        val name: String,
-        val isUsb: Boolean) {
+    val uri: Uri,
+    val name: String,
+    val isUsb: Boolean
+) {
     fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
-            ?: throw AssertionError("Should only happen on API < 21.")
+        ?: throw AssertionError("Should only happen on API < 21.")
 }
 
 data class FlashDrive(
-        val name: String,
-        val serialNumber: String?,
-        val vendorId: Int,
-        val productId: Int) {
+    val name: String,
+    val serialNumber: String?,
+    val vendorId: Int,
+    val productId: Int
+) {
     companion object {
         fun from(device: UsbDevice) = FlashDrive(
-                name = "${device.manufacturerName} ${device.productName}",
-                serialNumber = device.serialNumber,
-                vendorId = device.vendorId,
-                productId = device.productId
+            name = "${device.manufacturerName} ${device.productName}",
+            serialNumber = device.serialNumber,
+            vendorId = device.vendorId,
+            productId = device.productId
         )
     }
 }

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.core.net.toUri
-import com.stevesoltys.seedvault.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.koin.core.context.GlobalContext.get
 
 internal const val ACTION_RESTORE_ERROR_UNINSTALL = "com.stevesoltys.seedvault.action.UNINSTALL"
