@@ -147,7 +147,10 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
                 icon = getIcon(context, authority, rootId, cursor.getInt(COLUMN_ICON)),
                 title = cursor.getString(COLUMN_TITLE)!!,
                 summary = cursor.getString(COLUMN_SUMMARY),
-                availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES),
+                availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES).let { bytes ->
+                    // AOSP 11 reports -1 instead of null
+                    if (bytes == -1L) null else bytes
+                },
                 isUsb = flags and FLAG_REMOVABLE_USB != 0
         )
     }
