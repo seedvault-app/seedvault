@@ -12,7 +12,7 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VersionHeader
 import libcore.io.IoUtils.closeQuietly
-import org.apache.commons.io.IOUtils
+import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -156,7 +156,9 @@ internal class FullBackup(
             state.outputStreamInit = null // the stream init lambda is not needed beyond that point
 
             // read backup data, encrypt it and write it to output stream
-            val payload = IOUtils.readFully(state.inputStream, numBytes)
+            val payload = ByteArray(numBytes)
+            val read = state.inputStream.read(payload, 0, numBytes)
+            if (read != numBytes) throw EOFException("Read $read bytes instead of $numBytes.")
             crypto.encryptSegment(outputStream, payload)
             TRANSPORT_OK
         } catch (e: IOException) {
