@@ -33,6 +33,11 @@
          to allow the user to uninstall an app when storage was not plugged in during install -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
+    <!-- Getting info about installed packages via PackageManager is restricted since Android 11
+         We need to know what is installed, with what signatures, etc. for APK backup,
+         triggering manual backup and other tasks -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <application
         android:name=".App"
         android:allowBackup="false"
