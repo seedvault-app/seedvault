@@ -37,7 +37,6 @@ android_app {
         "seedvault-lib-androidx-lifecycle-viewmodel-ktx",
         "seedvault-lib-koin-android",
         "seedvault-lib-koin-androidx-viewmodel",
-        "seedvault-lib-commons-io",
         "seedvault-lib-koin-core",
         "seedvault-lib-novacrypto-bip39",
         "seedvault-lib-novacrypto-sha256",
