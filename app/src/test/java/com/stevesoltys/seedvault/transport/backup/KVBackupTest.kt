@@ -1,17 +1,18 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.BackupDataInput
+import android.app.backup.BackupTransport.FLAG_DATA_NOT_CHANGED
 import android.app.backup.BackupTransport.FLAG_INCREMENTAL
 import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -149,6 +150,17 @@ internal class KVBackupTest : BackupTest() {
             assertEquals(TRANSPORT_OK, backup.finishBackup())
             assertFalse(backup.hasState())
         }
+
+    @Test
+    fun `package with no new data comes back ok right away`() = runBlocking {
+        assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_DATA_NOT_CHANGED))
+        assertTrue(backup.hasState())
+
+        every { plugin.packageFinished(packageInfo) } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
+        assertFalse(backup.hasState())
+    }
 
     @Test
     fun `exception while reading next header`() = runBlocking {

@@ -1,6 +1,12 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.backup.BackupTransport.FLAG_DATA_NOT_CHANGED
+import android.app.backup.BackupTransport.FLAG_INCREMENTAL
+import android.app.backup.BackupTransport.FLAG_NON_INCREMENTAL
+import android.app.backup.BackupTransport.FLAG_USER_INITIATED
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
@@ -163,6 +169,42 @@ internal class BackupCoordinator(
         Log.i(TAG, "Request incremental backup time. Returned $this")
     }
 
+    /**
+     * Send one application's key/value data update to the backup destination.
+     * The transport may send the data immediately, or may buffer it.
+     * If this method returns [TRANSPORT_OK], [finishBackup] will then be called
+     * to ensure the data is sent and recorded successfully.
+     *
+     * If the backup data is a diff against the previous backup
+     * then the flag [FLAG_INCREMENTAL] will be set.
+     * Otherwise, if the data is a complete backup set,
+     * then [FLAG_NON_INCREMENTAL] will be set.
+     * Before P neither flag will be set regardless of whether the backup is incremental or not.
+     *
+     * If [FLAG_INCREMENTAL] is set and the transport does not have data
+     * for this package in its storage backend then it cannot apply the incremental diff.
+     * Thus it should return [TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED]
+     * to indicate that backup manager should delete its state
+     * and retry the package as a non-incremental backup.
+     *
+     * Note that if an app (e.g. com.whatsapp) has no data to backup,
+     * this method will NOT even be called for the app.
+     *
+     * @param packageInfo The identity of the application whose data is being backed up.
+     *   This specifically includes the signature list for the package.
+     * @param data Descriptor of file with data that resulted from invoking the application's
+     *   BackupService.doBackup() method.  This may be a pipe rather than a file on
+     *   persistent media, so it may not be seekable.
+     * @param flags a combination of [FLAG_USER_INITIATED], [FLAG_NON_INCREMENTAL],
+     *   [FLAG_INCREMENTAL], [FLAG_DATA_NOT_CHANGED], or 0.
+     * @return one of [TRANSPORT_OK] (OK so far),
+     *  [TRANSPORT_PACKAGE_REJECTED] (to suppress backup of this package, but let others proceed),
+     *  [TRANSPORT_ERROR] (on network error or other failure),
+     *  [TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED] (if the transport cannot accept
+     *  an incremental backup for this package), or
+     *  [TRANSPORT_NOT_INITIALIZED] (if the backend dataset has become lost due to
+     *  inactivity purge or some other reason and needs re-initializing)
+     */
     suspend fun performIncrementalBackup(
         packageInfo: PackageInfo,
         data: ParcelFileDescriptor,
