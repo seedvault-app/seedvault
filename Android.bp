@@ -35,8 +35,6 @@ android_app {
         "seedvault-lib-koin-android",
         "seedvault-lib-koin-androidx-viewmodel",
         "seedvault-lib-novacrypto-bip39",
-        "seedvault-lib-novacrypto-sha256",
-        "seedvault-lib-novacrypto-toruntime"
     ],
     manifest: "app/src/main/AndroidManifest.xml",
 

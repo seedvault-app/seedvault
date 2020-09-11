@@ -39,10 +39,10 @@ fun getRandomBase64(size: Int = Random.nextInt(1, MAX_KEY_LENGTH_NEXTCLOUD)): St
             .joinToString("")
 }
 
-fun ByteArray.toHexString(): String {
+fun ByteArray.toHexString(spacer: String = " "): String {
     var str = ""
     for (b in this) {
-        str += String.format("%02X ", b)
+        str += String.format("%02X$spacer", b)
     }
     return str
 }

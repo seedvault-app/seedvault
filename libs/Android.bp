@@ -16,24 +16,3 @@ android_library_import {
     aars: ["koin-androidx-viewmodel-2.0.1.aar"],
     sdk_version: "current",
 }
-
-java_import {
-    name: "seedvault-lib-novacrypto-bip39",
-    host_supported: true,
-    jars: ["BIP39-2019.01.27.jar"],
-    sdk_version: "current",
-}
-
-java_import {
-    name: "seedvault-lib-novacrypto-sha256",
-    host_supported: true,
-    jars: ["SHA256-2019.01.27.jar"],
-    sdk_version: "current",
-}
-
-java_import {
-    name: "seedvault-lib-novacrypto-toruntime",
-    host_supported: true,
-    jars: ["ToRuntime-0.9.0.jar"],
-    sdk_version: "current",
-}
