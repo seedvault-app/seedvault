@@ -18,7 +18,7 @@ import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
-import org.koin.core.context.GlobalContext.get
+import org.koin.core.context.KoinContextHandler.get
 import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
@@ -26,8 +26,8 @@ private val TAG = UsbIntentReceiver::class.java.simpleName
 class UsbIntentReceiver : UsbMonitor() {
 
     // using KoinComponent would crash robolectric tests :(
-    private val settingsManager: SettingsManager by lazy { get().koin.get<SettingsManager>() }
-    private val metadataManager: MetadataManager by lazy { get().koin.get<MetadataManager>() }
+    private val settingsManager: SettingsManager by lazy { get().get<SettingsManager>() }
+    private val metadataManager: MetadataManager by lazy { get().get<MetadataManager>() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false

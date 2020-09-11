@@ -113,13 +113,16 @@ def aospDeps = fileTree(include: [
         'libcore.jar'
 ], dir: 'libs')
 
-// We try to keep the dependencies in sync with what AOSP ships as Seedvault is meant to be built
-// with the AOSP build system and gradle builds are just for more pleasant development.
-// If the dependencies below are updated please make sure to update the
-// prebuilt libraries and Android.bp in the top `libs` folder to reflect that.
-// You can copy these libraries from ~/.gradle/caches/modules-2
 dependencies {
     compileOnly aospDeps
+
+    /**
+     * Dependencies in AOSP
+     *
+     * We try to keep the dependencies in sync with what AOSP ships as Seedvault is meant to be built
+     * with the AOSP build system and gradle builds are just for more pleasant development.
+     * Using the AOSP versions in gradle builds allows us to spot issues early on.
+     */
 
     //noinspection GradleDependency
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -153,18 +156,36 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.1.0-alpha05'
 
-    implementation 'io.github.novacrypto:BIP39:2019.01.27'
-    implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
 
-    //
-    // Dependencies below do not concern the AOSP build
-    //
+    /**
+     * External Dependencies
+     *
+     * If the dependencies below are updated,
+     * please make sure to update the prebuilt libraries and the Android.bp files
+     * in the top-level `libs` folder to reflect that.
+     * You can copy these libraries from ~/.gradle/caches/modules-2
+     */
+
+    def koin_version = '2.1.1'
+    implementation("org.koin:koin-android:$koin_version") {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    }
+    implementation("org.koin:koin-androidx-viewmodel:$koin_version") {
+        exclude group: 'org.koin', module: 'koin-androidx-scope'
+        exclude group: 'androidx.lifecycle'
+    }
+
+    implementation 'io.github.novacrypto:BIP39:2019.01.27'
+
+    /**
+     * Test Dependencies (do not concern the AOSP build)
+     */
 
     lintChecks 'com.github.thirdegg:lint-rules:0.0.5-alpha'
 
     def junit_version = "5.5.2"  // careful, upgrading this can change a Cipher's IV size in tests!?
     def mockk_version = "1.10.0"
-    testImplementation aospDeps  // anything less fails tests run with gradlew
+    testImplementation aospDeps  // anything less than 'implementation' fails tests run with gradlew
     testImplementation 'androidx.test.ext:junit:1.1.2'
     testImplementation('org.robolectric:robolectric:4.3.1') { // 4.4 has issue with non-idle Looper
         // https://github.com/robolectric/robolectric/issues/5245

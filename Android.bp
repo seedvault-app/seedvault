@@ -31,7 +31,7 @@ android_app {
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
         "com.google.android.material_material",
-        "seedvault-lib-koin-core",
+        "seedvault-lib-koin-core", // did not manage to add this as transitive dependency
         "seedvault-lib-koin-android",
         "seedvault-lib-koin-androidx-viewmodel",
         "seedvault-lib-novacrypto-bip39",

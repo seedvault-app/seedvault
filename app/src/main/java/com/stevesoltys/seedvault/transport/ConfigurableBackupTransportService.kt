@@ -17,7 +17,7 @@ import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
 import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext.get
+import org.koin.core.context.KoinContextHandler.get
 import org.koin.core.inject
 
 private val TAG = ConfigurableBackupTransportService::class.java.simpleName
@@ -56,17 +56,17 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
 
 @WorkerThread
 fun requestBackup(context: Context) {
-    val packageService: PackageService = get().koin.get()
+    val packageService: PackageService = get().get()
     val packages = packageService.eligiblePackages
     val appTotals = packageService.expectedAppTotals
 
     val observer = NotificationBackupObserver(context, packages.size, appTotals)
     val result = try {
-        val backupManager: IBackupManager = get().koin.get()
+        val backupManager: IBackupManager = get().get()
         backupManager.requestBackup(packages, observer, BackupMonitor(), 0)
     } catch (e: RemoteException) {
         Log.e(TAG, "Error during backup: ", e)
-        val nm: BackupNotificationManager = get().koin.get()
+        val nm: BackupNotificationManager = get().get()
         nm.onBackupError()
     }
     if (result == BackupManager.SUCCESS) {
