@@ -1,0 +1,17 @@
+android_library_import {
+    name: "seedvault-lib-koin-androidx-viewmodel",
+    aars: ["koin-androidx-viewmodel-2.1.1.aar"],
+    sdk_version: "current",
+}
+
+android_library_import {
+    name: "seedvault-lib-koin-android",
+    aars: ["koin-android-2.1.1.aar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-koin-core",
+    jars: ["koin-core-2.1.1.jar"],
+    sdk_version: "current",
+}
