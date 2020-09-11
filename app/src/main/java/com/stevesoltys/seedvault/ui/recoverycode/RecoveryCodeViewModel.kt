@@ -16,7 +16,7 @@ import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import io.github.novacrypto.bip39.Words
 import io.github.novacrypto.bip39.wordlists.English
 import java.security.SecureRandom
-import java.util.*
+import java.util.ArrayList
 
 internal const val WORD_NUM = 12
 internal const val WORD_LIST_SIZE = 2048

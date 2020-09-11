@@ -124,9 +124,6 @@ dependencies {
     //noinspection GradleDependency
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation 'io.github.novacrypto:BIP39:2019.01.27'
-    implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
-
     // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#610
     //noinspection GradleDependency
     implementation 'androidx.core:core-ktx:1.5.0-alpha01'
@@ -155,6 +152,9 @@ dependencies {
     // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/extras/material-design-x/Android.bp#6
     //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.1.0-alpha05'
+
+    implementation 'io.github.novacrypto:BIP39:2019.01.27'
+    implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
 
     //
     // Dependencies below do not concern the AOSP build
