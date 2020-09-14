@@ -12,7 +12,6 @@ import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.writeAndClose
 import io.mockk.Runs
@@ -43,7 +42,6 @@ import kotlin.random.Random
 class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val metadataManager by inject<MetadataManager>()
     private val settingsManager by inject<SettingsManager>()
     private val storage = DocumentsStorage(context, settingsManager)
 

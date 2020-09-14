@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
     Normally, restoring from backup is only available during initial device setup.
     You can make it always available at your own risk.
@@ -11,7 +11,7 @@
     <bool name="show_restore_in_settings">false</bool>
 
     <!-- Add only storage that is also available when restoring from backup (e.g. initial device setup) -->
-    <string-array name="storage_authority_whitelist">
+    <string-array name="storage_authority_whitelist" tools:ignore="InconsistentArrays">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
     </string-array>

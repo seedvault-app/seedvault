@@ -8,9 +8,6 @@
     <!-- Settings -->
     <string name="settings_backup">Backup my data</string>
     <string name="settings_backup_location">Backup location</string>
-    <string name="settings_backup_location_picker">Choose backup location</string>
-    <string name="settings_backup_location_title">Backup location</string>
-    <string name="settings_backup_location_invalid">The chosen location can not be used.</string>
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
@@ -74,9 +71,6 @@
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_title">Backup running</string>
-    <string name="notification_backup_result_complete">Backup complete</string>
-    <string name="notification_backup_result_rejected">Not backed up</string>
-    <string name="notification_backup_result_error">Backup failed</string>
     <string name="notification_backup_already_running">Backup already in progress</string>
 
     <string name="notification_success_title">Backup finished</string>

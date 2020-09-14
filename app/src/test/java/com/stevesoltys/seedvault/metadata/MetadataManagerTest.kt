@@ -34,6 +34,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.random.Random
 
+@Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [29]) // robolectric does not support 30, yet
 class MetadataManagerTest {
@@ -213,7 +214,7 @@ class MetadataManagerTest {
             // expected
         }
 
-        assertEquals(0L, manager.getLastBackupTime())  // time was reverted
+        assertEquals(0L, manager.getLastBackupTime()) // time was reverted
         assertEquals(initialMetadata.packageMetadataMap[packageName], manager.getPackageMetadata(packageName))
     }
 
