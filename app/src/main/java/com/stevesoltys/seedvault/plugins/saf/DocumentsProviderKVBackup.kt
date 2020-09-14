@@ -47,7 +47,7 @@ internal class DocumentsProviderKVBackup(
         }
         if (key.length > MAX_KEY_LENGTH_NEXTCLOUD) {
             Log.e(
-                DocumentsProviderKVBackup::class.simpleName,
+                DocumentsProviderKVBackup::class.java.simpleName,
                 "Key $key for ${packageInfo.packageName} is too long: ${key.length} chars."
             )
         }
