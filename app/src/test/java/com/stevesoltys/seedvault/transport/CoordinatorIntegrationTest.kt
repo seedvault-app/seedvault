@@ -126,7 +126,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
         // read one key/value record and write it to output stream
         coEvery { kvBackupPlugin.hasDataForPackage(packageInfo) } returns false
-        coEvery { kvBackupPlugin.ensureRecordStorageForPackage(packageInfo) } just Runs
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen true andThen false
         every { backupDataInput.key } returns key andThen key2
@@ -151,6 +150,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 key264
             )
         } returns bOutputStream2
+        every { kvBackupPlugin.packageFinished(packageInfo) } just Runs
         coEvery {
             apkBackup.backupApkIfNecessary(
                 packageInfo,
@@ -219,7 +219,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
         // read one key/value record and write it to output stream
         coEvery { kvBackupPlugin.hasDataForPackage(packageInfo) } returns false
-        coEvery { kvBackupPlugin.ensureRecordStorageForPackage(packageInfo) } just Runs
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen false
         every { backupDataInput.key } returns key
@@ -234,6 +233,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 key64
             )
         } returns bOutputStream
+        every { kvBackupPlugin.packageFinished(packageInfo) } just Runs
         coEvery { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
         coEvery { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs

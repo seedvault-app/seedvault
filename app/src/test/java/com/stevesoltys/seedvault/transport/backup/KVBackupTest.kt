@@ -90,6 +90,9 @@ internal class KVBackupTest : BackupTest() {
 
         assertEquals(TRANSPORT_OK, backup.performBackup(pmPackageInfo, data, 0))
         assertTrue(backup.hasState())
+
+        every { plugin.packageFinished(pmPackageInfo) } just Runs
+
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
 
@@ -103,6 +106,7 @@ internal class KVBackupTest : BackupTest() {
     @Test
     fun `incremental backup with no data gets rejected`() = runBlocking {
         coEvery { plugin.hasDataForPackage(packageInfo) } returns false
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(
             TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
@@ -114,6 +118,7 @@ internal class KVBackupTest : BackupTest() {
     @Test
     fun `check for existing data throws exception`() = runBlocking {
         coEvery { plugin.hasDataForPackage(packageInfo) } throws IOException()
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -146,19 +151,11 @@ internal class KVBackupTest : BackupTest() {
         }
 
     @Test
-    fun `ensuring storage throws exception`() = runBlocking {
-        coEvery { plugin.hasDataForPackage(packageInfo) } returns false
-        coEvery { plugin.ensureRecordStorageForPackage(packageInfo) } throws IOException()
-
-        assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
-        assertFalse(backup.hasState())
-    }
-
-    @Test
     fun `exception while reading next header`() = runBlocking {
         initPlugin(false)
         createBackupDataInput()
         every { dataInput.readNextHeader() } throws IOException()
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -172,6 +169,7 @@ internal class KVBackupTest : BackupTest() {
         every { dataInput.key } returns key
         every { dataInput.dataSize } returns value.size
         every { dataInput.readEntityData(any(), 0, value.size) } throws IOException()
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -181,6 +179,7 @@ internal class KVBackupTest : BackupTest() {
     fun `no data records`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(false))
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0))
         assertTrue(backup.hasState())
@@ -195,6 +194,7 @@ internal class KVBackupTest : BackupTest() {
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } throws IOException()
         every { outputStream.close() } just Runs
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -211,6 +211,7 @@ internal class KVBackupTest : BackupTest() {
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
         every { crypto.encryptMultipleSegments(outputStream, any()) } throws IOException()
         every { outputStream.close() } just Runs
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -226,6 +227,7 @@ internal class KVBackupTest : BackupTest() {
         every { outputStream.write(value) } just Runs
         every { outputStream.flush() } throws IOException()
         every { outputStream.close() } just Runs
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
         assertFalse(backup.hasState())
@@ -241,6 +243,7 @@ internal class KVBackupTest : BackupTest() {
         every { outputStream.write(value) } just Runs
         every { outputStream.flush() } just Runs
         every { outputStream.close() } throws IOException()
+        every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0))
         assertTrue(backup.hasState())
@@ -255,11 +258,11 @@ internal class KVBackupTest : BackupTest() {
         every { outputStream.write(value) } just Runs
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
+        every { plugin.packageFinished(packageInfo) } just Runs
     }
 
     private fun initPlugin(hasDataForPackage: Boolean = false, pi: PackageInfo = packageInfo) {
         coEvery { plugin.hasDataForPackage(pi) } returns hasDataForPackage
-        coEvery { plugin.ensureRecordStorageForPackage(pi) } just Runs
     }
 
     private fun createBackupDataInput() {
