@@ -11,6 +11,7 @@ import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED
 import android.hardware.usb.UsbManager.EXTRA_DEVICE
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
 import android.util.Log
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -74,7 +75,8 @@ abstract class UsbMonitor : BroadcastReceiver() {
 
             val rootsUri = DocumentsContract.buildRootsUri(AUTHORITY_STORAGE)
             val contentResolver = context.contentResolver
-            val observer = object : ContentObserver(Handler()) {
+            val handler = Handler(Looper.getMainLooper())
+            val observer = object : ContentObserver(handler) {
                 override fun onChange(selfChange: Boolean, uri: Uri?) {
                     super.onChange(selfChange, uri)
                     onStatusChanged(context, action, device)

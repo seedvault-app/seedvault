@@ -43,8 +43,8 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         activity?.setTitle(R.string.settings_backup_status_title)
 
@@ -54,7 +54,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         }
 
         progressBar.visibility = VISIBLE
-        viewModel.appStatusList.observe(this, Observer { result ->
+        viewModel.appStatusList.observe(viewLifecycleOwner, Observer { result ->
             adapter.update(result.appStatusList, result.diff)
             progressBar.visibility = INVISIBLE
         })
@@ -66,7 +66,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         appEditMenuItem = menu.findItem(R.id.edit_app_blacklist)
 
         // observe edit mode changes here where we are sure to have the MenuItem
-        viewModel.appEditMode.observe(this, Observer { enabled ->
+        viewModel.appEditMode.observe(viewLifecycleOwner, Observer { enabled ->
             appEditMenuItem.isChecked = enabled
             adapter.setEditMode(enabled)
         })

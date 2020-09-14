@@ -33,8 +33,11 @@ class StorageCheckFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_storage_check, container, false)
 
         titleView = v.findViewById(R.id.titleView)
@@ -45,12 +48,12 @@ class StorageCheckFragment : Fragment() {
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        titleView.text = arguments!!.getString(TITLE)
+        titleView.text = requireArguments().getString(TITLE)
 
-        val errorMsg = arguments!!.getString(ERROR_MSG)
+        val errorMsg = requireArguments().getString(ERROR_MSG)
         if (errorMsg != null) {
             progressBar.visibility = INVISIBLE
             errorView.text = errorMsg

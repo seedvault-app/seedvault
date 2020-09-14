@@ -16,7 +16,7 @@ class RecoveryCodeActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (isSetupWizard()) hideSystemUI()
+        if (isSetupWizard()) hideSystemUiNavigation()
 
         setContentView(R.layout.activity_recovery_code)
 

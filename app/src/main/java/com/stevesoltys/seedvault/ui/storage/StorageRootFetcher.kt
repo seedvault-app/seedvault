@@ -12,6 +12,7 @@ import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.PROVIDER_INTERFACE
 import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
@@ -72,7 +73,8 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
     private val whitelistedAuthorities = context.resources.getStringArray(R.array.storage_authority_whitelist)
 
     private var listener: RemovableStorageListener? = null
-    private val observer = object : ContentObserver(Handler()) {
+    private val handler = Handler(Looper.getMainLooper())
+    private val observer = object : ContentObserver(handler) {
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             super.onChange(selfChange, uri)
             listener?.onStorageChanged()

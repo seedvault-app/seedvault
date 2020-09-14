@@ -5,10 +5,10 @@ import androidx.annotation.CallSuper
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,13 +50,16 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
         }
     }
 
-    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
-        fragment.setTargetFragment(caller, 0)
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
+        val fragment =
+            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, fragment)
-                .addToBackStack(null)
-                .commit()
+            .replace(R.id.fragment, fragment)
+            .addToBackStack(null)
+            .commit()
         return true
     }
 

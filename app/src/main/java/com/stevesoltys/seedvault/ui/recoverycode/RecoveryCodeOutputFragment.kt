@@ -19,8 +19,11 @@ class RecoveryCodeOutputFragment : Fragment() {
     private lateinit var wordList: RecyclerView
     private lateinit var confirmCodeButton: Button
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
 
         wordList = v.findViewById(R.id.wordList)
@@ -29,8 +32,8 @@ class RecoveryCodeOutputFragment : Fragment() {
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setGridParameters(wordList)
         wordList.adapter = RecoveryCodeAdapter(viewModel.wordList)
@@ -38,6 +41,7 @@ class RecoveryCodeOutputFragment : Fragment() {
         confirmCodeButton.setOnClickListener { viewModel.onConfirmButtonClicked() }
     }
 
+    @Suppress("MagicNumber")
     private fun setGridParameters(list: RecyclerView) {
         val layoutManager = list.layoutManager as GridLayoutManager
         if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {

@@ -25,7 +25,7 @@ abstract class BackupActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    protected fun hideSystemUI() {
+    protected fun hideSystemUiNavigation() {
         window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
 

@@ -3,13 +3,10 @@ package com.stevesoltys.seedvault.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.CallSuper
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeActivity
 import com.stevesoltys.seedvault.ui.storage.StorageActivity
-
-const val REQUEST_CODE_OPEN_DOCUMENT_TREE = 1
-const val REQUEST_CODE_BACKUP_LOCATION = 2
-const val REQUEST_CODE_RECOVERY_CODE = 3
 
 const val INTENT_EXTRA_IS_RESTORE = "isRestore"
 const val INTENT_EXTRA_IS_SETUP_WIZARD = "isSetupWizard"
@@ -23,6 +20,25 @@ private val TAG = RequireProvisioningActivity::class.java.name
  * before starting.
  */
 abstract class RequireProvisioningActivity : BackupActivity() {
+
+    private val recoveryCodeRequest =
+        registerForActivityResult(StartActivityForResult()) { result ->
+            if (result.resultCode != RESULT_OK) {
+                Log.w(TAG, "Error in activity result for requesting recovery code")
+                if (!getViewModel().recoveryCodeIsSet()) {
+                    finishAfterTransition()
+                }
+            }
+        }
+    private val requestLocation =
+        registerForActivityResult(StartActivityForResult()) { result ->
+            if (result.resultCode != RESULT_OK) {
+                Log.w(TAG, "Error in activity result for requesting location")
+                if (!getViewModel().validLocationIsSet()) {
+                    finishAfterTransition()
+                }
+            }
+        }
 
     protected val isSetupWizard: Boolean
         get() = intent?.action == ACTION_SETUP_WIZARD
@@ -38,35 +54,18 @@ abstract class RequireProvisioningActivity : BackupActivity() {
         })
     }
 
-    @CallSuper
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (requestCode == REQUEST_CODE_BACKUP_LOCATION && resultCode != RESULT_OK) {
-            Log.w(TAG, "Error in activity result: $requestCode")
-            if (!getViewModel().validLocationIsSet()) {
-                finishAfterTransition()
-            }
-        } else if (requestCode == REQUEST_CODE_RECOVERY_CODE && resultCode != RESULT_OK) {
-            Log.w(TAG, "Error in activity result: $requestCode")
-            if (!getViewModel().recoveryCodeIsSet()) {
-                finishAfterTransition()
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, result)
-        }
-    }
-
     protected fun showStorageActivity() {
         val intent = Intent(this, StorageActivity::class.java)
         intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
         intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
-        startActivityForResult(intent, REQUEST_CODE_BACKUP_LOCATION)
+        requestLocation.launch(intent)
     }
 
     protected fun showRecoveryCodeActivity() {
         val intent = Intent(this, RecoveryCodeActivity::class.java)
         intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
         intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
-        startActivityForResult(intent, REQUEST_CODE_RECOVERY_CODE)
+        recoveryCodeRequest.launch(intent)
     }
 
 }
