@@ -32,7 +32,7 @@ const val DIRECTORY_FULL_BACKUP = "full"
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
 const val FILE_NO_MEDIA = ".nomedia"
-private const val MIME_TYPE = "application/octet-stream"
+const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 

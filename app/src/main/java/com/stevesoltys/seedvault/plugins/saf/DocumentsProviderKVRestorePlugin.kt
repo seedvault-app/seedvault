@@ -14,13 +14,19 @@ internal class DocumentsProviderKVRestorePlugin(
 ) : KVRestorePlugin {
 
     private var packageDir: DocumentFile? = null
+    private var packageChildren: List<DocumentFile>? = null
 
     override suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
         return try {
             val backupDir = storage.getKVBackupDir(token) ?: return false
+            val dir = backupDir.findFileBlocking(context, packageInfo.packageName) ?: return false
+            val children = dir.listFilesBlocking(context)
             // remember package file for subsequent operations
-            packageDir = backupDir.findFileBlocking(context, packageInfo.packageName)
-            packageDir != null
+            packageDir = dir
+            // remember package children for subsequent operations
+            packageChildren = children
+            // we have data if we have a non-empty list of children
+            children.isNotEmpty()
         } catch (e: IOException) {
             false
         }
@@ -28,11 +34,13 @@ internal class DocumentsProviderKVRestorePlugin(
 
     @Throws(IOException::class)
     override suspend fun listRecords(token: Long, packageInfo: PackageInfo): List<String> {
-        val packageDir = this.packageDir ?: throw AssertionError()
+        val packageDir = this.packageDir
+            ?: throw AssertionError("No cached packageDir for ${packageInfo.packageName}")
         packageDir.assertRightFile(packageInfo)
-        return packageDir.listFilesBlocking(context)
-            .filter { file -> file.name != null }
-            .map { file -> file.name!! }
+        return packageChildren
+            ?.filter { file -> file.name != null }
+            ?.map { file -> file.name!! }
+            ?: throw AssertionError("No cached children for ${packageInfo.packageName}")
     }
 
     @Throws(IOException::class)
@@ -41,9 +49,12 @@ internal class DocumentsProviderKVRestorePlugin(
         packageInfo: PackageInfo,
         key: String
     ): InputStream {
-        val packageDir = this.packageDir ?: throw AssertionError()
+        val packageDir = this.packageDir
+            ?: throw AssertionError("No cached packageDir for ${packageInfo.packageName}")
         packageDir.assertRightFile(packageInfo)
-        val keyFile = packageDir.findFileBlocking(context, key) ?: throw IOException()
+        val keyFile = packageChildren?.find { it.name == key }
+            ?: packageDir.findFileBlocking(context, key)
+            ?: throw IOException()
         return storage.getInputStream(keyFile)
     }
 
