@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.transport.backup
 
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
+import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
@@ -44,9 +45,9 @@ internal class ApkBackupTest : BackupTest() {
     private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
     private val sigs = arrayOf(Signature(signatureBytes))
     private val packageMetadata = PackageMetadata(
-            time = Random.nextLong(),
-            version = packageInfo.longVersionCode - 1,
-            signatures = listOf("AwIB")
+        time = Random.nextLong(),
+        version = packageInfo.longVersionCode - 1,
+        signatures = listOf("AwIB")
     )
 
     init {
@@ -79,7 +80,7 @@ internal class ApkBackupTest : BackupTest() {
     fun `does not back up the same version`() = runBlocking {
         packageInfo.applicationInfo.flags = FLAG_UPDATED_SYSTEM_APP
         val packageMetadata = packageMetadata.copy(
-                version = packageInfo.longVersionCode
+            version = packageInfo.longVersionCode
         )
 
         expectChecks(packageMetadata)
@@ -120,20 +121,31 @@ internal class ApkBackupTest : BackupTest() {
         }.absolutePath
         val apkOutputStream = ByteArrayOutputStream()
         val updatedMetadata = PackageMetadata(
-                time = 0L,
-                state = UNKNOWN_ERROR,
-                version = packageInfo.longVersionCode,
-                installer = getRandomString(),
-                sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
-                signatures = packageMetadata.signatures
+            time = 0L,
+            state = UNKNOWN_ERROR,
+            version = packageInfo.longVersionCode,
+            installer = getRandomString(),
+            sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
+            signatures = packageMetadata.signatures
         )
 
         expectChecks()
         coEvery { streamGetter.invoke() } returns apkOutputStream
-        every { pm.getInstallerPackageName(packageInfo.packageName) } returns updatedMetadata.installer
-        every { metadataManager.onApkBackedUp(packageInfo, updatedMetadata, outputStream) } just Runs
+        every {
+            pm.getInstallSourceInfo(packageInfo.packageName)
+        } returns InstallSourceInfo(null, null, null, updatedMetadata.installer)
+        every {
+            metadataManager.onApkBackedUp(
+                packageInfo,
+                updatedMetadata,
+                outputStream
+            )
+        } just Runs
 
-        assertEquals(updatedMetadata, apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
+        assertEquals(
+            updatedMetadata,
+            apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter)
+        )
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
     }
 

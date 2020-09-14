@@ -105,7 +105,7 @@ fun getAppName(context: Context, packageId: String): CharSequence {
     }
     return try {
         val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
-        context.packageManager.getApplicationLabel(appInfo) ?: packageId
+        context.packageManager.getApplicationLabel(appInfo)
     } catch (e: NameNotFoundException) {
         packageId
     }

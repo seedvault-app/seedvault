@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.ui.notification
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
@@ -213,6 +214,7 @@ internal class BackupNotificationManager(private val context: Context) {
         return false
     }
 
+    @SuppressLint("RestrictedApi")
     fun onBackupError() {
         val intent = Intent(context, SettingsActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
@@ -234,6 +236,7 @@ internal class BackupNotificationManager(private val context: Context) {
         nm.cancel(NOTIFICATION_ID_ERROR)
     }
 
+    @SuppressLint("RestrictedApi")
     fun onRemovableStorageNotAvailableForRestore(packageName: String, storageName: String) {
         val appName = try {
             val appInfo = context.packageManager.getApplicationInfo(packageName, 0)

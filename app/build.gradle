@@ -22,7 +22,8 @@ android {
     }
 
     lintOptions {
-        abortOnError false
+        disable "CheckedExceptions"
+        abortOnError true
     }
     compileOptions {
         targetCompatibility 1.8

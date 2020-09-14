@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
@@ -35,6 +36,7 @@ class ApkBackup(
      * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
      */
     @Throws(IOException::class)
+    @SuppressLint("NewApi") // can be removed when minSdk is set to 30
     suspend fun backupApkIfNecessary(
         packageInfo: PackageInfo,
         packageState: PackageState,

@@ -123,7 +123,7 @@ internal class ApkRestore(
             publicSourceDir = cachedApk.absolutePath
         }
         val icon = appInfo.loadIcon(pm)
-        val name = pm.getApplicationLabel(appInfo) ?: packageName
+        val name = pm.getApplicationLabel(appInfo)
 
         installResult.update(packageName) { it.copy(status = IN_PROGRESS, name = name, icon = icon) }
         emit(installResult)

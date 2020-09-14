@@ -76,6 +76,7 @@ class App : Application() {
      * after sufficient time has passed.
      */
     private fun migrateTokenFromMetadataToSettingsManager() {
+        @Suppress("DEPRECATION")
         val token = metadataManager.getBackupToken()
         if (token != 0L && settingsManager.getToken() == null) {
             settingsManager.setNewToken(token)
