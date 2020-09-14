@@ -202,7 +202,6 @@ class PluginTest : KoinComponent {
         val record3 = Pair(getRandomBase64(128), getRandomByteArray(5 * 1024 * 1024))
 
         // write first record
-        kvBackup.ensureRecordStorageForPackage(packageInfo)
         kvBackup.getOutputStreamForRecord(packageInfo, record1.first).writeAndClose(record1.second)
 
         // data is now available for current token and given package, but not for different token
@@ -220,11 +219,11 @@ class PluginTest : KoinComponent {
         )
 
         // write second and third record
-        kvBackup.ensureRecordStorageForPackage(packageInfo)
         kvBackup.getOutputStreamForRecord(packageInfo, record2.first).writeAndClose(record2.second)
         kvBackup.getOutputStreamForRecord(packageInfo, record3.first).writeAndClose(record3.second)
 
         // all records for package are found and returned properly
+        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
         records = kvRestore.listRecords(token, packageInfo)
         assertEquals(listOf(record1.first, record2.first, record3.first).sorted(), records.sorted())
         assertReadEquals(
@@ -242,6 +241,7 @@ class PluginTest : KoinComponent {
 
         // delete record3 and ensure that the other two are still found
         kvBackup.deleteRecord(packageInfo, record3.first)
+        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
         records = kvRestore.listRecords(token, packageInfo)
         assertEquals(listOf(record1.first, record2.first).sorted(), records.sorted())
 
@@ -259,6 +259,7 @@ class PluginTest : KoinComponent {
 
         // initialize storage with given token
         initStorage(token)
+        assertFalse(kvBackup.hasDataForPackage(packageInfo))
 
         // FIXME get Nextcloud to have the same limit
         //  Since Nextcloud is using WebDAV and that seems to have undefined lower file name limits
@@ -271,7 +272,6 @@ class PluginTest : KoinComponent {
         val recordOver = Pair(getRandomBase64(maxOver), getRandomByteArray(1024))
 
         // write max record
-        kvBackup.ensureRecordStorageForPackage(packageInfo)
         kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first)
             .writeAndClose(recordMax.second)
 
@@ -281,7 +281,6 @@ class PluginTest : KoinComponent {
         assertEquals(listOf(recordMax.first), records)
 
         // write exceeding key length record
-        kvBackup.ensureRecordStorageForPackage(packageInfo)
         if (isNextcloud()) {
             // Nextcloud simply refuses to write long filenames
             coAssertThrows(IOException::class.java) {

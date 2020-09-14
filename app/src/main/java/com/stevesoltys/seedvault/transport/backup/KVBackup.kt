@@ -91,14 +91,6 @@ internal class KVBackup(
             }
         }
 
-        // ensure there's a place to store K/V for the given package
-        try {
-            plugin.ensureRecordStorageForPackage(packageInfo)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error ensuring storage for ${packageInfo.packageName}.", e)
-            return backupError(TRANSPORT_ERROR)
-        }
-
         // parse and store the K/V updates
         return storeRecords(packageInfo, data)
     }
@@ -221,6 +213,7 @@ internal class KVBackup(
 
     fun finishBackup(): Int {
         Log.i(TAG, "Finish K/V Backup of ${state!!.packageInfo.packageName}")
+        plugin.packageFinished(state!!.packageInfo)
         state = null
         return TRANSPORT_OK
     }
@@ -233,6 +226,7 @@ internal class KVBackup(
         "Resetting state because of K/V Backup error of ${state!!.packageInfo.packageName}".let {
             Log.i(TAG, it)
         }
+        plugin.packageFinished(state!!.packageInfo)
         state = null
         return result
     }

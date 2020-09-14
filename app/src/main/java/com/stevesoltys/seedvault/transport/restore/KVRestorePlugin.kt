@@ -15,7 +15,8 @@ interface KVRestorePlugin {
     /**
      * Return all record keys for the given token and package.
      *
-     * Note: Implementations might expect that you call [hasDataForPackage] before.
+     * Note: Implementations usually expect that you call [hasDataForPackage]
+     *       with the same parameters before.
      *
      * For file-based plugins, this is usually a list of file names in the package directory.
      */
