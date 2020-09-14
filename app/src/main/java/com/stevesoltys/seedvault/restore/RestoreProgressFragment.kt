@@ -59,25 +59,21 @@ class RestoreProgressFragment : Fragment() {
             requireActivity().setResult(RESULT_OK)
             requireActivity().finishAfterTransition()
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.chosenRestorableBackup.observe(this, Observer { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, Observer { restorableBackup ->
             backupNameView.text = restorableBackup.name
             progressBar.max = restorableBackup.packageMetadataMap.size
         })
 
-        viewModel.restoreProgress.observe(this, Observer { list ->
+        viewModel.restoreProgress.observe(viewLifecycleOwner, Observer { list ->
             stayScrolledAtTop { adapter.update(list) }
             progressBar.progress = list.size
         })
 
-        viewModel.restoreBackupResult.observe(this, Observer { finished ->
+        viewModel.restoreBackupResult.observe(viewLifecycleOwner, Observer { finished ->
             button.isEnabled = true
             if (finished.hasError()) {
                 backupNameView.text = finished.errorMsg

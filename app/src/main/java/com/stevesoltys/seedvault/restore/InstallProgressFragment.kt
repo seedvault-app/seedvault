@@ -32,8 +32,11 @@ class InstallProgressFragment : Fragment() {
     private lateinit var appList: RecyclerView
     private lateinit var button: Button
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
         progressBar = v.findViewById(R.id.progressBar)
@@ -55,20 +58,16 @@ class InstallProgressFragment : Fragment() {
         }
         button.setText(R.string.restore_next)
         button.setOnClickListener { viewModel.onNextClicked() }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewModel.chosenRestorableBackup.observe(this, Observer { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, Observer { restorableBackup ->
             backupNameView.text = restorableBackup.name
         })
 
-        viewModel.installResult.observe(this, Observer { result ->
+        viewModel.installResult.observe(viewLifecycleOwner, Observer { result ->
             onInstallResult(result)
         })
 
-        viewModel.nextButtonEnabled.observe(this, Observer { enabled ->
+        viewModel.nextButtonEnabled.observe(viewLifecycleOwner, Observer { enabled ->
             button.isEnabled = enabled
         })
     }

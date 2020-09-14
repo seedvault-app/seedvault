@@ -116,7 +116,7 @@ class ApkBackup(
         return PackageMetadata(
             state = packageState,
             version = version,
-            installer = pm.getInstallerPackageName(packageName),
+            installer = pm.getInstallSourceInfo(packageName).installingPackageName,
             sha256 = sha256,
             signatures = signatures
         )

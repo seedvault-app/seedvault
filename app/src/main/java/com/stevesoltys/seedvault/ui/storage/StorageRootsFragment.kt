@@ -1,9 +1,12 @@
 package com.stevesoltys.seedvault.ui.storage
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +16,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
+import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
-import com.stevesoltys.seedvault.ui.REQUEST_CODE_OPEN_DOCUMENT_TREE
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
 internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
@@ -45,8 +47,11 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
     private val adapter by lazy { StorageRootAdapter(viewModel.isRestoreOperation, this) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
 
         titleView = v.findViewById(R.id.titleView)
@@ -60,10 +65,10 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel = if (arguments!!.getBoolean(INTENT_EXTRA_IS_RESTORE)) {
+        viewModel = if (requireArguments().getBoolean(INTENT_EXTRA_IS_RESTORE)) {
             getSharedViewModel<RestoreStorageViewModel>()
         } else {
             getSharedViewModel<BackupStorageViewModel>()
@@ -81,7 +86,9 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
         listView.adapter = adapter
 
-        viewModel.storageRoots.observe(this, Observer { roots -> onRootsLoaded(roots) })
+        viewModel.storageRoots.observe(viewLifecycleOwner, Observer { roots ->
+            onRootsLoaded(roots)
+        })
     }
 
     override fun onStart() {
@@ -94,25 +101,30 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
         adapter.setItems(roots)
     }
 
-    override fun onClick(root: StorageRoot) {
-        viewModel.onStorageRootChosen(root)
-        val intent = Intent(requireContext(), PermissionGrantActivity::class.java)
-        intent.data = root.uri
-        intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION)
-        startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT_TREE)
+    private val openDocumentTree = registerForActivityResult(OpenSeedvaultTree()) { uri ->
+        viewModel.onUriPermissionResultReceived(uri)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_OPEN_DOCUMENT_TREE) {
-            viewModel.onUriPermissionGranted(result)
-        } else {
-            super.onActivityResult(requestCode, resultCode, result)
-        }
+    override fun onClick(root: StorageRoot) {
+        viewModel.onStorageRootChosen(root)
+        openDocumentTree.launch(root.uri)
     }
 
 }
 
 internal interface StorageRootClickedListener {
     fun onClick(root: StorageRoot)
+}
+
+private class OpenSeedvaultTree : OpenDocumentTree() {
+    @SuppressLint("MissingSuperCall") // we are intentionally creating our own intent
+    override fun createIntent(context: Context, input: Uri?): Intent {
+        return Intent(context, PermissionGrantActivity::class.java).apply {
+            check(input != null) { "Uri was null, but is needed." }
+            data = input
+            val flags = FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                    FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
+            addFlags(flags)
+        }
+    }
 }

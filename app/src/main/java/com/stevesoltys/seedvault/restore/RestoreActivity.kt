@@ -19,7 +19,7 @@ class RestoreActivity : RequireProvisioningActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (isSetupWizard) hideSystemUI()
+        if (isSetupWizard) hideSystemUiNavigation()
 
         setContentView(R.layout.activity_fragment_container)
 

@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.ui.storage
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.CallSuper
@@ -22,7 +21,7 @@ class StorageActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (isSetupWizard()) hideSystemUI()
+        if (isSetupWizard()) hideSystemUiNavigation()
 
         setContentView(R.layout.activity_fragment_container)
 
@@ -49,16 +48,6 @@ class StorageActivity : BackupActivity() {
 
         if (savedInstanceState == null) {
             showFragment(StorageRootsFragment.newInstance(isRestore()))
-        }
-    }
-
-    @CallSuper
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        if (resultCode != RESULT_OK) {
-            Log.w(TAG, "Error in activity result: $requestCode")
-            onInvalidLocation(getString(R.string.storage_check_fragment_permission_error))
-        } else {
-            super.onActivityResult(requestCode, resultCode, result)
         }
     }
 

@@ -24,8 +24,11 @@ class RestoreSetFragment : Fragment() {
     private lateinit var errorView: TextView
     private lateinit var backView: TextView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_restore_set, container, false)
 
         listView = v.findViewById(R.id.listView)
@@ -36,13 +39,15 @@ class RestoreSetFragment : Fragment() {
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.restoreSetResults.observe(this, Observer { result -> onRestoreResultsLoaded(result) })
+        viewModel.restoreSetResults.observe(viewLifecycleOwner, Observer { result ->
+            onRestoreResultsLoaded(result)
+        })
 
         backView.setOnClickListener { requireActivity().finishAfterTransition() }
     }

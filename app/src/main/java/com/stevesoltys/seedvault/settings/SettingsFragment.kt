@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.preference.Preference
@@ -117,8 +118,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@OnPreferenceChangeListener false
         }
         backupStatus = findPreference("backup_status")!!
+    }
 
-        viewModel.lastBackupTime.observe(this, Observer { time -> setAppBackupStatusSummary(time) })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.lastBackupTime.observe(viewLifecycleOwner, Observer { time -> setAppBackupStatusSummary(time) })
     }
 
     override fun onStart() {
@@ -162,7 +167,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         R.id.action_about -> {
-            AboutDialogFragment().show(fragmentManager!!, AboutDialogFragment.TAG)
+            AboutDialogFragment().show(parentFragmentManager, AboutDialogFragment.TAG)
             true
         }
         else -> super.onOptionsItemSelected(item)

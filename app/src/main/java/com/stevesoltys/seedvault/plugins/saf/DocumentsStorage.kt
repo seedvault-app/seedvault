@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo
 import android.database.ContentObserver
 import android.database.Cursor
 import android.net.Uri
-import android.os.FileUtils.closeQuietly
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import android.provider.DocumentsContract.EXTRA_LOADING
 import android.provider.DocumentsContract.buildChildDocumentsUriUsingTree
@@ -294,14 +293,14 @@ internal suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor
     withTimeout(timeout) {
         suspendCancellableCoroutine<Cursor> { cont ->
             val cursor = query() ?: throw IOException()
-            cont.invokeOnCancellation { closeQuietly(cursor) }
+            cont.invokeOnCancellation { cursor.close() }
             val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
             if (loading) {
                 Log.d(TAG, "Wait for children to get loaded...")
                 cursor.registerContentObserver(object : ContentObserver(null) {
                     override fun onChange(selfChange: Boolean, uri: Uri?) {
                         Log.d(TAG, "Children loaded. Continue...")
-                        closeQuietly(cursor)
+                        cursor.close()
                         val newCursor = query()
                         if (newCursor == null) cont.cancel(IOException("query returned no results"))
                         else cont.resume(newCursor)
