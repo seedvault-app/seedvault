@@ -1,0 +1,130 @@
+// To produce these binaries, in latest AOSP source tree, run
+// $ m
+def aospDeps = fileTree(include: [
+        // For more information about this module:
+        // https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-11.0.0_r3/Android.bp#507
+        // framework_intermediates/classes-header.jar works for gradle build as well,
+        // but not unit tests, so we use the actual classes (without updatable modules).
+        //
+        // out/target/common/obj/JAVA_LIBRARIES/framework-minus-apex_intermediates/classes.jar
+        'android.jar',
+        // out/target/common/obj/JAVA_LIBRARIES/core-libart.com.android.art.release_intermediates/classes.jar
+        'libcore.jar'
+], dir: 'libs')
+
+dependencies {
+    compileOnly aospDeps
+
+    /**
+     * Dependencies in AOSP
+     *
+     * We try to keep the dependencies in sync with what AOSP ships as Seedvault is meant to be built
+     * with the AOSP build system and gradle builds are just for more pleasant development.
+     * Using the AOSP versions in gradle builds allows us to spot issues early on.
+     */
+
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8') {
+        version { strictly "$kotlin_version" }
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-common') {
+        version { strictly "$kotlin_version" }
+    }
+    implementation('org.jetbrains.kotlin:kotlin-stdlib') {
+        version { strictly "$kotlin_version" }
+    }
+
+    // These coroutine libraries get upgraded otherwise to versions incompatible with kotlin version
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-core') {
+        // https://android.googlesource.com/platform/prebuilts/tools/+/refs/tags/android-11.0.0_r3/common/m2/Android.bp#326
+        version { strictly '1.3.0' }
+    }
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-android') {
+        // https://android.googlesource.com/platform/prebuilts/tools/+/refs/tags/android-11.0.0_r3/common/m2/Android.bp#340
+        version { strictly '1.3.0' }
+    }
+
+    implementation('androidx.core:core-ktx') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#610
+        version { strictly '1.5.0-alpha01' }
+    }
+
+    // A newer version gets pulled in with AOSP via core, so we include this here explicitly
+    implementation('androidx.fragment:fragment-ktx') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#930
+        version { strictly '1.3.0-alpha07' }
+    }
+
+    implementation('androidx.preference:preference') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#2412
+        version { strictly '1.1.1' } // should be 1.2.0-alpha01, but that is not even released, yet
+    }
+
+    implementation('androidx.lifecycle:lifecycle-viewmodel-ktx') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#1553
+        version { strictly '2.3.0-alpha05' }
+    }
+
+    implementation('androidx.lifecycle:lifecycle-livedata-ktx') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/androidx/Android.bp#1353
+        version { strictly '2.3.0-alpha05' }
+    }
+
+    implementation('androidx.constraintlayout:constraintlayout') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/extras/constraint-layout-x/Android.bp#30
+        version { strictly '2.0.0-beta7' }
+    }
+
+    implementation('com.google.android.material:material') {
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-11.0.0_r3/current/extras/material-design-x/Android.bp#6
+        version { strictly '1.1.0-alpha05' }
+    }
+
+
+    /**
+     * External Dependencies
+     *
+     * If the dependencies below are updated,
+     * please make sure to update the prebuilt libraries and the Android.bp files
+     * in the top-level `libs` folder to reflect that.
+     * You can copy these libraries from ~/.gradle/caches/modules-2
+     */
+
+    def koin_version = '2.1.1' // later versions require newer kotlin version
+    //noinspection GradleDependency
+    implementation("org.koin:koin-android:$koin_version") {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+    }
+    //noinspection GradleDependency
+    implementation("org.koin:koin-androidx-viewmodel:$koin_version") {
+        exclude group: 'org.koin', module: 'koin-androidx-scope'
+        exclude group: 'androidx.lifecycle'
+    }
+
+    implementation('io.github.novacrypto:BIP39:2019.01.27') {
+        exclude group: 'com.madgag.spongycastle'
+    }
+
+    /**
+     * Test Dependencies (do not concern the AOSP build)
+     */
+
+    lintChecks 'com.github.thirdegg:lint-rules:0.0.5-alpha'
+
+    def junit_version = "5.5.2"  // careful, upgrading this can change a Cipher's IV size in tests!?
+    def mockk_version = "1.10.0"
+    testImplementation aospDeps  // anything less than 'implementation' fails tests run with gradlew
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation('org.robolectric:robolectric:4.3.1') { // 4.4 has issue with non-idle Looper
+        // https://github.com/robolectric/robolectric/issues/5245
+        exclude group: "com.google.auto.service", module: "auto-service"
+    }
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit_version"
+
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+}
