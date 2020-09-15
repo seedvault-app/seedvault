@@ -44,7 +44,10 @@ android_app {
     required: [
         "privapp_whitelist_com.stevesoltys.backup",
         "com.stevesoltys.backup_whitelist"
-    ]
+    ],
+    optimize: {
+        enabled: false,
+    },
 }
 
 prebuilt_etc {
