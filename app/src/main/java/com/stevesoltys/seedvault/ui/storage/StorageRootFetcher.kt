@@ -173,9 +173,17 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
         roots.add(root)
     }
 
+    /**
+     * This adds a fake Nextcloud entry if no real one was found.
+     *
+     * If Nextcloud is *not* installed,
+     * the user will always have the option to install it by clicking the entry.
+     *
+     * If it *is* installed and this is restore, the user can set up a new account by clicking.
+     * If this isn't restore, the entry will be disabled,
+     * because we don't know if there's no account or an activated passcode.
+     */
     private fun checkOrAddNextCloudRoot(roots: ArrayList<StorageRoot>) {
-        if (!isRestore) return
-
         for (root in roots) {
             // return if we already have a NextCloud storage root
             if (root.authority == AUTHORITY_NEXTCLOUD) return
@@ -188,16 +196,20 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
             putExtra("onlyAdd", true)
         }
         val isInstalled = packageManager.resolveActivity(intent, 0) != null
+        val summaryRes = if (isInstalled) {
+            if (isRestore) R.string.storage_fake_nextcloud_summary_installed
+            else R.string.storage_fake_nextcloud_summary_unavailable
+        } else R.string.storage_fake_nextcloud_summary
         val root = StorageRoot(
                 authority = AUTHORITY_NEXTCLOUD,
                 rootId = "fake",
                 documentId = "fake",
                 icon = getIcon(context, AUTHORITY_NEXTCLOUD, "fake", 0),
                 title = context.getString(R.string.storage_fake_nextcloud_title),
-                summary = context.getString(if (isInstalled) R.string.storage_fake_nextcloud_summary_installed else R.string.storage_fake_nextcloud_summary),
+                summary = context.getString(summaryRes),
                 availableBytes = null,
                 isUsb = false,
-                enabled = true,
+                enabled = !isInstalled || isRestore,
                 overrideClickListener = {
                     if (isInstalled) context.startActivity(intent)
                     else {
