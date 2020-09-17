@@ -25,7 +25,7 @@ import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
-private class RestoreCoordinatorState(
+private data class RestoreCoordinatorState(
     val token: Long,
     val packages: Iterator<PackageInfo>,
     /**
@@ -124,7 +124,7 @@ internal class RestoreCoordinator(
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
     fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
-        check(state == null) { "Started new restore with existing state" }
+        check(state == null) { "Started new restore with existing state: $state" }
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
 
         // If there's only one package to restore (Auto Restore feature), add it to the state
@@ -251,6 +251,7 @@ internal class RestoreCoordinator(
      * or will call [finishRestore] to shut down the restore operation.
      */
     fun abortFullRestore(): Int {
+        Log.d(TAG, "abortFullRestore")
         state?.currentPackage?.let { failedPackages.add(it) }
         return full.abortFullRestore()
     }
@@ -260,7 +261,9 @@ internal class RestoreCoordinator(
      * freeing any resources and connections used during the restore process.
      */
     fun finishRestore() {
+        Log.d(TAG, "finishRestore")
         if (full.hasState()) full.finishRestore()
+        state = null
     }
 
     /**
