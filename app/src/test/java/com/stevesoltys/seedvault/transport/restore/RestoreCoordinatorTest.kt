@@ -109,6 +109,16 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
+    fun `startRestore() can be be called again after restore finished`() {
+        assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
+
+        every { full.hasState() } returns false
+        restore.finishRestore()
+
+        assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
+    }
+
+    @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() {
         every { settingsManager.getStorage() } returns storage
         every { storage.isUsb } returns true
