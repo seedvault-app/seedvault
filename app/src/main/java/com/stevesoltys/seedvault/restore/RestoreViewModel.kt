@@ -25,12 +25,14 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_INSTALLED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
@@ -218,6 +220,7 @@ internal class RestoreViewModel(
         val metadata = restorableBackup.packageMetadataMap[packageName] ?: return FAILED
         return when (metadata.state) {
             NO_DATA -> FAILED_NO_DATA
+            WAS_STOPPED -> NOT_YET_BACKED_UP
             NOT_ALLOWED -> FAILED_NOT_ALLOWED
             QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
             UNKNOWN_ERROR -> FAILED

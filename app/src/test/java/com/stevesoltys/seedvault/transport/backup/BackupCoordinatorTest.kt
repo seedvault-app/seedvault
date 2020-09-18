@@ -4,6 +4,8 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
+import android.content.pm.ApplicationInfo
+import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -16,6 +18,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -318,7 +321,11 @@ internal class BackupCoordinatorTest : BackupTest() {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
         val notAllowedPackages = listOf(
             PackageInfo().apply { packageName = "org.example.1" },
-            PackageInfo().apply { packageName = "org.example.2" }
+            PackageInfo().apply {
+                packageName = "org.example.2"
+                // the second package does not get backed up, because it is stopped
+                applicationInfo = ApplicationInfo().apply { flags = FLAG_STOPPED }
+            }
         )
         val packageMetadata: PackageMetadata = mockk()
 
@@ -337,13 +344,13 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         // no backup needed
         coEvery {
-            apkBackup.backupApkIfNecessary(
-                notAllowedPackages[0],
-                NOT_ALLOWED,
-                any()
-            )
+            apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())
         } returns null
-        // update notification
+        // check old metadata for state changes, because we won't update it otherwise
+        every { metadataManager.getPackageMetadata(notAllowedPackages[0].packageName) } returns packageMetadata
+        every { packageMetadata.state } returns NOT_ALLOWED // no change
+
+        // update notification for second package
         every {
             notificationManager.onOptOutAppBackup(
                 notAllowedPackages[1].packageName,
@@ -353,11 +360,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         // was backed up, get new packageMetadata
         coEvery {
-            apkBackup.backupApkIfNecessary(
-                notAllowedPackages[1],
-                NOT_ALLOWED,
-                any()
-            )
+            apkBackup.backupApkIfNecessary(notAllowedPackages[1], WAS_STOPPED, any())
         } returns packageMetadata
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
         every {
@@ -369,14 +372,38 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         every { metadataOutputStream.close() } just Runs
 
-        assertEquals(
-            TRANSPORT_OK,
-            backup.performIncrementalBackup(packageInfo, fileDescriptor, 0)
-        )
+        assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
 
         coVerify {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())
-            apkBackup.backupApkIfNecessary(notAllowedPackages[1], NOT_ALLOWED, any())
+            apkBackup.backupApkIfNecessary(notAllowedPackages[1], WAS_STOPPED, any())
+            metadataOutputStream.close()
+        }
+    }
+
+    @Test
+    fun `APK backup of not allowed apps updates state even without new APK`() = runBlocking {
+        val oldPackageMetadata: PackageMetadata = mockk()
+
+        every { packageService.notAllowedPackages } returns listOf(packageInfo)
+        every { notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1) } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo, NOT_ALLOWED, any()) } returns null
+        every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns oldPackageMetadata
+        every { oldPackageMetadata.state } returns WAS_STOPPED // state differs now, was stopped before
+        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every {
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                NOT_ALLOWED,
+                metadataOutputStream
+            )
+        } just Runs
+        every { metadataOutputStream.close() } just Runs
+
+        backup.backUpNotAllowedPackages()
+
+        verify {
+            metadataManager.onPackageBackupError(packageInfo, NOT_ALLOWED, metadataOutputStream)
             metadataOutputStream.close()
         }
     }

@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -84,12 +85,15 @@ class MetadataManager(
         }
         val oldPackageMetadata = metadata.packageMetadataMap[packageName]
             ?: PackageMetadata()
-        // only allow state change if backup of this package is not allowed
-        val newState = if (packageMetadata.state == NOT_ALLOWED) {
-            packageMetadata.state
-        } else {
-            oldPackageMetadata.state
-        }
+        // only allow state change if backup of this package is not allowed,
+        // because we need to change from the default of UNKNOWN_ERROR here,
+        // but otherwise don't want to modify the state since set elsewhere.
+        val newState =
+            if (packageMetadata.state == NOT_ALLOWED || packageMetadata.state == WAS_STOPPED) {
+                packageMetadata.state
+            } else {
+                oldPackageMetadata.state
+            }
         modifyMetadata(metadataOutputStream) {
             metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
                 state = newState,

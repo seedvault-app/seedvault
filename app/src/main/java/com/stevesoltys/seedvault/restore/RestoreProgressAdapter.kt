@@ -71,7 +71,7 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 enum class AppRestoreStatus {
     IN_PROGRESS,
     SUCCEEDED,
-    NOT_ELIGIBLE,
+    NOT_YET_BACKED_UP,
     FAILED,
     FAILED_NO_DATA,
     FAILED_NOT_ALLOWED,
