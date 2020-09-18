@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "org.calyxos.backup.contacts"
+        minSdkVersion 30
+        targetSdkVersion 30
+        versionCode 30
+        versionName "0.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    // optional signingConfigs
+    // On userdebug builds, you can use the testkey here to update the system app
+    def keystorePropertiesFile = project.file("keystore.properties")
+    if (keystorePropertiesFile.exists()) {
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+        buildTypes.release.signingConfig = signingConfigs.release
+        buildTypes.debug.signingConfig = signingConfigs.release
+    }
+}
+
+def aospDeps = fileTree(include: [
+        // out/target/common/obj/JAVA_LIBRARIES/com.android.vcard_intermediates/classes.jar
+        'com.android.vcard.jar'
+], dir: 'libs')
+
+dependencies {
+    implementation aospDeps
+
+    //noinspection GradleDependency
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testImplementation 'junit:junit:4.13'
+    def mockk_version = "1.10.0"
+    testImplementation "io.mockk:mockk:$mockk_version"
+
+    //noinspection GradleDependency
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    def espresso_version = "3.3.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+}

@@ -1,0 +1,24 @@
+android_app {
+    name: "LocalContactsBackup",
+    srcs: [
+        "src/main/java/**/*.java",
+    ],
+    resource_dirs: [
+        "src/main/res",
+    ],
+    manifest: "src/main/AndroidManifest.xml",
+    static_libs: [
+        "com.android.vcard",
+    ],
+    required: [
+        "default-permissions_org.calyxos.backup.contacts",
+    ],
+    sdk_version: "current",
+}
+
+prebuilt_etc {
+    name: "default-permissions_org.calyxos.backup.contacts",
+    sub_dir: "default-permissions",
+    src: "default-permissions_org.calyxos.backup.contacts.xml",
+    filename_from_src: true,
+}
