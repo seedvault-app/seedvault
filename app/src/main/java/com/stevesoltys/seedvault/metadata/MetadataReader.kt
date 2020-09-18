@@ -9,6 +9,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -64,11 +65,12 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
             for (packageName in json.keys()) {
                 if (packageName == JSON_METADATA) continue
                 val p = json.getJSONObject(packageName)
-                val pState = when(p.optString(JSON_PACKAGE_STATE)) {
+                val pState = when (p.optString(JSON_PACKAGE_STATE)) {
                     "" -> APK_AND_DATA
                     QUOTA_EXCEEDED.name -> QUOTA_EXCEEDED
                     NO_DATA.name -> NO_DATA
                     NOT_ALLOWED.name -> NOT_ALLOWED
+                    WAS_STOPPED.name -> WAS_STOPPED
                     else -> UNKNOWN_ERROR
                 }
                 val pSystem = p.optBoolean(JSON_PACKAGE_SYSTEM, false)

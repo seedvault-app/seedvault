@@ -10,6 +10,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
@@ -19,6 +21,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
@@ -299,34 +302,54 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    private suspend fun backUpNotAllowedPackages() {
+    @VisibleForTesting(otherwise = PRIVATE)
+    internal suspend fun backUpNotAllowedPackages() {
         Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
         val notAllowedPackages = packageService.notAllowedPackages
-        notAllowedPackages.forEachIndexed { i, optOutPackageInfo ->
+        notAllowedPackages.forEachIndexed { i, packageInfo ->
+            val packageName = packageInfo.packageName
             try {
-                nm.onOptOutAppBackup(optOutPackageInfo.packageName, i + 1, notAllowedPackages.size)
-                backUpApk(optOutPackageInfo, NOT_ALLOWED)
+                nm.onOptOutAppBackup(packageName, i + 1, notAllowedPackages.size)
+                val packageState = if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
+                val wasBackedUp = backUpApk(packageInfo, packageState)
+                if (!wasBackedUp) {
+                    val packageMetadata = metadataManager.getPackageMetadata(packageName)
+                    val oldPackageState = packageMetadata?.state
+                    if (oldPackageState != null && oldPackageState != packageState) {
+                        Log.e(TAG, "Package $packageName was in $oldPackageState, update to $packageState")
+                        plugin.getMetadataOutputStream().use {
+                            metadataManager.onPackageBackupError(packageInfo, packageState, it)
+                        }
+                    }
+                }
             } catch (e: IOException) {
-                Log.e(TAG, "Error backing up opt-out APK of ${optOutPackageInfo.packageName}", e)
+                Log.e(TAG, "Error backing up opt-out APK of $packageName", e)
             }
         }
     }
 
+    /**
+     * Backs up an APK for the given [PackageInfo].
+     *
+     * @return true if a backup was performed and false if no backup was needed or it failed.
+     */
     private suspend fun backUpApk(
         packageInfo: PackageInfo,
         packageState: PackageState = UNKNOWN_ERROR
-    ) {
+    ): Boolean {
         val packageName = packageInfo.packageName
-        try {
+        return try {
             apkBackup.backupApkIfNecessary(packageInfo, packageState) {
                 plugin.getApkOutputStream(packageInfo)
             }?.let { packageMetadata ->
                 plugin.getMetadataOutputStream().use {
                     metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)
                 }
-            }
+                true
+            } ?: false
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
+            false
         }
     }
 
