@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -163,6 +164,11 @@ class MetadataManagerTest {
         packageMetadata = packageMetadata.copy(version = ++version, state = NOT_ALLOWED)
         manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
         assertEquals(packageMetadata.copy(state = NOT_ALLOWED), manager.getPackageMetadata(packageName))
+
+        // state DOES change for WAS_STOPPED
+        packageMetadata = packageMetadata.copy(version = ++version, state = WAS_STOPPED)
+        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        assertEquals(packageMetadata.copy(state = WAS_STOPPED), manager.getPackageMetadata(packageName))
     }
 
     @Test

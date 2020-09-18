@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.metadata
 
+import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.os.Build
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
@@ -39,6 +40,10 @@ enum class PackageState {
      * Package data could not get backed up, because the app reported no data to back up.
      */
     NO_DATA,
+    /**
+     * Package data could not get backed up, because the app has [FLAG_STOPPED].
+     */
+    WAS_STOPPED,
     /**
      * Package data could not get backed up, because it was not allowed.
      * Most often, this is a manifest opt-out, but it could also be a disabled or system-user app.
