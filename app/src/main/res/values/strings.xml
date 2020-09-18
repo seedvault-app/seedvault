@@ -107,6 +107,7 @@
     <string name="restore_magic_package">System package manager</string>
     <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
     <string name="restore_app_not_yet_backed_up">Not yet backed up</string>
+    <string name="restore_app_was_stopped">Not backed up as it wasn\'t used recently</string>
     <string name="restore_app_no_data">App reported no data for backup</string>
     <string name="restore_app_not_allowed">App doesn\'t allow backup</string>
     <string name="restore_app_not_installed">App not installed</string>

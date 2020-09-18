@@ -18,6 +18,7 @@ import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_INSTALLED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_WAS_STOPPED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
@@ -66,6 +67,7 @@ internal open class AppViewHolder(protected val v: View) : RecyclerView.ViewHold
     private fun AppRestoreStatus.getInfo(): String = when (this) {
         NOT_YET_BACKED_UP -> context.getString(R.string.restore_app_not_yet_backed_up)
         FAILED_NO_DATA -> context.getString(R.string.restore_app_no_data)
+        FAILED_WAS_STOPPED -> context.getString(R.string.restore_app_was_stopped)
         FAILED_NOT_ALLOWED -> context.getString(R.string.restore_app_not_allowed)
         FAILED_NOT_INSTALLED -> context.getString(R.string.restore_app_not_installed)
         FAILED_QUOTA_EXCEEDED -> context.getString(R.string.restore_app_quota_exceeded)
