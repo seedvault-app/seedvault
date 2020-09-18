@@ -28,6 +28,7 @@ import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_WAS_STOPPED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -101,7 +102,7 @@ internal class SettingsViewModel(
                     NOT_YET_BACKED_UP
                 }
                 NO_DATA -> FAILED_NO_DATA
-                WAS_STOPPED -> NOT_YET_BACKED_UP
+                WAS_STOPPED -> FAILED_WAS_STOPPED
                 NOT_ALLOWED -> FAILED_NOT_ALLOWED
                 QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
                 UNKNOWN_ERROR -> FAILED
