@@ -23,8 +23,7 @@ import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 
-
-internal open class AppViewHolder(protected val v: View) : RecyclerView.ViewHolder(v) {
+internal abstract class AppViewHolder(protected val v: View) : RecyclerView.ViewHolder(v) {
 
     protected val context: Context = v.context
     protected val pm: PackageManager = context.packageManager
@@ -43,7 +42,6 @@ internal open class AppViewHolder(protected val v: View) : RecyclerView.ViewHold
     }
 
     protected fun setStatus(status: AppRestoreStatus) {
-        v.background = null
         if (status == IN_PROGRESS) {
             appInfo.visibility = GONE
             appStatus.visibility = INVISIBLE
