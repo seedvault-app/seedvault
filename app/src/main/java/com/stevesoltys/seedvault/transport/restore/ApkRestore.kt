@@ -137,7 +137,7 @@ internal class ApkRestore(
                 if (isOlder || !installedPackageInfo.isSystemApp()) throw NameNotFoundException()
             } catch (e: NameNotFoundException) {
                 Log.w(TAG, "Not installing $packageName because older or not a system app here.")
-                fail(installResult, packageName)
+                emit(fail(installResult, packageName))
                 return@flow
             }
         }
