@@ -63,8 +63,7 @@ fun requestBackup(context: Context) {
     val observer = NotificationBackupObserver(context, packages.size, appTotals)
     val result = try {
         val backupManager: IBackupManager = get().koin.get()
-        // TODO check why this is not doing incremental K/V backups like `bmgr backupnow`
-        backupManager.requestBackup(packages, observer, BackupMonitor(), FLAG_USER_INITIATED)
+        backupManager.requestBackup(packages, observer, BackupMonitor(), 0)
     } catch (e: RemoteException) {
         Log.e(TAG, "Error during backup: ", e)
         val nm: BackupNotificationManager = get().koin.get()
