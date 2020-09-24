@@ -8,11 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.stevesoltys.seedvault.R
 
-class RecoveryCodeAdapter(private val items: List<CharSequence>) : Adapter<RecoveryCodeViewHolder>() {
+class RecoveryCodeAdapter(private val items: List<CharSequence>) :
+    Adapter<RecoveryCodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecoveryCodeViewHolder {
         val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_recovery_code_output, parent, false) as View
+            .inflate(R.layout.list_item_recovery_code_output, parent, false) as View
         return RecoveryCodeViewHolder(v)
     }
 

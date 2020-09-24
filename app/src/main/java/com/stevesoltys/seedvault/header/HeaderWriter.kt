@@ -43,8 +43,8 @@ internal class HeaderWriterImpl : HeaderWriter {
 
     override fun writeSegmentHeader(outputStream: OutputStream, header: SegmentHeader) {
         val buffer = ByteBuffer.allocate(SEGMENT_HEADER_SIZE)
-                .putShort(header.segmentLength)
-                .put(header.nonce)
+            .putShort(header.segmentLength)
+            .put(header.nonce)
         outputStream.write(buffer.array())
     }
 

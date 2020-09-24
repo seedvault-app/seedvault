@@ -3,7 +3,6 @@ package com.stevesoltys.seedvault.transport
 import android.app.Service
 import android.app.backup.BackupManager
 import android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP
-import android.app.backup.BackupTransport.FLAG_USER_INITIATED
 import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.Context.BACKUP_SERVICE

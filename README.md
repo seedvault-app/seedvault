@@ -32,7 +32,9 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.INSTALL_PACKAGES` to re-install apps when restoring from backup.
 
 ## Contributing
-Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault. 
+Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault.
+
+This project aims to adhere to the [official Kotlin coding style](https://developer.android.com/kotlin/style-guide).
 
 ## License
 This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).

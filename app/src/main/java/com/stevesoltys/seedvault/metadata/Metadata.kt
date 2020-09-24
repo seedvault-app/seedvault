@@ -9,13 +9,13 @@ import java.io.InputStream
 typealias PackageMetadataMap = HashMap<String, PackageMetadata>
 
 data class BackupMetadata(
-        internal val version: Byte = VERSION,
-        internal val token: Long,
-        internal var time: Long = 0L,
-        internal val androidVersion: Int = Build.VERSION.SDK_INT,
-        internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
-        internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
-        internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap()
+    internal val version: Byte = VERSION,
+    internal val token: Long,
+    internal var time: Long = 0L,
+    internal val androidVersion: Int = Build.VERSION.SDK_INT,
+    internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
+    internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
+    internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap()
 )
 
 internal const val JSON_METADATA = "@meta@"
@@ -32,23 +32,28 @@ enum class PackageState {
      * This is the expected state of all user-installed packages.
      */
     APK_AND_DATA,
+
     /**
      * Package data could not get backed up, because the app exceeded the allowed quota.
      */
     QUOTA_EXCEEDED,
+
     /**
      * Package data could not get backed up, because the app reported no data to back up.
      */
     NO_DATA,
+
     /**
      * Package data could not get backed up, because the app has [FLAG_STOPPED].
      */
     WAS_STOPPED,
+
     /**
      * Package data could not get backed up, because it was not allowed.
      * Most often, this is a manifest opt-out, but it could also be a disabled or system-user app.
      */
     NOT_ALLOWED,
+
     /**
      * Package data could not get backed up, because an error occurred during backup.
      */
@@ -56,17 +61,17 @@ enum class PackageState {
 }
 
 data class PackageMetadata(
-        /**
-         * The timestamp in milliseconds of the last app data backup.
-         * It is 0 if there never was a data backup.
-         */
-        internal var time: Long = 0L,
-        internal var state: PackageState = UNKNOWN_ERROR,
-        internal val system: Boolean = false,
-        internal val version: Long? = null,
-        internal val installer: String? = null,
-        internal val sha256: String? = null,
-        internal val signatures: List<String>? = null
+    /**
+     * The timestamp in milliseconds of the last app data backup.
+     * It is 0 if there never was a data backup.
+     */
+    internal var time: Long = 0L,
+    internal var state: PackageState = UNKNOWN_ERROR,
+    internal val system: Boolean = false,
+    internal val version: Long? = null,
+    internal val installer: String? = null,
+    internal val sha256: String? = null,
+    internal val signatures: List<String>? = null
 ) {
     fun hasApk(): Boolean {
         return version != null && sha256 != null && signatures != null
@@ -84,11 +89,13 @@ internal const val JSON_PACKAGE_SIGNATURES = "signatures"
 internal class DecryptionFailedException(cause: Throwable) : Exception(cause)
 
 class EncryptedBackupMetadata private constructor(
-        val token: Long,
-        val inputStream: InputStream?,
-        val error: Boolean) {
+    val token: Long,
+    val inputStream: InputStream?,
+    val error: Boolean
+) {
 
     constructor(token: Long, inputStream: InputStream) : this(token, inputStream, false)
+
     /**
      * Indicates that there was an error retrieving the encrypted backup metadata.
      */

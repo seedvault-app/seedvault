@@ -17,7 +17,8 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
     private val items = LinkedList<AppRestoreResult>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PackageViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.list_item_app_status, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_app_status, parent, false)
         return PackageViewHolder(v)
     }
 
@@ -35,8 +36,9 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
     }
 
     private class Diff(
-            private val oldItems: LinkedList<AppRestoreResult>,
-            private val newItems: LinkedList<AppRestoreResult>) : DiffUtil.Callback() {
+        private val oldItems: LinkedList<AppRestoreResult>,
+        private val newItems: LinkedList<AppRestoreResult>
+    ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
         override fun getNewListSize() = newItems.size
@@ -81,6 +83,7 @@ enum class AppRestoreStatus {
 }
 
 internal data class AppRestoreResult(
-        val packageName: String,
-        val name: CharSequence,
-        val status: AppRestoreStatus)
+    val packageName: String,
+    val name: CharSequence,
+    val status: AppRestoreStatus
+)

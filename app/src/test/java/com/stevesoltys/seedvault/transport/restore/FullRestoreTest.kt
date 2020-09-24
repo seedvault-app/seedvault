@@ -68,7 +68,10 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } throws IOException()
 
-        assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
 
     @Test
@@ -78,7 +81,10 @@ internal class FullRestoreTest : RestoreTest() {
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } throws IOException()
 
-        assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
 
     @Test
@@ -86,9 +92,14 @@ internal class FullRestoreTest : RestoreTest() {
         restore.initializeState(token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } throws UnsupportedVersionException(unsupportedVersion)
+        every {
+            headerReader.readVersion(inputStream)
+        } throws UnsupportedVersionException(unsupportedVersion)
 
-        assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
 
     @Test
@@ -97,21 +108,37 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } throws IOException()
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName
+            )
+        } throws IOException()
 
-        assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
 
     @Test
-    fun `decrypting version header when getting first chunk throws security exception`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+    fun `decrypting version header when getting first chunk throws security exception`() =
+        runBlocking {
+            restore.initializeState(token, packageInfo)
 
-        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } throws SecurityException()
+            coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+            every { headerReader.readVersion(inputStream) } returns VERSION
+            every {
+                crypto.decryptHeader(
+                    inputStream,
+                    VERSION,
+                    packageInfo.packageName
+                )
+            } throws SecurityException()
 
-        assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
-    }
+            assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        }
 
     @Test
     fun `decrypting segment throws IOException`() = runBlocking {
@@ -123,7 +150,10 @@ internal class FullRestoreTest : RestoreTest() {
         every { inputStream.close() } just Runs
         every { fileDescriptor.close() } just Runs
 
-        assertEquals(TRANSPORT_PACKAGE_REJECTED, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
 
     @Test
@@ -171,7 +201,13 @@ internal class FullRestoreTest : RestoreTest() {
     private fun initInputStream() {
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName
+            )
+        } returns versionHeader
     }
 
     private fun readAndEncryptInputStream(encryptedBytes: ByteArray) {

@@ -130,7 +130,8 @@ class RecoveryCodeInputFragment : Fragment() {
     private fun showWrongWordError(input: List<CharSequence>, e: WordNotFoundException) {
         val i = input.indexOf(e.word)
         if (i == -1) throw AssertionError()
-        showError(i, getString(R.string.recovery_code_error_invalid_word, e.suggestion1, e.suggestion2))
+        val str = getString(R.string.recovery_code_error_invalid_word, e.suggestion1, e.suggestion2)
+        showError(i, str)
     }
 
     private fun showError(i: Int, errorMsg: CharSequence) {

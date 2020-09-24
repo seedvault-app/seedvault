@@ -16,19 +16,21 @@ import java.io.IOException
 import java.io.InputStream
 
 private class FullRestoreState(
-        internal val token: Long,
-        internal val packageInfo: PackageInfo) {
-    internal var inputStream: InputStream? = null
+    val token: Long,
+    val packageInfo: PackageInfo
+) {
+    var inputStream: InputStream? = null
 }
 
 private val TAG = FullRestore::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestore(
-        private val plugin: FullRestorePlugin,
-        private val outputFactory: OutputFactory,
-        private val headerReader: HeaderReader,
-        private val crypto: Crypto) {
+    private val plugin: FullRestorePlugin,
+    private val outputFactory: OutputFactory,
+    private val headerReader: HeaderReader,
+    private val crypto: Crypto
+) {
 
     private var state: FullRestoreState? = null
 

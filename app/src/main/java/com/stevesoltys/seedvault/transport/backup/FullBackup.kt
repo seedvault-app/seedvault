@@ -18,14 +18,14 @@ import java.io.InputStream
 import java.io.OutputStream
 
 private class FullBackupState(
-    internal val packageInfo: PackageInfo,
-    internal val inputFileDescriptor: ParcelFileDescriptor,
-    internal val inputStream: InputStream,
-    internal var outputStreamInit: (suspend () -> OutputStream)?
+    val packageInfo: PackageInfo,
+    val inputFileDescriptor: ParcelFileDescriptor,
+    val inputStream: InputStream,
+    var outputStreamInit: (suspend () -> OutputStream)?
 ) {
-    internal var outputStream: OutputStream? = null
-    internal val packageName: String = packageInfo.packageName
-    internal var size: Long = 0
+    var outputStream: OutputStream? = null
+    val packageName: String = packageInfo.packageName
+    var size: Long = 0
 }
 
 const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()

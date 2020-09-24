@@ -42,16 +42,17 @@ private const val NEXTCLOUD_PACKAGE = "com.nextcloud.client"
 private const val NEXTCLOUD_ACTIVITY = "com.owncloud.android.authentication.AuthenticatorActivity"
 
 data class StorageRoot(
-        internal val authority: String,
-        internal val rootId: String,
-        internal val documentId: String,
-        internal val icon: Drawable?,
-        internal val title: String,
-        internal val summary: String?,
-        internal val availableBytes: Long?,
-        internal val isUsb: Boolean,
-        internal val enabled: Boolean = true,
-        internal val overrideClickListener: (() -> Unit)? = null) {
+    internal val authority: String,
+    internal val rootId: String,
+    internal val documentId: String,
+    internal val icon: Drawable?,
+    internal val title: String,
+    internal val summary: String?,
+    internal val availableBytes: Long?,
+    internal val isUsb: Boolean,
+    internal val enabled: Boolean = true,
+    internal val overrideClickListener: (() -> Unit)? = null
+) {
 
     internal val uri: Uri by lazy {
         DocumentsContract.buildTreeDocumentUri(authority, documentId)
@@ -70,7 +71,8 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
 
     private val packageManager = context.packageManager
     private val contentResolver = context.contentResolver
-    private val whitelistedAuthorities = context.resources.getStringArray(R.array.storage_authority_whitelist)
+    private val whitelistedAuthorities =
+        context.resources.getStringArray(R.array.storage_authority_whitelist)
 
     private var listener: RemovableStorageListener? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -143,17 +145,17 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
         val rootId = cursor.getString(COLUMN_ROOT_ID)!!
         if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_HOME) return null
         return StorageRoot(
-                authority = authority,
-                rootId = rootId,
-                documentId = cursor.getString(COLUMN_DOCUMENT_ID)!!,
-                icon = getIcon(context, authority, rootId, cursor.getInt(COLUMN_ICON)),
-                title = cursor.getString(COLUMN_TITLE)!!,
-                summary = cursor.getString(COLUMN_SUMMARY),
-                availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES).let { bytes ->
-                    // AOSP 11 reports -1 instead of null
-                    if (bytes == -1L) null else bytes
-                },
-                isUsb = flags and FLAG_REMOVABLE_USB != 0
+            authority = authority,
+            rootId = rootId,
+            documentId = cursor.getString(COLUMN_DOCUMENT_ID)!!,
+            icon = getIcon(context, authority, rootId, cursor.getInt(COLUMN_ICON)),
+            title = cursor.getString(COLUMN_TITLE)!!,
+            summary = cursor.getString(COLUMN_SUMMARY),
+            availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES).let { bytes ->
+                // AOSP 11 reports -1 instead of null
+                if (bytes == -1L) null else bytes
+            },
+            isUsb = flags and FLAG_REMOVABLE_USB != 0
         )
     }
 
@@ -165,15 +167,15 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
             if (root.authority == AUTHORITY_STORAGE && root.isUsb) return
         }
         val root = StorageRoot(
-                authority = AUTHORITY_STORAGE,
-                rootId = "usb",
-                documentId = "fake",
-                icon = getIcon(context, AUTHORITY_STORAGE, "usb", 0),
-                title = context.getString(R.string.storage_fake_drive_title),
-                summary = context.getString(R.string.storage_fake_drive_summary),
-                availableBytes = null,
-                isUsb = true,
-                enabled = false
+            authority = AUTHORITY_STORAGE,
+            rootId = "usb",
+            documentId = "fake",
+            icon = getIcon(context, AUTHORITY_STORAGE, "usb", 0),
+            title = context.getString(R.string.storage_fake_drive_title),
+            summary = context.getString(R.string.storage_fake_drive_summary),
+            availableBytes = null,
+            isUsb = true,
+            enabled = false
         )
         roots.add(root)
     }
@@ -206,24 +208,24 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
             else R.string.storage_fake_nextcloud_summary_unavailable
         } else R.string.storage_fake_nextcloud_summary
         val root = StorageRoot(
-                authority = AUTHORITY_NEXTCLOUD,
-                rootId = "fake",
-                documentId = "fake",
-                icon = getIcon(context, AUTHORITY_NEXTCLOUD, "fake", 0),
-                title = context.getString(R.string.storage_fake_nextcloud_title),
-                summary = context.getString(summaryRes),
-                availableBytes = null,
-                isUsb = false,
-                enabled = !isInstalled || isRestore,
-                overrideClickListener = {
-                    if (isInstalled) context.startActivity(intent)
-                    else {
-                        val uri = Uri.parse("market://details?id=$NEXTCLOUD_PACKAGE")
-                        val i = Intent(ACTION_VIEW, uri)
-                        i.addFlags(FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(i)
-                    }
+            authority = AUTHORITY_NEXTCLOUD,
+            rootId = "fake",
+            documentId = "fake",
+            icon = getIcon(context, AUTHORITY_NEXTCLOUD, "fake", 0),
+            title = context.getString(R.string.storage_fake_nextcloud_title),
+            summary = context.getString(summaryRes),
+            availableBytes = null,
+            isUsb = false,
+            enabled = !isInstalled || isRestore,
+            overrideClickListener = {
+                if (isInstalled) context.startActivity(intent)
+                else {
+                    val uri = Uri.parse("market://details?id=$NEXTCLOUD_PACKAGE")
+                    val i = Intent(ACTION_VIEW, uri)
+                    i.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(i)
                 }
+            }
         )
         roots.add(root)
     }

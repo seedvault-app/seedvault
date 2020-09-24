@@ -86,14 +86,16 @@ class MetadataReaderTest {
     @Test
     fun `package metadata gets read`() {
         val packageMetadata = HashMap<String, PackageMetadata>().apply {
-            put("org.example", PackageMetadata(
+            put(
+                "org.example", PackageMetadata(
                     time = Random.nextLong(),
                     state = QUOTA_EXCEEDED,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
                     signatures = listOf(getRandomString(), getRandomString())
-            ))
+                )
+            )
         }
         val metadata = getMetadata(packageMetadata)
         val metadataByteArray = encoder.encode(metadata)
@@ -160,13 +162,13 @@ class MetadataReaderTest {
 
     private fun getMetadata(packageMetadata: PackageMetadataMap = PackageMetadataMap()): BackupMetadata {
         return BackupMetadata(
-                version = 1.toByte(),
-                token = Random.nextLong(),
-                time = Random.nextLong(),
-                androidVersion = Random.nextInt(),
-                androidIncremental = getRandomString(),
-                deviceName = getRandomString(),
-                packageMetadataMap = packageMetadata
+            version = 1.toByte(),
+            token = Random.nextLong(),
+            time = Random.nextLong(),
+            androidVersion = Random.nextInt(),
+            androidIncremental = getRandomString(),
+            deviceName = getRandomString(),
+            packageMetadataMap = packageMetadata
         )
     }
 

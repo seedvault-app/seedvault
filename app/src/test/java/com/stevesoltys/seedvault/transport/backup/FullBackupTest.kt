@@ -162,21 +162,22 @@ internal class FullBackupTest : BackupTest() {
     }
 
     @Test
-    fun `sendBackupData throws exception when writing encrypted data to OutputStream`() = runBlocking {
-        every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
-        every { plugin.getQuota() } returns quota
-        every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
-        every { crypto.encryptSegment(outputStream, any()) } throws IOException()
-        expectClearState()
+    fun `sendBackupData throws exception when writing encrypted data to OutputStream`() =
+        runBlocking {
+            every { inputFactory.getInputStream(data) } returns inputStream
+            expectInitializeOutputStream()
+            every { plugin.getQuota() } returns quota
+            every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
+            every { crypto.encryptSegment(outputStream, any()) } throws IOException()
+            expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
+            assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+            assertTrue(backup.hasState())
+            assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
+            assertTrue(backup.hasState())
+            assertEquals(TRANSPORT_OK, backup.finishBackup())
+            assertFalse(backup.hasState())
+        }
 
     @Test
     fun `sendBackupData runs ok`() = runBlocking {

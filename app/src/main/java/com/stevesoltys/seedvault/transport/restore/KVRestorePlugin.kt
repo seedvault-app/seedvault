@@ -30,6 +30,10 @@ interface KVRestorePlugin {
      * Note: Implementations might expect that you call [hasDataForPackage] before.
      */
     @Throws(IOException::class)
-    suspend fun getInputStreamForRecord(token: Long, packageInfo: PackageInfo, key: String): InputStream
+    suspend fun getInputStreamForRecord(
+        token: Long,
+        packageInfo: PackageInfo,
+        key: String
+    ): InputStream
 
 }

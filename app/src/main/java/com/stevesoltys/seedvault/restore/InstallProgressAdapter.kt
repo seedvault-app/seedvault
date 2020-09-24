@@ -18,14 +18,22 @@ import com.stevesoltys.seedvault.ui.AppViewHolder
 
 internal class InstallProgressAdapter : Adapter<AppInstallViewHolder>() {
 
-    private val items = SortedList<ApkRestoreResult>(ApkRestoreResult::class.java, object : SortedListAdapterCallback<ApkRestoreResult>(this) {
-        override fun areItemsTheSame(item1: ApkRestoreResult, item2: ApkRestoreResult) = item1.packageName == item2.packageName
-        override fun areContentsTheSame(oldItem: ApkRestoreResult, newItem: ApkRestoreResult) = oldItem == newItem
-        override fun compare(item1: ApkRestoreResult, item2: ApkRestoreResult) = item1.compareTo(item2)
-    })
+    private val items = SortedList<ApkRestoreResult>(
+        ApkRestoreResult::class.java,
+        object : SortedListAdapterCallback<ApkRestoreResult>(this) {
+            override fun areItemsTheSame(item1: ApkRestoreResult, item2: ApkRestoreResult) =
+                item1.packageName == item2.packageName
+
+            override fun areContentsTheSame(oldItem: ApkRestoreResult, newItem: ApkRestoreResult) =
+                oldItem == newItem
+
+            override fun compare(item1: ApkRestoreResult, item2: ApkRestoreResult) =
+                item1.compareTo(item2)
+        })
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppInstallViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.list_item_app_status, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_app_status, parent, false)
         return AppInstallViewHolder(v)
     }
 

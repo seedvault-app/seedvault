@@ -67,7 +67,9 @@ internal class KVRestoreTest : RestoreTest() {
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } throws UnsupportedVersionException(unsupportedVersion)
+        every {
+            headerReader.readVersion(inputStream)
+        } throws UnsupportedVersionException(unsupportedVersion)
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -94,7 +96,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } returns versionHeader
         every { crypto.decryptMultipleSegments(inputStream) } throws IOException()
         streamsGetClosed()
 
@@ -109,7 +118,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } throws IOException()
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } throws IOException()
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -123,7 +139,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } throws SecurityException()
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } throws SecurityException()
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -137,7 +160,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } returns versionHeader
         every { crypto.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } throws IOException()
         streamsGetClosed()
@@ -153,7 +183,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } returns versionHeader
         every { crypto.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } throws IOException()
@@ -170,7 +207,14 @@ internal class KVRestoreTest : RestoreTest() {
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } returns versionHeader
         every { crypto.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
@@ -190,14 +234,28 @@ internal class KVRestoreTest : RestoreTest() {
         // first key/value
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every { headerReader.readVersion(inputStream) } returns VERSION
-        every { crypto.decryptHeader(inputStream, VERSION, packageInfo.packageName, key) } returns versionHeader
+        every {
+            crypto.decryptHeader(
+                inputStream,
+                VERSION,
+                packageInfo.packageName,
+                key
+            )
+        } returns versionHeader
         every { crypto.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
         // second key/value
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key264) } returns inputStream2
         every { headerReader.readVersion(inputStream2) } returns VERSION
-        every { crypto.decryptHeader(inputStream2, VERSION, packageInfo.packageName, key2) } returns versionHeader2
+        every {
+            crypto.decryptHeader(
+                inputStream2,
+                VERSION,
+                packageInfo.packageName,
+                key2
+            )
+        } returns versionHeader2
         every { crypto.decryptMultipleSegments(inputStream2) } returns data2
         every { output.writeEntityHeader(key2, data2.size) } returns 42
         every { output.writeEntityData(data2, data2.size) } returns data2.size

@@ -53,7 +53,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         addAction(ACTION_USB_DEVICE_DETACHED)
     }
     private val usbReceiver = object : UsbMonitor() {
-        override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
+        override fun shouldMonitorStatus(
+            context: Context,
+            action: String,
+            device: UsbDevice
+        ): Boolean {
             return device.isMassStorage()
         }
 
@@ -104,17 +108,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val enable = newValue as Boolean
             if (enable) return@OnPreferenceChangeListener true
             AlertDialog.Builder(requireContext())
-                    .setIcon(R.drawable.ic_warning)
-                    .setTitle(R.string.settings_backup_apk_dialog_title)
-                    .setMessage(R.string.settings_backup_apk_dialog_message)
-                    .setPositiveButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
-                        apkBackup.isChecked = enable
-                        dialog.dismiss()
-                    }
-                    .show()
+                .setIcon(R.drawable.ic_warning)
+                .setTitle(R.string.settings_backup_apk_dialog_title)
+                .setMessage(R.string.settings_backup_apk_dialog_message)
+                .setPositiveButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
+                    apkBackup.isChecked = enable
+                    dialog.dismiss()
+                }
+                .show()
             return@OnPreferenceChangeListener false
         }
         backupStatus = findPreference("backup_status")!!
@@ -123,7 +127,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.lastBackupTime.observe(viewLifecycleOwner, Observer { time -> setAppBackupStatusSummary(time) })
+        viewModel.lastBackupTime.observe(viewLifecycleOwner, Observer { time ->
+            setAppBackupStatusSummary(time)
+        })
     }
 
     override fun onStart() {
@@ -192,7 +198,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val storage = this.storage
         if (storage?.isUsb == true) {
             autoRestore.summary = getString(R.string.settings_auto_restore_summary) + "\n\n" +
-                    getString(R.string.settings_auto_restore_summary_usb, storage.name)
+                getString(R.string.settings_auto_restore_summary_usb, storage.name)
         } else {
             autoRestore.setSummary(R.string.settings_auto_restore_summary)
         }
@@ -214,7 +220,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (menuBackupNow != null && menuRestore != null) {
             val storage = this.storage
             val enabled = storage != null &&
-                    (!storage.isUsb || storage.getDocumentFile(context).isDirectory)
+                (!storage.isUsb || storage.getDocumentFile(context).isDirectory)
             menuBackupNow?.isEnabled = enabled
             menuRestore?.isEnabled = enabled
         }

@@ -5,9 +5,48 @@ import org.koin.dsl.module
 
 val backupModule = module {
     single { InputFactory() }
-    single { PackageService(androidContext(), get()) }
-    single { ApkBackup(androidContext().packageManager, get(), get()) }
-    single { KVBackup(get<BackupPlugin>().kvBackupPlugin, get(), get(), get(), get()) }
-    single { FullBackup(get<BackupPlugin>().fullBackupPlugin, get(), get(), get()) }
-    single { BackupCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    single {
+        PackageService(
+            context = androidContext(),
+            backupManager = get()
+        )
+    }
+    single {
+        ApkBackup(
+            pm = androidContext().packageManager,
+            settingsManager = get(),
+            metadataManager = get()
+        )
+    }
+    single {
+        KVBackup(
+            plugin = get<BackupPlugin>().kvBackupPlugin,
+            inputFactory = get(),
+            headerWriter = get(),
+            crypto = get(),
+            nm = get()
+        )
+    }
+    single {
+        FullBackup(
+            plugin = get<BackupPlugin>().fullBackupPlugin,
+            inputFactory = get(),
+            headerWriter = get(),
+            crypto = get()
+        )
+    }
+    single {
+        BackupCoordinator(
+            context = androidContext(),
+            plugin = get(),
+            kv = get(),
+            full = get(),
+            apkBackup = get(),
+            clock = get(),
+            packageService = get(),
+            metadataManager = get(),
+            settingsManager = get(),
+            nm = get()
+        )
+    }
 }
