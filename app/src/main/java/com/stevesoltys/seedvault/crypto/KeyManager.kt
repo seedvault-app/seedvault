@@ -54,7 +54,7 @@ internal class KeyManagerImpl : KeyManager {
     }
 
     override fun hasBackupKey() = keyStore.containsAlias(KEY_ALIAS) &&
-            keyStore.entryInstanceOf(KEY_ALIAS, SecretKeyEntry::class.java)
+        keyStore.entryInstanceOf(KEY_ALIAS, SecretKeyEntry::class.java)
 
     override fun getBackupKey(): SecretKey {
         val ksEntry = keyStore.getEntry(KEY_ALIAS, null) as SecretKeyEntry
@@ -63,9 +63,9 @@ internal class KeyManagerImpl : KeyManager {
 
     private fun getKeyProtection(): KeyProtection {
         val builder = KeyProtection.Builder(PURPOSE_ENCRYPT or PURPOSE_DECRYPT)
-                .setBlockModes(BLOCK_MODE_GCM)
-                .setEncryptionPaddings(ENCRYPTION_PADDING_NONE)
-                .setRandomizedEncryptionRequired(true)
+            .setBlockModes(BLOCK_MODE_GCM)
+            .setEncryptionPaddings(ENCRYPTION_PADDING_NONE)
+            .setRandomizedEncryptionRequired(true)
         // unlocking is required only for decryption, so when restoring from backup
         builder.setUnlockedDeviceRequired(true)
         return builder.build()

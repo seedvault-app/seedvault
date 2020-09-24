@@ -73,8 +73,8 @@ internal class PackageService(
             return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
                 .filter { packageInfo ->
                     packageInfo.doesNotGetBackedUp() && // only apps that do not allow backup
-                            !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
-                            packageInfo.packageName != context.packageName // not this app
+                        !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
+                        packageInfo.packageName != context.packageName // not this app
                 }.sortedBy { packageInfo ->
                     packageInfo.packageName
                 }.also { notAllowed ->
@@ -155,7 +155,7 @@ internal fun PackageInfo.isNotUpdatedSystemApp(): Boolean {
 internal fun PackageInfo.doesNotGetBackedUp(): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
     return applicationInfo.flags and FLAG_ALLOW_BACKUP == 0 || // does not allow backup
-            applicationInfo.flags and FLAG_STOPPED != 0 // is stopped
+        applicationInfo.flags and FLAG_STOPPED != 0 // is stopped
 }
 
 internal fun PackageInfo.isStopped(): Boolean {

@@ -123,7 +123,7 @@ private class OpenSeedvaultTree : OpenDocumentTree() {
             check(input != null) { "Uri was null, but is needed." }
             data = input
             val flags = FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                    FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
+                FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
             addFlags(flags)
         }
     }

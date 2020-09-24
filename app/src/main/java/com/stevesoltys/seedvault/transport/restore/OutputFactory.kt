@@ -13,7 +13,7 @@ internal class OutputFactory {
     fun getBackupDataOutput(outputFileDescriptor: ParcelFileDescriptor): BackupDataOutput {
         return BackupDataOutput(outputFileDescriptor.fileDescriptor)
     }
-    
+
     fun getOutputStream(outputFileDescriptor: ParcelFileDescriptor): OutputStream {
         return FileOutputStream(outputFileDescriptor.fileDescriptor)
     }

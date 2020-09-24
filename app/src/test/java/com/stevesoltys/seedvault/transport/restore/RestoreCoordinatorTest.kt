@@ -63,8 +63,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
     private val pmPackageInfoArray = arrayOf(
-            PackageInfo().apply { packageName = "@pm@" },
-            packageInfo
+        PackageInfo().apply { packageName = "@pm@" },
+        packageInfo
     )
     private val packageName = packageInfo.packageName
     private val storageName = getRandomString()
@@ -73,12 +73,16 @@ internal class RestoreCoordinatorTest : TransportTest() {
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
         val encryptedMetadata = EncryptedBackupMetadata(token, inputStream)
         val metadata = BackupMetadata(
-                token = token,
-                androidVersion = Random.nextInt(),
-                androidIncremental = getRandomString(),
-                deviceName = getRandomString())
+            token = token,
+            androidVersion = Random.nextInt(),
+            androidIncremental = getRandomString(),
+            deviceName = getRandomString()
+        )
 
-        coEvery { plugin.getAvailableBackups() } returns sequenceOf(encryptedMetadata, encryptedMetadata)
+        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+            encryptedMetadata,
+            encryptedMetadata
+        )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { inputStream.close() } just Runs
 
@@ -126,11 +130,21 @@ internal class RestoreCoordinatorTest : TransportTest() {
         every { documentFile.isDirectory } returns false
         every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
         every { storage.name } returns storageName
-        every { notificationManager.onRemovableStorageNotAvailableForRestore(packageName, storageName) } just Runs
+        every {
+            notificationManager.onRemovableStorageNotAvailableForRestore(
+                packageName,
+                storageName
+            )
+        } just Runs
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
 
-        verify(exactly = 1) { notificationManager.onRemovableStorageNotAvailableForRestore(packageName, storageName) }
+        verify(exactly = 1) {
+            notificationManager.onRemovableStorageNotAvailableForRestore(
+                packageName,
+                storageName
+            )
+        }
     }
 
     @Test
@@ -142,7 +156,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
 
-        verify(exactly = 0) { notificationManager.onRemovableStorageNotAvailableForRestore(packageName, storageName) }
+        verify(exactly = 0) {
+            notificationManager.onRemovableStorageNotAvailableForRestore(
+                packageName,
+                storageName
+            )
+        }
     }
 
     @Test
@@ -155,7 +174,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
 
-        verify(exactly = 0) { notificationManager.onRemovableStorageNotAvailableForRestore(packageName, storageName) }
+        verify(exactly = 0) {
+            notificationManager.onRemovableStorageNotAvailableForRestore(
+                packageName,
+                storageName
+            )
+        }
     }
 
     @Test

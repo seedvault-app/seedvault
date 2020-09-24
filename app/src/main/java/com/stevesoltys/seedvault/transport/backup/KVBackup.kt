@@ -83,7 +83,7 @@ internal class KVBackup(
         if (isIncremental && !hasDataForPackage) {
             Log.w(
                 TAG, "Requested incremental, but transport currently stores no data" +
-                        " for $packageName, requesting non-incremental retry."
+                    " for $packageName, requesting non-incremental retry."
             )
             return backupError(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED)
         }

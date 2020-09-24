@@ -55,8 +55,8 @@
     <TextView
         android:id="@+id/errorView"
         android:layout_width="0dp"
-        android:layout_margin="16dp"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:textColor="@android:color/holo_red_dark"
         android:textSize="18sp"
         android:visibility="invisible"

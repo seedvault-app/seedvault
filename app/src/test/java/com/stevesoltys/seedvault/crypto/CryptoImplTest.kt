@@ -30,9 +30,9 @@ class CryptoImplTest {
 
     private val iv = ByteArray(IV_SIZE).apply { Random.nextBytes(this) }
     private val cleartext = ByteArray(Random.nextInt(Short.MAX_VALUE.toInt()))
-            .apply { Random.nextBytes(this) }
+        .apply { Random.nextBytes(this) }
     private val ciphertext = ByteArray(Random.nextInt(Short.MAX_VALUE.toInt()))
-            .apply { Random.nextBytes(this) }
+        .apply { Random.nextBytes(this) }
     private val outputStream = ByteArrayOutputStream()
 
     @Test

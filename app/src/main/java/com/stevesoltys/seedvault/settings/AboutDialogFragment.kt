@@ -20,8 +20,11 @@ class AboutDialogFragment : DialogFragment() {
         internal val TAG = AboutDialogFragment::class.java.simpleName
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v: View = inflater.inflate(R.layout.fragment_about, container, false)
 
         licenseView = v.findViewById(R.id.licenseView)

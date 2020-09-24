@@ -9,6 +9,7 @@ out/
 lib/
 .idea/*
 !.idea/runConfigurations*
+!.idea/codeStyles*
 *.ipr
 *.iws
 *.iml

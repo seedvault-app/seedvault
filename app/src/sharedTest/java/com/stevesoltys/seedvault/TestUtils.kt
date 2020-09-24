@@ -23,9 +23,9 @@ private val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') + '_' + 
 @Suppress("MagicNumber")
 fun getRandomString(size: Int = Random.nextInt(1, 255)): String {
     return (1..size)
-            .map { Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
+        .map { Random.nextInt(0, charPool.size) }
+        .map(charPool::get)
+        .joinToString("")
 }
 
 // URL-save version (RFC 4648)
@@ -34,9 +34,9 @@ private val base64CharPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') //
 @Suppress("MagicNumber")
 fun getRandomBase64(size: Int = Random.nextInt(1, MAX_KEY_LENGTH_NEXTCLOUD)): String {
     return (1..size)
-            .map { Random.nextInt(0, base64CharPool.size) }
-            .map(base64CharPool::get)
-            .joinToString("")
+        .map { Random.nextInt(0, base64CharPool.size) }
+        .map(base64CharPool::get)
+        .joinToString("")
 }
 
 fun ByteArray.toHexString(spacer: String = " "): String {

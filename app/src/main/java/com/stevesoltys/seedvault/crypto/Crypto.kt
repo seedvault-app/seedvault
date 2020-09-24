@@ -75,8 +75,12 @@ interface Crypto {
      * @return The read [VersionHeader] present in the beginning of the given [InputStream].
      */
     @Throws(IOException::class, SecurityException::class)
-    fun decryptHeader(inputStream: InputStream, expectedVersion: Byte, expectedPackageName: String,
-                      expectedKey: String? = null): VersionHeader
+    fun decryptHeader(
+        inputStream: InputStream,
+        expectedVersion: Byte,
+        expectedPackageName: String,
+        expectedKey: String? = null
+    ): VersionHeader
 
     /**
      * Reads and decrypts a segment from the given [InputStream].
@@ -94,9 +98,10 @@ interface Crypto {
 }
 
 internal class CryptoImpl(
-        private val cipherFactory: CipherFactory,
-        private val headerWriter: HeaderWriter,
-        private val headerReader: HeaderReader) : Crypto {
+    private val cipherFactory: CipherFactory,
+    private val headerWriter: HeaderWriter,
+    private val headerReader: HeaderReader
+) : Crypto {
 
     @Throws(IOException::class)
     override fun encryptHeader(outputStream: OutputStream, versionHeader: VersionHeader) {
@@ -136,16 +141,26 @@ internal class CryptoImpl(
     }
 
     @Throws(IOException::class, SecurityException::class)
-    override fun decryptHeader(inputStream: InputStream, expectedVersion: Byte,
-                               expectedPackageName: String, expectedKey: String?): VersionHeader {
+    override fun decryptHeader(
+        inputStream: InputStream,
+        expectedVersion: Byte,
+        expectedPackageName: String,
+        expectedKey: String?
+    ): VersionHeader {
         val decrypted = decryptSegment(inputStream, MAX_VERSION_HEADER_SIZE)
         val header = headerReader.getVersionHeader(decrypted)
 
         if (header.version != expectedVersion) {
-            throw SecurityException("Invalid version '${header.version.toInt()}' in header, expected '${expectedVersion.toInt()}'.")
+            throw SecurityException(
+                "Invalid version '${header.version.toInt()}' in header, " +
+                    "expected '${expectedVersion.toInt()}'."
+            )
         }
         if (header.packageName != expectedPackageName) {
-            throw SecurityException("Invalid package name '${header.packageName}' in header, expected '$expectedPackageName'.")
+            throw SecurityException(
+                "Invalid package name '${header.packageName}' in header, " +
+                    "expected '$expectedPackageName'."
+            )
         }
         if (header.key != expectedKey) {
             throw SecurityException("Invalid key '${header.key}' in header, expected '$expectedKey'.")

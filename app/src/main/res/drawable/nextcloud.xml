@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Nextcloud Android client application
 
   Copyright (C) 2017 Andy Scherzinger
@@ -19,6 +18,6 @@
   License along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/nextcloud_background"/>
-    <foreground android:drawable="@drawable/nextcloud_foreground"/>
+    <background android:drawable="@drawable/nextcloud_background" />
+    <foreground android:drawable="@drawable/nextcloud_foreground" />
 </adaptive-icon>

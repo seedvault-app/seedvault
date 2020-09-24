@@ -182,7 +182,10 @@ class MetadataManager(
      * If the token is 0L, it is not yet initialized and must not be used for anything.
      */
     @Synchronized
-    @Deprecated("Responsibility for current token moved to SettingsManager", ReplaceWith("settingsManager.getToken()"))
+    @Deprecated(
+        "Responsibility for current token moved to SettingsManager",
+        ReplaceWith("settingsManager.getToken()")
+    )
     fun getBackupToken(): Long = metadata.token
 
     /**
@@ -207,9 +210,9 @@ class MetadataManager(
         //  because we have no way to also include upgraded system apps
         return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
             !packageMetadata.system && ( // ignore system apps
-                    packageMetadata.state == APK_AND_DATA || // either full success
-                            packageMetadata.state == NO_DATA // or apps that simply had no data
-                    )
+                packageMetadata.state == APK_AND_DATA || // either full success
+                    packageMetadata.state == NO_DATA // or apps that simply had no data
+                )
         }.count()
     }
 

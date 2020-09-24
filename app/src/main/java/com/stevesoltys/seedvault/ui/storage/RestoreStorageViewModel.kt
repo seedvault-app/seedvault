@@ -15,9 +15,10 @@ import java.io.IOException
 private val TAG = RestoreStorageViewModel::class.java.simpleName
 
 internal class RestoreStorageViewModel(
-        private val app: Application,
-        private val restorePlugin: RestorePlugin,
-        settingsManager: SettingsManager) : StorageViewModel(app, settingsManager) {
+    private val app: Application,
+    private val restorePlugin: RestorePlugin,
+    settingsManager: SettingsManager
+) : StorageViewModel(app, settingsManager) {
 
     override val isRestoreOperation = true
 
@@ -37,7 +38,8 @@ internal class RestoreStorageViewModel(
                 Log.w(TAG, "Location was rejected: $uri")
 
                 // notify the UI that the location was invalid
-                val errorMsg = app.getString(R.string.restore_invalid_location_message, DIRECTORY_ROOT)
+                val errorMsg =
+                    app.getString(R.string.restore_invalid_location_message, DIRECTORY_ROOT)
                 mLocationChecked.postEvent(LocationResult(errorMsg))
             }
         }

@@ -81,7 +81,7 @@ class ApkBackup(
             Log.d(
                 TAG,
                 "Package $packageName with version $version already has a backup ($backedUpVersion)" +
-                        " with the same signature. Not backing it up."
+                    " with the same signature. Not backing it up."
             )
             return null
         }

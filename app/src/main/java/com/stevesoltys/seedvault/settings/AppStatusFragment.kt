@@ -32,8 +32,11 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
     private lateinit var list: RecyclerView
     private lateinit var progressBar: ProgressBar
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setHasOptionsMenu(true)
         val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
 

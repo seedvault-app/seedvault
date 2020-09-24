@@ -23,6 +23,7 @@ class RestoreErrorBroadcastReceiver : BroadcastReceiver() {
         notificationManager.onRestoreErrorSeen()
 
         val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
+
         @Suppress("DEPRECATION")  // the alternative doesn't work for us
         val i = Intent(Intent.ACTION_UNINSTALL_PACKAGE).apply {
             data = "package:$packageName".toUri()

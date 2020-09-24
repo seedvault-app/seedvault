@@ -36,7 +36,12 @@ internal class ApkInstaller(private val context: Context) {
 
     @ExperimentalCoroutinesApi
     @Throws(IOException::class, SecurityException::class)
-    internal fun install(cachedApk: File, packageName: String, installerPackageName: String?, installResult: MutableInstallResult) = callbackFlow {
+    internal fun install(
+        cachedApk: File,
+        packageName: String,
+        installerPackageName: String?,
+        installResult: MutableInstallResult
+    ) = callbackFlow {
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, i: Intent) {
                 if (i.action != BROADCAST_ACTION) return
@@ -76,11 +81,17 @@ internal class ApkInstaller(private val context: Context) {
             flags = FLAG_RECEIVER_FOREGROUND
             setPackage(context.packageName)
         }
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, broadcastIntent, FLAG_UPDATE_CURRENT)
+        val pendingIntent =
+            PendingIntent.getBroadcast(context, 0, broadcastIntent, FLAG_UPDATE_CURRENT)
         return pendingIntent.intentSender
     }
 
-    private fun onBroadcastReceived(i: Intent, expectedPackageName: String, cachedApk: File, installResult: MutableInstallResult): InstallResult {
+    private fun onBroadcastReceived(
+        i: Intent,
+        expectedPackageName: String,
+        cachedApk: File,
+        installResult: MutableInstallResult
+    ): InstallResult {
         val packageName = i.getStringExtra(EXTRA_PACKAGE_NAME)!!
         val success = i.getIntExtra(EXTRA_STATUS, -1) == STATUS_SUCCESS
         val statusMsg = i.getStringExtra(EXTRA_STATUS_MESSAGE)!!

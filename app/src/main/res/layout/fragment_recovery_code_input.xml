@@ -81,9 +81,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/doneButton"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/wordList"
+            app:layout_constraintVertical_bias="1.0"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

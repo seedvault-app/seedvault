@@ -19,12 +19,12 @@ import java.util.ArrayList
 import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
-    internal val token: Long,
-    internal val packageInfo: PackageInfo,
+    val token: Long,
+    val packageInfo: PackageInfo,
     /**
      * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
      */
-    internal val pmPackageInfo: PackageInfo?
+    val pmPackageInfo: PackageInfo?
 )
 
 private val TAG = KVRestore::class.java.simpleName
@@ -156,8 +156,8 @@ internal class KVRestore(
             Unit
         }
 
-    private class DecodedKey(internal val base64Key: String) : Comparable<DecodedKey> {
-        internal val key = base64Key.decodeBase64()
+    private class DecodedKey(val base64Key: String) : Comparable<DecodedKey> {
+        val key = base64Key.decodeBase64()
 
         override fun compareTo(other: DecodedKey) = key.compareTo(other.key)
     }

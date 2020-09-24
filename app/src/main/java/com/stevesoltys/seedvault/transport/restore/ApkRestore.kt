@@ -23,13 +23,13 @@ import java.io.IOException
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 
-
 private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
-        private val context: Context,
-        private val restorePlugin: RestorePlugin,
-        private val apkInstaller: ApkInstaller = ApkInstaller(context)) {
+    private val context: Context,
+    private val restorePlugin: RestorePlugin,
+    private val apkInstaller: ApkInstaller = ApkInstaller(context)
+) {
 
     private val pm = context.packageManager
 
@@ -51,7 +51,7 @@ internal class ApkRestore(
         // restore individual packages and emit updates
         for ((packageName, metadata) in packages) {
             try {
-                @Suppress("BlockingMethodInNonBlockingContext")  // flows on Dispatcher.IO
+                @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
                 restore(token, packageName, metadata, installResult).collect {
                     emit(it)
                 }
@@ -69,9 +69,14 @@ internal class ApkRestore(
     }
 
     @ExperimentalCoroutinesApi
-    @Suppress("BlockingMethodInNonBlockingContext")  // flows on Dispatcher.IO
+    @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
     @Throws(IOException::class, SecurityException::class)
-    private fun restore(token: Long, packageName: String, metadata: PackageMetadata, installResult: MutableInstallResult) = flow {
+    private fun restore(
+        token: Long,
+        packageName: String,
+        metadata: PackageMetadata,
+        installResult: MutableInstallResult
+    ) = flow {
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
@@ -97,7 +102,7 @@ internal class ApkRestore(
         // parse APK (GET_SIGNATURES is needed even though deprecated)
         @Suppress("DEPRECATION") val flags = GET_SIGNING_CERTIFICATES or GET_SIGNATURES
         val packageInfo = pm.getPackageArchiveInfo(cachedApk.absolutePath, flags)
-                ?: throw IOException("getPackageArchiveInfo returned null")
+            ?: throw IOException("getPackageArchiveInfo returned null")
 
         // check APK package name
         if (packageName != packageInfo.packageName) {
@@ -106,7 +111,10 @@ internal class ApkRestore(
 
         // check APK version code
         if (metadata.version != packageInfo.longVersionCode) {
-            Log.w(TAG, "Package $packageName expects version code ${metadata.version}, but has ${packageInfo.longVersionCode}.")
+            Log.w(
+                TAG, "Package $packageName expects version code ${metadata.version}," +
+                    "but has ${packageInfo.longVersionCode}."
+            )
             // TODO should we let this one pass, maybe once we can revert PackageMetadata during backup?
         }
 
@@ -125,7 +133,13 @@ internal class ApkRestore(
         val icon = appInfo.loadIcon(pm)
         val name = pm.getApplicationLabel(appInfo)
 
-        installResult.update(packageName) { it.copy(status = IN_PROGRESS, name = name, icon = icon) }
+        installResult.update(packageName) { result ->
+            result.copy(
+                status = IN_PROGRESS,
+                name = name,
+                icon = icon
+            )
+        }
         emit(installResult)
 
         // ensure system apps are actually installed and newer system apps as well
@@ -143,9 +157,10 @@ internal class ApkRestore(
         }
 
         // install APK and emit updates from it
-        apkInstaller.install(cachedApk, packageName, metadata.installer, installResult).collect { result ->
-            emit(result)
-        }
+        apkInstaller.install(cachedApk, packageName, metadata.installer, installResult)
+            .collect { result ->
+                emit(result)
+            }
     }
 
     private fun fail(installResult: MutableInstallResult, packageName: String): InstallResult {
@@ -163,8 +178,12 @@ internal fun InstallResult.getInProgress(): ApkRestoreResult? {
     return filtered.values.first()
 }
 
-internal class MutableInstallResult(initialCapacity: Int) : ConcurrentHashMap<String, ApkRestoreResult>(initialCapacity) {
-    fun update(packageName: String, updateFun: (ApkRestoreResult) -> ApkRestoreResult): MutableInstallResult {
+internal class MutableInstallResult(initialCapacity: Int) :
+    ConcurrentHashMap<String, ApkRestoreResult>(initialCapacity) {
+    fun update(
+        packageName: String,
+        updateFun: (ApkRestoreResult) -> ApkRestoreResult
+    ): MutableInstallResult {
         val result = get(packageName)
         check(result != null) { "ApkRestoreResult for $packageName does not exist." }
         set(packageName, updateFun(result))
@@ -173,12 +192,12 @@ internal class MutableInstallResult(initialCapacity: Int) : ConcurrentHashMap<St
 }
 
 internal data class ApkRestoreResult(
-        val packageName: CharSequence,
-        val progress: Int,
-        val total: Int,
-        val status: ApkRestoreStatus,
-        val name: CharSequence? = null,
-        val icon: Drawable? = null
+    val packageName: CharSequence,
+    val progress: Int,
+    val total: Int,
+    val status: ApkRestoreStatus,
+    val name: CharSequence? = null,
+    val icon: Drawable? = null
 ) : Comparable<ApkRestoreResult> {
     override fun compareTo(other: ApkRestoreResult): Int {
         return other.progress.compareTo(progress)

@@ -17,14 +17,15 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.storage.StorageRootAdapter.StorageRootViewHolder
 
 internal class StorageRootAdapter(
-        private val isRestore: Boolean,
-        private val listener: StorageRootClickedListener) : Adapter<StorageRootViewHolder>() {
+    private val isRestore: Boolean,
+    private val listener: StorageRootClickedListener
+) : Adapter<StorageRootViewHolder>() {
 
     private val items = ArrayList<StorageRoot>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorageRootViewHolder {
         val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_storage_root, parent, false) as View
+            .inflate(R.layout.list_item_storage_root, parent, false) as View
         return StorageRootViewHolder(v)
     }
 
@@ -84,16 +85,16 @@ internal class StorageRootAdapter(
 
     private fun showWarningDialog(context: Context, item: StorageRoot) {
         AlertDialog.Builder(context)
-                .setTitle(R.string.storage_internal_warning_title)
-                .setMessage(R.string.storage_internal_warning_message)
-                .setPositiveButton(R.string.storage_internal_warning_choose_other) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.storage_internal_warning_use_anyway) { dialog, _ ->
-                    dialog.dismiss()
-                    listener.onClick(item)
-                }
-                .show()
+            .setTitle(R.string.storage_internal_warning_title)
+            .setMessage(R.string.storage_internal_warning_message)
+            .setPositiveButton(R.string.storage_internal_warning_choose_other) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.storage_internal_warning_use_anyway) { dialog, _ ->
+                dialog.dismiss()
+                listener.onClick(item)
+            }
+            .show()
     }
 
 }

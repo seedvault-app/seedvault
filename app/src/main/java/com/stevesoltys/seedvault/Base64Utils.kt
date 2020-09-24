@@ -1,7 +1,7 @@
 package com.stevesoltys.seedvault
 
 import java.nio.charset.Charset
-import java.util.*
+import java.util.Base64
 
 val Utf8: Charset = Charset.forName("UTF-8")
 

@@ -21,12 +21,12 @@ internal class DocumentFileTest {
     private val context: Context = mockk()
     private val parentUri: Uri = Uri.parse(
         "content://com.android.externalstorage.documents/tree/" +
-                "primary%3A/document/primary%3A.SeedVaultAndroidBackup"
+            "primary%3A/document/primary%3A.SeedVaultAndroidBackup"
     )
     private val parentFile: DocumentFile = DocumentFile.fromTreeUri(context, parentUri)!!
     private val uri: Uri = Uri.parse(
         "content://com.android.externalstorage.documents/tree/" +
-                "primary%3A/document/primary%3A.SeedVaultAndroidBackup%2Ftest"
+            "primary%3A/document/primary%3A.SeedVaultAndroidBackup%2Ftest"
     )
 
     @After

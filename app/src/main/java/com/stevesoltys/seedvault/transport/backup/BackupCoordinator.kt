@@ -358,7 +358,10 @@ internal class BackupCoordinator(
                     val packageMetadata = metadataManager.getPackageMetadata(packageName)
                     val oldPackageState = packageMetadata?.state
                     if (oldPackageState != null && oldPackageState != packageState) {
-                        Log.e(TAG, "Package $packageName was in $oldPackageState, update to $packageState")
+                        Log.e(
+                            TAG,
+                            "Package $packageName was in $oldPackageState, update to $packageState"
+                        )
                         plugin.getMetadataOutputStream().use {
                             metadataManager.onPackageBackupError(packageInfo, packageState, it)
                         }

@@ -22,13 +22,15 @@ import com.stevesoltys.seedvault.settings.AppStatusAdapter.AppStatusViewHolder
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import com.stevesoltys.seedvault.ui.toRelativeTime
 
-internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListener) : Adapter<AppStatusViewHolder>() {
+internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListener) :
+    Adapter<AppStatusViewHolder>() {
 
     private val items = ArrayList<AppStatus>()
     private var editMode = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppStatusViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.list_item_app_status, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_app_status, parent, false)
         return AppStatusViewHolder(v)
     }
 
@@ -103,16 +105,18 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
 }
 
 data class AppStatus(
-        val packageName: String,
-        var enabled: Boolean,
-        val icon: Drawable,
-        val name: String,
-        val time: Long,
-        val status: AppRestoreStatus)
+    val packageName: String,
+    var enabled: Boolean,
+    val icon: Drawable,
+    val name: String,
+    val time: Long,
+    val status: AppRestoreStatus
+)
 
 internal class AppStatusDiff(
-        private val oldItems: List<AppStatus>,
-        private val newItems: List<AppStatus>) : DiffUtil.Callback() {
+    private val oldItems: List<AppStatus>,
+    private val newItems: List<AppStatus>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldItems.size
     override fun getNewListSize() = newItems.size
@@ -127,6 +131,6 @@ internal class AppStatusDiff(
 }
 
 internal class AppStatusResult(
-        val appStatusList: List<AppStatus>,
-        val diff: DiffResult
+    val appStatusList: List<AppStatus>,
+    val diff: DiffResult
 )

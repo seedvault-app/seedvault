@@ -23,7 +23,8 @@ open class LiveEvent<T> : LiveData<ConsumableEvent<T>>() {
             }
     }
 
-    internal class LiveEventObserver<T>(private val handler: LiveEventHandler<in T>) : Observer<ConsumableEvent<T>> {
+    internal class LiveEventObserver<T>(private val handler: LiveEventHandler<in T>) :
+        Observer<ConsumableEvent<T>> {
         override fun onChanged(consumableEvent: ConsumableEvent<T>?) {
             if (consumableEvent != null) {
                 val content = consumableEvent.contentIfNotConsumed

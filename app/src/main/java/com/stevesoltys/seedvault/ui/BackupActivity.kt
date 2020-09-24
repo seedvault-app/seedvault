@@ -20,7 +20,7 @@ abstract class BackupActivity : AppCompatActivity() {
 
     protected fun showFragment(f: Fragment, addToBackStack: Boolean = false) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, f)
+            .replace(R.id.fragment, f)
         if (addToBackStack) fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }

@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
 
+private const val HOURS_AUTO_BACKUP: Long = 24
+
 class UsbIntentReceiver : UsbMonitor() {
 
     // using KoinComponent would crash robolectric tests :(
@@ -37,7 +39,8 @@ class UsbIntentReceiver : UsbMonitor() {
         val attachedFlashDrive = FlashDrive.from(device)
         return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
-            if (System.currentTimeMillis() - metadataManager.getLastBackupTime() >= HOURS.toMillis(24)) {
+            val backupMillis = System.currentTimeMillis() - metadataManager.getLastBackupTime()
+            if (backupMillis >= HOURS.toMillis(HOURS_AUTO_BACKUP)) {
                 Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
                 true
             } else {
@@ -101,6 +104,7 @@ internal fun UsbDevice.isMassStorage(): Boolean {
 }
 
 private fun UsbInterface.isMassStorage(): Boolean {
+    @Suppress("MagicNumber")
     return interfaceClass == 8 && interfaceProtocol == 80 && interfaceSubclass == 6
 }
 

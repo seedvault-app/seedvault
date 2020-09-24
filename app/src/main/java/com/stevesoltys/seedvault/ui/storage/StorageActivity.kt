@@ -63,10 +63,10 @@ class StorageActivity : BackupActivity() {
         if (viewModel.isRestoreOperation) {
             supportFragmentManager.popBackStack()
             AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.restore_invalid_location_title))
-                    .setMessage(errorMsg)
-                    .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
-                    .show()
+                .setTitle(getString(R.string.restore_invalid_location_title))
+                .setMessage(errorMsg)
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
         } else {
             showFragment(StorageCheckFragment.newInstance(getCheckFragmentTitle(), errorMsg))
         }

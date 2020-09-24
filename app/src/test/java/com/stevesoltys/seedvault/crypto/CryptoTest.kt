@@ -47,11 +47,16 @@ class CryptoTest {
     private val iv = getRandomByteArray(IV_SIZE)
     private val cleartext = getRandomByteArray(Random.nextInt(MAX_SEGMENT_LENGTH))
     private val ciphertext = getRandomByteArray(Random.nextInt(MAX_SEGMENT_LENGTH))
-    private val versionHeader = VersionHeader(VERSION, getRandomString(MAX_PACKAGE_LENGTH_SIZE), getRandomString(MAX_KEY_LENGTH_SIZE))
+    private val versionHeader = VersionHeader(
+        VERSION,
+        getRandomString(MAX_PACKAGE_LENGTH_SIZE),
+        getRandomString(MAX_KEY_LENGTH_SIZE)
+    )
     private val versionCiphertext = getRandomByteArray(MAX_VERSION_HEADER_SIZE)
     private val versionSegmentHeader = SegmentHeader(versionCiphertext.size.toShort(), iv)
     private val outputStream = ByteArrayOutputStream()
     private val segmentHeader = SegmentHeader(ciphertext.size.toShort(), iv)
+
     // the headerReader will not actually read the header, so only insert cipher text
     private val inputStream = ByteArrayInputStream(ciphertext)
     private val versionInputStream = ByteArrayInputStream(versionCiphertext)
@@ -81,7 +86,10 @@ class CryptoTest {
         assertEquals(ciphertext.size, segmentHeader.captured.segmentLength.toInt())
     }
 
-    private fun encryptSegmentHeader(toEncrypt: ByteArray, segmentHeader: CapturingSlot<SegmentHeader>) {
+    private fun encryptSegmentHeader(
+        toEncrypt: ByteArray,
+        segmentHeader: CapturingSlot<SegmentHeader>
+    ) {
         every { cipherFactory.createEncryptionCipher() } returns cipher
         every { cipher.getOutputSize(toEncrypt.size) } returns toEncrypt.size
         every { cipher.iv } returns iv
@@ -99,8 +107,13 @@ class CryptoTest {
         every { headerReader.getVersionHeader(cleartext) } returns versionHeader
 
         assertEquals(
-                versionHeader,
-                crypto.decryptHeader(versionInputStream, versionHeader.version, versionHeader.packageName, versionHeader.key)
+            versionHeader,
+            crypto.decryptHeader(
+                versionInputStream,
+                versionHeader.version,
+                versionHeader.packageName,
+                versionHeader.key
+            )
         )
     }
 
@@ -114,7 +127,12 @@ class CryptoTest {
         every { headerReader.readSegmentHeader(versionInputStream) } returns versionSegmentHeader
 
         val e = assertThrows(SecurityException::class.java) {
-            crypto.decryptHeader(versionInputStream, versionHeader.version, versionHeader.packageName, versionHeader.key)
+            crypto.decryptHeader(
+                versionInputStream,
+                versionHeader.version,
+                versionHeader.packageName,
+                versionHeader.key
+            )
         }
         assertContains(e.message, size.toString())
     }
@@ -128,7 +146,12 @@ class CryptoTest {
 
         val version = (VERSION + 1).toByte()
         val e = assertThrows(SecurityException::class.java) {
-            crypto.decryptHeader(versionInputStream, version, versionHeader.packageName, versionHeader.key)
+            crypto.decryptHeader(
+                versionInputStream,
+                version,
+                versionHeader.packageName,
+                versionHeader.key
+            )
         }
         assertContains(e.message, version.toString())
     }
@@ -142,7 +165,12 @@ class CryptoTest {
 
         val packageName = getRandomString(MAX_PACKAGE_LENGTH_SIZE)
         val e = assertThrows(SecurityException::class.java) {
-            crypto.decryptHeader(versionInputStream, versionHeader.version, packageName, versionHeader.key)
+            crypto.decryptHeader(
+                versionInputStream,
+                versionHeader.version,
+                packageName,
+                versionHeader.key
+            )
         }
         assertContains(e.message, packageName)
     }
@@ -155,7 +183,12 @@ class CryptoTest {
         every { headerReader.getVersionHeader(cleartext) } returns versionHeader
 
         val e = assertThrows(SecurityException::class.java) {
-            crypto.decryptHeader(versionInputStream, versionHeader.version, versionHeader.packageName, null)
+            crypto.decryptHeader(
+                versionInputStream,
+                versionHeader.version,
+                versionHeader.packageName,
+                null
+            )
         }
         assertContains(e.message, "null")
         assertContains(e.message, versionHeader.key ?: fail())

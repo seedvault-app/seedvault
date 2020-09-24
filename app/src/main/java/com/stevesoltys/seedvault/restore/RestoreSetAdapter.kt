@@ -13,12 +13,13 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreSetAdapter.RestoreSetViewHolder
 
 internal class RestoreSetAdapter(
-        private val listener: RestorableBackupClickListener,
-        private val items: List<RestorableBackup>) : Adapter<RestoreSetViewHolder>() {
+    private val listener: RestorableBackupClickListener,
+    private val items: List<RestorableBackup>
+) : Adapter<RestoreSetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestoreSetViewHolder {
         val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_restore_set, parent, false) as View
+            .inflate(R.layout.list_item_restore_set, parent, false) as View
         return RestoreSetViewHolder(v)
     }
 
@@ -39,7 +40,8 @@ internal class RestoreSetAdapter(
 
             val lastBackup = getRelativeTime(item.time)
             val setup = getRelativeTime(item.token)
-            subtitleView.text = v.context.getString(R.string.restore_restore_set_times, lastBackup, setup)
+            subtitleView.text =
+                v.context.getString(R.string.restore_restore_set_times, lastBackup, setup)
         }
 
         private fun getRelativeTime(time: Long): CharSequence {
