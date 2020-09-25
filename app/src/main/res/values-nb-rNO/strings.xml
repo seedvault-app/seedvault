@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="restore_installing_packages">Re-installerer programmer</string>
+    <string name="restore_set_empty_result">Ingen passende sikkerhetskopier funnet der.
+\n
+\nDette er antagelig fordi feil gjenopprettingskode har blitt angitt, eller en lagringsfeil.</string>
+    <string name="restore_set_error">Kunne ikke laste inn sikkerhetskopiene.</string>
+    <string name="restore_invalid_location_message">Fant ikke noen sikkerhetskopier på denne plasseringen.
+\n
+\nVelg et annet sted som inneholder ei %s-mappe.</string>
+    <string name="notification_restore_error_text">Plugg i din %1$s før du installerer programmet for å gjenopprette dataen fra sikkerhetskopi.</string>
+    <string name="storage_internal_warning_choose_other">Velg \"Annet\"</string>
+    <string name="restore_app_not_allowed">Programmet tillater ikke sikkerhetskopiering</string>
+    <string name="restore_app_no_data">Programmet sier ingen data skal sikkerhetskopieres</string>
+    <string name="restore_magic_package">System-pakkebehandler</string>
+    <string name="notification_restore_error_channel_title">Minnepinnefeil ved automatisk gjenoppretting</string>
+    <string name="about_license">Lisens: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Sikkerhetskopieringsprogram som bruker Android sitt interne sikkerhetskopi-API.</string>
+    <string name="storage_internal_warning_message">Du har valgt å sikkerhetskopiere til internlager. Dette vil ikke være tilgjengelig hvis enheten går tapt, eller ødelegges.</string>
+    <string name="restore_finished_error">Kunne ikke gjenopprette sikkerhetskopi.</string>
+    <string name="restore_app_quota_exceeded">Sikkerhetskopikvote overskredet</string>
+    <string name="restore_app_not_installed">Program ikke installert</string>
+    <string name="notification_restore_error_title">Kunne ikke gjenopprette data for %1$s</string>
+    <string name="notification_error_text">Klarte ikke å kjøre sikkerhetskopiering av enhet.</string>
+    <string name="recovery_code_input_intro">Skriv inn din 12 ord lange gjenopprettingskode som du skrev ned da du satt opp sikkerhetskopiering.</string>
+    <string name="recovery_code_confirm_intro">Skriv inn din 12 ord lange gjenopprettingskode for å forsikre at den vil virke når du trenger den.</string>
+    <string name="recovery_code_write_it_down">Skriv den ned på papir nå!</string>
+    <string name="recovery_code_12_word_intro">Du trenger din 12 ord lange gjenopprettingskode for å gjenopprette sikkerhetskopiert data.</string>
+    <string name="storage_check_fragment_permission_error">Mangler skrivetilgang til sikkerhetskopiplasseringen.</string>
+    <string name="recovery_code_title">Gjenopprettingskode</string>
+    <string name="storage_check_fragment_backup_error">Fikk ikke tilgang til sikkerhetskopiplassering</string>
+    <string name="storage_check_fragment_backup_title">Igangsetter sikkerhetskopiplassering…</string>
+    <string name="storage_fragment_warning">De med tilgang til din lagringsplassering kan finne ut hvilke programmer du bruker, men ikke få tilgang til programdataen.</string>
+    <string name="settings_backup_apk_dialog_message">Å skru av programsikkerhetskopiering vil fremdeles sikkerhetskopiere programdata. Dog, vil den ikke bli gjenopprettet automatisk.
+\n
+\nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.
+\n
+\nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.</string>
+    <string name="about_source_code">Kildekode: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Sponset av: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx-instituttet&lt;/a&gt; for for bruk i &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design av: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Skrevet av: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; og &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_title">Om</string>
+    <string name="storage_internal_warning_use_anyway">Bruk uansett</string>
+    <string name="storage_internal_warning_title">Advarsel</string>
+    <string name="restore_finished_button">Fullfør</string>
+    <string name="restore_finished_success">Gjenoppretting utført</string>
+    <string name="restore_restoring">Gjenoppretting av sikkerhetskopi</string>
+    <string name="restore_next">Neste</string>
+    <string name="restore_invalid_location_title">Fant ingen sikkerhetskopier</string>
+    <string name="restore_back">Ikke gjenopprett</string>
+    <string name="restore_restore_set_times">Siste sikkerhetskopi %1$s · Første %2$s.</string>
+    <string name="restore_choose_restore_set">Velg en sikkerhetskopi å gjenopprette</string>
+    <string name="restore_title">Gjenopprett fra sikkerhetskopi</string>
+    <string name="notification_restore_error_action">Avinstaller program</string>
+    <string name="notification_error_action">Fiks</string>
+    <string name="notification_error_title">Sikkerhetskopieringsfeil</string>
+    <string name="notification_error_channel_title">Feilmerknad</string>
+    <string name="notification_failed_title">Sikkerhetskopiering mislyktes</string>
+    <string name="notification_success_title">Sikkerhetskopi fullført</string>
+    <string name="notification_backup_result_error">Sikkerhetskopi mislyktes</string>
+    <string name="notification_backup_result_rejected">Ikke sikkerhetskopiert</string>
+    <string name="notification_backup_result_complete">Sikkerhetskopi utført</string>
+    <string name="notification_title">Sikkerhetskopiering utføres</string>
+    <string name="notification_channel_title">Sikkerhetskopieringsmerknad</string>
+    <string name="recovery_code_error_checksum_word">Koden din er ugyldig. Sjekk alle ordene og prøv igjen.</string>
+    <string name="recovery_code_error_invalid_word">Feil ord. Mente du %1$s eller %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Du glemte å skrive inn dette ordet.</string>
+    <string name="recovery_code_input_hint_12">Ord 12</string>
+    <string name="recovery_code_input_hint_11">Ord 11</string>
+    <string name="recovery_code_input_hint_10">Ord 10</string>
+    <string name="recovery_code_input_hint_9">Ord 9</string>
+    <string name="recovery_code_input_hint_8">Ord 8</string>
+    <string name="recovery_code_input_hint_7">Ord 7</string>
+    <string name="recovery_code_input_hint_6">Ord 6</string>
+    <string name="recovery_code_input_hint_5">Ord 5</string>
+    <string name="recovery_code_input_hint_4">Ord 4</string>
+    <string name="recovery_code_input_hint_3">Ord 3</string>
+    <string name="recovery_code_input_hint_2">Ord 2</string>
+    <string name="recovery_code_input_hint_1">Ord 1</string>
+    <string name="recovery_code_done_button">Ferdig</string>
+    <string name="recovery_code_confirm_button">Bekreft kode</string>
+    <string name="storage_check_fragment_error_button">Tilbake</string>
+    <string name="storage_check_fragment_restore_title">Ser etter sikkerhetskopier…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Klikk for å sette opp konto</string>
+    <string name="storage_fake_nextcloud_summary">Klikk for å installere</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; ledig<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">Må plugges inn</string>
+    <string name="storage_fake_drive_title">USB-minnepinne</string>
+    <string name="storage_fragment_restore_title">Hvor er sikkerhetskopiene å finne\?</string>
+    <string name="storage_fragment_backup_title">Velg hvor sikkerhetskopier skal lagres</string>
+    <string name="settings_backup_now">Sikkerhetskopier nå</string>
+    <string name="settings_backup_exclude_apps">Utelat programmer</string>
+    <string name="settings_backup_status_summary">Siste sikkerhetskopi: %1$s</string>
+    <string name="settings_backup_status_title">Status for programsikkerhetskopiering</string>
+    <string name="settings_backup_apk_dialog_disable">Skru av programsikkerhetskopiering</string>
+    <string name="settings_backup_apk_dialog_cancel">Avbryt</string>
+    <string name="settings_backup_apk_dialog_title">Vil du virkelig skru av programsikkerhetskopiering\?</string>
+    <string name="settings_backup_apk_summary">Sikkerhetskopierer programmene. Ellers vil kun programdata sikkerhetskopieres.</string>
+    <string name="settings_backup_apk_title">Sikkerhetskopiering av programmer</string>
+    <string name="settings_category_app_data_backup">Sikkerhetskopiering av programdata</string>
+    <string name="settings_auto_restore_summary_usb">Merk: Din %1$s må plugges inn for at dette skal virke.</string>
+    <string name="settings_auto_restore_summary">Når du reinstallerer et program, gjenopprett sikkerhetskopierte innstillinger og data.</string>
+    <string name="settings_auto_restore_title">Automatisk gjenoppretting</string>
+    <string name="settings_info">Alle sikkerhetskopier krypteres til telefonen din. For å gjenopprette fra sikkerhetskopi må du ha din 12-ordskode for gjenoppretting.</string>
+    <string name="settings_backup_last_backup_never">Aldri</string>
+    <string name="settings_backup_location_internal">Internlager</string>
+    <string name="settings_backup_location_none">Ingen</string>
+    <string name="settings_backup_location_invalid">Valgt plassering kan ikke brukes.</string>
+    <string name="settings_backup_location_title">Sikkerhetskopieringslokasjon</string>
+    <string name="settings_backup_location_picker">Velg sikkerhetskopieringsplassering</string>
+    <string name="settings_backup_location">Sikkerhetskopieringsplassering</string>
+    <string name="settings_backup">Sikkerhetskopier dataen min</string>
+    <string name="restore_backup_button">Gjenopprett sikkerhetskopi</string>
+    <string name="backup">Sikkerhetskopier</string>
+    <string name="app_name">Frøbank</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_backup">备份我的资料</string>
+    <string name="restore_backup_button">恢复后备</string>
+    <string name="backup">备用</string>
+    <string name="app_name">种子库备用应用</string>
+    <string name="settings_backup_apk_dialog_title">确认取消应用备份？</string>
+    <string name="settings_backup_apk_title">应用备份</string>
+    <string name="settings_category_app_data_backup">应用数据备用</string>
+    <string name="settings_auto_restore_summary">重新安装应用程序时，重置备用设置和数据。</string>
+    <string name="settings_auto_restore_title">自动重置</string>
+    <string name="settings_backup_last_backup_never">永不</string>
+    <string name="settings_backup_location_internal">内部储存</string>
+    <string name="settings_backup_location_none">无</string>
+    <string name="settings_backup_location_invalid">所选位置不可用。</string>
+    <string name="settings_backup_location_title">备用位置</string>
+    <string name="settings_backup_location_picker">选择备用位置</string>
+    <string name="settings_backup_location">备用位置</string>
+</resources>

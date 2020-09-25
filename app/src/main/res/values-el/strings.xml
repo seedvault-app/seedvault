@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="storage_check_fragment_error_button">Πίσω</string>
+    <string name="storage_check_fragment_permission_error">Δεν είναι δυνατή η λήψη δικαιωμάτων εγγραφής στην τοποθεσία αντιγράφων ασφαλείας.</string>
+    <string name="storage_check_fragment_backup_error">Παρουσιάστηκε σφάλμα κατά την πρόσβαση στην τοποθεσία αντιγράφων ασφαλείας.</string>
+    <string name="storage_check_fragment_restore_title">Αναζήτηση αντιγράφων ασφαλείας…</string>
+    <string name="storage_check_fragment_backup_title">Προετοιμασία τοποθεσίας αντιγράφων ασφαλείας…</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; ελεύθερα<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">Πρέπει να είναι συνδεδεμένο</string>
+    <string name="storage_fragment_warning">Άτομα με πρόσβαση στον αποθηκευτικό χώρο σας μπορούν να μάθουν ποιες εφαρμογές χρησιμοποιείτε, αλλά δεν έχουν πρόσβαση στα δεδομένα των εφαρμογών.</string>
+    <string name="storage_fragment_restore_title">Πού βρίσκονται τα αντίγραφα ασφαλείας σας;</string>
+    <string name="storage_fragment_backup_title">Επιλέξτε πού θα αποθηκεύονται τα αντίγραφα ασφαλείας</string>
+    <string name="settings_backup_now">Δημιουργία αντιγράφων ασφαλείας τώρα</string>
+    <string name="settings_backup_exclude_apps">Εξαίρεση εφαρμογών</string>
+    <string name="settings_backup_status_title">Κατάσταση αντιγράφων ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_apk_dialog_disable">Απενεργοποίηση αντιγράφων ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_apk_dialog_cancel">Άκυρο</string>
+    <string name="settings_backup_apk_dialog_message">Η απενεργοποιημένη δημιουργία αντιγράφων ασφαλείας θα εξακολουθεί να δημιουργεί αντίγραφα ασφαλείας των δεδομένων εφαρμογών. Ωστόσο, δεν θα επαναφέρονται αυτόματα.
+\n
+\nΘα πρέπει να εγκαταστήσετε όλες τις εφαρμογές σας χειροκίνητα ενώ έχετε ενεργοποιήσει την \"Αυτόματη επαναφορά\".</string>
+    <string name="settings_backup_apk_dialog_title">Θέλετε πραγματικά να απενεργοποιήσετε τα αντίγραφα ασφαλείας εφαρμογών;</string>
+    <string name="settings_backup_apk_summary">Δημιουργία αντιγράφων των ίδιων των εφαρμογών. Διαφορετικά, θα δημιουργούνται αντίγραφα ασφαλείας μόνο δεδομένων εφαρμογών.</string>
+    <string name="settings_backup_apk_title">Αντίγραφα ασφαλείας εφαρμογών</string>
+    <string name="settings_category_app_data_backup">Αντίγραφα ασφαλείας δεδομένων εφαρμογών</string>
+    <string name="settings_auto_restore_summary_usb">Σημείωση: Το %1$s πρέπει να συνδεθεί για να λειτουργήσει η αυτόματη επαναφορά.</string>
+    <string name="settings_auto_restore_summary">Κατά την επανεγκατάσταση μιας εφαρμογής, επαναφέρετε τα αντίγραφα ασφαλείας των ρυθμίσεων και των δεδομένων.</string>
+    <string name="settings_auto_restore_title">Αυτόματη επαναφορά</string>
+    <string name="settings_backup_last_backup_never">Ποτέ</string>
+    <string name="settings_backup_location_none">Καμία</string>
+    <string name="settings_backup_location_invalid">Η επιλεγμένη τοποθεσία δεν μπορεί να χρησιμοποιηθεί.</string>
+    <string name="settings_backup_location_picker">Επιλέξτε την τοποθεσία των αντιγράφων ασφαλείας</string>
+    <string name="settings_backup_location">Τοποθεσία αντιγράφων ασφαλείας</string>
+    <string name="settings_backup">Δημιουργία αντιγράφου ασφαλείας των δεδομένων μου</string>
+    <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
+    <string name="backup">Αντίγραφο ασφαλείας</string>
+    <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό αποκατάστασης 12 λέξεων.</string>
+</resources>
