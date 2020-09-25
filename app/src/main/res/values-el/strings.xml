@@ -5,7 +5,7 @@
     <string name="storage_check_fragment_backup_error">Παρουσιάστηκε σφάλμα κατά την πρόσβαση στην τοποθεσία αντιγράφων ασφαλείας.</string>
     <string name="storage_check_fragment_restore_title">Αναζήτηση αντιγράφων ασφαλείας…</string>
     <string name="storage_check_fragment_backup_title">Προετοιμασία τοποθεσίας αντιγράφων ασφαλείας…</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; ελεύθερα<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ελεύθερα</string>
     <string name="storage_fake_drive_summary">Πρέπει να είναι συνδεδεμένο</string>
     <string name="storage_fragment_warning">Άτομα με πρόσβαση στον αποθηκευτικό χώρο σας μπορούν να μάθουν ποιες εφαρμογές χρησιμοποιείτε, αλλά δεν έχουν πρόσβαση στα δεδομένα των εφαρμογών.</string>
     <string name="storage_fragment_restore_title">Πού βρίσκονται τα αντίγραφα ασφαλείας σας;</string>
@@ -34,4 +34,84 @@
     <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
     <string name="backup">Αντίγραφο ασφαλείας</string>
     <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό αποκατάστασης 12 λέξεων.</string>
+    <string name="about_source_code">Πηγαίος κώδικας: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Χορηγός: <a href="https://www.calyxinstitute.org">Calyx Institute</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Σχεδιασμός από: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Αναπτύχθηκε από: <a href="https://github.com/stevesoltys">Steve Soltys</a> και <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Άδεια: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Μια εφαρμογή δημιουργίας αντιγράφων ασφαλείας που χρησιμοποιεί το εσωτερικό API αντιγράφων ασφαλείας του Android.</string>
+    <string name="about_title">Σχετικά με</string>
+    <string name="storage_internal_warning_use_anyway">Χρησιμοποιήστε ούτως ή άλλως</string>
+    <string name="storage_internal_warning_choose_other">Επιλέξτε άλλο</string>
+    <string name="storage_internal_warning_message">Έχετε επιλέξει εσωτερικό αποθηκευτικό χώρο για το αντίγραφο ασφαλείας σας. Αυτό δεν θα είναι διαθέσιμο όταν το τηλέφωνό σας χαθεί ή σπάσει.</string>
+    <string name="storage_internal_warning_title">Προσοχή</string>
+    <string name="restore_finished_button">Τέλος</string>
+    <string name="restore_finished_error">Παρουσιάστηκε σφάλμα κατά την επαναφορά του αντιγράφου ασφαλείας.</string>
+    <string name="restore_finished_success">Η επαναφορά ολοκληρώθηκε</string>
+    <string name="restore_app_quota_exceeded">Έγινε υπέρβαση του ορίου αντιγράφων ασφαλείας</string>
+    <string name="restore_app_not_installed">Η εφαρμογή δεν έχει εγκατασταθεί</string>
+    <string name="restore_app_not_allowed">Η εφαρμογή δεν επιτρέπει τη δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="restore_app_no_data">Η εφαρμογή δεν ανέφερε δεδομένα για δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="restore_app_not_eligible">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας</string>
+    <string name="restore_magic_package">Διαχειριστής πακέτων συστήματος</string>
+    <string name="restore_restoring">Επαναφορά αντιγράφου ασφαλείας</string>
+    <string name="restore_next">Επόμενο</string>
+    <string name="restore_installing_packages">Επανεγκατάσταση εφαρμογών</string>
+    <string name="restore_set_empty_result">Δεν βρέθηκαν κατάλληλα αντίγραφα ασφαλείας στη δεδομένη τοποθεσία.
+\n
+\nΑυτό πιθανότατα οφείλεται σε λάθος κωδικό ανάκτησης ή σε σφάλμα αποθηκευτικού χώρου.</string>
+    <string name="restore_set_error">Παρουσιάστηκε σφάλμα κατά τη φόρτωση των αντιγράφων ασφαλείας.</string>
+    <string name="restore_invalid_location_message">Δεν ήταν δυνατή η εύρεση αντιγράφων ασφαλείας σε αυτήν την τοποθεσία.
+\n
+\nΕπιλέξτε άλλη τοποθεσία που περιέχει ένα φάκελο %s.</string>
+    <string name="restore_invalid_location_title">Δεν βρέθηκαν αντίγραφα ασφαλείας</string>
+    <string name="restore_back">Να μην γίνει επαναφορά</string>
+    <string name="restore_restore_set_times">Τελευταίο αντίγραφο ασφαλείας %1$s · Πρώτο %2$s.</string>
+    <string name="restore_choose_restore_set">Επιλέξτε ένα αντίγραφο ασφαλείας για επαναφορά</string>
+    <string name="restore_title">Επαναφορά από αντίγραφο ασφαλείας</string>
+    <string name="notification_restore_error_action">Απεγκατάσταση εφαρμογής</string>
+    <string name="notification_restore_error_text">Συνδέστε το %1$s πριν εγκαταστήσετε την εφαρμογή για να επαναφέρετε τα δεδομένα της από το αντίγραφο ασφαλείας.</string>
+    <string name="notification_restore_error_title">Δεν ήταν δυνατή η επαναφορά δεδομένων για %1$s</string>
+    <string name="notification_restore_error_channel_title">Σφάλμα αυτόματης επαναφοράς μονάδας flash</string>
+    <string name="notification_error_action">Επιδιόρθωση</string>
+    <string name="notification_error_text">Απέτυχε η εκτέλεση ενός αντιγράφου ασφαλείας συσκευής.</string>
+    <string name="notification_error_title">Σφάλμα δημιουργίας αντιγράφων ασφαλείας</string>
+    <string name="notification_error_channel_title">Ειδοποίηση σφάλματος</string>
+    <string name="notification_failed_title">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
+    <string name="notification_success_text">Δημιουργήθηκαν αντίγραφα ασφαλείας για %1$d από %2$d εφαρμογές. Πατήστε για να μάθετε περισσότερα.</string>
+    <string name="notification_success_title">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
+    <string name="notification_backup_already_running">Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη</string>
+    <string name="notification_backup_result_error">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
+    <string name="notification_backup_result_rejected">Δεν δημιουργήθηκε αντίγραφο ασφαλείας</string>
+    <string name="notification_backup_result_complete">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
+    <string name="notification_title">Εκτελείται δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="notification_channel_title">Ειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
+    <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις και δοκιμάστε ξανά!</string>
+    <string name="recovery_code_error_invalid_word">Λάθος λέξη. Εννοείτε %1$s ή %2$s;</string>
+    <string name="recovery_code_error_empty_word">Ξεχάσατε να εισαγάγετε αυτήν τη λέξη.</string>
+    <string name="recovery_code_input_hint_12">Λέξη 12</string>
+    <string name="recovery_code_input_hint_11">Λέξη 11</string>
+    <string name="recovery_code_input_hint_10">Λέξη 10</string>
+    <string name="recovery_code_input_hint_9">Λέξη 9</string>
+    <string name="recovery_code_input_hint_8">Λέξη 8</string>
+    <string name="recovery_code_input_hint_7">Λέξη 7</string>
+    <string name="recovery_code_input_hint_6">Λέξη 6</string>
+    <string name="recovery_code_input_hint_5">Λέξη 5</string>
+    <string name="recovery_code_input_hint_4">Λέξη 4</string>
+    <string name="recovery_code_input_hint_3">Λέξη 3</string>
+    <string name="recovery_code_input_hint_2">Λέξη 2</string>
+    <string name="recovery_code_input_hint_1">Λέξη 1</string>
+    <string name="recovery_code_done_button">Ολοκληρώθηκε</string>
+    <string name="recovery_code_input_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων που γράψατε κατά τη δημιουργία αντιγράφων ασφαλείας.</string>
+    <string name="recovery_code_confirm_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων για να βεβαιωθείτε ότι θα λειτουργήσει όταν το χρειάζεστε.</string>
+    <string name="recovery_code_confirm_button">Επιβεβαίωση κωδικού</string>
+    <string name="recovery_code_write_it_down">Γράψτε το σε χαρτί τώρα!</string>
+    <string name="recovery_code_12_word_intro">Χρειάζεστε τον κωδικό ανάκτησης 12 λέξεων για να επαναφέρετε τα αντίγραφα ασφαλείας των δεδομένων.</string>
+    <string name="recovery_code_title">Κωδικός ανάκτησης</string>
+    <string name="storage_fake_nextcloud_summary_installed">Κάντε κλικ για να δημιουργήσετε λογαριασμό</string>
+    <string name="storage_fake_nextcloud_summary">Κάντε κλικ για εγκατάσταση</string>
+    <string name="storage_fake_drive_title">Μονάδα USB flash</string>
+    <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
+    <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
+    <string name="settings_backup_location_title">Τοποθεσία αντιγράφων ασφαλείας</string>
 </resources>
