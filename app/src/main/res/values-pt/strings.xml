@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="restore_app_not_eligible">Ainda sem backup</string>
     <string name="notification_success_text">%1$d de %2$d app com backup. Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
     <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>

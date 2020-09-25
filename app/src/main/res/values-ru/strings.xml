@@ -113,7 +113,6 @@
     <string name="settings_backup_location_invalid">Выбранное место использовать нельзя.</string>
     <string name="settings_backup_location_picker">Выберите место для резервной копии</string>
     <string name="restore_backup_button">Восстановление резервной копии</string>
-    <string name="restore_app_not_eligible">Ещё не скопировано</string>
     <string name="notification_success_text">Резервное копирование %1$d из %2$d приложений выполнено. Нажмите, чтобы узнать больше.</string>
     <string name="notification_backup_already_running">Резервное копирование уже выполняется</string>
 </resources>
