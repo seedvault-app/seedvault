@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="storage_internal_warning_choose_other">Choisissez autre chose</string>
+    <string name="about_summary">Une application de sauvegarde utilisant l’interface de programmation des sauvegardes internes d’Android.</string>
+    <string name="about_design">Design de : &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Écrit par : &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; et &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licence : &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_source_code">Code source : https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Parrainé par : &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; pour usage dans &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="storage_internal_warning_use_anyway">Utiliser quand même</string>
+    <string name="about_title">À propos</string>
+    <string name="storage_internal_warning_title">Avertissement</string>
+    <string name="restore_finished_button">Finir</string>
+    <string name="restore_next">Suivant</string>
+    <string name="restore_back">Ne pas restaurer</string>
+    <string name="notification_error_action">Réparer</string>
+    <string name="notification_channel_title">Notification de la sauvegarde</string>
+    <string name="recovery_code_error_checksum_word">Votre code est invalide. Veuillez vérifier tous les mots et réessayer !</string>
+    <string name="recovery_code_error_invalid_word">Mot erroné. Vouliez-vous dire %1$s ou %2$s \?</string>
+    <string name="recovery_code_error_empty_word">Vous avez oublié d’entrer ce mot.</string>
+    <string name="recovery_code_input_hint_12">Mot 12</string>
+    <string name="recovery_code_input_hint_11">Mot 11</string>
+    <string name="recovery_code_input_hint_10">Mot 10</string>
+    <string name="recovery_code_input_hint_9">Mot 9</string>
+    <string name="recovery_code_input_hint_8">Mot 8</string>
+    <string name="recovery_code_input_hint_7">Mot 7</string>
+    <string name="recovery_code_input_hint_6">Mot 6</string>
+    <string name="recovery_code_input_hint_5">Mot 5</string>
+    <string name="recovery_code_input_hint_4">Mot 4</string>
+    <string name="recovery_code_input_hint_3">Mot 3</string>
+    <string name="recovery_code_input_hint_2">Mot 2</string>
+    <string name="recovery_code_input_hint_1">Mot 1</string>
+    <string name="recovery_code_done_button">Terminé</string>
+    <string name="recovery_code_confirm_intro">Entrez votre code de récupération de 12 mots pour vous assurer qu’il fonctionnera quand vous en aurez besoin.</string>
+    <string name="recovery_code_confirm_button">Confirmez le code</string>
+    <string name="recovery_code_write_it_down">Écrivez-le sur du papier maintenant !</string>
+    <string name="recovery_code_12_word_intro">Vous avez besoin de votre code de récupération de 12 mots pour restaurer les données sauvegardées.</string>
+    <string name="recovery_code_title">Code de récupération</string>
+    <string name="storage_check_fragment_error_button">Retour</string>
+    <string name="storage_check_fragment_backup_error">Une erreur est survenue lors de l’accès à l’emplacement de la sauvegarde.</string>
+    <string name="storage_check_fragment_restore_title">Recherche de sauvegardes…</string>
+    <string name="storage_check_fragment_backup_title">Initialisation de l’emplacement de la sauvegarde…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Cliquez pour configurer un compte</string>
+    <string name="storage_fake_nextcloud_summary">Cliquez pour installer</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; de libre<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">A besoin d’être branché</string>
+    <string name="storage_fake_drive_title">Clé USB</string>
+    <string name="storage_fragment_restore_title">Où trouver vos sauvegardes \?</string>
+    <string name="storage_fragment_backup_title">Choisissez où stocker les sauvegardes</string>
+    <string name="settings_backup_now">Sauvegarder maintenant</string>
+    <string name="settings_backup_exclude_apps">Exclure les applis</string>
+    <string name="settings_backup_status_summary">Dernière sauvegarde : %1$s</string>
+    <string name="settings_backup_status_title">État de la sauvegarde de l’appli</string>
+    <string name="settings_backup_apk_dialog_disable">Désactiver la sauvegarde de l’appli</string>
+    <string name="settings_backup_apk_dialog_cancel">Annuler</string>
+    <string name="settings_backup_apk_title">Sauvegarde de l’appli</string>
+    <string name="settings_category_app_data_backup">Sauvegarde des données de l’appli</string>
+    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$ doit être branché pour que ceci fonctionne.</string>
+    <string name="settings_auto_restore_summary">Lors de la réinstallation d’une appli, restaurer les paramètres et les données sauvegardés.</string>
+    <string name="settings_auto_restore_title">Restauration automatique</string>
+    <string name="settings_info">Toutes les sauvegardes sont chiffrées sur votre téléphone. Pour restaurer à partir d’une sauvegarde, vous aurez besoin de votre code de récupération de 12 mots.</string>
+    <string name="settings_backup_last_backup_never">Jamais</string>
+    <string name="settings_backup_location_internal">Stockage interne</string>
+    <string name="settings_backup_location_none">Aucun</string>
+    <string name="settings_backup_location_invalid">L’emplacement choisi ne peut pas être choisi.</string>
+    <string name="settings_backup_location_title">Emplacement de la sauvegarde</string>
+    <string name="settings_backup_location_picker">Choisissez l’emplacement de la sauvegarde</string>
+    <string name="settings_backup_location">Emplacement de la sauvegarde</string>
+    <string name="settings_backup">Sauvegarder mes données</string>
+    <string name="restore_backup_button">Restaurer la sauvegarde</string>
+    <string name="backup">Sauvegarde</string>
+    <string name="app_name">Seedvault</string>
+    <string name="storage_internal_warning_message">Vous avez choisi le stockage interne pour votre sauvegarde. Ceci ne sera pas disponible lorsque votre téléphone sera perdu ou cassé.</string>
+    <string name="restore_finished_error">Une erreur s\'est produite lors de la restauration de la sauvegarde.</string>
+    <string name="restore_finished_success">Restauration terminée</string>
+    <string name="restore_app_quota_exceeded">Quota de sauvegarde dépassé</string>
+    <string name="restore_app_not_installed">Application non installée</string>
+    <string name="restore_app_not_allowed">L\'application n\'autorise pas la sauvegarde</string>
+    <string name="restore_app_no_data">L\'application n\'a signalé aucune donnée à sauvegarder</string>
+    <string name="restore_magic_package">Gestionnaire de paquets système</string>
+    <string name="restore_restoring">Restauration de la sauvegarde</string>
+    <string name="restore_installing_packages">Réinstallation des applications</string>
+    <string name="restore_set_empty_result">Aucune sauvegarde appropriée trouvée à l’emplacement donné.
+\n
+\nCeci est probablement dû à un code de récupération erroné ou à une erreur de stockage.</string>
+    <string name="restore_set_error">Une erreur s\'est produite lors du chargement des sauvegardes.</string>
+    <string name="restore_invalid_location_message">Nous n\'avons trouvé aucune sauvegarde à cet emplacement.
+\n
+\nVeuillez choisir un autre emplacement contenant un dossier %s.</string>
+    <string name="restore_invalid_location_title">Aucune sauvegarde trouvée</string>
+    <string name="restore_restore_set_times">Dernière sauvegarde %1$s · Première %2$s.</string>
+    <string name="restore_choose_restore_set">Choisir une sauvegarde à restaurer</string>
+    <string name="restore_title">Restaurer depuis une sauvegarde</string>
+    <string name="notification_restore_error_action">Désinstaller l\'appli</string>
+    <string name="notification_restore_error_text">Branchez votre %1$s avant l\'installation de l\'application pour restaurer ses données à partir d\'une sauvegarde.</string>
+    <string name="notification_restore_error_title">Impossible de restaurer les données pour %1$s</string>
+    <string name="notification_restore_error_channel_title">Erreur de restauration automatique du lecteur flash</string>
+    <string name="notification_error_text">Un dispositif de sauvegarde n\'a pas fonctionné.</string>
+    <string name="notification_error_title">Erreur de sauvegarde</string>
+    <string name="notification_error_channel_title">Notification d\'erreur</string>
+    <string name="notification_failed_title">La sauvegarde a échoué</string>
+    <string name="notification_success_title">Sauvegarde terminée</string>
+    <string name="notification_backup_result_error">La sauvegarde a échoué</string>
+    <string name="notification_backup_result_rejected">Non sauvegardé</string>
+    <string name="notification_backup_result_complete">Sauvegarde complète</string>
+    <string name="notification_title">Sauvegarde en cours</string>
+    <string name="recovery_code_input_intro">Entrez votre code de récupération de 12 mots que vous avez écrit lors de la configuration des sauvegardes.</string>
+    <string name="storage_check_fragment_permission_error">Impossible d\'obtenir la permission d\'écrire dans l\'emplacement de sauvegarde.</string>
+    <string name="storage_fragment_warning">Les personnes ayant accès à votre lieu de stockage peuvent savoir quelles applications vous utilisez mais n\'ont pas accès aux données des applications.</string>
+    <string name="settings_backup_apk_dialog_message">La sauvegarde d\'application désactivée sauvegarde toujours les données de l\'application. Toutefois, elles ne seront pas restaurées automatiquement.
+\n
+\nVous devrez installer toutes vos applications manuellement tout en ayant « Restauration automatique » allumé.</string>
+    <string name="settings_backup_apk_dialog_title">Vraiment désactiver la sauvegarde des applications \?</string>
+    <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
+</resources>

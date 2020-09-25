@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Seedvault</string>
+    <string name="settings_backup_location_title">Расположение Резервной Копии</string>
+    <string name="settings_backup_location_internal">Внутреннее Хранилище</string>
+    <string name="settings_auto_restore_title">Автоматическое восстановление</string>
+    <string name="settings_backup_apk_dialog_cancel">Отмена</string>
+    <string name="settings_backup_last_backup_never">Никогда</string>
+    <string name="backup">Резервная копия</string>
+    <string name="settings_backup_location">Расположение Резервной Копии</string>
+    <string name="about_source_code">Исходный код: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Спонсировано: <a href="https://www.calyxinstitute.org">Calyx Institute</a> для использования в <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Дизайн: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Авторы: <a href="https://github.com/stevesoltys">Steve Soltys</a> и <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Лицензия: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Приложение для резервного копирования с использованием внутреннего API резервного копирования Android.</string>
+    <string name="about_title">О приложении</string>
+    <string name="storage_internal_warning_use_anyway">Все равно использовать</string>
+    <string name="storage_internal_warning_choose_other">Выбрать другое</string>
+    <string name="storage_internal_warning_message">Вы выбрали внутреннее хранилище для резервной копии. Это будет недоступно, если ваш телефон потерян или сломан.</string>
+    <string name="storage_internal_warning_title">Внимание</string>
+    <string name="restore_finished_button">Готово</string>
+    <string name="restore_finished_error">Произошла ошибка при восстановлении резервной копии.</string>
+    <string name="restore_finished_success">Восстановление завершено</string>
+    <string name="restore_app_quota_exceeded">Превышена квота резервного копирования</string>
+    <string name="restore_app_not_installed">Приложение не установлено</string>
+    <string name="restore_app_not_allowed">Приложение не разрешает резервное копирование</string>
+    <string name="restore_app_no_data">Приложение не сообщило об отсутствии данных для резервного копирования</string>
+    <string name="restore_magic_package">Системный менеджер пакетов</string>
+    <string name="restore_restoring">Восстановление резервной копии</string>
+    <string name="restore_next">Следующий</string>
+    <string name="restore_installing_packages">Переустановка приложений</string>
+    <string name="restore_set_empty_result">В данном месте не найдено подходящих резервных копий.
+\n
+\nСкорее всего, это связано с неправильным кодом восстановления или ошибкой хранилища.</string>
+    <string name="restore_set_error">Ошибка при загрузке резервных копий.</string>
+    <string name="restore_invalid_location_message">Мы не смогли найти никаких резервных копий в этом месте.
+\n
+\nПожалуйста, выберите другое расположение, содержащее папку %s.</string>
+    <string name="restore_invalid_location_title">Резервные копии не найдены</string>
+    <string name="restore_back">Не восстанавливать</string>
+    <string name="restore_restore_set_times">Последняя резервная копия %1$s · Первая %2$s.</string>
+    <string name="restore_choose_restore_set">Выберите резервную копию для восстановления</string>
+    <string name="restore_title">Восстановить из резервной копии</string>
+    <string name="notification_restore_error_action">Удалить приложение</string>
+    <string name="notification_restore_error_text">Подключите %1$s перед установкой приложения, чтобы восстановить данные из резервной копии.</string>
+    <string name="notification_restore_error_title">Не удалось восстановить данные для %1$s</string>
+    <string name="notification_restore_error_channel_title">Ошибка автоматического восстановления флэш-накопителя</string>
+    <string name="notification_error_action">Исправить</string>
+    <string name="notification_error_text">Не удалось запустить резервное копирование устройства.</string>
+    <string name="notification_error_title">Ошибка резервного копирования</string>
+    <string name="notification_error_channel_title">Уведомление об ошибке</string>
+    <string name="notification_failed_title">Ошибка резервного копирования</string>
+    <string name="notification_success_title">Резервное копирование завершено</string>
+    <string name="notification_backup_result_error">Ошибка резервного копирования</string>
+    <string name="notification_backup_result_rejected">Не резервная копия</string>
+    <string name="notification_backup_result_complete">Резервное копирование завершено</string>
+    <string name="notification_title">Резервное копирование запущено</string>
+    <string name="notification_channel_title">Уведомление о резервном копировании</string>
+    <string name="recovery_code_error_checksum_word">Ваш код недействителен. Пожалуйста, проверьте все слова и попробуйте еще раз!</string>
+    <string name="recovery_code_error_invalid_word">Неверное слово. Вы имели в виду %1$s или %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Вы забыли ввести это слово.</string>
+    <string name="recovery_code_input_hint_12">Слово 12</string>
+    <string name="recovery_code_input_hint_11">Слово 11</string>
+    <string name="recovery_code_input_hint_10">Слово 10</string>
+    <string name="recovery_code_input_hint_9">Слово 9</string>
+    <string name="recovery_code_input_hint_8">Слово 8</string>
+    <string name="recovery_code_input_hint_7">Слово 7</string>
+    <string name="recovery_code_input_hint_6">Слово 6</string>
+    <string name="recovery_code_input_hint_5">Слово 5</string>
+    <string name="recovery_code_input_hint_4">Слово 4</string>
+    <string name="recovery_code_input_hint_3">Слово 3</string>
+    <string name="recovery_code_input_hint_2">Слово 2</string>
+    <string name="recovery_code_input_hint_1">Слово 1</string>
+    <string name="recovery_code_done_button">Готово</string>
+    <string name="recovery_code_input_intro">Введите код восстановления из 12 слов, который вы записали при настройке резервного копирования.</string>
+    <string name="recovery_code_confirm_intro">Введите код восстановления из 12 слов, чтобы убедиться, что он будет работать тогда, когда он вам понадобится.</string>
+    <string name="recovery_code_confirm_button">Подтвердить код</string>
+    <string name="recovery_code_write_it_down">Запишите это сейчас на бумаге!</string>
+    <string name="recovery_code_12_word_intro">Для восстановления данных из резервной копии вам понадобится код восстановления из 12 слов.</string>
+    <string name="recovery_code_title">Код восстановления</string>
+    <string name="storage_check_fragment_error_button">Назад</string>
+    <string name="storage_check_fragment_permission_error">Не удалось получить разрешение на запись в хранилище резервной копии.</string>
+    <string name="storage_check_fragment_backup_error">Произошла ошибка при доступе к хранилищу резервной копии.</string>
+    <string name="storage_check_fragment_restore_title">Ищу резервные копии…</string>
+    <string name="storage_check_fragment_backup_title">Инициализация хранилища резервной копии…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Нажмите, чтобы настроить учетную запись</string>
+    <string name="storage_fake_nextcloud_summary">Нажмите, чтобы установить</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> свободно</string>
+    <string name="storage_fake_drive_summary">Должен быть подключен</string>
+    <string name="storage_fake_drive_title">USB-накопитель</string>
+    <string name="storage_fragment_warning">Люди, имеющие доступ к вашему хранилищу, могут узнать, какие приложения вы используете, но не получат доступа к данным приложений.</string>
+    <string name="storage_fragment_restore_title">Где найти резервные копии\?</string>
+    <string name="storage_fragment_backup_title">Выберите, где хранить резервные копии</string>
+    <string name="settings_backup_now">Сделать резервную копию сейчас</string>
+    <string name="settings_backup_exclude_apps">Исключить приложения</string>
+    <string name="settings_backup_status_summary">Последняя резервная копия: %1$s</string>
+    <string name="settings_backup">Резервное копирование моих данных</string>
+    <string name="settings_backup_apk_summary">Сделайте резервную копию самих приложений. В противном случае будет выполнено резервное копирование только данных приложений.</string>
+    <string name="settings_backup_apk_title">Резервное копирование приложений</string>
+    <string name="settings_category_app_data_backup">Резервное копирование данных приложений</string>
+    <string name="settings_auto_restore_summary">При переустановке приложений восстановите резервные копии настроек и данных.</string>
+    <string name="settings_backup_status_title">Статус резервного копирования приложений</string>
+    <string name="settings_backup_apk_dialog_disable">Отключить резервное копирование приложений</string>
+    <string name="settings_backup_apk_dialog_message">При отключенном резервном копировании приложений по-прежнему будут выполняться резервные копии данных приложений. Однако он не будет восстановлен автоматически.
+\n
+\nВам нужно будет установить все свои приложения вручную при включённом \"Автоматическом восстановлении\".</string>
+    <string name="settings_backup_apk_dialog_title">Действительно отключить резервное копирование приложений\?</string>
+    <string name="settings_auto_restore_summary_usb">Примечание: Ваш %1$s должен быть подключен к электросети, чтобы это работало.</string>
+    <string name="settings_info">Все резервные копии на вашем телефоне зашифрованы. Для восстановления из резервной копии вам понадобится код восстановления из 12 слов.</string>
+    <string name="settings_backup_location_none">Ни одно</string>
+    <string name="settings_backup_location_invalid">Выбранное место использовать нельзя.</string>
+    <string name="settings_backup_location_picker">Выберите место для резервной копии</string>
+    <string name="restore_backup_button">Восстановление резервной копии</string>
+</resources>
