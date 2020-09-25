@@ -1,2 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="restore_app_not_eligible">Još nije spremljena sigurnosna kopija</string>
+    <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija. Dodirni i saznaj više.</string>
+    <string name="notification_backup_already_running">Spremanje sigurnosne kopije je već u tijeku</string>
+    <string name="about_source_code">Izvorni kod: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Sponsor: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; za upotrebu u sustavu &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Dizajn: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Autori: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; i &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licenca: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Aplikacija za izradu sigurnosnih kopija koja koristi Androidovo interno sučelje.</string>
+    <string name="about_title">Informacije</string>
+    <string name="storage_internal_warning_use_anyway">Svejedno koristi</string>
+    <string name="storage_internal_warning_choose_other">Odaberi drugo</string>
+    <string name="storage_internal_warning_message">Za sigurnosnu kopiju odabrano je interno spremište. Neće biti dostupno ako se telefon izgubi ili pokvari.</string>
+    <string name="storage_internal_warning_title">Upozorenje</string>
+    <string name="restore_finished_button">Završi</string>
+    <string name="restore_finished_error">Došlo je do greške prilikom vraćanja sigurnosne kopije.</string>
+    <string name="restore_finished_success">Vraćanje završeno</string>
+    <string name="restore_app_quota_exceeded">Kvota za sigurnosne kopije premašena</string>
+    <string name="restore_app_not_installed">Aplikacija nije instalirana</string>
+    <string name="restore_app_not_allowed">Aplikacija ne dozvoljava sigurnosne kopije</string>
+    <string name="restore_app_no_data">Aplikacija nema podataka za sigurnosnu kopiju</string>
+    <string name="restore_magic_package">Upravljanje paketima sustava</string>
+    <string name="restore_restoring">Vraćanje sigurnosne kopije</string>
+    <string name="restore_next">Sljedeća</string>
+    <string name="restore_installing_packages">Ponovno instaliranje aplikacija</string>
+    <string name="restore_set_empty_result">Na zadanom mjestu nema odgovarajućih sigurnosnih kopija.
+\n
+\nNajvjerojatnije zbog pogrešnog koda za obnovu ili greške u spremištu.</string>
+    <string name="restore_set_error">Došlo je do greške pri učitavanju sigurnosnih kopija.</string>
+    <string name="restore_invalid_location_message">Na ovom mjestu nema sigurnosnih kopija.
+\n
+\nOdaberi jedno drugo mjesto koje sadrži %s mapu.</string>
+    <string name="restore_invalid_location_title">Nema sigurnosnih kopija</string>
+    <string name="restore_back">Nemoj vratiti</string>
+    <string name="restore_restore_set_times">Zadnja sigurnosna kopija %1$s · Prva %2$s.</string>
+    <string name="restore_choose_restore_set">Odaberi sigurnosnu kopiju za vraćanje</string>
+    <string name="restore_title">Vrati iz sigurnosne kopije</string>
+    <string name="notification_restore_error_action">Deinstaliraj program</string>
+    <string name="notification_restore_error_text">Priključi %1$s prije instaliranja aplikacije za vraćanje njenih podataka pomoću sigurnosne kopije.</string>
+    <string name="notification_restore_error_title">Neuspjelo vraćanje podataka za %1$s</string>
+    <string name="notification_restore_error_channel_title">Greška automatskog vraćanja flash pogona</string>
+    <string name="notification_error_action">Ispravi</string>
+    <string name="notification_error_text">Neuspjelo pokretanje sigurnosne kopije uređaja.</string>
+    <string name="notification_error_title">Greška sigurnosne kopije</string>
+    <string name="notification_error_channel_title">Obavijest o greškama</string>
+    <string name="notification_failed_title">Sigurnosna kopija neuspjela</string>
+    <string name="notification_success_title">Sigurnosna kopija gotova</string>
+    <string name="notification_backup_result_error">Sigurnosna kopija neuspjela</string>
+    <string name="notification_backup_result_rejected">Sigurnosna kopija nije spremljena</string>
+    <string name="notification_backup_result_complete">Sigurnosna kopija završena</string>
+    <string name="notification_title">Sigurnosna kopija pokrenuta</string>
+    <string name="notification_channel_title">Obavijest sigurnosne kopije</string>
+    <string name="recovery_code_error_checksum_word">Tvoja lozinka je neispravna. Provjeri sve riječi i pokušaj ponovo!</string>
+    <string name="recovery_code_error_invalid_word">Kriva riječ. Je li misliš %1$s ili %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Ova riječ nije upisana.</string>
+    <string name="recovery_code_input_hint_12">Riječ 12</string>
+    <string name="recovery_code_input_hint_11">Riječ 11</string>
+    <string name="recovery_code_input_hint_10">Riječ 10</string>
+    <string name="recovery_code_input_hint_9">Riječ 9</string>
+    <string name="recovery_code_input_hint_8">Riječ 8</string>
+    <string name="recovery_code_input_hint_7">Riječ 7</string>
+    <string name="recovery_code_input_hint_6">Riječ 6</string>
+    <string name="recovery_code_input_hint_5">Riječ 5</string>
+    <string name="recovery_code_input_hint_4">Riječ 4</string>
+    <string name="recovery_code_input_hint_3">Riječ 3</string>
+    <string name="recovery_code_input_hint_2">Riječ 2</string>
+    <string name="recovery_code_input_hint_1">Riječ 1</string>
+    <string name="recovery_code_done_button">Završeno</string>
+    <string name="recovery_code_input_intro">Upiši kod za obnovu od 12 riječi koji si zapisao/la prilikom postavljanja sigurnosnih kopija.</string>
+    <string name="recovery_code_confirm_intro">Upiši kod za obnovu od 12 riječi. Tako osiguravaš, da će raditi kad ti zatreba.</string>
+    <string name="recovery_code_confirm_button">Kod za potvrdu</string>
+    <string name="recovery_code_write_it_down">Zapiši si na papir sada!</string>
+    <string name="recovery_code_12_word_intro">Za vraćanje sigurnosno kopiranih podataka potreban je kod za obnovu koji se satoji od 12 riječi.</string>
+    <string name="recovery_code_title">Kod za obnovu</string>
+    <string name="storage_check_fragment_error_button">Natrag</string>
+    <string name="storage_check_fragment_permission_error">Nemoguće dobiti dozvolu za pisanje u mjestu sigurnosnih kopija.</string>
+    <string name="storage_check_fragment_backup_error">Došlo je do greške pri pristupanju mjestu sigurnosne kopije.</string>
+    <string name="storage_check_fragment_restore_title">Pretraga za sigurnosnim kopijama …</string>
+    <string name="storage_check_fragment_backup_title">Inicijaliziranje mjesta sigurnosne kopije …</string>
+    <string name="storage_fake_nextcloud_summary_installed">Pritisni za postavljanje računa</string>
+    <string name="storage_fake_nextcloud_summary">Pritisni za instaliranje</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; slobodno<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">Mora biti priključeno</string>
+    <string name="storage_fake_drive_title">USB flash pogon</string>
+    <string name="storage_fragment_warning">Osobe s pristupom tvom mjestu spremišta mogu saznati koje aplikacije koristiš, ali nemaju pristup podacima aplikacija.</string>
+    <string name="storage_fragment_restore_title">Gdje tražiti sigurnosne kopije\?</string>
+    <string name="storage_fragment_backup_title">Odaberi kamo spremati sigurnosne kopije</string>
+    <string name="settings_backup_now">Spremi sigurnosnu kopiju sada</string>
+    <string name="settings_backup_exclude_apps">Izuzmi aplikacije</string>
+    <string name="settings_backup_status_summary">Zadnja sigurnosna kopija: %1$s</string>
+    <string name="settings_backup_status_title">Stanje sigurnosne kopije aplikacije</string>
+    <string name="settings_backup_apk_dialog_disable">Isključi sigurnosne kopije aplikacije</string>
+    <string name="settings_backup_apk_dialog_cancel">Odustani</string>
+    <string name="settings_backup_apk_dialog_message">Isključivanjem sigurnosnih kopija aplikacija i dalje će spremati podaci aplikacije. Međutim, neće se automatski vratiti.
+\n
+\nSve aplikacije morat će se instalirati ručno s uključenom postavkom „Automatska obnova”.</string>
+    <string name="settings_backup_apk_dialog_title">Stvarno isključi sigurnosne kopije aplikacije\?</string>
+    <string name="settings_backup_apk_summary">Spremi sigurnosne kopije samih aplikacija. Inače će se spremiti samo podaci aplikacije.</string>
+    <string name="settings_backup_apk_title">Sigurnosna kopija aplikacije</string>
+    <string name="settings_category_app_data_backup">Sigurnosna kopija podataka aplikacije</string>
+    <string name="settings_auto_restore_summary_usb">Napomena: Da bi ovo radilo, tvoj %1$s mora biti priključen.</string>
+    <string name="settings_auto_restore_summary">Pri ponovnom instaliranju aplikacije vrati sigurnosno kopirane postavke i podatke.</string>
+    <string name="settings_auto_restore_title">Automatsko vraćanje</string>
+    <string name="settings_info">Sve sigurnosne kopije šifriraju se na telefonu. Za vraćanje iz sigurnosne kopije trebat ćeš tvoj kod za obnovu koji se sastoji od 12 riječi.</string>
+    <string name="settings_backup_last_backup_never">Nikada</string>
+    <string name="settings_backup_location_internal">Interno spremište</string>
+    <string name="settings_backup_location_none">Bez</string>
+    <string name="settings_backup_location_invalid">Odabrano mjesto se ne može koristiti.</string>
+    <string name="settings_backup_location_title">Mjesto za sigurnosne kopije</string>
+    <string name="settings_backup_location_picker">Odaberi mjesto za sigurnosne kopije</string>
+    <string name="settings_backup_location">Mjesto za sigurnosne kopije</string>
+    <string name="settings_backup">Spremi sigurnosnu kopiju mojih podataka</string>
+    <string name="restore_backup_button">Vrati sigurnosnu kopiju</string>
+    <string name="backup">Sigurnosna kopija</string>
+</resources>
