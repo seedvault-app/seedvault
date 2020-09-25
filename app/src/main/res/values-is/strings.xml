@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="about_source_code">Grunnkóði: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Kostað af: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; til notkunar á &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Hönnun: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Skrifað af: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; og &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Leyfi: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">App til öryggisaritunar sem notar innra forritunarviðmót Android.</string>
+    <string name="about_title">Um þetta</string>
+    <string name="storage_internal_warning_use_anyway">Nota samt</string>
+    <string name="storage_internal_warning_choose_other">Velja annað</string>
+    <string name="storage_internal_warning_message">Þú hefur valið innri gagnavistun fyrir öryggisafritatöku. Þessi öryggisafrit verða þér því ónothæf ef síminn tapast eða eyðileggst.</string>
+    <string name="storage_internal_warning_title">Viðvörun</string>
+    <string name="restore_finished_button">Ljúka</string>
+    <string name="restore_finished_error">Villa kom upp þegar reynt var að endurvekja öryggisafrit.</string>
+    <string name="restore_finished_success">Endurvakningu lokið</string>
+    <string name="restore_app_quota_exceeded">Afritunarrými búið</string>
+    <string name="restore_app_not_installed">Appið er ekki uppsett</string>
+    <string name="restore_app_no_data">Appið tilkynnti að engin gögn væru til öryggisafritunar</string>
+    <string name="restore_app_not_allowed">Appið leyfir ekki öryggisafritun</string>
+    <string name="restore_magic_package">Pakkastjóri kerfis</string>
+    <string name="restore_restoring">Endurvek öryggisafrit</string>
+    <string name="restore_next">Næst</string>
+    <string name="restore_installing_packages">Enduruppset öpp</string>
+    <string name="restore_set_empty_result">Engin nothæf afrit fundust í þeirri geymslu sem bent var á.
+\n
+\nÞetta orsakast líklega af röngum endurvakningarkóða eða villu í afritageymslu.</string>
+    <string name="restore_set_error">Villa kom upp þegar reynt var að sækja öryggisafritin.</string>
+    <string name="restore_invalid_location_message">Engin öryggisafrit fundust á þessum geymslustað.
+\n
+\nVinsamlegast veldu annan afritageymslustað sem býður upp á %s möppu.</string>
+    <string name="restore_invalid_location_title">Engin öryggisafrit fundust</string>
+    <string name="restore_back">Ekki endurvekja</string>
+    <string name="restore_restore_set_times">Síðasta öryggisafrit %1$s · Fyrsta %2$s.</string>
+    <string name="restore_choose_restore_set">Veldu öryggisafrit til að endurvekja</string>
+    <string name="restore_title">Endurvekja úr öryggisafriti</string>
+    <string name="notification_restore_error_action">Fjarlægja app</string>
+    <string name="notification_restore_error_text">Settu %1$s í samband við rafmagn áður en þú innsetur appið svo hægt sé að endurvekja gögn þess úr öryggisafriti.</string>
+    <string name="notification_restore_error_title">Ekki tókst að endurvekja gögn fyrir %1$s</string>
+    <string name="notification_restore_error_channel_title">Villa í sjálfvirkri endurvakningu af Flash drifi</string>
+    <string name="notification_error_action">Laga</string>
+    <string name="notification_error_text">Keyrsla öryggisafritunar tækis mistókst.</string>
+    <string name="notification_error_title">Villa við öryggisafritun</string>
+    <string name="notification_error_channel_title">Villuskilaboð</string>
+    <string name="notification_failed_title">Öryggisafritun mistókst</string>
+    <string name="notification_success_title">Öryggisafritun lokið</string>
+    <string name="notification_backup_result_error">Öryggisafritun mistókst</string>
+    <string name="notification_backup_result_rejected">Öryggisafrit ekki tekið</string>
+    <string name="notification_backup_result_complete">Öryggisafritun lokið</string>
+    <string name="notification_title">Öryggisafritun í gangi</string>
+    <string name="notification_channel_title">Tilkynning um öryggisafritatöku</string>
+    <string name="recovery_code_error_checksum_word">Kóðinn er ógildur. Athugað öll orðin og prófaðu aftur!</string>
+    <string name="recovery_code_error_invalid_word">Rangt orð. Meintirðu %1$s or %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Þú gleymdir að slá inn þetta orð.</string>
+    <string name="recovery_code_input_hint_12">Orð 12</string>
+    <string name="recovery_code_input_hint_11">Orð 11</string>
+    <string name="recovery_code_input_hint_10">Orð 10</string>
+    <string name="recovery_code_input_hint_9">Orð 9</string>
+    <string name="recovery_code_input_hint_8">Orð 8</string>
+    <string name="recovery_code_input_hint_7">Orð 7</string>
+    <string name="recovery_code_input_hint_6">Orð 6</string>
+    <string name="recovery_code_input_hint_5">Orð 5</string>
+    <string name="recovery_code_input_hint_4">Orð 4</string>
+    <string name="recovery_code_input_hint_3">Orð 3</string>
+    <string name="recovery_code_input_hint_2">Orð 2</string>
+    <string name="recovery_code_input_hint_1">Orð 1</string>
+    <string name="recovery_code_done_button">Búið og gert</string>
+    <string name="recovery_code_input_intro">Sláðu inn 12 orða endurvakningarkóðann þinn sem þú skrifaðir vandlega á blað þegar þú stilltir upp öryggisafritatökum.</string>
+    <string name="recovery_code_confirm_intro">Sláðu inn 12 orða endurvakningarkóðann þinn til að tryggja að hann muni virka þegar þú þarft á honum að halda.</string>
+    <string name="recovery_code_confirm_button">Staðfestu kóðann</string>
+    <string name="recovery_code_write_it_down">Skrifaðu þetta tafarlaust niður á pappír!</string>
+    <string name="recovery_code_12_word_intro">Þú þarft 12 orða endurvakningarkóðann þinn til að endurvekja frá gögnum í öryggisafriti.</string>
+    <string name="recovery_code_title">Endurvakningarkóði</string>
+    <string name="storage_check_fragment_error_button">Til baka</string>
+    <string name="storage_check_fragment_permission_error">Ekki tókst að fá heimild til að vista gögn í öryggisafritageymslu.</string>
+    <string name="storage_check_fragment_backup_title">Tek geymslustað öryggisafrita í notkun…</string>
+    <string name="storage_check_fragment_backup_error">Villa kom upp þegar reynt var að hafa samband við geymslustað öryggisafrita.</string>
+    <string name="storage_check_fragment_restore_title">Leita að öryggisafritum…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Smelltu til að setja upp notandareikning</string>
+    <string name="storage_fake_nextcloud_summary">Smelltu til að innsetja</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; laus<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">Þarf að vera í sambandi við rafmagn</string>
+    <string name="storage_fake_drive_title">USB Flash drif</string>
+    <string name="storage_fragment_warning">Þeir sem hafa aðgang að geymslustað öryggisafrita þinna geta séð hvaða öpp þú notar en hafa ekkert aðgengi að gögnum appanna.</string>
+    <string name="storage_fragment_restore_title">Hvar er öryggisafrit þín að finna\?</string>
+    <string name="storage_fragment_backup_title">Velja vistunarstað öryggisafrita</string>
+    <string name="settings_backup_now">Framkvæma öryggisafritun núna</string>
+    <string name="settings_backup_exclude_apps">Undanskilja öpp</string>
+    <string name="settings_backup_status_summary">Síðasta öryggisafritun: %1$s</string>
+    <string name="settings_backup_status_title">Staða á öryggisafritun appa</string>
+    <string name="settings_backup_apk_dialog_disable">Afvirkja öryggisafritun appa</string>
+    <string name="settings_backup_apk_dialog_cancel">Stöðva</string>
+    <string name="settings_backup_apk_dialog_message">Ef öryggisafritun appa er óvirk verða gögn úr öppum samt afrituð. Hins vegar verða þau ekki endurvakin sjálfkrafa.
+\n
+\nÞú munt þurfa að enduruppsetja öll öpp handvirkt með stillinguna \"Sjálfvirk endurvakning úr öryggisafriti\" virka.</string>
+    <string name="settings_backup_apk_dialog_title">Viltu í alvöru ekki taka öryggisafrit af öppum\?</string>
+    <string name="settings_backup_apk_summary">Taka öryggisafrit af öppunum sjálfum. Ef þetta er ekki valið er aðeins tekið öryggisafrit af öppunum sjálfum.</string>
+    <string name="settings_backup_apk_title">Öryggisafritun appa</string>
+    <string name="settings_category_app_data_backup">Öryggisafritun gagna úr öppum</string>
+    <string name="settings_auto_restore_summary_usb">ATH: %1$s þarf að vera tengt til að þetta sé hægt.</string>
+    <string name="settings_auto_restore_summary">Enduruppsetja stillingar og gögn þegar app er enduruppsett.</string>
+    <string name="settings_auto_restore_title">Sjálfvirk endurvakning úr öryggisafriti</string>
+    <string name="settings_info">Öll öryggisafrit eru dulkóðuð í símanum þínum. Til að endurvekja úr öryggisafriti þarftu 12 orða endurvakningarkóða þinn.</string>
+    <string name="settings_backup_last_backup_never">Aldrei</string>
+    <string name="settings_backup_location_internal">Innri gagnageymsla</string>
+    <string name="settings_backup_location_none">Engin</string>
+    <string name="settings_backup_location_invalid">Valin staðsetning er ónothæf.</string>
+    <string name="settings_backup_location_title">Staðsetning öryggisafrits</string>
+    <string name="settings_backup_location_picker">Velja staðsetningu öryggisafrits</string>
+    <string name="settings_backup_location">Staðsetning öryggisafrits</string>
+    <string name="settings_backup">Búa til öryggsafrit</string>
+    <string name="restore_backup_button">Endurvekja úr öryggisafriti</string>
+    <string name="backup">Öryggisafrit</string>
+    <string name="app_name">Seedvault</string>
+</resources>

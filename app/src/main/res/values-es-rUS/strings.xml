@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_source_code">Código fuente: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Patrocinado por: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; for use in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Diseño por: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Escrito por: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; and &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licencia: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Una aplicación de respaldo que usa la API interna de respaldo de Android.</string>
+    <string name="about_title">Acerca de</string>
+    <string name="storage_internal_warning_use_anyway">Usar de todos modos</string>
+    <string name="storage_internal_warning_choose_other">Elegir Otro</string>
+    <string name="storage_internal_warning_message">Has elegido el almacenamiento interno para su respaldo. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
+    <string name="storage_internal_warning_title">Advertencia</string>
+    <string name="restore_finished_button">Terminar</string>
+    <string name="restore_finished_error">Se produjo un error al restaurar el respaldo.</string>
+    <string name="restore_finished_success">Restauración completa</string>
+    <string name="restore_app_quota_exceeded">Cuota de respaldo excedida</string>
+    <string name="restore_app_not_installed">Aplicación no instalada</string>
+    <string name="restore_app_not_allowed">La aplicación no permite respaldo</string>
+    <string name="restore_app_no_data">La aplicación no reportó datos para respaldo</string>
+    <string name="restore_magic_package">Administrador de Paquetes del Sistema</string>
+    <string name="restore_restoring">Restaurando Respaldo</string>
+    <string name="restore_next">Próximo</string>
+    <string name="restore_installing_packages">Reinstalar Aplicaciones</string>
+    <string name="restore_set_empty_result">No se encontraron respaldos en la ubicación dada.
+\n
+\nEsto probablemente se deba a un código de recuperación incorrecto o un error de almacenamiento.</string>
+    <string name="restore_set_error">Se produjo un error al cargar los respaldos.</string>
+    <string name="restore_invalid_location_message">No pudimos encontrar ningún respaldo en esta ubicación.
+\n
+\nElija otra ubicación que contenga una carpeta %s.</string>
+    <string name="restore_invalid_location_title">No se encontraron respaldos</string>
+    <string name="restore_back">No restaurar</string>
+    <string name="restore_restore_set_times">Último Respaldo %1$s · Primero %2$s.</string>
+    <string name="restore_choose_restore_set">Elije un respaldo para restaurar</string>
+    <string name="restore_title">Restaurar desde el respaldo</string>
+    <string name="notification_restore_error_action">Desinstalar Aplicación</string>
+    <string name="notification_restore_error_text">Enchufe su %1$s antes de instalar la aplicación para restaurar sus datos del respaldo.</string>
+    <string name="notification_restore_error_title">No se pudieron restaurar los datos para %1$s</string>
+    <string name="notification_restore_error_channel_title">Error de restauración automática de unidad flash</string>
+    <string name="notification_error_action">Reparar</string>
+    <string name="notification_error_text">No se pudo ejecutar un respaldo del dispositivo.</string>
+    <string name="notification_error_title">Error de Respaldo</string>
+    <string name="notification_error_channel_title">Notificación de Error</string>
+    <string name="notification_failed_title">Respaldo falló</string>
+    <string name="notification_success_title">Respaldo terminó</string>
+    <string name="notification_backup_result_error">Respaldo falló</string>
+    <string name="notification_backup_result_rejected">No respaldado</string>
+    <string name="notification_backup_result_complete">Respaldo completo</string>
+    <string name="notification_title">Ejecución de respaldo</string>
+    <string name="recovery_code_error_checksum_word">Tu código no es válido. Por favor revise todas las palabras e intente nuevamente!</string>
+    <string name="recovery_code_error_invalid_word">Palabra equivocada. ¿Quisiste decir %1$s o %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Olvidaste ingresar esta palabra.</string>
+    <string name="recovery_code_input_hint_12">Palabra 12</string>
+    <string name="recovery_code_input_hint_11">Palabra 11</string>
+    <string name="recovery_code_input_hint_10">Palabra 10</string>
+    <string name="recovery_code_input_hint_9">Palabra 9</string>
+    <string name="recovery_code_input_hint_8">Palabra 8</string>
+    <string name="recovery_code_input_hint_7">Palabra 7</string>
+    <string name="recovery_code_input_hint_6">Palabra 6</string>
+    <string name="recovery_code_input_hint_5">Palabra 5</string>
+    <string name="recovery_code_input_hint_4">Palabra 4</string>
+    <string name="recovery_code_input_hint_3">Palabra 3</string>
+    <string name="recovery_code_input_hint_2">Palabra 2</string>
+    <string name="recovery_code_input_hint_1">Palabra 1</string>
+    <string name="recovery_code_confirm_intro">Ingresa tu código de recuperación de 12 palabras para asegurarte de que funcionará cuando lo necesite.</string>
+    <string name="recovery_code_done_button">Terminado</string>
+    <string name="recovery_code_input_intro">Ingresa tu código de recuperación de 12 palabras que escribiste al configurar los respaldos.</string>
+    <string name="recovery_code_confirm_button">Confirma Código</string>
+    <string name="recovery_code_write_it_down">¡Escríbelo en papel ahora!</string>
+    <string name="recovery_code_12_word_intro">Necesita tu código de recuperación de 12 palabras para restaurar los datos respaldados.</string>
+    <string name="recovery_code_title">Código de Recuperación</string>
+    <string name="storage_check_fragment_error_button">Atrás</string>
+    <string name="storage_check_fragment_permission_error">No se pudo obtener el permiso para escribir en la ubicación del respaldo.</string>
+    <string name="storage_check_fragment_backup_error">Se produjo un error al acceder a la ubicación del respaldo.</string>
+    <string name="storage_check_fragment_restore_title">Buscando respaldos…</string>
+    <string name="storage_check_fragment_backup_title">Inicializando la ubicación del respaldo…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Haz clic para configurar la cuenta</string>
+    <string name="storage_fake_nextcloud_summary">Haz clic para instalar</string>
+    <string name="storage_fake_nextcloud_title">Nextcloud</string>
+    <string name="storage_fake_drive_summary">Necesita ser enchufado</string>
+    <string name="storage_fake_drive_title">Memoria USB</string>
+    <string name="storage_fragment_warning">Las personas con acceso a su ubicación de almacenamiento pueden saber qué aplicaciones usas, pero no reciben acceso a los datos de las aplicaciones.</string>
+    <string name="storage_fragment_restore_title">¿Dónde encontrar sus respaldos\?</string>
+    <string name="storage_fragment_backup_title">Elija dónde almacenar los respaldos</string>
+    <string name="settings_backup_now">Respaldar ahora</string>
+    <string name="settings_backup_exclude_apps">Excluir aplicaciones</string>
+    <string name="settings_backup_status_summary">Último respaldo: %1$s</string>
+    <string name="settings_backup_status_title">Estado de respaldo de la aplicación</string>
+    <string name="settings_backup_apk_dialog_disable">Deshabilitar respaldo de la aplicación</string>
+    <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
+    <string name="settings_backup_apk_dialog_message">Respaldo deshabilitado de la aplicación aún seguirá haciendo un respaldo de los datos de la aplicación. Sin embargo, no se restaurará automáticamente.
+\n
+\nDeberás instalar todas tus aplicaciones manualmente mientras tengas activada la \"Restauración Automática\".</string>
+    <string name="settings_backup_apk_dialog_title">¿Deshabilitar realmente el respaldo de la aplicación\?</string>
+    <string name="settings_backup_apk_summary">Respalde las aplicaciones en sí. De lo contrario, solo se harían respaldos de los datos de la aplicación.</string>
+    <string name="settings_backup_apk_title">Respaldo de la aplicación</string>
+    <string name="settings_category_app_data_backup">Respaldo de datos de la aplicación</string>
+    <string name="settings_auto_restore_summary_usb">Nota: Su %1$s necesita estar enchufado para que esto funcione.</string>
+    <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaure la configuración y los datos respaldados.</string>
+    <string name="settings_auto_restore_title">Restauración automática</string>
+    <string name="settings_info">Todas las copias de seguridad están encriptadas en su teléfono. Para restaurar desde una copia de seguridad, necesitará su código de recuperación de 12 palabras.</string>
+    <string name="settings_backup_last_backup_never">Nunca</string>
+    <string name="settings_backup_location_internal">Almacenamiento Interno</string>
+    <string name="settings_backup_location_none">Ninguno</string>
+    <string name="settings_backup_location_invalid">La ubicación elegida no se puede utilizar.</string>
+    <string name="settings_backup_location_title">Ubicación de respaldo</string>
+    <string name="settings_backup_location">Ubicación de respaldo</string>
+    <string name="settings_backup_location_picker">Elegir ubicación de respaldo</string>
+    <string name="restore_backup_button">Restaurar respaldo</string>
+    <string name="settings_backup">Respalda mi información</string>
+    <string name="backup">Respaldo</string>
+</resources>
