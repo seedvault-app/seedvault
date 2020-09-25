@@ -46,9 +46,6 @@
     <string name="notification_error_channel_title">Notificação de erro</string>
     <string name="notification_failed_title">Backup falhou</string>
     <string name="notification_success_title">Backup concluído</string>
-    <string name="notification_backup_result_error">Backup falhou</string>
-    <string name="notification_backup_result_rejected">Sem backup</string>
-    <string name="notification_backup_result_complete">Backup completo</string>
     <string name="notification_title">Backup em execução</string>
     <string name="notification_channel_title">Notificação de backup</string>
     <string name="recovery_code_error_checksum_word">Seu código é inválido. Por favor, verifique todas as palavras e tente novamente!</string>
@@ -106,9 +103,6 @@
     <string name="settings_backup_last_backup_never">Nunca</string>
     <string name="settings_backup_location_internal">Armazenamento interno</string>
     <string name="settings_backup_location_none">Nenhum</string>
-    <string name="settings_backup_location_invalid">O local escolhido não pode ser usado.</string>
-    <string name="settings_backup_location_title">Local de backup</string>
-    <string name="settings_backup_location_picker">Escolher local de backup</string>
     <string name="settings_backup_location">Local de backup</string>
     <string name="settings_backup">Fazer backup dos meus dados</string>
     <string name="restore_backup_button">Restaurar backup</string>
