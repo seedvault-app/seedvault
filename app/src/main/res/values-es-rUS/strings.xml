@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about_source_code">Código fuente: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Patrocinado por: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; for use in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Diseño por: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Escrito por: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; and &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licencia: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Diseño por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Una aplicación de respaldo que usa la API interna de respaldo de Android.</string>
     <string name="about_title">Acerca de</string>
     <string name="storage_internal_warning_use_anyway">Usar de todos modos</string>

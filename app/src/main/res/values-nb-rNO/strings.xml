@@ -37,9 +37,9 @@
 \n
 \nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.</string>
     <string name="about_source_code">Kildekode: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Sponset av: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx-instituttet&lt;/a&gt; for for bruk i &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_sponsor">Sponset av: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; for use in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design av: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Skrevet av: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; og &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_author">Skrevet av: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; and &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_title">Om</string>
     <string name="storage_internal_warning_use_anyway">Bruk uansett</string>
     <string name="storage_internal_warning_title">Advarsel</string>
