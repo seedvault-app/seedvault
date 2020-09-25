@@ -2,11 +2,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_restore_error_text">Conecte seu %1$s antes de instalar o aplicativo para restaurar seus dados do backup.</string>
     <string name="notification_restore_error_title">Não foi possível restaurar os dados de %1$s</string>
-    <string name="notification_restore_error_channel_title">Erro de restauração automática do Pen Drive</string>
+    <string name="notification_restore_error_channel_title">Erro de restauração automática do pen drive</string>
     <string name="notification_error_action">Consertar</string>
     <string name="notification_error_text">Falha ao executar um backup do dispositivo.</string>
-    <string name="notification_error_title">Erro de Backup</string>
-    <string name="notification_error_channel_title">Notificação de Erro</string>
+    <string name="notification_error_title">Erro de backup</string>
+    <string name="notification_error_channel_title">Notificação de erro</string>
     <string name="notification_failed_title">Backup falhou</string>
     <string name="notification_backup_result_complete">Backup completo</string>
     <string name="notification_success_title">Backup concluído</string>
@@ -35,7 +35,7 @@
     <string name="recovery_code_confirm_button">Confirmar código</string>
     <string name="recovery_code_write_it_down">Escreva no papel agora!</string>
     <string name="recovery_code_12_word_intro">Você precisa do seu código de recuperação de 12 palavras para restaurar os dados de backup.</string>
-    <string name="recovery_code_title">Código de Recuperação</string>
+    <string name="recovery_code_title">Código de recuperação</string>
     <string name="storage_check_fragment_error_button">Voltar</string>
     <string name="storage_check_fragment_permission_error">Não foi possível obter permissão para gravar no local do backup.</string>
     <string name="storage_check_fragment_backup_error">Ocorreu um erro ao acessar o local do backup.</string>
@@ -53,7 +53,7 @@
     <string name="storage_fragment_backup_title">Escolha onde armazenar backups</string>
     <string name="settings_backup_now">Fazer backup agora</string>
     <string name="settings_backup_exclude_apps">Excluir aplicativos</string>
-    <string name="settings_backup_status_summary">Último Backup: %1$s</string>
+    <string name="settings_backup_status_summary">Último backup: %1$s</string>
     <string name="settings_backup_status_title">Status de backup do aplicativo</string>
     <string name="settings_backup_apk_dialog_disable">Desativar backup de aplicativo</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
@@ -73,7 +73,7 @@
     <string name="settings_backup_location_internal">Armazenamento interno</string>
     <string name="settings_backup_location_none">Nenhum</string>
     <string name="settings_backup_location_invalid">O local escolhido não pode ser usado.</string>
-    <string name="settings_backup_location_title">Local de Backup</string>
+    <string name="settings_backup_location_title">Local de backup</string>
     <string name="settings_backup_location_picker">Escolher local de backup</string>
     <string name="settings_backup_location">Local de backup</string>
     <string name="settings_backup">Fazer backup dos meus dados</string>
@@ -85,9 +85,9 @@
 \nEscolha outro local que contenha uma pasta %s.</string>
     <string name="restore_invalid_location_title">Sem backups encontrados</string>
     <string name="restore_back">Não restaurar</string>
-    <string name="restore_restore_set_times">Último Backup %1$s · Primeiro %2$s.</string>
+    <string name="restore_restore_set_times">Último backup %1$s · Primeiro %2$s.</string>
     <string name="restore_choose_restore_set">Escolha um backup para restaurar</string>
-    <string name="restore_title">Restaurar do Backup</string>
+    <string name="restore_title">Restaurar do backup</string>
     <string name="notification_restore_error_action">Desinstalar aplicativo</string>
     <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para seu uso em <a href="https://calyxos.org">CalyxOS</a></string>
@@ -106,11 +106,14 @@
     <string name="restore_app_not_installed">Aplicativo não instalado</string>
     <string name="restore_app_not_allowed">O aplicativo não permite backup</string>
     <string name="restore_app_no_data">O aplicativo não relatou nenhum dado para backup</string>
-    <string name="restore_magic_package">Gerenciador de Pacotes do Sistema</string>
-    <string name="restore_restoring">Restaurando Backup</string>
+    <string name="restore_magic_package">Gerenciador de pacote do sistema</string>
+    <string name="restore_restoring">Restaurando backup</string>
     <string name="restore_next">Próximo</string>
-    <string name="restore_installing_packages">Reinstalando Aplicativos</string>
+    <string name="restore_installing_packages">Reinstalando aplicativos</string>
     <string name="restore_set_empty_result">Nenhum backup adequado encontrado no local dado.
 \n
 \nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
+    <string name="restore_app_not_eligible">Ainda sem backup</string>
+    <string name="notification_success_text">%1$d de %2$d aplicativos com backup. Toque para saber mais.</string>
+    <string name="notification_backup_already_running">Backup já em andamento</string>
 </resources>
