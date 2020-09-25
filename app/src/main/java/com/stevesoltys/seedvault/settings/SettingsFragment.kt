@@ -2,7 +2,7 @@ package com.stevesoltys.seedvault.settings
 
 import android.app.backup.IBackupManager
 import android.content.Context
-import android.content.Context.BACKUP_SERVICE
+import android.content.Context.BACKUP_SERVICE // ktlint-disable no-unused-imports
 import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
@@ -11,7 +11,7 @@ import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
-import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
+import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE // ktlint-disable no-unused-imports
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater

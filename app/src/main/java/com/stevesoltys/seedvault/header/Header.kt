@@ -22,7 +22,9 @@ data class VersionHeader(
             "Package $packageName has name longer than $MAX_PACKAGE_LENGTH_SIZE"
         }
         key?.let {
-            check(key.length <= MAX_KEY_LENGTH_SIZE) { "Key $key is longer than $MAX_KEY_LENGTH_SIZE" }
+            check(key.length <= MAX_KEY_LENGTH_SIZE) {
+                "Key $key is longer than $MAX_KEY_LENGTH_SIZE"
+            }
         }
     }
 }

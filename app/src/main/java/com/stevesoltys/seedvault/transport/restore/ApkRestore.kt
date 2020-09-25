@@ -95,9 +95,9 @@ internal class ApkRestore(
 
         // check APK's SHA-256 hash
         val sha256 = messageDigest.digest().encodeBase64()
-        if (metadata.sha256 != sha256) {
-            throw SecurityException("Package $packageName has sha256 '$sha256', but '${metadata.sha256}' expected.")
-        }
+        if (metadata.sha256 != sha256) throw SecurityException(
+            "Package $packageName has sha256 '$sha256', but '${metadata.sha256}' expected."
+        )
 
         // parse APK (GET_SIGNATURES is needed even though deprecated)
         @Suppress("DEPRECATION") val flags = GET_SIGNING_CERTIFICATES or GET_SIGNATURES
@@ -105,9 +105,9 @@ internal class ApkRestore(
             ?: throw IOException("getPackageArchiveInfo returned null")
 
         // check APK package name
-        if (packageName != packageInfo.packageName) {
-            throw SecurityException("Package $packageName expected, but ${packageInfo.packageName} found.")
-        }
+        if (packageName != packageInfo.packageName) throw SecurityException(
+            "Package $packageName expected, but ${packageInfo.packageName} found."
+        )
 
         // check APK version code
         if (metadata.version != packageInfo.longVersionCode) {

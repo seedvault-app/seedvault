@@ -79,8 +79,8 @@ class ApkBackup(
         // do not backup if we have the version already and signatures did not change
         if (version <= backedUpVersion && !signaturesChanged(packageMetadata, signatures)) {
             Log.d(
-                TAG,
-                "Package $packageName with version $version already has a backup ($backedUpVersion)" +
+                TAG, "Package $packageName with version $version" +
+                    " already has a backup ($backedUpVersion)" +
                     " with the same signature. Not backing it up."
             )
             return null

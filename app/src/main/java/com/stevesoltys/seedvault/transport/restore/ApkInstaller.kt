@@ -62,7 +62,7 @@ internal class ApkInstaller(private val context: Context) {
         }
         // Don't set more sessionParams intentionally here.
         // We saw strange permission issues when doing setInstallReason() or setting installFlags.
-        @Suppress("BlockingMethodInNonBlockingContext")  // flows on Dispatcher.IO
+        @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
         val session = installer.openSession(installer.createSession(sessionParams))
         val sizeBytes = cachedApk.length()
         session.use { s ->
@@ -96,7 +96,9 @@ internal class ApkInstaller(private val context: Context) {
         val success = i.getIntExtra(EXTRA_STATUS, -1) == STATUS_SUCCESS
         val statusMsg = i.getStringExtra(EXTRA_STATUS_MESSAGE)!!
 
-        check(packageName == expectedPackageName) { "Expected $expectedPackageName, but got $packageName." }
+        check(packageName == expectedPackageName) {
+            "Expected $expectedPackageName, but got $packageName."
+        }
         Log.d(TAG, "Received result for $packageName: success=$success $statusMsg")
 
         // delete cached APK file

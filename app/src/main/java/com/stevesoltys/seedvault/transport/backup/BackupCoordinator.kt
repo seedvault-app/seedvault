@@ -327,12 +327,16 @@ internal class BackupCoordinator(
      */
     suspend fun finishBackup(): Int = when {
         kv.hasState() -> {
-            check(!full.hasState()) { "K/V backup has state, but full backup has dangling state as well" }
+            check(!full.hasState()) {
+                "K/V backup has state, but full backup has dangling state as well"
+            }
             onPackageBackedUp(kv.getCurrentPackage()!!) // not-null because we have state
             kv.finishBackup()
         }
         full.hasState() -> {
-            check(!kv.hasState()) { "Full backup has state, but K/V backup has dangling state as well" }
+            check(!kv.hasState()) {
+                "Full backup has state, but K/V backup has dangling state as well"
+            }
             onPackageBackedUp(full.getCurrentPackage()!!) // not-null because we have state
             full.finishBackup()
         }
@@ -352,15 +356,17 @@ internal class BackupCoordinator(
             val packageName = packageInfo.packageName
             try {
                 nm.onOptOutAppBackup(packageName, i + 1, notAllowedPackages.size)
-                val packageState = if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
+                val packageState =
+                    if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
                 val wasBackedUp = backUpApk(packageInfo, packageState)
                 if (!wasBackedUp) {
-                    val packageMetadata = metadataManager.getPackageMetadata(packageName)
+                    val packageMetadata =
+                        metadataManager.getPackageMetadata(packageName)
                     val oldPackageState = packageMetadata?.state
                     if (oldPackageState != null && oldPackageState != packageState) {
                         Log.e(
-                            TAG,
-                            "Package $packageName was in $oldPackageState, update to $packageState"
+                            TAG, "Package $packageName was in $oldPackageState" +
+                                ", update to $packageState"
                         )
                         plugin.getMetadataOutputStream().use {
                             metadataManager.onPackageBackupError(packageInfo, packageState, it)

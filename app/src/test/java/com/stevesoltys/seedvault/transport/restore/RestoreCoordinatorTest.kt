@@ -165,7 +165,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `startRestore() optimized auto-restore with removed storage but no backup shows no notification`() {
+    fun `startRestore() with removed storage shows no notification`() {
         every { settingsManager.getStorage() } returns storage
         every { storage.isUsb } returns true
         every { storage.getDocumentFile(context) } returns documentFile

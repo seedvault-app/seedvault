@@ -69,7 +69,9 @@ abstract class UsbMonitor : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action ?: return
-        if (intent.action == ACTION_USB_DEVICE_ATTACHED || intent.action == ACTION_USB_DEVICE_DETACHED) {
+        if (intent.action == ACTION_USB_DEVICE_ATTACHED ||
+            intent.action == ACTION_USB_DEVICE_DETACHED
+        ) {
             val device = intent.extras?.getParcelable<UsbDevice>(EXTRA_DEVICE) ?: return
             Log.d(TAG, "New USB mass-storage device attached.")
             device.log()

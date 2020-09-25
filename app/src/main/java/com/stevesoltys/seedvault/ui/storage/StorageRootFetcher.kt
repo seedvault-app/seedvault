@@ -277,9 +277,15 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
 
     private fun getIcon(context: Context, authority: String, rootId: String, icon: Int): Drawable? {
         return getPackageIcon(context, authority, icon) ?: when {
-            authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> context.getDrawable(R.drawable.ic_phone_android)
-            authority == AUTHORITY_STORAGE && rootId != ROOT_ID_HOME -> context.getDrawable(R.drawable.ic_usb)
-            authority == AUTHORITY_NEXTCLOUD -> context.getDrawable(R.drawable.nextcloud)
+            authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> {
+                context.getDrawable(R.drawable.ic_phone_android)
+            }
+            authority == AUTHORITY_STORAGE && rootId != ROOT_ID_HOME -> {
+                context.getDrawable(R.drawable.ic_usb)
+            }
+            authority == AUTHORITY_NEXTCLOUD -> {
+                context.getDrawable(R.drawable.nextcloud)
+            }
             else -> null
         }
     }
