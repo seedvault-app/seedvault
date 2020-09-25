@@ -3,10 +3,10 @@
     <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija. Dodirni i saznaj više.</string>
     <string name="notification_backup_already_running">Spremanje sigurnosne kopije je već u tijeku</string>
     <string name="about_source_code">Izvorni kod: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Sponsor: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; za upotrebu u sustavu &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Dizajn: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Autori: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; i &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licenca: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">Sponsor: <a href="https://www.calyxinstitute.org">Calyx Institute</a> za upotrebu u sustavu <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Dizajn: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Autori: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licenca: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Aplikacija za izradu sigurnosnih kopija koja koristi Androidovo interno sučelje.</string>
     <string name="about_title">Informacije</string>
     <string name="storage_internal_warning_use_anyway">Svejedno koristi</string>
@@ -80,7 +80,7 @@
     <string name="storage_check_fragment_backup_title">Inicijaliziranje mjesta sigurnosne kopije …</string>
     <string name="storage_fake_nextcloud_summary_installed">Pritisni za postavljanje računa</string>
     <string name="storage_fake_nextcloud_summary">Pritisni za instaliranje</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; slobodno<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> slobodno</string>
     <string name="storage_fake_drive_summary">Mora biti priključeno</string>
     <string name="storage_fake_drive_title">USB flash pogon</string>
     <string name="storage_fragment_warning">Osobe s pristupom tvom mjestu spremišta mogu saznati koje aplikacije koristiš, ali nemaju pristup podacima aplikacija.</string>

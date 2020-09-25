@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="about_source_code">Grunnkóði: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Kostað af: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; for use in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Hönnun: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Skrifað af: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; and &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Leyfi: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">Kostað af: <a href="https://www.calyxinstitute.org">Calyx Institute</a> til notkunar á <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Hönnun: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Skrifað af: <a href="https://github.com/stevesoltys">Steve Soltys</a> og <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Leyfi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">App til öryggisaritunar sem notar innra forritunarviðmót Android.</string>
     <string name="about_title">Um þetta</string>
     <string name="storage_internal_warning_use_anyway">Nota samt</string>
@@ -79,7 +79,7 @@
     <string name="storage_fake_nextcloud_summary_installed">Smelltu til að setja upp notandareikning</string>
     <string name="storage_fake_nextcloud_summary">Smelltu til að innsetja</string>
     <string name="storage_fake_nextcloud_title">Nextcloud</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; laus<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laus</string>
     <string name="storage_fake_drive_summary">Þarf að vera í sambandi við rafmagn</string>
     <string name="storage_fake_drive_title">USB Flash drif</string>
     <string name="storage_fragment_warning">Þeir sem hafa aðgang að geymslustað öryggisafrita þinna geta séð hvaða öpp þú notar en hafa ekkert aðgengi að gögnum appanna.</string>
