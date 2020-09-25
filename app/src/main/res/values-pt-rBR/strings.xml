@@ -44,7 +44,7 @@
     <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
     <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
     <string name="storage_fake_nextcloud_title">Nextcloud</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; livre<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
     <string name="settings_backup_apk_dialog_title">Deseja realmente desativar o backup de aplicativo\?</string>
