@@ -27,8 +27,6 @@
     <string name="settings_auto_restore_title">Αυτόματη επαναφορά</string>
     <string name="settings_backup_last_backup_never">Ποτέ</string>
     <string name="settings_backup_location_none">Καμία</string>
-    <string name="settings_backup_location_invalid">Η επιλεγμένη τοποθεσία δεν μπορεί να χρησιμοποιηθεί.</string>
-    <string name="settings_backup_location_picker">Επιλέξτε την τοποθεσία των αντιγράφων ασφαλείας</string>
     <string name="settings_backup_location">Τοποθεσία αντιγράφων ασφαλείας</string>
     <string name="settings_backup">Δημιουργία αντιγράφου ασφαλείας των δεδομένων μου</string>
     <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
@@ -80,9 +78,6 @@
     <string name="notification_success_text">Δημιουργήθηκαν αντίγραφα ασφαλείας για %1$d από %2$d εφαρμογές. Πατήστε για να μάθετε περισσότερα.</string>
     <string name="notification_success_title">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
     <string name="notification_backup_already_running">Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη</string>
-    <string name="notification_backup_result_error">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
-    <string name="notification_backup_result_rejected">Δεν δημιουργήθηκε αντίγραφο ασφαλείας</string>
-    <string name="notification_backup_result_complete">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
     <string name="notification_title">Εκτελείται δημιουργία αντιγράφων ασφαλείας</string>
     <string name="notification_channel_title">Ειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις και δοκιμάστε ξανά!</string>
@@ -112,5 +107,4 @@
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
-    <string name="settings_backup_location_title">Τοποθεσία αντιγράφων ασφαλείας</string>
 </resources>
