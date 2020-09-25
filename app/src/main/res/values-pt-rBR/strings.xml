@@ -8,10 +8,7 @@
     <string name="notification_error_title">Erro de backup</string>
     <string name="notification_error_channel_title">Notificação de erro</string>
     <string name="notification_failed_title">Backup falhou</string>
-    <string name="notification_backup_result_complete">Backup completo</string>
     <string name="notification_success_title">Backup concluído</string>
-    <string name="notification_backup_result_error">Backup falhou</string>
-    <string name="notification_backup_result_rejected">Sem backup</string>
     <string name="notification_title">Backup em execução</string>
     <string name="notification_channel_title">Notificação de backup</string>
     <string name="recovery_code_error_checksum_word">Seu código é inválido. Por favor, verifique todas as palavras e tente novamente!</string>
@@ -43,7 +40,6 @@
     <string name="storage_check_fragment_backup_title">Inicializando local de backup…</string>
     <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
     <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
@@ -62,7 +58,6 @@
 \nVocê precisará instalar todos os seus aplicativos manualmente enquanto o \"Restauração automática\" está ativado.</string>
     <string name="settings_backup_apk_summary">Faça backup dos aplicativos neles mesmos. Caso contrário, apenas os dados do aplicativo seriam armazenados em backup.</string>
     <string name="settings_category_app_data_backup">Backup de dados de aplicativo</string>
-    <string name="app_name">Seedvault</string>
     <string name="settings_backup_apk_title">Backup de aplicativo</string>
     <string name="settings_auto_restore_summary_usb">Observação: seu %1$s precisa estar conectado para que isso funcione.</string>
     <string name="settings_auto_restore_summary">Ao reinstalar um aplicativo, restaura as configurações e dados do backup.</string>
@@ -72,9 +67,6 @@
     <string name="settings_backup_last_backup_never">Nunca</string>
     <string name="settings_backup_location_internal">Armazenamento interno</string>
     <string name="settings_backup_location_none">Nenhum</string>
-    <string name="settings_backup_location_invalid">O local escolhido não pode ser usado.</string>
-    <string name="settings_backup_location_title">Local de backup</string>
-    <string name="settings_backup_location_picker">Escolher local de backup</string>
     <string name="settings_backup_location">Local de backup</string>
     <string name="settings_backup">Fazer backup dos meus dados</string>
     <string name="restore_backup_button">Restaurar backup</string>

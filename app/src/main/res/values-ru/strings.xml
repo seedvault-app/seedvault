@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Seedvault</string>
-    <string name="settings_backup_location_title">Расположение резервной копии</string>
     <string name="settings_backup_location_internal">Внутреннее хранилище</string>
     <string name="settings_auto_restore_title">Автоматическое восстановление</string>
     <string name="settings_backup_apk_dialog_cancel">Отмена</string>
@@ -52,9 +50,6 @@
     <string name="notification_error_channel_title">Уведомление об ошибке</string>
     <string name="notification_failed_title">Ошибка резервного копирования</string>
     <string name="notification_success_title">Резервное копирование завершено</string>
-    <string name="notification_backup_result_error">Ошибка резервного копирования</string>
-    <string name="notification_backup_result_rejected">Не резервная копия</string>
-    <string name="notification_backup_result_complete">Резервное копирование завершено</string>
     <string name="notification_title">Резервное копирование запущено</string>
     <string name="notification_channel_title">Уведомление о резервном копировании</string>
     <string name="recovery_code_error_checksum_word">Ваш код недействителен. Пожалуйста, проверьте все слова и попробуйте еще раз!</string>
@@ -86,7 +81,6 @@
     <string name="storage_check_fragment_backup_title">Инициализация хранилища резервной копии…</string>
     <string name="storage_fake_nextcloud_summary_installed">Нажмите, чтобы настроить учетную запись</string>
     <string name="storage_fake_nextcloud_summary">Нажмите, чтобы установить</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> свободно</string>
     <string name="storage_fake_drive_summary">Должен быть подключен</string>
     <string name="storage_fake_drive_title">USB-накопитель</string>
@@ -110,8 +104,6 @@
     <string name="settings_auto_restore_summary_usb">Примечание: Ваш %1$s должен быть подключен к электросети, чтобы это работало.</string>
     <string name="settings_info">Все резервные копии на вашем телефоне зашифрованы. Для восстановления из резервной копии вам понадобится код восстановления из 12 слов.</string>
     <string name="settings_backup_location_none">Ни одно</string>
-    <string name="settings_backup_location_invalid">Выбранное место использовать нельзя.</string>
-    <string name="settings_backup_location_picker">Выберите место для резервной копии</string>
     <string name="restore_backup_button">Восстановление резервной копии</string>
     <string name="notification_success_text">Резервное копирование %1$d из %2$d приложений выполнено. Нажмите, чтобы узнать больше.</string>
     <string name="notification_backup_already_running">Резервное копирование уже выполняется</string>

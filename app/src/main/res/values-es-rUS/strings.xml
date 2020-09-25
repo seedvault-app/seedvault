@@ -44,9 +44,6 @@
     <string name="notification_error_channel_title">Notificación de Error</string>
     <string name="notification_failed_title">Respaldo falló</string>
     <string name="notification_success_title">Respaldo terminó</string>
-    <string name="notification_backup_result_error">Respaldo falló</string>
-    <string name="notification_backup_result_rejected">No respaldado</string>
-    <string name="notification_backup_result_complete">Respaldo completo</string>
     <string name="notification_title">Ejecución de respaldo</string>
     <string name="recovery_code_error_checksum_word">Tu código no es válido. Por favor revise todas las palabras e intente nuevamente!</string>
     <string name="recovery_code_error_invalid_word">Palabra equivocada. ¿Quisiste decir %1$s o %2$s\?</string>
@@ -77,7 +74,6 @@
     <string name="storage_check_fragment_backup_title">Inicializando la ubicación del respaldo…</string>
     <string name="storage_fake_nextcloud_summary_installed">Haz clic para configurar la cuenta</string>
     <string name="storage_fake_nextcloud_summary">Haz clic para instalar</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_fake_drive_summary">Necesita ser enchufado</string>
     <string name="storage_fake_drive_title">Memoria USB</string>
     <string name="storage_fragment_warning">Las personas con acceso a su ubicación de almacenamiento pueden saber qué aplicaciones usas, pero no reciben acceso a los datos de las aplicaciones.</string>
@@ -103,10 +99,7 @@
     <string name="settings_backup_last_backup_never">Nunca</string>
     <string name="settings_backup_location_internal">Almacenamiento Interno</string>
     <string name="settings_backup_location_none">Ninguno</string>
-    <string name="settings_backup_location_invalid">La ubicación elegida no se puede utilizar.</string>
-    <string name="settings_backup_location_title">Ubicación de respaldo</string>
     <string name="settings_backup_location">Ubicación de respaldo</string>
-    <string name="settings_backup_location_picker">Elegir ubicación de respaldo</string>
     <string name="restore_backup_button">Restaurar respaldo</string>
     <string name="settings_backup">Respalda mi información</string>
     <string name="backup">Respaldo</string>

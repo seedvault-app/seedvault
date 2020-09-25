@@ -3,14 +3,10 @@
     <string name="settings_backup_last_backup_never">Nie</string>
     <string name="settings_backup_location_internal">Interner Speicher</string>
     <string name="settings_backup_location_none">Keiner</string>
-    <string name="settings_backup_location_invalid">Der gewählte Ort kann nicht verwendet werden.</string>
-    <string name="settings_backup_location_title">Sicherungsort</string>
-    <string name="settings_backup_location_picker">Sicherungsort wählen</string>
     <string name="settings_backup_location">Sicherungsort</string>
     <string name="settings_backup">Meine Daten sichern</string>
     <string name="restore_backup_button">Sicherung wiederherstellen</string>
     <string name="backup">Sicherung</string>
-    <string name="app_name">Seedvault</string>
     <string name="notification_restore_error_title">Daten von %1$s konnten nicht wiederhergestellt werden</string>
     <string name="notification_restore_error_channel_title">Fehler bei automatischer Wiederherstellung vom Laufwerk</string>
     <string name="notification_error_action">Beheben</string>
@@ -19,9 +15,6 @@
     <string name="notification_error_channel_title">Fehlermeldung</string>
     <string name="notification_failed_title">Sicherung fehlgeschlagen</string>
     <string name="notification_success_title">Sicherung fertiggestellt</string>
-    <string name="notification_backup_result_error">Sicherung fehlgeschlagen</string>
-    <string name="notification_backup_result_rejected">Nicht gesichert</string>
-    <string name="notification_backup_result_complete">Sicherung fertiggestellt</string>
     <string name="notification_title">Sicherung läuft</string>
     <string name="notification_channel_title">Sicherungsbenachrichtigung</string>
     <string name="recovery_code_error_checksum_word">Ihr Wiederherstellungsschlüssel ist ungültig. Bitte prüfen Sie alle eingegebenen Wörter und versuchen Sie es erneut!</string>
@@ -60,7 +53,6 @@
     <string name="storage_check_fragment_backup_error">Ein Fehler trat beim Zugriff auf den Speicherort auf.</string>
     <string name="storage_fake_nextcloud_summary_installed">Berühren um ein Benutzerkonto zu erstellen</string>
     <string name="storage_fake_nextcloud_summary">Jetzt Installieren</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_fake_drive_summary">muss angeschlossen sein</string>
     <string name="storage_fake_drive_title">USB-Speichergerät</string>
     <string name="storage_fragment_warning">Personen mit Zugriff auf Ihren Speicherort können herausfinden, welche Apps sie nutzen, allerdings nicht auf Ihre APP-Daten zugreifen.</string>

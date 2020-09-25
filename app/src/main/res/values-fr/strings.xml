@@ -42,7 +42,6 @@
     <string name="storage_check_fragment_backup_title">Initialisation de l’emplacement de la sauvegarde…</string>
     <string name="storage_fake_nextcloud_summary_installed">Cliquez pour configurer un compte</string>
     <string name="storage_fake_nextcloud_summary">Cliquez pour installer</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> de libre</string>
     <string name="storage_fake_drive_summary">A besoin d’être branché</string>
     <string name="storage_fake_drive_title">Clé USB</string>
@@ -56,21 +55,17 @@
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde de l’appli</string>
     <string name="settings_category_app_data_backup">Sauvegarde des données de l’appli</string>
-    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$ doit être branché pour que ceci fonctionne.</string>
+    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une appli, restaurer les paramètres et les données sauvegardés.</string>
     <string name="settings_auto_restore_title">Restauration automatique</string>
     <string name="settings_info">Toutes les sauvegardes sont chiffrées sur votre téléphone. Pour restaurer à partir d’une sauvegarde, vous aurez besoin de votre code de récupération de 12 mots.</string>
     <string name="settings_backup_last_backup_never">Jamais</string>
     <string name="settings_backup_location_internal">Stockage interne</string>
     <string name="settings_backup_location_none">Aucun</string>
-    <string name="settings_backup_location_invalid">L’emplacement choisi ne peut pas être choisi.</string>
-    <string name="settings_backup_location_title">Emplacement de la sauvegarde</string>
-    <string name="settings_backup_location_picker">Choisissez l’emplacement de la sauvegarde</string>
     <string name="settings_backup_location">Emplacement de la sauvegarde</string>
     <string name="settings_backup">Sauvegarder mes données</string>
     <string name="restore_backup_button">Restaurer la sauvegarde</string>
     <string name="backup">Sauvegarde</string>
-    <string name="app_name">Seedvault</string>
     <string name="storage_internal_warning_message">Vous avez choisi le stockage interne pour votre sauvegarde. Ceci ne sera pas disponible lorsque votre téléphone sera perdu ou cassé.</string>
     <string name="restore_finished_error">Une erreur s\'est produite lors de la restauration de la sauvegarde.</string>
     <string name="restore_finished_success">Restauration terminée</string>
@@ -101,9 +96,6 @@
     <string name="notification_error_channel_title">Notification d\'erreur</string>
     <string name="notification_failed_title">La sauvegarde a échoué</string>
     <string name="notification_success_title">Sauvegarde terminée</string>
-    <string name="notification_backup_result_error">La sauvegarde a échoué</string>
-    <string name="notification_backup_result_rejected">Non sauvegardé</string>
-    <string name="notification_backup_result_complete">Sauvegarde complète</string>
     <string name="notification_title">Sauvegarde en cours</string>
     <string name="recovery_code_input_intro">Entrez votre code de récupération de 12 mots que vous avez écrit lors de la configuration des sauvegardes.</string>
     <string name="storage_check_fragment_permission_error">Impossible d\'obtenir la permission d\'écrire dans l\'emplacement de sauvegarde.</string>
