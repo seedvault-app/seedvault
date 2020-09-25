@@ -44,7 +44,7 @@
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys"> Steve Soltys </a> y <a href="https://blog.grobox.de"> Torsten Grote </a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0"> Apache2 </a></string>
     <string name="about_summary">Una aplicación de respaldo que utiliza la API de respaldo interno de Android.</string>
-    <string name="storage_internal_warning_choose_other">Escoger Otro</string>
+    <string name="storage_internal_warning_choose_other">Escoger otro</string>
     <string name="storage_internal_warning_message">Ha elegido almacenamiento interno para su copia de seguridad. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
     <string name="restore_finished_error">Ocurrió un error al restaurar la copia de seguridad.</string>
     <string name="restore_finished_success">Restauración completada</string>
@@ -54,7 +54,7 @@
     <string name="restore_app_no_data">La aplicación no reportó datos para la copia de seguridad</string>
     <string name="restore_magic_package">Administrador de paquetes del sistema</string>
     <string name="restore_restoring">Restaurando copia de seguridad</string>
-    <string name="restore_installing_packages">Re-Instalando Aplicaciones</string>
+    <string name="restore_installing_packages">Re-Instalando aplicaciones</string>
     <string name="restore_set_empty_result">No se han encontrado copias de seguridad adecuadas en la ubicación determinada.
 \n
 \nEsto es más probable debido a un código de recuperación incorrecto o un error de almacenamiento.</string>
@@ -107,10 +107,13 @@
     <string name="settings_category_app_data_backup">Copia de seguridad de datos de la aplicación</string>
     <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaure la configuración y los datos respaldados.</string>
     <string name="settings_info">Todas las copias de seguridad están encriptadas en su teléfono. Para restaurar desde la copia de seguridad, necesitará su código de recuperación de 12 palabras.</string>
-    <string name="settings_backup_location_title">Ubicación de respaldo</string>
+    <string name="settings_backup_location_title">Ubicación de copia de seguridad</string>
     <string name="settings_backup_location_picker">Elija la ubicación de la copia de seguridad</string>
     <string name="settings_backup_location">Ubicación de la copia de seguridad</string>
     <string name="settings_backup">Respaldar mi información</string>
     <string name="restore_backup_button">Restaurar la copia de seguridad</string>
     <string name="backup">Copia de seguridad</string>
+    <string name="restore_app_not_eligible">Todavía no hay una copia de seguridad</string>
+    <string name="notification_success_text">%1$d de %2$d aplicaciones respaldadas. Toque para obtener más información.</string>
+    <string name="notification_backup_already_running">Copia de seguridad en progreso</string>
 </resources>
