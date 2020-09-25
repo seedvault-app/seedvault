@@ -46,9 +46,6 @@
     <string name="notification_error_channel_title">Obavijest o greškama</string>
     <string name="notification_failed_title">Sigurnosna kopija neuspjela</string>
     <string name="notification_success_title">Sigurnosna kopija gotova</string>
-    <string name="notification_backup_result_error">Sigurnosna kopija neuspjela</string>
-    <string name="notification_backup_result_rejected">Sigurnosna kopija nije spremljena</string>
-    <string name="notification_backup_result_complete">Sigurnosna kopija završena</string>
     <string name="notification_title">Sigurnosna kopija pokrenuta</string>
     <string name="notification_channel_title">Obavijest sigurnosne kopije</string>
     <string name="recovery_code_error_checksum_word">Tvoja lozinka je neispravna. Provjeri sve riječi i pokušaj ponovo!</string>
@@ -106,9 +103,6 @@
     <string name="settings_backup_last_backup_never">Nikada</string>
     <string name="settings_backup_location_internal">Interno spremište</string>
     <string name="settings_backup_location_none">Bez</string>
-    <string name="settings_backup_location_invalid">Odabrano mjesto se ne može koristiti.</string>
-    <string name="settings_backup_location_title">Mjesto za sigurnosne kopije</string>
-    <string name="settings_backup_location_picker">Odaberi mjesto za sigurnosne kopije</string>
     <string name="settings_backup_location">Mjesto za sigurnosne kopije</string>
     <string name="settings_backup">Spremi sigurnosnu kopiju mojih podataka</string>
     <string name="restore_backup_button">Vrati sigurnosnu kopiju</string>

@@ -28,11 +28,8 @@
     <string name="storage_check_fragment_error_button">Atrás</string>
     <string name="storage_fake_nextcloud_summary_installed">Pulse para configurar una cuenta</string>
     <string name="storage_fake_nextcloud_summary">Pulse para instalar</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
-    <string name="app_name">Seedvault</string>
     <string name="settings_backup_location_none">Ninguna</string>
-    <string name="settings_backup_location_invalid">La ubicación seleccionada no se puede usar.</string>
     <string name="settings_auto_restore_title">Restauración automática</string>
     <string name="settings_auto_restore_summary_usb">Nota: su %1$s debe enchufarse para que esto funcione.</string>
     <string name="settings_backup_last_backup_never">Nunca</string>
@@ -72,9 +69,6 @@
     <string name="notification_error_title">Error de copia de seguridad</string>
     <string name="notification_failed_title">La copia de seguridad falló</string>
     <string name="notification_success_title">Copia de seguridad terminada</string>
-    <string name="notification_backup_result_error">La copia de seguridad falló</string>
-    <string name="notification_backup_result_rejected">No está respaldado</string>
-    <string name="notification_backup_result_complete">Copia de seguridad completa</string>
     <string name="notification_title">Copia de seguridad en ejecución</string>
     <string name="notification_channel_title">Notificación de copia de seguridad</string>
     <string name="recovery_code_error_checksum_word">Su código es inválido. Por favor, compruebe todas las palabras e inténtelo de nuevo!</string>
@@ -107,8 +101,6 @@
     <string name="settings_category_app_data_backup">Copia de seguridad de datos de la aplicación</string>
     <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaure la configuración y los datos respaldados.</string>
     <string name="settings_info">Todas las copias de seguridad están encriptadas en su teléfono. Para restaurar desde la copia de seguridad, necesitará su código de recuperación de 12 palabras.</string>
-    <string name="settings_backup_location_title">Ubicación de copia de seguridad</string>
-    <string name="settings_backup_location_picker">Elija la ubicación de la copia de seguridad</string>
     <string name="settings_backup_location">Ubicación de la copia de seguridad</string>
     <string name="settings_backup">Respaldar mi información</string>
     <string name="restore_backup_button">Restaurar la copia de seguridad</string>

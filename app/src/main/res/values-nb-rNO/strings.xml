@@ -58,9 +58,6 @@
     <string name="notification_error_channel_title">Feilmerknad</string>
     <string name="notification_failed_title">Sikkerhetskopiering mislyktes</string>
     <string name="notification_success_title">Sikkerhetskopi fullført</string>
-    <string name="notification_backup_result_error">Sikkerhetskopi mislyktes</string>
-    <string name="notification_backup_result_rejected">Ikke sikkerhetskopiert</string>
-    <string name="notification_backup_result_complete">Sikkerhetskopi utført</string>
     <string name="notification_title">Sikkerhetskopiering utføres</string>
     <string name="notification_channel_title">Sikkerhetskopieringsmerknad</string>
     <string name="recovery_code_error_checksum_word">Koden din er ugyldig. Sjekk alle ordene og prøv igjen.</string>
@@ -84,7 +81,6 @@
     <string name="storage_check_fragment_restore_title">Ser etter sikkerhetskopier…</string>
     <string name="storage_fake_nextcloud_summary_installed">Klikk for å sette opp konto</string>
     <string name="storage_fake_nextcloud_summary">Klikk for å installere</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ledig</string>
     <string name="storage_fake_drive_summary">Må plugges inn</string>
     <string name="storage_fake_drive_title">USB-minnepinne</string>
@@ -107,12 +103,8 @@
     <string name="settings_backup_last_backup_never">Aldri</string>
     <string name="settings_backup_location_internal">Internlager</string>
     <string name="settings_backup_location_none">Ingen</string>
-    <string name="settings_backup_location_invalid">Valgt plassering kan ikke brukes.</string>
-    <string name="settings_backup_location_title">Sikkerhetskopieringslokasjon</string>
-    <string name="settings_backup_location_picker">Velg sikkerhetskopieringsplassering</string>
     <string name="settings_backup_location">Sikkerhetskopieringsplassering</string>
     <string name="settings_backup">Sikkerhetskopier dataen min</string>
     <string name="restore_backup_button">Gjenopprett sikkerhetskopi</string>
     <string name="backup">Sikkerhetskopier</string>
-    <string name="app_name">Frøbank</string>
 </resources>

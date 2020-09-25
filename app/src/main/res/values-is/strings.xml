@@ -44,9 +44,6 @@
     <string name="notification_error_channel_title">Villuskilaboð</string>
     <string name="notification_failed_title">Öryggisafritun mistókst</string>
     <string name="notification_success_title">Öryggisafritun lokið</string>
-    <string name="notification_backup_result_error">Öryggisafritun mistókst</string>
-    <string name="notification_backup_result_rejected">Öryggisafrit ekki tekið</string>
-    <string name="notification_backup_result_complete">Öryggisafritun lokið</string>
     <string name="notification_title">Öryggisafritun í gangi</string>
     <string name="notification_channel_title">Tilkynning um öryggisafritatöku</string>
     <string name="recovery_code_error_checksum_word">Kóðinn er ógildur. Athugað öll orðin og prófaðu aftur!</string>
@@ -78,7 +75,6 @@
     <string name="storage_check_fragment_restore_title">Leita að öryggisafritum…</string>
     <string name="storage_fake_nextcloud_summary_installed">Smelltu til að setja upp notandareikning</string>
     <string name="storage_fake_nextcloud_summary">Smelltu til að innsetja</string>
-    <string name="storage_fake_nextcloud_title">Nextcloud</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laus</string>
     <string name="storage_fake_drive_summary">Þarf að vera í sambandi við rafmagn</string>
     <string name="storage_fake_drive_title">USB Flash drif</string>
@@ -105,12 +101,8 @@
     <string name="settings_backup_last_backup_never">Aldrei</string>
     <string name="settings_backup_location_internal">Innri gagnageymsla</string>
     <string name="settings_backup_location_none">Engin</string>
-    <string name="settings_backup_location_invalid">Valin staðsetning er ónothæf.</string>
-    <string name="settings_backup_location_title">Staðsetning öryggisafrits</string>
-    <string name="settings_backup_location_picker">Velja staðsetningu öryggisafrits</string>
     <string name="settings_backup_location">Staðsetning öryggisafrits</string>
     <string name="settings_backup">Búa til öryggsafrit</string>
     <string name="restore_backup_button">Endurvekja úr öryggisafriti</string>
     <string name="backup">Öryggisafrit</string>
-    <string name="app_name">Seedvault</string>
 </resources>
