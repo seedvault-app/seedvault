@@ -6,6 +6,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -32,6 +33,7 @@ internal class MetadataWriterDecoderTest {
         val time = Random.nextLong()
         val packages = HashMap<String, PackageMetadata>().apply {
             put(getRandomString(), PackageMetadata(time, APK_AND_DATA))
+            put(getRandomString(), PackageMetadata(time, WAS_STOPPED))
         }
         val metadata = getMetadata(packages)
         assertEquals(metadata, decoder.decode(encoder.encode(metadata), metadata.version, metadata.token))

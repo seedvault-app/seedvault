@@ -23,11 +23,13 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_ELIGIBLE
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_WAS_STOPPED
+import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.requestBackup
@@ -97,9 +99,10 @@ internal class SettingsViewModel(
             val status = when (metadata?.state) {
                 null -> {
                     Log.w(TAG, "No metadata available for: ${it.packageName}")
-                    NOT_ELIGIBLE
+                    NOT_YET_BACKED_UP
                 }
                 NO_DATA -> FAILED_NO_DATA
+                WAS_STOPPED -> FAILED_WAS_STOPPED
                 NOT_ALLOWED -> FAILED_NOT_ALLOWED
                 QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
                 UNKNOWN_ERROR -> FAILED

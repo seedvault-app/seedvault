@@ -1,12 +1,16 @@
 package com.stevesoltys.seedvault.settings
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.DiffResult
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -54,8 +58,8 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
         fun bind(item: AppStatus) {
             appName.text = item.name
             appIcon.setImageDrawable(item.icon)
+            v.background = clickableBackground
             if (editMode) {
-                v.background = clickableBackground
                 v.setOnClickListener {
                     switchView.toggle()
                     item.enabled = switchView.isChecked
@@ -67,8 +71,14 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                 switchView.visibility = VISIBLE
                 switchView.isChecked = item.enabled
             } else {
-                v.background = null
                 v.setOnClickListener(null)
+                v.setOnLongClickListener {
+                    val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", item.packageName, null)
+                    }
+                    startActivity(context, intent, null)
+                    true
+                }
                 setStatus(item.status)
                 if (item.status == SUCCEEDED) {
                     appInfo.text = item.time.toRelativeTime(context)
