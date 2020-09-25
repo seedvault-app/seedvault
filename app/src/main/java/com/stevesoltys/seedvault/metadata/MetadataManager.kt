@@ -80,7 +80,8 @@ class MetadataManager(
                 "APK backup returned version null"
             }
             check(it.version == null || it.version < packageMetadata.version) {
-                "APK backup backed up the same or a smaller version: was ${it.version} is ${packageMetadata.version}"
+                "APK backup backed up the same or a smaller version:" +
+                    "was ${it.version} is ${packageMetadata.version}"
             }
         }
         val oldPackageMetadata = metadata.packageMetadataMap[packageName]

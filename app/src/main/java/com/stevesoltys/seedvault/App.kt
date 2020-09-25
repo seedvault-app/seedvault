@@ -56,7 +56,7 @@ class App : Application() {
                     cryptoModule,
                     headerModule,
                     metadataModule,
-                    documentsProviderModule,  // storage plugin
+                    documentsProviderModule, // storage plugin
                     backupModule,
                     restoreModule,
                     appModule

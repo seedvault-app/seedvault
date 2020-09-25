@@ -32,7 +32,6 @@ import java.io.OutputStream
 import java.nio.file.Path
 import kotlin.random.Random
 
-
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackupTest : BackupTest() {
 
@@ -104,7 +103,9 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `do not accept empty signature`() = runBlocking {
         every { settingsManager.backupApks() } returns true
-        every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns packageMetadata
+        every {
+            metadataManager.getPackageMetadata(packageInfo.packageName)
+        } returns packageMetadata
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns emptyArray()
 
@@ -151,7 +152,9 @@ internal class ApkBackupTest : BackupTest() {
 
     private fun expectChecks(packageMetadata: PackageMetadata = this.packageMetadata) {
         every { settingsManager.backupApks() } returns true
-        every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns packageMetadata
+        every {
+            metadataManager.getPackageMetadata(packageInfo.packageName)
+        } returns packageMetadata
         every { PackageUtils.computeSha256DigestBytes(signatureBytes) } returns signatureHash
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns sigs

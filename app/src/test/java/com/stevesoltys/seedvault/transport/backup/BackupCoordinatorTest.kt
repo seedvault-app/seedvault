@@ -246,7 +246,9 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
         expectApkBackupAndMetadataWrite()
         every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
-        every { full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1) } returns TRANSPORT_QUOTA_EXCEEDED
+        every {
+            full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
+        } returns TRANSPORT_QUOTA_EXCEEDED
         every { full.getCurrentPackage() } returns packageInfo
         every {
             metadataManager.onPackageBackupError(
@@ -347,7 +349,9 @@ internal class BackupCoordinatorTest : BackupTest() {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())
         } returns null
         // check old metadata for state changes, because we won't update it otherwise
-        every { metadataManager.getPackageMetadata(notAllowedPackages[0].packageName) } returns packageMetadata
+        every {
+            metadataManager.getPackageMetadata(notAllowedPackages[0].packageName)
+        } returns packageMetadata
         every { packageMetadata.state } returns NOT_ALLOWED // no change
 
         // update notification for second package
@@ -386,10 +390,15 @@ internal class BackupCoordinatorTest : BackupTest() {
         val oldPackageMetadata: PackageMetadata = mockk()
 
         every { packageService.notAllowedPackages } returns listOf(packageInfo)
-        every { notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1) } just Runs
+        every {
+            notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1)
+        } just Runs
         coEvery { apkBackup.backupApkIfNecessary(packageInfo, NOT_ALLOWED, any()) } returns null
-        every { metadataManager.getPackageMetadata(packageInfo.packageName) } returns oldPackageMetadata
-        every { oldPackageMetadata.state } returns WAS_STOPPED // state differs now, was stopped before
+        every {
+            metadataManager.getPackageMetadata(packageInfo.packageName)
+        } returns oldPackageMetadata
+        // state differs now, was stopped before
+        every { oldPackageMetadata.state } returns WAS_STOPPED
         coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
         every {
             metadataManager.onPackageBackupError(

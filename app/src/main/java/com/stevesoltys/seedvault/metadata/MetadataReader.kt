@@ -78,9 +78,9 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                 )
             }
             val token = meta.getLong(JSON_METADATA_TOKEN)
-            if (expectedToken != null && token != expectedToken) {
-                throw SecurityException("Invalid token '$token' in metadata, expected '$expectedToken'.")
-            }
+            if (expectedToken != null && token != expectedToken) throw SecurityException(
+                "Invalid token '$token' in metadata, expected '$expectedToken'."
+            )
             // get package metadata
             val packageMetadataMap = PackageMetadataMap()
             for (packageName in json.keys()) {

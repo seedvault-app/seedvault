@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.ui.storage
 
-
 import android.content.Context
 import android.text.format.Formatter
 import android.view.LayoutInflater

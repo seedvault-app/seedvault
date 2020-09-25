@@ -15,7 +15,9 @@ internal const val REQUEST_CODE_UNINSTALL = 4576841
 class RestoreErrorBroadcastReceiver : BroadcastReceiver() {
 
     // using KoinComponent would crash robolectric tests :(
-    private val notificationManager: BackupNotificationManager by lazy { get().get<BackupNotificationManager>() }
+    private val notificationManager: BackupNotificationManager by lazy {
+        get().get<BackupNotificationManager>()
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != ACTION_RESTORE_ERROR_UNINSTALL) return
@@ -24,7 +26,7 @@ class RestoreErrorBroadcastReceiver : BroadcastReceiver() {
 
         val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
 
-        @Suppress("DEPRECATION")  // the alternative doesn't work for us
+        @Suppress("DEPRECATION") // the alternative doesn't work for us
         val i = Intent(Intent.ACTION_UNINSTALL_PACKAGE).apply {
             data = "package:$packageName".toUri()
             flags = FLAG_ACTIVITY_NEW_TASK

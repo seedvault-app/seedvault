@@ -24,7 +24,7 @@ before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
-script: ./gradlew check assemble
+script: ./gradlew check assemble ktlintCheck
 
 cache:
   directories:

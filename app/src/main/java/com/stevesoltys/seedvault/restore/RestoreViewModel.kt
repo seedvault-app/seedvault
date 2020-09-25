@@ -186,7 +186,9 @@ internal class RestoreViewModel(
         // we need to start a new session and retrieve the restore sets before starting the restore
         val restoreSetResult = getAvailableRestoreSets()
         if (restoreSetResult.hasError()) {
-            mRestoreBackupResult.postValue(RestoreBackupResult(app.getString(R.string.restore_finished_error)))
+            mRestoreBackupResult.postValue(
+                RestoreBackupResult(app.getString(R.string.restore_finished_error))
+            )
             return
         }
 
@@ -196,7 +198,9 @@ internal class RestoreViewModel(
         if (restoreAllResult != 0) {
             if (session == null) Log.e(TAG, "session was null")
             else Log.e(TAG, "restoreAll() returned non-zero value")
-            mRestoreBackupResult.postValue(RestoreBackupResult(app.getString(R.string.restore_finished_error)))
+            mRestoreBackupResult.postValue(
+                RestoreBackupResult(app.getString(R.string.restore_finished_error))
+            )
             return
         }
     }
@@ -306,8 +310,9 @@ internal class RestoreViewModel(
                     val restorableBackups = restoreSets.mapNotNull { set ->
                         getRestorableBackup(set, backupMetadata[set.token])
                     }
-                    if (restorableBackups.isEmpty()) RestoreSetResult(app.getString(R.string.restore_set_empty_result))
-                    else RestoreSetResult(restorableBackups)
+                    if (restorableBackups.isEmpty()) {
+                        RestoreSetResult(app.getString(R.string.restore_set_empty_result))
+                    } else RestoreSetResult(restorableBackups)
                 }
             }
             continuation.resume(result)

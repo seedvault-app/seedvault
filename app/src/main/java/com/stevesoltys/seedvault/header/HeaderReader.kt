@@ -33,15 +33,21 @@ internal class HeaderReaderImpl : HeaderReader {
 
         val packageLength = buffer.short.toInt()
         if (packageLength <= 0) throw SecurityException("Invalid package length: $packageLength")
-        if (packageLength > MAX_PACKAGE_LENGTH_SIZE) throw SecurityException("Too large package length: $packageLength")
-        if (packageLength > buffer.remaining()) throw SecurityException("Not enough bytes for package name")
+        if (packageLength > MAX_PACKAGE_LENGTH_SIZE) throw SecurityException(
+            "Too large package length: $packageLength"
+        )
+        if (packageLength > buffer.remaining()) throw SecurityException(
+            "Not enough bytes for package name"
+        )
         val packageName = ByteArray(packageLength)
             .apply { buffer.get(this) }
             .toString(Utf8)
 
         val keyLength = buffer.short.toInt()
         if (keyLength < 0) throw SecurityException("Invalid key length: $keyLength")
-        if (keyLength > MAX_KEY_LENGTH_SIZE) throw SecurityException("Too large key length: $keyLength")
+        if (keyLength > MAX_KEY_LENGTH_SIZE) throw SecurityException(
+            "Too large key length: $keyLength"
+        )
         if (keyLength > buffer.remaining()) throw SecurityException("Not enough bytes for key")
         val key = if (keyLength == 0) null else ByteArray(keyLength)
             .apply { buffer.get(this) }

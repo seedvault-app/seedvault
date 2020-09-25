@@ -1,7 +1,10 @@
 import groovy.xml.XmlUtil
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
+}
 
 android {
 
@@ -74,6 +77,17 @@ android {
 
 apply from: '../gradle/dependencies.gradle'
 
+ktlint {
+    version = "0.36.0" // https://github.com/pinterest/ktlint/issues/764
+    android = true
+    enableExperimentalRules = false
+    verbose = true
+    disabledRules = [
+            "import-ordering",
+            "no-blank-line-before-rbrace",
+    ]
+}
+
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
         if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
@@ -92,9 +106,14 @@ preBuild.doLast {
         def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
         parsedXml.component[1].remove(jdkNode)
 
-        def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+        def apiString = android.compileSdkVersion.substring("android-".length())
+        def sdkString = "Android API " + apiString + " Platform"
         //noinspection GroovyResultOfObjectAllocationIgnored // the note gets inserted
-        new Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+        new Node(parsedXml.component[1], 'orderEntry', [
+                'type'   : 'jdk',
+                'jdkName': sdkString,
+                'jdkType': 'Android SDK'
+        ])
         XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
 
     } catch (NullPointerException | FileNotFoundException ex) {

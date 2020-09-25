@@ -160,7 +160,9 @@ class MetadataReaderTest {
         assertNull(packageMetadata.signatures)
     }
 
-    private fun getMetadata(packageMetadata: PackageMetadataMap = PackageMetadataMap()): BackupMetadata {
+    private fun getMetadata(
+        packageMetadata: PackageMetadataMap = PackageMetadataMap()
+    ): BackupMetadata {
         return BackupMetadata(
             version = 1.toByte(),
             token = Random.nextLong(),

@@ -215,7 +215,7 @@ internal class ApkRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `test system apps only get reinstalled when older system apps exist`(@TempDir tmpDir: Path) =
+    fun `test system apps only reinstalled when older system apps exist`(@TempDir tmpDir: Path) =
         runBlocking {
             val packageMetadata = this@ApkRestoreTest.packageMetadata.copy(system = true)
             packageMetadataMap[packageName] = packageMetadata
