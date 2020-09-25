@@ -3,10 +3,10 @@
     <string name="notification_success_text">%1$d de %2$d app com backup. Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
     <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Patrocinado por: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; para o seu uso no &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Design por: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Escrito por: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; e &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licença: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org\">Calyx Institute</a> para o seu uso no <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licença: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
     <string name="about_title">Sobre</string>
     <string name="storage_internal_warning_use_anyway">Usar assim mesmo</string>
@@ -80,7 +80,7 @@
     <string name="storage_check_fragment_backup_title">Inicializando local de backup…</string>
     <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
     <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
-    <string name="storage_available_bytes">&amp;lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&amp;gt;%1$s&amp;lt;/xliff:g&amp;gt; livre&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; free<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
     <string name="storage_fragment_warning">Pessoas com acesso ao seu local de armazenamento podem saber quais apps usa, mas não têm acesso aos dados das apps.</string>
