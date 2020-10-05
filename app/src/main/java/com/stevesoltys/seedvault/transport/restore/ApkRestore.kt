@@ -6,9 +6,9 @@ import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.content.pm.PackageManager.NameNotFoundException
 import android.graphics.drawable.Drawable
 import android.util.Log
-import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.io.IOException
-import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 
 private val TAG = ApkRestore::class.java.simpleName
@@ -80,21 +79,10 @@ internal class ApkRestore(
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        restorePlugin.getApkInputStream(token, packageName).use { inputStream ->
-            cachedApk.outputStream().use { outputStream ->
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                var bytes = inputStream.read(buffer)
-                while (bytes >= 0) {
-                    outputStream.write(buffer, 0, bytes)
-                    messageDigest.update(buffer, 0, bytes)
-                    bytes = inputStream.read(buffer)
-                }
-            }
-        }
+        val inputStream = restorePlugin.getApkInputStream(token, packageName)
+        val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
 
         // check APK's SHA-256 hash
-        val sha256 = messageDigest.digest().encodeBase64()
         if (metadata.sha256 != sha256) throw SecurityException(
             "Package $packageName has sha256 '$sha256', but '${metadata.sha256}' expected."
         )
