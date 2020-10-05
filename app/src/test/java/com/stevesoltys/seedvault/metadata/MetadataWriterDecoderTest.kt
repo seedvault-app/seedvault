@@ -54,6 +54,11 @@ internal class MetadataWriterDecoderTest {
                     state = APK_AND_DATA,
                     version = Random.nextLong(),
                     installer = getRandomString(),
+                    splits = listOf(
+                        ApkSplit(getRandomString(), getRandomString()),
+                        ApkSplit(getRandomString(), getRandomString()),
+                        ApkSplit(getRandomString(), getRandomString())
+                    ),
                     sha256 = getRandomString(),
                     signatures = listOf(getRandomString(), getRandomString())
                 )

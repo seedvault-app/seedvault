@@ -45,6 +45,14 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 }
                 packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
                 packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }
+                packageMetadata.splits?.let { splits ->
+                    put(JSON_PACKAGE_SPLITS, JSONArray().apply {
+                        for (split in splits) put(JSONObject().apply {
+                            put(JSON_PACKAGE_SPLIT_NAME, split.name)
+                            put(JSON_PACKAGE_SHA256, split.sha256)
+                        })
+                    })
+                }
                 packageMetadata.sha256?.let { put(JSON_PACKAGE_SHA256, it) }
                 packageMetadata.signatures?.let { put(JSON_PACKAGE_SIGNATURES, JSONArray(it)) }
             })

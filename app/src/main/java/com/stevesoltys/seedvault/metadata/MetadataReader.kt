@@ -112,6 +112,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     system = pSystem,
                     version = if (pVersion == 0L) null else pVersion,
                     installer = if (pInstaller == "") null else pInstaller,
+                    splits = getSplits(p),
                     sha256 = if (pSha256 == "") null else pSha256,
                     signatures = signatures
                 )
@@ -128,6 +129,20 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         } catch (e: JSONException) {
             throw SecurityException(e)
         }
+    }
+
+    private fun getSplits(p: JSONObject): List<ApkSplit>? {
+        val jsonSplits = p.optJSONArray(JSON_PACKAGE_SPLITS) ?: return null
+        val splits = ArrayList<ApkSplit>(jsonSplits.length())
+        for (i in 0 until jsonSplits.length()) {
+            val jsonApkSplit = jsonSplits.getJSONObject(i)
+            val apkSplit = ApkSplit(
+                name = jsonApkSplit.getString(JSON_PACKAGE_SPLIT_NAME),
+                sha256 = jsonApkSplit.getString(JSON_PACKAGE_SHA256)
+            )
+            splits.add(apkSplit)
+        }
+        return splits
     }
 
 }
