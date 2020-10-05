@@ -66,6 +66,8 @@ class MetadataManager(
      *
      * It updates the packages' metadata
      * and writes it encrypted to the given [OutputStream] as well as the internal cache.
+     *
+     * Closing the [OutputStream] is the responsibility of the caller.
      */
     @Synchronized
     @Throws(IOException::class)
@@ -112,6 +114,8 @@ class MetadataManager(
      *
      * It updates the packages' metadata
      * and writes it encrypted to the given [OutputStream] as well as the internal cache.
+     *
+     * Closing the [OutputStream] is the responsibility of the caller.
      */
     @Synchronized
     @Throws(IOException::class)
@@ -221,8 +225,8 @@ class MetadataManager(
     @VisibleForTesting
     private fun getMetadataFromCache(): BackupMetadata? {
         try {
-            with(context.openFileInput(METADATA_CACHE_FILE)) {
-                return metadataReader.decode(readBytes())
+            context.openFileInput(METADATA_CACHE_FILE).use { stream ->
+                return metadataReader.decode(stream.readBytes())
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Error parsing cached metadata", e)
@@ -237,8 +241,8 @@ class MetadataManager(
     @VisibleForTesting
     @Throws(IOException::class)
     private fun writeMetadataToCache() {
-        with(context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE)) {
-            write(metadataWriter.encode(metadata))
+        context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE).use { stream ->
+            stream.write(metadataWriter.encode(metadata))
         }
     }
 

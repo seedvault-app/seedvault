@@ -20,6 +20,7 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -74,6 +75,11 @@ class MetadataManagerTest {
 
         assertEquals(token, manager.getBackupToken())
         assertEquals(0L, manager.getLastBackupTime())
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -91,6 +97,11 @@ class MetadataManagerTest {
         manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
 
         assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -109,6 +120,11 @@ class MetadataManagerTest {
         manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
 
         assertEquals(packageMetadata.copy(system = true), manager.getPackageMetadata(packageName))
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -133,6 +149,11 @@ class MetadataManagerTest {
         manager.onApkBackedUp(packageInfo, updatedPackageMetadata, storageOutputStream)
 
         assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -187,6 +208,11 @@ class MetadataManagerTest {
             packageMetadata.copy(state = WAS_STOPPED),
             manager.getPackageMetadata(packageName)
         )
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -210,6 +236,11 @@ class MetadataManagerTest {
             manager.getPackageMetadata(packageName)
         )
         assertEquals(time, manager.getLastBackupTime())
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -237,6 +268,8 @@ class MetadataManagerTest {
             initialMetadata.packageMetadataMap[packageName],
             manager.getPackageMetadata(packageName)
         )
+
+        verify { cacheInputStream.close() }
     }
 
     @Test
@@ -265,6 +298,11 @@ class MetadataManagerTest {
             updatedMetadata.packageMetadataMap[packageName],
             manager.getPackageMetadata(packageName)
         )
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
     }
 
     @Test
@@ -289,6 +327,8 @@ class MetadataManagerTest {
 
         assertEquals(initialMetadata.time, manager.getLastBackupTime())
         assertEquals(initialMetadata.token, manager.getBackupToken())
+
+        verify { cacheInputStream.close() }
     }
 
     private fun expectModifyMetadata(metadata: BackupMetadata) {
@@ -301,6 +341,7 @@ class MetadataManagerTest {
             )
         } returns cacheOutputStream
         every { cacheOutputStream.write(encodedMetadata) } just Runs
+        every { cacheOutputStream.close() } just Runs
     }
 
     private fun expectReadFromCache() {
@@ -309,6 +350,7 @@ class MetadataManagerTest {
         every { cacheInputStream.available() } returns byteArray.size andThen 0
         every { cacheInputStream.read(byteArray) } returns -1
         every { metadataReader.decode(ByteArray(0)) } returns initialMetadata
+        every { cacheInputStream.close() } just Runs
     }
 
 }
