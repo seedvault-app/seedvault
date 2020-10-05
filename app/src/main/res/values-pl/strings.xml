@@ -1,2 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="storage_check_fragment_backup_error">Wystąpił błąd podczas uzyskiwania dostępu do lokalizacji kopii zapasowej.</string>
+    <string name="storage_check_fragment_restore_title">Szukanie kopii zapasowych…</string>
+    <string name="storage_check_fragment_backup_title">Inicjowanie lokalizacji kopii zapasowej…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Kliknij, aby skonfigurować konto</string>
+    <string name="storage_fake_nextcloud_summary">Kliknij by zainstalować</string>
+    <string name="storage_fragment_backup_title">Wybierz miejsce przechowywania kopii zapasowych</string>
+    <string name="settings_backup_now">Utwórz kopię zapasową teraz</string>
+    <string name="settings_backup_exclude_apps">Wyklucz aplikacje</string>
+    <string name="settings_backup_status_summary">Ostatnia kopia zapasowa: %1$s</string>
+    <string name="settings_backup_status_title">Stan kopii zapasowej aplikacji</string>
+    <string name="settings_backup_apk_dialog_disable">Wyłączanie tworzenia kopii zapasowych aplikacji</string>
+    <string name="settings_backup_apk_dialog_cancel">Anuluj</string>
+    <string name="settings_backup_apk_dialog_title">Naprawdę wyłączyć kopię zapasową aplikacji\?</string>
+    <string name="settings_backup_apk_title">Kopia zapasowa aplikacji</string>
+    <string name="settings_category_app_data_backup">Kopia zapasowa danych aplikacji</string>
+    <string name="settings_auto_restore_summary">Podczas ponownej instalacji aplikacji przywróć ustawienia i dane z kopii zapasowej.</string>
+    <string name="settings_auto_restore_title">Automatyczne przywracanie</string>
+    <string name="settings_info">Wszystkie kopie zapasowe w telefonie są zaszyfrowane. Aby przywrócić dane z kopii zapasowej, będziesz potrzebować 12-słowowego kodu odzyskiwania.</string>
+    <string name="settings_backup_last_backup_never">Nigdy</string>
+    <string name="settings_backup_location_internal">Pamięć wewnętrzna</string>
+    <string name="settings_backup_location_none">Brak</string>
+    <string name="settings_backup_location_invalid">Nie można użyć wybranej lokalizacji.</string>
+    <string name="settings_backup_location_title">Lokalizacja kopii zapasowych</string>
+    <string name="settings_backup_location_picker">Wybierz lokalizację kopii zapasowej</string>
+    <string name="settings_backup_location">Lokalizacja kopii zapasowych</string>
+    <string name="settings_backup">Tworzenie kopii zapasowej</string>
+    <string name="restore_backup_button">Przywróć kopię zapasową</string>
+</resources>
