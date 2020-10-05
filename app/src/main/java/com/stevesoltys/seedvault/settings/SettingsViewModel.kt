@@ -24,6 +24,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
@@ -36,7 +37,6 @@ import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -67,7 +67,11 @@ internal class SettingsViewModel(
     internal val appEditMode: LiveData<Boolean> = mAppEditMode
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        val scope = permitDiskReads {
+            // this shouldn't cause disk reads, but it still does
+            viewModelScope
+        }
+        scope.launch {
             // ensures the lastBackupTime LiveData gets set
             metadataManager.getLastBackupTime()
         }

@@ -19,9 +19,12 @@ import android.content.pm.PackageManager
 import android.util.Log
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
 import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 
@@ -101,8 +104,10 @@ internal class ApkInstaller(private val context: Context) {
         }
         Log.d(TAG, "Received result for $packageName: success=$success $statusMsg")
 
-        // delete cached APK file
-        cachedApk.delete()
+        // delete cached APK file on I/O thread
+        GlobalScope.launch(Dispatchers.IO) {
+            cachedApk.delete()
+        }
 
         // update status and offer result
         val status = if (success) SUCCEEDED else FAILED

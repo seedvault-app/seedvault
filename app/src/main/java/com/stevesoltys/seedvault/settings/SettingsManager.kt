@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -25,7 +26,9 @@ private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
 class SettingsManager(context: Context) {
 
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    private val prefs = permitDiskReads {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     @Volatile
     private var token: Long? = null
