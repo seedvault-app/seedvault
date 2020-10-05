@@ -36,5 +36,11 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/steves
 
 This project aims to adhere to the [official Kotlin coding style](https://developer.android.com/kotlin/style-guide).
 
+## Third-party tools
+
+The [Seedvault backup parser](https://github.com/tlambertz/seedvault_backup_parser)
+allows you to decrypt and inspect your backups.
+It can also re-encrypt them.
+
 ## License
 This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).
