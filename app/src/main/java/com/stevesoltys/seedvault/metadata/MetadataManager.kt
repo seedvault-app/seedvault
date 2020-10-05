@@ -103,6 +103,7 @@ class MetadataManager(
                 system = packageInfo.isSystemApp(),
                 version = packageMetadata.version,
                 installer = packageMetadata.installer,
+                splits = packageMetadata.splits,
                 sha256 = packageMetadata.sha256,
                 signatures = packageMetadata.signatures
             )

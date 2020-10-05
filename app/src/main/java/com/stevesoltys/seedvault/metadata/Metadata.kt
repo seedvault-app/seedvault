@@ -70,6 +70,7 @@ data class PackageMetadata(
     internal val system: Boolean = false,
     internal val version: Long? = null,
     internal val installer: String? = null,
+    internal val splits: List<ApkSplit>? = null,
     internal val sha256: String? = null,
     internal val signatures: List<String>? = null
 ) {
@@ -78,11 +79,19 @@ data class PackageMetadata(
     }
 }
 
+data class ApkSplit(
+    val name: String,
+    val sha256: String
+    // There's also a revisionCode, but it doesn't seem to be used just yet
+)
+
 internal const val JSON_PACKAGE_TIME = "time"
 internal const val JSON_PACKAGE_STATE = "state"
 internal const val JSON_PACKAGE_SYSTEM = "system"
 internal const val JSON_PACKAGE_VERSION = "version"
 internal const val JSON_PACKAGE_INSTALLER = "installer"
+internal const val JSON_PACKAGE_SPLITS = "splits"
+internal const val JSON_PACKAGE_SPLIT_NAME = "name"
 internal const val JSON_PACKAGE_SHA256 = "sha256"
 internal const val JSON_PACKAGE_SIGNATURES = "signatures"
 
