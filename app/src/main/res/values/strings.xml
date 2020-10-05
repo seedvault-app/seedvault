@@ -2,6 +2,8 @@
 
     <string name="app_name" translatable="false">Seedvault</string>
     <string name="backup">Backup</string>
+    <string name="data_management_label">Seedvault Backup</string>
+    <string name="current_destination_string">Backup status and settings</string>
 
     <string name="restore_backup_button">Restore backup</string>
 
