@@ -86,7 +86,7 @@
     <string name="settings_backup_now">Fazer backup agora</string>
     <string name="settings_backup_exclude_apps">Excluir apps</string>
     <string name="settings_backup_status_summary">Último backup: %1$s</string>
-    <string name="settings_backup_status_title">Status de backup da app</string>
+    <string name="settings_backup_status_title">Estado de backup da app</string>
     <string name="settings_backup_apk_dialog_disable">Desativar backup da app</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
     <string name="settings_backup_apk_dialog_message">O backup da app desativado ainda fará o backup dos dados da app. Porém, ele não será restaurado automaticamente.
