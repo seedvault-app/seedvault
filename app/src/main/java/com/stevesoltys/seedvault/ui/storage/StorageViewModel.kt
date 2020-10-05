@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.settings.BackupManagerSettings
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -49,7 +50,9 @@ internal abstract class StorageViewModel(
         ): Boolean {
             val storage = settingsManager.getStorage() ?: return false
             if (storage.isUsb) return true
-            return storage.getDocumentFile(context).isDirectory
+            return permitDiskReads {
+                storage.getDocumentFile(context).isDirectory
+            }
         }
     }
 

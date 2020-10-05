@@ -79,7 +79,9 @@ class App : Application() {
                     .build()
             )
         }
-        migrateTokenFromMetadataToSettingsManager()
+        permitDiskReads {
+            migrateTokenFromMetadataToSettingsManager()
+        }
     }
 
     private val settingsManager: SettingsManager by inject()
@@ -106,3 +108,21 @@ const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val GLOBAL_METADATA_KEY = "@meta@"
 
 fun isDebugBuild() = Build.TYPE == "userdebug"
+
+fun <T> permitDiskReads(func: () -> T): T {
+    return if (isDebugBuild()) {
+        val oldThreadPolicy = StrictMode.getThreadPolicy()
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder(oldThreadPolicy)
+                .permitDiskReads()
+                .build()
+        )
+        try {
+            func()
+        } finally {
+            StrictMode.setThreadPolicy(oldThreadPolicy)
+        }
+    } else {
+        func()
+    }
+}

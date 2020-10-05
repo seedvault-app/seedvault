@@ -26,6 +26,7 @@ import androidx.preference.TwoStatePreference
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.UsbMonitor
 import com.stevesoltys.seedvault.isMassStorage
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
 import org.koin.android.ext.android.inject
@@ -67,7 +68,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.settings, rootKey)
+        permitDiskReads {
+            setPreferencesFromResource(R.xml.settings, rootKey)
+        }
         setHasOptionsMenu(true)
 
         backup = findPreference("backup")!!
