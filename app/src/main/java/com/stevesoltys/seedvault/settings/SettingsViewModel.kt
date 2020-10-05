@@ -37,6 +37,7 @@ import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -85,7 +86,7 @@ internal class SettingsViewModel(
         }
     }
 
-    private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData {
+    private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData(Dispatchers.Default) {
         val pm = app.packageManager
         val locale = Locale.getDefault()
         val list = packageService.userApps.map {
