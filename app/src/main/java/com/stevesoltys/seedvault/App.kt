@@ -6,6 +6,7 @@ import android.app.backup.IBackupManager
 import android.content.Context.BACKUP_SERVICE
 import android.os.Build
 import android.os.ServiceManager.getService
+import android.os.StrictMode
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -61,6 +62,21 @@ class App : Application() {
                     restoreModule,
                     appModule
                 )
+            )
+        }
+        if (isDebugBuild()) {
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyFlashScreen()
+                    .build()
+            )
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build()
             )
         }
         migrateTokenFromMetadataToSettingsManager()
