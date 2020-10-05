@@ -17,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
+// If we ever change this, we should use a ComponentName like the other backup transports.
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
 private const val TRANSPORT_DIRECTORY_NAME =
@@ -37,22 +38,69 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return TRANSPORT_DIRECTORY_NAME
     }
 
+    /**
+     * Ask the transport for the name under which it should be registered.
+     * This will typically be its host service's component name, but need not be.
+     */
     override fun name(): String {
         return TRANSPORT_ID
     }
 
+    /**
+     * Returns flags with additional information about the transport,
+     * which is accessible to the BackupAgent.
+     * This allows the agent to decide what to do based on properties of the transport.
+     */
     override fun getTransportFlags(): Int {
         return FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
     }
 
+    /**
+     * Ask the transport for an [Intent] that can be used to launch
+     * a more detailed secondary data management activity.
+     * For example, the configuration intent might be one for allowing the user
+     * to select which account they wish to associate their backups with,
+     * and the management intent might be one which presents a UI
+     * for managing the data on the backend.
+     *
+     * In the Settings UI, the configuration intent will typically be invoked
+     * when the user taps on the preferences item labeled with the current destination string,
+     * and the management intent will be placed in an overflow menu labelled
+     * with the management label string.
+     *
+     * If the transport does not supply any user-facing data management UI,
+     * then it should return {@code null} from this method.
+     *
+     * @return An intent that can be passed to [Context.startActivity] in order to
+     *         launch the transport's data-management UI.  This method will return
+     *         {@code null} if the transport does not offer any user-facing data
+     *         management UI.
+     */
     override fun dataManagementIntent(): Intent {
         return Intent(context, SettingsActivity::class.java)
     }
 
-    override fun dataManagementLabel(): String {
+    /**
+     * On demand, supply a short CharSequence that can be shown to the user
+     * as the label on an overflow menu item used to invoke the data management UI.
+     *
+     * @return A CharSequence to be used as the label for the transport's data management
+     *     affordance. If the transport supplies a data management intent, this method must not
+     *     return {@code null}.
+     */
+    override fun dataManagementIntentLabel(): CharSequence {
         return context.getString(R.string.data_management_label)
     }
 
+    /**
+     * On demand, supply a one-line string that can be shown to the user
+     * that describes the current backend destination.
+     * For example, a transport that can potentially associate backup data
+     * with arbitrary user accounts should include the name of the currently-active account here.
+     *
+     * @return A string describing the destination to which the transport is currently
+     *         sending data.  This method should not return null.
+     */
     override fun currentDestinationString(): String {
         return context.getString(R.string.current_destination_string)
     }
