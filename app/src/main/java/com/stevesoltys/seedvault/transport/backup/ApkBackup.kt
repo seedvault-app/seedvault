@@ -14,13 +14,16 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.security.MessageDigest
 
 private val TAG = ApkBackup::class.java.simpleName
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class ApkBackup(
     private val pm: PackageManager,
     private val settingsManager: SettingsManager,
@@ -87,31 +90,10 @@ class ApkBackup(
         }
 
         // get an InputStream for the APK
-        val apk = File(packageInfo.applicationInfo.sourceDir)
-        val inputStream = try {
-            apk.inputStream()
-        } catch (e: FileNotFoundException) {
-            Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
-            throw IOException(e)
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
-            throw IOException(e)
-        }
-
+        val inputStream = getApkInputStream(packageInfo.applicationInfo.sourceDir)
         // copy the APK to the storage's output and calculate SHA-256 hash while at it
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        streamGetter().use { outputStream ->
-            inputStream.use { inputStream ->
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                var bytes = inputStream.read(buffer)
-                while (bytes >= 0) {
-                    outputStream.write(buffer, 0, bytes)
-                    messageDigest.update(buffer, 0, bytes)
-                    bytes = inputStream.read(buffer)
-                }
-            }
-        }
-        val sha256 = messageDigest.digest().encodeBase64()
+        val sha256 = copyStreamsAndGetHash(inputStream, streamGetter())
+
         Log.d(TAG, "Backed up new APK of $packageName with version $version.")
 
         // return updated metadata
@@ -134,6 +116,45 @@ class ApkBackup(
         return packageMetadata.signatures.intersect(signatures).isEmpty()
     }
 
+    @Throws(IOException::class)
+    private fun getApkInputStream(apkPath: String): FileInputStream {
+        val apk = File(apkPath)
+        return try {
+            apk.inputStream()
+        } catch (e: FileNotFoundException) {
+            Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
+            throw IOException(e)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
+            throw IOException(e)
+        }
+    }
+
+}
+
+/**
+ * Copy the APK from the given [InputStream] to the given [OutputStream]
+ * and calculate the SHA-256 hash while at it.
+ *
+ * Both streams will be closed when the method returns.
+ *
+ * @return the APK's SHA-256 hash in Base64 format.
+ */
+@Throws(IOException::class)
+fun copyStreamsAndGetHash(inputStream: InputStream, outputStream: OutputStream): String {
+    val messageDigest = MessageDigest.getInstance("SHA-256")
+    outputStream.use { oStream ->
+        inputStream.use { inputStream ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = inputStream.read(buffer)
+            while (bytes >= 0) {
+                oStream.write(buffer, 0, bytes)
+                messageDigest.update(buffer, 0, bytes)
+                bytes = inputStream.read(buffer)
+            }
+        }
+    }
+    return messageDigest.digest().encodeBase64()
 }
 
 /**
