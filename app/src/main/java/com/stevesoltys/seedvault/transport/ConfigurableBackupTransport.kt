@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsActivity
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
@@ -49,11 +50,11 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     }
 
     override fun dataManagementLabel(): String {
-        return "Please file a bug if you see this! 1"
+        return context.getString(R.string.data_management_label)
     }
 
     override fun currentDestinationString(): String {
-        return "Please file a bug if you see this! 2"
+        return context.getString(R.string.current_destination_string)
     }
 
     // ------------------------------------------------------------------------------------
