@@ -9,6 +9,7 @@ import android.util.Log
 import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.encodeBase64
+import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState
@@ -43,7 +44,7 @@ class ApkBackup(
     suspend fun backupApkIfNecessary(
         packageInfo: PackageInfo,
         packageState: PackageState,
-        streamGetter: suspend () -> OutputStream
+        streamGetter: suspend (suffix: String) -> OutputStream
     ): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
@@ -86,13 +87,19 @@ class ApkBackup(
                     " already has a backup ($backedUpVersion)" +
                     " with the same signature. Not backing it up."
             )
+            // We could also check if there are new feature module splits to back up,
+            // but we rely on the app themselves to re-download those, if needed after restore.
             return null
         }
 
         // get an InputStream for the APK
         val inputStream = getApkInputStream(packageInfo.applicationInfo.sourceDir)
         // copy the APK to the storage's output and calculate SHA-256 hash while at it
-        val sha256 = copyStreamsAndGetHash(inputStream, streamGetter())
+        val sha256 = copyStreamsAndGetHash(inputStream, streamGetter(""))
+
+        // back up splits if they exist
+        val splits =
+            if (packageInfo.splitNames == null) null else backupSplitApks(packageInfo, streamGetter)
 
         Log.d(TAG, "Backed up new APK of $packageName with version $version.")
 
@@ -101,6 +108,7 @@ class ApkBackup(
             state = packageState,
             version = version,
             installer = pm.getInstallSourceInfo(packageName).installingPackageName,
+            splits = splits,
             sha256 = sha256,
             signatures = signatures
         )
@@ -128,6 +136,56 @@ class ApkBackup(
             Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
             throw IOException(e)
         }
+    }
+
+    @Throws(IOException::class)
+    private suspend fun backupSplitApks(
+        packageInfo: PackageInfo,
+        streamGetter: suspend (suffix: String) -> OutputStream
+    ): List<ApkSplit> {
+        check(packageInfo.splitNames != null)
+        val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs
+        check(packageInfo.splitNames.size == splitSourceDirs.size) {
+            "Size Mismatch! ${packageInfo.splitNames.size} != ${splitSourceDirs.size} " +
+                "splitNames is ${packageInfo.splitNames.toList()}, " +
+                "but splitSourceDirs is ${splitSourceDirs.toList()}"
+        }
+        val splits = ArrayList<ApkSplit>(packageInfo.splitNames.size)
+        for (i in packageInfo.splitNames.indices) {
+            val split = backupSplitApk(packageInfo.splitNames[i], splitSourceDirs[i], streamGetter)
+            splits.add(split)
+        }
+        return splits
+    }
+
+    @Throws(IOException::class)
+    private suspend fun backupSplitApk(
+        name: String,
+        sourceDir: String,
+        streamGetter: suspend (suffix: String) -> OutputStream
+    ): ApkSplit {
+        // Calculate sha256 hash first to determine file name suffix.
+        // We could also just use the split name as a suffix, but there is a theoretical risk
+        // that we exceed the maximum file name length, so we use the hash instead.
+        // The downside is that we need to read the file two times.
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        getApkInputStream(sourceDir).use { inputStream ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = inputStream.read(buffer)
+            while (bytes >= 0) {
+                messageDigest.update(buffer, 0, bytes)
+                bytes = inputStream.read(buffer)
+            }
+        }
+        val sha256 = messageDigest.digest().encodeBase64()
+        val suffix = "_$sha256"
+        // copy the split APK to the storage stream
+        getApkInputStream(sourceDir).use { inputStream ->
+            streamGetter(suffix).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        return ApkSplit(name, sha256)
     }
 
 }

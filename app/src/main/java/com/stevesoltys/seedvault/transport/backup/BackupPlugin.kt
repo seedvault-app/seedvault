@@ -35,7 +35,7 @@ interface BackupPlugin {
      * Returns an [OutputStream] for writing an APK to be backed up.
      */
     @Throws(IOException::class)
-    suspend fun getApkOutputStream(packageInfo: PackageInfo): OutputStream
+    suspend fun getApkOutputStream(packageInfo: PackageInfo, suffix: String): OutputStream
 
     /**
      * Returns the package name of the app that provides the backend storage
