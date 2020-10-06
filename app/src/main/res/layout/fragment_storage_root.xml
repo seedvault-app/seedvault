@@ -19,11 +19,13 @@
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/storage_fragment_backup_title"
         android:textSize="24sp"
+        android:gravity="center"
+        tools:text="Choose where to store backup (is a short title, but it can be longer)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
