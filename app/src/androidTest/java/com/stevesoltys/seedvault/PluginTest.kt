@@ -170,14 +170,14 @@ class PluginTest : KoinComponent {
 
         // write random bytes as APK
         val apk1 = getRandomByteArray(1337 * 1024)
-        backupPlugin.getApkOutputStream(packageInfo).writeAndClose(apk1)
+        backupPlugin.getApkOutputStream(packageInfo, "").writeAndClose(apk1)
 
         // assert that read APK bytes match what was written
         assertReadEquals(apk1, restorePlugin.getApkInputStream(token, packageInfo.packageName))
 
         // write random bytes as another APK
         val apk2 = getRandomByteArray(23 * 1024 * 1024)
-        backupPlugin.getApkOutputStream(packageInfo2).writeAndClose(apk2)
+        backupPlugin.getApkOutputStream(packageInfo2, "").writeAndClose(apk2)
 
         // assert that read APK bytes match what was written
         assertReadEquals(apk2, restorePlugin.getApkInputStream(token, packageInfo2.packageName))

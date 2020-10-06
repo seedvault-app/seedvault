@@ -52,9 +52,13 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun getApkOutputStream(packageInfo: PackageInfo): OutputStream {
+    override suspend fun getApkOutputStream(
+        packageInfo: PackageInfo,
+        suffix: String
+    ): OutputStream {
         val setDir = storage.getSetDir() ?: throw IOException()
-        val file = setDir.createOrGetFile(context, "${packageInfo.packageName}.apk", MIME_TYPE_APK)
+        val name = "${packageInfo.packageName}$suffix.apk"
+        val file = setDir.createOrGetFile(context, name, MIME_TYPE_APK)
         return storage.getOutputStream(file)
     }
 

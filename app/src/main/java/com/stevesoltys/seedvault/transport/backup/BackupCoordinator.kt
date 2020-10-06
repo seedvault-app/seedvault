@@ -364,7 +364,7 @@ internal class BackupCoordinator(
                         metadataManager.getPackageMetadata(packageName)
                     val oldPackageState = packageMetadata?.state
                     if (oldPackageState != null && oldPackageState != packageState) {
-                        Log.e(
+                        Log.i(
                             TAG, "Package $packageName was in $oldPackageState" +
                                 ", update to $packageState"
                         )
@@ -390,8 +390,8 @@ internal class BackupCoordinator(
     ): Boolean {
         val packageName = packageInfo.packageName
         return try {
-            apkBackup.backupApkIfNecessary(packageInfo, packageState) {
-                plugin.getApkOutputStream(packageInfo)
+            apkBackup.backupApkIfNecessary(packageInfo, packageState) { suffix ->
+                plugin.getApkOutputStream(packageInfo, suffix)
             }?.let { packageMetadata ->
                 plugin.getMetadataOutputStream().use {
                     metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)

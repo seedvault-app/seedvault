@@ -9,12 +9,11 @@ import android.content.pm.Signature
 import android.util.PackageUtils
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
@@ -36,7 +35,7 @@ import kotlin.random.Random
 internal class ApkBackupTest : BackupTest() {
 
     private val pm: PackageManager = mockk()
-    private val streamGetter: suspend () -> OutputStream = mockk()
+    private val streamGetter: suspend (suffix: String) -> OutputStream = mockk()
 
     private val apkBackup = ApkBackup(pm, settingsManager, metadataManager)
 
@@ -131,23 +130,80 @@ internal class ApkBackupTest : BackupTest() {
         )
 
         expectChecks()
-        coEvery { streamGetter.invoke() } returns apkOutputStream
+        coEvery { streamGetter.invoke("") } returns apkOutputStream
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)
         } returns InstallSourceInfo(null, null, null, updatedMetadata.installer)
-        every {
-            metadataManager.onApkBackedUp(
-                packageInfo,
-                updatedMetadata,
-                outputStream
-            )
-        } just Runs
 
         assertEquals(
             updatedMetadata,
             apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter)
         )
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
+    }
+
+    @Test
+    fun `test successful APK backup with two splits`(@TempDir tmpDir: Path) = runBlocking {
+        // create base APK
+        val apkBytes = byteArrayOf(0x04, 0x05, 0x06) // not random because of hash
+        val tmpFile = File(tmpDir.toAbsolutePath().toString())
+        packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
+            assertTrue(createNewFile())
+            writeBytes(apkBytes)
+        }.absolutePath
+        // set split names
+        val split1Name = "config.arm64_v8a"
+        val split2Name = "config.xxxhdpi"
+        packageInfo.splitNames = arrayOf(split1Name, split2Name)
+        // create two split APKs
+        val split1Bytes = byteArrayOf(0x07, 0x08, 0x09)
+        val split1Sha256 = "ZqZ1cVH47lXbEncWx-Pc4L6AdLZOIO2lQuXB5GypxB4"
+        val split2Bytes = byteArrayOf(0x01, 0x02, 0x03)
+        val split2Sha256 = "A5BYxvLAy0ksUzsKTRTvd8wPeKvMztUofYShogEc-4E"
+        packageInfo.applicationInfo.splitSourceDirs = arrayOf(
+            File(tmpFile, "test-$split1Name.apk").apply {
+                assertTrue(createNewFile())
+                writeBytes(split1Bytes)
+            }.absolutePath,
+            File(tmpFile, "test-$split2Name.apk").apply {
+                assertTrue(createNewFile())
+                writeBytes(split2Bytes)
+            }.absolutePath
+        )
+        // create streams
+        val apkOutputStream = ByteArrayOutputStream()
+        val split1OutputStream = ByteArrayOutputStream()
+        val split2OutputStream = ByteArrayOutputStream()
+        // expected new metadata for package
+        val updatedMetadata = PackageMetadata(
+            time = 0L,
+            state = UNKNOWN_ERROR,
+            version = packageInfo.longVersionCode,
+            installer = getRandomString(),
+            splits = listOf(
+                ApkSplit(split1Name, split1Sha256),
+                ApkSplit(split2Name, split2Sha256)
+            ),
+            sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
+            signatures = packageMetadata.signatures
+        )
+
+        expectChecks()
+        coEvery { streamGetter.invoke("") } returns apkOutputStream
+        coEvery { streamGetter.invoke("_$split1Sha256") } returns split1OutputStream
+        coEvery { streamGetter.invoke("_$split2Sha256") } returns split2OutputStream
+
+        every {
+            pm.getInstallSourceInfo(packageInfo.packageName)
+        } returns InstallSourceInfo(null, null, null, updatedMetadata.installer)
+
+        assertEquals(
+            updatedMetadata,
+            apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter)
+        )
+        assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
+        assertArrayEquals(split1Bytes, split1OutputStream.toByteArray())
+        assertArrayEquals(split2Bytes, split2OutputStream.toByteArray())
     }
 
     private fun expectChecks(packageMetadata: PackageMetadata = this.packageMetadata) {
