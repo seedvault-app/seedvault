@@ -7,7 +7,6 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.transport.TransportTest
 import io.mockk.mockk
 import java.io.InputStream
-import kotlin.random.Random
 
 internal abstract class RestoreTest : TransportTest() {
 
@@ -15,7 +14,6 @@ internal abstract class RestoreTest : TransportTest() {
     protected val headerReader = mockk<HeaderReader>()
     protected val fileDescriptor = mockk<ParcelFileDescriptor>()
 
-    protected val token = Random.nextLong()
     protected val data = getRandomByteArray()
     protected val inputStream = mockk<InputStream>()
 

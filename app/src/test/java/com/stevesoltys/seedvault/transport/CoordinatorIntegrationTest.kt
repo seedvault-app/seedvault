@@ -103,7 +103,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
-    private val token = Random.nextLong()
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
     private val metadataOutputStream = ByteArrayOutputStream()

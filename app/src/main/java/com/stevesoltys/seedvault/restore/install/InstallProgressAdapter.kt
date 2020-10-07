@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.restore
+package com.stevesoltys.seedvault.restore.install
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,25 +9,24 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreResult
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.AppViewHolder
 
 internal class InstallProgressAdapter : Adapter<AppInstallViewHolder>() {
 
-    private val items = SortedList<ApkRestoreResult>(
-        ApkRestoreResult::class.java,
-        object : SortedListAdapterCallback<ApkRestoreResult>(this) {
-            override fun areItemsTheSame(item1: ApkRestoreResult, item2: ApkRestoreResult) =
+    private val items = SortedList<ApkInstallResult>(
+        ApkInstallResult::class.java,
+        object : SortedListAdapterCallback<ApkInstallResult>(this) {
+            override fun areItemsTheSame(item1: ApkInstallResult, item2: ApkInstallResult) =
                 item1.packageName == item2.packageName
 
-            override fun areContentsTheSame(oldItem: ApkRestoreResult, newItem: ApkRestoreResult) =
+            override fun areContentsTheSame(oldItem: ApkInstallResult, newItem: ApkInstallResult) =
                 oldItem == newItem
 
-            override fun compare(item1: ApkRestoreResult, item2: ApkRestoreResult) =
+            override fun compare(item1: ApkInstallResult, item2: ApkInstallResult) =
                 item1.compareTo(item2)
         })
 
@@ -43,17 +42,17 @@ internal class InstallProgressAdapter : Adapter<AppInstallViewHolder>() {
         holder.bind(items[position])
     }
 
-    fun update(items: Collection<ApkRestoreResult>) {
+    fun update(items: Collection<ApkInstallResult>) {
         this.items.replaceAll(items)
     }
 }
 
 internal class AppInstallViewHolder(v: View) : AppViewHolder(v) {
 
-    fun bind(item: ApkRestoreResult) {
+    fun bind(item: ApkInstallResult) {
         appIcon.setImageDrawable(item.icon)
         appName.text = item.name
-        when (item.status) {
+        when (item.state) {
             IN_PROGRESS -> {
                 appStatus.visibility = INVISIBLE
                 progressBar.visibility = VISIBLE

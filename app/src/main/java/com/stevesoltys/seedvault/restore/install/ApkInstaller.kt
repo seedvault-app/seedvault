@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.restore
+package com.stevesoltys.seedvault.restore.install
 
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -17,8 +17,8 @@ import android.content.pm.PackageInstaller.SessionParams
 import android.content.pm.PackageInstaller.SessionParams.MODE_FULL_INSTALL
 import android.content.pm.PackageManager
 import android.util.Log
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -111,7 +111,7 @@ internal class ApkInstaller(private val context: Context) {
 
         // update status and offer result
         val status = if (success) SUCCEEDED else FAILED
-        return installResult.update(packageName) { it.copy(status = status) }
+        return installResult.update(packageName) { it.copy(state = status) }
     }
 
 }

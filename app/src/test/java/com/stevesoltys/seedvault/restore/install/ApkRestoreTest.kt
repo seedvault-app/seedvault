@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.restore
+package com.stevesoltys.seedvault.restore.install
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -11,10 +11,12 @@ import android.graphics.drawable.Drawable
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
+import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -34,7 +36,7 @@ import kotlin.random.Random
 
 @Suppress("BlockingMethodInNonBlockingContext")
 @ExperimentalCoroutinesApi
-internal class ApkRestoreTest : RestoreTest() {
+internal class ApkRestoreTest : TransportTest() {
 
     private val pm: PackageManager = mockk()
     private val strictContext: Context = mockk<Context>().apply {
@@ -79,13 +81,13 @@ internal class ApkRestoreTest : RestoreTest() {
             when (index) {
                 0 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(QUEUED, result.status)
+                    assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
                     assertEquals(1, result.total)
                 }
                 1 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(FAILED, result.status)
+                    assertEquals(FAILED, result.state)
                 }
                 else -> fail()
             }
@@ -105,13 +107,13 @@ internal class ApkRestoreTest : RestoreTest() {
             when (index) {
                 0 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(QUEUED, result.status)
+                    assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
                     assertEquals(1, result.total)
                 }
                 1 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(FAILED, result.status)
+                    assertEquals(FAILED, result.state)
                 }
                 else -> fail()
             }
@@ -143,19 +145,19 @@ internal class ApkRestoreTest : RestoreTest() {
             when (index) {
                 0 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(QUEUED, result.status)
+                    assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
                     assertEquals(1, result.total)
                 }
                 1 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(IN_PROGRESS, result.status)
+                    assertEquals(IN_PROGRESS, result.state)
                     assertEquals(appName, result.name)
                     assertEquals(icon, result.icon)
                 }
                 2 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(FAILED, result.status)
+                    assertEquals(FAILED, result.state)
                 }
                 else -> fail()
             }
@@ -166,11 +168,11 @@ internal class ApkRestoreTest : RestoreTest() {
     fun `test successful run`(@TempDir tmpDir: Path) = runBlocking {
         val installResult = MutableInstallResult(1).apply {
             put(
-                packageName, ApkRestoreResult(
+                packageName, ApkInstallResult(
                     packageName,
                     progress = 1,
                     total = 1,
-                    status = SUCCEEDED
+                    state = SUCCEEDED
                 )
             )
         }
@@ -194,19 +196,19 @@ internal class ApkRestoreTest : RestoreTest() {
             when (i) {
                 0 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(QUEUED, result.status)
+                    assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
                     assertEquals(1, result.total)
                 }
                 1 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(IN_PROGRESS, result.status)
+                    assertEquals(IN_PROGRESS, result.state)
                     assertEquals(appName, result.name)
                     assertEquals(icon, result.icon)
                 }
                 2 -> {
                     val result = value[packageName] ?: fail()
-                    assertEquals(SUCCEEDED, result.status)
+                    assertEquals(SUCCEEDED, result.state)
                 }
                 else -> fail()
             }
@@ -244,7 +246,7 @@ internal class ApkRestoreTest : RestoreTest() {
                 val installResult = MutableInstallResult(1).apply {
                     put(
                         packageName,
-                        ApkRestoreResult(packageName, progress = 1, total = 1, status = SUCCEEDED)
+                        ApkInstallResult(packageName, progress = 1, total = 1, state = SUCCEEDED)
                     )
                 }
                 every {
@@ -262,22 +264,22 @@ internal class ApkRestoreTest : RestoreTest() {
                 when (i) {
                     0 -> {
                         val result = value[packageName] ?: fail()
-                        assertEquals(QUEUED, result.status)
+                        assertEquals(QUEUED, result.state)
                         assertEquals(1, result.progress)
                         assertEquals(1, result.total)
                     }
                     1 -> {
                         val result = value[packageName] ?: fail()
-                        assertEquals(IN_PROGRESS, result.status)
+                        assertEquals(IN_PROGRESS, result.state)
                         assertEquals(appName, result.name)
                         assertEquals(icon, result.icon)
                     }
                     2 -> {
                         val result = value[packageName] ?: fail()
                         if (willFail) {
-                            assertEquals(FAILED, result.status)
+                            assertEquals(FAILED, result.state)
                         } else {
-                            assertEquals(SUCCEEDED, result.status)
+                            assertEquals(SUCCEEDED, result.state)
                         }
                     }
                     else -> fail()
