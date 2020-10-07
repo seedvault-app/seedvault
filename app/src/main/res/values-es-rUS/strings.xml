@@ -17,7 +17,7 @@
     <string name="restore_app_quota_exceeded">Cuota de respaldo excedida</string>
     <string name="restore_app_not_installed">Aplicación no instalada</string>
     <string name="restore_app_not_allowed">La aplicación no permite respaldo</string>
-    <string name="restore_app_no_data">La aplicación no reportó datos para respaldo</string>
+    <string name="backup_app_no_data">La aplicación no reportó datos para respaldo</string>
     <string name="restore_magic_package">Administrador de Paquetes del Sistema</string>
     <string name="restore_restoring">Restaurando Respaldo</string>
     <string name="restore_next">Próximo</string>

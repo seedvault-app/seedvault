@@ -16,7 +16,7 @@
     <string name="restore_finished_success">Endurvakningu lokið</string>
     <string name="restore_app_quota_exceeded">Afritunarrými búið</string>
     <string name="restore_app_not_installed">Appið er ekki uppsett</string>
-    <string name="restore_app_no_data">Appið tilkynnti að engin gögn væru til öryggisafritunar</string>
+    <string name="backup_app_no_data">Appið tilkynnti að engin gögn væru til öryggisafritunar</string>
     <string name="restore_app_not_allowed">Appið leyfir ekki öryggisafritun</string>
     <string name="restore_magic_package">Pakkastjóri kerfis</string>
     <string name="restore_restoring">Endurvek öryggisafrit</string>

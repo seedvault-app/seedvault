@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreProgressAdapter.PackageViewHolder
+import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import java.util.LinkedList
 
@@ -64,26 +65,14 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
                     appIcon.setImageResource(R.drawable.ic_launcher_default)
                 }
             }
-            setStatus(item.status)
+            setState(item.state, true)
         }
     }
 
 }
 
-enum class AppRestoreStatus {
-    IN_PROGRESS,
-    SUCCEEDED,
-    NOT_YET_BACKED_UP,
-    FAILED,
-    FAILED_NO_DATA,
-    FAILED_WAS_STOPPED,
-    FAILED_NOT_ALLOWED,
-    FAILED_QUOTA_EXCEEDED,
-    FAILED_NOT_INSTALLED,
-}
-
 internal data class AppRestoreResult(
     val packageName: String,
     val name: CharSequence,
-    val status: AppRestoreStatus
+    val state: AppBackupState
 )

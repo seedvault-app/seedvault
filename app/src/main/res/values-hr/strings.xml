@@ -19,7 +19,7 @@
     <string name="restore_app_quota_exceeded">Kvota za sigurnosne kopije premašena</string>
     <string name="restore_app_not_installed">Aplikacija nije instalirana</string>
     <string name="restore_app_not_allowed">Aplikacija ne dozvoljava sigurnosne kopije</string>
-    <string name="restore_app_no_data">Aplikacija nema podataka za sigurnosnu kopiju</string>
+    <string name="backup_app_no_data">Aplikacija nema podataka za sigurnosnu kopiju</string>
     <string name="restore_magic_package">Upravljanje paketima sustava</string>
     <string name="restore_restoring">Vraćanje sigurnosne kopije</string>
     <string name="restore_next">Sljedeća</string>

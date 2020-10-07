@@ -72,7 +72,7 @@
     <string name="restore_app_quota_exceeded">Quota de sauvegarde dépassé</string>
     <string name="restore_app_not_installed">Application non installée</string>
     <string name="restore_app_not_allowed">L\'application n\'autorise pas la sauvegarde</string>
-    <string name="restore_app_no_data">L\'application n\'a signalé aucune donnée à sauvegarder</string>
+    <string name="backup_app_no_data">L\'application n\'a signalé aucune donnée à sauvegarder</string>
     <string name="restore_magic_package">Gestionnaire de paquets système</string>
     <string name="restore_restoring">Restauration de la sauvegarde</string>
     <string name="restore_installing_packages">Réinstallation des applications</string>

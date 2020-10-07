@@ -23,7 +23,7 @@
     <string name="restore_app_quota_exceeded">Превышена квота резервного копирования</string>
     <string name="restore_app_not_installed">Приложение не установлено</string>
     <string name="restore_app_not_allowed">Приложение не разрешает резервное копирование</string>
-    <string name="restore_app_no_data">Приложение не сообщило об отсутствии данных для резервного копирования</string>
+    <string name="backup_app_no_data">Приложение не сообщило об отсутствии данных для резервного копирования</string>
     <string name="restore_magic_package">Системный менеджер пакетов</string>
     <string name="restore_restoring">Восстановление резервной копии</string>
     <string name="restore_next">Следующий</string>
