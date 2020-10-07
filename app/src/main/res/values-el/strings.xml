@@ -49,7 +49,7 @@
     <string name="restore_app_quota_exceeded">Έγινε υπέρβαση του ορίου αντιγράφων ασφαλείας</string>
     <string name="restore_app_not_installed">Η εφαρμογή δεν έχει εγκατασταθεί</string>
     <string name="restore_app_not_allowed">Η εφαρμογή δεν επιτρέπει τη δημιουργία αντιγράφων ασφαλείας</string>
-    <string name="restore_app_no_data">Η εφαρμογή δεν ανέφερε δεδομένα για δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="backup_app_no_data">Η εφαρμογή δεν ανέφερε δεδομένα για δημιουργία αντιγράφων ασφαλείας</string>
     <string name="restore_magic_package">Διαχειριστής πακέτων συστήματος</string>
     <string name="restore_restoring">Επαναφορά αντιγράφου ασφαλείας</string>
     <string name="restore_next">Επόμενο</string>

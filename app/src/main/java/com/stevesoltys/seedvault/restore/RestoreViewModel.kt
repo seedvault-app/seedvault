@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
@@ -26,14 +27,14 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_ALLOWED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NOT_INSTALLED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_NO_DATA
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.FAILED_QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.IN_PROGRESS
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.NOT_YET_BACKED_UP
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NO_DATA
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.ui.AppBackupState.IN_PROGRESS
+import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
+import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -99,7 +100,7 @@ internal class RestoreViewModel(
                 AppRestoreResult(
                     packageName = MAGIC_PACKAGE_MANAGER,
                     name = getAppName(app, MAGIC_PACKAGE_MANAGER),
-                    status = IN_PROGRESS
+                    state = IN_PROGRESS
                 )
             )
         }
@@ -222,9 +223,9 @@ internal class RestoreViewModel(
     private fun updateLatestPackage(list: LinkedList<AppRestoreResult>) {
         val latestResult = list[0]
         if (restoreCoordinator.isFailedPackage(latestResult.packageName)) {
-            list[0] = latestResult.copy(status = getFailedStatus(latestResult.packageName))
+            list[0] = latestResult.copy(state = getFailedStatus(latestResult.packageName))
         } else {
-            list[0] = latestResult.copy(status = SUCCEEDED)
+            list[0] = latestResult.copy(state = SUCCEEDED)
         }
     }
 
@@ -232,7 +233,7 @@ internal class RestoreViewModel(
     private fun getFailedStatus(
         packageName: String,
         restorableBackup: RestorableBackup = chosenRestorableBackup.value!!
-    ): AppRestoreStatus {
+    ): AppBackupState {
         val metadata = restorableBackup.packageMetadataMap[packageName] ?: return FAILED
         return when (metadata.state) {
             NO_DATA -> FAILED_NO_DATA

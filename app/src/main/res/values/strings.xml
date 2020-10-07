@@ -89,6 +89,20 @@
     <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
     <string name="notification_restore_error_action">Uninstall app</string>
 
+    <!-- App Backup and Restore State -->
+
+    <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
+    <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
+    <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
+    <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
+    <string name="restore_app_was_stopped">Was not backed up as it hadn\'t been used recently</string>
+    <string name="backup_app_no_data">App reported no data for backup</string>
+    <string name="backup_app_not_allowed">App doesn\'t allow backup</string>
+    <string name="restore_app_not_allowed">App didn\'t allow backup</string>
+    <string name="backup_app_quota_exceeded">Backup quota exceeded</string>
+    <string name="restore_app_quota_exceeded">Backup quota was exceeded</string>
+    <string name="restore_app_not_installed">App not installed</string>
+
     <!-- Restore -->
     <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
@@ -102,13 +116,6 @@
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring backup</string>
     <string name="restore_magic_package">System package manager</string>
-    <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
-    <string name="restore_app_not_yet_backed_up">Not yet backed up</string>
-    <string name="restore_app_was_stopped">Not backed up as it wasn\'t used recently</string>
-    <string name="restore_app_no_data">App reported no data for backup</string>
-    <string name="restore_app_not_allowed">App doesn\'t allow backup</string>
-    <string name="restore_app_not_installed">App not installed</string>
-    <string name="restore_app_quota_exceeded">Backup quota exceeded</string>
     <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
     <string name="restore_finished_button">Finish</string>

@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.DiffUtil.DiffResult
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.restore.AppRestoreStatus
-import com.stevesoltys.seedvault.restore.AppRestoreStatus.SUCCEEDED
 import com.stevesoltys.seedvault.settings.AppStatusAdapter.AppStatusViewHolder
+import com.stevesoltys.seedvault.ui.AppBackupState
+import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import com.stevesoltys.seedvault.ui.toRelativeTime
 
@@ -81,7 +81,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                     startActivity(context, intent, null)
                     true
                 }
-                setStatus(item.status)
+                setState(item.status, false)
                 if (item.status == SUCCEEDED) {
                     appInfo.text = item.time.toRelativeTime(context)
                     appInfo.visibility = VISIBLE
@@ -110,7 +110,7 @@ data class AppStatus(
     val icon: Drawable,
     val name: String,
     val time: Long,
-    val status: AppRestoreStatus
+    val status: AppBackupState
 )
 
 internal class AppStatusDiff(

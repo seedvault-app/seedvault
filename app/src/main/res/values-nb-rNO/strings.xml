@@ -11,7 +11,7 @@
     <string name="notification_restore_error_text">Plugg i din %1$s før du installerer programmet for å gjenopprette dataen fra sikkerhetskopi.</string>
     <string name="storage_internal_warning_choose_other">Velg \"Annet\"</string>
     <string name="restore_app_not_allowed">Programmet tillater ikke sikkerhetskopiering</string>
-    <string name="restore_app_no_data">Programmet sier ingen data skal sikkerhetskopieres</string>
+    <string name="backup_app_no_data">Programmet sier ingen data skal sikkerhetskopieres</string>
     <string name="restore_magic_package">System-pakkebehandler</string>
     <string name="notification_restore_error_channel_title">Minnepinnefeil ved automatisk gjenoppretting</string>
     <string name="about_license">Lisens: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>

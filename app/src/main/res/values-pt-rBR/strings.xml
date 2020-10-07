@@ -97,7 +97,7 @@
     <string name="restore_app_quota_exceeded">Cota de backup excedida</string>
     <string name="restore_app_not_installed">Aplicativo não instalado</string>
     <string name="restore_app_not_allowed">O aplicativo não permite backup</string>
-    <string name="restore_app_no_data">O aplicativo não relatou nenhum dado para backup</string>
+    <string name="backup_app_no_data">O aplicativo não relatou nenhum dado para backup</string>
     <string name="restore_magic_package">Gerenciador de pacote do sistema</string>
     <string name="restore_restoring">Restaurando backup</string>
     <string name="restore_next">Próximo</string>
