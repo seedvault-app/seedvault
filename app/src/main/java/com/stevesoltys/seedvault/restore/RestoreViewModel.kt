@@ -37,10 +37,10 @@ import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
+import com.stevesoltys.seedvault.restore.install.InstallResult
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.restore.ApkRestore
-import com.stevesoltys.seedvault.transport.restore.InstallResult
+import com.stevesoltys.seedvault.restore.install.ApkRestore
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent

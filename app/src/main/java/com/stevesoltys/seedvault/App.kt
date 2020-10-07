@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
 import com.stevesoltys.seedvault.restore.RestoreViewModel
+import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import com.stevesoltys.seedvault.transport.backup.backupModule
@@ -60,6 +61,7 @@ class App : Application() {
                     documentsProviderModule, // storage plugin
                     backupModule,
                     restoreModule,
+                    installModule,
                     appModule
                 )
             )

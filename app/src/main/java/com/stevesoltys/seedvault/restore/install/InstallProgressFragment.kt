@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.restore
+package com.stevesoltys.seedvault.restore.install
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
-import com.stevesoltys.seedvault.transport.restore.InstallResult
-import com.stevesoltys.seedvault.transport.restore.getInProgress
+import com.stevesoltys.seedvault.restore.RestoreViewModel
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class InstallProgressFragment : Fragment() {
@@ -76,7 +75,7 @@ class InstallProgressFragment : Fragment() {
         // skip this screen, if there are no apps to install
         if (installResult.isEmpty()) viewModel.onNextClicked()
 
-        val result = installResult.filterValues { it.status != QUEUED }
+        val result = installResult.filterValues { it.state != QUEUED }
         val position = layoutManager.findFirstVisibleItemPosition()
         adapter.update(result.values)
         if (position == 0) layoutManager.scrollToPosition(0)

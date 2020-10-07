@@ -1,33 +1,32 @@
-package com.stevesoltys.seedvault.transport.restore
+package com.stevesoltys.seedvault.restore.install
 
 import android.content.Context
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.content.pm.PackageManager.NameNotFoundException
-import android.graphics.drawable.Drawable
 import android.util.Log
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.FAILED
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.IN_PROGRESS
-import com.stevesoltys.seedvault.transport.restore.ApkRestoreStatus.QUEUED
+import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.ConcurrentHashMap
 
 private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
     private val context: Context,
     private val restorePlugin: RestorePlugin,
-    private val apkInstaller: ApkInstaller = ApkInstaller(context)
+    private val apkInstaller: ApkInstaller
 ) {
 
     private val pm = context.packageManager
@@ -43,7 +42,7 @@ internal class ApkRestore(
         val installResult = MutableInstallResult(total)
         packages.forEach { (packageName, _) ->
             progress++
-            installResult[packageName] = ApkRestoreResult(packageName, progress, total, QUEUED)
+            installResult[packageName] = ApkInstallResult(packageName, progress, total, QUEUED)
         }
         emit(installResult)
 
@@ -123,7 +122,7 @@ internal class ApkRestore(
 
         installResult.update(packageName) { result ->
             result.copy(
-                status = IN_PROGRESS,
+                state = IN_PROGRESS,
                 name = name,
                 icon = icon
             )
@@ -152,46 +151,7 @@ internal class ApkRestore(
     }
 
     private fun fail(installResult: MutableInstallResult, packageName: String): InstallResult {
-        return installResult.update(packageName) { it.copy(status = FAILED) }
+        return installResult.update(packageName) { it.copy(state = FAILED) }
     }
 
-}
-
-internal typealias InstallResult = Map<String, ApkRestoreResult>
-
-internal fun InstallResult.getInProgress(): ApkRestoreResult? {
-    val filtered = filterValues { result -> result.status == IN_PROGRESS }
-    if (filtered.isEmpty()) return null
-    check(filtered.size == 1) { "More than one package in progress: ${filtered.keys}" }
-    return filtered.values.first()
-}
-
-internal class MutableInstallResult(initialCapacity: Int) :
-    ConcurrentHashMap<String, ApkRestoreResult>(initialCapacity) {
-    fun update(
-        packageName: String,
-        updateFun: (ApkRestoreResult) -> ApkRestoreResult
-    ): MutableInstallResult {
-        val result = get(packageName)
-        check(result != null) { "ApkRestoreResult for $packageName does not exist." }
-        set(packageName, updateFun(result))
-        return this
-    }
-}
-
-internal data class ApkRestoreResult(
-    val packageName: CharSequence,
-    val progress: Int,
-    val total: Int,
-    val status: ApkRestoreStatus,
-    val name: CharSequence? = null,
-    val icon: Drawable? = null
-) : Comparable<ApkRestoreResult> {
-    override fun compareTo(other: ApkRestoreResult): Int {
-        return other.progress.compareTo(progress)
-    }
-}
-
-internal enum class ApkRestoreStatus {
-    QUEUED, IN_PROGRESS, SUCCEEDED, FAILED
 }

@@ -29,6 +29,7 @@ abstract class TransportTest {
     protected val context = mockk<Context>(relaxed = true)
 
     protected val sigInfo: SigningInfo = mockk()
+    protected val token = Random.nextLong()
     protected val packageInfo = PackageInfo().apply {
         packageName = "org.example"
         longVersionCode = Random.nextLong()

@@ -55,7 +55,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
         metadataReader
     )
 
-    private val token = Random.nextLong()
     private val inputStream = mockk<InputStream>()
     private val storage: Storage = mockk()
     private val documentFile: DocumentFile = mockk()
