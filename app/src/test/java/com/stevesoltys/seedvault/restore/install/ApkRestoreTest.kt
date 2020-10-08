@@ -167,7 +167,7 @@ internal class ApkRestoreTest : TransportTest() {
     @Test
     fun `test successful run`(@TempDir tmpDir: Path) = runBlocking {
         val installResult = MutableInstallResult(1).apply {
-            put(
+            set(
                 packageName, ApkInstallResult(
                     packageName,
                     progress = 1,
@@ -244,7 +244,7 @@ internal class ApkRestoreTest : TransportTest() {
             every { installedPackageInfo.longVersionCode } returns packageMetadata.version!! - 1
             if (!willFail) {
                 val installResult = MutableInstallResult(1).apply {
-                    put(
+                    set(
                         packageName,
                         ApkInstallResult(packageName, progress = 1, total = 1, state = SUCCEEDED)
                     )
