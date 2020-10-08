@@ -14,9 +14,8 @@ import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.io.IOException
@@ -31,7 +30,6 @@ internal class ApkRestore(
 
     private val pm = context.packageManager
 
-    @ExperimentalCoroutinesApi
     fun restore(token: Long, packageMetadataMap: PackageMetadataMap) = flow {
         // filter out packages without APK and get total
         val packages = packageMetadataMap.filter { it.value.hasApk() }
@@ -40,19 +38,21 @@ internal class ApkRestore(
 
         // queue all packages and emit LiveData
         val installResult = MutableInstallResult(total)
-        packages.forEach { (packageName, _) ->
+        packages.forEach { (packageName, metadata) ->
             progress++
-            installResult[packageName] = ApkInstallResult(packageName, progress, total, QUEUED)
+            installResult[packageName] = ApkInstallResult(
+                packageName = packageName,
+                progress = progress,
+                state = QUEUED,
+                installerPackageName = metadata.installer
+            )
         }
         emit(installResult)
 
-        // restore individual packages and emit updates
+        // re-install individual packages and emit updates
         for ((packageName, metadata) in packages) {
             try {
-                @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
-                restore(token, packageName, metadata, installResult).collect {
-                    emit(it)
-                }
+                restore(this, token, packageName, metadata, installResult)
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
                 emit(fail(installResult, packageName))
@@ -64,17 +64,19 @@ internal class ApkRestore(
                 emit(fail(installResult, packageName))
             }
         }
+        installResult.isFinished = true
+        emit(installResult)
     }
 
-    @ExperimentalCoroutinesApi
-    @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
+    @Suppress("ThrowsCount", "BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
     @Throws(IOException::class, SecurityException::class)
-    private fun restore(
+    private suspend fun restore(
+        collector: FlowCollector<InstallResult>,
         token: Long,
         packageName: String,
         metadata: PackageMetadata,
         installResult: MutableInstallResult
-    ) = flow {
+    ) {
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
@@ -102,7 +104,8 @@ internal class ApkRestore(
                 TAG, "Package $packageName expects version code ${metadata.version}," +
                     "but has ${packageInfo.longVersionCode}."
             )
-            // TODO should we let this one pass, maybe once we can revert PackageMetadata during backup?
+            // TODO should we let this one pass,
+            //  maybe once we can revert PackageMetadata during backup?
         }
 
         // check signatures
@@ -121,13 +124,9 @@ internal class ApkRestore(
         val name = pm.getApplicationLabel(appInfo)
 
         installResult.update(packageName) { result ->
-            result.copy(
-                state = IN_PROGRESS,
-                name = name,
-                icon = icon
-            )
+            result.copy(state = IN_PROGRESS, name = name, icon = icon)
         }
-        emit(installResult)
+        collector.emit(installResult)
 
         // ensure system apps are actually installed and newer system apps as well
         if (metadata.system) {
@@ -138,16 +137,15 @@ internal class ApkRestore(
                 if (isOlder || !installedPackageInfo.isSystemApp()) throw NameNotFoundException()
             } catch (e: NameNotFoundException) {
                 Log.w(TAG, "Not installing $packageName because older or not a system app here.")
-                emit(fail(installResult, packageName))
-                return@flow
+                // TODO consider reporting different status here to prevent manual installs
+                collector.emit(fail(installResult, packageName))
+                return
             }
         }
 
         // install APK and emit updates from it
-        apkInstaller.install(cachedApk, packageName, metadata.installer, installResult)
-            .collect { result ->
-                emit(result)
-            }
+        val result = apkInstaller.install(cachedApk, packageName, metadata.installer, installResult)
+        collector.emit(result)
     }
 
     private fun fail(installResult: MutableInstallResult, packageName: String): InstallResult {

@@ -1,21 +1,38 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.graphics.drawable.Drawable
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import java.util.concurrent.ConcurrentHashMap
 
 internal interface InstallResult {
     /**
-     * Returns true, if there is no packages to install and false otherwise.
+     * The number of packages already processed.
      */
-    fun isEmpty(): Boolean
+    val progress: Int
 
     /**
-     * Returns the [ApkInstallResult] of the package currently [IN_PROGRESS]
-     * or null if there is no such package.
+     * The total number of packages to be considered for re-install.
      */
-    fun getInProgress(): ApkInstallResult?
+    val total: Int
+
+    /**
+     * Is true, if there is no packages to install and false otherwise.
+     */
+    val isEmpty: Boolean
+
+    /**
+     * Is true, if the installation is finished, either because all packages were processed
+     * or because an unexpected error happened along the way.
+     * Is false, if the installation is still ongoing.
+     */
+    val isFinished: Boolean
+
+    /**
+     * Is true when one or more packages failed to install.
+     */
+    val hasFailed: Boolean
 
     /**
      * Get all [ApkInstallResult]s that are not in state [QUEUED].
@@ -23,32 +40,43 @@ internal interface InstallResult {
     fun getNotQueued(): Collection<ApkInstallResult>
 
     /**
-     * Get the [ApkInstallResult] for the given package name or null if none exists.
+     * Set the set of all [ApkInstallResult]s that are still [QUEUED] to [FAILED].
+     * This is useful after [isFinished] is true due to an error
+     * and we need to treat all packages as failed that haven't been processed.
      */
-    operator fun get(packageName: String): ApkInstallResult?
+    fun queuedToFailed()
 }
 
-internal class MutableInstallResult(initialCapacity: Int) : InstallResult {
+internal class MutableInstallResult(override val total: Int) : InstallResult {
 
-    private val installResults = ConcurrentHashMap<String, ApkInstallResult>(initialCapacity)
+    private val installResults = ConcurrentHashMap<String, ApkInstallResult>(total)
+    override val isEmpty get() = installResults.isEmpty()
 
-    override fun isEmpty() = installResults.isEmpty()
-
-    override fun getInProgress(): ApkInstallResult? {
-        val filtered = installResults.filterValues { result -> result.state == IN_PROGRESS }
-        if (filtered.isEmpty()) return null
-        check(filtered.size == 1) { "More than one package in progress: ${filtered.keys}" }
-        return filtered.values.first()
-    }
+    @Volatile
+    override var isFinished = false
+    override val progress
+        get() = installResults.count {
+            val state = it.value.state
+            state != QUEUED && state != IN_PROGRESS
+        }
+    override val hasFailed get() = installResults.any { it.value.state == FAILED }
 
     override fun getNotQueued(): Collection<ApkInstallResult> {
         return installResults.filterValues { result -> result.state != QUEUED }.values
     }
 
-    override fun get(packageName: String) = installResults[packageName]
+    override fun queuedToFailed() {
+        installResults.forEach { entry ->
+            val result = entry.value
+            if (result.state == QUEUED) installResults[entry.key] = result.copy(state = FAILED)
+        }
+    }
+
+    operator fun get(packageName: String) = installResults[packageName]
 
     operator fun set(packageName: String, installResult: ApkInstallResult) {
         installResults[packageName] = installResult
+        check(installResults.size <= total) { "Attempting to add more packages than total" }
     }
 
     fun update(
@@ -63,20 +91,28 @@ internal class MutableInstallResult(initialCapacity: Int) : InstallResult {
 
 }
 
-internal data class ApkInstallResult(
+data class ApkInstallResult(
     val packageName: CharSequence,
     val progress: Int,
-    val total: Int,
     val state: ApkInstallState,
     val name: CharSequence? = null,
-    val icon: Drawable? = null
+    val icon: Drawable? = null,
+    val installerPackageName: CharSequence? = null
 ) : Comparable<ApkInstallResult> {
     override fun compareTo(other: ApkInstallResult): Int {
         return other.progress.compareTo(progress)
     }
 }
 
-internal enum class ApkInstallState {
+internal class FailedFirstComparator : Comparator<ApkInstallResult> {
+    override fun compare(a1: ApkInstallResult, a2: ApkInstallResult): Int {
+        return (if (a1.state == FAILED && a2.state != FAILED) -1
+        else if (a2.state == FAILED && a1.state != FAILED) 1
+        else a1.compareTo(a2))
+    }
+}
+
+enum class ApkInstallState {
     QUEUED,
     IN_PROGRESS,
     SUCCEEDED,
