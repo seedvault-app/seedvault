@@ -20,13 +20,12 @@ import android.util.Log
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.io.IOException
+import kotlin.coroutines.resume
 
 private val TAG: String = ApkInstaller::class.java.simpleName
 
@@ -37,26 +36,24 @@ internal class ApkInstaller(private val context: Context) {
     private val pm: PackageManager = context.packageManager
     private val installer: PackageInstaller = pm.packageInstaller
 
-    @ExperimentalCoroutinesApi
     @Throws(IOException::class, SecurityException::class)
-    internal fun install(
+    internal suspend fun install(
         cachedApk: File,
         packageName: String,
         installerPackageName: String?,
         installResult: MutableInstallResult
-    ) = callbackFlow {
+    ) = suspendCancellableCoroutine<InstallResult> { cont ->
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, i: Intent) {
                 if (i.action != BROADCAST_ACTION) return
-                offer(onBroadcastReceived(i, packageName, cachedApk, installResult))
-                close()
+                context.unregisterReceiver(this)
+                cont.resume(onBroadcastReceived(i, packageName, cachedApk, installResult))
             }
         }
         context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_ACTION))
+        cont.invokeOnCancellation { context.unregisterReceiver(broadcastReceiver) }
 
         install(cachedApk, installerPackageName)
-
-        awaitClose { context.unregisterReceiver(broadcastReceiver) }
     }
 
     private fun install(cachedApk: File, installerPackageName: String?) {
@@ -65,7 +62,6 @@ internal class ApkInstaller(private val context: Context) {
         }
         // Don't set more sessionParams intentionally here.
         // We saw strange permission issues when doing setInstallReason() or setting installFlags.
-        @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
         val session = installer.openSession(installer.createSession(sessionParams))
         val sizeBytes = cachedApk.length()
         session.use { s ->
@@ -110,6 +106,7 @@ internal class ApkInstaller(private val context: Context) {
         }
 
         // update status and offer result
+        // TODO maybe don't back up statusMsg=INSTALL_FAILED_TEST_ONLY apps in the first place?
         val status = if (success) SUCCEEDED else FAILED
         return installResult.update(packageName) { it.copy(state = status) }
     }

@@ -15,7 +15,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
@@ -27,6 +26,14 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
+import com.stevesoltys.seedvault.restore.install.ApkRestore
+import com.stevesoltys.seedvault.restore.install.InstallResult
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
@@ -35,20 +42,12 @@ import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.ui.AppBackupState.IN_PROGRESS
 import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
-import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
-import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
-import com.stevesoltys.seedvault.restore.install.InstallResult
-import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.restore.install.ApkRestore
-import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
@@ -87,7 +86,6 @@ internal class RestoreViewModel(
 
     internal val installResult: LiveData<InstallResult> =
         switchMap(mChosenRestorableBackup) { backup ->
-            @Suppress("EXPERIMENTAL_API_USAGE")
             getInstallResult(backup)
         }
 
@@ -151,8 +149,8 @@ internal class RestoreViewModel(
         closeSession()
     }
 
-    @ExperimentalCoroutinesApi
     private fun getInstallResult(restorableBackup: RestorableBackup): LiveData<InstallResult> {
+        @Suppress("EXPERIMENTAL_API_USAGE")
         return apkRestore.restore(restorableBackup.token, restorableBackup.packageMetadataMap)
             .onStart {
                 Log.d(TAG, "Start InstallResult Flow")
@@ -163,7 +161,9 @@ internal class RestoreViewModel(
                 mNextButtonEnabled.postValue(true)
             }
             .flowOn(ioDispatcher)
-            .asLiveData()
+            // collect on the same thread, so concurrency issues don't mess up live data updates
+            // e.g. InstallResult#isFinished isn't reported too early.
+            .asLiveData(ioDispatcher)
     }
 
     internal fun onNextClicked() {
@@ -336,7 +336,8 @@ internal class RestoreViewModel(
         /**
          * The restore operation has begun.
          *
-         * @param numPackages The total number of packages being processed in this restore operation.
+         * @param numPackages The total number of packages
+         * being processed in this restore operation.
          */
         override fun restoreStarting(numPackages: Int) {
             // noop

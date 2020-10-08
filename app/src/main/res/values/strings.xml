@@ -113,6 +113,9 @@
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
     <string name="restore_installing_packages">Re-installing apps</string>
+    <string name="restore_installing_error_title">Some apps not installed</string>
+    <string name="restore_installing_error_message">Data can only be restored if an app is installed.\n\nTap failed apps to try to install them manually before proceeding.</string>
+    <string name="restore_installing_tap_to_install">Tap to install</string>
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring backup</string>
     <string name="restore_magic_package">System package manager</string>

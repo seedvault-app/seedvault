@@ -23,9 +23,10 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -80,16 +81,22 @@ internal class ApkRestoreTest : TransportTest() {
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
             when (index) {
                 0 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
-                    assertEquals(1, result.total)
+                    assertEquals(1, value.total)
                 }
                 1 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(FAILED, result.state)
+                    assertTrue(value.hasFailed)
+                    assertFalse(value.isFinished)
                 }
-                else -> fail()
+                2 -> {
+                    assertTrue(value.hasFailed)
+                    assertTrue(value.isFinished)
+                }
+                else -> fail("more values emitted")
             }
         }
     }
@@ -106,16 +113,21 @@ internal class ApkRestoreTest : TransportTest() {
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
             when (index) {
                 0 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
-                    assertEquals(1, result.total)
+                    assertEquals(1, value.total)
                 }
                 1 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(FAILED, result.state)
+                    assertTrue(value.hasFailed)
                 }
-                else -> fail()
+                2 -> {
+                    assertTrue(value.hasFailed)
+                    assertTrue(value.isFinished)
+                }
+                else -> fail("more values emitted")
             }
         }
     }
@@ -132,34 +144,37 @@ internal class ApkRestoreTest : TransportTest() {
             )
         } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
-        every {
-            apkInstaller.install(
-                any(),
-                packageName,
-                installerName,
-                any()
-            )
+        coEvery {
+            apkInstaller.install(any(), packageName, installerName, any())
         } throws SecurityException()
 
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
             when (index) {
                 0 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
-                    assertEquals(1, result.total)
+                    assertEquals(installerName, result.installerPackageName)
+                    assertEquals(1, value.total)
                 }
                 1 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(IN_PROGRESS, result.state)
                     assertEquals(appName, result.name)
                     assertEquals(icon, result.icon)
+                    assertFalse(value.hasFailed)
                 }
                 2 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
+                    assertTrue(value.hasFailed)
                     assertEquals(FAILED, result.state)
+                    assertFalse(value.isFinished)
                 }
-                else -> fail()
+                3 -> {
+                    assertTrue(value.hasFailed, "1")
+                    assertTrue(value.isFinished, "2")
+                }
+                else -> fail("more values emitted")
             }
         }
     }
@@ -171,7 +186,6 @@ internal class ApkRestoreTest : TransportTest() {
                 packageName, ApkInstallResult(
                     packageName,
                     progress = 1,
-                    total = 1,
                     state = SUCCEEDED
                 )
             )
@@ -187,30 +201,34 @@ internal class ApkRestoreTest : TransportTest() {
             )
         } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
-        every { apkInstaller.install(any(), packageName, installerName, any()) } returns flowOf(
-            installResult
-        )
+        coEvery {
+            apkInstaller.install(any(), packageName, installerName, any())
+        } returns installResult
 
         var i = 0
         apkRestore.restore(token, packageMetadataMap).collect { value ->
             when (i) {
                 0 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(QUEUED, result.state)
                     assertEquals(1, result.progress)
-                    assertEquals(1, result.total)
+                    assertEquals(1, value.total)
                 }
                 1 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(IN_PROGRESS, result.state)
                     assertEquals(appName, result.name)
                     assertEquals(icon, result.icon)
                 }
                 2 -> {
-                    val result = value[packageName] ?: fail()
+                    val result = value[packageName]
                     assertEquals(SUCCEEDED, result.state)
                 }
-                else -> fail()
+                3 -> {
+                    assertFalse(value.hasFailed)
+                    assertTrue(value.isFinished)
+                }
+                else -> fail("more values emitted")
             }
             i++
         }
@@ -246,46 +264,48 @@ internal class ApkRestoreTest : TransportTest() {
                 val installResult = MutableInstallResult(1).apply {
                     set(
                         packageName,
-                        ApkInstallResult(packageName, progress = 1, total = 1, state = SUCCEEDED)
+                        ApkInstallResult(packageName, progress = 1, state = SUCCEEDED)
                     )
                 }
-                every {
-                    apkInstaller.install(
-                        any(),
-                        packageName,
-                        installerName,
-                        any()
-                    )
-                } returns flowOf(installResult)
+                coEvery {
+                    apkInstaller.install(any(), packageName, installerName, any())
+                } returns installResult
             }
 
-            var i = 0
-            apkRestore.restore(token, packageMetadataMap).collect { value ->
+            apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
                 when (i) {
                     0 -> {
-                        val result = value[packageName] ?: fail()
+                        val result = value[packageName]
                         assertEquals(QUEUED, result.state)
                         assertEquals(1, result.progress)
-                        assertEquals(1, result.total)
+                        assertEquals(1, value.total)
                     }
                     1 -> {
-                        val result = value[packageName] ?: fail()
+                        val result = value[packageName]
                         assertEquals(IN_PROGRESS, result.state)
                         assertEquals(appName, result.name)
                         assertEquals(icon, result.icon)
                     }
                     2 -> {
-                        val result = value[packageName] ?: fail()
+                        val result = value[packageName]
                         if (willFail) {
                             assertEquals(FAILED, result.state)
                         } else {
                             assertEquals(SUCCEEDED, result.state)
                         }
+                        assertEquals(willFail, value.hasFailed)
                     }
-                    else -> fail()
+                    3 -> {
+                        assertEquals(willFail, value.hasFailed)
+                        assertTrue(value.isFinished)
+                    }
+                    else -> fail("more values emitted")
                 }
-                i++
             }
         }
 
+}
+
+private operator fun InstallResult.get(packageName: String): ApkInstallResult {
+    return (this as MutableInstallResult)[packageName] ?: fail("$packageName not found")
 }
