@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreViewModel
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class InstallProgressFragment : Fragment() {
@@ -75,12 +74,11 @@ class InstallProgressFragment : Fragment() {
         // skip this screen, if there are no apps to install
         if (installResult.isEmpty()) viewModel.onNextClicked()
 
-        val result = installResult.filterValues { it.state != QUEUED }
         val position = layoutManager.findFirstVisibleItemPosition()
-        adapter.update(result.values)
+        adapter.update(installResult.getNotQueued())
         if (position == 0) layoutManager.scrollToPosition(0)
 
-        result.getInProgress()?.let {
+        installResult.getInProgress()?.let {
             progressBar.progress = it.progress
             progressBar.max = it.total
         }
