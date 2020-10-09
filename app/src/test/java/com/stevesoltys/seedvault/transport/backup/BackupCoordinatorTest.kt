@@ -417,6 +417,34 @@ internal class BackupCoordinatorTest : BackupTest() {
         }
     }
 
+    @Test
+    fun `APK backup of not allowed apps updates state even without old state`() = runBlocking {
+        every { packageService.notAllowedPackages } returns listOf(packageInfo)
+        every {
+            notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1)
+        } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo, NOT_ALLOWED, any()) } returns null
+        every {
+            metadataManager.getPackageMetadata(packageInfo.packageName)
+        } returns null
+        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every {
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                NOT_ALLOWED,
+                metadataOutputStream
+            )
+        } just Runs
+        every { metadataOutputStream.close() } just Runs
+
+        backup.backUpNotAllowedPackages()
+
+        verify {
+            metadataManager.onPackageBackupError(packageInfo, NOT_ALLOWED, metadataOutputStream)
+            metadataOutputStream.close()
+        }
+    }
+
     private fun expectApkBackupAndMetadataWrite() {
         coEvery {
             apkBackup.backupApkIfNecessary(
