@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
@@ -24,6 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -242,10 +244,7 @@ internal class ApkRestoreTest : TransportTest() {
             packageInfo.applicationInfo = mockk()
             val installedPackageInfo: PackageInfo = mockk()
             val willFail = Random.nextBoolean()
-            installedPackageInfo.applicationInfo = ApplicationInfo().apply {
-                // will not fail when app really is a system app
-                flags = if (willFail) FLAG_INSTALLED else FLAG_SYSTEM or FLAG_UPDATED_SYSTEM_APP
-            }
+            val isSystemApp = Random.nextBoolean()
 
             every { strictContext.cacheDir } returns File(tmpDir.toString())
             coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
@@ -258,18 +257,28 @@ internal class ApkRestoreTest : TransportTest() {
             } returns icon
             every { packageInfo.applicationInfo.loadIcon(pm) } returns icon
             every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
-            every { pm.getPackageInfo(packageName, 0) } returns installedPackageInfo
-            every { installedPackageInfo.longVersionCode } returns packageMetadata.version!! - 1
-            if (!willFail) {
-                val installResult = MutableInstallResult(1).apply {
-                    set(
-                        packageName,
-                        ApkInstallResult(packageName, progress = 1, state = SUCCEEDED)
-                    )
+            if (willFail) {
+                every {
+                    pm.getPackageInfo(packageName, 0)
+                } throws PackageManager.NameNotFoundException()
+            } else {
+                installedPackageInfo.applicationInfo = ApplicationInfo().apply {
+                    flags =
+                        if (!isSystemApp) FLAG_INSTALLED else FLAG_SYSTEM or FLAG_UPDATED_SYSTEM_APP
                 }
-                coEvery {
-                    apkInstaller.install(any(), packageName, installerName, any())
-                } returns installResult
+                every { pm.getPackageInfo(packageName, 0) } returns installedPackageInfo
+                every { installedPackageInfo.longVersionCode } returns packageMetadata.version!! - 1
+                if (isSystemApp) { // if the installed app is not a system app, we don't install
+                    val installResult = MutableInstallResult(1).apply {
+                        set(
+                            packageName,
+                            ApkInstallResult(packageName, progress = 1, state = SUCCEEDED)
+                        )
+                    }
+                    coEvery {
+                        apkInstaller.install(any(), packageName, installerName, any())
+                    } returns installResult
+                }
             }
 
             apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
@@ -289,14 +298,12 @@ internal class ApkRestoreTest : TransportTest() {
                     2 -> {
                         val result = value[packageName]
                         if (willFail) {
-                            assertEquals(FAILED, result.state)
+                            assertEquals(FAILED_SYSTEM_APP, result.state)
                         } else {
                             assertEquals(SUCCEEDED, result.state)
                         }
-                        assertEquals(willFail, value.hasFailed)
                     }
                     3 -> {
-                        assertEquals(willFail, value.hasFailed)
                         assertTrue(value.isFinished)
                     }
                     else -> fail("more values emitted")
@@ -307,5 +314,5 @@ internal class ApkRestoreTest : TransportTest() {
 }
 
 private operator fun InstallResult.get(packageName: String): ApkInstallResult {
-    return (this as MutableInstallResult)[packageName] ?: fail("$packageName not found")
+    return (this as MutableInstallResult)[packageName] ?: Assertions.fail("$packageName not found")
 }

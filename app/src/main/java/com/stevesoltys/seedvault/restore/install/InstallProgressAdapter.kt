@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
@@ -96,6 +97,11 @@ internal class InstallProgressAdapter(
                         appInfo.visibility = VISIBLE
                         appInfo.setText(R.string.restore_installing_tap_to_install)
                     }
+                }
+                FAILED_SYSTEM_APP -> {
+                    appStatus.setImageResource(R.drawable.ic_error_red)
+                    appStatus.visibility = VISIBLE
+                    progressBar.visibility = INVISIBLE
                 }
                 QUEUED -> throw AssertionError()
             }

@@ -97,6 +97,10 @@ internal class MutableInstallResult(override val total: Int) : InstallResult {
         return this
     }
 
+    fun fail(packageName: String, state: ApkInstallState = FAILED): InstallResult {
+        return update(packageName) { it.copy(state = state) }
+    }
+
     override fun reCheckFailedPackage(pm: PackageManager, packageName: String): Boolean {
         check(isFinished) { "re-checking failed packages only allowed when finished" }
         if (pm.isInstalled(packageName)) {
@@ -133,5 +137,11 @@ enum class ApkInstallState {
     QUEUED,
     IN_PROGRESS,
     SUCCEEDED,
-    FAILED
+    FAILED,
+
+    /**
+     * The app was a system app and can't be installed on the restore device,
+     * because it is not preset there.
+     */
+    FAILED_SYSTEM_APP
 }
