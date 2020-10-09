@@ -1,5 +1,7 @@
 package com.stevesoltys.seedvault.restore.install
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -115,9 +118,33 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     }
 
     override fun onFailedItemClicked(item: ApkInstallResult) {
-        val i =
-            viewModel.installIntentCreator.getIntent(item.packageName, item.installerPackageName)
-        startActivity(i)
+        installAppLauncher.launch(item)
+    }
+
+    private val installAppLauncher = registerForActivityResult(InstallApp()) { packageName ->
+        val result = viewModel.installResult.value ?: return@registerForActivityResult
+        if (result.isFinished) {
+            val changed = result.reCheckFailedPackage(
+                requireContext().packageManager,
+                packageName.toString()
+            )
+            if (changed) adapter.update(result.getNotQueued())
+        }
+    }
+
+    private inner class InstallApp : ActivityResultContract<ApkInstallResult, CharSequence>() {
+        private lateinit var packageName: CharSequence
+        override fun createIntent(context: Context, input: ApkInstallResult): Intent {
+            packageName = input.packageName
+            return viewModel.installIntentCreator.getIntent(
+                input.packageName,
+                input.installerPackageName
+            )
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): CharSequence {
+            return packageName
+        }
     }
 
 }

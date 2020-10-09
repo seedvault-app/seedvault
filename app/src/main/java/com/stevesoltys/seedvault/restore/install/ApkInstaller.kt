@@ -59,6 +59,8 @@ internal class ApkInstaller(private val context: Context) {
     private fun install(cachedApk: File, installerPackageName: String?) {
         val sessionParams = SessionParams(MODE_FULL_INSTALL).apply {
             setInstallerPackageName(installerPackageName)
+            // Setting the INSTALL_ALLOW_TEST flag here does not allow us to install test apps,
+            // because the flag is filtered out by PackageInstallerService.
         }
         // Don't set more sessionParams intentionally here.
         // We saw strange permission issues when doing setInstallReason() or setting installFlags.

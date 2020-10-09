@@ -3,7 +3,6 @@ package com.stevesoltys.seedvault.restore.install
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -23,7 +22,7 @@ internal class InstallIntentCreator(
 
     fun getIntent(packageName: CharSequence, installerPackageName: CharSequence?): Intent {
         val i = Intent(ACTION_VIEW, Uri.parse("market://details?id=$packageName")).apply {
-            addFlags(FLAG_ACTIVITY_NEW_TASK)
+            // Not using FLAG_ACTIVITY_NEW_TASK, so startActivityForResult works
             addFlags(FLAG_ACTIVITY_CLEAR_TOP)
             addFlags(FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         }
@@ -39,14 +38,18 @@ internal class InstallIntentCreator(
         if (installerPackageName == null) return null
         val packageName = installerToPackage[installerPackageName] ?: return null
         val isInstalled = isPackageInstalled.getOrPut(packageName) {
-            try {
-                packageManager.getPackageInfo(packageName, 0)
-                true
-            } catch (e: PackageManager.NameNotFoundException) {
-                false
-            }
+            packageManager.isInstalled(packageName)
         }
         return if (isInstalled) packageName else null
     }
 
+}
+
+fun PackageManager.isInstalled(packageName: String): Boolean {
+    return try {
+        getPackageInfo(packageName, 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
 }

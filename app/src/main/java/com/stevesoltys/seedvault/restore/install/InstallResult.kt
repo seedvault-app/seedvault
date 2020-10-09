@@ -1,9 +1,11 @@
 package com.stevesoltys.seedvault.restore.install
 
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import java.util.concurrent.ConcurrentHashMap
 
 internal interface InstallResult {
@@ -45,6 +47,12 @@ internal interface InstallResult {
      * and we need to treat all packages as failed that haven't been processed.
      */
     fun queuedToFailed()
+
+    /**
+     * Once [isFinished] is true, this can be called to re-check a package in state [FAILED].
+     * If it is now installed, the state will be changed to [SUCCEEDED] and true returned.
+     */
+    fun reCheckFailedPackage(pm: PackageManager, packageName: String): Boolean
 }
 
 internal class MutableInstallResult(override val total: Int) : InstallResult {
@@ -87,6 +95,15 @@ internal class MutableInstallResult(override val total: Int) : InstallResult {
         check(result != null) { "ApkRestoreResult for $packageName does not exist." }
         installResults[packageName] = updateFun(result)
         return this
+    }
+
+    override fun reCheckFailedPackage(pm: PackageManager, packageName: String): Boolean {
+        check(isFinished) { "re-checking failed packages only allowed when finished" }
+        if (pm.isInstalled(packageName)) {
+            update(packageName) { it.copy(state = SUCCEEDED) }
+            return true
+        }
+        return false
     }
 
 }
