@@ -5,7 +5,6 @@ import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
-import android.content.pm.PackageManager
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
@@ -31,6 +30,7 @@ import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.install.ApkRestore
 import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
 import com.stevesoltys.seedvault.restore.install.InstallResult
+import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
@@ -244,12 +244,7 @@ internal class RestoreViewModel(
             QUOTA_EXCEEDED -> FAILED_QUOTA_EXCEEDED
             UNKNOWN_ERROR -> FAILED
             APK_AND_DATA -> {
-                try {
-                    app.packageManager.getPackageInfo(packageName, 0)
-                    FAILED
-                } catch (e: PackageManager.NameNotFoundException) {
-                    FAILED_NOT_INSTALLED
-                }
+                if (app.packageManager.isInstalled(packageName)) FAILED else FAILED_NOT_INSTALLED
             }
         }
     }

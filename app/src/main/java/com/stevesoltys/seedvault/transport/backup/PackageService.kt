@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
+import android.content.pm.ApplicationInfo.FLAG_TEST_ONLY
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -161,4 +162,9 @@ internal fun PackageInfo.doesNotGetBackedUp(): Boolean {
 internal fun PackageInfo.isStopped(): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
     return applicationInfo.flags and FLAG_STOPPED != 0
+}
+
+internal fun PackageInfo.isTestOnly(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
+    return applicationInfo.flags and FLAG_TEST_ONLY != 0
 }

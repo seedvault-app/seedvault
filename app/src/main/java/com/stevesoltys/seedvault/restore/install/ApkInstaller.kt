@@ -108,7 +108,6 @@ internal class ApkInstaller(private val context: Context) {
         }
 
         // update status and offer result
-        // TODO maybe don't back up statusMsg=INSTALL_FAILED_TEST_ONLY apps in the first place?
         val status = if (success) SUCCEEDED else FAILED
         return installResult.update(packageName) { it.copy(state = status) }
     }
