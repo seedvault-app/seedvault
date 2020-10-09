@@ -137,6 +137,13 @@ internal class ApkRestore(
             }
         }
 
+        if (metadata.splits != null) {
+            // do not install APKs that require splits (for now)
+            Log.w(TAG, "Not installing $packageName because it requires splits.")
+            collector.emit(installResult.fail(packageName))
+            return
+        }
+
         // install APK and emit updates from it
         val result = apkInstaller.install(cachedApk, packageName, metadata.installer, installResult)
         collector.emit(result)
