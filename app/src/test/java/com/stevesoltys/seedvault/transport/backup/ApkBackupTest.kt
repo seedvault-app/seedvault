@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
+import android.content.pm.ApplicationInfo.FLAG_TEST_ONLY
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageInfo
@@ -61,6 +62,15 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does not back up when setting disabled`() = runBlocking {
         every { settingsManager.backupApks() } returns false
+
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
+    }
+
+    @Test
+    fun `does not back up test-only apps`() = runBlocking {
+        packageInfo.applicationInfo.flags = FLAG_TEST_ONLY
+
+        every { settingsManager.backupApks() } returns true
 
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }

@@ -53,6 +53,13 @@ class ApkBackup(
         // do not back up when setting is not enabled
         if (!settingsManager.backupApks()) return null
 
+        // do not back up test-only apps as we can't re-install them anyway
+        // see: https://commonsware.com/blog/2017/10/31/android-studio-3p0-flag-test-only.html
+        if (packageInfo.isTestOnly()) {
+            Log.d(TAG, "Package $packageName is test-only app. Not backing it up.")
+            return null
+        }
+
         // do not back up system apps that haven't been updated
         if (packageInfo.isNotUpdatedSystemApp()) {
             Log.d(TAG, "Package $packageName is vanilla system app. Not backing it up.")
