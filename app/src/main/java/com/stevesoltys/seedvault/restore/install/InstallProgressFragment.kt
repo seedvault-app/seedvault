@@ -1,11 +1,5 @@
 package com.stevesoltys.seedvault.restore.install
 
-import android.content.Intent
-import android.content.Intent.ACTION_VIEW
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -121,16 +115,8 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     }
 
     override fun onFailedItemClicked(item: ApkInstallResult) {
-        // TODO restrict intent to installer package names to one of:
-        //  * "org.fdroid.fdroid" "org.fdroid.fdroid.privileged"
-        //  * "com.aurora.store"
-        //  * "com.android.vending"
-        val i = Intent(ACTION_VIEW, Uri.parse("market://details?id=${item.packageName}")).apply {
-            addFlags(FLAG_ACTIVITY_NEW_TASK)
-            addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            addFlags(FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            // setPackage("com.aurora.store")
-        }
+        val i =
+            viewModel.installIntentCreator.getIntent(item.packageName, item.installerPackageName)
         startActivity(i)
     }
 
