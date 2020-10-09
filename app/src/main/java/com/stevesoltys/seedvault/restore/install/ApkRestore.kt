@@ -1,15 +1,16 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
-import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
@@ -55,13 +56,13 @@ internal class ApkRestore(
                 restore(this, token, packageName, metadata, installResult)
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
-                emit(fail(installResult, packageName))
+                emit(installResult.fail(packageName))
             } catch (e: SecurityException) {
                 Log.e(TAG, "Security error re-installing APK for $packageName.", e)
-                emit(fail(installResult, packageName))
+                emit(installResult.fail(packageName))
             } catch (e: TimeoutCancellationException) {
                 Log.e(TAG, "Timeout while re-installing APK for $packageName.", e)
-                emit(fail(installResult, packageName))
+                emit(installResult.fail(packageName))
             }
         }
         installResult.isFinished = true
@@ -128,17 +129,10 @@ internal class ApkRestore(
         }
         collector.emit(installResult)
 
-        // ensure system apps are actually installed and newer system apps as well
+        // ensure system apps are actually already installed and newer system apps as well
         if (metadata.system) {
-            try {
-                val installedPackageInfo = pm.getPackageInfo(packageName, 0)
-                // metadata.version is not null, because here hasApk() must be true
-                val isOlder = metadata.version!! <= installedPackageInfo.longVersionCode
-                if (isOlder || !installedPackageInfo.isSystemApp()) throw NameNotFoundException()
-            } catch (e: NameNotFoundException) {
-                Log.w(TAG, "Not installing $packageName because older or not a system app here.")
-                // TODO consider reporting different status here to prevent manual installs
-                collector.emit(fail(installResult, packageName))
+            shouldInstallSystemApp(packageName, metadata, installResult)?.let {
+                collector.emit(it)
                 return
             }
         }
@@ -148,8 +142,33 @@ internal class ApkRestore(
         collector.emit(result)
     }
 
-    private fun fail(installResult: MutableInstallResult, packageName: String): InstallResult {
-        return installResult.update(packageName) { it.copy(state = FAILED) }
+    /**
+     * Returns null if this system app should get re-installed,
+     * or a new [InstallResult] to be emitted otherwise.
+     */
+    private fun shouldInstallSystemApp(
+        packageName: String,
+        metadata: PackageMetadata,
+        installResult: MutableInstallResult
+    ): InstallResult? {
+        val installedPackageInfo = try {
+            pm.getPackageInfo(packageName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.w(TAG, "Not installing system app $packageName because not installed here.")
+            // we report a different FAILED status here to prevent manual installs
+            return installResult.fail(packageName, FAILED_SYSTEM_APP)
+        }
+        // metadata.version is not null, because here hasApk() must be true
+        val isOlder = metadata.version!! <= installedPackageInfo.longVersionCode
+        return if (isOlder) {
+            Log.w(TAG, "Not installing $packageName because ours is older.")
+            installResult.update(packageName) { it.copy(state = SUCCEEDED) }
+        } else if (!installedPackageInfo.isSystemApp()) {
+            Log.w(TAG, "Not installing $packageName because not a system app here.")
+            installResult.update(packageName) { it.copy(state = SUCCEEDED) }
+        } else {
+            null // everything is good, we can re-install this
+        }
     }
 
 }
