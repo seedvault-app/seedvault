@@ -29,6 +29,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.install.ApkRestore
+import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
 import com.stevesoltys.seedvault.restore.install.InstallResult
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
@@ -88,6 +89,7 @@ internal class RestoreViewModel(
         switchMap(mChosenRestorableBackup) { backup ->
             getInstallResult(backup)
         }
+    internal val installIntentCreator by lazy { InstallIntentCreator(app.packageManager) }
 
     private val mNextButtonEnabled = MutableLiveData<Boolean>().apply { value = false }
     internal val nextButtonEnabled: LiveData<Boolean> = mNextButtonEnabled
