@@ -27,4 +27,10 @@
     <string name="settings_backup_location">Lokalizacja kopii zapasowych</string>
     <string name="settings_backup">Tworzenie kopii zapasowej</string>
     <string name="restore_backup_button">Przywróć kopię zapasową</string>
+    <string name="storage_fake_drive_summary">Musi być podłączona</string>
+    <string name="storage_fake_drive_title">Pamięć USB</string>
+    <string name="storage_fragment_restore_title">Gdzie znaleźć kopie zapasowe\?</string>
+    <string name="settings_backup_apk_summary">Utwórz kopie zapasowe aplikacji. W przeciwnym razie utworzona zostanie kopia zapasowa tylko danych aplikacji.</string>
+    <string name="settings_auto_restore_summary_usb">Uwaga: Twój %1$s musi być podłączony, aby to zadziałało.</string>
+    <string name="backup">Kopia zapasowa</string>
 </resources>
