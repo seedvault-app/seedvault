@@ -5,5 +5,6 @@ import org.koin.dsl.module
 
 val installModule = module {
     factory { ApkInstaller(androidContext()) }
-    factory { ApkRestore(androidContext(), get(), get()) }
+    factory { ApkSplitCompatibilityChecker(DeviceInfo(androidContext())) }
+    factory { ApkRestore(androidContext(), get(), get(), get()) }
 }

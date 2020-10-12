@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.util.Log
+import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -26,6 +27,7 @@ private val TAG = ApkRestore::class.java.simpleName
 internal class ApkRestore(
     private val context: Context,
     private val restorePlugin: RestorePlugin,
+    private val splitCompatChecker: ApkSplitCompatibilityChecker,
     private val apkInstaller: ApkInstaller
 ) {
 
@@ -78,11 +80,8 @@ internal class ApkRestore(
         metadata: PackageMetadata,
         installResult: MutableInstallResult
     ) {
-        // create a cache file to write the APK into
-        val cachedApk = File.createTempFile(packageName, ".apk", context.cacheDir)
-        // copy APK to cache file and calculate SHA-256 hash while we are at it
-        val inputStream = restorePlugin.getApkInputStream(token, packageName)
-        val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
+        // cache the APK and get its hash
+        val (cachedApk, sha256) = cacheApk(token, packageName)
 
         // check APK's SHA-256 hash
         if (metadata.sha256 != sha256) throw SecurityException(
@@ -137,16 +136,76 @@ internal class ApkRestore(
             }
         }
 
-        if (metadata.splits != null) {
-            // do not install APKs that require splits (for now)
-            Log.w(TAG, "Not installing $packageName because it requires splits.")
+        // process further APK splits, if available
+        val cachedApks = cacheSplitsIfNeeded(token, packageName, cachedApk, metadata.splits)
+        if (cachedApks == null) {
+            Log.w(TAG, "Not installing $packageName because of incompatible splits.")
             collector.emit(installResult.fail(packageName))
             return
         }
 
         // install APK and emit updates from it
-        val result = apkInstaller.install(cachedApk, packageName, metadata.installer, installResult)
+        val result =
+            apkInstaller.install(cachedApks, packageName, metadata.installer, installResult)
         collector.emit(result)
+    }
+
+    /**
+     * Retrieves APK splits from [RestorePlugin] and caches them locally.
+     *
+     * @throws SecurityException if a split has an unexpected SHA-256 hash.
+     * @return a list of all APKs that need to be installed
+     * or null if the splits are incompatible with this restore device.
+     */
+    @Throws(IOException::class, SecurityException::class)
+    private suspend fun cacheSplitsIfNeeded(
+        token: Long,
+        packageName: String,
+        cachedApk: File,
+        splits: List<ApkSplit>?
+    ): List<File>? {
+        // if null, there are no splits, so we just have a single base APK to consider
+        val splitNames = splits?.map { it.name } ?: return listOf(cachedApk)
+
+        // return null when splits are incompatible
+        if (!splitCompatChecker.isCompatible(splitNames)) return null
+
+        // store coming splits in a list
+        val cachedApks = ArrayList<File>(splits.size + 1).apply {
+            add(cachedApk) // don't forget the base APK
+        }
+        splits.forEach { apkSplit -> // cache and check all splits
+            val suffix = "_${apkSplit.sha256}"
+            val (file, sha256) = cacheApk(token, packageName, suffix)
+            // check APK split's SHA-256 hash
+            if (apkSplit.sha256 != sha256) throw SecurityException(
+                "$packageName:${apkSplit.name} has sha256 '$sha256'," +
+                    " but '${apkSplit.sha256}' expected."
+            )
+            cachedApks.add(file)
+        }
+        return cachedApks
+    }
+
+    /**
+     * Retrieves an APK from the [RestorePlugin] and caches it locally
+     * while calculating its SHA-256 hash.
+     *
+     * @return a [Pair] of the cached [File] and SHA-256 hash.
+     */
+    @Throws(IOException::class)
+    @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
+    private suspend fun cacheApk(
+        token: Long,
+        packageName: String,
+        suffix: String = ""
+    ): Pair<File, String> {
+        // create a cache file to write the APK into
+        val cachedApk = File.createTempFile(packageName + suffix, ".apk", context.cacheDir)
+        // copy APK to cache file and calculate SHA-256 hash while we are at it
+        val inputStream = restorePlugin.getApkInputStream(token, packageName, suffix)
+        val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
+        return Pair(cachedApk, sha256)
     }
 
     /**

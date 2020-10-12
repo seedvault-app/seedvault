@@ -46,9 +46,11 @@ internal class ApkRestoreTest : TransportTest() {
         every { packageManager } returns pm
     }
     private val restorePlugin: RestorePlugin = mockk()
+    private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
 
-    private val apkRestore: ApkRestore = ApkRestore(strictContext, restorePlugin, apkInstaller)
+    private val apkRestore: ApkRestore =
+        ApkRestore(strictContext, restorePlugin, splitCompatChecker, apkInstaller)
 
     private val icon: Drawable = mockk()
 
@@ -78,7 +80,7 @@ internal class ApkRestoreTest : TransportTest() {
         val packageMetadataMap: PackageMetadataMap = hashMapOf(packageName to packageMetadata)
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
 
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
             when (index) {
@@ -109,7 +111,7 @@ internal class ApkRestoreTest : TransportTest() {
         packageInfo.packageName = getRandomString()
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
 
         apkRestore.restore(token, packageMetadataMap).collectIndexed { index, value ->
@@ -137,7 +139,7 @@ internal class ApkRestoreTest : TransportTest() {
     @Test
     fun `test apkInstaller throws exceptions`(@TempDir tmpDir: Path) = runBlocking {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every {
             pm.loadItemIcon(
@@ -194,7 +196,7 @@ internal class ApkRestoreTest : TransportTest() {
         }
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every {
             pm.loadItemIcon(
@@ -247,7 +249,9 @@ internal class ApkRestoreTest : TransportTest() {
             val isSystemApp = Random.nextBoolean()
 
             every { strictContext.cacheDir } returns File(tmpDir.toString())
-            coEvery { restorePlugin.getApkInputStream(token, packageName) } returns apkInputStream
+            coEvery {
+                restorePlugin.getApkInputStream(token, packageName, "")
+            } returns apkInputStream
             every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
             every {
                 pm.loadItemIcon(

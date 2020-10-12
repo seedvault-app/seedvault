@@ -38,7 +38,7 @@ internal class ApkInstaller(private val context: Context) {
 
     @Throws(IOException::class, SecurityException::class)
     internal suspend fun install(
-        cachedApk: File,
+        cachedApks: List<File>,
         packageName: String,
         installerPackageName: String?,
         installResult: MutableInstallResult
@@ -47,16 +47,16 @@ internal class ApkInstaller(private val context: Context) {
             override fun onReceive(context: Context, i: Intent) {
                 if (i.action != BROADCAST_ACTION) return
                 context.unregisterReceiver(this)
-                cont.resume(onBroadcastReceived(i, packageName, cachedApk, installResult))
+                cont.resume(onBroadcastReceived(i, packageName, cachedApks, installResult))
             }
         }
         context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_ACTION))
         cont.invokeOnCancellation { context.unregisterReceiver(broadcastReceiver) }
 
-        install(cachedApk, installerPackageName)
+        install(cachedApks, installerPackageName)
     }
 
-    private fun install(cachedApk: File, installerPackageName: String?) {
+    private fun install(cachedApks: List<File>, installerPackageName: String?) {
         val sessionParams = SessionParams(MODE_FULL_INSTALL).apply {
             setInstallerPackageName(installerPackageName)
             // Setting the INSTALL_ALLOW_TEST flag here does not allow us to install test apps,
@@ -65,12 +65,14 @@ internal class ApkInstaller(private val context: Context) {
         // Don't set more sessionParams intentionally here.
         // We saw strange permission issues when doing setInstallReason() or setting installFlags.
         val session = installer.openSession(installer.createSession(sessionParams))
-        val sizeBytes = cachedApk.length()
         session.use { s ->
-            cachedApk.inputStream().use { inputStream ->
-                s.openWrite("PackageInstaller", 0, sizeBytes).use { out ->
-                    inputStream.copyTo(out)
-                    s.fsync(out)
+            cachedApks.forEach { cachedApk ->
+                val sizeBytes = cachedApk.length()
+                cachedApk.inputStream().use { inputStream ->
+                    s.openWrite(cachedApk.name, 0, sizeBytes).use { out ->
+                        inputStream.copyTo(out)
+                        s.fsync(out)
+                    }
                 }
             }
             s.commit(getIntentSender())
@@ -90,7 +92,7 @@ internal class ApkInstaller(private val context: Context) {
     private fun onBroadcastReceived(
         i: Intent,
         expectedPackageName: String,
-        cachedApk: File,
+        cachedApks: List<File>,
         installResult: MutableInstallResult
     ): InstallResult {
         val packageName = i.getStringExtra(EXTRA_PACKAGE_NAME)!!
@@ -102,9 +104,9 @@ internal class ApkInstaller(private val context: Context) {
         }
         Log.d(TAG, "Received result for $packageName: success=$success $statusMsg")
 
-        // delete cached APK file on I/O thread
+        // delete all cached APK files on I/O thread
         GlobalScope.launch(Dispatchers.IO) {
-            cachedApk.delete()
+            cachedApks.forEach { it.delete() }
         }
 
         // update status and offer result
