@@ -8,7 +8,10 @@ import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import com.stevesoltys.seedvault.getRandomBase64
+import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
@@ -33,6 +36,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path
 import kotlin.random.Random
 
@@ -205,6 +209,122 @@ internal class ApkRestoreTest : TransportTest() {
                 }
             }
         }
+
+    @Test
+    fun `incompatible splits cause FAILED state`(@TempDir tmpDir: Path) = runBlocking {
+        // add one APK split to metadata
+        val split1Name = getRandomString()
+        val split2Name = getRandomString()
+        packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
+            splits = listOf(
+                ApkSplit(split1Name, getRandomBase64()),
+                ApkSplit(split2Name, getRandomBase64())
+            )
+        )
+
+        // cache APK and get icon as well as app name
+        cacheBaseApkAndGetInfo(tmpDir)
+
+        // splits are NOT compatible
+        every { splitCompatChecker.isCompatible(listOf(split1Name, split2Name)) } returns false
+
+        apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
+            assertQueuedProgressFailFinished(i, value)
+        }
+    }
+
+    @Test
+    fun `split signature mismatch causes FAILED state`(@TempDir tmpDir: Path) = runBlocking {
+        // add one APK split to metadata
+        val splitName = getRandomString()
+        val sha256 = getRandomBase64(23)
+        packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
+            splits = listOf(ApkSplit(splitName, sha256))
+        )
+
+        // cache APK and get icon as well as app name
+        cacheBaseApkAndGetInfo(tmpDir)
+
+        every { splitCompatChecker.isCompatible(listOf(splitName)) } returns true
+        coEvery {
+            restorePlugin.getApkInputStream(token, packageName, "_$sha256")
+        } returns ByteArrayInputStream(getRandomByteArray())
+
+        apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
+            assertQueuedProgressFailFinished(i, value)
+        }
+    }
+
+    @Test
+    fun `exception while getting split data causes FAILED state`(@TempDir tmpDir: Path) =
+        runBlocking {
+            // add one APK split to metadata
+            val splitName = getRandomString()
+            val sha256 = getRandomBase64(23)
+            packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
+                splits = listOf(ApkSplit(splitName, sha256))
+            )
+
+            // cache APK and get icon as well as app name
+            cacheBaseApkAndGetInfo(tmpDir)
+
+            every { splitCompatChecker.isCompatible(listOf(splitName)) } returns true
+            coEvery {
+                restorePlugin.getApkInputStream(token, packageName, "_$sha256")
+            } throws IOException()
+
+            apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
+                assertQueuedProgressFailFinished(i, value)
+            }
+        }
+
+    @Test
+    fun `splits get installed along with base APK`(@TempDir tmpDir: Path) = runBlocking {
+        // add one APK split to metadata
+        val split1Name = getRandomString()
+        val split2Name = getRandomString()
+        val split1sha256 = "A5BYxvLAy0ksUzsKTRTvd8wPeKvMztUofYShogEc-4E"
+        val split2sha256 = "ZqZ1cVH47lXbEncWx-Pc4L6AdLZOIO2lQuXB5GypxB4"
+        packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
+            splits = listOf(
+                ApkSplit(split1Name, split1sha256),
+                ApkSplit(split2Name, split2sha256)
+            )
+        )
+
+        // cache APK and get icon as well as app name
+        cacheBaseApkAndGetInfo(tmpDir)
+
+        every { splitCompatChecker.isCompatible(listOf(split1Name, split2Name)) } returns true
+
+        // define bytes of splits and return them as stream (matches above hashes)
+        val split1Bytes = byteArrayOf(0x01, 0x02, 0x03)
+        val split2Bytes = byteArrayOf(0x07, 0x08, 0x09)
+        val split1InputStream = ByteArrayInputStream(split1Bytes)
+        val split2InputStream = ByteArrayInputStream(split2Bytes)
+        coEvery {
+            restorePlugin.getApkInputStream(token, packageName, "_$split1sha256")
+        } returns split1InputStream
+        coEvery {
+            restorePlugin.getApkInputStream(token, packageName, "_$split2sha256")
+        } returns split2InputStream
+
+        coEvery {
+            apkInstaller.install(match { it.size == 3 }, packageName, installerName, any())
+        } returns MutableInstallResult(1).apply {
+            set(
+                packageName, ApkInstallResult(
+                    packageName,
+                    progress = 1,
+                    state = SUCCEEDED
+                )
+            )
+        }
+
+        apkRestore.restore(token, packageMetadataMap).collectIndexed { i, value ->
+            assertQueuedProgressSuccessFinished(i, value)
+        }
+    }
 
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
