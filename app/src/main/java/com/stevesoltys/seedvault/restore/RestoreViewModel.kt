@@ -151,9 +151,9 @@ internal class RestoreViewModel(
         closeSession()
     }
 
-    private fun getInstallResult(restorableBackup: RestorableBackup): LiveData<InstallResult> {
+    private fun getInstallResult(backup: RestorableBackup): LiveData<InstallResult> {
         @Suppress("EXPERIMENTAL_API_USAGE")
-        return apkRestore.restore(restorableBackup.token, restorableBackup.packageMetadataMap)
+        return apkRestore.restore(backup.token, backup.deviceName, backup.packageMetadataMap)
             .onStart {
                 Log.d(TAG, "Start InstallResult Flow")
             }.catch { e ->

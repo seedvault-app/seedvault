@@ -1,7 +1,5 @@
 package com.stevesoltys.seedvault.restore.install
 
-import android.content.Context
-import android.os.Build
 import android.util.Log
 
 private const val TAG = "SplitCompatChecker"
@@ -9,6 +7,7 @@ private const val TAG = "SplitCompatChecker"
 private const val CONFIG_PREFIX = "config."
 private const val CONFIG_LENGTH = CONFIG_PREFIX.length
 
+// see https://developer.android.com/training/multiscreen/screendensities#TaskProvideAltBmp
 private const val LDPI_VALUE = 120
 private const val MDPI_VALUE = 160
 private const val TVDPI_VALUE = 213
@@ -17,14 +16,9 @@ private const val XHDPI_VALUE = 320
 private const val XXHDPI_VALUE = 480
 private const val XXXHDPI_VALUE = 640
 
-class DeviceInfo(context: Context) {
-    val densityDpi: Int = context.resources.displayMetrics.densityDpi
-    val supportedABIs: List<String> = Build.SUPPORTED_ABIS.toList()
-}
-
 /**
  * Tries to determine APK split compatibility with a device by examining the list of split names.
- * This only looks on the supported ABIs and the screen density.
+ * This only looks on the supported ABIs, the screen density and supported languages.
  * Other config splits e.g. based on OpenGL or Vulkan version are also possible,
  * but don't seem to be widely used, so we don't consider those for now.
  */
@@ -53,18 +47,29 @@ class ApkSplitCompatibilityChecker(private val deviceInfo: DeviceInfo) {
      * Returns true if the list of splits can be considered compatible with the current device,
      * and false otherwise.
      */
-    fun isCompatible(splitNames: Collection<String>): Boolean = splitNames.all { splitName ->
-        // all individual splits need to be compatible (which can be hard to judge by name only)
-        isCompatible(splitName)
+    fun isCompatible(deviceName: String, splitNames: Collection<String>): Boolean {
+        val unknownAllowed = deviceInfo.areUnknownSplitsAllowed(deviceName)
+        return splitNames.all { splitName ->
+            // all individual splits need to be compatible (which can be hard to judge by name only)
+            isCompatible(deviceName, unknownAllowed, splitName)
+        }
     }
 
-    private fun isCompatible(splitName: String): Boolean {
+    private fun isCompatible(
+        deviceName: String,
+        unknownAllowed: Boolean,
+        splitName: String
+    ): Boolean {
         val index = splitName.indexOf(CONFIG_PREFIX)
-        // If this is not a standardized config split, we just assume that it will work,
-        // as it is most likely a dynamic feature module.
-        if (index == -1) {
+        // If this is not a standardized config split
+        if (index == -1 && unknownAllowed) {
+            // we assume that it will work, as it is most likely a dynamic feature module
             Log.v(TAG, "Not a config split '$splitName'. Assuming it is ok.")
             return true
+        } else if (index != 0 && !unknownAllowed) { // not a normal config split at all
+            // we refuse it, since unknown splits are not allowed
+            Log.v(TAG, "Not a config split '$splitName'. Not allowed.")
+            return false
         }
 
         val name = splitName.substring(index + CONFIG_LENGTH)
@@ -77,14 +82,25 @@ class ApkSplitCompatibilityChecker(private val deviceInfo: DeviceInfo) {
 
         // Check if this is a known screen density config
         densityMap[name]?.let { splitDensity ->
-            // the split's density must not be much lower than the device's.
+            // The split's density must not be much lower than the device's.
             return isDensityCompatible(splitDensity)
         }
 
-        // At this point we don't know what to make of that split,
-        // so let's just hope that it will work. It might just be a language.
-        Log.v(TAG, "Unhandled config split '$splitName'. Assuming it is ok.")
-        return true
+        // Check if this is a language split
+        if (deviceInfo.isSupportedLanguage(name)) {
+            // accept all language splits as an extra language should not break things
+            return true
+        }
+
+        // At this point we don't know what to make of that split
+        return if (deviceInfo.isSameDevice(deviceName)) {
+            // so we only allow it if it came from the same device
+            Log.v(TAG, "Unhandled config split '$splitName'. Came from same device.")
+            true
+        } else {
+            Log.w(TAG, "Unhandled config split '$splitName'. Not allowed.")
+            false
+        }
     }
 
     private fun isAbiCompatible(name: String): Boolean {

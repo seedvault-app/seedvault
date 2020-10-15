@@ -18,6 +18,9 @@ data class RestorableBackup(
     val time: Long
         get() = backupMetadata.time
 
+    val deviceName: String
+        get() = backupMetadata.deviceName
+
     val packageMetadataMap: PackageMetadataMap
         get() = backupMetadata.packageMetadataMap
 

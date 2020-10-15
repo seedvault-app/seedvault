@@ -33,7 +33,7 @@ internal class ApkRestore(
 
     private val pm = context.packageManager
 
-    fun restore(token: Long, packageMetadataMap: PackageMetadataMap) = flow {
+    fun restore(token: Long, deviceName: String, packageMetadataMap: PackageMetadataMap) = flow {
         // filter out packages without APK and get total
         val packages = packageMetadataMap.filter { it.value.hasApk() }
         val total = packages.size
@@ -55,7 +55,7 @@ internal class ApkRestore(
         // re-install individual packages and emit updates
         for ((packageName, metadata) in packages) {
             try {
-                restore(this, token, packageName, metadata, installResult)
+                restore(this, token, deviceName, packageName, metadata, installResult)
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
                 emit(installResult.fail(packageName))
@@ -76,6 +76,7 @@ internal class ApkRestore(
     private suspend fun restore(
         collector: FlowCollector<InstallResult>,
         token: Long,
+        deviceName: String,
         packageName: String,
         metadata: PackageMetadata,
         installResult: MutableInstallResult
@@ -137,7 +138,8 @@ internal class ApkRestore(
         }
 
         // process further APK splits, if available
-        val cachedApks = cacheSplitsIfNeeded(token, packageName, cachedApk, metadata.splits)
+        val cachedApks =
+            cacheSplitsIfNeeded(token, deviceName, packageName, cachedApk, metadata.splits)
         if (cachedApks == null) {
             Log.w(TAG, "Not installing $packageName because of incompatible splits.")
             collector.emit(installResult.fail(packageName))
@@ -160,6 +162,7 @@ internal class ApkRestore(
     @Throws(IOException::class, SecurityException::class)
     private suspend fun cacheSplitsIfNeeded(
         token: Long,
+        deviceName: String,
         packageName: String,
         cachedApk: File,
         splits: List<ApkSplit>?
@@ -168,7 +171,7 @@ internal class ApkRestore(
         val splitNames = splits?.map { it.name } ?: return listOf(cachedApk)
 
         // return null when splits are incompatible
-        if (!splitCompatChecker.isCompatible(splitNames)) return null
+        if (!splitCompatChecker.isCompatible(deviceName, splitNames)) return null
 
         // store coming splits in a list
         val cachedApks = ArrayList<File>(splits.size + 1).apply {
