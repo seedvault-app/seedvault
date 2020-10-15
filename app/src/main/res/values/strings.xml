@@ -118,6 +118,8 @@
     <string name="restore_installing_tap_to_install">Tap to install</string>
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring backup</string>
+    <string name="restore_restoring_error_title">Unable to restore some apps</string>
+    <string name="restore_restoring_error_message">You can re-install these apps manually and "Automatic restore" will attempt to restore their data (when enabled).</string>
     <string name="restore_magic_package">System package manager</string>
     <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
