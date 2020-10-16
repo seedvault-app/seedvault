@@ -79,6 +79,7 @@ internal class SettingsViewModel(
     }
 
     internal fun backupNow() {
+        // maybe replace the check below with one that checks if our transport service is running
         if (notificationManager.hasActiveBackupNotifications()) {
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
         } else {
