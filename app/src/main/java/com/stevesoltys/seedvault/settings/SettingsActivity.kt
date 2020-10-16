@@ -28,10 +28,11 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        // always start with settings fragment as a base (when fresh start)
+        if (savedInstanceState == null) showFragment(SettingsFragment())
+        // add app status fragment on the stack, if started via intent
         if (intent?.action == ACTION_APP_STATUS_LIST) {
-            showFragment(AppStatusFragment())
-        } else if (savedInstanceState == null) {
-            showFragment(SettingsFragment())
+            showFragment(AppStatusFragment(), true)
         }
     }
 
