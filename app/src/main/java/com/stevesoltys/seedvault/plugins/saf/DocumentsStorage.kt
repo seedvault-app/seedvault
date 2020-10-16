@@ -178,7 +178,9 @@ internal suspend fun DocumentFile.createOrGetFile(
     mimeType: String = MIME_TYPE
 ): DocumentFile {
     return findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
-        check(this.name == name) { "File named ${this.name}, but should be $name" }
+        if (this.name != name) {
+            throw IOException("File named ${this.name}, but should be $name")
+        }
     } ?: throw IOException()
 }
 
@@ -188,7 +190,9 @@ internal suspend fun DocumentFile.createOrGetFile(
 @Throws(IOException::class)
 suspend fun DocumentFile.createOrGetDirectory(context: Context, name: String): DocumentFile {
     return findFileBlocking(context, name) ?: createDirectory(name)?.apply {
-        check(this.name == name) { "Directory named ${this.name}, but should be $name" }
+        if (this.name != name) {
+            throw IOException("Directory named ${this.name}, but should be $name")
+        }
     } ?: throw IOException()
 }
 
