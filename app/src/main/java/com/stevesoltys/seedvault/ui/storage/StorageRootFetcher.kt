@@ -22,6 +22,7 @@ import android.provider.DocumentsContract.Root.COLUMN_ICON
 import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import android.provider.DocumentsContract.Root.COLUMN_SUMMARY
 import android.provider.DocumentsContract.Root.COLUMN_TITLE
+import android.provider.DocumentsContract.Root.FLAG_LOCAL_ONLY
 import android.provider.DocumentsContract.Root.FLAG_REMOVABLE_USB
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_CREATE
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD
@@ -50,6 +51,7 @@ data class StorageRoot(
     internal val summary: String?,
     internal val availableBytes: Long?,
     internal val isUsb: Boolean,
+    internal val requiresNetwork: Boolean,
     internal val enabled: Boolean = true,
     internal val overrideClickListener: (() -> Unit)? = null
 ) {
@@ -144,10 +146,11 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
         if (!supportsCreate || !supportsIsChild) return null
         val rootId = cursor.getString(COLUMN_ROOT_ID)!!
         if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_HOME) return null
+        val documentId = cursor.getString(COLUMN_DOCUMENT_ID) ?: return null
         return StorageRoot(
             authority = authority,
             rootId = rootId,
-            documentId = cursor.getString(COLUMN_DOCUMENT_ID)!!,
+            documentId = documentId,
             icon = getIcon(context, authority, rootId, cursor.getInt(COLUMN_ICON)),
             title = cursor.getString(COLUMN_TITLE)!!,
             summary = cursor.getString(COLUMN_SUMMARY),
@@ -155,7 +158,8 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
                 // AOSP 11 reports -1 instead of null
                 if (bytes == -1L) null else bytes
             },
-            isUsb = flags and FLAG_REMOVABLE_USB != 0
+            isUsb = flags and FLAG_REMOVABLE_USB != 0,
+            requiresNetwork = flags and FLAG_LOCAL_ONLY == 0 // not local only == requires network
         )
     }
 
@@ -175,6 +179,7 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
             summary = context.getString(R.string.storage_fake_drive_summary),
             availableBytes = null,
             isUsb = true,
+            requiresNetwork = false,
             enabled = false
         )
         roots.add(root)
@@ -216,6 +221,7 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
             summary = context.getString(summaryRes),
             availableBytes = null,
             isUsb = false,
+            requiresNetwork = true,
             enabled = !isInstalled || isRestore,
             overrideClickListener = {
                 if (isInstalled) context.startActivity(intent)

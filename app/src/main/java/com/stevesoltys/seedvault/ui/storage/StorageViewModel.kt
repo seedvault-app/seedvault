@@ -101,7 +101,7 @@ internal abstract class StorageViewModel(
         } else {
             root.title
         }
-        val storage = Storage(uri, name, root.isUsb)
+        val storage = Storage(uri, name, root.isUsb, root.requiresNetwork)
         settingsManager.setStorage(storage)
 
         if (storage.isUsb) {

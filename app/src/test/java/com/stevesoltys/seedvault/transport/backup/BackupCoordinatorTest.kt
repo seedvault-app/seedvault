@@ -63,7 +63,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
-    private val storage = Storage(Uri.EMPTY, getRandomString(), false)
+    private val storage = Storage(Uri.EMPTY, getRandomString(), false, false)
 
     @Test
     fun `starting a new restore set works as expected`() = runBlocking {

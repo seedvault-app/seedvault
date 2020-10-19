@@ -14,6 +14,8 @@ import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.VisibleForTesting
@@ -32,6 +34,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
+import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = BackupCoordinator::class.java.simpleName
 
@@ -212,12 +215,11 @@ internal class BackupCoordinator(
     ): Int {
         cancelReason = UNKNOWN_ERROR
         val packageName = packageInfo.packageName
-        if (packageName == MAGIC_PACKAGE_MANAGER) {
-            // backups of package manager metadata do not respect backoff
-            // we need to reject them manually when now is not a good time for a backup
-            if (getBackupBackoff() != 0L) {
-                return TRANSPORT_PACKAGE_REJECTED
-            }
+        // K/V backups (typically starting with package manager metadata)
+        // are scheduled with JobInfo.Builder#setOverrideDeadline() and thus do not respect backoff.
+        // We need to reject them manually when now is not a good time for a backup.
+        if (packageName == MAGIC_PACKAGE_MANAGER && getBackupBackoff() != 0L) {
+            return TRANSPORT_PACKAGE_REJECTED
         }
         val result = kv.performBackup(packageInfo, data, flags)
         if (result == TRANSPORT_OK && packageName == MAGIC_PACKAGE_MANAGER) {
@@ -430,14 +432,23 @@ internal class BackupCoordinator(
 
     private fun getBackupBackoff(): Long {
         val noBackoff = 0L
-        val defaultBackoff = DAYS.toMillis(30)
+        val longBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
-        val storage = settingsManager.getStorage() ?: return defaultBackoff
-        // don't back off if storage is not ejectable or available right now
-        return if (!storage.isUsb || storage.getDocumentFile(context).isDirectory) noBackoff
-        // otherwise back off
-        else defaultBackoff
+        val storage = settingsManager.getStorage() ?: return longBackoff
+
+        // back off if storage is removable and not available right now
+        return if (storage.isUsb && !storage.getDocumentFile(context).isDirectory) longBackoff
+        // back off if storage is on network, but we have no access
+        else if (storage.requiresNetwork && !hasInternet()) HOURS.toMillis(1)
+        // otherwise no back off
+        else noBackoff
+    }
+
+    private fun hasInternet(): Boolean {
+        val cm = context.getSystemService(ConnectivityManager::class.java)
+        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+        return capabilities.hasCapability(NET_CAPABILITY_INTERNET)
     }
 
 }
