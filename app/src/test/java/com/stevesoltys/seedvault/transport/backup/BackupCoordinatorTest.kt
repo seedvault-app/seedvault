@@ -9,7 +9,6 @@ import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
@@ -63,7 +62,10 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
-    private val storage = Storage(Uri.EMPTY, getRandomString(), false, false)
+    private val storage = Storage(Uri.EMPTY, getRandomString(),
+        isUsb = false,
+        requiresNetwork = false
+    )
 
     @Test
     fun `starting a new restore set works as expected`() = runBlocking {
@@ -121,14 +123,11 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `no error notification when device initialization fails on unplugged USB storage`() =
         runBlocking {
             val storage = mockk<Storage>()
-            val documentFile = mockk<DocumentFile>()
 
             every { settingsManager.getToken() } returns token
             coEvery { plugin.initializeDevice() } throws IOException()
             every { settingsManager.getStorage() } returns storage
-            every { storage.isUsb } returns true
-            every { storage.getDocumentFile(context) } returns documentFile
-            every { documentFile.isDirectory } returns false
+            every { storage.isUnavailableUsb(context) } returns true
 
             assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
 

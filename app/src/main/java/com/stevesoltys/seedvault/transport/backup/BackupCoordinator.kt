@@ -14,8 +14,6 @@ import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.VisibleForTesting
@@ -431,24 +429,18 @@ internal class BackupCoordinator(
     }
 
     private fun getBackupBackoff(): Long {
-        val noBackoff = 0L
         val longBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
         val storage = settingsManager.getStorage() ?: return longBackoff
-
-        // back off if storage is removable and not available right now
-        return if (storage.isUsb && !storage.getDocumentFile(context).isDirectory) longBackoff
-        // back off if storage is on network, but we have no access
-        else if (storage.requiresNetwork && !hasInternet()) HOURS.toMillis(1)
-        // otherwise no back off
-        else noBackoff
-    }
-
-    private fun hasInternet(): Boolean {
-        val cm = context.getSystemService(ConnectivityManager::class.java)
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NET_CAPABILITY_INTERNET)
+        return when {
+            // back off if storage is removable and not available right now
+            storage.isUnavailableUsb(context) -> longBackoff
+            // back off if storage is on network, but we have no access
+            storage.isUnavailableNetwork(context) -> HOURS.toMillis(1)
+            // otherwise no back off
+            else -> 0L
+        }
     }
 
 }

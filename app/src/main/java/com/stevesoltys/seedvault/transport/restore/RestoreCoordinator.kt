@@ -283,7 +283,7 @@ internal class RestoreCoordinator(
     // TODO this is plugin specific, needs to be factored out when supporting different plugins
     private fun isStorageRemovableAndNotAvailable(): Boolean {
         val storage = settingsManager.getStorage() ?: return false
-        return storage.isUsb && !storage.getDocumentFile(context).isDirectory
+        return storage.isUnavailableUsb(context)
     }
 
 }

@@ -151,6 +151,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setAutoRestoreState()
         lifecycleScope.launch { setMenuItemStates() }
 
+        // TODO we should also monitor network changes, if storage requires network
         if (storage?.isUsb == true) context?.registerReceiver(usbReceiver, usbFilter)
     }
 
@@ -233,7 +234,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private suspend fun storageAvailable(storage: Storage) = withContext(Dispatchers.IO) {
         val context = context ?: return@withContext false
-        (!storage.isUsb || storage.getDocumentFile(context).isDirectory)
+        !storage.isUnavailableUsb(context) && !storage.isUnavailableNetwork(context)
     }
 
 }
