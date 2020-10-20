@@ -19,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -29,6 +30,9 @@ import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -63,7 +67,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
-            setMenuItemStates()
+            lifecycleScope.launch { setMenuItemStates() }
         }
     }
 
@@ -145,7 +149,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setBackupEnabledState()
         setBackupLocationSummary()
         setAutoRestoreState()
-        setMenuItemStates()
+        lifecycleScope.launch { setMenuItemStates() }
 
         if (storage?.isUsb == true) context?.registerReceiver(usbReceiver, usbFilter)
     }
@@ -163,7 +167,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (resources.getBoolean(R.bool.show_restore_in_settings)) {
             menuRestore?.isVisible = true
         }
-        setMenuItemStates()
+        lifecycleScope.launch { setMenuItemStates() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -218,15 +222,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
         backupStatus.summary = getString(R.string.settings_backup_status_summary, lastBackup)
     }
 
-    private fun setMenuItemStates() {
-        val context = context ?: return
+    private suspend fun setMenuItemStates() {
         if (menuBackupNow != null && menuRestore != null) {
             val storage = this.storage
-            val enabled = storage != null &&
-                (!storage.isUsb || storage.getDocumentFile(context).isDirectory)
+            val enabled = storage != null && storageAvailable(storage)
             menuBackupNow?.isEnabled = enabled
             menuRestore?.isEnabled = enabled
         }
+    }
+
+    private suspend fun storageAvailable(storage: Storage) = withContext(Dispatchers.IO) {
+        val context = context ?: return@withContext false
+        (!storage.isUsb || storage.getDocumentFile(context).isDirectory)
     }
 
 }
