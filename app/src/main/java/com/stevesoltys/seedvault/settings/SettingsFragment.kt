@@ -1,13 +1,8 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.backup.IBackupManager
-import android.content.Context
 import android.content.Context.BACKUP_SERVICE // ktlint-disable no-unused-imports
 import android.content.Intent
-import android.content.IntentFilter
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_ATTACHED
-import android.hardware.usb.UsbManager.ACTION_USB_DEVICE_DETACHED
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
@@ -19,20 +14,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.UsbMonitor
-import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -54,22 +43,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var menuRestore: MenuItem? = null
 
     private var storage: Storage? = null
-    private val usbFilter = IntentFilter(ACTION_USB_DEVICE_ATTACHED).apply {
-        addAction(ACTION_USB_DEVICE_DETACHED)
-    }
-    private val usbReceiver = object : UsbMonitor() {
-        override fun shouldMonitorStatus(
-            context: Context,
-            action: String,
-            device: UsbDevice
-        ): Boolean {
-            return device.isMassStorage()
-        }
-
-        override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
-            lifecycleScope.launch { setMenuItemStates() }
-        }
-    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         permitDiskReads {
@@ -149,15 +122,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setBackupEnabledState()
         setBackupLocationSummary()
         setAutoRestoreState()
-        lifecycleScope.launch { setMenuItemStates() }
-
-        // TODO we should also monitor network changes, if storage requires network
-        if (storage?.isUsb == true) context?.registerReceiver(usbReceiver, usbFilter)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (storage?.isUsb == true) context?.unregisterReceiver(usbReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -168,7 +132,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (resources.getBoolean(R.bool.show_restore_in_settings)) {
             menuRestore?.isVisible = true
         }
-        lifecycleScope.launch { setMenuItemStates() }
+        viewModel.backupPossible.observe(viewLifecycleOwner, Observer { possible ->
+            menuBackupNow?.isEnabled = possible
+            menuRestore?.isEnabled = possible
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -221,16 +188,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // set time of last backup
         val lastBackup = lastBackupInMillis.toRelativeTime(requireContext())
         backupStatus.summary = getString(R.string.settings_backup_status_summary, lastBackup)
-    }
-
-    private suspend fun setMenuItemStates() {
-        if (menuBackupNow != null && menuRestore != null) {
-            val enabled = withContext(Dispatchers.IO) {
-                settingsManager.canDoBackupNow()
-            }
-            menuBackupNow?.isEnabled = enabled
-            menuRestore?.isEnabled = enabled
-        }
     }
 
 }
