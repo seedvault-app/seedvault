@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.ui.storage
 
+import android.Manifest.permission.MANAGE_DOCUMENTS
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree
+import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
     companion object {
+        @RequiresPermission(MANAGE_DOCUMENTS)
         fun newInstance(isRestore: Boolean): StorageRootsFragment {
             val f = StorageRootsFragment()
             f.arguments = Bundle().apply {
