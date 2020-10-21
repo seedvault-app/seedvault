@@ -9,12 +9,14 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
 internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
+internal const val PREF_KEY_REDO_PM = "redoPm"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -28,7 +30,7 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
-class SettingsManager(context: Context) {
+class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -106,6 +108,29 @@ class SettingsManager(context: Context) {
         val productId = prefs.getInt(PREF_KEY_FLASH_DRIVE_PRODUCT_ID, -1)
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
+
+    /**
+     * Check if we are able to do backups now by examining possible pre-conditions
+     * such as plugged-in flash drive or internet access.
+     *
+     * Should be run off the UI thread (ideally I/O) because of disk access.
+     *
+     * @return true if a backup is possible, false if not.
+     */
+    @WorkerThread
+    fun canDoBackupNow(): Boolean {
+        val storage = getStorage() ?: return false
+        return !storage.isUnavailableUsb(context) && !storage.isUnavailableNetwork(context)
+    }
+
+    /**
+     * Set this to true if the next backup run for [MAGIC_PACKAGE_MANAGER]
+     * needs to be non-incremental,
+     * because we need to fake an OK backup now even though we can't do one right now.
+     */
+    var pmBackupNextTimeNonIncremental: Boolean
+        get() = prefs.getBoolean(PREF_KEY_REDO_PM, false)
+        set(value) = prefs.edit().putBoolean(PREF_KEY_REDO_PM, value).apply()
 
     fun backupApks(): Boolean {
         return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)

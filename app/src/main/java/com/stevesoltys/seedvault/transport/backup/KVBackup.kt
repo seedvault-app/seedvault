@@ -71,7 +71,10 @@ internal class KVBackup(
         this.state = KVBackupState(packageInfo)
 
         // no need for backup when no data has changed
-        if (dataNotChanged) return TRANSPORT_OK
+        if (dataNotChanged) {
+            data.close()
+            return TRANSPORT_OK
+        }
 
         // check if we have existing data for the given package
         val hasDataForPackage = try {

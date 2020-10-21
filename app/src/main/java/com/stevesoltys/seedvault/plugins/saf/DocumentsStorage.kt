@@ -177,11 +177,17 @@ internal suspend fun DocumentFile.createOrGetFile(
     name: String,
     mimeType: String = MIME_TYPE
 ): DocumentFile {
-    return findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
-        if (this.name != name) {
-            throw IOException("File named ${this.name}, but should be $name")
-        }
-    } ?: throw IOException()
+    return try {
+        findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
+            if (this.name != name) {
+                throw IOException("File named ${this.name}, but should be $name")
+            }
+        } ?: throw IOException()
+    } catch (e: IllegalArgumentException) {
+        // Can be thrown by FileSystemProvider#isChildDocument() when flash drive is not plugged-in
+        // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/core/java/com/android/internal/content/FileSystemProvider.java#135
+        throw IOException(e)
+    }
 }
 
 /**

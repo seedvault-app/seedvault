@@ -153,8 +153,12 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `package with no new data comes back ok right away`() = runBlocking {
+        every { data.close() } just Runs
+
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, FLAG_DATA_NOT_CHANGED))
         assertTrue(backup.hasState())
+
+        verify { data.close() }
 
         every { plugin.packageFinished(packageInfo) } just Runs
 

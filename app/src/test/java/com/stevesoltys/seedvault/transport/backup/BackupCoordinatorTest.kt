@@ -1,6 +1,8 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.backup.BackupTransport.FLAG_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
+import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
@@ -62,7 +64,9 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
-    private val storage = Storage(Uri.EMPTY, getRandomString(),
+    private val storage = Storage(
+        uri = Uri.EMPTY,
+        name = getRandomString(),
         isUsb = false,
         requiresNetwork = false
     )
@@ -106,7 +110,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `error notification when device initialization fails`() = runBlocking {
         every { settingsManager.getToken() } returns token
         coEvery { plugin.initializeDevice() } throws IOException()
-        every { settingsManager.getStorage() } returns storage
+        every { settingsManager.canDoBackupNow() } returns true
         every { notificationManager.onBackupError() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
@@ -120,14 +124,11 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `no error notification when device initialization fails on unplugged USB storage`() =
+    fun `no error notification when device initialization fails when no backup possible`() =
         runBlocking {
-            val storage = mockk<Storage>()
-
             every { settingsManager.getToken() } returns token
             coEvery { plugin.initializeDevice() } throws IOException()
-            every { settingsManager.getStorage() } returns storage
-            every { storage.isUnavailableUsb(context) } returns true
+            every { settingsManager.canDoBackupNow() } returns false
 
             assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
 
@@ -138,6 +139,28 @@ internal class BackupCoordinatorTest : BackupTest() {
                 backup.finishBackup()
             }
         }
+
+    @Test
+    fun `performIncrementalBackup fakes @pm@ when no backup possible`() = runBlocking {
+        val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
+
+        every { settingsManager.canDoBackupNow() } returns false
+        every { settingsManager.pmBackupNextTimeNonIncremental = true } just Runs
+        every { data.close() } just Runs
+
+        // returns OK even though we can't do backups
+        assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, data, 0))
+
+        every { settingsManager.canDoBackupNow() } returns true
+        every { settingsManager.pmBackupNextTimeNonIncremental } returns true
+        every { settingsManager.pmBackupNextTimeNonIncremental = false } just Runs
+
+        // now that we can do backups again, it requests a full non-incremental backup of @pm@
+        assertEquals(
+            TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
+            backup.performIncrementalBackup(packageInfo, data, FLAG_INCREMENTAL)
+        )
+    }
 
     @Test
     fun `getBackupQuota() delegates to right plugin`() = runBlocking {
@@ -330,7 +353,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         )
         val packageMetadata: PackageMetadata = mockk()
 
-        every { settingsManager.getStorage() } returns storage // to check for removable storage
+        every { settingsManager.canDoBackupNow() } returns true
         // do actual @pm@ backup
         coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
         // now check if we have opt-out apps that we need to back up APKs for

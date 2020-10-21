@@ -225,16 +225,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private suspend fun setMenuItemStates() {
         if (menuBackupNow != null && menuRestore != null) {
-            val storage = this.storage
-            val enabled = storage != null && storageAvailable(storage)
+            val enabled = withContext(Dispatchers.IO) {
+                settingsManager.canDoBackupNow()
+            }
             menuBackupNow?.isEnabled = enabled
             menuRestore?.isEnabled = enabled
         }
-    }
-
-    private suspend fun storageAvailable(storage: Storage) = withContext(Dispatchers.IO) {
-        val context = context ?: return@withContext false
-        !storage.isUnavailableUsb(context) && !storage.isUnavailableNetwork(context)
     }
 
 }
