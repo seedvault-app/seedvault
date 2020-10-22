@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<exceptions>
+    <exception package="org.calyxos.backup.contacts">
+        <permission name="android.permission.READ_CONTACTS" fixed="true" />
+        <permission name="android.permission.WRITE_CONTACTS" fixed="true" />
+    </exception>
+</exceptions>
