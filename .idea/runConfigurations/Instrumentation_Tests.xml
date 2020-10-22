@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Instrumentation Tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
-    <module name="app" />
+  <configuration default="false" name="Instrumentation Tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" singleton="true">
+    <module name="seedvault.app" />
     <option name="TESTING_TYPE" value="0" />
     <option name="METHOD_NAME" value="" />
     <option name="CLASS_NAME" value="" />
@@ -38,8 +38,11 @@
     </Native>
     <Profilers>
       <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+      <option name="STARTUP_PROFILING_ENABLED" value="false" />
       <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
       <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+      <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
     </Profilers>
     <method v="2">
       <option name="Android.Gradle.BeforeRunTask" enabled="true" />

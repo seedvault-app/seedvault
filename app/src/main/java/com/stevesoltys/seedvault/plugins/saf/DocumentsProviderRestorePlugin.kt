@@ -94,10 +94,14 @@ internal class DocumentsProviderRestorePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun getApkInputStream(token: Long, packageName: String): InputStream {
+    override suspend fun getApkInputStream(
+        token: Long,
+        packageName: String,
+        suffix: String
+    ): InputStream {
         val setDir = storage.getSetDir(token) ?: throw IOException()
-        val file =
-            setDir.findFileBlocking(context, "$packageName.apk") ?: throw FileNotFoundException()
+        val file = setDir.findFileBlocking(context, "$packageName$suffix.apk")
+            ?: throw FileNotFoundException()
         return storage.getInputStream(file)
     }
 

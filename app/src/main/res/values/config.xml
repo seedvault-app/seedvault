@@ -10,10 +10,26 @@
     -->
     <bool name="show_restore_in_settings">false</bool>
 
-    <!-- Add only storage that is also available when restoring from backup (e.g. initial device setup) -->
+    <!--
+    Add only storage here that is also available
+    when restoring from backup (e.g. initial device setup)
+    -->
     <string-array name="storage_authority_whitelist" tools:ignore="InconsistentArrays">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
     </string-array>
+
+    <!--
+    Android App Bundles split up the app into several APKs.
+    We always back up all the available split APKs
+    and do a compatibility check when re-installing them.
+    If a backed up split is not compatible, the re-install will fail
+    and the user will be given the opportunity to install the app manually before data restore.
+    Unknown splits are treated as compatible as we haven't yet seen a case
+    where this would cause a problem such as an app crashing when starting it after re-install.
+    However, if you prefer to be on the safe side, you can set this to true,
+    to only install unknown splits if they come from the same device.
+    -->
+    <bool name="re_install_unknown_splits_only_on_same_device">false</bool>
 
 </resources>
