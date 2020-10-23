@@ -63,6 +63,19 @@
         app:layout_constraintTop_toBottomOf="@+id/appNameView" />
 
     <TextView
+        android:id="@+id/versionView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/about_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/summaryView" />
+
+    <TextView
         android:id="@+id/licenseView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +86,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/summaryView" />
+        app:layout_constraintTop_toBottomOf="@+id/versionView" />
 
     <TextView
         android:id="@+id/authorView"

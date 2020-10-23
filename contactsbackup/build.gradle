@@ -9,8 +9,6 @@ android {
         applicationId "org.calyxos.backup.contacts"
         minSdkVersion 30
         targetSdkVersion 30
-        versionCode 30
-        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,8 +52,8 @@ dependencies {
 
     //noinspection GradleDependency
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.13'
-    def mockk_version = "1.10.0"
+    testImplementation 'junit:junit:4.13.1'
+    def mockk_version = "1.10.2"
     testImplementation "io.mockk:mockk:$mockk_version"
 
     //noinspection GradleDependency
