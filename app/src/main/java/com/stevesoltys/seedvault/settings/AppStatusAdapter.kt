@@ -10,6 +10,7 @@ import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView.ScaleType
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.DiffResult
@@ -59,6 +60,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
     inner class AppStatusViewHolder(v: View) : AppViewHolder(v) {
         fun bind(item: AppStatus) {
             appName.text = item.name
+            appIcon.scaleType = if (item.isSpecial) ScaleType.CENTER else ScaleType.FIT_CENTER
             appIcon.setImageDrawable(item.icon)
             v.background = clickableBackground
             if (editMode) {
@@ -110,7 +112,8 @@ data class AppStatus(
     val icon: Drawable,
     val name: String,
     val time: Long,
-    val status: AppBackupState
+    val status: AppBackupState,
+    val isSpecial: Boolean = false
 )
 
 internal class AppStatusDiff(
