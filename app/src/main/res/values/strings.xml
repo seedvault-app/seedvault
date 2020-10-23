@@ -126,6 +126,7 @@
     <!-- About -->
     <string name="about_title">About</string>
     <string name="about_summary">A backup application using Android\'s internal backup API.</string>
+    <string name="about_version">Version: %s</string>
     <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>

@@ -3,6 +3,15 @@ import groovy.xml.XmlUtil
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def gitDescribe = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--always', '--tags', '--dirty=-dirty'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 android {
 
     compileSdkVersion 29
@@ -11,6 +20,7 @@ android {
     defaultConfig {
         minSdkVersion 29
         targetSdkVersion 29
+        versionNameSuffix "-$gitDescribe"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
     }
