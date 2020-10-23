@@ -6,6 +6,15 @@ plugins {
     id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
 }
 
+def gitDescribe = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--always', '--tags', '--dirty=-dirty'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 android {
 
     compileSdkVersion 30
@@ -14,6 +23,7 @@ android {
     defaultConfig {
         minSdkVersion 29 // leave at 29 for robolectric tests
         targetSdkVersion 30
+        versionNameSuffix "-$gitDescribe"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
     }
