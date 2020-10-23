@@ -22,4 +22,8 @@ abstract class RequireProvisioningViewModel(
 
     internal fun recoveryCodeIsSet() = keyManager.hasBackupKey()
 
+    open fun onStorageLocationChanged() {
+        // noop can be overwritten by sub-classes
+    }
+
 }

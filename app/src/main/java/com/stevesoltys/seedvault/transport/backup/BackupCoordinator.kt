@@ -32,8 +32,26 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
+import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = BackupCoordinator::class.java.simpleName
+
+private class CoordinatorState(
+    var calledInitialize: Boolean,
+    var calledClearBackupData: Boolean,
+    var skippedPmBackup: Boolean,
+    var cancelReason: PackageState
+) {
+    val expectFinish: Boolean
+        get() = calledInitialize || calledClearBackupData || skippedPmBackup
+
+    fun onFinish() {
+        calledInitialize = false
+        calledClearBackupData = false
+        skippedPmBackup = false
+        cancelReason = UNKNOWN_ERROR
+    }
+}
 
 /**
  * @author Steve Soltys
@@ -54,9 +72,12 @@ internal class BackupCoordinator(
     private val nm: BackupNotificationManager
 ) {
 
-    private var calledInitialize = false
-    private var calledClearBackupData = false
-    private var cancelReason: PackageState = UNKNOWN_ERROR
+    private val state = CoordinatorState(
+        calledInitialize = false,
+        calledClearBackupData = false,
+        skippedPmBackup = false,
+        cancelReason = UNKNOWN_ERROR
+    )
 
     // ------------------------------------------------------------------------------------
     // Transport initialization and quota
@@ -107,12 +128,12 @@ internal class BackupCoordinator(
         }
         // [finishBackup] will only be called when we return [TRANSPORT_OK] here
         // so we remember that we initialized successfully
-        calledInitialize = true
+        state.calledInitialize = true
         TRANSPORT_OK
     } catch (e: IOException) {
         Log.e(TAG, "Error initializing device", e)
         // Show error notification if we were ready for backups
-        if (getBackupBackoff() == 0L) nm.onBackupError()
+        if (settingsManager.canDoBackupNow()) nm.onBackupError()
         TRANSPORT_ERROR
     }
 
@@ -210,13 +231,29 @@ internal class BackupCoordinator(
         data: ParcelFileDescriptor,
         flags: Int
     ): Int {
-        cancelReason = UNKNOWN_ERROR
+        state.cancelReason = UNKNOWN_ERROR
         val packageName = packageInfo.packageName
+        // K/V backups (typically starting with package manager metadata - @pm@)
+        // are scheduled with JobInfo.Builder#setOverrideDeadline() and thus do not respect backoff.
+        // We need to reject them manually when we can not do a backup now.
+        // What else we tried can be found in: https://github.com/stevesoltys/seedvault/issues/102
         if (packageName == MAGIC_PACKAGE_MANAGER) {
-            // backups of package manager metadata do not respect backoff
-            // we need to reject them manually when now is not a good time for a backup
-            if (getBackupBackoff() != 0L) {
-                return TRANSPORT_PACKAGE_REJECTED
+            if (!settingsManager.canDoBackupNow()) {
+                // Returning anything else here (except non-incremental-required which re-tries)
+                // will make the system consider the backup state compromised
+                // and force re-initialization on next run.
+                // Errors for other packages are OK, but this one is not allowed to fail.
+                Log.w(TAG, "Skipping @pm@ backup as we can't do backup right now.")
+                state.skippedPmBackup = true
+                settingsManager.pmBackupNextTimeNonIncremental = true
+                data.close()
+                return TRANSPORT_OK
+            } else if (flags and FLAG_INCREMENTAL != 0 &&
+                settingsManager.pmBackupNextTimeNonIncremental
+            ) {
+                settingsManager.pmBackupNextTimeNonIncremental = false
+                data.close()
+                return TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
             }
         }
         val result = kv.performBackup(packageInfo, data, flags)
@@ -250,8 +287,8 @@ internal class BackupCoordinator(
 
     fun checkFullBackupSize(size: Long): Int {
         val result = full.checkFullBackupSize(size)
-        if (result == TRANSPORT_PACKAGE_REJECTED) cancelReason = NO_DATA
-        else if (result == TRANSPORT_QUOTA_EXCEEDED) cancelReason = QUOTA_EXCEEDED
+        if (result == TRANSPORT_PACKAGE_REJECTED) state.cancelReason = NO_DATA
+        else if (result == TRANSPORT_QUOTA_EXCEEDED) state.cancelReason = QUOTA_EXCEEDED
         return result
     }
 
@@ -260,7 +297,7 @@ internal class BackupCoordinator(
         fileDescriptor: ParcelFileDescriptor,
         flags: Int
     ): Int {
-        cancelReason = UNKNOWN_ERROR
+        state.cancelReason = UNKNOWN_ERROR
         return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 
@@ -282,7 +319,10 @@ internal class BackupCoordinator(
     suspend fun cancelFullBackup() {
         val packageInfo = full.getCurrentPackage()
             ?: throw AssertionError("Cancelling full backup, but no current package")
-        Log.i(TAG, "Cancel full backup of ${packageInfo.packageName} because of $cancelReason")
+        Log.i(
+            TAG, "Cancel full backup of ${packageInfo.packageName}" +
+                " because of $state.cancelReason"
+        )
         onPackageBackupError(packageInfo)
         full.cancelFullBackup()
     }
@@ -313,13 +353,13 @@ internal class BackupCoordinator(
             Log.w(TAG, "Error clearing full backup data for $packageName", e)
             return TRANSPORT_ERROR
         }
-        calledClearBackupData = true
+        state.calledClearBackupData = true
         return TRANSPORT_OK
     }
 
     /**
-     * Finish sending application data to the backup destination.
-     * This must be called after [performIncrementalBackup], [performFullBackup], or [clearBackupData]
+     * Finish sending application data to the backup destination. This must be called
+     * after [performIncrementalBackup], [performFullBackup], or [clearBackupData]
      * to ensure that all data is sent and the operation properly finalized.
      * Only when this method returns true can a backup be assumed to have succeeded.
      *
@@ -340,9 +380,8 @@ internal class BackupCoordinator(
             onPackageBackedUp(full.getCurrentPackage()!!) // not-null because we have state
             full.finishBackup()
         }
-        calledInitialize || calledClearBackupData -> {
-            calledInitialize = false
-            calledClearBackupData = false
+        state.expectFinish -> {
+            state.onFinish()
             TRANSPORT_OK
         }
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
@@ -405,23 +444,24 @@ internal class BackupCoordinator(
     }
 
     private suspend fun onPackageBackedUp(packageInfo: PackageInfo) {
-        val packageName = packageInfo.packageName
         try {
             plugin.getMetadataOutputStream().use {
                 metadataManager.onPackageBackedUp(packageInfo, it)
             }
         } catch (e: IOException) {
-            Log.e(TAG, "Error while writing metadata for $packageName", e)
+            Log.e(TAG, "Error while writing metadata for ${packageInfo.packageName}", e)
+            // we are not re-throwing this as there's nothing we can do now
+            // except hoping the current metadata gets written with the next package
         }
     }
 
     private suspend fun onPackageBackupError(packageInfo: PackageInfo) {
         // don't bother with system apps that have no data
-        if (cancelReason == NO_DATA && packageInfo.isSystemApp()) return
+        if (state.cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
             plugin.getMetadataOutputStream().use {
-                metadataManager.onPackageBackupError(packageInfo, cancelReason, it)
+                metadataManager.onPackageBackupError(packageInfo, state.cancelReason, it)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
@@ -429,15 +469,18 @@ internal class BackupCoordinator(
     }
 
     private fun getBackupBackoff(): Long {
-        val noBackoff = 0L
-        val defaultBackoff = DAYS.toMillis(30)
+        val longBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
-        val storage = settingsManager.getStorage() ?: return defaultBackoff
-        // don't back off if storage is not ejectable or available right now
-        return if (!storage.isUsb || storage.getDocumentFile(context).isDirectory) noBackoff
-        // otherwise back off
-        else defaultBackoff
+        val storage = settingsManager.getStorage() ?: return longBackoff
+        return when {
+            // back off if storage is removable and not available right now
+            storage.isUnavailableUsb(context) -> longBackoff
+            // back off if storage is on network, but we have no access
+            storage.isUnavailableNetwork(context) -> HOURS.toMillis(1)
+            // otherwise no back off
+            else -> 0L
+        }
     }
 
 }

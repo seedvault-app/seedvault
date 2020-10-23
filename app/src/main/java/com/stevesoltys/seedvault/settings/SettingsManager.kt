@@ -2,20 +2,26 @@ package com.stevesoltys.seedvault.settings
 
 import android.content.Context
 import android.hardware.usb.UsbDevice
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
 internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
+internal const val PREF_KEY_REDO_PM = "redoPm"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
 private const val PREF_KEY_STORAGE_IS_USB = "storageIsUsb"
+private const val PREF_KEY_STORAGE_REQUIRES_NETWORK = "storageRequiresNetwork"
 
 private const val PREF_KEY_FLASH_DRIVE_NAME = "flashDriveName"
 private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
@@ -24,7 +30,7 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
-class SettingsManager(context: Context) {
+class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -63,6 +69,7 @@ class SettingsManager(context: Context) {
             .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
             .putString(PREF_KEY_STORAGE_NAME, storage.name)
             .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
+            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, storage.requiresNetwork)
             .apply()
     }
 
@@ -72,7 +79,8 @@ class SettingsManager(context: Context) {
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null)
             ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
-        return Storage(uri, name, isUsb)
+        val requiresNetwork = prefs.getBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, false)
+        return Storage(uri, name, isUsb, requiresNetwork)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
@@ -101,6 +109,29 @@ class SettingsManager(context: Context) {
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
 
+    /**
+     * Check if we are able to do backups now by examining possible pre-conditions
+     * such as plugged-in flash drive or internet access.
+     *
+     * Should be run off the UI thread (ideally I/O) because of disk access.
+     *
+     * @return true if a backup is possible, false if not.
+     */
+    @WorkerThread
+    fun canDoBackupNow(): Boolean {
+        val storage = getStorage() ?: return false
+        return !storage.isUnavailableUsb(context) && !storage.isUnavailableNetwork(context)
+    }
+
+    /**
+     * Set this to true if the next backup run for [MAGIC_PACKAGE_MANAGER]
+     * needs to be non-incremental,
+     * because we need to fake an OK backup now even though we can't do one right now.
+     */
+    var pmBackupNextTimeNonIncremental: Boolean
+        get() = prefs.getBoolean(PREF_KEY_REDO_PM, false)
+        set(value) = prefs.edit().putBoolean(PREF_KEY_REDO_PM, value).apply()
+
     fun backupApks(): Boolean {
         return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)
     }
@@ -119,10 +150,35 @@ class SettingsManager(context: Context) {
 data class Storage(
     val uri: Uri,
     val name: String,
-    val isUsb: Boolean
+    val isUsb: Boolean,
+    val requiresNetwork: Boolean
 ) {
     fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
         ?: throw AssertionError("Should only happen on API < 21.")
+
+    /**
+     * Returns true if this is USB storage that is not available, false otherwise.
+     *
+     * Must be run off UI thread (ideally I/O).
+     */
+    @WorkerThread
+    fun isUnavailableUsb(context: Context): Boolean {
+        return isUsb && !getDocumentFile(context).isDirectory
+    }
+
+    /**
+     * Returns true if this is storage that requires network access,
+     * but it isn't available right now.
+     */
+    fun isUnavailableNetwork(context: Context): Boolean {
+        return requiresNetwork && !hasInternet(context)
+    }
+
+    private fun hasInternet(context: Context): Boolean {
+        val cm = context.getSystemService(ConnectivityManager::class.java)
+        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
 }
 
 data class FlashDrive(

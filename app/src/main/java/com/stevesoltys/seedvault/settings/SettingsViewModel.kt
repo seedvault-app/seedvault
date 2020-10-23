@@ -2,6 +2,12 @@ package com.stevesoltys.seedvault.settings
 
 import android.app.Application
 import android.content.pm.PackageManager.NameNotFoundException
+import android.database.ContentObserver
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.net.Uri
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -54,7 +60,13 @@ internal class SettingsViewModel(
     private val packageService: PackageService
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
+    private val contentResolver = app.contentResolver
+    private val connectivityManager = app.getSystemService(ConnectivityManager::class.java)
+
     override val isRestoreOperation = false
+
+    private val mBackupPossible = MutableLiveData<Boolean>(false)
+    val backupPossible: LiveData<Boolean> = mBackupPossible
 
     internal val lastBackupTime = metadataManager.lastBackupTime
 
@@ -67,6 +79,26 @@ internal class SettingsViewModel(
     private val mAppEditMode = MutableLiveData<Boolean>()
     internal val appEditMode: LiveData<Boolean> = mAppEditMode
 
+    private val storageObserver = object : ContentObserver(null) {
+        override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
+            onStorageLocationChanged()
+        }
+    }
+
+    private inner class NetworkObserver : ConnectivityManager.NetworkCallback() {
+        var registered = false
+        override fun onAvailable(network: Network) {
+            onStorageLocationChanged()
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            onStorageLocationChanged()
+        }
+    }
+
+    private val networkCallback = NetworkObserver()
+
     init {
         val scope = permitDiskReads {
             // this shouldn't cause disk reads, but it still does
@@ -76,9 +108,44 @@ internal class SettingsViewModel(
             // ensures the lastBackupTime LiveData gets set
             metadataManager.getLastBackupTime()
         }
+        onStorageLocationChanged()
+    }
+
+    override fun onStorageLocationChanged() {
+        val storage = settingsManager.getStorage() ?: return
+
+        // register storage observer
+        contentResolver.unregisterContentObserver(storageObserver)
+        contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+
+        // register network observer if needed
+        if (networkCallback.registered && !storage.requiresNetwork) {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+            networkCallback.registered = false
+        } else if (!networkCallback.registered && storage.requiresNetwork) {
+            val request = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build()
+            connectivityManager.registerNetworkCallback(request, networkCallback)
+            networkCallback.registered = true
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val canDo = settingsManager.canDoBackupNow()
+            mBackupPossible.postValue(canDo)
+        }
+    }
+
+    override fun onCleared() {
+        contentResolver.unregisterContentObserver(storageObserver)
+        if (networkCallback.registered) {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+            networkCallback.registered = false
+        }
     }
 
     internal fun backupNow() {
+        // maybe replace the check below with one that checks if our transport service is running
         if (notificationManager.hasActiveBackupNotifications()) {
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
         } else {

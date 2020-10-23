@@ -207,9 +207,10 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun hasActiveBackupNotifications(): Boolean {
         nm.activeNotifications.forEach {
-            if (it.packageName == context.packageName &&
-                (it.id == NOTIFICATION_ID_OBSERVER || it.id == NOTIFICATION_ID_BACKGROUND)
-            ) return true
+            if (it.packageName == context.packageName) {
+                if (it.id == NOTIFICATION_ID_BACKGROUND) return true
+                if (it.id == NOTIFICATION_ID_OBSERVER) return it.isOngoing
+            }
         }
         return false
     }

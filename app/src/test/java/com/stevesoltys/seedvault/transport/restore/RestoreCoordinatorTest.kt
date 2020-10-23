@@ -8,7 +8,6 @@ import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
-import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
@@ -57,7 +56,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     private val inputStream = mockk<InputStream>()
     private val storage: Storage = mockk()
-    private val documentFile: DocumentFile = mockk()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
@@ -124,9 +122,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() {
         every { settingsManager.getStorage() } returns storage
-        every { storage.isUsb } returns true
-        every { storage.getDocumentFile(context) } returns documentFile
-        every { documentFile.isDirectory } returns false
+        every { storage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
         every { storage.name } returns storageName
         every {
@@ -149,9 +145,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() {
         every { settingsManager.getStorage() } returns storage
-        every { storage.isUsb } returns true
-        every { storage.getDocumentFile(context) } returns documentFile
-        every { documentFile.isDirectory } returns true
+        every { storage.isUnavailableUsb(context) } returns false
 
         assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
 
@@ -166,9 +160,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() with removed storage shows no notification`() {
         every { settingsManager.getStorage() } returns storage
-        every { storage.isUsb } returns true
-        every { storage.getDocumentFile(context) } returns documentFile
-        every { documentFile.isDirectory } returns false
+        every { storage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))

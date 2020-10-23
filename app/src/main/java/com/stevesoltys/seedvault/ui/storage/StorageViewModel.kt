@@ -101,7 +101,7 @@ internal abstract class StorageViewModel(
         } else {
             root.title
         }
-        val storage = Storage(uri, name, root.isUsb)
+        val storage = Storage(uri, name, root.isUsb, root.requiresNetwork)
         settingsManager.setStorage(storage)
 
         if (storage.isUsb) {
@@ -109,11 +109,10 @@ internal abstract class StorageViewModel(
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
             if (!wasSaved) settingsManager.setFlashDrive(null)
-            BackupManagerSettings.disableAutomaticBackups(app.contentResolver)
         } else {
             settingsManager.setFlashDrive(null)
-            BackupManagerSettings.enableAutomaticBackups(app.contentResolver)
         }
+        BackupManagerSettings.resetDefaults(app.contentResolver)
 
         Log.d(TAG, "New storage location saved: $uri")
 
