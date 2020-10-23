@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="7"
-    android:versionName="1.0.0">
+    android:versionCode="29000001"
+    android:versionName="10-1.0.0">
+    <!--
+    The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
+    The version name is the targeted Android version followed by - and our own version name.
+    -->
 
     <uses-permission
         android:name="android.permission.BACKUP"

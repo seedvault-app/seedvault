@@ -112,6 +112,12 @@ internal class PackageService(
             return ExpectedAppTotals(appsTotal, appsOptOut)
         }
 
+    fun getVersionName(packageName: String): String? = try {
+        packageManager.getPackageInfo(packageName, 0).versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        null
+    }
+
     private fun logPackages(packages: List<String>) {
         packages.chunked(LOG_MAX_PACKAGES).forEach {
             Log.i(TAG, it.toString())
