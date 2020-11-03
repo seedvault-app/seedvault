@@ -22,14 +22,14 @@
     <string name="recovery_code_12_word_intro">백업을 복원하려면 12개 단어로 이루어진 복구 코드가 필요합니다.</string>
     <string name="storage_check_fragment_permission_error">백업 위치에 쓰기 권한을 얻을 수 없습니다.</string>
     <string name="storage_check_fragment_backup_error">백업 위치에 접근하는 중 오류가 발생했습니다.</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; 남음<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 남음</string>
     <string name="restore_finished_error">백업을 복원하는 중 오류가 발생했습니다.</string>
     <string name="storage_check_fragment_restore_title">백업을 찾는 중…</string>
     <string name="storage_check_fragment_backup_title">백업 위치 초기화 중…</string>
-    <string name="about_sponsor">스폰서: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; (&lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt; 내부 사용을 위해)<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">디자인: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">제작자: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; 및 &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">라이선스: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">스폰서: <a href="https://www.calyxinstitute.org">Calyx Institute</a> (<a href="https://calyxos.org">CalyxOS</a> 내부 사용을 위해)</string>
+    <string name="about_design">디자인: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">제작자: <a href="https://github.com/stevesoltys">Steve Soltys</a> 및 <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">라이선스: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Android 내장 백업 API를 사용한 백업 애플리케이션입니다.</string>
     <string name="storage_internal_warning_use_anyway">백업 진행</string>
     <string name="storage_internal_warning_choose_other">다른 위치 선택</string>

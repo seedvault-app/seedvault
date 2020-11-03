@@ -3,7 +3,7 @@
     <string name="notification_success_text">%1$d de %2$d app com backup. Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
     <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org\">Calyx Institute</a> para o seu uso no <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para o seu uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licença: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
