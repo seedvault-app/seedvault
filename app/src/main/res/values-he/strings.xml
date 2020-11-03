@@ -37,7 +37,7 @@
     <string name="storage_check_fragment_backup_title">מיקום הגיבוי נערך…</string>
     <string name="storage_fake_nextcloud_summary_installed">יש ללחוץ כדי להקים חשבון</string>
     <string name="storage_fake_nextcloud_summary">יש ללחוץ כדי להתקין</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 ג״ב\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; פנויים<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> פנויים</string>
     <string name="storage_fake_drive_summary">יש לחבר אותו</string>
     <string name="storage_fake_drive_title">כונן USB נייד</string>
     <string name="storage_fragment_warning">אנשים עם גישה למיקום האחסון שלך יכולים להבין אילו יישומונים משמשים אותך אך לא יקבלו גישה לנתוני היישומונים.</string>
@@ -75,10 +75,10 @@
     <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו. הקש למידע נוסף.</string>
     <string name="notification_success_title">הגיבוי הסתיים</string>
     <string name="notification_backup_already_running">הגיבוי כבר מתבצע</string>
-    <string name="about_sponsor">מומן על ידי: &lt;a href=\"https://www.calyxinstitute.org\"&gt;מכון Calyx&lt;/a&gt; לשימוש ב־&lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">עיצוב של: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;גלן סורנטינו&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">נכתב על ידי: &lt;a href=\"https://github.com/stevesoltys\"&gt;סטיב סולטיס&lt;/a&gt; ו&lt;a href=\"https://blog.grobox.de\"&gt;טורסטן גרוט&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">רישיון: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">מומן על ידי: <a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">עיצוב של: <a href="https://www.glennsorrentino.com/">גלן סורנטינו</a></string>
+    <string name="about_author">נכתב על ידי: <a href="https://github.com/stevesoltys">סטיב סולטיס</a> ו<a href="https://blog.grobox.de">טורסטן גרוט</a></string>
+    <string name="about_license">רישיון: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">יישומון גיבוי שמשתמש ב־API הפנימי לגיבוי של Android.</string>
     <string name="about_title">על אודות</string>
     <string name="storage_internal_warning_use_anyway">להשתמש בכל זאת</string>

@@ -79,7 +79,7 @@
     <string name="storage_check_fragment_backup_title">Yedekleme konumu başlatılıyor…</string>
     <string name="storage_fake_nextcloud_summary_installed">Hesap oluşturmak için tıklayın</string>
     <string name="storage_fake_nextcloud_summary">Kurmak için tıklayın</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; boş<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> boş</string>
     <string name="storage_fake_drive_summary">Takılı olması gerekiyor</string>
     <string name="storage_fake_drive_title">USB flash bellek</string>
     <string name="storage_fragment_warning">Depolama konumunuza erişimi olan kişiler, hangi uygulamaları kullandığınızı öğrenebilir, ancak uygulamaların verilerine erişemez.</string>
