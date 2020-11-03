@@ -70,10 +70,10 @@
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer APP die gesicherten Daten und Einstellungen wiederherstellen.</string>
     <string name="settings_auto_restore_title">Automatische Wiederherstellung</string>
     <string name="about_source_code">Quellcode: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Gesponsert von: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; zur Verwendung in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Design von: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Geschrieben von: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; und &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Lizenz: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_sponsor">Gesponsert von: <a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design von: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Geschrieben von: <a href="https://github.com/stevesoltys">Steve Soltys</a> und <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Lizenz: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Eine Sicherungsanwendung, die die interne Sicherungs-API von Android verwendet.</string>
     <string name="about_title">Über</string>
     <string name="storage_internal_warning_use_anyway">Trotzdem verwenden</string>
