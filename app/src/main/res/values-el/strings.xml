@@ -107,4 +107,15 @@
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
+    <string name="notification_backup_result_error">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
+    <string name="notification_backup_result_rejected">Δεν δημιουργήθηκε αντίγραφο ασφαλείας</string>
+    <string name="notification_backup_result_complete">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
+    <string name="settings_backup_location_invalid">Η επιλεγμένη τοποθεσία δεν μπορεί να χρησιμοποιηθεί.</string>
+    <string name="settings_backup_location_title">Τοποθεσία αντιγράφων ασφαλείας</string>
+    <string name="settings_backup_location_picker">Επιλέξτε την τοποθεσία των αντιγράφων ασφαλείας</string>
+    <string name="restore_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν χρησιμοποιήθηκε πρόσφατα</string>
+    <string name="restore_app_not_yet_backed_up">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Ο λογαριασμός δεν είναι διαθέσιμος. Ρυθμίστε έναν (ή απενεργοποιήστε τον κωδικό πρόσβασης).</string>
+    <string name="current_destination_string">Κατάσταση αντιγράφων ασφαλείας και ρυθμίσεις</string>
+    <string name="data_management_label">Αντίγραφα ασφαλείας Seedvault</string>
 </resources>
