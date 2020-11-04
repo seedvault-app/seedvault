@@ -35,7 +35,7 @@
     <string name="settings_backup_status_summary">Ultimo backup: %1$s</string>
     <string name="settings_backup_apk_dialog_cancel">Annulla</string>
     <string name="settings_auto_restore_title">Ripristino automatico</string>
-    <string name="settings_info">Tutti i backup sono crittografati sul tuo telefono. Per ripristinare dal backup, sarà necessario il tuo codice di recupero di 12 parole.</string>
+    <string name="settings_info">Tutti i backup sono crittografati sul telefono. Per ripristinare dal backup sarà necessario il codice di recupero di 12 parole.</string>
     <string name="settings_backup_last_backup_never">Mai</string>
     <string name="settings_backup">Esegui il backup dei miei dati</string>
     <string name="restore_backup_button">Ripristina backup</string>
@@ -55,11 +55,18 @@
     <string name="settings_backup_apk_dialog_message">Il backup dell\'app disabilitato eseguirà comunque il backup dei dati dell\'app. Tuttavia, non verrà ripristinato automaticamente.
 \n
 \nDovrai installare manualmente tutte le tue app mentre \"Ripristino Automatico\" è attivato.</string>
-    <string name="settings_backup_apk_summary">Esegui il backup delle app stesse. Altrimenti, verrà eseguito il backup solo dei dati dell\'app.</string>
+    <string name="settings_backup_apk_summary">Esegui il backup delle app stesse. In caso contrario verrà eseguito solamente il backup dei loro dati.</string>
     <string name="settings_backup_apk_title">Backup dell\'app</string>
     <string name="settings_category_app_data_backup">Backup dei dati dell\'app</string>
     <string name="settings_auto_restore_summary">Quando reinstalli un\'app, ripristina impostazioni e dati di backup.</string>
     <string name="settings_backup_location_internal">Memoria interna</string>
     <string name="settings_backup_location_none">Nessuno</string>
     <string name="settings_backup_location">Posizione di backup</string>
+    <string name="settings_backup_apk_dialog_title">Si vuole veramente disabilitare il backup delle app\?</string>
+    <string name="settings_auto_restore_summary_usb">Nota: è necessario collegare %1$s per permettere il ripristino.</string>
+    <string name="settings_backup_location_invalid">Impossibile usare la posizione scelta.</string>
+    <string name="settings_backup_location_title">Posizione di backup</string>
+    <string name="settings_backup_location_picker">Scegli posizione per il backup</string>
+    <string name="current_destination_string">Stato backup e impostazioni</string>
+    <string name="data_management_label">Backup Seedvault</string>
 </resources>
