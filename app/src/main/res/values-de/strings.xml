@@ -51,7 +51,7 @@
     <string name="storage_check_fragment_error_button">Zurück</string>
     <string name="storage_check_fragment_permission_error">Es fehlen Schreib-Berechtigungen am Speicherort.</string>
     <string name="storage_check_fragment_backup_error">Ein Fehler trat beim Zugriff auf den Speicherort auf.</string>
-    <string name="storage_fake_nextcloud_summary_installed">Berühren um ein Benutzerkonto zu erstellen</string>
+    <string name="storage_fake_nextcloud_summary_installed">Klicken Sie hier, um ein Konto einzurichten</string>
     <string name="storage_fake_nextcloud_summary">Jetzt Installieren</string>
     <string name="storage_fake_drive_summary">muss angeschlossen sein</string>
     <string name="storage_fake_drive_title">USB-Speichergerät</string>
@@ -69,4 +69,53 @@
     <string name="settings_auto_restore_summary_usb">Achtung: Ihr %1$s muss für diese Aktion verbunden sein.</string>
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer APP die gesicherten Daten und Einstellungen wiederherstellen.</string>
     <string name="settings_auto_restore_title">Automatische Wiederherstellung</string>
+    <string name="about_source_code">Quellcode: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Gesponsert von: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; zur Verwendung in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design von: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Geschrieben von: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; und &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Lizenz: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Eine Sicherungsanwendung, die die interne Sicherungs-API von Android verwendet.</string>
+    <string name="about_title">Über</string>
+    <string name="storage_internal_warning_use_anyway">Trotzdem verwenden</string>
+    <string name="storage_internal_warning_choose_other">Anderen wählen</string>
+    <string name="storage_internal_warning_message">Sie haben den internen Speicher für Ihre Sicherung ausgewählt. Dieser ist nicht verfügbar, wenn Ihr Telefon verloren geht oder kaputt ist.</string>
+    <string name="storage_internal_warning_title">Warnung</string>
+    <string name="restore_finished_button">Beenden</string>
+    <string name="restore_finished_error">Beim Wiederherstellen der Sicherung ist ein Fehler aufgetreten.</string>
+    <string name="restore_finished_success">Wiederherstellung abgeschlossen</string>
+    <string name="restore_magic_package">System-Paketmanager</string>
+    <string name="notification_restore_error_text">Schließen Sie Ihr %1$s an, bevor Sie die App installieren, um die Daten aus der Sicherung wiederherzustellen.</string>
+    <string name="restore_app_quota_exceeded">Sicherungskontingent überschritten</string>
+    <string name="restore_app_not_installed">App ist nicht installiert</string>
+    <string name="restore_app_not_allowed">App erlaubt keine Sicherung</string>
+    <string name="restore_app_no_data">App hat keine Daten für die Sicherung gemeldet</string>
+    <string name="restore_app_was_stopped">Nicht gesichert, da es in letzter Zeit nicht verwendet wurde</string>
+    <string name="restore_app_not_yet_backed_up">Noch nicht gesichert</string>
+    <string name="restore_restoring">Sicherung wird wiederhergestellt</string>
+    <string name="restore_installing_packages">Apps neu installieren</string>
+    <string name="restore_set_empty_result">Am angegebenen Speicherort wurden keine geeigneten Sicherungen gefunden.
+\n
+\nDies ist höchstwahrscheinlich auf einen falschen Wiederherstellungscode oder einen Speicherfehler zurückzuführen.</string>
+    <string name="restore_next">Weiter</string>
+    <string name="restore_title">Wiederherstellung von einer Sicherung</string>
+    <string name="restore_set_error">Beim Laden der Sicherungen ist ein Fehler aufgetreten.</string>
+    <string name="restore_invalid_location_message">Wir konnten keine Sicherungen an diesem Speicherort finden.
+\n
+\nWählen Sie einen anderen Speicherort aus, der einen %s Ordner enthält.</string>
+    <string name="restore_invalid_location_title">Keine Sicherungen gefunden</string>
+    <string name="restore_back">Nicht wiederherstellen</string>
+    <string name="restore_restore_set_times">Letzte Sicherung %1$s · Erste %2$s.</string>
+    <string name="restore_choose_restore_set">Wählen Sie eine Sicherung aus, um sie wiederherzustellen</string>
+    <string name="notification_restore_error_action">App deinstallieren</string>
+    <string name="notification_success_text">%1$d von %2$d Apps gesichert. Tippen Sie, um mehr zu erfahren.</string>
+    <string name="notification_backup_already_running">Sicherung wird bereits durchgeführt</string>
+    <string name="notification_backup_result_error">Sicherung fehlgeschlagen</string>
+    <string name="notification_backup_result_rejected">Nicht gesichert</string>
+    <string name="notification_backup_result_complete">Sicherung abgeschlossen</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Konto nicht verfügbar. Richten Sie ein Konto ein (oder deaktivieren Sie das Passcode).</string>
+    <string name="settings_backup_location_invalid">Der gewählte Speicherort kann nicht verwendet werden.</string>
+    <string name="settings_backup_location_picker">Sicherungsort wählen</string>
+    <string name="settings_backup_location_title">Sicherungsort</string>
+    <string name="current_destination_string">Sicherungsstatus und Einstellungen</string>
+    <string name="data_management_label">Seedvault Sicherung</string>
 </resources>
