@@ -105,4 +105,16 @@
 \nVous devrez installer toutes vos applications manuellement tout en ayant « Restauration automatique » allumé.</string>
     <string name="settings_backup_apk_dialog_title">Vraiment désactiver la sauvegarde des applications \?</string>
     <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
+    <string name="restore_app_was_stopped">Non sauvegardé car il n\'a pas été utilisé récemment</string>
+    <string name="restore_app_not_yet_backed_up">Non sauvegardé</string>
+    <string name="notification_success_text">%1$d des applications %2$d sauvegardées. Appuyez pour en savoir plus.</string>
+    <string name="notification_backup_already_running">Sauvegarde déjà en cours</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Compte non disponible. Configurez-en un (ou désactivez le mot de passe).</string>
+    <string name="notification_backup_result_error">Échec de la sauvegarde</string>
+    <string name="notification_backup_result_rejected">Non sauvegardé</string>
+    <string name="notification_backup_result_complete">Sauvegarde complète</string>
+    <string name="settings_backup_location_invalid">L’emplacement choisi ne peut pas être choisi.</string>
+    <string name="settings_backup_location_title">Emplacement de la sauvegarde</string>
+    <string name="settings_backup_location_picker">Choisissez l’emplacement de la sauvegarde</string>
+    <string name="current_destination_string">Statut et paramètres de sauvegarde</string>
 </resources>
