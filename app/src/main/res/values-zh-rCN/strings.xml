@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="settings_backup">备份我的资料</string>
     <string name="restore_backup_button">恢复后备</string>
     <string name="backup">备用</string>
@@ -12,4 +12,110 @@
     <string name="settings_backup_location_internal">内部储存</string>
     <string name="settings_backup_location_none">无</string>
     <string name="settings_backup_location">备用位置</string>
+    <string name="recovery_code_input_hint_12">单词 12</string>
+    <string name="recovery_code_input_hint_11">单词 11</string>
+    <string name="recovery_code_input_hint_10">单词 10</string>
+    <string name="recovery_code_input_hint_9">单词 9</string>
+    <string name="recovery_code_input_hint_8">单词8</string>
+    <string name="recovery_code_input_hint_7">单词 7</string>
+    <string name="recovery_code_input_hint_6">单词 6</string>
+    <string name="recovery_code_input_hint_5">单词 5</string>
+    <string name="recovery_code_input_hint_4">单词 4</string>
+    <string name="recovery_code_input_hint_3">单词 3</string>
+    <string name="recovery_code_input_hint_2">单词 2</string>
+    <string name="recovery_code_input_hint_1">单词 1</string>
+    <string name="recovery_code_input_intro">输入设置备份时写下的12个单词的恢复代码。</string>
+    <string name="recovery_code_confirm_intro">输入您的12个单词的恢复代码，以确保它在您需要时可以使用。</string>
+    <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来还原备份的数据。</string>
+    <string name="settings_info">所有备份均已加密。 要从备份还原，您需要12个单词的恢复代码。</string>
+    <string name="about_source_code">源代码:https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">赞助者: <a href="https://www.calyxinstitute.org">Calyx Institute</a>, 用于<a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">设计师:<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">开发者: <a href="https://github.com/stevesoltys">Steve Soltys</a>和<a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">许可证:<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">一个使用Android自带备份API的备份应用程序。</string>
+    <string name="about_title">关于</string>
+    <string name="storage_internal_warning_use_anyway">无论如何都要用内部存储</string>
+    <string name="storage_internal_warning_choose_other">另选一处</string>
+    <string name="storage_internal_warning_message">您选择将备份储存在内部存储上。当您的手机丢失或损坏时，备份文件将不可用。</string>
+    <string name="storage_internal_warning_title">警告</string>
+    <string name="restore_finished_button">完成</string>
+    <string name="restore_finished_error">还原备份时出错。</string>
+    <string name="restore_finished_success">恢复完成</string>
+    <string name="restore_app_quota_exceeded">超出备份配额</string>
+    <string name="restore_app_not_installed">应用未安装</string>
+    <string name="restore_app_not_allowed">应用程序不允许备份</string>
+    <string name="restore_app_no_data">应用报告没有数据需要备份</string>
+    <string name="restore_magic_package">系统包管理器</string>
+    <string name="restore_restoring">还原备份中</string>
+    <string name="restore_next">下一步</string>
+    <string name="restore_installing_packages">重新安装应用中</string>
+    <string name="restore_set_empty_result">在给定位置找不到合适的备份。
+\n
+\n可能性最大的原因是错误的恢复代码或存储错误。</string>
+    <string name="restore_set_error">加载备份时出错。</string>
+    <string name="restore_invalid_location_message">我们在此位置找不到任何备份。
+\n
+\n请选择另一个包含一个%s文件夹的位置。</string>
+    <string name="restore_invalid_location_title">没有找到备份</string>
+    <string name="restore_back">不要还原</string>
+    <string name="restore_restore_set_times">上次备份%1$s · 首次%2$s。</string>
+    <string name="restore_choose_restore_set">选择一个备份来还原</string>
+    <string name="restore_title">从备份还原</string>
+    <string name="notification_restore_error_action">卸载应用</string>
+    <string name="notification_restore_error_text">安装应用程序从备份恢复其数据前先插入你的%1$s。</string>
+    <string name="notification_restore_error_title">无法还原%1$s的数据</string>
+    <string name="notification_restore_error_channel_title">自动还原闪存驱动器出错</string>
+    <string name="notification_error_action">修复</string>
+    <string name="notification_error_text">未能运行一次设备备份。</string>
+    <string name="notification_error_title">备份出错</string>
+    <string name="notification_error_channel_title">错误通知</string>
+    <string name="notification_failed_title">备份失败</string>
+    <string name="notification_success_title">备份完成</string>
+    <string name="notification_backup_result_error">备份失败</string>
+    <string name="notification_backup_result_rejected">尚未备份</string>
+    <string name="notification_backup_result_complete">备份完成</string>
+    <string name="notification_title">备份运行中</string>
+    <string name="notification_channel_title">备份提示</string>
+    <string name="recovery_code_error_checksum_word">您的代码无效。请检查所有单词，然后重试！</string>
+    <string name="recovery_code_error_invalid_word">错误的词。你的意思是%1$s或%2$s？</string>
+    <string name="recovery_code_error_empty_word">你忘了输入这个词。</string>
+    <string name="recovery_code_done_button">完成</string>
+    <string name="recovery_code_confirm_button">确认代码</string>
+    <string name="recovery_code_write_it_down">现在就把它写下来！</string>
+    <string name="recovery_code_title">恢复代码</string>
+    <string name="storage_check_fragment_error_button">返回</string>
+    <string name="storage_check_fragment_permission_error">无法获得写入备份位置的权限。</string>
+    <string name="storage_check_fragment_backup_error">访问备份位置时发生错误。</string>
+    <string name="storage_check_fragment_restore_title">正在寻找备份…</string>
+    <string name="storage_check_fragment_backup_title">初始化备份位置中…</string>
+    <string name="storage_fake_nextcloud_summary_installed">点击设置账户</string>
+    <string name="storage_fake_nextcloud_summary">点击安装</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt;剩余<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">需要插入</string>
+    <string name="storage_fake_drive_title">U盘</string>
+    <string name="storage_fragment_warning">能访问您存储位置的人可以了解您使用的应用程序，但无法访问应用程序的数据。</string>
+    <string name="storage_fragment_restore_title">去哪里找你的备份？</string>
+    <string name="storage_fragment_backup_title">选择备份文件储存位置</string>
+    <string name="settings_backup_now">现在备份</string>
+    <string name="settings_backup_exclude_apps">排除的应用</string>
+    <string name="settings_backup_status_summary">上次备份: %1$s</string>
+    <string name="settings_backup_status_title">应用程序备份状态</string>
+    <string name="settings_backup_apk_dialog_disable">禁用应用程序备份</string>
+    <string name="settings_backup_apk_dialog_cancel">取消</string>
+    <string name="settings_backup_apk_dialog_message">禁用应用程序备份仍将备份应用数据。 但是，它不会自动还原。
+\n
+\n您需要手动安装所有应用程序，同时打开“自动还原”。</string>
+    <string name="settings_backup_apk_summary">备份应用程序本身。 否则，只备份应用程序数据。</string>
+    <string name="settings_auto_restore_summary_usb">注意：要让该功能正常工作，需插入你的%1$s。</string>
+    <string name="settings_backup_location_invalid">选定的位置无法使用。</string>
+    <string name="settings_backup_location_title">备份位置</string>
+    <string name="settings_backup_location_picker">选择备份位置</string>
+    <string name="restore_app_was_stopped">未备份，因为最近没有用过</string>
+    <string name="restore_app_not_yet_backed_up">尚未备份</string>
+    <string name="notification_success_text">已备份了%2$d个应用中的%1$d个。点击了解更多。</string>
+    <string name="notification_backup_already_running">备份进行中</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">帐户不可用。 设置一个（或禁用密码）。</string>
+    <string name="current_destination_string">备份状态和设置</string>
+    <string name="data_management_label">种子库备份</string>
 </resources>
