@@ -1,2 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="about_source_code">Kaynak Kodları: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Sponsor: <a href="https://calyxos.org">CalyxOS</a>\'de kullanmak için <a href="https://www.calyxinstitute.org">Calyx Institute</a></string>
+    <string name="about_design">Tasarım: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Yazanlar: <a href="https://github.com/stevesoltys">Steve Soltys</a> ve <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Lisans: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Android\'in dahili yedekleme API\'sini kullanan bir yedekleme uygulaması.</string>
+    <string name="about_title">Hakkında</string>
+    <string name="storage_internal_warning_use_anyway">Yine de kullan</string>
+    <string name="storage_internal_warning_choose_other">Başkasını seç</string>
+    <string name="storage_internal_warning_message">Yedeklemeniz için dahili depolamayı seçtiniz. Bu, telefonunuz kaybolduğunda veya bozulduğunda kullanılamayacaktır.</string>
+    <string name="storage_internal_warning_title">Uyarı</string>
+    <string name="restore_finished_button">Bitir</string>
+    <string name="restore_finished_error">Yedekleme geri yüklenirken bir hata oluştu.</string>
+    <string name="restore_finished_success">Geri yükleme tamamlandı</string>
+    <string name="restore_app_quota_exceeded">Yedekleme kotası aşıldı</string>
+    <string name="restore_app_not_installed">Uygulama kurulu değil</string>
+    <string name="restore_app_not_allowed">Uygulama yedeklemeye izin vermiyor</string>
+    <string name="restore_app_no_data">Uygulama yedekleme için veri bildirmedi</string>
+    <string name="restore_magic_package">Sistem paket yöneticisi</string>
+    <string name="restore_restoring">Yedekleme geri yükleniyor</string>
+    <string name="restore_next">Sonraki</string>
+    <string name="restore_installing_packages">Uygulamalar yeniden kuruluyor</string>
+    <string name="restore_set_empty_result">Belirtilen konumda uygun yedekleme bulunamadı.
+\n
+\nBunun nedeni büyük olasılıkla yanlış bir kurtarma kodu veya bir depolama hatasıdır.</string>
+    <string name="restore_set_error">Yedeklemeler yüklenirken bir hata oluştu.</string>
+    <string name="restore_invalid_location_message">Bu konumda herhangi bir yedekleme bulamadık.
+\n
+\nLütfen %s klasörünü içeren başka bir konum seçin.</string>
+    <string name="restore_invalid_location_title">Yedekleme bulunamadı</string>
+    <string name="restore_back">Geri yükleme</string>
+    <string name="restore_restore_set_times">Son yedekleme %1$s · İlk %2$s.</string>
+    <string name="restore_choose_restore_set">Geri yüklemek için bir yedekleme seç</string>
+    <string name="restore_title">Yedeklemeyi geri yükle</string>
+    <string name="notification_restore_error_action">Uygulamayı kaldır</string>
+    <string name="notification_restore_error_text">Verilerini yedekten geri yüklemek için uygulamayı kurmadan önce %1$s aygıtınızı takın.</string>
+    <string name="settings_auto_restore_summary_usb">Not: Bunun çalışması için %1$s aygıtınızın takılı olması gerekir.</string>
+    <string name="notification_restore_error_title">%1$s için veriler geri yüklenemedi</string>
+    <string name="notification_restore_error_channel_title">Flash belleği otomatik geri yükleme hatası</string>
+    <string name="notification_error_action">Düzelt</string>
+    <string name="notification_error_text">Aygıt yedeklemesini çalıştırma başarısız oldu.</string>
+    <string name="notification_error_title">Yedekleme hatası</string>
+    <string name="notification_error_channel_title">Hata bildirimi</string>
+    <string name="notification_failed_title">Yedekleme başarısız oldu</string>
+    <string name="notification_success_title">Yedekleme bitti</string>
+    <string name="notification_backup_result_error">Yedekleme başarısız oldu</string>
+    <string name="notification_backup_result_rejected">Yedeklenmedi</string>
+    <string name="notification_backup_result_complete">Yedekleme tamamlandı</string>
+    <string name="notification_title">Yedekleme çalışıyor</string>
+    <string name="notification_channel_title">Yedekleme bildirimi</string>
+    <string name="recovery_code_error_checksum_word">Kodunuz geçersiz. Lütfen tüm sözcükleri gözden geçirin ve tekrar deneyin!</string>
+    <string name="recovery_code_error_invalid_word">Yanlış sözcük. %1$s veya %2$s demek mi istediniz\?</string>
+    <string name="recovery_code_error_empty_word">Bu sözcüğü girmeyi unuttunuz.</string>
+    <string name="recovery_code_input_hint_12">12. sözcük</string>
+    <string name="recovery_code_input_hint_11">11. sözcük</string>
+    <string name="recovery_code_input_hint_10">10. sözcük</string>
+    <string name="recovery_code_input_hint_9">9. sözcük</string>
+    <string name="recovery_code_input_hint_8">8. sözcük</string>
+    <string name="recovery_code_input_hint_7">7. sözcük</string>
+    <string name="recovery_code_input_hint_6">6. sözcük</string>
+    <string name="recovery_code_input_hint_5">5. sözcük</string>
+    <string name="recovery_code_input_hint_4">4. sözcük</string>
+    <string name="recovery_code_input_hint_3">3. sözcük</string>
+    <string name="recovery_code_input_hint_2">2. sözcük</string>
+    <string name="recovery_code_input_hint_1">1. sözcük</string>
+    <string name="recovery_code_done_button">Bitti</string>
+    <string name="recovery_code_input_intro">Yedeklemeleri ayarlarken yazdığınız 12 sözcükten oluşan kurtarma kodunuzu girin.</string>
+    <string name="recovery_code_confirm_intro">İhtiyacınız olduğunda çalışacağından emin olmak için 12 sözcükten oluşan kurtarma kodunuzu girin.</string>
+    <string name="recovery_code_confirm_button">Kodu onayla</string>
+    <string name="recovery_code_write_it_down">Onu şimdi kağıda yazın!</string>
+    <string name="recovery_code_12_word_intro">Yedeklenen verileri geri yüklemek için 12 sözcükten oluşan kurtarma kodunuza ihtiyacınız var.</string>
+    <string name="recovery_code_title">Kurtarma kodu</string>
+    <string name="storage_check_fragment_error_button">Geri</string>
+    <string name="storage_check_fragment_permission_error">Yedekleme konumuna yazma izni alınamıyor.</string>
+    <string name="storage_check_fragment_backup_error">Yedekleme konumuna erişilirken bir hata oluştu.</string>
+    <string name="storage_check_fragment_restore_title">Yedeklemeler aranıyor…</string>
+    <string name="storage_check_fragment_backup_title">Yedekleme konumu başlatılıyor…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Hesap oluşturmak için tıklayın</string>
+    <string name="storage_fake_nextcloud_summary">Kurmak için tıklayın</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; boş<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_drive_summary">Takılı olması gerekiyor</string>
+    <string name="storage_fake_drive_title">USB flash bellek</string>
+    <string name="storage_fragment_warning">Depolama konumunuza erişimi olan kişiler, hangi uygulamaları kullandığınızı öğrenebilir, ancak uygulamaların verilerine erişemez.</string>
+    <string name="storage_fragment_restore_title">Yedeklemelerinizi nerede bulabilirsiniz\?</string>
+    <string name="storage_fragment_backup_title">Yedeklemelerin nerede depolanacağını seç</string>
+    <string name="settings_backup_now">Şimdi yedekle</string>
+    <string name="settings_backup_exclude_apps">Uygulamaları hariç tut</string>
+    <string name="settings_backup_status_summary">Son yedekleme: %1$s</string>
+    <string name="settings_backup_status_title">Uygulama yedekleme durumu</string>
+    <string name="settings_backup_apk_dialog_disable">Uygulama yedeklemeyi devre dışı bırak</string>
+    <string name="settings_backup_apk_dialog_cancel">İptal</string>
+    <string name="settings_backup_apk_dialog_message">Uygulama yedekleme devre dışı bırakıldığında, uygulama verileri yine de yedeklenecektir. Ancak, otomatik olarak geri yüklenmeyecektir.
+\n
+\n\"Otomatik Geri Yükle\" açıkken tüm uygulamalarınızı elle kurmanız gerekecektir.</string>
+    <string name="backup">Yedekle</string>
+    <string name="settings_auto_restore_title">Otomatik geri yükle</string>
+    <string name="settings_category_app_data_backup">Uygulama verilerini yedekle</string>
+    <string name="settings_backup_apk_title">Uygulama yedekle</string>
+    <string name="settings_backup_apk_dialog_title">Uygulama yedeklemesi gerçekten devre dışı bırakılsın mı\?</string>
+    <string name="settings_backup_apk_summary">Uygulamaların kendisini yedekle. Aksi takdirde, yalnızca uygulama verileri yedeklenir.</string>
+    <string name="settings_auto_restore_summary">Bir uygulamayı yeniden kurarken, yedeklenen ayarları ve verileri geri yükle.</string>
+    <string name="settings_info">Tüm yedeklemeler telefonunuzda şifrelenir. Yedeklemeyi geri yüklemek için 12 sözcükten oluşan kurtarma kodunuza ihtiyacınız olacak.</string>
+    <string name="settings_backup_last_backup_never">Asla</string>
+    <string name="settings_backup_location_internal">Dahili depolama</string>
+    <string name="settings_backup_location_none">Yok</string>
+    <string name="settings_backup_location_invalid">Seçilen konum kullanılamıyor.</string>
+    <string name="settings_backup_location_title">Yedekleme konumu</string>
+    <string name="settings_backup_location_picker">Yedekleme konumunu seç</string>
+    <string name="settings_backup_location">Yedekleme konumu</string>
+    <string name="settings_backup">Verilerimi yedekle</string>
+    <string name="restore_backup_button">Yedeklemeyi geri yükle</string>
+    <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmedi</string>
+    <string name="restore_app_not_yet_backed_up">Henüz yedeklenmedi</string>
+    <string name="notification_success_text">%1$d / %2$d uygulama yedeklendi. Daha fazlasını öğrenmek için dokunun.</string>
+    <string name="notification_backup_already_running">Yedekleme zaten devam ediyor</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Kullanılabilir hesap yok. Bir tane ayarlayın (veya parolayı devre dışı bırakın).</string>
+    <string name="current_destination_string">Yedekleme durumu ve ayarları</string>
+    <string name="data_management_label">Seedvault Yedeklemesi</string>
+</resources>
