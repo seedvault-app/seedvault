@@ -117,4 +117,5 @@
     <string name="notification_backup_result_complete">Резервное копирование завершено</string>
     <string name="settings_backup_location_invalid">Выбранное место не может быть использовано.</string>
     <string name="settings_backup_location_title">Расположение Резервной Копии</string>
+    <string name="data_management_label">Хранилище копий</string>
 </resources>
