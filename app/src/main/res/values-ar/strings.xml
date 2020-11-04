@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings_auto_restore_title">استعادة تلقائية</string>
+    <string name="settings_backup_location_title">موقع النسخ الاحتياطي</string>
+    <string name="settings_backup_location_picker">اختر موقع النسخ الاحتياطي</string>
+    <string name="settings_backup_location">موقع النسخ الاحتياطي</string>
+    <string name="settings_backup">احتفظ باحتياطي من معلوماتي</string>
+    <string name="restore_backup_button">استرجاع النسخة الاحتياطية</string>
+    <string name="current_destination_string">حالة النسخ الاحتياطي والإعدادات</string>
+    <string name="backup">نسخ احتياطية</string>
+</resources>
