@@ -1,2 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="notification_restore_error_title">%1$s의 데이터 복원 실패</string>
+    <string name="restore_choose_restore_set">복원할 백업 선택</string>
+    <string name="notification_restore_error_channel_title">자동 복원 플래시 드라이브 오류</string>
+    <string name="restore_invalid_location_title">백업을 찾을 수 없음</string>
+    <string name="restore_app_was_stopped">앱을 최근에 사용하지 않아 백업되지 않음</string>
+    <string name="restore_app_not_allowed">앱이 백업을 허용하지 않음</string>
+    <string name="restore_app_not_installed">앱이 설치되지 않음</string>
+    <string name="restore_app_quota_exceeded">백업 한도 초과</string>
+    <string name="restore_magic_package">시스템 패키지 관리자</string>
+    <string name="restore_installing_packages">앱 재설치 중</string>
+    <string name="restore_set_empty_result">주어진 위치에서 알맞은 백업을 찾을 수 없습니다.
+\n
+\n이는 저장소 오류 또는 잘못된 복구 코드 때문일 가능성이 큽니다.</string>
+    <string name="restore_set_error">백업을 불러오는 중 오류가 발생했습니다.</string>
+    <string name="restore_invalid_location_message">이 위치에서 백업을 찾을 수 없습니다.
+\n
+\n%s 폴더가 포함된 다른 위치를 선택해 주세요.</string>
+    <string name="settings_info">모든 백업은 사용자의 기기에 암호화 후 저장됩니다. 백업을 복원하려면 12개 단어로 이루어진 복구 코드가 필요합니다.</string>
+    <string name="recovery_code_write_it_down">지금 종이에 써 두세요!</string>
+    <string name="recovery_code_12_word_intro">백업을 복원하려면 12개 단어로 이루어진 복구 코드가 필요합니다.</string>
+    <string name="storage_check_fragment_permission_error">백업 위치에 쓰기 권한을 얻을 수 없습니다.</string>
+    <string name="storage_check_fragment_backup_error">백업 위치에 접근하는 중 오류가 발생했습니다.</string>
+    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; 남음<xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="restore_finished_error">백업을 복원하는 중 오류가 발생했습니다.</string>
+    <string name="storage_check_fragment_restore_title">백업을 찾는 중…</string>
+    <string name="storage_check_fragment_backup_title">백업 위치 초기화 중…</string>
+    <string name="about_sponsor">스폰서: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; (&lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt; 내부 사용을 위해)<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">디자인: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">제작자: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; 및 &lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;<a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">라이선스: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_summary">Android 내장 백업 API를 사용한 백업 애플리케이션입니다.</string>
+    <string name="storage_internal_warning_use_anyway">백업 진행</string>
+    <string name="storage_internal_warning_choose_other">다른 위치 선택</string>
+    <string name="storage_internal_warning_message">백업 위치로 내부 저장소를 선택했습니다. 기기를 고장내거나 잃어버렸을 경우 백업을 사용하지 못할 수 있습니다.</string>
+    <string name="restore_finished_success">복원 완료</string>
+    <string name="restore_finished_button">마침</string>
+    <string name="restore_restoring">백업 복원 중</string>
+    <string name="restore_title">백업에서 복원</string>
+    <string name="notification_restore_error_action">앱 설치 제거</string>
+    <string name="notification_backup_already_running">백업이 이미 진행 중</string>
+    <string name="notification_backup_result_rejected">백업되지 않음</string>
+    <string name="recovery_code_error_checksum_word">코드가 잘못되었습니다. 모든 단어를 확인하고 다시 시도하세요!</string>
+    <string name="recovery_code_error_invalid_word">단어가 틀렸습니다. %1$s 또는 %2$s를 입력하려고 하셨나요\?</string>
+    <string name="recovery_code_error_empty_word">이 단어를 입력하지 않았습니다.</string>
+    <string name="recovery_code_confirm_intro">복구 코드가 맞는지 확인하려면 12개 단어로 이루어진 복구 코드를 입력하세요.</string>
+    <string name="recovery_code_input_intro">백업을 설정할 때 지정했던 12개 단어로 이루어진 복구 코드를 입력하세요.</string>
+    <string name="recovery_code_confirm_button">코드 확인</string>
+    <string name="recovery_code_title">복구 코드</string>
+    <string name="storage_check_fragment_error_button">뒤로</string>
+    <string name="storage_fake_drive_title">USB 플래시 드라이브</string>
+    <string name="about_source_code">소스 코드: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_title">정보</string>
+    <string name="storage_internal_warning_title">경고</string>
+    <string name="restore_next">다음</string>
+    <string name="restore_back">복원 안 함</string>
+    <string name="notification_error_title">백업 오류</string>
+    <string name="notification_error_channel_title">오류 알림</string>
+    <string name="notification_failed_title">백업 실패</string>
+    <string name="notification_success_text">%2$d개 중 %1$d개 앱을 백업했습니다. 여기를 눌러서 더 알아보세요.</string>
+    <string name="notification_success_title">백업 완료</string>
+    <string name="notification_backup_result_error">백업 실패</string>
+    <string name="notification_backup_result_complete">백업 완료</string>
+    <string name="notification_title">백업 실행 중</string>
+    <string name="notification_channel_title">백업 알림</string>
+    <string name="recovery_code_input_hint_12">단어 12</string>
+    <string name="recovery_code_input_hint_11">단어 11</string>
+    <string name="recovery_code_input_hint_10">단어 10</string>
+    <string name="recovery_code_input_hint_9">단어 9</string>
+    <string name="recovery_code_input_hint_8">단어 8</string>
+    <string name="recovery_code_input_hint_7">단어 7</string>
+    <string name="recovery_code_input_hint_6">단어 6</string>
+    <string name="recovery_code_input_hint_5">단어 5</string>
+    <string name="recovery_code_input_hint_4">단어 4</string>
+    <string name="recovery_code_input_hint_3">단어 3</string>
+    <string name="recovery_code_input_hint_2">단어 2</string>
+    <string name="recovery_code_input_hint_1">단어 1</string>
+    <string name="recovery_code_done_button">완료</string>
+    <string name="storage_fragment_backup_title">백업을 보관할 위치 선택</string>
+    <string name="settings_backup_now">지금 백업</string>
+    <string name="settings_backup_exclude_apps">앱 제외</string>
+    <string name="settings_backup_status_summary">최근 백업: %1$s</string>
+    <string name="settings_backup_status_title">앱 백업 상태</string>
+    <string name="settings_backup_apk_dialog_disable">앱 백업 비활성화</string>
+    <string name="settings_backup_apk_dialog_cancel">취소</string>
+    <string name="settings_backup_apk_dialog_message">앱 백업을 꺼도 앱 데이터는 계속 백업됩니다. 그러나 데이터가 자동으로 복원되지는 않습니다.
+\n
+\n\"자동 복원\"이 켜진 상태에서 모든 앱을 수동으로 설치해야 합니다.</string>
+    <string name="settings_backup_apk_dialog_title">정말 앱 백업을 끄시겠습니까\?</string>
+    <string name="settings_backup_apk_summary">앱 자체를 백업합니다. 이 설정을 끄면 앱 데이터만 백업됩니다.</string>
+    <string name="settings_backup_apk_title">앱 백업</string>
+    <string name="settings_category_app_data_backup">앱 데이터 백업</string>
+    <string name="settings_auto_restore_summary">앱을 다시 설치하면 백업된 설정 및 데이터를 자동으로 복원합니다.</string>
+    <string name="settings_auto_restore_title">자동 복원</string>
+    <string name="settings_backup_last_backup_never">백업 없음</string>
+    <string name="settings_backup_location_internal">내부 저장소</string>
+    <string name="settings_backup_location_none">없음</string>
+    <string name="settings_backup_location_invalid">선택한 위치는 사용할 수 없습니다.</string>
+    <string name="settings_backup_location_title">백업 위치</string>
+    <string name="settings_backup_location_picker">백업 위치 선택</string>
+    <string name="settings_backup_location">백업 위치</string>
+    <string name="settings_backup">내 데이터 백업</string>
+    <string name="restore_backup_button">백업 복원</string>
+    <string name="current_destination_string">백업 상태 및 설정</string>
+    <string name="data_management_label">Seedvault 백업</string>
+    <string name="backup">백업</string>
+    <string name="restore_app_not_yet_backed_up">아직 백업한 적 없음</string>
+    <string name="notification_error_text">기기 백업에 실패했습니다.</string>
+    <string name="storage_fragment_restore_title">어디에서 백업을 찾으시겠습니까\?</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">계정을 사용할 수 없습니다. 새 계정을 만들거나 비밀번호를 비활성화하세요.</string>
+    <string name="storage_fake_nextcloud_summary_installed">여기를 눌러 계정 만들기</string>
+    <string name="storage_fake_nextcloud_summary">여기를 눌러 설치</string>
+    <string name="storage_fragment_warning">사용자의 저장소에 접근 가능한 타인은 사용자가 쓰는 앱까지는 알 수 있지만 앱의 데이터에는 접근할 수 없습니다.</string>
+</resources>
