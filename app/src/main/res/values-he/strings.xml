@@ -72,7 +72,7 @@
     <string name="notification_error_title">שגיאת גיבוי</string>
     <string name="notification_error_channel_title">התראת שגיאה</string>
     <string name="notification_failed_title">הגיבוי נכשל</string>
-    <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו. מידע נוסף בנגיעה.</string>
+    <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו. הקש למידע נוסף.</string>
     <string name="notification_success_title">הגיבוי הסתיים</string>
     <string name="notification_backup_already_running">הגיבוי כבר מתבצע</string>
     <string name="about_sponsor">מומן על ידי: &lt;a href=\"https://www.calyxinstitute.org\"&gt;מכון Calyx&lt;/a&gt; לשימוש ב־&lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;<a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
@@ -97,7 +97,7 @@
     <string name="restore_next">הבא</string>
     <string name="restore_installing_packages">היישומונים מותקנים מחדש</string>
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
-    <string name="restore_app_not_yet_backed_up">טרם נערך גיבוי</string>
+    <string name="restore_app_not_yet_backed_up">עדיין לא מגובה</string>
     <string name="storage_fake_nextcloud_summary_unavailable">החשבון אינו זמין. ניתן להקים אחד (או להשבית את קוד הגישה).</string>
     <string name="about_source_code">קוד המקור: https://github.com/stevesoltys/seedvault</string>
     <string name="settings_backup_apk_title">גיבוי יישומונים</string>
@@ -116,4 +116,6 @@
     <string name="settings_backup">גיבוי הנתונים שלי</string>
     <string name="restore_backup_button">שחזור גיבוי</string>
     <string name="backup">גיבוי</string>
+    <string name="current_destination_string">מצב והגדרות גיבוי</string>
+    <string name="data_management_label">גיבוי Seedvault</string>
 </resources>
