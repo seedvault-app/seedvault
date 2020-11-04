@@ -110,4 +110,11 @@
     <string name="restore_app_not_yet_backed_up">Еще не скопировано</string>
     <string name="restore_app_was_stopped">Резервная копия не сохранена, поскольку давно не использовалась</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Аккаунт недоступен. Установите один (или отключите пароль).</string>
+    <string name="current_destination_string">Статус и настройки резервного копирования</string>
+    <string name="settings_backup_location_picker">Выберите место для резервной копии</string>
+    <string name="notification_backup_result_error">Ошибка резервного копирования</string>
+    <string name="notification_backup_result_rejected">Ещё не скопировано</string>
+    <string name="notification_backup_result_complete">Резервное копирование завершено</string>
+    <string name="settings_backup_location_invalid">Выбранное место не может быть использовано.</string>
+    <string name="settings_backup_location_title">Расположение Резервной Копии</string>
 </resources>
