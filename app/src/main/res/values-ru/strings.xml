@@ -95,7 +95,6 @@
     <string name="settings_backup_apk_title">Резервное копирование приложений</string>
     <string name="settings_category_app_data_backup">Резервное копирование данных приложений</string>
     <string name="settings_auto_restore_summary">При переустановке приложений восстановите резервные копии настроек и данных.</string>
-    <string name="settings_backup_status_title">Статус резервного копирования приложений</string>
     <string name="settings_backup_apk_dialog_disable">Отключить резервное копирование приложений</string>
     <string name="settings_backup_apk_dialog_message">При отключенном резервном копировании приложений по-прежнему будут выполняться резервные копии данных приложений. Однако он не будет восстановлен автоматически.
 \n
@@ -111,11 +110,5 @@
     <string name="restore_app_was_stopped">Резервная копия не сохранена, поскольку давно не использовалась</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Аккаунт недоступен. Установите один (или отключите пароль).</string>
     <string name="current_destination_string">Статус и настройки резервного копирования</string>
-    <string name="settings_backup_location_picker">Выберите место для резервной копии</string>
-    <string name="notification_backup_result_error">Ошибка резервного копирования</string>
-    <string name="notification_backup_result_rejected">Ещё не скопировано</string>
-    <string name="notification_backup_result_complete">Резервное копирование завершено</string>
-    <string name="settings_backup_location_invalid">Выбранное место не может быть использовано.</string>
-    <string name="settings_backup_location_title">Расположение Резервной Копии</string>
     <string name="data_management_label">Хранилище копий</string>
 </resources>

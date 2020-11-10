@@ -82,7 +82,6 @@
     <string name="settings_backup_now">Respaldar ahora</string>
     <string name="settings_backup_exclude_apps">Excluir aplicaciones</string>
     <string name="settings_backup_status_summary">Último respaldo: %1$s</string>
-    <string name="settings_backup_status_title">Estado de respaldo de la aplicación</string>
     <string name="settings_backup_apk_dialog_disable">Deshabilitar respaldo de la aplicación</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
     <string name="settings_backup_apk_dialog_message">Respaldo deshabilitado de la aplicación aún seguirá haciendo un respaldo de los datos de la aplicación. Sin embargo, no se restaurará automáticamente.

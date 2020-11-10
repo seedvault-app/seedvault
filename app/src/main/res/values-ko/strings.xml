@@ -40,7 +40,6 @@
     <string name="restore_title">백업에서 복원</string>
     <string name="notification_restore_error_action">앱 설치 제거</string>
     <string name="notification_backup_already_running">백업이 이미 진행 중</string>
-    <string name="notification_backup_result_rejected">백업되지 않음</string>
     <string name="recovery_code_error_checksum_word">코드가 잘못되었습니다. 모든 단어를 확인하고 다시 시도하세요!</string>
     <string name="recovery_code_error_invalid_word">단어가 틀렸습니다. %1$s 또는 %2$s를 입력하려고 하셨나요\?</string>
     <string name="recovery_code_error_empty_word">이 단어를 입력하지 않았습니다.</string>
@@ -60,8 +59,6 @@
     <string name="notification_failed_title">백업 실패</string>
     <string name="notification_success_text">%2$d개 중 %1$d개 앱을 백업했습니다. 여기를 눌러서 더 알아보세요.</string>
     <string name="notification_success_title">백업 완료</string>
-    <string name="notification_backup_result_error">백업 실패</string>
-    <string name="notification_backup_result_complete">백업 완료</string>
     <string name="notification_title">백업 실행 중</string>
     <string name="notification_channel_title">백업 알림</string>
     <string name="recovery_code_input_hint_12">단어 12</string>
@@ -81,7 +78,6 @@
     <string name="settings_backup_now">지금 백업</string>
     <string name="settings_backup_exclude_apps">앱 제외</string>
     <string name="settings_backup_status_summary">최근 백업: %1$s</string>
-    <string name="settings_backup_status_title">앱 백업 상태</string>
     <string name="settings_backup_apk_dialog_disable">앱 백업 비활성화</string>
     <string name="settings_backup_apk_dialog_cancel">취소</string>
     <string name="settings_backup_apk_dialog_message">앱 백업을 꺼도 앱 데이터는 계속 백업됩니다. 그러나 데이터가 자동으로 복원되지는 않습니다.
@@ -96,9 +92,6 @@
     <string name="settings_backup_last_backup_never">백업 없음</string>
     <string name="settings_backup_location_internal">내부 저장소</string>
     <string name="settings_backup_location_none">없음</string>
-    <string name="settings_backup_location_invalid">선택한 위치는 사용할 수 없습니다.</string>
-    <string name="settings_backup_location_title">백업 위치</string>
-    <string name="settings_backup_location_picker">백업 위치 선택</string>
     <string name="settings_backup_location">백업 위치</string>
     <string name="settings_backup">내 데이터 백업</string>
     <string name="restore_backup_button">백업 복원</string>

@@ -36,7 +36,6 @@
     <string name="recovery_code_input_intro">Geben Sie ihren aus 12 Wörtern bestehenden Wiederherstellungsschlüssel ein, den sie beim Konfigurieren der Sicherungen aufgeschrieben haben.</string>
     <string name="recovery_code_confirm_intro">Geben sie Ihren aus 12 Wörtern bestehenden Wiederherstellungsschlüssel ein, um sicher zu gehen, dass er funktionieren wird, wenn sie ihn brauchen.</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> frei</string>
-    <string name="settings_backup_status_title">App-Sicherungsstatus</string>
     <string name="settings_backup_apk_dialog_message">Beim Deaktivieren der App-Sicherungen werden immer noch die App-Daten gesichert. Allerdings werden diese nicht automatisch wiederhergestellt.
 \n
 \nSie werden Ihre Apps manuell installieren müssen während \"Automatische Sicherungen\" aktiviert sind.</string>
@@ -88,7 +87,7 @@
     <string name="restore_app_quota_exceeded">Sicherungskontingent überschritten</string>
     <string name="restore_app_not_installed">App ist nicht installiert</string>
     <string name="restore_app_not_allowed">App erlaubt keine Sicherung</string>
-    <string name="restore_app_no_data">App hat keine Daten für die Sicherung gemeldet</string>
+    <string name="backup_app_no_data">App hat keine Daten für die Sicherung gemeldet</string>
     <string name="restore_app_was_stopped">Nicht gesichert, da es in letzter Zeit nicht verwendet wurde</string>
     <string name="restore_app_not_yet_backed_up">Noch nicht gesichert</string>
     <string name="restore_restoring">Sicherung wird wiederhergestellt</string>
@@ -109,13 +108,7 @@
     <string name="notification_restore_error_action">App deinstallieren</string>
     <string name="notification_success_text">%1$d von %2$d Apps gesichert. Tippen Sie, um mehr zu erfahren.</string>
     <string name="notification_backup_already_running">Sicherung wird bereits durchgeführt</string>
-    <string name="notification_backup_result_error">Sicherung fehlgeschlagen</string>
-    <string name="notification_backup_result_rejected">Nicht gesichert</string>
-    <string name="notification_backup_result_complete">Sicherung abgeschlossen</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nicht verfügbar. Richten Sie ein Konto ein (oder deaktivieren Sie das Passcode).</string>
-    <string name="settings_backup_location_invalid">Der gewählte Speicherort kann nicht verwendet werden.</string>
-    <string name="settings_backup_location_picker">Sicherungsort wählen</string>
-    <string name="settings_backup_location_title">Sicherungsort</string>
     <string name="current_destination_string">Sicherungsstatus und Einstellungen</string>
     <string name="data_management_label">Seedvault Sicherung</string>
 </resources>

@@ -50,7 +50,6 @@
     <string name="settings_backup_now">Sauvegarder maintenant</string>
     <string name="settings_backup_exclude_apps">Exclure les applis</string>
     <string name="settings_backup_status_summary">Dernière sauvegarde : %1$s</string>
-    <string name="settings_backup_status_title">État de la sauvegarde de l’appli</string>
     <string name="settings_backup_apk_dialog_disable">Désactiver la sauvegarde de l’appli</string>
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde de l’appli</string>
@@ -110,11 +109,5 @@
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées. Appuyez pour en savoir plus.</string>
     <string name="notification_backup_already_running">Sauvegarde déjà en cours</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Compte non disponible. Configurez-en un (ou désactivez le mot de passe).</string>
-    <string name="notification_backup_result_error">Échec de la sauvegarde</string>
-    <string name="notification_backup_result_rejected">Non sauvegardé</string>
-    <string name="notification_backup_result_complete">Sauvegarde complète</string>
-    <string name="settings_backup_location_invalid">L’emplacement choisi ne peut pas être choisi.</string>
-    <string name="settings_backup_location_title">Emplacement de la sauvegarde</string>
-    <string name="settings_backup_location_picker">Choisissez l’emplacement de la sauvegarde</string>
     <string name="current_destination_string">Statut et paramètres de sauvegarde</string>
 </resources>

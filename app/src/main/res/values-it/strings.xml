@@ -50,7 +50,6 @@
     <string name="storage_fragment_restore_title">Come trovare i tuoi backup\?</string>
     <string name="settings_backup_now">Esegui il backup ora</string>
     <string name="settings_backup_exclude_apps">Escludi le app</string>
-    <string name="settings_backup_status_title">Stato del backup dell\'app</string>
     <string name="settings_backup_apk_dialog_disable">Disattiva il backup dell\'app</string>
     <string name="settings_backup_apk_dialog_message">Il backup dell\'app disabilitato eseguirà comunque il backup dei dati dell\'app. Tuttavia, non verrà ripristinato automaticamente.
 \n
@@ -64,9 +63,6 @@
     <string name="settings_backup_location">Posizione di backup</string>
     <string name="settings_backup_apk_dialog_title">Si vuole veramente disabilitare il backup delle app\?</string>
     <string name="settings_auto_restore_summary_usb">Nota: è necessario collegare %1$s per permettere il ripristino.</string>
-    <string name="settings_backup_location_invalid">Impossibile usare la posizione scelta.</string>
-    <string name="settings_backup_location_title">Posizione di backup</string>
-    <string name="settings_backup_location_picker">Scegli posizione per il backup</string>
     <string name="current_destination_string">Stato backup e impostazioni</string>
     <string name="data_management_label">Backup Seedvault</string>
 </resources>

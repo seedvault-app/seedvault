@@ -86,7 +86,6 @@
     <string name="settings_backup_now">Spremi sigurnosnu kopiju sada</string>
     <string name="settings_backup_exclude_apps">Izuzmi aplikacije</string>
     <string name="settings_backup_status_summary">Zadnja sigurnosna kopija: %1$s</string>
-    <string name="settings_backup_status_title">Stanje sigurnosne kopije aplikacije</string>
     <string name="settings_backup_apk_dialog_disable">Isključi sigurnosne kopije aplikacije</string>
     <string name="settings_backup_apk_dialog_cancel">Odustani</string>
     <string name="settings_backup_apk_dialog_message">Isključivanjem sigurnosnih kopija aplikacija i dalje će spremati podaci aplikacije. Međutim, neće se automatski vratiti.
@@ -110,12 +109,6 @@
     <string name="restore_app_was_stopped">Sigurnosna kopija nije spremljena, jer nije nedavno korištena</string>
     <string name="restore_app_not_yet_backed_up">Sigurnosna kopija još nije spremljena</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Račun nije dostupan. Postavi jedan račun (ili deaktiviraj pristupni kod).</string>
-    <string name="notification_backup_result_error">Sigurnosna kopija neuspjela</string>
-    <string name="notification_backup_result_rejected">Sigurnosna kopija nije spremljena</string>
-    <string name="notification_backup_result_complete">Sigurnosna kopija završena</string>
-    <string name="settings_backup_location_invalid">Odabrano mjesto se ne može koristiti.</string>
-    <string name="settings_backup_location_title">Mjesto za sigurnosne kopije</string>
-    <string name="settings_backup_location_picker">Odaberi mjesto za sigurnosne kopije</string>
     <string name="current_destination_string">Stanje sigurnosne kopije i postavke</string>
     <string name="data_management_label">Seedvault sigurnosna kopija</string>
 </resources>
