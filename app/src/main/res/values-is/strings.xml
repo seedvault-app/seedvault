@@ -84,7 +84,6 @@
     <string name="settings_backup_now">Framkvæma öryggisafritun núna</string>
     <string name="settings_backup_exclude_apps">Undanskilja öpp</string>
     <string name="settings_backup_status_summary">Síðasta öryggisafritun: %1$s</string>
-    <string name="settings_backup_status_title">Staða á öryggisafritun appa</string>
     <string name="settings_backup_apk_dialog_disable">Afvirkja öryggisafritun appa</string>
     <string name="settings_backup_apk_dialog_cancel">Stöðva</string>
     <string name="settings_backup_apk_dialog_message">Ef öryggisafritun appa er óvirk verða gögn úr öppum samt afrituð. Hins vegar verða þau ekki endurvakin sjálfkrafa.

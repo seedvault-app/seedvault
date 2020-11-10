@@ -12,7 +12,6 @@
     <string name="storage_fragment_backup_title">Επιλέξτε πού θα αποθηκεύονται τα αντίγραφα ασφαλείας</string>
     <string name="settings_backup_now">Δημιουργία αντιγράφων ασφαλείας τώρα</string>
     <string name="settings_backup_exclude_apps">Εξαίρεση εφαρμογών</string>
-    <string name="settings_backup_status_title">Κατάσταση αντιγράφων ασφαλείας εφαρμογών</string>
     <string name="settings_backup_apk_dialog_disable">Απενεργοποίηση αντιγράφων ασφαλείας εφαρμογών</string>
     <string name="settings_backup_apk_dialog_cancel">Άκυρο</string>
     <string name="settings_backup_apk_dialog_message">Η απενεργοποιημένη δημιουργία αντιγράφων ασφαλείας θα εξακολουθεί να δημιουργεί αντίγραφα ασφαλείας των δεδομένων εφαρμογών. Ωστόσο, δεν θα επαναφέρονται αυτόματα.
@@ -107,12 +106,6 @@
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
-    <string name="notification_backup_result_error">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
-    <string name="notification_backup_result_rejected">Δεν δημιουργήθηκε αντίγραφο ασφαλείας</string>
-    <string name="notification_backup_result_complete">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
-    <string name="settings_backup_location_invalid">Η επιλεγμένη τοποθεσία δεν μπορεί να χρησιμοποιηθεί.</string>
-    <string name="settings_backup_location_title">Τοποθεσία αντιγράφων ασφαλείας</string>
-    <string name="settings_backup_location_picker">Επιλέξτε την τοποθεσία των αντιγράφων ασφαλείας</string>
     <string name="restore_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν χρησιμοποιήθηκε πρόσφατα</string>
     <string name="restore_app_not_yet_backed_up">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Ο λογαριασμός δεν είναι διαθέσιμος. Ρυθμίστε έναν (ή απενεργοποιήστε τον κωδικό πρόσβασης).</string>

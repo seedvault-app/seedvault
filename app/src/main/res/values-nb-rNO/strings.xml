@@ -89,7 +89,6 @@
     <string name="settings_backup_now">Sikkerhetskopier nå</string>
     <string name="settings_backup_exclude_apps">Utelat programmer</string>
     <string name="settings_backup_status_summary">Siste sikkerhetskopi: %1$s</string>
-    <string name="settings_backup_status_title">Status for programsikkerhetskopiering</string>
     <string name="settings_backup_apk_dialog_disable">Skru av programsikkerhetskopiering</string>
     <string name="settings_backup_apk_dialog_cancel">Avbryt</string>
     <string name="settings_backup_apk_dialog_title">Vil du virkelig skru av programsikkerhetskopiering\?</string>

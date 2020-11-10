@@ -3,9 +3,6 @@
     <string name="settings_backup_apk_dialog_message">גיבוי מושבת של יישומון עדיין יגבה את נתוני היישומון. עם זאת, הוא לא ישוחזר אוטומטית.
 \n
 \nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
-    <string name="notification_backup_result_error">הגיבוי נכשל</string>
-    <string name="notification_backup_result_rejected">לא מגובה</string>
-    <string name="notification_backup_result_complete">הגיבוי הושלם</string>
     <string name="notification_title">הגיבוי פועל</string>
     <string name="notification_channel_title">התראת גיבוי</string>
     <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ולנסות שוב!</string>
@@ -46,7 +43,6 @@
     <string name="settings_backup_now">לגבות כעת</string>
     <string name="settings_backup_exclude_apps">החרגת יישומונים</string>
     <string name="settings_backup_status_summary">גיבוי אחרון: %1$s</string>
-    <string name="settings_backup_status_title">מצב גיבוי יישומון</string>
     <string name="settings_backup_apk_dialog_disable">להשבית את גיבוי היישומון</string>
     <string name="settings_backup_apk_dialog_cancel">ביטול</string>
     <string name="settings_backup_apk_dialog_title">להשבית את גיבוי היישומון\?</string>
@@ -91,7 +87,7 @@
     <string name="restore_app_quota_exceeded">חרגת ממיכסת הגיבוי</string>
     <string name="restore_app_not_installed">היישומון לא מותקן</string>
     <string name="restore_app_not_allowed">היישומון לא מאפשר גיבוי</string>
-    <string name="restore_app_no_data">היישומון דיווח שאין לו נתונים לגיבוי</string>
+    <string name="backup_app_no_data">היישומון דיווח שאין לו נתונים לגיבוי</string>
     <string name="restore_magic_package">מנהל חבילות המערכת</string>
     <string name="restore_restoring">הגיבוי משוחזר</string>
     <string name="restore_next">הבא</string>
@@ -109,9 +105,6 @@
     <string name="settings_backup_last_backup_never">מעולם לא</string>
     <string name="settings_backup_location_internal">אחסון פנימי</string>
     <string name="settings_backup_location_none">אף מקום</string>
-    <string name="settings_backup_location_invalid">לא ניתן להשתמש במיקום שנבחר.</string>
-    <string name="settings_backup_location_title">מיקום גיבוי</string>
-    <string name="settings_backup_location_picker">בחירת מיקום גיבוי</string>
     <string name="settings_backup_location">מיקום גיבוי</string>
     <string name="settings_backup">גיבוי הנתונים שלי</string>
     <string name="restore_backup_button">שחזור גיבוי</string>

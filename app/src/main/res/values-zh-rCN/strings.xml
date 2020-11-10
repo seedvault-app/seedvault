@@ -45,7 +45,7 @@
     <string name="restore_app_quota_exceeded">超出备份配额</string>
     <string name="restore_app_not_installed">应用未安装</string>
     <string name="restore_app_not_allowed">应用程序不允许备份</string>
-    <string name="restore_app_no_data">应用报告没有数据需要备份</string>
+    <string name="backup_app_no_data">应用报告没有数据需要备份</string>
     <string name="restore_magic_package">系统包管理器</string>
     <string name="restore_restoring">还原备份中</string>
     <string name="restore_next">下一步</string>
@@ -72,9 +72,6 @@
     <string name="notification_error_channel_title">错误通知</string>
     <string name="notification_failed_title">备份失败</string>
     <string name="notification_success_title">备份完成</string>
-    <string name="notification_backup_result_error">备份失败</string>
-    <string name="notification_backup_result_rejected">尚未备份</string>
-    <string name="notification_backup_result_complete">备份完成</string>
     <string name="notification_title">备份运行中</string>
     <string name="notification_channel_title">备份提示</string>
     <string name="recovery_code_error_checksum_word">您的代码无效。请检查所有单词，然后重试！</string>
@@ -100,7 +97,6 @@
     <string name="settings_backup_now">现在备份</string>
     <string name="settings_backup_exclude_apps">排除的应用</string>
     <string name="settings_backup_status_summary">上次备份: %1$s</string>
-    <string name="settings_backup_status_title">应用程序备份状态</string>
     <string name="settings_backup_apk_dialog_disable">禁用应用程序备份</string>
     <string name="settings_backup_apk_dialog_cancel">取消</string>
     <string name="settings_backup_apk_dialog_message">禁用应用程序备份仍将备份应用数据。 但是，它不会自动还原。
@@ -108,9 +104,6 @@
 \n您需要手动安装所有应用程序，同时打开“自动还原”。</string>
     <string name="settings_backup_apk_summary">备份应用程序本身。 否则，只备份应用程序数据。</string>
     <string name="settings_auto_restore_summary_usb">注意：要让该功能正常工作，需插入你的%1$s。</string>
-    <string name="settings_backup_location_invalid">选定的位置无法使用。</string>
-    <string name="settings_backup_location_title">备份位置</string>
-    <string name="settings_backup_location_picker">选择备份位置</string>
     <string name="restore_app_was_stopped">未备份，因为最近没有用过</string>
     <string name="restore_app_not_yet_backed_up">尚未备份</string>
     <string name="notification_success_text">已备份了%2$d个应用中的%1$d个。点击了解更多。</string>
