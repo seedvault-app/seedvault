@@ -18,7 +18,7 @@ def gitDescribe = { ->
 android {
 
     compileSdkVersion 30
-    buildToolsVersion '30.0.2'  // adapt in .travis.yaml if changed here
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         minSdkVersion 29 // leave at 29 for robolectric tests
