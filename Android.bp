@@ -44,7 +44,8 @@ android_app {
     required: [
         "LocalContactsBackup",
         "privapp_whitelist_com.stevesoltys.backup",
-        "com.stevesoltys.backup_whitelist"
+        "com.stevesoltys.backup_whitelist",
+        "SeedvaultOverlay",
     ],
     optimize: {
         enabled: false,

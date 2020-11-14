@@ -1,0 +1,4 @@
+runtime_resource_overlay {
+    name: "SeedvaultOverlay",
+    product_specific: true
+}

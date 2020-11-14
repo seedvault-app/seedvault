@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.stevesoltys.seedvault.framework_rro"
+        android:versionCode="1"
+        android:versionName="1.0">
+        <overlay android:targetPackage="com.android.providers.settings"
+            android:priority="947"
+            android:isStatic="true" />
+</manifest>

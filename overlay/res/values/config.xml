@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<resources>
+    <bool name="def_backup_enabled">true</bool>
+    <string name="def_backup_transport" translatable="false">com.stevesoltys.seedvault.transport.ConfigurableBackupTransport</string>
+</resources>
