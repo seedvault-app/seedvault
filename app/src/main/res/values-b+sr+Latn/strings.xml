@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings_backup_location_invalid">Odabrana lokacija se ne može da koristiti.</string>
+    <string name="settings_backup_location_title">Lokacija rezervne kopije</string>
+    <string name="settings_backup_location_picker">Odaberite lokaciju rezervne kopije</string>
+    <string name="settings_backup_location">Lokacija rezervne kopije</string>
+    <string name="settings_backup">Napravi rezervnu kopiju mojih podataka</string>
+    <string name="restore_backup_button">Vrati rezervnu kopiju</string>
+    <string name="current_destination_string">Status i podešavanja rezervne kopije</string>
+    <string name="data_management_label">Rezervna kopija Seedvault</string>
+    <string name="backup">Rezervna kopija</string>
+</resources>
