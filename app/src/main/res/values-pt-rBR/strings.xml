@@ -107,4 +107,15 @@
 \nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
     <string name="notification_success_text">%1$d de %2$d aplicativos com backup. Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
+    <string name="restore_app_was_stopped">Sem backup porque não foi usado recentemente</string>
+    <string name="restore_app_not_yet_backed_up">Ainda sem Backup</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Configure uma (ou desative a senha).</string>
+    <string name="settings_backup_location_picker">Escolha o local do Backup</string>
+    <string name="notification_backup_result_error">Backup falhou</string>
+    <string name="notification_backup_result_rejected">Sem Backup</string>
+    <string name="notification_backup_result_complete">Backup completo</string>
+    <string name="settings_backup_location_invalid">O local escolhido não pode ser usada.</string>
+    <string name="settings_backup_location_title">Local do Backup</string>
+    <string name="current_destination_string">Status e configurações do Backup</string>
+    <string name="data_management_label">Backup Seedvault</string>
 </resources>
