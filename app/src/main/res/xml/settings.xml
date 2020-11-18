@@ -8,6 +8,14 @@
         app:title="@string/settings_backup" />
 
     <androidx.preference.Preference
+        app:allowDividerAbove="true"
+        app:fragment="com.stevesoltys.seedvault.settings.AppStatusFragment"
+        app:icon="@drawable/ic_apps"
+        app:key="backup_status"
+        app:title="@string/settings_backup_status_title"
+        tools:summary="Last backup: Never" />
+
+    <androidx.preference.Preference
         app:dependency="backup"
         app:icon="@drawable/ic_storage"
         app:key="backup_location"
@@ -21,25 +29,12 @@
         app:summary="@string/settings_auto_restore_summary"
         app:title="@string/settings_auto_restore_title" />
 
-    <androidx.preference.PreferenceCategory
-        app:key="category_app_data_backup"
-        app:title="@string/settings_category_app_data_backup">
-
-        <androidx.preference.Preference
-            app:fragment="com.stevesoltys.seedvault.settings.AppStatusFragment"
-            app:icon="@drawable/ic_apps"
-            app:key="backup_status"
-            app:title="@string/settings_backup_status_title"
-            tools:summary="Last backup: Never" />
-
-        <androidx.preference.SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:dependency="backup"
-            app:key="backup_apk"
-            app:summary="@string/settings_backup_apk_summary"
-            app:title="@string/settings_backup_apk_title" />
-
-    </androidx.preference.PreferenceCategory>
+    <androidx.preference.SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:dependency="backup"
+        app:key="backup_apk"
+        app:summary="@string/settings_backup_apk_summary"
+        app:title="@string/settings_backup_apk_title" />
 
     <androidx.preference.Preference
         app:allowDividerAbove="true"
