@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.settings
 
+import android.annotation.StringRes
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -28,6 +29,20 @@ private const val PACKAGE_NAME_SETTINGS = "com.android.providers.settings"
 private const val PACKAGE_NAME_CALL_LOG = "com.android.calllogbackup"
 private const val PACKAGE_NAME_CONTACTS = "org.calyxos.backup.contacts"
 
+sealed class AppListItem
+
+data class AppStatus(
+    val packageName: String,
+    var enabled: Boolean,
+    val icon: Drawable,
+    val name: String,
+    val time: Long,
+    val status: AppBackupState,
+    val isSpecial: Boolean = false
+) : AppListItem()
+
+class AppSectionTitle(@StringRes val titleRes: Int) : AppListItem()
+
 internal class AppListRetriever(
     private val context: Context,
     private val packageService: PackageService,
@@ -38,11 +53,13 @@ internal class AppListRetriever(
     private val pm: PackageManager = context.packageManager
 
     @WorkerThread
-    fun getAppList(): List<AppStatus> {
-        return getSpecialApps() + getUserApps()
+    fun getAppList(): List<AppListItem> {
+        return listOf(AppSectionTitle(R.string.backup_section_system)) + getSpecialApps() +
+            listOf(AppSectionTitle(R.string.backup_section_user)) + getUserApps() +
+            listOf(AppSectionTitle(R.string.backup_section_not_allowed)) + getNotAllowedApps()
     }
 
-    private fun getSpecialApps(): List<AppStatus> {
+    private fun getSpecialApps(): List<AppListItem> {
         val specialPackages = listOf(
             Pair(PACKAGE_NAME_SMS, R.string.backup_sms),
             Pair(PACKAGE_NAME_SETTINGS, R.string.backup_settings),
@@ -82,6 +99,20 @@ internal class AppListRetriever(
                 name = getAppName(context, it.packageName).toString(),
                 time = time,
                 status = status
+            )
+        }.sortedBy { it.name.toLowerCase(locale) }
+    }
+
+    private fun getNotAllowedApps(): List<AppStatus> {
+        val locale = Locale.getDefault()
+        return packageService.userNotAllowedApps.map {
+            AppStatus(
+                packageName = it.packageName,
+                enabled = settingsManager.isBackupEnabled(it.packageName),
+                icon = getIcon(it.packageName),
+                name = getAppName(context, it.packageName).toString(),
+                time = 0,
+                status = FAILED_NOT_ALLOWED
             )
         }.sortedBy { it.name.toLowerCase(locale) }
     }

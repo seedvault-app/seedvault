@@ -66,7 +66,7 @@ internal class PackageService(
             return packageArray.toTypedArray()
         }
 
-    val notAllowedPackages: List<PackageInfo>
+    val notBackedUpPackages: List<PackageInfo>
         @WorkerThread
         get() {
             // We need the GET_SIGNING_CERTIFICATES flag here,
@@ -88,13 +88,22 @@ internal class PackageService(
         }
 
     /**
-     * A list of non-system apps (without instrumentation test apps).
+     * A list of non-system apps
+     * (without instrumentation test apps and without apps that don't allow backup).
      */
     val userApps: List<PackageInfo>
         @WorkerThread
-        get() {
-            return packageManager.getInstalledPackages(GET_INSTRUMENTATION)
-                .filter { it.isUserVisible(context) }
+        get() = packageManager.getInstalledPackages(GET_INSTRUMENTATION).filter { packageInfo ->
+            packageInfo.isUserVisible(context) && packageInfo.allowsBackup()
+        }
+
+    /**
+     * A list of apps that does not allow backup.
+     */
+    val userNotAllowedApps: List<PackageInfo>
+        @WorkerThread
+        get() = packageManager.getInstalledPackages(0).filter { packageInfo ->
+            !packageInfo.allowsBackup() && !packageInfo.isSystemApp()
         }
 
     val expectedAppTotals: ExpectedAppTotals
@@ -146,6 +155,11 @@ internal fun PackageInfo.isUserVisible(context: Context): Boolean {
 internal fun PackageInfo.isSystemApp(): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
     return applicationInfo.flags and FLAG_SYSTEM != 0
+}
+
+internal fun PackageInfo.allowsBackup(): Boolean {
+    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
+    return applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
 }
 
 /**
