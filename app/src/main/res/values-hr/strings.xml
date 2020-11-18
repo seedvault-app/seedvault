@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija. Dodirni i saznaj više.</string>
-    <string name="notification_backup_already_running">Spremanje sigurnosne kopije je već u tijeku</string>
+    <string name="notification_backup_already_running">Spremanje sigurnosne kopije je u tijeku</string>
     <string name="about_source_code">Izvorni kod: https://github.com/stevesoltys/seedvault</string>
     <string name="about_sponsor">Sponsor: <a href="https://www.calyxinstitute.org">Calyx Institute</a> za upotrebu u sustavu <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Dizajn: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
@@ -110,4 +110,12 @@
     <string name="restore_app_was_stopped">Sigurnosna kopija nije spremljena, jer nije nedavno korištena</string>
     <string name="restore_app_not_yet_backed_up">Sigurnosna kopija još nije spremljena</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Račun nije dostupan. Postavi jedan račun (ili deaktiviraj pristupni kod).</string>
+    <string name="notification_backup_result_error">Sigurnosna kopija neuspjela</string>
+    <string name="notification_backup_result_rejected">Sigurnosna kopija nije spremljena</string>
+    <string name="notification_backup_result_complete">Sigurnosna kopija završena</string>
+    <string name="settings_backup_location_invalid">Odabrano mjesto se ne može koristiti.</string>
+    <string name="settings_backup_location_title">Mjesto za sigurnosne kopije</string>
+    <string name="settings_backup_location_picker">Odaberi mjesto za sigurnosne kopije</string>
+    <string name="current_destination_string">Stanje sigurnosne kopije i postavke</string>
+    <string name="data_management_label">Seedvault sigurnosna kopija</string>
 </resources>
