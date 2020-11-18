@@ -24,7 +24,7 @@ enum class AppBackupState {
         FAILED_NO_DATA -> context.getString(R.string.backup_app_no_data)
         FAILED_WAS_STOPPED -> context.getString(R.string.backup_app_was_stopped)
         FAILED_NOT_ALLOWED -> context.getString(R.string.backup_app_not_allowed)
-        FAILED_NOT_INSTALLED -> notShownString
+        FAILED_NOT_INSTALLED -> context.getString(R.string.restore_app_not_installed)
         FAILED_QUOTA_EXCEEDED -> context.getString(R.string.backup_app_quota_exceeded)
     }
 

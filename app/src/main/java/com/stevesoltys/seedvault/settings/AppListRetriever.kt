@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NO_DATA
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_WAS_STOPPED
@@ -68,13 +69,18 @@ internal class AppListRetriever(
         )
         return specialPackages.map { (packageName, stringId) ->
             val metadata = metadataManager.getPackageMetadata(packageName)
+            val status = if (packageName == PACKAGE_NAME_CONTACTS && metadata?.state == null) {
+                // handle local contacts backup specially as it might not be installed
+                if (packageService.getVersionName(packageName) == null) FAILED_NOT_INSTALLED
+                else NOT_YET_BACKED_UP
+            } else metadata?.state.toAppBackupState()
             AppStatus(
                 packageName = packageName,
                 enabled = settingsManager.isBackupEnabled(packageName),
                 icon = getIcon(packageName),
                 name = context.getString(stringId),
                 time = metadata?.time ?: 0,
-                status = metadata?.state.toAppBackupState(),
+                status = status,
                 isSpecial = true
             )
         }
