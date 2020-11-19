@@ -1,9 +1,11 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.seedvault.App
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import io.github.novacrypto.bip39.JavaxPBKDF2WithHmacSHA512
@@ -16,6 +18,10 @@ import io.github.novacrypto.bip39.Validation.UnexpectedWhiteSpaceException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import io.github.novacrypto.bip39.Words
 import io.github.novacrypto.bip39.wordlists.English
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.IOException
 import java.security.SecureRandom
 import java.util.ArrayList
 
@@ -25,7 +31,8 @@ internal const val WORD_LIST_SIZE = 2048
 class RecoveryCodeViewModel(
     app: App,
     private val crypto: Crypto,
-    private val keyManager: KeyManager
+    private val keyManager: KeyManager,
+    private val backupPlugin: BackupPlugin
 ) : AndroidViewModel(app) {
 
     internal val wordList: List<CharSequence> by lazy {
@@ -66,6 +73,16 @@ class RecoveryCodeViewModel(
             mRecoveryCodeSaved.setEvent(true)
         } else {
             mExistingCodeChecked.setEvent(crypto.verifyBackupKey(seed))
+        }
+    }
+
+    fun deleteAllBackup() {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                backupPlugin.deleteAllBackups()
+            } catch (e: IOException) {
+                Log.e("RecoveryCodeViewModel", "Error deleting backups", e)
+            }
         }
     }
 
