@@ -190,6 +190,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     private val regenRequest = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
+            viewModel.deleteAllBackup()
             parentFragmentManager.popBackStack()
             Snackbar.make(requireView(), R.string.recovery_code_recreated, Snackbar.LENGTH_LONG)
                 .show()
@@ -203,7 +204,6 @@ class RecoveryCodeInputFragment : Fragment() {
             .setMessage(R.string.recovery_code_verification_new_dialog_message)
             .setPositiveButton(R.string.recovery_code_verification_generate_new) { dialog, _ ->
                 dialog.dismiss()
-                // TODO try to delete backups
                 val i = Intent(requireContext(), RecoveryCodeActivity::class.java)
                 regenRequest.launch(i)
             }
