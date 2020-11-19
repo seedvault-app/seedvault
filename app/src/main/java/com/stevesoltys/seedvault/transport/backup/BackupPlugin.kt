@@ -26,6 +26,12 @@ interface BackupPlugin {
     suspend fun initializeDevice()
 
     /**
+     * Delete all existing [RestoreSet]s from the storage medium.
+     */
+    @Throws(IOException::class)
+    suspend fun deleteAllBackups()
+
+    /**
      * Returns an [OutputStream] for writing backup metadata.
      */
     @Throws(IOException::class)
