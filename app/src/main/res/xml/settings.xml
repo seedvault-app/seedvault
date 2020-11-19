@@ -37,6 +37,14 @@
         app:title="@string/settings_backup_apk_title" />
 
     <androidx.preference.Preference
+        app:dependency="backup"
+        app:fragment="com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeInputFragment"
+        app:icon="@drawable/ic_vpn_key"
+        app:key="backup_recovery_code"
+        app:summary="@string/settings_backup_recovery_code_summary"
+        app:title="@string/settings_backup_recovery_code" />
+
+    <androidx.preference.Preference
         app:allowDividerAbove="true"
         app:allowDividerBelow="false"
         app:dependency="backup"

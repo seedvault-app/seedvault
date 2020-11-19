@@ -9,10 +9,12 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.recoverycode.ARG_FOR_NEW_CODE
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 internal const val ACTION_APP_STATUS_LIST = "com.stevesoltys.seedvault.APP_STATUS_LIST"
+private const val PREF_BACKUP_RECOVERY_CODE = "backup_recovery_code"
 
 class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmentCallback {
 
@@ -57,6 +59,9 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
     ): Boolean {
         val fragment =
             supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+        if (pref.key == PREF_BACKUP_RECOVERY_CODE) fragment.arguments = Bundle().apply {
+            putBoolean(ARG_FOR_NEW_CODE, false)
+        }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment, fragment)
             .addToBackStack(null)

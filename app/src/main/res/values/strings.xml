@@ -28,6 +28,8 @@
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
+    <string name="settings_backup_recovery_code">Recovery Code</string>
+    <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
 
     <!-- Storage -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
@@ -53,7 +55,7 @@
     <string name="recovery_code_confirm_button">Confirm code</string>
     <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
     <string name="recovery_code_input_intro">Enter your 12-word recovery code that you wrote down when setting up backups.</string>
-    <string name="recovery_code_done_button">Done</string>
+    <string name="recovery_code_done_button">Verify</string>
     <string name="recovery_code_input_hint_1">Word 1</string>
     <string name="recovery_code_input_hint_2">Word 2</string>
     <string name="recovery_code_input_hint_3">Word 3</string>
@@ -69,6 +71,11 @@
     <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
     <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
     <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words and try again!</string>
+    <string name="recovery_code_verification_ok_title">Recovery Code Verified</string>
+    <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
+    <string name="recovery_code_verification_error_title">Incorrect Recovery Code</string>
+    <string name="recovery_code_verification_error_message">You have entered an invalid recovery code. Please try again!\n\nIf you have lost your code, tap on Generate New Code below.</string>
+    <string name="recovery_code_verification_try_again">Try Again</string>
 
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>

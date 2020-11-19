@@ -12,6 +12,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 import kotlin.math.min
 
 /**
@@ -95,6 +96,13 @@ interface Crypto {
      */
     @Throws(IOException::class, SecurityException::class)
     fun decryptMultipleSegments(inputStream: InputStream): ByteArray
+
+    /**
+     * Verify that the stored backup key was created from the given seed.
+     *
+     * @return true if the key was created from given seed, false otherwise.
+     */
+    fun verifyBackupKey(seed: ByteArray): Boolean
 }
 
 internal class CryptoImpl(
@@ -202,6 +210,21 @@ internal class CryptoImpl(
         val cipher = cipherFactory.createDecryptionCipher(segmentHeader.nonce)
 
         return cipher.doFinal(buffer)
+    }
+
+    override fun verifyBackupKey(seed: ByteArray): Boolean {
+        // encrypt with stored backup key
+        val toEncrypt = "Recovery Code Verification".toByteArray()
+        val cipher = cipherFactory.createEncryptionCipher()
+        val encrypted = cipher.doFinal(toEncrypt) as ByteArray
+
+        // encrypt with input key cipher
+        val secretKeySpec = SecretKeySpec(seed, 0, KEY_SIZE_BYTES, "AES")
+        val inputCipher = cipherFactory.createEncryptionTestCipher(secretKeySpec, cipher.iv)
+        val inputEncrypted = inputCipher.doFinal(toEncrypt)
+
+        // keys match if encrypted result is the same
+        return encrypted.contentEquals(inputEncrypted)
     }
 
 }
