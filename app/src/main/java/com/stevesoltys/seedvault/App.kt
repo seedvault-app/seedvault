@@ -44,7 +44,7 @@ class App : Application() {
         factory { AppListRetriever(this@App, get(), get(), get()) }
 
         viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get()) }
-        viewModel { RecoveryCodeViewModel(this@App, get()) }
+        viewModel { RecoveryCodeViewModel(this@App, get(), get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get()) }
@@ -111,6 +111,7 @@ const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
 const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val GLOBAL_METADATA_KEY = "@meta@"
 
+// TODO this doesn't work for LineageOS as they do public debug builds
 fun isDebugBuild() = Build.TYPE == "userdebug"
 
 fun <T> permitDiskReads(func: () -> T): T {
