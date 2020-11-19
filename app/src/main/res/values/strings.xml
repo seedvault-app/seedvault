@@ -76,6 +76,10 @@
     <string name="recovery_code_verification_error_title">Incorrect Recovery Code</string>
     <string name="recovery_code_verification_error_message">You have entered an invalid recovery code. Please try again!\n\nIf you have lost your code, tap on Generate New Code below.</string>
     <string name="recovery_code_verification_try_again">Try Again</string>
+    <string name="recovery_code_verification_generate_new">Generate New Code</string>
+    <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
+    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.\n\nAre you sure you want to do this?</string>
+    <string name="recovery_code_recreated">New recovery code has been created successfully</string>
 
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>

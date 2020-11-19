@@ -67,7 +67,7 @@
             android:layout_marginBottom="8dp"
             android:text="@string/recovery_code_done_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/newCodeButton"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -84,6 +84,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/wordList"
             app:layout_constraintVertical_bias="1.0"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/newCodeButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/recovery_code_verification_generate_new"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/doneButton"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
