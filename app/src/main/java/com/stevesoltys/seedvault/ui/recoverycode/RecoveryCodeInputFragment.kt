@@ -1,8 +1,11 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -12,9 +15,11 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
@@ -32,6 +37,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     private lateinit var introText: TextView
     private lateinit var doneButton: Button
+    private lateinit var newCodeButton: Button
     private lateinit var backView: TextView
     private lateinit var wordLayout1: TextInputLayout
     private lateinit var wordLayout2: TextInputLayout
@@ -61,6 +67,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
         introText = v.findViewById(R.id.introText)
         doneButton = v.findViewById(R.id.doneButton)
+        newCodeButton = v.findViewById(R.id.newCodeButton)
         backView = v.findViewById(R.id.backView)
         wordLayout1 = v.findViewById(R.id.wordLayout1)
         wordLayout2 = v.findViewById(R.id.wordLayout2)
@@ -103,6 +110,8 @@ class RecoveryCodeInputFragment : Fragment() {
             editText.setAdapter(adapter)
         }
         doneButton.setOnClickListener { done() }
+        newCodeButton.visibility = if (forVerifyingNewCode) GONE else VISIBLE
+        newCodeButton.setOnClickListener { generateNewCode() }
 
         viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner,
             LiveEventHandler { verified -> onExistingCodeChecked(verified) }
@@ -172,8 +181,36 @@ class RecoveryCodeInputFragment : Fragment() {
                 setPositiveButton(R.string.recovery_code_verification_try_again) { dialog, _ ->
                     dialog.dismiss()
                 }
+                setNegativeButton(R.string.recovery_code_verification_generate_new) { dialog, _ ->
+                    dialog.dismiss()
+                }
             }
         }.show()
+    }
+
+    private val regenRequest = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            parentFragmentManager.popBackStack()
+            Snackbar.make(requireView(), R.string.recovery_code_recreated, Snackbar.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun generateNewCode() {
+        AlertDialog.Builder(requireContext())
+            .setIcon(R.drawable.ic_warning)
+            .setTitle(R.string.recovery_code_verification_new_dialog_title)
+            .setMessage(R.string.recovery_code_verification_new_dialog_message)
+            .setPositiveButton(R.string.recovery_code_verification_generate_new) { dialog, _ ->
+                dialog.dismiss()
+                // TODO try to delete backups
+                val i = Intent(requireContext(), RecoveryCodeActivity::class.java)
+                regenRequest.launch(i)
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     @Suppress("MagicNumber")
