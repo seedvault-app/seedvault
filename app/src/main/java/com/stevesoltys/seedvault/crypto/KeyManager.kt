@@ -11,7 +11,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 internal const val KEY_SIZE = 256
-private const val KEY_SIZE_BYTES = KEY_SIZE / 8
+internal const val KEY_SIZE_BYTES = KEY_SIZE / 8
 private const val KEY_ALIAS = "com.stevesoltys.seedvault"
 private const val ANDROID_KEY_STORE = "AndroidKeyStore"
 
@@ -47,7 +47,6 @@ internal class KeyManagerImpl : KeyManager {
 
     override fun storeBackupKey(seed: ByteArray) {
         if (seed.size < KEY_SIZE_BYTES) throw IllegalArgumentException()
-        // TODO check if using first 256 of 512 bits produced by PBKDF2WithHmacSHA512 is safe!
         val secretKeySpec = SecretKeySpec(seed, 0, KEY_SIZE_BYTES, "AES")
         val ksEntry = SecretKeyEntry(secretKeySpec)
         keyStore.setEntry(KEY_ALIAS, ksEntry, getKeyProtection())

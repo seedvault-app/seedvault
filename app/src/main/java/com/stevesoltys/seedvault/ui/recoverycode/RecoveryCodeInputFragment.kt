@@ -12,15 +12,19 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
+import com.stevesoltys.seedvault.ui.LiveEventHandler
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException
 import io.github.novacrypto.bip39.Validation.WordNotFoundException
 import io.github.novacrypto.bip39.wordlists.English
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
+internal const val ARG_FOR_NEW_CODE = "forVerifyingNewCode"
 
 class RecoveryCodeInputFragment : Fragment() {
 
@@ -42,6 +46,11 @@ class RecoveryCodeInputFragment : Fragment() {
     private lateinit var wordLayout11: TextInputLayout
     private lateinit var wordLayout12: TextInputLayout
     private lateinit var wordList: ConstraintLayout
+
+    /**
+     * True if this is for verifying a new recovery code, false for verifying an existing one.
+     */
+    private var forVerifyingNewCode: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +76,10 @@ class RecoveryCodeInputFragment : Fragment() {
         wordLayout12 = v.findViewById(R.id.wordLayout12)
         wordList = v.findViewById(R.id.wordList)
 
+        arguments?.getBoolean(ARG_FOR_NEW_CODE, true)?.let {
+            forVerifyingNewCode = it
+        }
+
         return v
     }
 
@@ -91,7 +104,11 @@ class RecoveryCodeInputFragment : Fragment() {
         }
         doneButton.setOnClickListener { done() }
 
-        if (isDebugBuild() && !viewModel.isRestore) debugPreFill()
+        viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner,
+            LiveEventHandler { verified -> onExistingCodeChecked(verified) }
+        )
+
+        if (forVerifyingNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
     }
 
     private fun getAdapter(): ArrayAdapter<String> {
@@ -110,7 +127,7 @@ class RecoveryCodeInputFragment : Fragment() {
         val input = getInput()
         if (!allFilledOut(input)) return
         try {
-            viewModel.validateAndContinue(input)
+            viewModel.validateAndContinue(input, forVerifyingNewCode)
         } catch (e: InvalidChecksumException) {
             Toast.makeText(context, R.string.recovery_code_error_checksum_word, LENGTH_LONG).show()
         } catch (e: WordNotFoundException) {
@@ -139,6 +156,24 @@ class RecoveryCodeInputFragment : Fragment() {
             error = errorMsg
             requestFocus()
         }
+    }
+
+    private fun onExistingCodeChecked(verified: Boolean) {
+        AlertDialog.Builder(requireContext()).apply {
+            if (verified) {
+                setTitle(R.string.recovery_code_verification_ok_title)
+                setMessage(R.string.recovery_code_verification_ok_message)
+                setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                setOnDismissListener { parentFragmentManager.popBackStack() }
+            } else {
+                setIcon(R.drawable.ic_warning)
+                setTitle(R.string.recovery_code_verification_error_title)
+                setMessage(R.string.recovery_code_verification_error_message)
+                setPositiveButton(R.string.recovery_code_verification_try_again) { dialog, _ ->
+                    dialog.dismiss()
+                }
+            }
+        }.show()
     }
 
     @Suppress("MagicNumber")
