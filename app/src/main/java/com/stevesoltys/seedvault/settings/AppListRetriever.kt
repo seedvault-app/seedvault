@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.settings
 
+import android.annotation.StringRes
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -13,6 +14,7 @@ import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NO_DATA
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_WAS_STOPPED
@@ -28,6 +30,20 @@ private const val PACKAGE_NAME_SETTINGS = "com.android.providers.settings"
 private const val PACKAGE_NAME_CALL_LOG = "com.android.calllogbackup"
 private const val PACKAGE_NAME_CONTACTS = "org.calyxos.backup.contacts"
 
+sealed class AppListItem
+
+data class AppStatus(
+    val packageName: String,
+    var enabled: Boolean,
+    val icon: Drawable,
+    val name: String,
+    val time: Long,
+    val status: AppBackupState,
+    val isSpecial: Boolean = false
+) : AppListItem()
+
+class AppSectionTitle(@StringRes val titleRes: Int) : AppListItem()
+
 internal class AppListRetriever(
     private val context: Context,
     private val packageService: PackageService,
@@ -38,11 +54,13 @@ internal class AppListRetriever(
     private val pm: PackageManager = context.packageManager
 
     @WorkerThread
-    fun getAppList(): List<AppStatus> {
-        return getSpecialApps() + getUserApps()
+    fun getAppList(): List<AppListItem> {
+        return listOf(AppSectionTitle(R.string.backup_section_system)) + getSpecialApps() +
+            listOf(AppSectionTitle(R.string.backup_section_user)) + getUserApps() +
+            listOf(AppSectionTitle(R.string.backup_section_not_allowed)) + getNotAllowedApps()
     }
 
-    private fun getSpecialApps(): List<AppStatus> {
+    private fun getSpecialApps(): List<AppListItem> {
         val specialPackages = listOf(
             Pair(PACKAGE_NAME_SMS, R.string.backup_sms),
             Pair(PACKAGE_NAME_SETTINGS, R.string.backup_settings),
@@ -51,13 +69,18 @@ internal class AppListRetriever(
         )
         return specialPackages.map { (packageName, stringId) ->
             val metadata = metadataManager.getPackageMetadata(packageName)
+            val status = if (packageName == PACKAGE_NAME_CONTACTS && metadata?.state == null) {
+                // handle local contacts backup specially as it might not be installed
+                if (packageService.getVersionName(packageName) == null) FAILED_NOT_INSTALLED
+                else NOT_YET_BACKED_UP
+            } else metadata?.state.toAppBackupState()
             AppStatus(
                 packageName = packageName,
                 enabled = settingsManager.isBackupEnabled(packageName),
                 icon = getIcon(packageName),
                 name = context.getString(stringId),
                 time = metadata?.time ?: 0,
-                status = metadata?.state.toAppBackupState(),
+                status = status,
                 isSpecial = true
             )
         }
@@ -82,6 +105,20 @@ internal class AppListRetriever(
                 name = getAppName(context, it.packageName).toString(),
                 time = time,
                 status = status
+            )
+        }.sortedBy { it.name.toLowerCase(locale) }
+    }
+
+    private fun getNotAllowedApps(): List<AppStatus> {
+        val locale = Locale.getDefault()
+        return packageService.userNotAllowedApps.map {
+            AppStatus(
+                packageName = it.packageName,
+                enabled = settingsManager.isBackupEnabled(it.packageName),
+                icon = getIcon(it.packageName),
+                name = getAppName(context, it.packageName).toString(),
+                time = 0,
+                status = FAILED_NOT_ALLOWED
             )
         }.sortedBy { it.name.toLowerCase(locale) }
     }

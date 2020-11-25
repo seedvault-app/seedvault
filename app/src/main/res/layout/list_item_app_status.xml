@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/appInfo"
         app:layout_constraintEnd_toStartOf="@+id/switchView"
         app:layout_constraintStart_toEndOf="@+id/appIcon"
@@ -38,13 +39,13 @@
         android:id="@+id/appInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/appName"
         app:layout_constraintStart_toStartOf="@+id/appName"
         app:layout_constraintTop_toBottomOf="@+id/appName"
-        tools:text="Some additional information about why the app could not be installed or its data not restored."
+        tools:text="@string/backup_app_not_yet_backed_up"
         tools:visibility="visible" />
 
     <ImageView
@@ -60,8 +61,8 @@
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -70,6 +71,7 @@
         android:id="@+id/switchView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -357,7 +357,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         // do actual @pm@ backup
         coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
         // now check if we have opt-out apps that we need to back up APKs for
-        every { packageService.notAllowedPackages } returns notAllowedPackages
+        every { packageService.notBackedUpPackages } returns notAllowedPackages
         // update notification
         every {
             notificationManager.onOptOutAppBackup(
@@ -411,7 +411,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `APK backup of not allowed apps updates state even without new APK`() = runBlocking {
         val oldPackageMetadata: PackageMetadata = mockk()
 
-        every { packageService.notAllowedPackages } returns listOf(packageInfo)
+        every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every {
             notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1)
         } just Runs
@@ -431,7 +431,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         every { metadataOutputStream.close() } just Runs
 
-        backup.backUpNotAllowedPackages()
+        backup.backUpApksOfNotBackedUpPackages()
 
         verify {
             metadataManager.onPackageBackupError(packageInfo, NOT_ALLOWED, metadataOutputStream)
@@ -441,7 +441,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `APK backup of not allowed apps updates state even without old state`() = runBlocking {
-        every { packageService.notAllowedPackages } returns listOf(packageInfo)
+        every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every {
             notificationManager.onOptOutAppBackup(packageInfo.packageName, 1, 1)
         } just Runs
@@ -459,7 +459,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         every { metadataOutputStream.close() } just Runs
 
-        backup.backUpNotAllowedPackages()
+        backup.backUpApksOfNotBackedUpPackages()
 
         verify {
             metadataManager.onPackageBackupError(packageInfo, NOT_ALLOWED, metadataOutputStream)

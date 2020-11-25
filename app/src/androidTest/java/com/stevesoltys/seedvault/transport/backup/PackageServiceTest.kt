@@ -14,7 +14,7 @@ class PackageServiceTest : KoinComponent {
 
     @Test
     fun testNotAllowedPackages() {
-        val packages = packageService.notAllowedPackages
+        val packages = packageService.notBackedUpPackages
         Log.e("TEST", "Packages: $packages")
     }
 
