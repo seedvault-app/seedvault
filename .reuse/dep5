@@ -1,0 +1,14 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: seedvault
+Upstream-Contact: Torsten Grote <t@grobox.de>
+Source: https://github.com/seedvault-app/seedvault
+
+
+Files: *app/src/main/java/com/stevesoltys/seedvault/* *app/src/main/res/* *app/src/test/* *contactsbackup/src/*
+Copyright: 2020, Torsten Grote <t@grobox.de>
+License: Apache-2.0
+
+Files: *app/src/main/res/drawable/nextcloud.xml* *app/src/main/res/drawable_nextcloud_background.xml* * app/src/main/res/drawable/nextcloud_foreground.xml* 
+Copyright: (C) 2017 Andy Scherzinger
+Copyright: (C) 2017 Nextcloud
+License: AGPL-3.0-or-later
