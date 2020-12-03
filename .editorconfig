@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
+
+
 [*.{kt,kts}]
 indent_size=4
 insert_final_newline=true

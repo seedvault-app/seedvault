@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Instrumentation Tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" singleton="true">
     <module name="seedvault.app" />

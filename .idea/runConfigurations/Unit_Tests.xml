@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Unit Tests" type="AndroidJUnit" factoryName="Android JUnit">
     <module name="seedvault.app" />

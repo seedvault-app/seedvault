@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
+
 # Local Contacts Backup
 
 A backup application that backs up local on-device contacts via the system's backup API.

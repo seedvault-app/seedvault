@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
 <component name="ProjectCodeStyleConfiguration">
   <state>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />

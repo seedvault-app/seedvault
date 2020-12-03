@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
+
 buildscript {
 
     // 1.3.21 Android 10

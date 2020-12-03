@@ -1,2 +1,5 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
 include ':app'
 include ':contactsbackup'

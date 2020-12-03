@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
+
 // To produce these binaries, in latest AOSP source tree, run
 // $ m
 def aospDeps = fileTree(include: [

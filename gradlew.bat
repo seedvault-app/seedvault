@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+// SPDX-License-Identifier: Apache-2.0
+
+
+
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem

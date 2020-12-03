@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
+
 ## [1.0.0] - 2020-03-07
 
 ## Added

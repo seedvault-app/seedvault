@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-License-Identifier: Apache-2.0
+-->
+
+
 # Seedvault
 [![Build](https://github.com/seedvault-app/seedvault/workflows/Build/badge.svg?branch=master)](https://github.com/seedvault-app/seedvault/actions?query=branch%3Amaster+workflow%3ABuild)
 
@@ -44,4 +50,4 @@ allows you to decrypt and inspect your backups.
 It can also re-encrypt them.
 
 ## License
-This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).
+This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0). However, some elements are being licensed under AGPL-3.0-or-later and CC0-1.0. For accurate information, please check individual files.	
