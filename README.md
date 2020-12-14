@@ -50,4 +50,8 @@ allows you to decrypt and inspect your backups.
 It can also re-encrypt them.
 
 ## License
-This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0). However, some elements are being licensed under AGPL-3.0-or-later and CC0-1.0. For accurate information, please check individual files.	
+This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0). However, some elements are being licensed under CC0-1.0. For accurate information, please check individual files.	
+
+## Trademark Policy
+
+Seedvault allows Android users to store their phone data without relying on proprietary cloud storage, with options ranging from a USB flash drive to a remote self-hosted cloud storage alternative such as Nextcloud. The use of Nextcloud logo by Seedvault is meant to refer to Nextcloud servers users can connect to and perform their backups. Seedvault is not a Nextcloud partner and is not affiliated with Nextcloud GmbH.
