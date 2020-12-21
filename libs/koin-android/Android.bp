@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2020, Torsten Grote <t@grobox.de>
+SPDX-FileCopyrightText: 2020, Torsten Grote 
 SPDX-License-Identifier: Apache-2.0
 -->
 
