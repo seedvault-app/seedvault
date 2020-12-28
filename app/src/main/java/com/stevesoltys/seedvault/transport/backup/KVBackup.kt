@@ -67,7 +67,10 @@ internal class KVBackup(
         }
 
         // initialize state
-        if (this.state != null) throw AssertionError()
+        val state = this.state
+        if (state != null) {
+            throw AssertionError("Have state for ${state.packageInfo.packageName}")
+        }
         this.state = KVBackupState(packageInfo)
 
         // no need for backup when no data has changed
