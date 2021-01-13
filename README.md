@@ -33,7 +33,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots (optional) for better UX.
 
 ## Contributing
-Bug reports and pull requests are welcome on GitHub at https://github.com/stevesoltys/seedvault.
+Bug reports and pull requests are welcome on GitHub at https://github.com/seedvault-app/seedvault.
 
 This project aims to adhere to the [official Kotlin coding style](https://developer.android.com/kotlin/style-guide).
 
