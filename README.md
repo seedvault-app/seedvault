@@ -30,6 +30,9 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.WRITE_SECURE_SETTINGS` to change system backup settings and enable call log backup.
 * `android.permission.QUERY_ALL_PACKAGES` to get information about all installed apps for backup.
 * `android.permission.INSTALL_PACKAGES` to re-install apps when restoring from backup.
+* `android.permission.MANAGE_EXTERNAL_STORAGE` to backup and restore files from device storage.
+* `android.permission.ACCESS_MEDIA_LOCATION` to backup original media files e.g. without stripped EXIF metadata.
+* `android.permission.FOREGROUND_SERVICE` to do periodic storage backups without interruption.
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots (optional) for better UX.
 
 ## Contributing

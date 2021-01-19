@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Instrumentation Tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" singleton="true">
+  <configuration default="false" name="Instrumentation tests: app" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" singleton="true">
     <module name="seedvault.app" />
     <option name="TESTING_TYPE" value="0" />
     <option name="METHOD_NAME" value="" />

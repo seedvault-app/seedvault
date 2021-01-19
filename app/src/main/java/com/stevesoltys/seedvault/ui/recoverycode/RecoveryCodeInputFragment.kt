@@ -62,7 +62,7 @@ class RecoveryCodeInputFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
 
         introText = v.findViewById(R.id.introText)
@@ -92,6 +92,8 @@ class RecoveryCodeInputFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        activity?.setTitle(R.string.recovery_code_title)
 
         if (viewModel.isRestore) {
             introText.setText(R.string.recovery_code_input_intro)

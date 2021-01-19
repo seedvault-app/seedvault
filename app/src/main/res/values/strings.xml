@@ -8,7 +8,8 @@
     <string name="restore_backup_button">Restore backup</string>
 
     <!-- Settings -->
-    <string name="settings_backup">Backup my data</string>
+    <string name="settings_category_apps">App backup</string>
+    <string name="settings_backup">Backup my apps</string>
     <string name="settings_backup_location">Backup location</string>
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal storage</string>
@@ -28,10 +29,20 @@
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
+    <string name="settings_category_storage">Storage backup (experimental)</string>
+    <string name="settings_backup_storage_title">Backup my files</string>
+    <string name="settings_backup_files_title">Included files and folders</string>
+    <string name="settings_backup_files_summary">None</string>
     <string name="settings_backup_recovery_code">Recovery code</string>
     <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
+    <string name="settings_backup_storage_dialog_title">Experimental feature</string>
+    <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
+    <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
+    <string name="settings_backup_storage_code_dialog_title">Recovery code verification required</string>
+    <string name="settings_backup_storage_code_dialog_message">To enable storage backup, you need to first verify your recovery code or generate a new one.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Verify code</string>
 
-    <!-- Storage -->
+    <!-- Storage Location -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
