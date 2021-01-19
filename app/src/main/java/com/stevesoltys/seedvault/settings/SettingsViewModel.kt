@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.Application
+import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
 import android.database.ContentObserver
 import android.net.ConnectivityManager
 import android.net.Network
@@ -22,11 +23,15 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.backup.BackupJobService
+import java.util.concurrent.TimeUnit.HOURS
 
 private const val TAG = "SettingsViewModel"
 private const val USER_FULL_DATA_BACKUP_AWARE = "user_full_data_backup_aware"
@@ -37,7 +42,8 @@ internal class SettingsViewModel(
     keyManager: KeyManager,
     private val notificationManager: BackupNotificationManager,
     private val metadataManager: MetadataManager,
-    private val appListRetriever: AppListRetriever
+    private val appListRetriever: AppListRetriever,
+    private val storageBackup: StorageBackup
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
@@ -58,6 +64,9 @@ internal class SettingsViewModel(
 
     private val mAppEditMode = MutableLiveData<Boolean>()
     internal val appEditMode: LiveData<Boolean> = mAppEditMode
+
+    private val _filesSummary = MutableLiveData<String>()
+    internal val filesSummary: LiveData<String> = _filesSummary
 
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
@@ -89,6 +98,7 @@ internal class SettingsViewModel(
             metadataManager.getLastBackupTime()
         }
         onStorageLocationChanged()
+        loadFilesSummary()
     }
 
     override fun onStorageLocationChanged() {
@@ -134,8 +144,8 @@ internal class SettingsViewModel(
         // maybe replace the check below with one that checks if our transport service is running
         if (notificationManager.hasActiveBackupNotifications()) {
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
-        } else {
-            Thread { requestBackup(app) }.start()
+        } else viewModelScope.launch(Dispatchers.IO) {
+            requestBackup(app)
         }
     }
 
@@ -156,6 +166,14 @@ internal class SettingsViewModel(
         settingsManager.onAppBackupStatusChanged(status)
     }
 
+    @UiThread
+    fun loadFilesSummary() = viewModelScope.launch {
+        val uriSummary = storageBackup.getUriSummaryString()
+        _filesSummary.value = if (uriSummary.isEmpty()) {
+            app.getString(R.string.settings_backup_files_summary)
+        } else uriSummary
+    }
+
     /**
      * Ensures that the call log will be included in backups.
      *
@@ -168,6 +186,23 @@ internal class SettingsViewModel(
         if (Settings.Secure.getInt(app.contentResolver, USER_FULL_DATA_BACKUP_AWARE, 0) == 0) {
             Settings.Secure.putInt(app.contentResolver, USER_FULL_DATA_BACKUP_AWARE, 1)
         }
+    }
+
+    fun hasMainKey(): Boolean {
+        return keyManager.hasMainKey()
+    }
+
+    fun enableStorageBackup() = BackupJobService.scheduleJob(
+        context = app,
+        jobServiceClass = StorageBackupJobService::class.java,
+        periodMillis = HOURS.toMillis(24),
+        networkType = NETWORK_TYPE_UNMETERED,
+        deviceIdle = false,
+        charging = true
+    )
+
+    fun disableStorageBackup() {
+        BackupJobService.cancelJob(app)
     }
 
 }

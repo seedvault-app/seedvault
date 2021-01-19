@@ -1,2 +1,4 @@
 include ':app'
 include ':contactsbackup'
+include ':storage:lib'
+include ':storage:demo'

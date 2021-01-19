@@ -1,53 +1,75 @@
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.preference.SwitchPreferenceCompat
-        app:icon="@drawable/ic_cloud_upload"
-        app:key="backup"
-        app:persistent="false"
-        app:title="@string/settings_backup" />
-
     <androidx.preference.Preference
-        app:allowDividerAbove="true"
-        app:fragment="com.stevesoltys.seedvault.settings.AppStatusFragment"
-        app:icon="@drawable/ic_apps"
-        app:key="backup_status"
-        app:title="@string/settings_backup_status_title"
-        tools:summary="Last backup: Never" />
-
-    <androidx.preference.Preference
-        app:dependency="backup"
-        app:icon="@drawable/ic_storage"
+        app:icon="@drawable/ic_save_alt"
         app:key="backup_location"
         app:summary="@string/settings_backup_location_none"
         app:title="@string/settings_backup_location" />
 
-    <androidx.preference.SwitchPreferenceCompat
-        app:dependency="backup"
-        app:key="auto_restore"
-        app:persistent="false"
-        app:summary="@string/settings_auto_restore_summary"
-        app:title="@string/settings_auto_restore_title" />
-
-    <androidx.preference.SwitchPreferenceCompat
-        app:defaultValue="true"
-        app:dependency="backup"
-        app:key="backup_apk"
-        app:summary="@string/settings_backup_apk_summary"
-        app:title="@string/settings_backup_apk_title" />
-
     <androidx.preference.Preference
-        app:dependency="backup"
         app:fragment="com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeInputFragment"
         app:icon="@drawable/ic_vpn_key"
         app:key="backup_recovery_code"
         app:summary="@string/settings_backup_recovery_code_summary"
         app:title="@string/settings_backup_recovery_code" />
 
+    <PreferenceCategory android:title="@string/settings_category_apps">
+
+        <androidx.preference.SwitchPreferenceCompat
+            app:allowDividerBelow="true"
+            app:icon="@drawable/ic_cloud_upload"
+            app:key="backup"
+            app:persistent="false"
+            app:title="@string/settings_backup" />
+
+        <androidx.preference.Preference
+            app:fragment="com.stevesoltys.seedvault.settings.AppStatusFragment"
+            app:icon="@drawable/ic_apps"
+            app:key="backup_status"
+            app:title="@string/settings_backup_status_title"
+            tools:summary="Last backup: Never" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            app:dependency="backup"
+            app:key="auto_restore"
+            app:persistent="false"
+            app:summary="@string/settings_auto_restore_summary"
+            app:title="@string/settings_auto_restore_title"
+            tools:defaultValue="true" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:dependency="backup"
+            app:key="backup_apk"
+            app:summary="@string/settings_backup_apk_summary"
+            app:title="@string/settings_backup_apk_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_category_storage">
+
+        <androidx.preference.SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_storage"
+            app:key="backup_storage"
+            app:title="@string/settings_backup_storage_title" />
+
+        <androidx.preference.Preference
+            android:dependency="backup_storage"
+            app:dependency="backup_storage"
+            app:fragment="com.stevesoltys.seedvault.ui.files.FileSelectionFragment"
+            app:icon="@drawable/ic_library_add"
+            app:key="backup_files"
+            app:summary="@string/settings_backup_files_summary"
+            app:title="@string/settings_backup_files_title" />
+
+    </PreferenceCategory>
+
     <androidx.preference.Preference
         app:allowDividerAbove="true"
         app:allowDividerBelow="false"
-        app:dependency="backup"
         app:icon="@drawable/ic_info_outline"
         app:selectable="false"
         app:summary="@string/settings_info" />

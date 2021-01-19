@@ -113,5 +113,18 @@
             </intent-filter>
         </receiver>
 
+        <!-- Used to start actual BackupService depending on scheduling criteria -->
+        <service
+            android:name=".storage.StorageBackupJobService"
+            android:exported="false"
+            android:label="BackupJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- Does the actual backup work as a foreground service -->
+        <service
+            android:name=".storage.StorageBackupService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="BackupService" />
+
     </application>
 </manifest>

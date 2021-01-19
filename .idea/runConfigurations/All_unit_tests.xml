@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All unit tests" type="CompoundRunConfigurationType">
+    <toRun name="Unit tests: storage/lib" type="AndroidJUnit" />
+    <toRun name="Unit tests: app" type="AndroidJUnit" />
+    <toRun name="Unit tests: contactsbackup" type="AndroidJUnit" />
+    <method v="2" />
+  </configuration>
+</component>

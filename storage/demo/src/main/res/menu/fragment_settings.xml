@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/info"
+        android:icon="@drawable/ic_info"
+        android:title="Info"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/backup_location"
+        android:checkable="true"
+        android:title="Store backups"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/backup_job"
+        android:checkable="true"
+        android:enabled="false"
+        android:title="Automatic backups"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/restore_backup"
+        android:enabled="false"
+        android:title="Restore backup"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/clear_db"
+        android:title="Clear cache"
+        app:showAsAction="never" />
+
+</menu>
