@@ -70,6 +70,7 @@ class RecoveryCodeViewModel(
         val seed = SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(mnemonic, "")
         if (forVerifyingNewCode) {
             keyManager.storeBackupKey(seed)
+            keyManager.storeMainKey(seed)
             mRecoveryCodeSaved.setEvent(true)
         } else {
             mExistingCodeChecked.setEvent(crypto.verifyBackupKey(seed))

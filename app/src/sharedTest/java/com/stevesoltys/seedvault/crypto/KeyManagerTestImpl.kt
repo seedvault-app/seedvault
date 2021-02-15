@@ -15,12 +15,24 @@ class KeyManagerTestImpl : KeyManager {
         throw NotImplementedError("not implemented")
     }
 
+    override fun storeMainKey(seed: ByteArray) {
+        throw NotImplementedError("not implemented")
+    }
+
     override fun hasBackupKey(): Boolean {
         return true
     }
 
+    override fun hasMainKey(): Boolean {
+        throw NotImplementedError("not implemented")
+    }
+
     override fun getBackupKey(): SecretKey {
         return key
+    }
+
+    override fun getMainKey(): SecretKey {
+        throw NotImplementedError("not implemented")
     }
 
 }
