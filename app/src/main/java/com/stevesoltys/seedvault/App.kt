@@ -34,7 +34,7 @@ import org.koin.dsl.module
  * @author Steve Soltys
  * @author Torsten Grote
  */
-class App : Application() {
+open class App : Application() {
 
     private val appModule = module {
         single { SettingsManager(this@App) }
@@ -52,22 +52,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            modules(
-                listOf(
-                    cryptoModule,
-                    headerModule,
-                    metadataModule,
-                    documentsProviderModule, // storage plugin
-                    backupModule,
-                    restoreModule,
-                    installModule,
-                    appModule
-                )
-            )
-        }
+        startKoin()
         if (isDebugBuild()) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
@@ -86,6 +71,23 @@ class App : Application() {
         permitDiskReads {
             migrateTokenFromMetadataToSettingsManager()
         }
+    }
+
+    protected open fun startKoin() = startKoin {
+        androidLogger()
+        androidContext(this@App)
+        modules(
+            listOf(
+                cryptoModule,
+                headerModule,
+                metadataModule,
+                documentsProviderModule, // storage plugin
+                backupModule,
+                restoreModule,
+                installModule,
+                appModule
+            )
+        )
     }
 
     private val settingsManager: SettingsManager by inject()
