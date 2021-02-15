@@ -73,7 +73,9 @@ class RecoveryCodeViewModel(
             keyManager.storeMainKey(seed)
             mRecoveryCodeSaved.setEvent(true)
         } else {
-            mExistingCodeChecked.setEvent(crypto.verifyBackupKey(seed))
+            val verified = crypto.verifyBackupKey(seed)
+            if (verified && !keyManager.hasMainKey()) keyManager.storeMainKey(seed)
+            mExistingCodeChecked.setEvent(verified)
         }
     }
 
