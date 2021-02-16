@@ -30,6 +30,8 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
+private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
+
 class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
@@ -137,6 +139,8 @@ class SettingsManager(private val context: Context) {
     }
 
     fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
+
+    fun isStorageBackupEnabled() = prefs.getBoolean(PREF_KEY_BACKUP_STORAGE, false)
 
     @UiThread
     fun onAppBackupStatusChanged(status: AppStatus) {
