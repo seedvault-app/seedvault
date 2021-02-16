@@ -126,6 +126,13 @@ internal class SettingsViewModel(
             networkCallback.registered = true
         }
 
+        if (settingsManager.isStorageBackupEnabled()) {
+            // disable storage backup if new storage is on USB
+            if (storage.isUsb) disableStorageBackup()
+            // enable it, just in case the previous storage was on USB
+            else enableStorageBackup()
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             val canDo = settingsManager.canDoBackupNow()
             mBackupPossible.postValue(canDo)
@@ -192,14 +199,16 @@ internal class SettingsViewModel(
         return keyManager.hasMainKey()
     }
 
-    fun enableStorageBackup() = BackupJobService.scheduleJob(
-        context = app,
-        jobServiceClass = StorageBackupJobService::class.java,
-        periodMillis = HOURS.toMillis(24),
-        networkType = NETWORK_TYPE_UNMETERED,
-        deviceIdle = false,
-        charging = true
-    )
+    fun enableStorageBackup() {
+        if (settingsManager.getStorage()?.isUsb == false) BackupJobService.scheduleJob(
+            context = app,
+            jobServiceClass = StorageBackupJobService::class.java,
+            periodMillis = HOURS.toMillis(24),
+            networkType = NETWORK_TYPE_UNMETERED,
+            deviceIdle = false,
+            charging = true
+        )
+    }
 
     fun disableStorageBackup() {
         BackupJobService.cancelJob(app)
