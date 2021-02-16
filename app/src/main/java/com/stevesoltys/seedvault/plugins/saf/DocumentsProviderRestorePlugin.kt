@@ -24,6 +24,9 @@ internal class DocumentsProviderRestorePlugin(
     override val fullRestorePlugin: FullRestorePlugin
 ) : RestorePlugin {
 
+    private val tokenRegex = Regex("([0-9]{13})") // good until the year 2286
+    private val chunkFolderRegex = Regex("[a-f0-9]{2}")
+
     @Throws(IOException::class)
     override suspend fun hasBackup(uri: Uri): Boolean {
         val parent = DocumentFile.fromTreeUri(context, uri) ?: throw AssertionError()
@@ -59,18 +62,21 @@ internal class DocumentsProviderRestorePlugin(
             return backupSets
         }
         for (set in files) {
+            // retrieve name only once as this causes a DB query
+            val name = set.name
+
             // get current token from set or continue to next file/set
-            val token = set.getTokenOrNull() ?: continue
+            val token = set.getTokenOrNull(name) ?: continue
 
             // block until children of set are available
             val metadata = try {
                 set.findFileBlocking(context, FILE_BACKUP_METADATA)
             } catch (e: IOException) {
-                Log.e(TAG, "Error reading metadata file in backup set folder: ${set.name}", e)
+                Log.e(TAG, "Error reading metadata file in backup set folder: $name", e)
                 null
             }
             if (metadata == null) {
-                Log.w(TAG, "Missing metadata file in backup set folder: ${set.name}")
+                Log.w(TAG, "Missing metadata file in backup set folder: $name")
             } else {
                 backupSets.add(BackupSet(token, metadata))
             }
@@ -78,19 +84,27 @@ internal class DocumentsProviderRestorePlugin(
         return backupSets
     }
 
-    private fun DocumentFile.getTokenOrNull(): Long? {
-        if (!isDirectory || name == null) {
-            if (name != FILE_NO_MEDIA) {
+    private fun DocumentFile.getTokenOrNull(name: String?): Long? {
+        val looksLikeToken = name != null && tokenRegex.matches(name)
+        // check for isDirectory only if we already have a valid token (causes DB query)
+        if (!looksLikeToken || !isDirectory) {
+            // only log unexpected output
+            if (name != null && isUnexpectedFile(name)) {
                 Log.w(TAG, "Found invalid backup set folder: $name")
             }
             return null
         }
         return try {
-            name!!.toLong()
+            name?.toLong()
         } catch (e: NumberFormatException) {
-            Log.w(TAG, "Found invalid backup set folder: $name")
-            null
+            throw AssertionError(e)
         }
+    }
+
+    private fun isUnexpectedFile(name: String): Boolean {
+        return name != FILE_NO_MEDIA &&
+            !chunkFolderRegex.matches(name) &&
+            !name.endsWith(".SeedSnap")
     }
 
     @Throws(IOException::class)
