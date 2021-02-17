@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.UiThread
@@ -27,6 +28,7 @@ import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private const val TAG = "SettingsViewModel"
 private const val USER_FULL_DATA_BACKUP_AWARE = "user_full_data_backup_aware"
 
 internal class SettingsViewModel(
@@ -93,8 +95,14 @@ internal class SettingsViewModel(
         val storage = settingsManager.getStorage() ?: return
 
         // register storage observer
-        contentResolver.unregisterContentObserver(storageObserver)
-        contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+        try {
+            contentResolver.unregisterContentObserver(storageObserver)
+            contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+        } catch (e: SecurityException) {
+            // This can happen if the app providing the storage was uninstalled.
+            // validLocationIsSet() gets called elsewhere and prompts for a new storage location.
+            Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+        }
 
         // register network observer if needed
         if (networkCallback.registered && !storage.requiresNetwork) {
