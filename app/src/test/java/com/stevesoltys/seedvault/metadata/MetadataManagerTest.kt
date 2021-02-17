@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.TestApp
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
@@ -37,7 +38,10 @@ import kotlin.random.Random
 
 @Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [29]) // robolectric does not support 30, yet
+@Config(
+    sdk = [29], // robolectric does not support 30, yet
+    application = TestApp::class
+)
 class MetadataManagerTest {
 
     private val context: Context = mockk()

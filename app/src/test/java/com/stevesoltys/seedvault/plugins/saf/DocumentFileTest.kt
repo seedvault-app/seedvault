@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.stevesoltys.seedvault.TestApp
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -15,7 +16,10 @@ import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [29]) // robolectric does not support 30, yet
+@Config(
+    sdk = [29], // robolectric does not support 30, yet
+    application = TestApp::class
+)
 internal class DocumentFileTest {
 
     private val context: Context = mockk()

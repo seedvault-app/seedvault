@@ -6,6 +6,7 @@ import android.util.DisplayMetrics
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.TestApp
 import com.stevesoltys.seedvault.getRandomString
 import io.mockk.every
 import io.mockk.mockk
@@ -20,7 +21,10 @@ import org.robolectric.annotation.Config
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [29]) // robolectric does not support 30, yet
+@Config(
+    sdk = [29], // robolectric does not support 30, yet
+    application = TestApp::class
+)
 internal class DeviceInfoTest {
 
     @After
