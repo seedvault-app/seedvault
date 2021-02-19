@@ -66,23 +66,19 @@ android {
         }
     }
 
-    // optional signingConfigs
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
-    if (keystorePropertiesFile.exists()) {
-        def keystoreProperties = new Properties()
-        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
-        signingConfigs {
-            release {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-            }
+    signingConfigs {
+        aosp {
+            // Generated from the AOSP platform key:
+            // https://android.googlesource.com/platform/build/+/refs/tags/android-11.0.0_r29/target/product/security/platform.pk8
+            keyAlias "platform"
+            keyPassword "platform"
+            storeFile file("platform.jks")
+            storePassword "platform"
         }
-        buildTypes.release.signingConfig = signingConfigs.release
-        buildTypes.debug.signingConfig = signingConfigs.release
     }
+
+    buildTypes.release.signingConfig = signingConfigs.aosp
+    buildTypes.debug.signingConfig = signingConfigs.aosp
 }
 
 apply from: '../gradle/dependencies.gradle'
