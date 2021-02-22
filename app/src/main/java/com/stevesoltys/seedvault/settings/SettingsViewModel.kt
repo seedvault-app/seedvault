@@ -31,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
+import org.calyxos.backup.storage.backup.NotificationBackupObserver
 import java.util.concurrent.TimeUnit.HOURS
 
 private const val TAG = "SettingsViewModel"
@@ -152,6 +153,10 @@ internal class SettingsViewModel(
         if (notificationManager.hasActiveBackupNotifications()) {
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
         } else viewModelScope.launch(Dispatchers.IO) {
+            if (settingsManager.isStorageBackupEnabled()) {
+                val backupObserver = NotificationBackupObserver(app)
+                storageBackup.runBackup(backupObserver)
+            }
             requestBackup(app)
         }
     }
