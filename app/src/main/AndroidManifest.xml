@@ -125,6 +125,12 @@
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:label="BackupService" />
+        <!-- Does restore as a foreground service -->
+        <service
+            android:name=".storage.StorageRestoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="RestoreService" />
 
     </application>
 </manifest>

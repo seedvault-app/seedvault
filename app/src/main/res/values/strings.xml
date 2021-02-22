@@ -152,6 +152,13 @@
     <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
     <string name="restore_finished_button">Finish</string>
+
+    <string name="restore_storage_skip">Skip restoring files</string>
+    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (experimental)</string>
+    <string name="restore_storage_in_progress_title">Files are being restored…</string>
+    <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is not complete.</string>
+    <string name="restore_storage_got_it">Got it</string>
+
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
     <string name="storage_internal_warning_choose_other">Choose other</string>
