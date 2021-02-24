@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport
 
 import android.app.backup.BackupAgent.FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+import android.app.backup.BackupAgent.FLAG_DEVICE_TO_DEVICE_TRANSFER
 import android.app.backup.BackupTransport
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreSet
@@ -20,7 +21,9 @@ import org.koin.core.component.inject
 // If we ever change this, we should use a ComponentName like the other backup transports.
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
-const val TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+// Since there seems to be consensus in the community to pose as device to device transport,
+// we are pretending to be one here. This will backup opt-out apps that target API 30.
+const val TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED or FLAG_DEVICE_TO_DEVICE_TRANSFER
 
 private const val TRANSPORT_DIRECTORY_NAME =
     "com.stevesoltys.seedvault.transport.ConfigurableBackupTransport"
