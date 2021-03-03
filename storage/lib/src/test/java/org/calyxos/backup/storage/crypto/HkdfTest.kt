@@ -21,11 +21,14 @@ internal class HkdfTest {
     fun rfc5869testCase2() {
         checkStep2(
             "06a6b88c5853361a06104c9ceb35b45cef760014904671014a193f40c15fc244",
-            "b0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9" +
-                    "dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "b0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4" +
+                "c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9" +
+                "dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
             82,
-            "b11e398dc80327a1c8e7f78c596a49344f012eda2d4efad8a050cc4c19afa97c59045a99cac7827271c" +
-                    "b41c65e590e09da3275600c2f09b8367793a9aca3db71cc30c58179ec3e87c14c01d5c1f3434f1d87"
+            "b11e398dc80327a1c8e7f78c596a49344f012eda2" +
+                "d4efad8a050cc4c19afa97c59045a99cac7827271c" +
+                "b41c65e590e09da3275600c2f09b8367793a9aca3db" +
+                "71cc30c58179ec3e87c14c01d5c1f3434f1d87"
         )
     }
 

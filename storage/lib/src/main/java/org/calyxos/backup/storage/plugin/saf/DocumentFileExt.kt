@@ -174,8 +174,9 @@ public object DocumentFileExt {
                             Log.d(TAG, "Children loaded. Continue...")
                             cursor.close()
                             val newCursor = query()
-                            if (newCursor == null) cont.cancel(IOException("query returned no results"))
-                            else cont.resume(newCursor)
+                            if (newCursor == null) {
+                                cont.cancel(IOException("query returned no results"))
+                            } else cont.resume(newCursor)
                         }
                     })
                 } else {

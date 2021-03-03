@@ -15,7 +15,6 @@ internal data class Chunk(
     fun toCachedChunk() = CachedChunk(id, 0, size)
 }
 
-
 internal class Chunker(
     private val mac: Mac,
     private val chunkSizeMax: Int,

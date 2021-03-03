@@ -6,7 +6,6 @@ import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.api.BackupObserver
 import org.calyxos.backup.storage.ui.Notifications
 
-
 public open class NotificationBackupObserver internal constructor(private val n: Notifications) :
     BackupObserver {
 

@@ -67,7 +67,9 @@ internal class FileRestore(
         // ensure directory exists
         @Suppress("DEPRECATION")
         val dir = File("${getExternalStorageDirectory()}/${docFile.dir}")
-        if (!dir.mkdirs() && !dir.isDirectory) throw IOException("Could not create ${dir.absolutePath}")
+        if (!dir.mkdirs() && !dir.isDirectory) {
+            throw IOException("Could not create ${dir.absolutePath}")
+        }
         // find non-existing file-name
         var file = File(dir, docFile.name)
         var i = 0
@@ -145,14 +147,12 @@ internal class FileRestore(
         return bytesWritten
     }
 
-    private fun setLastModifiedOnMediaFile(
-        mediaFile: BackupMediaFile, uri: Uri
-    ) {
+    private fun setLastModifiedOnMediaFile(mediaFile: BackupMediaFile, uri: Uri) {
         @Suppress("DEPRECATION")
         val extDir = getExternalStorageDirectory()
 
         // re-set lastModified as we can't use the MediaStore for this (read-only property)
-        val path = "${extDir}/${mediaFile.path}/${mediaFile.name}"
+        val path = "$extDir/${mediaFile.path}/${mediaFile.name}"
         val file = File(path)
         if (file.isFile) {
             file.setLastModified(mediaFile.lastModified)
@@ -163,9 +163,9 @@ internal class FileRestore(
             // so try to find it in MediaStore
             val relPath = mediaScanner.getPath(uri)
             if (relPath == null) {
-                Log.w(TAG, "Did not find $path with $uri after inserting, can't set lastModified")
+                Log.w(TAG, "Did not find $path with $uri, can't set lastModified")
             } else {
-                val newPath = "${extDir}/$relPath"
+                val newPath = "$extDir/$relPath"
                 val newFile = File(newPath)
                 Log.w(TAG, "WARNING: ${mediaFile.name} is now ${newFile.path}")
                 if (newFile.isFile) {

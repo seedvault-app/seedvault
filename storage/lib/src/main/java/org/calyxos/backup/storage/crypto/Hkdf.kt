@@ -33,7 +33,9 @@ internal object Hkdf {
         }
 
         val iterations = ceil(outLengthBytes.toDouble() / hmacHasher.macLength).toInt()
-        require(iterations <= 255) { "out length must be maximal 255 * hash-length; requested: $outLengthBytes bytes" }
+        require(iterations <= 255) {
+            "out length must be maximal 255 * hash-length; requested: $outLengthBytes bytes"
+        }
 
         val buffer: ByteBuffer = ByteBuffer.allocate(outLengthBytes)
         var blockN = ByteArray(0)

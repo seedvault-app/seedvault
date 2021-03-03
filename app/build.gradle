@@ -148,16 +148,7 @@ dependencies {
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
 }
 
-ktlint {
-    version = "0.36.0" // https://github.com/pinterest/ktlint/issues/764
-    android = true
-    enableExperimentalRules = false
-    verbose = true
-    disabledRules = [
-            "import-ordering",
-            "no-blank-line-before-rbrace",
-    ]
-}
+apply from: "${rootProject.rootDir}/gradle/ktlint.gradle"
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
