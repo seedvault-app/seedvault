@@ -36,7 +36,7 @@ public abstract class SafStoragePlugin(
     private val snapshotFiles = HashMap<Long, DocumentFile>()
 
     private fun timestampToSnapshot(timestamp: Long): String {
-        return "${timestamp}.SeedSnap"
+        return "$timestamp.SeedSnap"
     }
 
     @Throws(IOException::class)
@@ -97,7 +97,9 @@ public abstract class SafStoragePlugin(
                 chunkFolders[chunkFolderName] = file
                 Log.d(TAG, "Created missing folder $chunkFolderName (${i + 1}/$s)")
             }
-            if (chunkFolders.size != 256) throw IOException("Only have ${chunkFolders.size} chunk folders.")
+            if (chunkFolders.size != 256) {
+                throw IOException("Only have ${chunkFolders.size} chunk folders.")
+            }
         }
         if (s > 0) Log.e(TAG, "Creating $s missing chunk folders took $duration")
     }

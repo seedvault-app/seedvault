@@ -60,7 +60,7 @@ public class MediaScanner(context: Context) {
         val extras = Bundle().apply {
             val query = StringBuilder()
             if (SDK_INT >= 30 && uri != MediaType.Downloads.contentUri) {
-                query.append("${IS_DOWNLOAD}=0")
+                query.append("$IS_DOWNLOAD=0")
             }
             extraQuery?.let {
                 if (query.isNotEmpty()) query.append(" AND ")
@@ -98,7 +98,9 @@ public class MediaScanner(context: Context) {
                 PROJECTION_GENERATION_MODIFIED
             ) else null,
             size = cursor.getLong(PROJECTION_SIZE),
-            isFavorite = if (SDK_INT >= 30) cursor.getIntOrNull(PROJECTION_IS_FAVORITE) == 1 else false,
+            isFavorite = if (SDK_INT >= 30) {
+                cursor.getIntOrNull(PROJECTION_IS_FAVORITE) == 1
+            } else false,
             ownerPackageName = cursor.getStringOrNull(PROJECTION_OWNER_PACKAGE_NAME),
             volume = cursor.getString(PROJECTION_VOLUME_NAME)
         )
@@ -112,7 +114,7 @@ public class MediaScanner(context: Context) {
     private fun getRealSize(mediaFile: MediaFile): Long {
         @Suppress("DEPRECATION")
         val extDir = Environment.getExternalStorageDirectory()
-        val path = "${extDir}/${mediaFile.dirPath}/${mediaFile.fileName}"
+        val path = "$extDir/${mediaFile.dirPath}/${mediaFile.fileName}"
         return try {
             File(path).length()
         } catch (e: Exception) {

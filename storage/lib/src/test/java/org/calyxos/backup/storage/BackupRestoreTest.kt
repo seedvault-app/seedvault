@@ -53,7 +53,6 @@ import java.io.OutputStream
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
-
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupRestoreTest {
 
@@ -261,10 +260,18 @@ internal class BackupRestoreTest {
 
         // first 3 chunks are not cached on 1st invocation, but afterwards. Last chunk never cached
         // also needed to ensure that we don't write chunks more than once into the same stream
-        expectCacheMissAndThenHit("040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
-        expectCacheMissAndThenHit("901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
-        expectCacheMissAndThenHit("5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
-        every { chunksCache.get("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67") } returns null
+        expectCacheMissAndThenHit(
+            "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+        )
+        expectCacheMissAndThenHit(
+            "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+        )
+        expectCacheMissAndThenHit(
+            "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+        )
+        every {
+            chunksCache.get("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+        } returns null
 
         // file input streams
         // don't return the same stream twice here, as we don't reset it, but read it twice
@@ -282,19 +289,27 @@ internal class BackupRestoreTest {
         // output streams for deterministic chunks
         val id040f32 = ByteArrayOutputStream()
         every {
-            plugin.getChunkOutputStream("040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+            plugin.getChunkOutputStream(
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            )
         } returns id040f32
         val id901fbc = ByteArrayOutputStream()
         every {
-            plugin.getChunkOutputStream("901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+            plugin.getChunkOutputStream(
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            )
         } returns id901fbc
         val id5adea3 = ByteArrayOutputStream()
         every {
-            plugin.getChunkOutputStream("5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+            plugin.getChunkOutputStream(
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            )
         } returns id5adea3
         val id40d00c = ByteArrayOutputStream()
         every {
-            plugin.getChunkOutputStream("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+            plugin.getChunkOutputStream(
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            )
         } returns id40d00c
 
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
@@ -310,10 +325,14 @@ internal class BackupRestoreTest {
 
         // chunks were only written to storage once
         verify(exactly = 1) {
-            plugin.getChunkOutputStream("040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
-            plugin.getChunkOutputStream("901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
-            plugin.getChunkOutputStream("5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
-            plugin.getChunkOutputStream("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+            plugin.getChunkOutputStream(
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+            plugin.getChunkOutputStream(
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+            plugin.getChunkOutputStream(
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+            plugin.getChunkOutputStream(
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
         }
 
         // RESTORE
@@ -334,16 +353,20 @@ internal class BackupRestoreTest {
 
         // pipe chunks back in
         coEvery {
-            plugin.getChunkInputStream("040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+            plugin.getChunkInputStream(
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
         } returns ByteArrayInputStream(id040f32.toByteArray())
         coEvery {
-            plugin.getChunkInputStream("901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+            plugin.getChunkInputStream(
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
         } returns ByteArrayInputStream(id901fbc.toByteArray())
         coEvery {
-            plugin.getChunkInputStream("5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+            plugin.getChunkInputStream(
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
         } returns ByteArrayInputStream(id5adea3.toByteArray())
         coEvery {
-            plugin.getChunkInputStream("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+            plugin.getChunkInputStream(
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
         } returns ByteArrayInputStream(id40d00c.toByteArray())
 
         // provide file output streams for restore
@@ -360,10 +383,14 @@ internal class BackupRestoreTest {
 
         // chunks were only read from storage once
         coVerify(exactly = 1) {
-            plugin.getChunkInputStream("040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
-            plugin.getChunkInputStream("901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
-            plugin.getChunkInputStream("5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
-            plugin.getChunkInputStream("40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+            plugin.getChunkInputStream(
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+            plugin.getChunkInputStream(
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+            plugin.getChunkInputStream(
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+            plugin.getChunkInputStream(
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
         }
     }
 
