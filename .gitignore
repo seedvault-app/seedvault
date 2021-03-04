@@ -11,6 +11,7 @@ out/
 !.idea/runConfigurations*
 !.idea/inspectionProfiles*
 !.idea/codeStyles*
+!.idea/dictionaries*
 *.ipr
 *.iws
 *.iml
