@@ -80,7 +80,7 @@ internal class Backup(
         zipChunker = ZipChunker(mac, chunkWriter),
     )
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, GeneralSecurityException::class)
     @OptIn(ExperimentalTime::class)
     suspend fun runBackup(backupObserver: BackupObserver?) {
         backupObserver?.onStartScanning()

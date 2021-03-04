@@ -38,6 +38,8 @@ internal abstract class AbstractChunkRestore(
         tag: String,
         streamWriter: suspend (outputStream: OutputStream) -> Long,
     ) {
+        // TODO check if the file exists already (same name, size, chunk IDs)
+        //  and skip it in this case
         fileRestore.restoreFile(file, observer, tag, streamWriter)
     }
 

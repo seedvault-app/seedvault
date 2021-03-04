@@ -49,7 +49,7 @@ internal class Pruner(
         backupObserver?.onPruneComplete(duration.toLongMilliseconds())
     }
 
-    @Throws(IOException::class, SecurityException::class)
+    @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun pruneSnapshot(timestamp: Long, backupObserver: BackupObserver?) {
         val snapshot = snapshotRetriever.getSnapshot(streamKey, timestamp)
         val chunks = HashSet<String>()
@@ -60,6 +60,8 @@ internal class Pruner(
             chunksCache.decrementRefCount(it)
         }
         var size = 0L
+        // TODO add integration test for a failed backup that later resumes with unreferenced chunks
+        //  and here only deletes those that are still unreferenced afterwards
         val cachedChunksToDelete = chunksCache.getUnreferencedChunks()
         val chunkIdsToDelete = cachedChunksToDelete.map {
             if (it.refCount < 0) Log.w(TAG, "${it.id} has ref count ${it.refCount}")
