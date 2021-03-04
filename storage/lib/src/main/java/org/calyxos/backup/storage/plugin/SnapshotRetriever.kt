@@ -16,8 +16,8 @@ internal class SnapshotRetriever(
     @Throws(IOException::class, GeneralSecurityException::class)
     suspend fun getSnapshot(streamKey: ByteArray, timestamp: Long): BackupSnapshot {
         return storagePlugin.getBackupSnapshotInputStream(timestamp).use { inputStream ->
-            inputStream.readVersion()
-            val ad = streamCrypto.getAssociatedDataForSnapshot(timestamp)
+            val version = inputStream.readVersion()
+            val ad = streamCrypto.getAssociatedDataForSnapshot(timestamp, version.toByte())
             streamCrypto.newDecryptingStream(streamKey, inputStream, ad).use { decryptedStream ->
                 BackupSnapshot.parseFrom(decryptedStream)
             }

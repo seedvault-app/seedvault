@@ -1,7 +1,7 @@
 package org.calyxos.backup.storage.crypto
 
 import com.google.crypto.tink.subtle.AesGcmHkdfStreaming
-import org.calyxos.backup.storage.backup.Backup
+import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.Hkdf.ALGORITHM_HMAC
 import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
 import org.calyxos.backup.storage.toByteArrayFromHex
@@ -29,16 +29,16 @@ public object StreamCrypto {
         outLengthBytes = KEY_SIZE_BYTES
     )
 
-    internal fun getAssociatedDataForChunk(chunkId: String): ByteArray =
+    internal fun getAssociatedDataForChunk(chunkId: String, version: Byte = VERSION): ByteArray =
         ByteBuffer.allocate(2 + KEY_SIZE_BYTES)
-            .put(Backup.VERSION)
+            .put(version)
             .put(TYPE_CHUNK) // type ID for chunks
             .put(chunkId.toByteArrayFromHex().apply { check(size == KEY_SIZE_BYTES) })
             .array()
 
-    internal fun getAssociatedDataForSnapshot(timestamp: Long): ByteArray =
+    internal fun getAssociatedDataForSnapshot(timestamp: Long, version: Byte = VERSION): ByteArray =
         ByteBuffer.allocate(2 + 8)
-            .put(Backup.VERSION)
+            .put(version)
             .put(TYPE_SNAPSHOT) // type ID for chunks
             .put(timestamp.toByteArray())
             .array()
