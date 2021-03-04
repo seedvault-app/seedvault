@@ -25,6 +25,7 @@ internal class MultiChunkRestore(
 ) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
 
     suspend fun restore(
+        version: Int,
         chunkMap: Map<String, RestorableChunk>,
         files: Collection<RestorableFile>,
         observer: RestoreObserver?,
@@ -33,7 +34,7 @@ internal class MultiChunkRestore(
         files.forEach { file ->
             try {
                 restoreFile(file, observer, "L") { outputStream ->
-                    writeChunks(file, chunkMap, outputStream)
+                    writeChunks(version, file, chunkMap, outputStream)
                 }
                 restoredFiles++
             } catch (e: Exception) {
@@ -47,6 +48,7 @@ internal class MultiChunkRestore(
 
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun writeChunks(
+        version: Int,
         file: RestorableFile,
         chunkMap: Map<String, RestorableChunk>,
         outputStream: OutputStream,
@@ -59,8 +61,8 @@ internal class MultiChunkRestore(
                 bytes += decryptedStream.copyTo(outputStream)
             }
             val isCached = isCached(chunkId)
-            if (isCached || otherFiles.size > 1) getAndCacheChunk(chunkId, chunkWriter)
-            else getAndDecryptChunk(chunkId, chunkWriter)
+            if (isCached || otherFiles.size > 1) getAndCacheChunk(version, chunkId, chunkWriter)
+            else getAndDecryptChunk(version, chunkId, chunkWriter)
 
             otherFiles.remove(file)
             if (isCached && otherFiles.isEmpty()) removeCachedChunk(chunkId)
@@ -74,13 +76,14 @@ internal class MultiChunkRestore(
 
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun getAndCacheChunk(
+        version: Int,
         chunkId: String,
         streamReader: suspend (InputStream) -> Unit,
     ) {
         val file = getChunkCacheFile(chunkId)
         if (!file.isFile) {
             FileOutputStream(file).use { outputStream ->
-                getAndDecryptChunk(chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, chunkId) { decryptedStream ->
                     decryptedStream.copyTo(outputStream)
                 }
             }

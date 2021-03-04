@@ -36,6 +36,7 @@ public abstract class RestoreService : Service() {
 
         startForeground(NOTIFICATION_ID_RESTORE, n.getRestoreNotification())
         GlobalScope.launch {
+            // TODO offer a way to try again if failed, or do an automatic retry here
             storageBackup.restoreBackupSnapshot(timestamp, restoreObserver)
             stopSelf(startId)
         }

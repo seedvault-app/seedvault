@@ -18,11 +18,12 @@ internal abstract class AbstractChunkRestore(
 
     @Throws(IOException::class, GeneralSecurityException::class)
     protected suspend fun getAndDecryptChunk(
+        version: Int,
         chunkId: String,
         streamReader: suspend (InputStream) -> Unit,
     ) {
         storagePlugin.getChunkInputStream(chunkId).use { inputStream ->
-            inputStream.readVersion()
+            inputStream.readVersion(version)
             val ad = streamCrypto.getAssociatedDataForChunk(chunkId)
             streamCrypto.newDecryptingStream(streamKey, inputStream, ad).use { decryptedStream ->
                 streamReader(decryptedStream)
