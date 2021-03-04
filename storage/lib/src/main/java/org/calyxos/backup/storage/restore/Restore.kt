@@ -73,7 +73,7 @@ internal class Restore(
         Log.e(TAG, "Decrypting and parsing $numSnapshots snapshots took $time")
     }
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, GeneralSecurityException::class)
     suspend fun restoreBackupSnapshot(timestamp: Long, observer: RestoreObserver?) {
         val snapshot = snapshotRetriever.getSnapshot(streamKey, timestamp)
         restoreBackupSnapshot(snapshot, observer)
@@ -88,17 +88,19 @@ internal class Restore(
         observer?.onRestoreStart(filesTotal, totalSize)
 
         val split = FileSplitter.splitSnapshot(snapshot)
+        val version = snapshot.version
         var restoredFiles = 0
         val smallFilesDuration = measure {
-            restoredFiles += zipChunkRestore.restore(split.zipChunks, observer)
+            restoredFiles += zipChunkRestore.restore(version, split.zipChunks, observer)
         }
         Log.e(TAG, "Restoring ${split.zipChunks.size} zip chunks took $smallFilesDuration.")
         val singleChunkDuration = measure {
-            restoredFiles += singleChunkRestore.restore(split.singleChunks, observer)
+            restoredFiles += singleChunkRestore.restore(version, split.singleChunks, observer)
         }
         Log.e(TAG, "Restoring ${split.singleChunks.size} single chunks took $singleChunkDuration.")
         val multiChunkDuration = measure {
             restoredFiles += multiChunkRestore.restore(
+                version,
                 split.multiChunkMap,
                 split.multiChunkFiles,
                 observer
@@ -113,10 +115,13 @@ internal class Restore(
 
 }
 
-@Throws(IOException::class)
-internal fun InputStream.readVersion() {
+@Throws(IOException::class, GeneralSecurityException::class)
+internal fun InputStream.readVersion(expectedVersion: Int? = null) {
     val version = read()
     if (version == -1) throw IOException()
+    if (expectedVersion != null && version != expectedVersion) {
+        throw GeneralSecurityException("Expected version $expectedVersion, not $version")
+    }
     if (version > Backup.VERSION) {
         // TODO maybe throw a different exception here and tell the user?
         throw IOException()

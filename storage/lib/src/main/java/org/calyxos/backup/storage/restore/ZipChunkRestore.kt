@@ -22,11 +22,15 @@ internal class ZipChunkRestore(
     /**
      * Assumes that files in [zipChunks] are sorted by zipIndex with no duplicate indices.
      */
-    suspend fun restore(zipChunks: Collection<RestorableChunk>, observer: RestoreObserver?): Int {
+    suspend fun restore(
+        version: Int,
+        zipChunks: Collection<RestorableChunk>,
+        observer: RestoreObserver?
+    ): Int {
         var restoredFiles = 0
         zipChunks.forEach { zipChunk ->
             try {
-                getAndDecryptChunk(zipChunk.chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, zipChunk.chunkId) { decryptedStream ->
                     restoredFiles += restoreZipChunk(zipChunk, decryptedStream, observer)
                 }
             } catch (e: Exception) {

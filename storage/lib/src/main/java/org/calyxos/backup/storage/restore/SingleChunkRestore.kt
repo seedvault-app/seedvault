@@ -15,13 +15,17 @@ internal class SingleChunkRestore(
     streamKey: ByteArray
 ) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
 
-    suspend fun restore(chunks: Collection<RestorableChunk>, observer: RestoreObserver?): Int {
+    suspend fun restore(
+        version: Int,
+        chunks: Collection<RestorableChunk>,
+        observer: RestoreObserver?
+    ): Int {
         var restoredFiles = 0
         chunks.forEach { chunk ->
             check(chunk.files.size == 1)
             val file = chunk.files[0]
             try {
-                getAndDecryptChunk(chunk.chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, chunk.chunkId) { decryptedStream ->
                     restoreFile(file, observer, "M") { outputStream ->
                         decryptedStream.copyTo(outputStream)
                     }
