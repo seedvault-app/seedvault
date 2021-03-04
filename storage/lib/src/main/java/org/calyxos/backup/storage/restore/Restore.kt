@@ -116,7 +116,7 @@ internal class Restore(
 }
 
 @Throws(IOException::class, GeneralSecurityException::class)
-internal fun InputStream.readVersion(expectedVersion: Int? = null) {
+internal fun InputStream.readVersion(expectedVersion: Int? = null): Int {
     val version = read()
     if (version == -1) throw IOException()
     if (expectedVersion != null && version != expectedVersion) {
@@ -126,4 +126,5 @@ internal fun InputStream.readVersion(expectedVersion: Int? = null) {
         // TODO maybe throw a different exception here and tell the user?
         throw IOException()
     }
+    return version
 }

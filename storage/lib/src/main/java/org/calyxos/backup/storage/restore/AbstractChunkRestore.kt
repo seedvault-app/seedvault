@@ -24,7 +24,7 @@ internal abstract class AbstractChunkRestore(
     ) {
         storagePlugin.getChunkInputStream(chunkId).use { inputStream ->
             inputStream.readVersion(version)
-            val ad = streamCrypto.getAssociatedDataForChunk(chunkId)
+            val ad = streamCrypto.getAssociatedDataForChunk(chunkId, version.toByte())
             streamCrypto.newDecryptingStream(streamKey, inputStream, ad).use { decryptedStream ->
                 streamReader(decryptedStream)
             }
