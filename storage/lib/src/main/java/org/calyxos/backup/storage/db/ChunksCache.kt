@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import org.calyxos.backup.storage.backup.Backup
 
 @Entity
 internal data class CachedChunk(
@@ -16,7 +17,8 @@ internal data class CachedChunk(
      * Note that this is *not* about how many files across various snapshots are referencing it.
      */
     @ColumnInfo(name = "ref_count") val refCount: Long,
-    val size: Long
+    val size: Long,
+    val version: Byte = Backup.VERSION,
 )
 
 @Dao
