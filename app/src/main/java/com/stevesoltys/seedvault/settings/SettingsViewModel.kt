@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.Application
+import android.app.job.JobInfo.NETWORK_TYPE_NONE
 import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
 import android.database.ContentObserver
 import android.net.ConnectivityManager
@@ -130,7 +131,8 @@ internal class SettingsViewModel(
         if (settingsManager.isStorageBackupEnabled()) {
             // disable storage backup if new storage is on USB
             if (storage.isUsb) disableStorageBackup()
-            // enable it, just in case the previous storage was on USB
+            // enable it, just in case the previous storage was on USB,
+            // also to update the network requirement of the new storage
             else enableStorageBackup()
         }
 
@@ -205,11 +207,13 @@ internal class SettingsViewModel(
     }
 
     fun enableStorageBackup() {
-        if (settingsManager.getStorage()?.isUsb == false) BackupJobService.scheduleJob(
+        val storage = settingsManager.getStorage() ?: error("no storage available")
+        if (!storage.isUsb) BackupJobService.scheduleJob(
             context = app,
             jobServiceClass = StorageBackupJobService::class.java,
             periodMillis = HOURS.toMillis(24),
-            networkType = NETWORK_TYPE_UNMETERED,
+            networkType = if (storage.requiresNetwork) NETWORK_TYPE_UNMETERED
+            else NETWORK_TYPE_NONE,
             deviceIdle = false,
             charging = true
         )
