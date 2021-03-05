@@ -1,6 +1,6 @@
 # Overview
 
-This is a design document for Seedvault Storage backup.
+This is a design document for Seedvault storage backup.
 It is heavily inspired by borgbackup, but simplified and adapted to the Android context.
 
 The aim is to efficiently backup media files from Android's `MediaStore`

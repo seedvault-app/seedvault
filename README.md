@@ -3,6 +3,12 @@
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
+## Components
+
+* [Local Contacts Backup](contactsbackup) - an app that backs up local on-device contacts
+* [Storage library](storage) - a library handling efficient backup of files
+* [Seedvault app](app) - the main app where all functionality comes together
+
 ## Features
 - Backup application data to a flash drive.
 - Restore application data from a flash drive.
