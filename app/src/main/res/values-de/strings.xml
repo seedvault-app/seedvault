@@ -39,7 +39,7 @@
     <string name="settings_backup_apk_dialog_message">Beim Deaktivieren der App-Sicherungen werden immer noch die App-Daten gesichert. Allerdings werden diese nicht automatisch wiederhergestellt.
 \n
 \nSie werden Ihre Apps manuell installieren müssen während \"Automatische Sicherungen\" aktiviert sind.</string>
-    <string name="settings_backup_apk_summary">Die App\'s an sich sichern. Ohne würden nur die App-Daten gesichert werden.</string>
+    <string name="settings_backup_apk_summary">Die Apps an sich sichern. Ohne würden nur die App-Daten gesichert werden.</string>
     <string name="storage_check_fragment_restore_title">Suche nach Sicherungen…</string>
     <string name="storage_check_fragment_backup_title">Bereite Speicherort vor…</string>
     <string name="storage_fragment_backup_title">Wählen Sie aus, wo die Sicherungen gespeichert werden sollen</string>
