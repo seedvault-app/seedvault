@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.backup.IBackupManager
-import android.content.Context.BACKUP_SERVICE // ktlint-disable no-unused-imports
 import android.content.Intent
 import android.os.Bundle
 import android.os.RemoteException
@@ -55,7 +54,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val enabled = newValue as Boolean
             try {
                 backupManager.isBackupEnabled = enabled
-                if (enabled) viewModel.enableCallLogBackup()
+                if (enabled) viewModel.disableCallLogKVBackup()
                 return@OnPreferenceChangeListener true
             } catch (e: RemoteException) {
                 e.printStackTrace()
@@ -158,8 +157,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         try {
             backup.isChecked = backupManager.isBackupEnabled
             backup.isEnabled = true
-            // enable call log backups for existing installs (added end of 2020)
-            if (backup.isChecked) viewModel.enableCallLogBackup()
+            // disable call log k/v backups for existing installs (added beginning of 2021)
+            if (backup.isChecked) viewModel.disableCallLogKVBackup()
         } catch (e: RemoteException) {
             Log.e(TAG, "Error communicating with BackupManager", e)
             backup.isEnabled = false

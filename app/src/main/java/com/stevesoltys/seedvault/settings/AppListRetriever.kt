@@ -27,7 +27,7 @@ private const val TAG = "AppListRetriever"
 
 private const val PACKAGE_NAME_SMS = "com.android.providers.telephony"
 private const val PACKAGE_NAME_SETTINGS = "com.android.providers.settings"
-private const val PACKAGE_NAME_CALL_LOG = "com.android.calllogbackup"
+private const val PACKAGE_NAME_CALL_LOG = "com.android.providers.contacts"
 private const val PACKAGE_NAME_CONTACTS = "org.calyxos.backup.contacts"
 
 sealed class AppListItem
