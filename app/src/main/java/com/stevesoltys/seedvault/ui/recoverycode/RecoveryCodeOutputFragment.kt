@@ -45,7 +45,7 @@ class RecoveryCodeOutputFragment : Fragment() {
     private fun setGridParameters(list: RecyclerView) {
         val layoutManager = list.layoutManager as GridLayoutManager
         if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
-            layoutManager.spanCount = 4
+            layoutManager.spanCount = 3
         } else {
             layoutManager.spanCount = 2
         }

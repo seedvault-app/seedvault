@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
     android:padding="24dp"
     tools:showIn="@layout/fragment_recovery_code_output">
 
     <TextView
         android:id="@+id/num"
         android:layout_width="24dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:gravity="center_vertical|end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/word"
@@ -22,11 +22,11 @@
 
     <TextView
         android:id="@+id/word"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:autoSizeTextType="uniform"
-        android:textSize="24sp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/num"
