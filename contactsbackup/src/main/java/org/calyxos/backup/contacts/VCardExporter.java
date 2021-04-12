@@ -45,7 +45,7 @@ class VCardExporter {
     private Collection<String> getLookupKeys() {
         String[] projection = new String[]{LOOKUP_KEY};
         // We can not add IS_PRIMARY here as this gets lost on restored contacts
-        String selection = ACCOUNT_TYPE + " is null";
+        String selection = ACCOUNT_TYPE + " is null OR " + ACCOUNT_TYPE + "='com.android.contacts'";
         Cursor cursor = contentResolver.query(CONTENT_URI, projection, selection, null, null);
         if (cursor == null) {
             Log.e(TAG, "Cursor for LOOKUP_KEY is null");
