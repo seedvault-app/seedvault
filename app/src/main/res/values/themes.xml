@@ -1,13 +1,29 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="colorError">@color/red</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="fontFamily">@*android:string/config_bodyFontFamily</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="android:windowLightStatusBar">@bool/isLight</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="actionBarTheme">@style/Theme.ActionBar</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.ActionBar" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/actionBarPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- Copied from Settings -->
+    <style name="ActionPrimaryButton" parent="android:Widget.DeviceDefault.Button.Colored" />
 
 </resources>

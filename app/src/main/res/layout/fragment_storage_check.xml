@@ -50,7 +50,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="?android:colorError"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +63,7 @@
 
     <Button
         android:id="@+id/backButton"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/ActionPrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
