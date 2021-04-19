@@ -23,7 +23,7 @@
 
 ### Notes
 - This contains breaking changes, any backups made prior to this release can no longer be restored.
-- Application can no longer be built in the Android source tree. It must be built using Gradle and binaries can now be found here: https://github.com/stevesoltys/seedvault-prebuilt
+- Application can no longer be built in the Android source tree. It must be built using Gradle and binaries can now be found here: https://github.com/seedvault-app/seedvault-prebuilt
 
 ## [0.3.0] - 2019-03-14
 ### Fixed
@@ -38,7 +38,7 @@
 
 ## [0.1.2] - 2019-02-11
 ### Fixed
-- Downgrade SDK target version to 26 due to [#15](https://github.com/stevesoltys/seedvault/issues/15).
+- Downgrade SDK target version to 26 due to [#15](https://github.com/seedvault-app/seedvault/issues/15).
 
 ## [0.1.1] - 2019-02-11
 ### Added
@@ -47,4 +47,4 @@
 - Upgrade target SDK version to 28.
 
 ### Fixed
-- Ignore `com.android.providers.downloads.ui` to resolve [#14](https://github.com/stevesoltys/seedvault/issues/14).
+- Ignore `com.android.providers.downloads.ui` to resolve [#14](https://github.com/seedvault-app/seedvault/issues/14).
