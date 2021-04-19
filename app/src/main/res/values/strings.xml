@@ -154,6 +154,6 @@
     <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_source_code">Source Code: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Source Code: https://github.com/seedvault-app/seedvault</string>
 
 </resources>

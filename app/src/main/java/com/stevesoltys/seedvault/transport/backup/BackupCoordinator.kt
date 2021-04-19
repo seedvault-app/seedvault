@@ -236,7 +236,7 @@ internal class BackupCoordinator(
         // K/V backups (typically starting with package manager metadata - @pm@)
         // are scheduled with JobInfo.Builder#setOverrideDeadline() and thus do not respect backoff.
         // We need to reject them manually when we can not do a backup now.
-        // What else we tried can be found in: https://github.com/stevesoltys/seedvault/issues/102
+        // What else we tried can be found in: https://github.com/seedvault-app/seedvault/issues/102
         if (packageName == MAGIC_PACKAGE_MANAGER) {
             if (!settingsManager.canDoBackupNow()) {
                 // Returning anything else here (except non-incremental-required which re-tries)
