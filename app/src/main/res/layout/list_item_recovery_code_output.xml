@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="24dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="24dp"
     tools:showIn="@layout/fragment_recovery_code_output">
 
     <TextView
@@ -25,12 +26,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:autoSizeTextType="uniform"
         android:textSize="24sp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/num"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Test1" />
+        tools:text="Test1CanBeLong" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
