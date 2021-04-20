@@ -37,6 +37,9 @@ internal interface FilesCache {
     @Update
     fun update(file: CachedFile)
 
+    @Query("DELETE FROM CachedFile")
+    fun clear()
+
     @Query("UPDATE CachedFile SET last_seen = :now WHERE uri IN (:uris)")
     fun updateLastSeen(uris: Collection<Uri>, now: Long = System.currentTimeMillis())
 

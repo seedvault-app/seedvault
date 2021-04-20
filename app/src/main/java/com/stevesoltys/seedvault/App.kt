@@ -47,7 +47,7 @@ open class App : Application() {
 
         viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get()) }
-        viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
+        viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { FileSelectionViewModel(this@App, get()) }

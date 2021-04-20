@@ -41,6 +41,8 @@ internal abstract class StorageViewModel(
     private var storageRoot: StorageRoot? = null
 
     internal var isSetupWizard: Boolean = false
+    internal val hasStorageSet: Boolean
+        get() = settingsManager.getStorage() != null
     abstract val isRestoreOperation: Boolean
 
     companion object {

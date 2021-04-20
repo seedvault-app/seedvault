@@ -46,6 +46,7 @@
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
+    <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
@@ -54,6 +55,7 @@
     <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
+    <string name="storage_check_fragment_patience">This may take some time…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
     <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
