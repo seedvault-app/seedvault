@@ -89,7 +89,12 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     }
 
     fun setBackupLocation(uri: Uri?) {
-        if (uri != null) clearDb()
+        if (uri != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                storageBackup.deleteAllSnapshots()
+                storageBackup.clearCache()
+            }
+        }
         settingsManager.setBackupLocation(uri)
     }
 

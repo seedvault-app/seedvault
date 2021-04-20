@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.requestBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.backup.storage.api.StorageBackup
 import java.io.IOException
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
@@ -24,6 +25,7 @@ internal class BackupStorageViewModel(
     private val app: Application,
     private val backupManager: IBackupManager,
     private val backupCoordinator: BackupCoordinator,
+    private val storageBackup: StorageBackup,
     settingsManager: SettingsManager
 ) : StorageViewModel(app, settingsManager) {
 
@@ -32,6 +34,9 @@ internal class BackupStorageViewModel(
     override fun onLocationSet(uri: Uri) {
         val isUsb = saveStorage(uri)
         viewModelScope.launch(Dispatchers.IO) {
+            // remove old storage snapshots and clear cache
+            storageBackup.deleteAllSnapshots()
+            storageBackup.clearCache()
             try {
                 // will also generate a new backup token for the new restore set
                 backupCoordinator.startNewRestoreSet()

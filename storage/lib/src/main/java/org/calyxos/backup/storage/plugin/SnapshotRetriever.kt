@@ -1,5 +1,6 @@
 package org.calyxos.backup.storage.plugin
 
+import com.google.protobuf.InvalidProtocolBufferException
 import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
@@ -13,7 +14,11 @@ internal class SnapshotRetriever(
     private val streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
-    @Throws(IOException::class, GeneralSecurityException::class)
+    @Throws(
+        IOException::class,
+        GeneralSecurityException::class,
+        InvalidProtocolBufferException::class,
+    )
     suspend fun getSnapshot(streamKey: ByteArray, timestamp: Long): BackupSnapshot {
         return storagePlugin.getBackupSnapshotInputStream(timestamp).use { inputStream ->
             val version = inputStream.readVersion()

@@ -26,6 +26,7 @@ import org.calyxos.backup.storage.scanner.DocumentScanner
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.MediaScanner
 import org.calyxos.backup.storage.toStoredUri
+import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val TAG = "StorageBackup"
@@ -33,7 +34,7 @@ private const val TAG = "StorageBackup"
 @Suppress("BlockingMethodInNonBlockingContext")
 public class StorageBackup(
     private val context: Context,
-    plugin: StoragePlugin,
+    private val plugin: StoragePlugin,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
@@ -98,9 +99,31 @@ public class StorageBackup(
         list.joinToString(", ", limit = 5)
     }
 
-    @Deprecated("TODO remove for release")
-    public fun clearCache() {
-        db.clearAllTables()
+    /**
+     * Run this on a new storage location to ensure that there are no old snapshots
+     * (potentially encrypted with an old key) laying around.
+     * Using a storage location with existing data is not supported.
+     */
+    public suspend fun deleteAllSnapshots(): Unit = withContext(dispatcher) {
+        try {
+            plugin.getAvailableBackupSnapshots().forEach {
+                try {
+                    plugin.deleteBackupSnapshot(it)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error deleting snapshot $it", e)
+                }
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Error deleting all snapshots", e)
+        }
+    }
+
+    /**
+     * It is advised to clear existing cache when selecting a new storage location.
+     */
+    public suspend fun clearCache(): Unit = withContext(dispatcher) {
+        db.getChunksCache().clear()
+        db.getFilesCache().clear()
     }
 
     public suspend fun runBackup(backupObserver: BackupObserver?): Boolean =
