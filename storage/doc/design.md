@@ -388,7 +388,6 @@ but are considered out-of-scope of the current design for time and budget reason
 * using a rolling hash to produce chunks in order to increase likelihood of obtaining same chunks
   even if file contents change slightly or shift
 * external secret-less corruption checks that would use checksums over encrypted data
-* supporting different backup clients backing up to the same storage
 * concealing file sizes (though zip chunks helps a bit here)
 * implementing different storage plugins
 

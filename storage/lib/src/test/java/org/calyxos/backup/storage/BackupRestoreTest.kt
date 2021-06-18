@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.SnapshotResult
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.Backup
 import org.calyxos.backup.storage.backup.Backup.Companion.CHUNK_SIZE_MAX
 import org.calyxos.backup.storage.backup.Backup.Companion.SMALL_FILE_SIZE_MAX
@@ -173,14 +174,16 @@ internal class BackupRestoreTest {
 
         // RESTORE
 
+        val storedSnapshot = StoredSnapshot("test", snapshotTimestamp.captured)
+
         val smallFileMOutputStream = ByteArrayOutputStream()
         val smallFileDOutputStream = ByteArrayOutputStream()
         val fileMOutputStream = ByteArrayOutputStream()
         val fileDOutputStream = ByteArrayOutputStream()
 
-        coEvery { plugin.getAvailableBackupSnapshots() } returns listOf(snapshotTimestamp.captured)
+        coEvery { plugin.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
         coEvery {
-            plugin.getBackupSnapshotInputStream(snapshotTimestamp.captured)
+            plugin.getBackupSnapshotInputStream(storedSnapshot)
         } returns ByteArrayInputStream(snapshotOutputStream.toByteArray())
 
         // retrieve snapshots
@@ -197,14 +200,14 @@ internal class BackupRestoreTest {
 
         // pipe chunks back in
         coEvery {
-            plugin.getChunkInputStream(cachedFiles[0].chunks[0])
+            plugin.getChunkInputStream(storedSnapshot, cachedFiles[0].chunks[0])
         } returns ByteArrayInputStream(zipChunkOutputStream.toByteArray())
         // cachedFiles[0].chunks[1] is in previous zipChunk
         coEvery {
-            plugin.getChunkInputStream(cachedFiles[2].chunks[0])
+            plugin.getChunkInputStream(storedSnapshot, cachedFiles[2].chunks[0])
         } returns ByteArrayInputStream(mOutputStream.toByteArray())
         coEvery {
-            plugin.getChunkInputStream(cachedFiles[3].chunks[0])
+            plugin.getChunkInputStream(storedSnapshot, cachedFiles[3].chunks[0])
         } returns ByteArrayInputStream(dOutputStream.toByteArray())
 
         // provide file output streams for restore
@@ -217,7 +220,7 @@ internal class BackupRestoreTest {
         val fileDRestorable = getRestorableFileD(fileD, snapshot)
         expectRestoreFile(fileDRestorable, fileDOutputStream)
 
-        restore.restoreBackupSnapshot(snapshot, null)
+        restore.restoreBackupSnapshot(storedSnapshot, snapshot, null)
 
         // restored files match backed up files exactly
         assertArrayEquals(smallFileMBytes, smallFileMOutputStream.toByteArray())
@@ -337,9 +340,11 @@ internal class BackupRestoreTest {
 
         // RESTORE
 
-        coEvery { plugin.getAvailableBackupSnapshots() } returns listOf(snapshotTimestamp.captured)
+        val storedSnapshot = StoredSnapshot("test", snapshotTimestamp.captured)
+
+        coEvery { plugin.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
         coEvery {
-            plugin.getBackupSnapshotInputStream(snapshotTimestamp.captured)
+            plugin.getBackupSnapshotInputStream(storedSnapshot)
         } returns ByteArrayInputStream(snapshotOutputStream.toByteArray())
 
         // retrieve snapshots
@@ -354,19 +359,27 @@ internal class BackupRestoreTest {
         // pipe chunks back in
         coEvery {
             plugin.getChunkInputStream(
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+                storedSnapshot,
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            )
         } returns ByteArrayInputStream(id040f32.toByteArray())
         coEvery {
             plugin.getChunkInputStream(
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+                storedSnapshot,
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            )
         } returns ByteArrayInputStream(id901fbc.toByteArray())
         coEvery {
             plugin.getChunkInputStream(
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+                storedSnapshot,
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            )
         } returns ByteArrayInputStream(id5adea3.toByteArray())
         coEvery {
             plugin.getChunkInputStream(
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+                storedSnapshot,
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            )
         } returns ByteArrayInputStream(id40d00c.toByteArray())
 
         // provide file output streams for restore
@@ -375,7 +388,7 @@ internal class BackupRestoreTest {
         val file2Restorable = getRestorableFileD(file2, snapshot)
         expectRestoreFile(file2Restorable, file2OutputStream)
 
-        restore.restoreBackupSnapshot(snapshot, null)
+        restore.restoreBackupSnapshot(storedSnapshot, snapshot, null)
 
         // restored files match backed up files exactly
         assertArrayEquals(file1Bytes, file1OutputStream.toByteArray())
@@ -384,13 +397,21 @@ internal class BackupRestoreTest {
         // chunks were only read from storage once
         coVerify(exactly = 1) {
             plugin.getChunkInputStream(
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
+                storedSnapshot,
+                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            )
             plugin.getChunkInputStream(
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
+                storedSnapshot,
+                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            )
             plugin.getChunkInputStream(
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
+                storedSnapshot,
+                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            )
             plugin.getChunkInputStream(
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+                storedSnapshot,
+                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            )
         }
     }
 

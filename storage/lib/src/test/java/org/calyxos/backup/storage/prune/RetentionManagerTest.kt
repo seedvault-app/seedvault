@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import io.mockk.every
 import io.mockk.mockk
 import org.calyxos.backup.storage.api.SnapshotRetention
+import org.calyxos.backup.storage.api.StoredSnapshot
+import org.calyxos.backup.storage.getRandomString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
@@ -17,19 +19,21 @@ internal class RetentionManagerTest {
 
     private val retention = RetentionManager(context)
 
+    private val userId = getRandomString()
+
     @Test
     fun testDailyRetention() {
         expectGetRetention(SnapshotRetention(2, 0, 0, 0))
-        val timestamps = listOf(
+        val storedSnapshots = listOf(
             // 1577919600000
             LocalDateTime.of(2020, 1, 1, 23, 0).toMillis(),
             // 1577872800000
             LocalDateTime.of(2020, 1, 1, 10, 0).toMillis(),
             // 1583276400000
             LocalDateTime.of(2020, 3, 3, 23, 0).toMillis(),
-        )
-        val toDelete = retention.getSnapshotsToDelete(timestamps)
-        assertEquals(listOf(1577872800000), toDelete)
+        ).map { StoredSnapshot(userId, it) }
+        val toDelete = retention.getSnapshotsToDelete(storedSnapshots)
+        assertEquals(listOf(1577872800000), toDelete.map { it.timestamp })
     }
 
     @Test
@@ -45,9 +49,9 @@ internal class RetentionManagerTest {
             LocalDateTime.of(2020, 12, 22, 12, 0).toMillis(),
             // 1608678000000
             LocalDateTime.of(2020, 12, 22, 23, 0).toMillis(),
-        )
+        ).map { StoredSnapshot(userId, it) }
         val toDelete = retention.getSnapshotsToDelete(timestamps)
-        assertEquals(listOf(1608544800000, 1608638400000), toDelete)
+        assertEquals(listOf(1608544800000, 1608638400000), toDelete.map { it.timestamp })
     }
 
     @Test
@@ -63,9 +67,9 @@ internal class RetentionManagerTest {
             LocalDateTime.of(2020, 12, 21, 10, 0).toMillis(),
             // 1608678000000
             LocalDateTime.of(2020, 12, 22, 23, 0).toMillis(),
-        )
+        ).map { StoredSnapshot(userId, it) }
         val toDelete = retention.getSnapshotsToDelete(timestamps)
-        assertEquals(listOf(1580857200000), toDelete)
+        assertEquals(listOf(1580857200000), toDelete.map { it.timestamp })
     }
 
     @Test
@@ -83,10 +87,10 @@ internal class RetentionManagerTest {
             LocalDateTime.of(2020, 12, 21, 10, 0).toMillis(),
             // 1608678000000
             LocalDateTime.of(2020, 12, 22, 23, 0).toMillis(),
-        )
+        ).map { StoredSnapshot(userId, it) }
         // keeps only the latest one for each year, so three in total, even though keep is four
         val toDelete = retention.getSnapshotsToDelete(timestamps)
-        assertEquals(listOf(1549321200000, 1608544800000), toDelete)
+        assertEquals(listOf(1549321200000, 1608544800000), toDelete.map { it.timestamp })
     }
 
     @Test
@@ -116,9 +120,11 @@ internal class RetentionManagerTest {
             LocalDateTime.of(2020, 12, 22, 23, 0).toMillis(),
             // 1608638400000
             LocalDateTime.of(2020, 12, 22, 12, 0).toMillis(),
-        )
+        ).map { StoredSnapshot(userId, it) }
         val toDelete = retention.getSnapshotsToDelete(timestamps)
-        assertEquals(listOf(1515106800000, 1549321200000, 1551441600000, 1608638400000), toDelete)
+        assertEquals(
+            listOf(1515106800000, 1549321200000, 1551441600000, 1608638400000),
+            toDelete.map { it.timestamp })
     }
 
     private fun expectGetRetention(snapshotRetention: SnapshotRetention) {

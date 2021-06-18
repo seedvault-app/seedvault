@@ -2,6 +2,7 @@ package org.calyxos.backup.storage.prune
 
 import android.content.Context
 import org.calyxos.backup.storage.api.SnapshotRetention
+import org.calyxos.backup.storage.api.StoredSnapshot
 import java.io.IOException
 import java.time.LocalDate
 import java.time.temporal.ChronoField
@@ -48,37 +49,37 @@ internal class RetentionManager(private val context: Context) {
     }
 
     /**
-     * Takes a list of snapshot timestamps and returns a list of those
+     * Takes a list of [StoredSnapshot]s and returns a list of those
      * that can be deleted according to the current snapshot retention policy.
      */
     @Throws(IOException::class)
-    fun getSnapshotsToDelete(snapshotTimestamps: List<Long>): List<Long> {
+    fun getSnapshotsToDelete(storedSnapshots: List<StoredSnapshot>): List<StoredSnapshot> {
         val retention = getSnapshotRetention()
-        val dates = snapshotTimestamps.sortedDescending().map {
-            Pair(it, LocalDate.ofEpochDay(it / 1000 / 60 / 60 / 24))
+        val datePairs = storedSnapshots.sortedByDescending { it.timestamp }.map { s ->
+            Pair(s, LocalDate.ofEpochDay(s.timestamp / 1000 / 60 / 60 / 24))
         }
-        val toKeep = HashSet<Long>()
-        toKeep += getToKeep(dates, retention.daily)
-        toKeep += getToKeep(dates, retention.weekly) { temporal: Temporal ->
+        val toKeep = HashSet<StoredSnapshot>()
+        toKeep += getToKeep(datePairs, retention.daily)
+        toKeep += getToKeep(datePairs, retention.weekly) { temporal: Temporal ->
             temporal.with(ChronoField.DAY_OF_WEEK, 1)
         }
-        toKeep += getToKeep(dates, retention.monthly, firstDayOfMonth())
-        toKeep += getToKeep(dates, retention.yearly, firstDayOfYear())
-        return snapshotTimestamps - toKeep
+        toKeep += getToKeep(datePairs, retention.monthly, firstDayOfMonth())
+        toKeep += getToKeep(datePairs, retention.yearly, firstDayOfYear())
+        return storedSnapshots - toKeep
     }
 
     private fun getToKeep(
-        pairs: List<Pair<Long, LocalDate>>,
+        pairs: List<Pair<StoredSnapshot, LocalDate>>,
         keep: Int,
         temporalAdjuster: TemporalAdjuster? = null,
-    ): List<Long> {
-        val toKeep = ArrayList<Long>()
+    ): List<StoredSnapshot> {
+        val toKeep = ArrayList<StoredSnapshot>()
         if (keep == 0) return toKeep
         var last: LocalDate? = null
-        for ((timestamp, date) in pairs) {
+        for ((snapshot, date) in pairs) {
             val period = if (temporalAdjuster == null) date else date.with(temporalAdjuster)
             if (period != last) {
-                toKeep.add(timestamp)
+                toKeep.add(snapshot)
                 if (toKeep.size >= keep) break
                 last = period
             }

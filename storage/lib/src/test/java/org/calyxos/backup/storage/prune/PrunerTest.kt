@@ -8,6 +8,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.BackupDocumentFile
 import org.calyxos.backup.storage.backup.BackupMediaFile
 import org.calyxos.backup.storage.backup.BackupSnapshot
@@ -66,18 +67,20 @@ internal class PrunerTest {
             .addMediaFiles(BackupMediaFile.newBuilder().addChunkIds(chunk2))
             .addDocumentFiles(BackupDocumentFile.newBuilder().addChunkIds(chunk4))
             .build()
-        val snapshotTimestamps = listOf(snapshot1.timeStart, snapshot2.timeStart)
+        val storedSnapshot1 = StoredSnapshot("foo", snapshot1.timeStart)
+        val storedSnapshot2 = StoredSnapshot("bar", snapshot2.timeStart)
+        val storedSnapshots = listOf(storedSnapshot1, storedSnapshot2)
         val expectedChunks = listOf(chunk1, chunk2, chunk3)
         val actualChunks = slot<Collection<String>>()
         val actualChunks2 = slot<Collection<String>>()
         val cachedChunk3 = CachedChunk(chunk3, 0, 0)
 
-        coEvery { plugin.getAvailableBackupSnapshots() } returns snapshotTimestamps
+        coEvery { plugin.getCurrentBackupSnapshots() } returns storedSnapshots
         every {
-            retentionManager.getSnapshotsToDelete(snapshotTimestamps)
-        } returns listOf(snapshot1.timeStart)
-        coEvery { snapshotRetriever.getSnapshot(streamKey, snapshot1.timeStart) } returns snapshot1
-        coEvery { plugin.deleteBackupSnapshot(snapshot1.timeStart) } just Runs
+            retentionManager.getSnapshotsToDelete(storedSnapshots)
+        } returns listOf(storedSnapshot1)
+        coEvery { snapshotRetriever.getSnapshot(streamKey, storedSnapshot1) } returns snapshot1
+        coEvery { plugin.deleteBackupSnapshot(storedSnapshot1) } just Runs
         every {
             db.applyInParts(capture(actualChunks), captureLambda())
         } answers {

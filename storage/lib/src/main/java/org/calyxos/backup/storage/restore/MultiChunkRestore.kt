@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import java.io.File
 import java.io.FileInputStream
@@ -26,6 +27,7 @@ internal class MultiChunkRestore(
 
     suspend fun restore(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         chunkMap: Map<String, RestorableChunk>,
         files: Collection<RestorableFile>,
         observer: RestoreObserver?,
@@ -34,7 +36,7 @@ internal class MultiChunkRestore(
         files.forEach { file ->
             try {
                 restoreFile(file, observer, "L") { outputStream ->
-                    writeChunks(version, file, chunkMap, outputStream)
+                    writeChunks(version, storedSnapshot, file, chunkMap, outputStream)
                 }
                 restoredFiles++
             } catch (e: Exception) {
@@ -49,6 +51,7 @@ internal class MultiChunkRestore(
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun writeChunks(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         file: RestorableFile,
         chunkMap: Map<String, RestorableChunk>,
         outputStream: OutputStream,
@@ -61,8 +64,11 @@ internal class MultiChunkRestore(
                 bytes += decryptedStream.copyTo(outputStream)
             }
             val isCached = isCached(chunkId)
-            if (isCached || otherFiles.size > 1) getAndCacheChunk(version, chunkId, chunkWriter)
-            else getAndDecryptChunk(version, chunkId, chunkWriter)
+            if (isCached || otherFiles.size > 1) {
+                getAndCacheChunk(version, storedSnapshot, chunkId, chunkWriter)
+            } else {
+                getAndDecryptChunk(version, storedSnapshot, chunkId, chunkWriter)
+            }
 
             otherFiles.remove(file)
             if (isCached && otherFiles.isEmpty()) removeCachedChunk(chunkId)
@@ -77,13 +83,14 @@ internal class MultiChunkRestore(
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun getAndCacheChunk(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         chunkId: String,
         streamReader: suspend (InputStream) -> Unit,
     ) {
         val file = getChunkCacheFile(chunkId)
         if (!file.isFile) {
             FileOutputStream(file).use { outputStream ->
-                getAndDecryptChunk(version, chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, storedSnapshot, chunkId) { decryptedStream ->
                     decryptedStream.copyTo(outputStream)
                 }
             }

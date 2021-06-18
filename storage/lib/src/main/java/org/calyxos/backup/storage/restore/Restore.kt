@@ -8,6 +8,7 @@ import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.SnapshotResult
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.Backup
 import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
@@ -46,8 +47,10 @@ internal class Restore(
         val numSnapshots: Int
         val time = measure {
             val list = try {
-                storagePlugin.getAvailableBackupSnapshots().sortedDescending().map {
-                    SnapshotItem(it, null)
+                storagePlugin.getBackupSnapshotsForRestore().sortedByDescending { storedSnapshot ->
+                    storedSnapshot.timestamp
+                }.map { storedSnapshot ->
+                    SnapshotItem(storedSnapshot, null)
                 }.toMutableList()
             } catch (e: Exception) {
                 Log.e("TAG", "Error retrieving snapshots", e)
@@ -61,7 +64,9 @@ internal class Restore(
             while (iterator.hasNext()) {
                 val oldItem = iterator.next()
                 val item = try {
-                    oldItem.copy(snapshot = snapshotRetriever.getSnapshot(streamKey, oldItem.time))
+                    oldItem.copy(
+                        snapshot = snapshotRetriever.getSnapshot(streamKey, oldItem.storedSnapshot)
+                    )
                 } catch (e: Exception) {
                     Log.e("TAG", "Error retrieving snapshot ${oldItem.time}", e)
                     continue
@@ -73,15 +78,15 @@ internal class Restore(
         Log.e(TAG, "Decrypting and parsing $numSnapshots snapshots took $time")
     }
 
-    @Throws(IOException::class, GeneralSecurityException::class)
-    suspend fun restoreBackupSnapshot(timestamp: Long, observer: RestoreObserver?) {
-        val snapshot = snapshotRetriever.getSnapshot(streamKey, timestamp)
-        restoreBackupSnapshot(snapshot, observer)
-    }
-
     @OptIn(ExperimentalTime::class)
-    @Throws(IOException::class)
-    suspend fun restoreBackupSnapshot(snapshot: BackupSnapshot, observer: RestoreObserver?) {
+    @Throws(IOException::class, GeneralSecurityException::class)
+    suspend fun restoreBackupSnapshot(
+        storedSnapshot: StoredSnapshot,
+        optionalSnapshot: BackupSnapshot? = null,
+        observer: RestoreObserver? = null,
+    ) {
+        val snapshot = optionalSnapshot ?: snapshotRetriever.getSnapshot(streamKey, storedSnapshot)
+
         val filesTotal = snapshot.mediaFilesList.size + snapshot.documentFilesList.size
         val totalSize =
             snapshot.mediaFilesList.sumOf { it.size } + snapshot.documentFilesList.sumOf { it.size }
@@ -91,19 +96,30 @@ internal class Restore(
         val version = snapshot.version
         var restoredFiles = 0
         val smallFilesDuration = measure {
-            restoredFiles += zipChunkRestore.restore(version, split.zipChunks, observer)
+            restoredFiles += zipChunkRestore.restore(
+                version,
+                storedSnapshot,
+                split.zipChunks,
+                observer,
+            )
         }
         Log.e(TAG, "Restoring ${split.zipChunks.size} zip chunks took $smallFilesDuration.")
         val singleChunkDuration = measure {
-            restoredFiles += singleChunkRestore.restore(version, split.singleChunks, observer)
+            restoredFiles += singleChunkRestore.restore(
+                version,
+                storedSnapshot,
+                split.singleChunks,
+                observer,
+            )
         }
         Log.e(TAG, "Restoring ${split.singleChunks.size} single chunks took $singleChunkDuration.")
         val multiChunkDuration = measure {
             restoredFiles += multiChunkRestore.restore(
                 version,
+                storedSnapshot,
                 split.multiChunkMap,
                 split.multiChunkFiles,
-                observer
+                observer,
             )
         }
         Log.e(TAG, "Restoring ${split.multiChunkFiles.size} multi chunks took $multiChunkDuration.")

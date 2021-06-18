@@ -3,6 +3,7 @@ package org.calyxos.backup.storage.restore
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 
 private const val TAG = "SingleChunkRestore"
@@ -17,6 +18,7 @@ internal class SingleChunkRestore(
 
     suspend fun restore(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         chunks: Collection<RestorableChunk>,
         observer: RestoreObserver?
     ): Int {
@@ -25,7 +27,7 @@ internal class SingleChunkRestore(
             check(chunk.files.size == 1)
             val file = chunk.files[0]
             try {
-                getAndDecryptChunk(version, chunk.chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, storedSnapshot, chunk.chunkId) { decryptedStream ->
                     restoreFile(file, observer, "M") { outputStream ->
                         decryptedStream.copyTo(outputStream)
                     }
