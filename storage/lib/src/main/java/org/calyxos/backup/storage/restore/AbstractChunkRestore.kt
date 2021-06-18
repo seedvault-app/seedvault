@@ -2,6 +2,7 @@ package org.calyxos.backup.storage.restore
 
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import java.io.IOException
 import java.io.InputStream
@@ -19,10 +20,11 @@ internal abstract class AbstractChunkRestore(
     @Throws(IOException::class, GeneralSecurityException::class)
     protected suspend fun getAndDecryptChunk(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         chunkId: String,
         streamReader: suspend (InputStream) -> Unit,
     ) {
-        storagePlugin.getChunkInputStream(chunkId).use { inputStream ->
+        storagePlugin.getChunkInputStream(storedSnapshot, chunkId).use { inputStream ->
             inputStream.readVersion(version)
             val ad = streamCrypto.getAssociatedDataForChunk(chunkId, version.toByte())
             streamCrypto.newDecryptingStream(streamKey, inputStream, ad).use { decryptedStream ->

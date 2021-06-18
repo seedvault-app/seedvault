@@ -103,10 +103,12 @@ public class StorageBackup(
      * Run this on a new storage location to ensure that there are no old snapshots
      * (potentially encrypted with an old key) laying around.
      * Using a storage location with existing data is not supported.
+     * Using the same root folder for storage on different devices or user profiles is fine though
+     * as the [StoragePlugin] should isolate storage per [StoredSnapshot.userId].
      */
     public suspend fun deleteAllSnapshots(): Unit = withContext(dispatcher) {
         try {
-            plugin.getAvailableBackupSnapshots().forEach {
+            plugin.getCurrentBackupSnapshots().forEach {
                 try {
                     plugin.deleteBackupSnapshot(it)
                 } catch (e: IOException) {
@@ -183,34 +185,22 @@ public class StorageBackup(
     }
 
     public suspend fun restoreBackupSnapshot(
-        snapshot: BackupSnapshot,
-        restoreObserver: RestoreObserver? = null
+        storedSnapshot: StoredSnapshot,
+        snapshot: BackupSnapshot? = null,
+        restoreObserver: RestoreObserver? = null,
     ): Boolean = withContext(dispatcher) {
         if (restoreRunning.getAndSet(true)) {
             Log.w(TAG, "Restore already running, not starting a new one")
             return@withContext false
         }
         try {
-            restore.restoreBackupSnapshot(snapshot, restoreObserver)
+            restore.restoreBackupSnapshot(storedSnapshot, snapshot, restoreObserver)
             true
         } catch (e: Exception) {
             Log.e(TAG, "Error during restore", e)
             false
         } finally {
             restoreRunning.set(false)
-        }
-    }
-
-    public suspend fun restoreBackupSnapshot(
-        timestamp: Long,
-        restoreObserver: RestoreObserver? = null
-    ): Boolean = withContext(dispatcher) {
-        try {
-            restore.restoreBackupSnapshot(timestamp, restoreObserver)
-            true
-        } catch (e: Exception) {
-            Log.e(TAG, "Error during restore", e)
-            false
         }
     }
 

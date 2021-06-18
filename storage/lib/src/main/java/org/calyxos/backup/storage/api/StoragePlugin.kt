@@ -35,22 +35,36 @@ public interface StoragePlugin {
     /* Restore */
 
     /**
-     * Returns the timestamps representing a backup snapshot that are available on storage.
+     * Returns *all* [StoredSnapshot]s that are available on storage
+     * independent of user ID and whether they can be decrypted
+     * with the key returned by [getMasterKey].
      */
     @Throws(IOException::class)
-    public suspend fun getAvailableBackupSnapshots(): List<Long>
+    public suspend fun getBackupSnapshotsForRestore(): List<StoredSnapshot>
 
     @Throws(IOException::class)
-    public suspend fun getBackupSnapshotInputStream(timestamp: Long): InputStream
+    public suspend fun getBackupSnapshotInputStream(storedSnapshot: StoredSnapshot): InputStream
 
     @Throws(IOException::class)
-    public suspend fun getChunkInputStream(chunkId: String): InputStream
+    public suspend fun getChunkInputStream(snapshot: StoredSnapshot, chunkId: String): InputStream
 
     /* Pruning */
 
+    /**
+     * Returns [StoredSnapshot]s for the currently active user ID.
+     */
     @Throws(IOException::class)
-    public suspend fun deleteBackupSnapshot(timestamp: Long)
+    public suspend fun getCurrentBackupSnapshots(): List<StoredSnapshot>
 
+    /**
+     * Deletes the given [StoredSnapshot].
+     */
+    @Throws(IOException::class)
+    public suspend fun deleteBackupSnapshot(storedSnapshot: StoredSnapshot)
+
+    /**
+     * Deletes the given chunks of the *current* user ID only.
+     */
     @Throws(IOException::class)
     public suspend fun deleteChunks(chunkIds: List<String>)
 

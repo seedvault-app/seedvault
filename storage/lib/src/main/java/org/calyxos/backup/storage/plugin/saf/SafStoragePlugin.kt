@@ -1,9 +1,13 @@
 package org.calyxos.backup.storage.plugin.saf
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
+import android.provider.Settings.Secure.ANDROID_ID
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.createDirectoryOrThrow
 import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.createFileOrThrow
@@ -15,11 +19,12 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
+private val folderRegex = Regex("^[a-f0-9]{16}\\.sv$")
 private val chunkFolderRegex = Regex("[a-f0-9]{2}")
 private val chunkRegex = Regex("[a-f0-9]{64}")
 private val snapshotRegex = Regex("([0-9]{13})\\.SeedSnap") // good until the year 2286
-private const val CHUNK_FOLDER_COUNT = 256
 private const val MIME_TYPE: String = "application/octet-stream"
+internal const val CHUNK_FOLDER_COUNT = 256
 
 private const val TAG = "SafStoragePlugin"
 
@@ -28,12 +33,30 @@ public abstract class SafStoragePlugin(
     private val context: Context,
 ) : StoragePlugin {
 
+    private val cache = SafCache()
     protected abstract val root: DocumentFile?
 
-    private val contentResolver = context.contentResolver
+    private val folder: DocumentFile?
+        get() {
+            val root = this.root ?: return null
+            if (cache.currentFolder != null) return cache.currentFolder
 
-    private val chunkFolders = HashMap<String, DocumentFile>(CHUNK_FOLDER_COUNT)
-    private val snapshotFiles = HashMap<Long, DocumentFile>()
+            @SuppressLint("HardwareIds")
+            // this is unique to each combination of app-signing key, user, and device
+            // so we don't leak anything by not hashing this and can use it as is
+            val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
+            // the folder name is our user ID
+            val folderName = "$androidId.sv"
+            cache.currentFolder = try {
+                root.findFile(folderName) ?: root.createDirectoryOrThrow(folderName)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error creating storage folder $folderName")
+                null
+            }
+            return cache.currentFolder
+        }
+
+    private val contentResolver = context.contentResolver
 
     private fun timestampToSnapshot(timestamp: Long): String {
         return "$timestamp.SeedSnap"
@@ -41,27 +64,33 @@ public abstract class SafStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getAvailableChunkIds(): List<String> {
-        val root = root ?: return emptyList()
+        val folder = folder ?: return emptyList()
         val chunkIds = ArrayList<String>()
-        populateChunkFolders(root) { file, name ->
+        populateChunkFolders(folder, cache.backupChunkFolders) { file, name ->
             if (chunkFolderRegex.matches(name)) {
                 chunkIds.addAll(getChunksFromFolder(file))
             }
         }
-        Log.e(TAG, "Got ${chunkIds.size} available chunks")
+        Log.i(TAG, "Got ${chunkIds.size} available chunks")
         return chunkIds
     }
 
+    /**
+     * Goes through all files in the given [folder] and performs the optional [fileOp] on them.
+     * Afterwards, it creates missing chunk folders, as needed.
+     * Chunk folders will get cached in the given [chunkFolders] for faster access.
+     */
     @Throws(IOException::class)
     private suspend fun populateChunkFolders(
-        root: DocumentFile,
+        folder: DocumentFile,
+        chunkFolders: HashMap<String, DocumentFile>,
         fileOp: ((DocumentFile, String) -> Unit)? = null
     ) {
         val expectedChunkFolders = (0x00..0xff).map {
             Integer.toHexString(it).padStart(2, '0')
         }.toHashSet()
         val duration = measure {
-            for (file in root.listFilesBlocking(context)) {
+            for (file in folder.listFilesBlocking(context)) {
                 val name = file.name ?: continue
                 if (chunkFolderRegex.matches(name)) {
                     chunkFolders[name] = file
@@ -70,8 +99,8 @@ public abstract class SafStoragePlugin(
                 fileOp?.invoke(file, name)
             }
         }
-        Log.e(TAG, "Retrieving chunk folders took $duration")
-        createMissingChunkFolders(root, expectedChunkFolders)
+        Log.i(TAG, "Retrieving chunk folders took $duration")
+        createMissingChunkFolders(folder, chunkFolders, expectedChunkFolders)
     }
 
     @Throws(IOException::class)
@@ -89,7 +118,11 @@ public abstract class SafStoragePlugin(
     }
 
     @Throws(IOException::class)
-    private fun createMissingChunkFolders(root: DocumentFile, expectedChunkFolders: Set<String>) {
+    private fun createMissingChunkFolders(
+        root: DocumentFile,
+        chunkFolders: HashMap<String, DocumentFile>,
+        expectedChunkFolders: Set<String>
+    ) {
         val s = expectedChunkFolders.size
         val duration = measure {
             for ((i, chunkFolderName) in expectedChunkFolders.withIndex()) {
@@ -101,13 +134,14 @@ public abstract class SafStoragePlugin(
                 throw IOException("Only have ${chunkFolders.size} chunk folders.")
             }
         }
-        if (s > 0) Log.e(TAG, "Creating $s missing chunk folders took $duration")
+        if (s > 0) Log.i(TAG, "Creating $s missing chunk folders took $duration")
     }
 
     @Throws(IOException::class)
     override fun getChunkOutputStream(chunkId: String): OutputStream {
         val chunkFolderName = chunkId.substring(0, 2)
-        val chunkFolder = chunkFolders[chunkFolderName] ?: error("No folder for chunk $chunkId")
+        val chunkFolder =
+            cache.backupChunkFolders[chunkFolderName] ?: error("No folder for chunk $chunkId")
         // TODO should we check if it exists first?
         val chunkFile = chunkFolder.createFileOrThrow(chunkId, MIME_TYPE)
         return chunkFile.getOutputStream(context.contentResolver)
@@ -115,48 +149,58 @@ public abstract class SafStoragePlugin(
 
     @Throws(IOException::class)
     override fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
-        val root = root ?: throw IOException()
+        val folder = folder ?: throw IOException()
         val name = timestampToSnapshot(timestamp)
         // TODO should we check if it exists first?
-        val snapshotFile = root.createFileOrThrow(name, MIME_TYPE)
+        val snapshotFile = folder.createFileOrThrow(name, MIME_TYPE)
         return snapshotFile.getOutputStream(contentResolver)
     }
 
     /************************* Restore *******************************/
 
     @Throws(IOException::class)
-    override suspend fun getAvailableBackupSnapshots(): List<Long> {
-        val root = root ?: return emptyList()
-        val snapshots = ArrayList<Long>()
+    override suspend fun getBackupSnapshotsForRestore(): List<StoredSnapshot> {
+        val snapshots = ArrayList<StoredSnapshot>()
 
-        populateChunkFolders(root) { file, name ->
-            val match = snapshotRegex.matchEntire(name)
-            if (match != null) {
-                val timestamp = match.groupValues[1].toLong()
-                snapshots.add(timestamp)
-                snapshotFiles[timestamp] = file
+        root?.listFilesBlocking(context)?.forEach { folder ->
+            val folderName = folder.name ?: ""
+            if (!folderRegex.matches(folderName)) return@forEach
+
+            Log.i(TAG, "Checking $folderName for snapshots...")
+            for (file in folder.listFilesBlocking(context)) {
+                val name = file.name ?: continue
+                val match = snapshotRegex.matchEntire(name)
+                if (match != null) {
+                    val timestamp = match.groupValues[1].toLong()
+                    val storedSnapshot = StoredSnapshot(folderName, timestamp)
+                    snapshots.add(storedSnapshot)
+                    cache.snapshotFiles[storedSnapshot] = file
+                }
             }
         }
-        Log.e(TAG, "Got ${snapshots.size} snapshots while populating chunk folders")
+        Log.i(TAG, "Got ${snapshots.size} snapshots while populating chunk folders")
         return snapshots
     }
 
     @Throws(IOException::class)
-    override suspend fun getBackupSnapshotInputStream(timestamp: Long): InputStream {
-        val snapshotFile = snapshotFiles.getOrElse(timestamp) {
-            root?.findFileBlocking(context, timestampToSnapshot(timestamp))
+    override suspend fun getBackupSnapshotInputStream(storedSnapshot: StoredSnapshot): InputStream {
+        val timestamp = storedSnapshot.timestamp
+        val snapshotFile = cache.snapshotFiles.getOrElse(storedSnapshot) {
+            getFolder(storedSnapshot).findFileBlocking(context, timestampToSnapshot(timestamp))
         } ?: throw IOException("Could not get file for snapshot $timestamp")
         return snapshotFile.getInputStream(contentResolver)
     }
 
     @Throws(IOException::class)
-    override suspend fun getChunkInputStream(chunkId: String): InputStream {
-        if (chunkFolders.size < CHUNK_FOLDER_COUNT) {
-            val root = root ?: throw IOException("Could not get root")
-            populateChunkFolders(root)
+    override suspend fun getChunkInputStream(
+        snapshot: StoredSnapshot,
+        chunkId: String
+    ): InputStream {
+        if (cache.restoreChunkFolders.size < CHUNK_FOLDER_COUNT) {
+            populateChunkFolders(getFolder(snapshot), cache.restoreChunkFolders)
         }
         val chunkFolderName = chunkId.substring(0, 2)
-        val chunkFolder = chunkFolders[chunkFolderName]
+        val chunkFolder = cache.restoreChunkFolders[chunkFolderName]
             ?: throw IOException("No folder for chunk $chunkId")
         val chunkFile = chunkFolder.findFileBlocking(context, chunkId)
             ?: throw IOException("No chunk $chunkId")
@@ -164,23 +208,56 @@ public abstract class SafStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun deleteBackupSnapshot(timestamp: Long) {
-        Log.d(TAG, "Deleting snapshot $timestamp")
-        val snapshotFile = snapshotFiles.getOrElse(timestamp) {
-            root?.findFileBlocking(context, timestampToSnapshot(timestamp))
-        } ?: throw IOException("Could not get file for snapshot $timestamp")
-        if (!snapshotFile.delete()) throw IOException("Could not delete snapshot $timestamp")
+    private suspend fun getFolder(storedSnapshot: StoredSnapshot): DocumentFile {
+        // not cached, because used in several places only once and
+        // [getBackupSnapshotInputStream] uses snapshot files cache and
+        // [getChunkInputStream] uses restore chunk folders cache
+        return root?.findFileBlocking(context, storedSnapshot.userId)
+            ?: throw IOException("Could not find snapshot $storedSnapshot")
     }
 
+    /************************* Pruning *******************************/
+
+    @Throws(IOException::class)
+    override suspend fun getCurrentBackupSnapshots(): List<StoredSnapshot> {
+        val folder = folder ?: return emptyList()
+        val folderName = folder.name ?: error("Folder suddenly has no more name")
+        val snapshots = ArrayList<StoredSnapshot>()
+
+        populateChunkFolders(folder, cache.backupChunkFolders) { file, name ->
+            val match = snapshotRegex.matchEntire(name)
+            if (match != null) {
+                val timestamp = match.groupValues[1].toLong()
+                val storedSnapshot = StoredSnapshot(folderName, timestamp)
+                snapshots.add(storedSnapshot)
+                cache.snapshotFiles[storedSnapshot] = file
+            }
+        }
+        Log.i(TAG, "Got ${snapshots.size} snapshots while populating chunk folders")
+        return snapshots
+    }
+
+    @Throws(IOException::class)
+    override suspend fun deleteBackupSnapshot(storedSnapshot: StoredSnapshot) {
+        val timestamp = storedSnapshot.timestamp
+        Log.d(TAG, "Deleting snapshot $timestamp")
+        val snapshotFile = cache.snapshotFiles.getOrElse(storedSnapshot) {
+            getFolder(storedSnapshot).findFileBlocking(context, timestampToSnapshot(timestamp))
+        } ?: throw IOException("Could not get file for snapshot $timestamp")
+        if (!snapshotFile.delete()) throw IOException("Could not delete snapshot $timestamp")
+        cache.snapshotFiles.remove(storedSnapshot)
+    }
+
+    @Throws(IOException::class)
     override suspend fun deleteChunks(chunkIds: List<String>) {
-        if (chunkFolders.size < CHUNK_FOLDER_COUNT) {
-            val root = root ?: throw IOException("Could not get root")
-            populateChunkFolders(root)
+        if (cache.backupChunkFolders.size < CHUNK_FOLDER_COUNT) {
+            val folder = folder ?: throw IOException("Could not get current folder in root")
+            populateChunkFolders(folder, cache.backupChunkFolders)
         }
         for (chunkId in chunkIds) {
             Log.d(TAG, "Deleting chunk $chunkId")
             val chunkFolderName = chunkId.substring(0, 2)
-            val chunkFolder = chunkFolders[chunkFolderName]
+            val chunkFolder = cache.backupChunkFolders[chunkFolderName]
                 ?: throw IOException("No folder for chunk $chunkId")
             val chunkFile = chunkFolder.findFileBlocking(context, chunkId)
             if (chunkFile == null) {

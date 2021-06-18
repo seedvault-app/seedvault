@@ -9,6 +9,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.db.CachedChunk
 import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.db.Db
@@ -56,7 +57,9 @@ internal class ChunksCacheRepopulaterTest {
             .addDocumentFiles(BackupDocumentFile.newBuilder().addChunkIds(chunk4))
             .addDocumentFiles(BackupDocumentFile.newBuilder().addChunkIds(chunk5))
             .build()
-        val snapshotTimestamps = listOf(snapshot1.timeStart, snapshot2.timeStart)
+        val storedSnapshot1 = StoredSnapshot("foo", snapshot1.timeStart)
+        val storedSnapshot2 = StoredSnapshot("bar", snapshot2.timeStart)
+        val storedSnapshots = listOf(storedSnapshot1, storedSnapshot2)
         val cachedChunks = listOf(
             CachedChunk(chunk1, 2, 0),
             CachedChunk(chunk2, 2, 0),
@@ -64,12 +67,12 @@ internal class ChunksCacheRepopulaterTest {
         ) // chunk3 is not referenced and should get deleted
         val cachedChunksSlot = slot<Collection<CachedChunk>>()
 
-        coEvery { plugin.getAvailableBackupSnapshots() } returns snapshotTimestamps
+        coEvery { plugin.getCurrentBackupSnapshots() } returns storedSnapshots
         coEvery {
-            snapshotRetriever.getSnapshot(streamKey, snapshot1.timeStart)
+            snapshotRetriever.getSnapshot(streamKey, storedSnapshot1)
         } returns snapshot1
         coEvery {
-            snapshotRetriever.getSnapshot(streamKey, snapshot2.timeStart)
+            snapshotRetriever.getSnapshot(streamKey, storedSnapshot2)
         } returns snapshot2
         every { chunksCache.clearAndRepopulate(db, capture(cachedChunksSlot)) } just Runs
         coEvery { plugin.deleteChunks(listOf(chunk3)) } just Runs

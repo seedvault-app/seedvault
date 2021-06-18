@@ -3,6 +3,7 @@ package org.calyxos.backup.storage.restore
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StoragePlugin
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import java.io.IOException
 import java.io.InputStream
@@ -24,13 +25,14 @@ internal class ZipChunkRestore(
      */
     suspend fun restore(
         version: Int,
+        storedSnapshot: StoredSnapshot,
         zipChunks: Collection<RestorableChunk>,
         observer: RestoreObserver?
     ): Int {
         var restoredFiles = 0
         zipChunks.forEach { zipChunk ->
             try {
-                getAndDecryptChunk(version, zipChunk.chunkId) { decryptedStream ->
+                getAndDecryptChunk(version, storedSnapshot, zipChunk.chunkId) { decryptedStream ->
                     restoredFiles += restoreZipChunk(zipChunk, decryptedStream, observer)
                 }
             } catch (e: Exception) {

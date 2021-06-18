@@ -62,6 +62,7 @@ import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTAMP_START
+import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
 import kotlin.coroutines.Continuation
@@ -392,6 +393,7 @@ internal class RestoreViewModel(
     @UiThread
     internal fun startFilesRestore(item: SnapshotItem) {
         val i = Intent(app, StorageRestoreService::class.java)
+        i.putExtra(EXTRA_USER_ID, item.storedSnapshot.userId)
         i.putExtra(EXTRA_TIMESTAMP_START, item.time)
         app.startForegroundService(i)
         mDisplayFragment.setEvent(RESTORE_FILES_STARTED)

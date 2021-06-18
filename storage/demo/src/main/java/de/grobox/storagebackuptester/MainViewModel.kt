@@ -123,6 +123,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
 
         // example for how to do restore via foreground service
 //        app.startForegroundService(Intent(app, DemoRestoreService::class.java).apply {
+//            putExtra(EXTRA_USER_ID, item.storedSnapshot.userId)
 //            putExtra(EXTRA_TIMESTAMP_START, snapshot.timeStart)
 //        })
 
@@ -130,7 +131,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
         _restoreProgressVisible.value = true
         val restoreObserver = RestoreStats(app, _restoreLog)
         viewModelScope.launch {
-            storageBackup.restoreBackupSnapshot(snapshot, restoreObserver)
+            storageBackup.restoreBackupSnapshot(item.storedSnapshot, snapshot, restoreObserver)
             _restoreProgressVisible.value = false
         }
     }
