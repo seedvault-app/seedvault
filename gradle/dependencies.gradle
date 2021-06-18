@@ -3,9 +3,9 @@ ext {
     ext.room_version = "2.3.0-alpha02"
     // http://aosp.opersys.com/xref/android-11.0.0_r27/xref/external/protobuf/java/pom.xml#7
     ext.protobuf_version = "3.9.1"
-    junit4_version = "4.13.1"
+    junit4_version = "4.13.2"
     junit5_version = "5.5.2" // careful, upgrading this can change a Cipher's IV size in tests!?
-    mockk_version = "1.10.2"
+    mockk_version = "1.10.2" // higher versions get us a kotlin version conflict
     espresso_version = "3.3.0"
 }
 
