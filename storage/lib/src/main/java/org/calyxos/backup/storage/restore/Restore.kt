@@ -68,10 +68,14 @@ internal class Restore(
                         snapshot = snapshotRetriever.getSnapshot(streamKey, oldItem.storedSnapshot)
                     )
                 } catch (e: Exception) {
-                    Log.e("TAG", "Error retrieving snapshot ${oldItem.time}", e)
-                    continue
+                    Log.e("TAG", "Error retrieving snapshot X ${oldItem.time}", e)
+                    null
                 }
-                iterator.set(item)
+                if (item == null) {
+                    iterator.remove() // remove the failing item from the list
+                } else {
+                    iterator.set(item) // replace old item with new item
+                }
                 emit(SnapshotResult.Success(ArrayList(list)))
             }
         }
