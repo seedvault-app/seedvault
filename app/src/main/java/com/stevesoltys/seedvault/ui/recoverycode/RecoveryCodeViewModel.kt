@@ -1,11 +1,14 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
+import android.app.backup.IBackupManager
+import android.os.UserHandle
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.seedvault.App
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import io.github.novacrypto.bip39.JavaxPBKDF2WithHmacSHA512
@@ -21,6 +24,7 @@ import io.github.novacrypto.bip39.wordlists.English
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.calyxos.backup.storage.api.StorageBackup
 import java.io.IOException
 import java.security.SecureRandom
 import java.util.ArrayList
@@ -28,11 +32,15 @@ import java.util.ArrayList
 internal const val WORD_NUM = 12
 internal const val WORD_LIST_SIZE = 2048
 
-class RecoveryCodeViewModel(
+private val TAG = RecoveryCodeViewModel::class.java.simpleName
+
+internal class RecoveryCodeViewModel(
     app: App,
     private val crypto: Crypto,
     private val keyManager: KeyManager,
-    private val backupPlugin: BackupPlugin
+    private val backupManager: IBackupManager,
+    private val backupCoordinator: BackupCoordinator,
+    private val storageBackup: StorageBackup
 ) : AndroidViewModel(app) {
 
     internal val wordList: List<CharSequence> by lazy {
@@ -79,12 +87,32 @@ class RecoveryCodeViewModel(
         }
     }
 
-    fun deleteAllBackup() {
+    /**
+     * Deletes all storage backups for current user and clears the storage backup cache.
+     * Also starts a new app data restore set and initializes it.
+     *
+     * The reason is that old backups won't be readable anymore with the new key.
+     * We can't delete other backups safely, because we can't be sure
+     * that they don't belong to a different device or user.
+     */
+    fun reinitializeBackupLocation() {
+        Log.d(TAG, "Re-initializing backup location...")
         GlobalScope.launch(Dispatchers.IO) {
+            // remove old storage snapshots and clear cache
+            storageBackup.deleteAllSnapshots()
+            storageBackup.clearCache()
             try {
-                backupPlugin.deleteAllBackups()
+                // will also generate a new backup token for the new restore set
+                backupCoordinator.startNewRestoreSet()
+
+                // initialize the new location
+                backupManager.initializeTransportsForUser(
+                    UserHandle.myUserId(),
+                    arrayOf(TRANSPORT_ID),
+                    null
+                )
             } catch (e: IOException) {
-                Log.e("RecoveryCodeViewModel", "Error deleting backups", e)
+                Log.e(TAG, "Error starting new RestoreSet", e)
             }
         }
     }
