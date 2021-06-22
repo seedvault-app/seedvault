@@ -192,7 +192,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     private val regenRequest = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
-            viewModel.deleteAllBackup()
+            viewModel.reinitializeBackupLocation()
             parentFragmentManager.popBackStack()
             Snackbar.make(requireView(), R.string.recovery_code_recreated, Snackbar.LENGTH_LONG)
                 .show()
