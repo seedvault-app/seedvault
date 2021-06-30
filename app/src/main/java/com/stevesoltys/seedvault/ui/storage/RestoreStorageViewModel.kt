@@ -32,7 +32,6 @@ internal class RestoreStorageViewModel(
             }
             if (hasBackup) {
                 saveStorage(uri)
-
                 mLocationChecked.postEvent(LocationResult())
             } else {
                 Log.w(TAG, "Location was rejected: $uri")

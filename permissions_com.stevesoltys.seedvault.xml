@@ -4,6 +4,7 @@
         <permission name="android.permission.BACKUP"/>
         <permission name="android.permission.MANAGE_USB"/>
         <permission name="android.permission.INSTALL_PACKAGES"/>
+        <permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
         <permission name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     </privapp-permissions>
