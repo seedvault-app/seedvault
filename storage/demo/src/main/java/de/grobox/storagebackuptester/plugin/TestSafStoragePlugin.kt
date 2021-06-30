@@ -11,10 +11,11 @@ import javax.crypto.SecretKey
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class TestSafStoragePlugin(
-    private val context: Context,
+    private val appContext: Context,
     private val getLocationUri: () -> Uri?,
-) : SafStoragePlugin(context) {
+) : SafStoragePlugin(appContext) {
 
+    override val context = appContext
     override val root: DocumentFile?
         get() {
             val uri = getLocationUri() ?: return null

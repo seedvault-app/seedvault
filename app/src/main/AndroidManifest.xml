@@ -60,6 +60,11 @@
         android:name="com.stevesoltys.seedvault.RESTORE_BACKUP"
         android:protectionLevel="system|signature" />
 
+    <!-- This is needed to query content providers in other users -->
+    <uses-permission
+        android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".App"
         android:allowBackup="false"

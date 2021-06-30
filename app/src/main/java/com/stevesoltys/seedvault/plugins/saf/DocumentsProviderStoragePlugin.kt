@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.seedvault.getSystemContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import java.io.FileNotFoundException
@@ -16,11 +17,15 @@ private val TAG = DocumentsProviderStoragePlugin::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderStoragePlugin(
-    private val context: Context,
+    private val appContext: Context,
     private val storage: DocumentsStorage,
 ) : StoragePlugin {
 
-    private val packageManager: PackageManager = context.packageManager
+    private val context: Context get() = appContext.getSystemContext {
+        storage.storage?.isUsb == true
+    }
+
+    private val packageManager: PackageManager = appContext.packageManager
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
