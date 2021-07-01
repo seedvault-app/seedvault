@@ -30,18 +30,27 @@ internal class Restore(
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
-    private val streamKey = try {
-        streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
-    } catch (e: GeneralSecurityException) {
-        throw AssertionError(e)
+    private val streamKey by lazy {
+        // This class might get instantiated before the StoragePlugin had time to provide the key
+        // so we need to get it lazily here to prevent crashes. We can still crash later,
+        // if the plugin is not providing a key as it should when performing calls into this class.
+        try {
+            streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+        } catch (e: GeneralSecurityException) {
+            throw AssertionError(e)
+        }
     }
 
-    private val zipChunkRestore =
+    // lazily instantiate these, so they don't try to get the streamKey too early
+    private val zipChunkRestore by lazy {
         ZipChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey)
-    private val singleChunkRestore =
+    }
+    private val singleChunkRestore by lazy {
         SingleChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey)
-    private val multiChunkRestore =
+    }
+    private val multiChunkRestore by lazy {
         MultiChunkRestore(context, storagePlugin, fileRestore, streamCrypto, streamKey)
+    }
 
     fun getBackupSnapshots(): Flow<SnapshotResult> = flow {
         val numSnapshots: Int
