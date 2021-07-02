@@ -19,6 +19,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupService
+import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
 import org.koin.core.context.KoinContextHandler.get
@@ -57,14 +58,15 @@ class UsbIntentReceiver : UsbMonitor() {
 
     override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
         if (settingsManager.isStorageBackupEnabled()) {
-            // TODO is it safe to start this at the same time as app backup?
             val i = Intent(context, StorageBackupService::class.java)
+            // this starts an app backup afterwards
+            i.putExtra(EXTRA_START_APP_BACKUP, true)
             startForegroundService(context, i)
+        } else {
+            Thread {
+                requestBackup(context)
+            }.start()
         }
-
-        Thread {
-            requestBackup(context)
-        }.start()
     }
 
 }

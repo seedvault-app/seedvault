@@ -21,14 +21,15 @@ public abstract class BackupService : Service() {
     protected abstract val storageBackup: StorageBackup
     protected abstract val backupObserver: BackupObserver?
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand $intent $flags $startId")
         startForeground(
             NOTIFICATION_ID_BACKUP,
             n.getBackupNotification(R.string.notification_backup_scanning)
         )
         GlobalScope.launch {
-            if (storageBackup.runBackup(backupObserver)) {
+            val success = storageBackup.runBackup(backupObserver)
+            if (success) {
                 // only prune old backups when backup run was successful
                 startForeground(
                     NOTIFICATION_ID_PRUNE,
@@ -36,9 +37,13 @@ public abstract class BackupService : Service() {
                 )
                 storageBackup.pruneOldBackups(backupObserver)
             }
+            onBackupFinished(intent, success)
             stopSelf(startId)
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    protected open fun onBackupFinished(intent: Intent, success: Boolean) {
     }
 
     override fun onBind(intent: Intent?): IBinder? {

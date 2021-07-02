@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.settings
 import android.app.Application
 import android.app.job.JobInfo.NETWORK_TYPE_NONE
 import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
+import android.content.Intent
 import android.database.ContentObserver
 import android.net.ConnectivityManager
 import android.net.Network
@@ -14,6 +15,7 @@ import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.UiThread
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.switchMap
@@ -25,6 +27,8 @@ import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
+import com.stevesoltys.seedvault.storage.StorageBackupService
+import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -32,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
-import org.calyxos.backup.storage.backup.NotificationBackupObserver
 import java.util.concurrent.TimeUnit.HOURS
 
 private const val TAG = "SettingsViewModel"
@@ -156,10 +159,13 @@ internal class SettingsViewModel(
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
         } else viewModelScope.launch(Dispatchers.IO) {
             if (settingsManager.isStorageBackupEnabled()) {
-                val backupObserver = NotificationBackupObserver(app)
-                storageBackup.runBackup(backupObserver)
+                val i = Intent(app, StorageBackupService::class.java)
+                // this starts an app backup afterwards
+                i.putExtra(EXTRA_START_APP_BACKUP, true)
+                startForegroundService(app, i)
+            } else {
+                requestBackup(app)
             }
-            requestBackup(app)
         }
     }
 
