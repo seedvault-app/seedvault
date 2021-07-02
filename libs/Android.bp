@@ -1,0 +1,5 @@
+java_import {
+    name: "seedvault-lib-kotlin-bip39",
+    jars: ["kotlin-bip39-1.0.2.jar"],
+    sdk_version: "current",
+}

@@ -16,7 +16,7 @@
     <string name="notification_error_action">Réparer</string>
     <string name="notification_channel_title">Notification de la sauvegarde</string>
     <string name="recovery_code_error_checksum_word">Votre code est invalide. Veuillez vérifier tous les mots et réessayer !</string>
-    <string name="recovery_code_error_invalid_word">Mot erroné. Vouliez-vous dire %1$s ou %2$s \?</string>
+    <string name="recovery_code_error_invalid_word">Mot erroné.</string>
     <string name="recovery_code_error_empty_word">Vous avez oublié d’entrer ce mot.</string>
     <string name="recovery_code_input_hint_12">Mot 12</string>
     <string name="recovery_code_input_hint_11">Mot 11</string>

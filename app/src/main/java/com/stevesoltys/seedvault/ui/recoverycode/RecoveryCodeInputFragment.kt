@@ -19,15 +19,16 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import cash.z.ecc.android.bip39.Mnemonics
+import cash.z.ecc.android.bip39.Mnemonics.ChecksumException
+import cash.z.ecc.android.bip39.Mnemonics.InvalidWordException
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
 import com.stevesoltys.seedvault.ui.LiveEventHandler
-import io.github.novacrypto.bip39.Validation.InvalidChecksumException
-import io.github.novacrypto.bip39.Validation.WordNotFoundException
-import io.github.novacrypto.bip39.wordlists.English
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.Locale
 
 internal const val ARG_FOR_NEW_CODE = "forVerifyingNewCode"
 
@@ -101,7 +102,10 @@ class RecoveryCodeInputFragment : Fragment() {
             backView.setOnClickListener { requireActivity().finishAfterTransition() }
         }
 
-        val adapter = getAdapter()
+        val adapterLayout = android.R.layout.simple_list_item_1
+        val adapter = ArrayAdapter<String>(requireContext(), adapterLayout).apply {
+            addAll(Mnemonics.getCachedWords(Locale.ENGLISH.language))
+        }
 
         for (i in 0 until WORD_NUM) {
             val wordLayout = getWordLayout(i)
@@ -122,14 +126,6 @@ class RecoveryCodeInputFragment : Fragment() {
         if (forVerifyingNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
     }
 
-    private fun getAdapter(): ArrayAdapter<String> {
-        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1)
-        for (i in 0 until WORD_LIST_SIZE) {
-            adapter.add(English.INSTANCE.getWord(i))
-        }
-        return adapter
-    }
-
     private fun getInput(): List<CharSequence> = ArrayList<String>(WORD_NUM).apply {
         for (i in 0 until WORD_NUM) add(getWordLayout(i).editText!!.text.toString())
     }
@@ -139,10 +135,10 @@ class RecoveryCodeInputFragment : Fragment() {
         if (!allFilledOut(input)) return
         try {
             viewModel.validateAndContinue(input, forVerifyingNewCode)
-        } catch (e: InvalidChecksumException) {
+        } catch (e: ChecksumException) {
             Toast.makeText(context, R.string.recovery_code_error_checksum_word, LENGTH_LONG).show()
-        } catch (e: WordNotFoundException) {
-            showWrongWordError(input, e)
+        } catch (e: InvalidWordException) {
+            showWrongWordError(input)
         }
     }
 
@@ -155,10 +151,11 @@ class RecoveryCodeInputFragment : Fragment() {
         return true
     }
 
-    private fun showWrongWordError(input: List<CharSequence>, e: WordNotFoundException) {
-        val i = input.indexOf(e.word)
+    private fun showWrongWordError(input: List<CharSequence>) {
+        val words = Mnemonics.getCachedWords(Locale.ENGLISH.language)
+        val i = input.indexOfFirst { it !in words }
         if (i == -1) throw AssertionError()
-        val str = getString(R.string.recovery_code_error_invalid_word, e.suggestion1, e.suggestion2)
+        val str = getString(R.string.recovery_code_error_invalid_word)
         showError(i, str)
     }
 
@@ -235,7 +232,7 @@ class RecoveryCodeInputFragment : Fragment() {
     private fun debugPreFill() {
         val words = viewModel.wordList
         for (i in words.indices) {
-            getWordLayout(i).editText!!.setText(words[i])
+            getWordLayout(i).editText!!.setText(String(words[i]))
         }
     }
 

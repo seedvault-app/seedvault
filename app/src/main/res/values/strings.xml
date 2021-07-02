@@ -82,8 +82,8 @@
     <string name="recovery_code_input_hint_11">Word 11</string>
     <string name="recovery_code_input_hint_12">Word 12</string>
     <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
-    <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
-    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words and try again!</string>
+    <string name="recovery_code_error_invalid_word">Wrong word.</string>
+    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words as well as their position and try again!</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
     <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
     <string name="recovery_code_verification_error_title">Incorrect recovery code</string>
