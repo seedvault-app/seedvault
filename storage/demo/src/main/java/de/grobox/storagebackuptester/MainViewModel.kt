@@ -68,6 +68,8 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             val text = storageBackup.getUriSummaryString()
             _backupLog.postValue(BackupProgress(0, 0, "Scanning: $text\n"))
+            // FIXME: This might get killed if we navigate away from the activity.
+            //  A foreground service would avoid that.
             if (storageBackup.runBackup(backupObserver)) {
                 // only prune old backups when backup run was successful
                 storageBackup.pruneOldBackups(backupObserver)
