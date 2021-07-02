@@ -41,7 +41,7 @@ android_app {
         "seedvault-lib-koin-android",
         "seedvault-lib-koin-androidx-viewmodel",
         // bip39
-        "seedvault-lib-novacrypto-bip39",
+        "seedvault-lib-kotlin-bip39",
     ],
     manifest: "app/src/main/AndroidManifest.xml",
 

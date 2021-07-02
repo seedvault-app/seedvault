@@ -23,7 +23,7 @@ class RecoveryCodeOutputFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
 
         wordList = v.findViewById(R.id.wordList)

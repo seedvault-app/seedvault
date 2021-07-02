@@ -123,7 +123,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: "${rootProject.rootDir}/libs/koin-android")
     implementation fileTree(include: ['*.aar'], dir: "${rootProject.rootDir}/libs/koin-android")
 
-    implementation fileTree(include: ['*.jar'], dir: "${rootProject.rootDir}/libs/novacrypto-bip39")
+    implementation fileTree(include: ['kotlin-bip39-1.0.2.jar'], dir: "${rootProject.rootDir}/libs")
 
     /**
      * Test Dependencies (do not concern the AOSP build)

@@ -44,7 +44,7 @@ fun ByteArray.toHexString(spacer: String = " "): String {
     for (b in this) {
         str += String.format("%02X$spacer", b)
     }
-    return str
+    return str.trimEnd()
 }
 
 fun ByteArray.toIntString(): String {
