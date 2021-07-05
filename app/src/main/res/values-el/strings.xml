@@ -132,11 +132,11 @@
     <string name="recovery_code_recreated">Ο νέος κωδικός επαναφοράς δημιουργήθηκε επιτυχώς</string>
     <string name="recovery_code_verification_new_dialog_message">Η δημιουργία νέου κωδικού θα καταστήσει τα υπάρχοντα αντίγραφα ασφαλείας σας μη-προσβάσιμα. Θα προσπαθήσουμε να τα διαγράψουμε αν είναι δυνατόν.
 \n
-\nΘέλετε να προχωρήσετε;</string>
+\nΕίστε βέβαιοι ότι θέλετε να συνεχίσετε;</string>
     <string name="recovery_code_verification_new_dialog_title">Περιμένετε μία στιγμή…</string>
     <string name="recovery_code_verification_generate_new">Δημιουργία νέου κωδικού</string>
     <string name="recovery_code_verification_try_again">Δοκιμάστε ξανά</string>
-    <string name="recovery_code_verification_error_message">Έχετε βάλει μη έγκυρο κωδικό επαναφοράς. Δοκιμάστε πάλι!
+    <string name="recovery_code_verification_error_message">Έχετε εισάγει μη έγκυρο κωδικό επαναφοράς. Δοκιμάστε πάλι!
 \n
 \nΑν χάσατε τον κωδικό σας, πατήστε \"Δημιουργία νέου κωδικού\" παρακάτω.</string>
     <string name="recovery_code_verification_error_title">Λάθος κωδικός επαναφοράς</string>
@@ -144,4 +144,5 @@
     <string name="recovery_code_verification_ok_title">Ο κωδικός επαναφοράς επαληθεύτηκε</string>
     <string name="settings_backup_recovery_code_summary">Επαλήθευση υπάρχοντος κωδικού ή δημιουργία καινούριου</string>
     <string name="settings_backup_recovery_code">Κωδικός Επαναφοράς</string>
+    <string name="settings_backup_status_title">Κατάσταση αντιγράφου ασφαλείας</string>
 </resources>
