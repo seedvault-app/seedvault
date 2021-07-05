@@ -26,7 +26,7 @@
     <string name="recovery_code_input_hint_3">Palavra 3</string>
     <string name="recovery_code_input_hint_2">Palavra 2</string>
     <string name="recovery_code_input_hint_1">Palavra 1</string>
-    <string name="recovery_code_done_button">Concluído</string>
+    <string name="recovery_code_done_button">Verifique</string>
     <string name="recovery_code_input_intro">Digite o código de recuperação de 12 palavras que você anotou ao configurar backups.</string>
     <string name="recovery_code_confirm_intro">Digite seu código de recuperação de 12 palavras para garantir que funcionará quando você precisar.</string>
     <string name="recovery_code_confirm_button">Confirmar código</string>
@@ -130,4 +130,19 @@
     <string name="backup_contacts">Contatos locais</string>
     <string name="backup_call_log">Histórico de chamadas</string>
     <string name="backup_settings">Configurações do dispositivo</string>
+    <string name="recovery_code_recreated">Novo código de recuperação foi criado com sucesso</string>
+    <string name="recovery_code_verification_new_dialog_message">Gerar um novo código fará seus backups existentes inacessíveis. Tentaremos deletá-los se possível.
+\n
+\nTem certeza que quer fazer isso\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Espere um segundo…</string>
+    <string name="recovery_code_verification_generate_new">Gerar um novo código</string>
+    <string name="recovery_code_verification_try_again">Tente novamente</string>
+    <string name="recovery_code_verification_error_message">Você inseriu um código de recuperação inválido. Por favor, tente novamente.
+\n
+\nSe você perdeu seu código, toque em \'Gerar um novo código\' abaixo.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperação incorreto</string>
+    <string name="recovery_code_verification_ok_message">Seu código está correto e funcionará para restaurar o seu backup.</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
+    <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
+    <string name="settings_backup_recovery_code">Código de recuperação</string>
 </resources>
