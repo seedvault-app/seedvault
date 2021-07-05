@@ -23,7 +23,7 @@
     <string name="recovery_code_input_hint_3">Palabra 3</string>
     <string name="recovery_code_input_hint_2">Palabra 2</string>
     <string name="recovery_code_input_hint_1">Palabra 1</string>
-    <string name="recovery_code_done_button">Hecho</string>
+    <string name="recovery_code_done_button">Verifica</string>
     <string name="recovery_code_title">Código de recuperación</string>
     <string name="storage_check_fragment_error_button">Atrás</string>
     <string name="storage_fake_nextcloud_summary_installed">Pulse para configurar una cuenta</string>
@@ -130,4 +130,19 @@
     <string name="backup_sms">Mensajes de texto SMS</string>
     <string name="backup_section_system">Aplicaciones del sistema</string>
     <string name="settings_backup_status_title">Estado de la copia de seguridad</string>
+    <string name="settings_backup_recovery_code_summary">Verifica el código existente o genera uno nuevo</string>
+    <string name="settings_backup_recovery_code">Código de recuperación</string>
+    <string name="recovery_code_verification_new_dialog_title">Espera un momento…</string>
+    <string name="recovery_code_verification_generate_new">Generar un código nuevo</string>
+    <string name="recovery_code_verification_try_again">Inténtalo de nuevo</string>
+    <string name="recovery_code_verification_error_message">Has introducido un código de recuperación inválido. Intentalo de nuevo. 
+\n
+\nSi has perdido tu código, toca \'Generar un código nuevo\' presente abajo.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperación incorrecto</string>
+    <string name="recovery_code_verification_ok_message">Tu código es correcto y funcionará al restaurar tu copia de seguridad.</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperación verificado</string>
+    <string name="recovery_code_recreated">Se ha creado un código de recuperación nuevo satisfactoriamente</string>
+    <string name="recovery_code_verification_new_dialog_message">Generar un código nuevo hará que tus copias de seguridad existentes se vuelvan inaccesibles. Intentaremos eliminarlas si es posible.
+\n
+\n¿Estás seguro de que quieres hacerlo\?</string>
 </resources>
