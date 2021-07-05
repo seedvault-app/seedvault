@@ -57,19 +57,21 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wordList"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/confirmCodeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintVertical_chainStyle="spread_inside"
         app:spanCount="2"
         tools:itemCount="12"
         tools:listitem="@layout/list_item_recovery_code_output" />
 
     <Button
         android:id="@+id/confirmCodeButton"
+        style="@style/ActionPrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -78,6 +80,7 @@
         android:text="@string/recovery_code_confirm_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

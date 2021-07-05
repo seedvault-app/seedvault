@@ -28,7 +28,7 @@
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
-    <string name="settings_backup_recovery_code">Recovery Code</string>
+    <string name="settings_backup_recovery_code">Recovery code</string>
     <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
 
     <!-- Storage -->
@@ -39,8 +39,8 @@
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
     <string name="storage_fake_nextcloud_title" translatable="false">Nextcloud</string>
-    <string name="storage_fake_nextcloud_summary">Click to install</string>
-    <string name="storage_fake_nextcloud_summary_installed">Click to set up account</string>
+    <string name="storage_fake_nextcloud_summary">Tap to install</string>
+    <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
@@ -154,6 +154,6 @@
     <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_source_code">Source Code: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Source code: https://github.com/seedvault-app/seedvault</string>
 
 </resources>

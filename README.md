@@ -13,10 +13,10 @@ A backup application for the [Android Open Source Project](https://source.androi
 
 - Android 11
 
-For older versions of Android, check out [the branches](https://github.com/stevesoltys/seedvault/branches).
+For older versions of Android, check out [the branches](https://github.com/seedvault-app/seedvault/branches).
 
 ## Getting Started
-- Check out [the wiki](https://github.com/stevesoltys/seedvault/wiki) for information on building the application with 
+- Check out [the wiki](https://github.com/seedvault-app/seedvault/wiki) for information on building the application with 
 AOSP.
 
 ## What makes this different?
