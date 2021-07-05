@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="recovery_code_error_invalid_word">తప్పు పదం. మీ ఉద్దేశ్యం %1$s లేదా %2$s\?</string>
+    <string name="recovery_code_input_hint_12">పదం 12</string>
+    <string name="recovery_code_input_hint_11">పదం 11</string>
+    <string name="recovery_code_input_hint_10">పదం 10</string>
+    <string name="recovery_code_input_hint_9">పదం 9</string>
+    <string name="recovery_code_input_hint_8">పదం 8</string>
+    <string name="recovery_code_input_hint_7">పదం 7</string>
+    <string name="recovery_code_input_hint_6">పదం 6</string>
+    <string name="recovery_code_input_hint_5">పదం 5</string>
+    <string name="recovery_code_input_hint_4">పదం 4</string>
+    <string name="recovery_code_input_hint_3">పదం 3</string>
+    <string name="recovery_code_input_hint_2">పదం 2</string>
+    <string name="recovery_code_input_hint_1">పదం 1</string>
+    <string name="recovery_code_done_button">పూర్తి</string>
+    <string name="storage_check_fragment_error_button">తిరిగి వెనకకు</string>
+    <string name="settings_backup_status_title">బ్యాకప్ స్థితి</string>
+    <string name="settings_backup_apk_dialog_cancel">రద్దు చేయండి</string>
+    <string name="settings_auto_restore_title">స్వయంచాలక పునరుద్ధరణ</string>
+    <string name="settings_info">అన్ని బ్యాకప్‌లు మీ చరవాణి లో గుప్తీకరించబడతాయి. బ్యాకప్ నుండి పునరుద్ధరించడానికి మీకు మీ 12-పదాల రికవరీ కోడ్ అవసరం.</string>
+    <string name="settings_backup_last_backup_never">ఎప్పుడూ</string>
+    <string name="settings_backup_location_internal">అంతర్గత నిల్వ</string>
+    <string name="settings_backup_location_none">ఏమియును లేదు</string>
+    <string name="restore_backup_button">బ్యాకప్‌ను పునరుద్ధరించండి</string>
+    <string name="current_destination_string">బ్యాకప్ స్థితి మరియు సెట్టింగ్‌లు</string>
+    <string name="data_management_label">సీడ్‌వాల్ట్ బ్యాకప్</string>
+    <string name="about_title">గురించి</string>
+</resources>
