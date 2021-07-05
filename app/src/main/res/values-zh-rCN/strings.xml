@@ -88,7 +88,7 @@
     <string name="storage_check_fragment_backup_title">初始化备份位置中…</string>
     <string name="storage_fake_nextcloud_summary_installed">点击设置账户</string>
     <string name="storage_fake_nextcloud_summary">点击安装</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; 可用</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用</string>
     <string name="storage_fake_drive_summary">需要插入</string>
     <string name="storage_fake_drive_title">U盘</string>
     <string name="storage_fragment_warning">能访问您存储位置的人能知道您使用了哪些应用程序，但无法访问应用程序的数据。</string>
