@@ -29,4 +29,10 @@
     <string name="settings_backup_apk_summary">Utwórz kopie zapasowe aplikacji. W przeciwnym razie utworzona zostanie kopia zapasowa tylko danych aplikacji.</string>
     <string name="settings_auto_restore_summary_usb">Uwaga: Twój %1$s musi być podłączony, aby to zadziałało.</string>
     <string name="backup">Kopia zapasowa</string>
+    <string name="settings_backup_status_title">Status kopii zapasowej</string>
+    <string name="settings_backup_apk_dialog_message">Wyłączona kopia zapasowa aplikacji w dalszym ciągu zapisuje kopie danych aplikacji. Nie przywróci ich jednak automatycznie. 
+\n
+\nBędzie trzeba zainstalować ręcznie wszystkie twoje aplikacje, gdy funkcja \"Przywracania Automatycznego\" jest włączona.</string>
+    <string name="current_destination_string">Kopia zapasowa statusu i ustawień</string>
+    <string name="data_management_label">Kopia zapasowa Seedvault</string>
 </resources>
