@@ -68,9 +68,9 @@
     <string name="storage_internal_warning_message">Vous avez choisi le stockage interne pour votre sauvegarde. Ceci ne sera pas disponible lorsque votre téléphone sera perdu ou cassé.</string>
     <string name="restore_finished_error">Une erreur s\'est produite lors de la restauration de la sauvegarde.</string>
     <string name="restore_finished_success">Restauration terminée</string>
-    <string name="restore_app_quota_exceeded">Quota de sauvegarde dépassé</string>
+    <string name="restore_app_quota_exceeded">Le quota de sauvegarde a été dépassé</string>
     <string name="restore_app_not_installed">Application non installée</string>
-    <string name="restore_app_not_allowed">L\'application n\'autorise pas la sauvegarde</string>
+    <string name="restore_app_not_allowed">L\'application n\'a pas permis la sauvegarde</string>
     <string name="backup_app_no_data">L\'application n\'a signalé aucune donnée à sauvegarder</string>
     <string name="restore_magic_package">Gestionnaire de paquets système</string>
     <string name="restore_restoring">Restauration de la sauvegarde</string>
@@ -104,10 +104,30 @@
 \nVous devrez installer toutes vos applications manuellement tout en ayant « Restauration automatique » allumé.</string>
     <string name="settings_backup_apk_dialog_title">Vraiment désactiver la sauvegarde des applications \?</string>
     <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
-    <string name="restore_app_was_stopped">Non sauvegardé car il n\'a pas été utilisé récemment</string>
-    <string name="restore_app_not_yet_backed_up">Non sauvegardé</string>
+    <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
+    <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées. Appuyez pour en savoir plus.</string>
     <string name="notification_backup_already_running">Sauvegarde déjà en cours</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Compte non disponible. Configurez-en un (ou désactivez le mot de passe).</string>
     <string name="current_destination_string">Statut et paramètres de sauvegarde</string>
+    <string name="about_version">Version : %s</string>
+    <string name="restore_restoring_error_message">Vous pouvez réinstaller ces applications manuellement et Automatic restore essaiera de restaurer leurs données (si activé).</string>
+    <string name="restore_restoring_error_title">Impossible de restaurer certaines applications</string>
+    <string name="restore_installing_tap_to_install">Toucher pour installer</string>
+    <string name="restore_installing_error_message">Les données ne peuvent être restaurées que si l\'app est installée.
+\n
+\nToucher les apps ayant échoué pour essayer de les installer manuellement avant de continuer.</string>
+    <string name="restore_installing_error_title">Certains applications n\'ont pas été installées</string>
+    <string name="backup_section_not_allowed">Applications n\'autorisant pas de sauvegarde</string>
+    <string name="backup_app_quota_exceeded">Quota de sauvegarde dépassé</string>
+    <string name="backup_app_was_stopped">Pas sauvegardé car pas utilisé récemment</string>
+    <string name="backup_app_not_yet_backed_up">En attente de backup…</string>
+    <string name="backup_section_user">Apps installées</string>
+    <string name="backup_contacts">Contacts locaux</string>
+    <string name="backup_call_log">Historique d\'appel</string>
+    <string name="backup_settings">Paramètres de l\'appareil</string>
+    <string name="backup_sms">Message SMS</string>
+    <string name="backup_section_system">Apps système</string>
+    <string name="settings_backup_status_title">Statut du backup</string>
+    <string name="data_management_label">Backup Seedvault</string>
 </resources>
