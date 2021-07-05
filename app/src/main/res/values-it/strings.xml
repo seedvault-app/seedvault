@@ -65,12 +65,12 @@
     <string name="settings_auto_restore_summary_usb">Nota: è necessario collegare %1$s per permettere il ripristino.</string>
     <string name="current_destination_string">Stato backup e impostazioni</string>
     <string name="data_management_label">Backup Seedvault</string>
-    <string name="storage_available_bytes">&lt;xliff:g xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\" example=\"1 GB\" id=\"size\"&gt;%1$s&lt;/xliff:g&gt; liberi</string>
+    <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size">%1$s</xliff:g> liberi</string>
     <string name="about_source_code">Codice Sorgente: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Sponsorizzato da: &lt;a href=\"https://www.calyxinstitute.org\"&gt;Calyx Institute&lt;/a&gt; per essere utilizzato in &lt;a href=\"https://calyxos.org\"&gt;CalyxOS&lt;/a&gt;</string>
-    <string name="about_design">Design di: &lt;a href=\"https://www.glennsorrentino.com/\"&gt;Glenn Sorrentino&lt;/a&gt;</string>
-    <string name="about_author">Scritto da: &lt;a href=\"https://github.com/stevesoltys\"&gt;Steve Soltys&lt;/a&gt; e&lt;a href=\"https://blog.grobox.de\"&gt;Torsten Grote&lt;/a&gt;</string>
-    <string name="about_license">Licenza: &lt;a href=\"https://www.apache.org/licenses/LICENSE-2.0\"&gt;Apache2&lt;/a&gt;</string>
+    <string name="about_sponsor">Sponsorizzato da: <a href="https://www.calyxinstitute.org">Calyx Institute</a> per essere utilizzato in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design di: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Scritto da: <a href="https://github.com/stevesoltys">Steve Soltys</a> e<a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licenza: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Versione: %s</string>
     <string name="about_summary">Una applicazione di backup sta utilizzando la API interna di backup di Android.</string>
     <string name="about_title">Ulteriori info</string>
