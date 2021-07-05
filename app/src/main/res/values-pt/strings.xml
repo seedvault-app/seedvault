@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="notification_success_text">%1$d de %2$d app com backup. Toque para saber mais.</string>
-    <string name="notification_backup_already_running">Backup já em andamento</string>
+    <string name="notification_success_text">Feito o backup da app %1$d de %2$d . Toque para saber mais.</string>
+    <string name="notification_backup_already_running">Backup em andamento</string>
     <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para o seu uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
@@ -19,7 +19,7 @@
     <string name="restore_app_quota_exceeded">Cota de backup excedida</string>
     <string name="restore_app_not_installed">App não instalado</string>
     <string name="restore_app_not_allowed">A app não permite backup</string>
-    <string name="backup_app_no_data">A app não relatou nenhuns dados para backup</string>
+    <string name="backup_app_no_data">App não relatou dados para backup</string>
     <string name="restore_magic_package">Gestor de pacote do sistema</string>
     <string name="restore_restoring">Restaurando backup</string>
     <string name="restore_next">Próximo</string>
@@ -106,4 +106,28 @@
     <string name="settings_backup">Fazer backup dos meus dados</string>
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="backup">Backup</string>
+    <string name="about_version">Versão: %s</string>
+    <string name="restore_restoring_error_message">Você pode reinstalar essas apps manualmente e a restauração automática tentará restaurar seus dados (quando habilitado).</string>
+    <string name="restore_restoring_error_title">Não foi possível restaurar algumas apps</string>
+    <string name="restore_installing_tap_to_install">Toque para instalar</string>
+    <string name="restore_installing_error_message">Dados apenas podem ser restaurados se uma app está instalada.
+\n
+\nToque apps falhadas para tentar instalá-las manualmente antes de prosseguir.</string>
+    <string name="restore_installing_error_title">Algumas apps não foram instaladas</string>
+    <string name="backup_section_not_allowed">Apps que não permitem backup dos dados</string>
+    <string name="backup_app_quota_exceeded">Quota de backup excedida</string>
+    <string name="restore_app_was_stopped">Não foi feito o backup por não ter sido usado recentemente</string>
+    <string name="backup_app_was_stopped">Backup não realizado por ter sido usado recentemente</string>
+    <string name="restore_app_not_yet_backed_up">Ainda não foi feito o backup</string>
+    <string name="backup_app_not_yet_backed_up">Aguardando back up…</string>
+    <string name="backup_section_user">Apps Instaladas</string>
+    <string name="backup_contacts">Contatos locais</string>
+    <string name="backup_call_log">Histórico de chamadas</string>
+    <string name="backup_settings">Configurações do dispositivo</string>
+    <string name="backup_sms">Mensagens de texto SMS</string>
+    <string name="backup_section_system">Apps de sistema</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Crie uma (ou desabilite a senha).</string>
+    <string name="settings_backup_status_title">Status do backup</string>
+    <string name="current_destination_string">Status do backup e configurações</string>
+    <string name="data_management_label">Backup do Seedvault</string>
 </resources>
