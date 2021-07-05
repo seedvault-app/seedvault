@@ -14,9 +14,9 @@
     <string name="restore_finished_button">Bitir</string>
     <string name="restore_finished_error">Yedekleme geri yüklenirken bir hata oluştu.</string>
     <string name="restore_finished_success">Geri yükleme tamamlandı</string>
-    <string name="restore_app_quota_exceeded">Yedekleme kotası aşıldı</string>
+    <string name="restore_app_quota_exceeded">Yedekleme kotası aşılmıştı</string>
     <string name="restore_app_not_installed">Uygulama kurulu değil</string>
-    <string name="restore_app_not_allowed">Uygulama yedeklemeye izin vermiyor</string>
+    <string name="restore_app_not_allowed">Uygulama yedeklemeye izin vermedi</string>
     <string name="backup_app_no_data">Uygulama yedekleme için veri bildirmedi</string>
     <string name="restore_magic_package">Sistem paket yöneticisi</string>
     <string name="restore_restoring">Yedekleme geri yükleniyor</string>
@@ -62,7 +62,7 @@
     <string name="recovery_code_input_hint_3">3. sözcük</string>
     <string name="recovery_code_input_hint_2">2. sözcük</string>
     <string name="recovery_code_input_hint_1">1. sözcük</string>
-    <string name="recovery_code_done_button">Bitti</string>
+    <string name="recovery_code_done_button">Doğrula</string>
     <string name="recovery_code_input_intro">Yedeklemeleri ayarlarken yazdığınız 12 sözcükten oluşan kurtarma kodunuzu girin.</string>
     <string name="recovery_code_confirm_intro">İhtiyacınız olduğunda çalışacağından emin olmak için 12 sözcükten oluşan kurtarma kodunuzu girin.</string>
     <string name="recovery_code_confirm_button">Kodu onayla</string>
@@ -104,11 +104,45 @@
     <string name="settings_backup_location">Yedekleme konumu</string>
     <string name="settings_backup">Verilerimi yedekle</string>
     <string name="restore_backup_button">Yedeklemeyi geri yükle</string>
-    <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmedi</string>
-    <string name="restore_app_not_yet_backed_up">Henüz yedeklenmedi</string>
+    <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmemişti</string>
+    <string name="restore_app_not_yet_backed_up">Henüz yedeklenmemişti</string>
     <string name="notification_success_text">%1$d / %2$d uygulama yedeklendi. Daha fazlasını öğrenmek için dokunun.</string>
     <string name="notification_backup_already_running">Yedekleme zaten devam ediyor</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Kullanılabilir hesap yok. Bir tane ayarlayın (veya parolayı devre dışı bırakın).</string>
     <string name="current_destination_string">Yedekleme durumu ve ayarları</string>
     <string name="data_management_label">Seedvault Yedeklemesi</string>
+    <string name="about_version">Sürüm: %s</string>
+    <string name="restore_restoring_error_message">Bu uygulamaları elle yeniden kurabilirsiniz ve (etkinleştirildiğinde) otomatik geri yükleme onların verilerini geri yüklemeyi deneyecektir.</string>
+    <string name="restore_restoring_error_title">Bazı uygulamalar geri yüklenemiyor</string>
+    <string name="restore_installing_tap_to_install">Kurmak için dokunun</string>
+    <string name="restore_installing_error_message">Veriler yalnızca bir uygulama kuruluysa geri yüklenebilir.
+\n
+\nDevam etmeden önce elle kurmayı denemek için başarısız olan uygulamalara dokunun.</string>
+    <string name="restore_installing_error_title">Bazı uygulamalar kurulmadı</string>
+    <string name="backup_section_not_allowed">Veri yedeklemeye izin vermeyen uygulamalar</string>
+    <string name="backup_app_quota_exceeded">Yedekleme kotası aşıldı</string>
+    <string name="backup_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmedi</string>
+    <string name="backup_app_not_yet_backed_up">Yedekleme bekleniyor…</string>
+    <string name="backup_section_user">Kurulu uygulamalar</string>
+    <string name="backup_contacts">Yerel kişiler</string>
+    <string name="backup_call_log">Arama geçmişi</string>
+    <string name="backup_settings">Aygıt ayarları</string>
+    <string name="backup_sms">SMS metin mesajları</string>
+    <string name="backup_section_system">Sistem uygulamaları</string>
+    <string name="settings_backup_status_title">Yedekleme durumu</string>
+    <string name="recovery_code_recreated">Yeni kurtarma kodu başarıyla oluşturuldu</string>
+    <string name="recovery_code_verification_new_dialog_message">Yeni bir kod oluşturmak, var olan yedeklemelerinizi erişilemez hale getirecektir. Mümkünse onları silmeye çalışacağız.
+\n
+\nBunu yapmak istediğinizden emin misiniz\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Bir saniye bekleyin…</string>
+    <string name="recovery_code_verification_generate_new">Yeni kod oluştur</string>
+    <string name="recovery_code_verification_try_again">Tekrar dene</string>
+    <string name="recovery_code_verification_error_message">Geçersiz bir kurtarma kodu girdiniz. Lütfen tekrar deneyin!
+\n
+\nKodunuzu kaybettiyseniz, aşağıdaki \'Yeni kod oluştur\' düğmesine dokunun.</string>
+    <string name="recovery_code_verification_error_title">Yanlış kurtarma kodu</string>
+    <string name="recovery_code_verification_ok_message">Kodunuz doğru ve yedeklemenizi geri yüklemek için kullanılabilir.</string>
+    <string name="recovery_code_verification_ok_title">Kurtarma kodu doğrulandı</string>
+    <string name="settings_backup_recovery_code_summary">Var olan kodu doğrulayın veya yeni bir tane oluşturun</string>
+    <string name="settings_backup_recovery_code">Kurtarma Kodu</string>
 </resources>
