@@ -67,7 +67,7 @@
     <string name="recovery_code_input_hint_3">Слово 3</string>
     <string name="recovery_code_input_hint_2">Слово 2</string>
     <string name="recovery_code_input_hint_1">Слово 1</string>
-    <string name="recovery_code_done_button">Готово</string>
+    <string name="recovery_code_done_button">Проверить</string>
     <string name="recovery_code_input_intro">Введите код восстановления из 12 слов, который вы записали при настройке резервного копирования.</string>
     <string name="recovery_code_confirm_intro">Введите код восстановления из 12 слов, чтобы убедиться, что он будет работать тогда, когда он вам понадобится.</string>
     <string name="recovery_code_confirm_button">Подтвердить код</string>
