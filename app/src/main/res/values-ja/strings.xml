@@ -1,2 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_success_title">バックアップが完了しました</string>
+    <string name="notification_title">バックアップが実行中です</string>
+    <string name="notification_failed_title">バックアップが失敗しました</string>
+    <string name="notification_backup_already_running">バックアップはすでに実行中です</string>
+    <string name="recovery_code_verification_error_title">不正なリカバリーコード</string>
+    <string name="recovery_code_verification_ok_title">リカバリーコードが確認できました</string>
+    <string name="recovery_code_verification_new_dialog_message">新規コードを作成すると、作成済みのバックアップにアクセスできなくなります。システムは作成済みのバックアップを削除します。
+\n
+\n本当に実行しますか？</string>
+    <string name="recovery_code_verification_new_dialog_title">しばらくお待ちください…</string>
+    <string name="recovery_code_verification_error_message">リカバリーコードが違います。もう一度入力してください！
+\n
+\nコードを紛失した場合は、下の「新規コードを作成」をタップしてください。</string>
+    <string name="recovery_code_verification_generate_new">新規コードを作成</string>
+    <string name="recovery_code_title">リカバリーコード</string>
+    <string name="storage_fake_drive_title">USBフラッシュドライブ</string>
+</resources>
