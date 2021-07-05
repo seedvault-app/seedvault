@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings_backup">আমার ডাটা ব্যাকআপ করো</string>
+    <string name="restore_backup_button">ব্যাকআপ পুনরুদ্ধার</string>
+    <string name="backup">ব্যাকআপ</string>
+</resources>
