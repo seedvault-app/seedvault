@@ -4,13 +4,11 @@
     <string name="notification_error_title">မှားယွင်းနေပါသည်</string>
     <string name="notification_error_channel_title">သတိပေးချက်အမှား</string>
     <string name="notification_failed_title">မအောင်မြင်ပါ</string>
-    <string name="notification_success_text">%1$d of %2$d apps backed up. Tap to learn more.</string>
     <string name="notification_success_title">Backup ပြီးဆုံးသွားပါပြီ</string>
     <string name="notification_backup_already_running">Back upလုပ်နေပါသည်</string>
     <string name="notification_title">Back up ပြန်ဆောင်ရွက်နေပါသည်။</string>
     <string name="notification_channel_title">အရန်ကူးအကြောင်းကြားစာ</string>
     <string name="recovery_code_error_checksum_word">သင်ကုဒ်မှားယွင်းနေပါသည်။ပြန်လည်စစ်ဆေးပြီပြန်ရိုက်ထည့်ပါ</string>
-    <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s\?</string>
     <string name="recovery_code_error_empty_word">စကာလုံးများမေ့လျော့ခြင်: .</string>
     <string name="recovery_code_input_hint_12">စကားလုံးတစ်ဆယ်နှစ်</string>
     <string name="recovery_code_input_hint_11">စကားလုံးတစ်ဆယ်တစ်</string>
