@@ -111,4 +111,15 @@
     <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Configure uma (ou desative a senha).</string>
     <string name="current_destination_string">Status e configurações do Backup</string>
     <string name="data_management_label">Backup Seedvault</string>
+    <string name="restore_restoring_error_title">Incapaz de restaurar alguns apps</string>
+    <string name="restore_installing_error_title">Alguns apps não foram instalados</string>
+    <string name="restore_installing_tap_to_install">Toque para instalar</string>
+    <string name="restore_installing_error_message">Dados só podem ser restaurados se um app estiver instalado.
+\n
+\nToque em apps falhos para tentar instalá-los manualmente antes de proceder.</string>
+    <string name="backup_section_not_allowed">Apps que não permitem backup de dados</string>
+    <string name="backup_section_user">Apps instalados</string>
+    <string name="backup_sms">Mensagens de texto SMS</string>
+    <string name="backup_section_system">Apps do sistema</string>
+    <string name="settings_backup_status_title">Status do backup</string>
 </resources>
