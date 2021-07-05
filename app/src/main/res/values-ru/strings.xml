@@ -87,7 +87,7 @@
     <string name="storage_fragment_warning">Люди, имеющие доступ к вашему хранилищу, могут узнать, какие приложения вы используете, но не получат доступа к данным приложений.</string>
     <string name="storage_fragment_restore_title">Где найти резервные копии\?</string>
     <string name="storage_fragment_backup_title">Выберите, где хранить резервные копии</string>
-    <string name="settings_backup_now">Сделать резервную копию сейчас</string>
+    <string name="settings_backup_now">Создать резервную копию сейчас</string>
     <string name="settings_backup_exclude_apps">Исключить приложения</string>
     <string name="settings_backup_status_summary">Последняя резервная копия: %1$s</string>
     <string name="settings_backup">Резервное копирование моих данных</string>
