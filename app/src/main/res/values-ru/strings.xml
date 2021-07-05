@@ -130,4 +130,19 @@
     <string name="backup_sms">Сообщения</string>
     <string name="backup_section_system">Системные приложения</string>
     <string name="settings_backup_status_title">Состояние резервного копирования</string>
+    <string name="recovery_code_recreated">Новый код восстановления успешно создан</string>
+    <string name="recovery_code_verification_new_dialog_message">Генерация нового кода сделает существующие резервные копии недоступными. Мы постараемся удалить их, если это возможно.
+\n
+\nВы уверены, что хотите это сделать\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Подождите одну секунду…</string>
+    <string name="recovery_code_verification_generate_new">Сгенерировать новый код</string>
+    <string name="recovery_code_verification_try_again">Повторить</string>
+    <string name="recovery_code_verification_error_message">Вы ввели неверный код восстановления. Пожалуйста, попробуйте ещё раз!
+\n
+\nЕсли вы потеряли свой код, нажмите на «Сгенерировать новый код» ниже.</string>
+    <string name="recovery_code_verification_error_title">Неверный код восстановления</string>
+    <string name="recovery_code_verification_ok_message">Ваш код правильный и будет работать для восстановления вашей резервной копии.</string>
+    <string name="recovery_code_verification_ok_title">Код восстановления проверен</string>
+    <string name="settings_backup_recovery_code_summary">Проверить существующий код или сгенерировать новый</string>
+    <string name="settings_backup_recovery_code">Код восстановления</string>
 </resources>
