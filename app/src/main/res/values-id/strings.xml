@@ -1,2 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="storage_fragment_backup_title">Pilih tempat untuk menyimpan cadangan</string>
+    <string name="settings_backup_now">Cadangkan sekarang</string>
+    <string name="settings_backup_exclude_apps">Kecualikan aplikasi</string>
+    <string name="settings_backup_status_summary">Pencadangan terakhir: %1$s</string>
+    <string name="settings_backup_status_title">Status pencadangan</string>
+    <string name="settings_backup_apk_dialog_disable">Nonaktifkan pencadangan aplikasi</string>
+    <string name="settings_backup_apk_dialog_cancel">Batalkan</string>
+    <string name="settings_backup_apk_dialog_message">Pencadangan aplikasi yang dinonaktifkan akan tetap mencadangkan data aplikasi. Namun, tidak akan dipulihkan secara otomatis.
+\n
+\nAnda perlu menginstal semua aplikasi Anda secara manual saat \"Pemulihan Otomatis\" diaktifkan.</string>
+    <string name="settings_backup_apk_dialog_title">Yakin menonaktifkan pencadangan aplikasi\?</string>
+    <string name="settings_backup_apk_summary">Cadangkan aplikasi itu sendiri. Jika tidak, hanya data aplikasi yang akan dicadangkan.</string>
+    <string name="settings_backup_apk_title">Pencadangan aplikasi</string>
+    <string name="settings_category_app_data_backup">Pencadangan data aplikasi</string>
+    <string name="settings_auto_restore_summary_usb">Catatan: %1$s Anda harus dicolokkan agar ini berfungsi.</string>
+    <string name="settings_auto_restore_summary">Saat menginstal ulang aplikasi, pulihkan pengaturan dan data yang dicadangkan.</string>
+    <string name="settings_auto_restore_title">Pemulihan otomatis</string>
+    <string name="settings_info">Semua cadangan terenkripsi di ponsel Anda. Untuk memulihkannya, anda memerlukan kode dari 12-word recovery.</string>
+    <string name="settings_backup_last_backup_never">Tidak pernah</string>
+    <string name="settings_backup_location_internal">Penyimpanan internal</string>
+    <string name="settings_backup_location_none">Tidak ada</string>
+    <string name="settings_backup_location">Lokasi pencadangan</string>
+    <string name="settings_backup">Cadangkan data saya</string>
+    <string name="restore_backup_button">Pulihkan cadangan</string>
+    <string name="backup">Cadangan</string>
+</resources>
