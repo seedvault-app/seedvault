@@ -7,7 +7,7 @@
     <string name="restore_app_was_stopped">앱을 최근에 사용하지 않아 백업되지 않음</string>
     <string name="restore_app_not_allowed">앱이 백업을 허용하지 않음</string>
     <string name="restore_app_not_installed">앱이 설치되지 않음</string>
-    <string name="restore_app_quota_exceeded">백업 한도 초과</string>
+    <string name="restore_app_quota_exceeded">백업 한도가 초과됨</string>
     <string name="restore_magic_package">시스템 패키지 관리자</string>
     <string name="restore_installing_packages">앱 재설치 중</string>
     <string name="restore_set_empty_result">주어진 위치에서 알맞은 백업을 찾을 수 없습니다.
@@ -73,7 +73,7 @@
     <string name="recovery_code_input_hint_3">단어 3</string>
     <string name="recovery_code_input_hint_2">단어 2</string>
     <string name="recovery_code_input_hint_1">단어 1</string>
-    <string name="recovery_code_done_button">완료</string>
+    <string name="recovery_code_done_button">확인</string>
     <string name="storage_fragment_backup_title">백업을 보관할 위치 선택</string>
     <string name="settings_backup_now">지금 백업</string>
     <string name="settings_backup_exclude_apps">앱 제외</string>
@@ -105,4 +105,33 @@
     <string name="storage_fake_nextcloud_summary_installed">여기를 눌러 계정 만들기</string>
     <string name="storage_fake_nextcloud_summary">여기를 눌러 설치</string>
     <string name="storage_fragment_warning">사용자의 저장소에 접근 가능한 타인은 사용자가 쓰는 앱까지는 알 수 있지만 앱의 데이터에는 접근할 수 없습니다.</string>
+    <string name="restore_restoring_error_message">앱을 다시 설치하면 (자동 복원 기능이 켜져 있는 경우) 자동으로 해당 앱의 데이터를 복원할 것입니다.</string>
+    <string name="about_version">버전: %s</string>
+    <string name="restore_restoring_error_title">복원하지 못한 앱</string>
+    <string name="restore_installing_tap_to_install">눌러서 설치</string>
+    <string name="restore_installing_error_message">설치되어 있는 앱의 데이터만 복원할 수 있습니다.
+\n
+\n복원을 계속하려면 실패한 앱을 눌러 직접 앱을 설치하세요.</string>
+    <string name="restore_installing_error_title">설치되지 않은 앱</string>
+    <string name="restore_restore_set_times">최근 백업 %1$s · 처음 백업 %2$s.</string>
+    <string name="backup_section_not_allowed">데이터 백업을 허용하지 않는 앱</string>
+    <string name="backup_app_quota_exceeded">백업 한도 초과</string>
+    <string name="backup_app_no_data">앱에 백업이 필요한 데이터가 없음</string>
+    <string name="backup_app_was_stopped">최근에 사용하지 않아 백업되지 않음</string>
+    <string name="backup_app_not_yet_backed_up">백업 대기 중…</string>
+    <string name="backup_section_user">설치된 앱</string>
+    <string name="backup_contacts">기기 연락처</string>
+    <string name="backup_call_log">통화 내역</string>
+    <string name="backup_settings">기기 설정</string>
+    <string name="backup_sms">SMS 문자 메시지</string>
+    <string name="backup_section_system">시스템 앱</string>
+    <string name="notification_restore_error_text">백업에서 데이터를 복원하려면 앱을 설치하기 전에 %1$s을(를) 연결하세요.</string>
+    <string name="notification_error_action">문제 수정</string>
+    <string name="settings_backup_status_title">백업 상태</string>
+    <string name="recovery_code_verification_generate_new">새 코드 생성</string>
+    <string name="recovery_code_verification_try_again">다시 시도</string>
+    <string name="recovery_code_verification_ok_message">코드가 일치합니다. 백업을 복원할 때 사용할 수 있습니다.</string>
+    <string name="recovery_code_verification_ok_title">복구 코드 확인 완료</string>
+    <string name="settings_backup_recovery_code_summary">설정되어 있는 코드 검증 또는 새 복구 코드 생성</string>
+    <string name="settings_backup_recovery_code">복구 코드</string>
 </resources>
