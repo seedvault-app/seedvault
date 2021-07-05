@@ -47,7 +47,7 @@
     <string name="restore_finished_success">Η επαναφορά ολοκληρώθηκε</string>
     <string name="restore_app_quota_exceeded">Έγινε υπέρβαση του ορίου αντιγράφων ασφαλείας</string>
     <string name="restore_app_not_installed">Η εφαρμογή δεν έχει εγκατασταθεί</string>
-    <string name="restore_app_not_allowed">Η εφαρμογή δεν επιτρέπει τη δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="restore_app_not_allowed">Η εφαρμογή δεν επέτρεψε τη δημιουργία αντιγράφων ασφαλείας</string>
     <string name="backup_app_no_data">Η εφαρμογή δεν ανέφερε δεδομένα για δημιουργία αντιγράφων ασφαλείας</string>
     <string name="restore_magic_package">Διαχειριστής πακέτων συστήματος</string>
     <string name="restore_restoring">Επαναφορά αντιγράφου ασφαλείας</string>
@@ -94,7 +94,7 @@
     <string name="recovery_code_input_hint_3">Λέξη 3</string>
     <string name="recovery_code_input_hint_2">Λέξη 2</string>
     <string name="recovery_code_input_hint_1">Λέξη 1</string>
-    <string name="recovery_code_done_button">Ολοκληρώθηκε</string>
+    <string name="recovery_code_done_button">Επαλήθευση</string>
     <string name="recovery_code_input_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων που γράψατε κατά τη δημιουργία αντιγράφων ασφαλείας.</string>
     <string name="recovery_code_confirm_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων για να βεβαιωθείτε ότι θα λειτουργήσει όταν το χρειάζεστε.</string>
     <string name="recovery_code_confirm_button">Επιβεβαίωση κωδικού</string>
@@ -106,9 +106,43 @@
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
-    <string name="restore_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν χρησιμοποιήθηκε πρόσφατα</string>
+    <string name="restore_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν έχει χρησιμοποιηθεί πρόσφατα</string>
     <string name="restore_app_not_yet_backed_up">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Ο λογαριασμός δεν είναι διαθέσιμος. Ρυθμίστε έναν (ή απενεργοποιήστε τον κωδικό πρόσβασης).</string>
     <string name="current_destination_string">Κατάσταση αντιγράφων ασφαλείας και ρυθμίσεις</string>
     <string name="data_management_label">Αντίγραφα ασφαλείας Seedvault</string>
+    <string name="about_version">Έκδοση: %s</string>
+    <string name="restore_restoring_error_message">Μπορείτε να επαναγκαταστήσετε αυτές τις εφαρμογές χειροκίνητα και η Αυτόματη επαναφορά θα επιχειρήσει επαναφορά δεδομένων (όπου ενεργή).</string>
+    <string name="restore_restoring_error_title">Αδυναμία επαναφοράς ορισμένων εφαρμογών</string>
+    <string name="restore_installing_tap_to_install">Πατήστε για εγκατάσταση</string>
+    <string name="restore_installing_error_message">Η επαναφορά δεδομένων είναι δυνατή μόνο αν μία εφαρμογή έχει εγκατασταθεί.
+\n
+\nΠατήστε τις εφαρμογές που απέτυχαν για να της εγκαταστήσετε χειροκίνητα πριν συνεχίσετε.</string>
+    <string name="restore_installing_error_title">Κάποιες εφαρμογές δεν εγκαταστάθηκαν</string>
+    <string name="backup_section_not_allowed">Εφαρμογές που δεν επιτρέπουν αντίγραφο ασφαλείας δεδομένων</string>
+    <string name="backup_app_quota_exceeded">Υπέρβαση ορίου αντιγράφων ασφαλείας</string>
+    <string name="backup_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν έχει χρησιμοποιηθεί πρόσφατα</string>
+    <string name="backup_app_not_yet_backed_up">Αναμονή για αντίγραφο ασφαλείας…</string>
+    <string name="backup_section_user">Εγκατεστημένες εφαρμογές</string>
+    <string name="backup_contacts">Τοπικές επαφές</string>
+    <string name="backup_call_log">Ιστορικό κλήσεων</string>
+    <string name="backup_settings">Ρυθμίσεις συσκευής</string>
+    <string name="backup_sms">Μηνύματα SMS</string>
+    <string name="backup_section_system">Εφαρμογές συστήματος</string>
+    <string name="recovery_code_recreated">Ο νέος κωδικός επαναφοράς δημιουργήθηκε επιτυχώς</string>
+    <string name="recovery_code_verification_new_dialog_message">Η δημιουργία νέου κωδικού θα καταστήσει τα υπάρχοντα αντίγραφα ασφαλείας σας μη-προσβάσιμα. Θα προσπαθήσουμε να τα διαγράψουμε αν είναι δυνατόν.
+\n
+\nΕίστε βέβαιοι ότι θέλετε να συνεχίσετε;</string>
+    <string name="recovery_code_verification_new_dialog_title">Περιμένετε μία στιγμή…</string>
+    <string name="recovery_code_verification_generate_new">Δημιουργία νέου κωδικού</string>
+    <string name="recovery_code_verification_try_again">Δοκιμάστε ξανά</string>
+    <string name="recovery_code_verification_error_message">Έχετε εισάγει μη έγκυρο κωδικό επαναφοράς. Δοκιμάστε πάλι!
+\n
+\nΑν χάσατε τον κωδικό σας, πατήστε \"Δημιουργία νέου κωδικού\" παρακάτω.</string>
+    <string name="recovery_code_verification_error_title">Λάθος κωδικός επαναφοράς</string>
+    <string name="recovery_code_verification_ok_message">Ο κωδικός σας είναι σωστός και θα λειτουργήσει για επαναφορά αντιγράφων ασφαλείας.</string>
+    <string name="recovery_code_verification_ok_title">Ο κωδικός επαναφοράς επαληθεύτηκε</string>
+    <string name="settings_backup_recovery_code_summary">Επαλήθευση υπάρχοντος κωδικού ή δημιουργία καινούριου</string>
+    <string name="settings_backup_recovery_code">Κωδικός Επαναφοράς</string>
+    <string name="settings_backup_status_title">Κατάσταση αντιγράφου ασφαλείας</string>
 </resources>

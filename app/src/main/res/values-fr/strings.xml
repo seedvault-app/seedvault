@@ -30,7 +30,7 @@
     <string name="recovery_code_input_hint_3">Mot 3</string>
     <string name="recovery_code_input_hint_2">Mot 2</string>
     <string name="recovery_code_input_hint_1">Mot 1</string>
-    <string name="recovery_code_done_button">Terminé</string>
+    <string name="recovery_code_done_button">Vérifier</string>
     <string name="recovery_code_confirm_intro">Entrez votre code de récupération de 12 mots pour vous assurer qu’il fonctionnera quand vous en aurez besoin.</string>
     <string name="recovery_code_confirm_button">Confirmez le code</string>
     <string name="recovery_code_write_it_down">Écrivez-le sur du papier maintenant !</string>
@@ -57,7 +57,7 @@
     <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une appli, restaurer les paramètres et les données sauvegardés.</string>
     <string name="settings_auto_restore_title">Restauration automatique</string>
-    <string name="settings_info">Toutes les sauvegardes sont chiffrées sur votre téléphone. Pour restaurer à partir d’une sauvegarde, vous aurez besoin de votre code de récupération de 12 mots.</string>
+    <string name="settings_info">Toutes les sauvegardes sont stockées sur votre téléphone et chiffrées. Pour restaurer une sauvegarde, vous aurez besoin de votre code de récupération constitué de 12 mots.</string>
     <string name="settings_backup_last_backup_never">Jamais</string>
     <string name="settings_backup_location_internal">Stockage interne</string>
     <string name="settings_backup_location_none">Aucun</string>
@@ -68,9 +68,9 @@
     <string name="storage_internal_warning_message">Vous avez choisi le stockage interne pour votre sauvegarde. Ceci ne sera pas disponible lorsque votre téléphone sera perdu ou cassé.</string>
     <string name="restore_finished_error">Une erreur s\'est produite lors de la restauration de la sauvegarde.</string>
     <string name="restore_finished_success">Restauration terminée</string>
-    <string name="restore_app_quota_exceeded">Quota de sauvegarde dépassé</string>
+    <string name="restore_app_quota_exceeded">Le quota de sauvegarde a été dépassé</string>
     <string name="restore_app_not_installed">Application non installée</string>
-    <string name="restore_app_not_allowed">L\'application n\'autorise pas la sauvegarde</string>
+    <string name="restore_app_not_allowed">L\'application n\'a pas permis la sauvegarde</string>
     <string name="backup_app_no_data">L\'application n\'a signalé aucune donnée à sauvegarder</string>
     <string name="restore_magic_package">Gestionnaire de paquets système</string>
     <string name="restore_restoring">Restauration de la sauvegarde</string>
@@ -99,15 +99,50 @@
     <string name="recovery_code_input_intro">Entrez votre code de récupération de 12 mots que vous avez écrit lors de la configuration des sauvegardes.</string>
     <string name="storage_check_fragment_permission_error">Impossible d\'obtenir la permission d\'écrire dans l\'emplacement de sauvegarde.</string>
     <string name="storage_fragment_warning">Les personnes ayant accès à votre lieu de stockage peuvent savoir quelles applications vous utilisez mais n\'ont pas accès aux données des applications.</string>
-    <string name="settings_backup_apk_dialog_message">La sauvegarde d\'application désactivée sauvegarde toujours les données de l\'application. Toutefois, elles ne seront pas restaurées automatiquement.
+    <string name="settings_backup_apk_dialog_message">La sauvegarde d\'une application désactivée enregistre toujours les données de l\'application. Celles-ci ne seront toutefois pas restaurées automatiquement.
 \n
-\nVous devrez installer toutes vos applications manuellement tout en ayant « Restauration automatique » allumé.</string>
+\nVous devrez installer toutes vos applications manuellement en vous assurant que le paramètre « Restauration automatique » est activé.</string>
     <string name="settings_backup_apk_dialog_title">Vraiment désactiver la sauvegarde des applications \?</string>
     <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
-    <string name="restore_app_was_stopped">Non sauvegardé car il n\'a pas été utilisé récemment</string>
-    <string name="restore_app_not_yet_backed_up">Non sauvegardé</string>
+    <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
+    <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées. Appuyez pour en savoir plus.</string>
     <string name="notification_backup_already_running">Sauvegarde déjà en cours</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Compte non disponible. Configurez-en un (ou désactivez le mot de passe).</string>
     <string name="current_destination_string">Statut et paramètres de sauvegarde</string>
+    <string name="about_version">Version : %s</string>
+    <string name="restore_restoring_error_message">Vous pouvez réinstaller ces applications manuellement et Automatic restore essaiera de restaurer leurs données (si activé).</string>
+    <string name="restore_restoring_error_title">Impossible de restaurer certaines applications</string>
+    <string name="restore_installing_tap_to_install">Toucher pour installer</string>
+    <string name="restore_installing_error_message">Les données ne peuvent être restaurées que si l\'app est installée.
+\n
+\nToucher les apps ayant échoué pour essayer de les installer manuellement avant de continuer.</string>
+    <string name="restore_installing_error_title">Certains applications n\'ont pas été installées</string>
+    <string name="backup_section_not_allowed">Applications n\'autorisant pas de sauvegarde</string>
+    <string name="backup_app_quota_exceeded">Quota de sauvegarde dépassé</string>
+    <string name="backup_app_was_stopped">Pas sauvegardé car pas utilisé récemment</string>
+    <string name="backup_app_not_yet_backed_up">En attente de backup…</string>
+    <string name="backup_section_user">Applis installées</string>
+    <string name="backup_contacts">Contacts locaux</string>
+    <string name="backup_call_log">Historique d\'appel</string>
+    <string name="backup_settings">Paramètres de l\'appareil</string>
+    <string name="backup_sms">Message SMS</string>
+    <string name="backup_section_system">Applications système</string>
+    <string name="settings_backup_status_title">Statut du backup</string>
+    <string name="data_management_label">Backup Seedvault</string>
+    <string name="settings_backup_recovery_code_summary">Vérifier un code existant ou en générer un nouveau</string>
+    <string name="settings_backup_recovery_code">Code de récupération</string>
+    <string name="recovery_code_recreated">Le nouveau code de récupération a été généré avec succès</string>
+    <string name="recovery_code_verification_new_dialog_message">La génération d\'un nouveau code vous fera perdre l\'accès aux sauvegardes antérieures. Celles-ci seront supprimées si c\'est possible.
+\n
+\nÊtes-vous sûr(e) de vouloir continuer \?</string>
+    <string name="recovery_code_verification_new_dialog_title">Veuillez patienter…</string>
+    <string name="recovery_code_verification_generate_new">Générer un nouveau code</string>
+    <string name="recovery_code_verification_try_again">Veuillez réessayer</string>
+    <string name="recovery_code_verification_error_message">Le code de récupération fourni est invalide. Veuillez réessayer.
+\n
+\nSi vous avez perdu votre code, appuyez sur \"générer un nouveau code\" ci-dessous.</string>
+    <string name="recovery_code_verification_error_title">Code de récupération incorrect</string>
+    <string name="recovery_code_verification_ok_message">Votre code est correct est permettra la restauration de votre sauvegarde.</string>
+    <string name="recovery_code_verification_ok_title">Code de récupération vérifié</string>
 </resources>

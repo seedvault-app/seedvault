@@ -108,4 +108,5 @@
     <string name="backup">Sikkerhetskopier</string>
     <string name="notification_success_text">%1$d av %2$d programmer sikkerhetskopiert. Trykk for mer info.</string>
     <string name="notification_backup_already_running">Sikkerhetskopi allerede underveis</string>
+    <string name="settings_backup_status_title">Sikkerhetskopieringsstatus</string>
 </resources>

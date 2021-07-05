@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="restore_finished_button">Finisci</string>
     <string name="restore_finished_error">Si è verificato un errore durante il ripristino del backup.</string>
     <string name="restore_finished_success">Ripristino completato</string>
@@ -65,4 +65,69 @@
     <string name="settings_auto_restore_summary_usb">Nota: è necessario collegare %1$s per permettere il ripristino.</string>
     <string name="current_destination_string">Stato backup e impostazioni</string>
     <string name="data_management_label">Backup Seedvault</string>
+    <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size">%1$s</xliff:g> liberi</string>
+    <string name="about_source_code">Codice Sorgente: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Sponsorizzato da: <a href="https://www.calyxinstitute.org">Calyx Institute</a> per essere utilizzato in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design di: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Scritto da: <a href="https://github.com/stevesoltys">Steve Soltys</a> e<a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licenza: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Versione: %s</string>
+    <string name="about_summary">Una applicazione di backup sta utilizzando la API interna di backup di Android.</string>
+    <string name="about_title">Ulteriori info</string>
+    <string name="storage_internal_warning_use_anyway">Utilizza comunque</string>
+    <string name="storage_internal_warning_choose_other">Scegliere altro</string>
+    <string name="storage_internal_warning_message">Hai scelto un supporto di memoria interno per il backup. Il backup non sara\' disponibile se il telefono sara\' rubato o rotto.</string>
+    <string name="storage_internal_warning_title">Avviso</string>
+    <string name="restore_magic_package">System package manager</string>
+    <string name="restore_restoring_error_message">Puoi re-installare queste app manualmente e il ripristino automatico tentera\' di ripristinare i dati relativi (quando abilitato).</string>
+    <string name="restore_restoring_error_title">Non e\' stato possibile ripristinare qualche app</string>
+    <string name="restore_restoring">backup in ripristino</string>
+    <string name="restore_next">Prossimo</string>
+    <string name="restore_installing_tap_to_install">Tocca per installare</string>
+    <string name="restore_installing_error_message">I dati possono essere ripristinati solo se la app relativa e\' installata.
+\n
+\nTocca le app non re-installate automaticamente per provare ad installarle manualmente ora prima di procedere con i passaggi successivi.</string>
+    <string name="restore_installing_error_title">Qualche app non e\' stata installata</string>
+    <string name="restore_installing_packages">App in re-installazione</string>
+    <string name="restore_set_empty_result">Nessun backup adatto e\' stato trovato qui.
+\n
+\nLe ragioni piu\' probabili sono un codice di recupero errato o un errore di archiviazione dati.</string>
+    <string name="restore_set_error">E\' successo un errore mentre si stavano caricando i backup.</string>
+    <string name="restore_invalid_location_message">Non e\' stato possibile trovare alcun backup qui.
+\n
+\nSi prega di scegliere un altro punto che contenga una %s cartella.</string>
+    <string name="restore_invalid_location_title">Nessun backup trovato</string>
+    <string name="restore_back">Non ripristinare</string>
+    <string name="restore_restore_set_times">Ultimo backup %1$s · Primo %2$s.</string>
+    <string name="restore_choose_restore_set">Selezionare un backup da ripristinare</string>
+    <string name="restore_title">Ripristino del backup</string>
+    <string name="backup_section_not_allowed">App che non consentono il backup dei relativi dati</string>
+    <string name="restore_app_quota_exceeded">La quota per il backup e\' stata superata</string>
+    <string name="backup_app_quota_exceeded">La quota backup e\' stata superata</string>
+    <string name="restore_app_not_allowed">La app non ha permesso il backup</string>
+    <string name="backup_app_no_data">La app ha indicato che non ci sono dati da gestire per il backup</string>
+    <string name="restore_app_was_stopped">Non e\' stato fatto il backup siccome non e\' stata utilizzata recentemente</string>
+    <string name="backup_app_was_stopped">Non e\' stato fatto il backup siccome non c\'e\' stato un utilizzo recente</string>
+    <string name="restore_app_not_yet_backed_up">Non e\' stato ancora fatto il backup</string>
+    <string name="backup_app_not_yet_backed_up">In attesa di fare il backup…</string>
+    <string name="backup_section_user">App installate</string>
+    <string name="backup_contacts">Contatti locali</string>
+    <string name="backup_call_log">Storico delle chiamate</string>
+    <string name="backup_settings">opzioni del dispositivo</string>
+    <string name="backup_sms">messaggi di testo SMS</string>
+    <string name="backup_section_system">App di Sistema</string>
+    <string name="notification_restore_error_action">Disinstalla app</string>
+    <string name="notification_restore_error_text">Connetti il tuo %1$s prima di installare l\'app per ripristinare i suoi dati dal backup.</string>
+    <string name="notification_restore_error_title">Non e\' stato possibile ripristinare i dati per %1$s</string>
+    <string name="notification_restore_error_channel_title">Errore di ripristino automatico del flash drive</string>
+    <string name="notification_error_action">Sistemare</string>
+    <string name="notification_error_text">Il backup del dispositivo non e\' partito.</string>
+    <string name="notification_error_title">Errore di backup</string>
+    <string name="notification_error_channel_title">Notifica d\'errore</string>
+    <string name="notification_success_text">%1$d di %2$d app gia\' in backup. Tocca per ulteriori informazioni.</string>
+    <string name="notification_backup_already_running">Backup gia\' in corso</string>
+    <string name="recovery_code_confirm_intro">Inserisci il tuo codice di recupero composto da 12 parole per controllare ora che il tutto funzionera\' correttamente quando sara\' necessario.</string>
+    <string name="recovery_code_input_intro">Inserisi il tuo codice di recupero composto da 12 parole che ti sei annotato quando hai inizializzato i backup.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Account non disponibile. Crearne uno ora (o disabilitare la passcode).</string>
+    <string name="settings_backup_status_title">Stato del backup</string>
 </resources>

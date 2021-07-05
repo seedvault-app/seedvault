@@ -26,7 +26,7 @@
     <string name="recovery_code_input_hint_3">Palavra 3</string>
     <string name="recovery_code_input_hint_2">Palavra 2</string>
     <string name="recovery_code_input_hint_1">Palavra 1</string>
-    <string name="recovery_code_done_button">Concluído</string>
+    <string name="recovery_code_done_button">Verifique</string>
     <string name="recovery_code_input_intro">Digite o código de recuperação de 12 palavras que você anotou ao configurar backups.</string>
     <string name="recovery_code_confirm_intro">Digite seu código de recuperação de 12 palavras para garantir que funcionará quando você precisar.</string>
     <string name="recovery_code_confirm_button">Confirmar código</string>
@@ -93,10 +93,10 @@
     <string name="restore_finished_button">Terminar</string>
     <string name="restore_finished_error">Ocorreu um erro ao restaurar o backup.</string>
     <string name="restore_finished_success">Restauração completa</string>
-    <string name="restore_app_quota_exceeded">Cota de backup excedida</string>
+    <string name="restore_app_quota_exceeded">A cota de backup foi excedida</string>
     <string name="restore_app_not_installed">Aplicativo não instalado</string>
-    <string name="restore_app_not_allowed">O aplicativo não permite backup</string>
-    <string name="backup_app_no_data">O aplicativo não relatou nenhum dado para backup</string>
+    <string name="restore_app_not_allowed">O aplicativo não permitiu o backup</string>
+    <string name="backup_app_no_data">O aplicativo informou de que não há dados para backup</string>
     <string name="restore_magic_package">Gerenciador de pacote do sistema</string>
     <string name="restore_restoring">Restaurando backup</string>
     <string name="restore_next">Próximo</string>
@@ -106,9 +106,43 @@
 \nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
     <string name="notification_success_text">%1$d de %2$d aplicativos com backup. Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
-    <string name="restore_app_was_stopped">Sem backup porque não foi usado recentemente</string>
-    <string name="restore_app_not_yet_backed_up">Ainda sem Backup</string>
+    <string name="restore_app_was_stopped">Não feito nenhum backup desde que não foi utilizado recentemente</string>
+    <string name="restore_app_not_yet_backed_up">Nenhum backup foi feito ainda</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Configure uma (ou desative a senha).</string>
     <string name="current_destination_string">Status e configurações do Backup</string>
     <string name="data_management_label">Backup Seedvault</string>
+    <string name="restore_restoring_error_title">Incapaz de restaurar alguns apps</string>
+    <string name="restore_installing_error_title">Alguns apps não foram instalados</string>
+    <string name="restore_installing_tap_to_install">Toque para instalar</string>
+    <string name="restore_installing_error_message">Dados só podem ser restaurados se um app estiver instalado.
+\n
+\nToque em apps falhos para tentar instalá-los manualmente antes de proceder.</string>
+    <string name="backup_section_not_allowed">Apps que não permitem backup de dados</string>
+    <string name="backup_section_user">Apps instalados</string>
+    <string name="backup_sms">Mensagens de texto SMS</string>
+    <string name="backup_section_system">Apps do sistema</string>
+    <string name="settings_backup_status_title">Status do backup</string>
+    <string name="about_version">Versão: %s</string>
+    <string name="restore_restoring_error_message">Você pode reinstalar esses aplicativos manualmente e a restauração automática tentará restaurar seus dados (quando ativada).</string>
+    <string name="backup_app_quota_exceeded">A cota de backup foi excedida</string>
+    <string name="backup_app_was_stopped">Nenhum backup foi feito desde que não foi usado recentemente</string>
+    <string name="backup_app_not_yet_backed_up">Aguardando pelo backup…</string>
+    <string name="backup_contacts">Contatos locais</string>
+    <string name="backup_call_log">Histórico de chamadas</string>
+    <string name="backup_settings">Configurações do dispositivo</string>
+    <string name="recovery_code_recreated">Novo código de recuperação foi criado com sucesso</string>
+    <string name="recovery_code_verification_new_dialog_message">Gerar um novo código fará seus backups existentes inacessíveis. Tentaremos deletá-los se possível.
+\n
+\nTem certeza que quer fazer isso\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Espere um segundo…</string>
+    <string name="recovery_code_verification_generate_new">Gerar um novo código</string>
+    <string name="recovery_code_verification_try_again">Tente novamente</string>
+    <string name="recovery_code_verification_error_message">Você inseriu um código de recuperação inválido. Por favor, tente novamente.
+\n
+\nSe você perdeu seu código, toque em \'Gerar um novo código\' abaixo.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperação incorreto</string>
+    <string name="recovery_code_verification_ok_message">Seu código está correto e funcionará para restaurar o seu backup.</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
+    <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
+    <string name="settings_backup_recovery_code">Código de recuperação</string>
 </resources>

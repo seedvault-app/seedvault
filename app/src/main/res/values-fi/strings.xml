@@ -1,2 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size"> %1$s </xliff:g> vapaana</string>
+    <string name="about_source_code">Lähdekoodi: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Sponsoroi: <a href="https://www.calyxinstitute.org"> Calyx Institute </a> käytettäväksi <a href="https://calyxos.org"> CalyxOS </a></string>
+    <string name="about_design">Suunnittelija: <a href="https://www.glennsorrentino.com/"> Glenn Sorrentino </a></string>
+    <string name="about_author">Kehittänyt: <a href="https://github.com/stevesoltys"> Steve Soltys </a> ja <a href="https://blog.grobox.de"> Torsten Grote </a></string>
+    <string name="about_license">Lisenssi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Versio: %s</string>
+    <string name="about_summary">Varmuuskopiosovellus, joka käyttää Androidin sisäistä varmuuskopiosovellusrajapintaa.</string>
+    <string name="about_title">Tietoa</string>
+    <string name="storage_internal_warning_use_anyway">Käytä joka tapauksessa</string>
+    <string name="storage_internal_warning_choose_other">Valitse toinen</string>
+    <string name="storage_internal_warning_message">Olet valinnut sisäisen tallennustilan varmuuskopioksi. Tämä ei ole käytettävissä, kun puhelimesi katoaa tai menee rikki.</string>
+    <string name="storage_internal_warning_title">Varoitus</string>
+    <string name="restore_finished_button">Valmis</string>
+    <string name="restore_finished_error">Varmuuskopion palauttamisessa tapahtui virhe.</string>
+    <string name="restore_finished_success">Palautus valmis</string>
+    <string name="restore_magic_package">Järjestelmäpakettien hallinta</string>
+    <string name="restore_restoring_error_message">Voit asentaa nämä sovellukset uudelleen manuaalisesti ja Automaattinen palautus yrittää palauttaa niiden tiedot (kun käytössä).</string>
+    <string name="restore_restoring_error_title">Joitakin sovelluksia ei voi palauttaa</string>
+    <string name="restore_restoring">Palautetaan varmuuskopiota</string>
+    <string name="restore_installing_error_title">Joitakin sovelluksia ei ole asennettu</string>
+    <string name="restore_installing_error_message">Tiedot voidaan palauttaa vain, jos sovellus on asennettu.
+\n
+\nNapauta epäonnistuneita sovelluksia yrittääksesi asentaa ne manuaalisesti ennen jatkamista.</string>
+    <string name="restore_installing_tap_to_install">Napauta asentaaksesi</string>
+    <string name="restore_next">Seuraava</string>
+    <string name="restore_installing_packages">Sovellusten asentaminen uudelleen</string>
+    <string name="restore_set_empty_result">Tietystä sijainnista ei löydy sopivia varmuuskopioita.
+\n
+\nTämä johtuu todennäköisesti väärästä palautuskoodista tai tallennusvirheestä.</string>
+    <string name="restore_set_error">Varmuuskopioiden lataamisessa tapahtui virhe.</string>
+    <string name="restore_invalid_location_message">Emme löytäneet varmuuskopioita tästä sijainnista.
+\n
+\nValitse toinen sijainti, joka sisältää %s-kansion.</string>
+    <string name="restore_invalid_location_title">Varmuuskopioita ei löytynyt</string>
+    <string name="restore_back">Älä palauta</string>
+    <string name="restore_restore_set_times">Viimeinen varmuuskopio %1$s · Ensimmäinen %2$s.</string>
+    <string name="restore_choose_restore_set">Valitse palautettava varmuuskopio</string>
+    <string name="restore_title">Palauta varmuuskopiosta</string>
+    <string name="backup_section_not_allowed">Sovellukset, jotka eivät salli tietojen varmuuskopiointia</string>
+    <string name="restore_app_not_installed">Sovellusta ei ole asennettu</string>
+    <string name="restore_app_quota_exceeded">Varmuuskopiointikiintiö ylittyi</string>
+    <string name="backup_app_quota_exceeded">Varmuuskopiointikiintiö ylitetty</string>
+    <string name="restore_app_not_allowed">Sovellus ei salli varmuuskopiointia</string>
+    <string name="backup_app_no_data">Sovellus ei ilmoittanut tietoja varmuuskopiointia varten</string>
+    <string name="restore_app_was_stopped">Sitä ei varmuuskopioitu, koska sitä ei ollut käytetty äskettäin</string>
+    <string name="backup_app_was_stopped">Ei varmuuskopioitu, koska sitä ei käytetty äskettäin</string>
+    <string name="restore_app_not_yet_backed_up">Ei vielä varmuuskopioitu</string>
+    <string name="backup_app_not_yet_backed_up">Odottaa varmuuskopiointia…</string>
+    <string name="backup_section_user">Asennetut Sovellukset</string>
+    <string name="backup_contacts">Paikalliset yhteystiedot</string>
+    <string name="backup_call_log">Puheluhistoria</string>
+    <string name="backup_settings">Laiteasetukset</string>
+    <string name="backup_sms">Tekstiviestit</string>
+    <string name="backup_section_system">Järjestelmäsovellukset</string>
+    <string name="notification_restore_error_action">Poista sovellus</string>
+    <string name="notification_restore_error_text">Liitä %1$s ennen sovelluksen asentamista palauttaaksesi sen tiedot varmuuskopiosta.</string>
+    <string name="notification_restore_error_title">Kohteen %1$s tietoja ei voitu palauttaa</string>
+    <string name="notification_restore_error_channel_title">Automaattisen palautuksen tallennustilan virhe</string>
+    <string name="notification_error_action">Korjaa</string>
+    <string name="notification_error_text">Laitteen varmuuskopiointi epäonnistui.</string>
+    <string name="notification_error_title">Varmuuskopiointivirhe</string>
+    <string name="notification_error_channel_title">Virheilmoitus</string>
+    <string name="notification_failed_title">Varmuuskopiointi epäonnistui</string>
+    <string name="notification_success_text">%1$d/%2$d sovellusta varmuuskopioitu. Napauta saadaksesi lisätietoja.</string>
+    <string name="notification_success_title">Varmuuskopiointi valmis</string>
+    <string name="notification_backup_already_running">Varmuuskopiointi on jo käynnissä</string>
+    <string name="notification_title">Varmuuskopiointi on käynnissä</string>
+    <string name="notification_channel_title">Varmuuskopiointi-ilmoitus</string>
+    <string name="recovery_code_error_checksum_word">Koodisi on virheellinen. Tarkista kaikki sanat ja yritä uudelleen!</string>
+    <string name="recovery_code_error_invalid_word">Väärä sana. Tarkoititko %1$s tai %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Unohdit kirjoittaa tämän sanan.</string>
+    <string name="recovery_code_input_hint_12">Sana 12</string>
+    <string name="recovery_code_input_hint_11">Sana 11</string>
+    <string name="recovery_code_input_hint_10">Sana 10</string>
+    <string name="recovery_code_input_hint_9">Sana 9</string>
+    <string name="recovery_code_input_hint_8">Sana 8</string>
+    <string name="recovery_code_input_hint_7">Sana 7</string>
+    <string name="recovery_code_input_hint_6">Sana 6</string>
+    <string name="recovery_code_input_hint_5">Sana 5</string>
+    <string name="recovery_code_input_hint_4">Sana 4</string>
+    <string name="recovery_code_input_hint_3">Sana 3</string>
+    <string name="recovery_code_input_hint_2">Sana 2</string>
+    <string name="recovery_code_input_hint_1">Sana 1</string>
+    <string name="recovery_code_done_button">Valmis</string>
+    <string name="recovery_code_input_intro">Kirjoita 12-sanan palautuskoodi, jonka kirjoitit muistiin varmuuskopioita määritettäessä.</string>
+    <string name="recovery_code_confirm_intro">Anna 12-sanainen palautuskoodi varmistaaksesi, että se toimii, kun tarvitset sitä.</string>
+    <string name="recovery_code_confirm_button">Vahvista koodi</string>
+    <string name="recovery_code_write_it_down">Kirjoita se paperille nyt!</string>
+    <string name="recovery_code_12_word_intro">Tarvitset 12-sanaisen palautuskoodisi varmuuskopioitujen tietojen palauttamiseksi.</string>
+    <string name="recovery_code_title">Palautuskoodi</string>
+    <string name="storage_check_fragment_error_button">Takaisin</string>
+    <string name="storage_check_fragment_permission_error">Varmuuskopiointikohteeseen kirjoittamiseen ei saatu lupaa.</string>
+    <string name="storage_check_fragment_backup_error">Varmuuskopiopaikan saannissa tapahtui virhe.</string>
+    <string name="storage_check_fragment_restore_title">Etsitään varmuuskopioita…</string>
+    <string name="storage_check_fragment_backup_title">Alustetaan varmuuskopioinnin sijaintia…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Tili ei saatavilla. Määritä tili (tai poista tunnusluku).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Määritä tili napauttamalla</string>
+    <string name="storage_fake_nextcloud_summary">Napauta asentaaksesi</string>
+    <string name="storage_fake_drive_summary">Täytyy olla kytkettynä</string>
+    <string name="storage_fake_drive_title">USB-muistitikku</string>
+    <string name="storage_fragment_warning">Ihmiset, joilla on pääsy tallennussijaintiisi, voivat nähdä mitä sovelluksia käytät, mutta eivät kuitenkaan pääse käyttämään sovellusten tietoja.</string>
+    <string name="storage_fragment_restore_title">Mistä löydät varmuuskopiot\?</string>
+    <string name="storage_fragment_backup_title">Valitse, mihin varmuuskopiot tallennetaan</string>
+    <string name="settings_backup_now">Varmuuskopioi heti</string>
+    <string name="settings_backup_exclude_apps">Lukuunottamatta sovelluksia</string>
+    <string name="settings_backup_status_summary">Viimeisin varmuuskopio: %1$s</string>
+    <string name="settings_backup_status_title">Varmuuskopioinnin tila</string>
+    <string name="settings_backup_apk_dialog_disable">Poista sovellusten varmuuskopiointi käytöstä</string>
+    <string name="settings_backup_apk_dialog_cancel">Peruuta</string>
+    <string name="settings_backup_apk_dialog_message">Poistettu sovelluksen varmuuskopiointi silti varmuuskopioi sovellustiedot. Sitä ei kuitenkaan palauteta automaattisesti.
+\n
+\nSinun on asennettava kaikki sovelluksesi manuaalisesti, kun \"Automaattinen Palautus\" on päällä.</string>
+    <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten varmuuskopiointi todella käytöstä\?</string>
+    <string name="settings_backup_apk_summary">Varmuuskopioi itse sovellukset. Muuten vain sovellustiedot varmuuskopioidaan.</string>
+    <string name="settings_backup_apk_title">Sovelluksen varmuuskopiointi</string>
+    <string name="settings_category_app_data_backup">Sovellustietojen varmuuskopiointi</string>
+    <string name="settings_auto_restore_summary_usb">Huomaa: %1$s tarvitsee olla kytkettynä tämän toimiakseen.</string>
+    <string name="settings_auto_restore_summary">Palauta varmuuskopioidut asetukset ja tiedot sovellusta uudellenasentaessasi.</string>
+    <string name="settings_auto_restore_title">Automaattinen palautus</string>
+    <string name="settings_info">Kaikki varmuuskopiot puhelimessasi ovat salattuja. Varmuuskopioinnin palauttamiseen vaaditaan 12-sanainen palautuskoodisi.</string>
+    <string name="settings_backup_location_internal">Sisäinen tallennustila</string>
+    <string name="settings_backup_last_backup_never">Ei koskaan</string>
+    <string name="settings_backup_location_none">Ei määritelty</string>
+    <string name="settings_backup_location">Varmuuskopioinnin sijainti</string>
+    <string name="settings_backup">Varmuuskopioi tietoni</string>
+    <string name="restore_backup_button">Palauta varmuuskopio</string>
+    <string name="current_destination_string">Varmuuskopioinnin tila ja asetukset</string>
+    <string name="data_management_label">Seedvault Varmuuskopio</string>
+    <string name="backup">Varmuuskopio</string>
+</resources>

@@ -6,4 +6,11 @@
     <string name="restore_backup_button">استرجاع النسخة الاحتياطية</string>
     <string name="current_destination_string">حالة النسخ الاحتياطي والإعدادات</string>
     <string name="backup">نسخ احتياطية</string>
+    <string name="settings_backup_apk_summary">قم بعمل نسخة احتياطية من التطبيقات نفسها. غير ذالك، سيتم فقط نسخ بيانات التطبيق احتياطيًا.</string>
+    <string name="settings_backup_apk_title">النسخ الإحتياطي للتطبيق</string>
+    <string name="settings_category_app_data_backup">النسخ الإحتياطي لبيانات التطبيق</string>
+    <string name="settings_auto_restore_summary">عند إعادة تحميل التطبيق , ستتم استعادة إعدادات وبيانات النسخ الاحتياطية.</string>
+    <string name="settings_info">كل النسخ الاحتياطية مشفرة على هاتفك. للإستعادة من النسخ الاحتياطي سوف تحتاج رمز الاسترداد المكون من 12 كلمة.</string>
+    <string name="settings_backup_location_internal">التخزين الداخلي</string>
+    <string name="settings_backup_location_none">لا شئ</string>
 </resources>

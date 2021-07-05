@@ -20,10 +20,10 @@
     <string name="restore_finished_button">Готово</string>
     <string name="restore_finished_error">Произошла ошибка при восстановлении резервной копии.</string>
     <string name="restore_finished_success">Восстановление завершено</string>
-    <string name="restore_app_quota_exceeded">Превышена квота резервного копирования</string>
+    <string name="restore_app_quota_exceeded">Превышен лимит резервного копирования</string>
     <string name="restore_app_not_installed">Приложение не установлено</string>
     <string name="restore_app_not_allowed">Приложение не разрешает резервное копирование</string>
-    <string name="backup_app_no_data">Приложение не сообщило об отсутствии данных для резервного копирования</string>
+    <string name="backup_app_no_data">Приложение сообщило об отсутствии данных для резервного копирования</string>
     <string name="restore_magic_package">Системный менеджер пакетов</string>
     <string name="restore_restoring">Восстановление резервной копии</string>
     <string name="restore_next">Следующий</string>
@@ -67,7 +67,7 @@
     <string name="recovery_code_input_hint_3">Слово 3</string>
     <string name="recovery_code_input_hint_2">Слово 2</string>
     <string name="recovery_code_input_hint_1">Слово 1</string>
-    <string name="recovery_code_done_button">Готово</string>
+    <string name="recovery_code_done_button">Проверить</string>
     <string name="recovery_code_input_intro">Введите код восстановления из 12 слов, который вы записали при настройке резервного копирования.</string>
     <string name="recovery_code_confirm_intro">Введите код восстановления из 12 слов, чтобы убедиться, что он будет работать тогда, когда он вам понадобится.</string>
     <string name="recovery_code_confirm_button">Подтвердить код</string>
@@ -87,7 +87,7 @@
     <string name="storage_fragment_warning">Люди, имеющие доступ к вашему хранилищу, могут узнать, какие приложения вы используете, но не получат доступа к данным приложений.</string>
     <string name="storage_fragment_restore_title">Где найти резервные копии\?</string>
     <string name="storage_fragment_backup_title">Выберите, где хранить резервные копии</string>
-    <string name="settings_backup_now">Сделать резервную копию сейчас</string>
+    <string name="settings_backup_now">Создать резервную копию сейчас</string>
     <string name="settings_backup_exclude_apps">Исключить приложения</string>
     <string name="settings_backup_status_summary">Последняя резервная копия: %1$s</string>
     <string name="settings_backup">Резервное копирование моих данных</string>
@@ -106,9 +106,43 @@
     <string name="restore_backup_button">Восстановление резервной копии</string>
     <string name="notification_success_text">Резервное копирование %1$d из %2$d приложений выполнено. Нажмите, чтобы узнать больше.</string>
     <string name="notification_backup_already_running">Резервное копирование уже выполняется</string>
-    <string name="restore_app_not_yet_backed_up">Еще не скопировано</string>
-    <string name="restore_app_was_stopped">Резервная копия не сохранена, поскольку давно не использовалась</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Аккаунт недоступен. Установите один (или отключите пароль).</string>
+    <string name="restore_app_not_yet_backed_up">Резервная копия ещё не создавалась</string>
+    <string name="restore_app_was_stopped">Резервная копия не сохранена, поскольку приложение давно не использовалось</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Учетная запись недоступна. Настройте новую (или отключите пароль).</string>
     <string name="current_destination_string">Статус и настройки резервного копирования</string>
-    <string name="data_management_label">Хранилище копий</string>
+    <string name="data_management_label">Резервное копирование Seedvault</string>
+    <string name="restore_restoring_error_message">Вы можете переустановить эти приложения вручную и программа резервного копирование попытается восстановить их данные (если включено).</string>
+    <string name="restore_installing_error_message">Данные могут быть восстановлены, если приложение установленно.
+\n
+\nНажмите на приложение, что бы установить вручную перед тем как продолжить.</string>
+    <string name="backup_app_was_stopped">Резервная копия не сохранена, поскольку приложение давно не использовалось</string>
+    <string name="about_version">Версия: %s</string>
+    <string name="restore_restoring_error_title">Не получилось восстановить некоторые приложения</string>
+    <string name="restore_installing_tap_to_install">Нажмите для установки</string>
+    <string name="restore_installing_error_title">Некоторые приложения не были установлены</string>
+    <string name="backup_section_not_allowed">Приложения, запрещающие резервное копирование</string>
+    <string name="backup_app_quota_exceeded">Превышен лимит резервных копий</string>
+    <string name="backup_app_not_yet_backed_up">Ожидание копирования…</string>
+    <string name="backup_section_user">Установленные приложения</string>
+    <string name="backup_contacts">Контакты на устройстве</string>
+    <string name="backup_call_log">История звонков</string>
+    <string name="backup_settings">Настройки устройства</string>
+    <string name="backup_sms">Сообщения</string>
+    <string name="backup_section_system">Системные приложения</string>
+    <string name="settings_backup_status_title">Состояние резервного копирования</string>
+    <string name="recovery_code_recreated">Новый код восстановления успешно создан</string>
+    <string name="recovery_code_verification_new_dialog_message">Генерация нового кода сделает существующие резервные копии недоступными. Мы постараемся удалить их, если это возможно.
+\n
+\nВы уверены, что хотите это сделать\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Подождите одну секунду…</string>
+    <string name="recovery_code_verification_generate_new">Сгенерировать новый код</string>
+    <string name="recovery_code_verification_try_again">Повторить</string>
+    <string name="recovery_code_verification_error_message">Вы ввели неверный код восстановления. Пожалуйста, попробуйте ещё раз!
+\n
+\nЕсли вы потеряли свой код, нажмите на «Сгенерировать новый код» ниже.</string>
+    <string name="recovery_code_verification_error_title">Неверный код восстановления</string>
+    <string name="recovery_code_verification_ok_message">Ваш код правильный и будет работать для восстановления вашей резервной копии.</string>
+    <string name="recovery_code_verification_ok_title">Код восстановления проверен</string>
+    <string name="settings_backup_recovery_code_summary">Проверить существующий код или сгенерировать новый</string>
+    <string name="settings_backup_recovery_code">Код восстановления</string>
 </resources>

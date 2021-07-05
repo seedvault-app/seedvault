@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="settings_backup">备份我的资料</string>
-    <string name="restore_backup_button">恢复后备</string>
-    <string name="backup">备用</string>
-    <string name="settings_backup_apk_dialog_title">确认取消应用备份？</string>
-    <string name="settings_backup_apk_title">应用备份</string>
-    <string name="settings_category_app_data_backup">应用数据备用</string>
-    <string name="settings_auto_restore_summary">重新安装应用程序时，重置备用设置和数据。</string>
-    <string name="settings_auto_restore_title">自动重置</string>
-    <string name="settings_backup_last_backup_never">永不</string>
-    <string name="settings_backup_location_internal">内部储存</string>
+    <string name="settings_backup">备份我的数据</string>
+    <string name="restore_backup_button">恢复备份</string>
+    <string name="backup">备份</string>
+    <string name="settings_backup_apk_dialog_title">真的要禁用“备份应用程序”吗？</string>
+    <string name="settings_backup_apk_title">备份应用程序</string>
+    <string name="settings_category_app_data_backup">应用数据备份</string>
+    <string name="settings_auto_restore_summary">重新安装应用程序时，恢复备份的数据与设置。</string>
+    <string name="settings_auto_restore_title">自动恢复</string>
+    <string name="settings_backup_last_backup_never">从未备份</string>
+    <string name="settings_backup_location_internal">内部存储</string>
     <string name="settings_backup_location_none">无</string>
-    <string name="settings_backup_location">备用位置</string>
+    <string name="settings_backup_location">备份位置</string>
     <string name="recovery_code_input_hint_12">单词 12</string>
     <string name="recovery_code_input_hint_11">单词 11</string>
     <string name="recovery_code_input_hint_10">单词 10</string>
     <string name="recovery_code_input_hint_9">单词 9</string>
-    <string name="recovery_code_input_hint_8">单词8</string>
+    <string name="recovery_code_input_hint_8">单词 8</string>
     <string name="recovery_code_input_hint_7">单词 7</string>
     <string name="recovery_code_input_hint_6">单词 6</string>
     <string name="recovery_code_input_hint_5">单词 5</string>
@@ -26,8 +26,8 @@
     <string name="recovery_code_input_hint_1">单词 1</string>
     <string name="recovery_code_input_intro">输入设置备份时写下的12个单词的恢复代码。</string>
     <string name="recovery_code_confirm_intro">输入您的12个单词的恢复代码，以确保它在您需要时可以使用。</string>
-    <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来还原备份的数据。</string>
-    <string name="settings_info">所有备份均已加密。 要从备份还原，您需要12个单词的恢复代码。</string>
+    <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来恢复备份的数据。</string>
+    <string name="settings_info">所有备份均已加密。 要从备份恢复，您需要12个单词的恢复代码。</string>
     <string name="about_source_code">源代码:https://github.com/stevesoltys/seedvault</string>
     <string name="about_sponsor">赞助者: <a href="https://www.calyxinstitute.org">Calyx Institute</a>, 用于<a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">设计师:<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
@@ -40,46 +40,46 @@
     <string name="storage_internal_warning_message">您选择将备份储存在内部存储上。当您的手机丢失或损坏时，备份文件将不可用。</string>
     <string name="storage_internal_warning_title">警告</string>
     <string name="restore_finished_button">完成</string>
-    <string name="restore_finished_error">还原备份时出错。</string>
+    <string name="restore_finished_error">恢复备份时出错。</string>
     <string name="restore_finished_success">恢复完成</string>
     <string name="restore_app_quota_exceeded">超出备份配额</string>
     <string name="restore_app_not_installed">应用未安装</string>
     <string name="restore_app_not_allowed">应用程序不允许备份</string>
     <string name="backup_app_no_data">应用报告没有数据需要备份</string>
     <string name="restore_magic_package">系统包管理器</string>
-    <string name="restore_restoring">还原备份中</string>
+    <string name="restore_restoring">恢复备份中</string>
     <string name="restore_next">下一步</string>
     <string name="restore_installing_packages">重新安装应用中</string>
     <string name="restore_set_empty_result">在给定位置找不到合适的备份。
 \n
-\n可能性最大的原因是错误的恢复代码或存储错误。</string>
+\n这很可能是由错误的恢复代码或存储错误导致的。</string>
     <string name="restore_set_error">加载备份时出错。</string>
     <string name="restore_invalid_location_message">我们在此位置找不到任何备份。
 \n
-\n请选择另一个包含一个%s文件夹的位置。</string>
+\n请选择包含%s文件夹的其他位置。</string>
     <string name="restore_invalid_location_title">没有找到备份</string>
-    <string name="restore_back">不要还原</string>
-    <string name="restore_restore_set_times">上次备份%1$s · 首次%2$s。</string>
-    <string name="restore_choose_restore_set">选择一个备份来还原</string>
-    <string name="restore_title">从备份还原</string>
+    <string name="restore_back">不恢复</string>
+    <string name="restore_restore_set_times">上次备份:%1$s · 首次备份:%2$s。</string>
+    <string name="restore_choose_restore_set">选择一个备份来恢复</string>
+    <string name="restore_title">从备份恢复</string>
     <string name="notification_restore_error_action">卸载应用</string>
-    <string name="notification_restore_error_text">安装应用程序从备份恢复其数据前先插入你的%1$s。</string>
-    <string name="notification_restore_error_title">无法还原%1$s的数据</string>
-    <string name="notification_restore_error_channel_title">自动还原闪存驱动器出错</string>
+    <string name="notification_restore_error_text">要恢复应用程序数据，请在安装应用程序前插入你的%1$s。</string>
+    <string name="notification_restore_error_title">无法为%1$s恢复数据</string>
+    <string name="notification_restore_error_channel_title">自动恢复闪存驱动器错误</string>
     <string name="notification_error_action">修复</string>
-    <string name="notification_error_text">未能运行一次设备备份。</string>
+    <string name="notification_error_text">未能进行一次设备备份。</string>
     <string name="notification_error_title">备份出错</string>
     <string name="notification_error_channel_title">错误通知</string>
     <string name="notification_failed_title">备份失败</string>
     <string name="notification_success_title">备份完成</string>
     <string name="notification_title">备份运行中</string>
-    <string name="notification_channel_title">备份提示</string>
+    <string name="notification_channel_title">备份通知</string>
     <string name="recovery_code_error_checksum_word">您的代码无效。请检查所有单词，然后重试！</string>
-    <string name="recovery_code_error_invalid_word">错误的词。你的意思是%1$s或%2$s？</string>
-    <string name="recovery_code_error_empty_word">你忘了输入这个词。</string>
-    <string name="recovery_code_done_button">完成</string>
+    <string name="recovery_code_error_invalid_word">错误的单词。你的意思是%1$s或%2$s？</string>
+    <string name="recovery_code_error_empty_word">你忘了输入这个单词。</string>
+    <string name="recovery_code_done_button">验证</string>
     <string name="recovery_code_confirm_button">确认代码</string>
-    <string name="recovery_code_write_it_down">现在就把它写下来！</string>
+    <string name="recovery_code_write_it_down">现在就把它写到纸上！</string>
     <string name="recovery_code_title">恢复代码</string>
     <string name="storage_check_fragment_error_button">返回</string>
     <string name="storage_check_fragment_permission_error">无法获得写入备份位置的权限。</string>
@@ -88,27 +88,61 @@
     <string name="storage_check_fragment_backup_title">初始化备份位置中…</string>
     <string name="storage_fake_nextcloud_summary_installed">点击设置账户</string>
     <string name="storage_fake_nextcloud_summary">点击安装</string>
-    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 剩余</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用</string>
     <string name="storage_fake_drive_summary">需要插入</string>
     <string name="storage_fake_drive_title">U盘</string>
-    <string name="storage_fragment_warning">能访问您存储位置的人可以了解您使用的应用程序，但无法访问应用程序的数据。</string>
+    <string name="storage_fragment_warning">能访问您存储位置的人能知道您使用了哪些应用程序，但无法访问应用程序的数据。</string>
     <string name="storage_fragment_restore_title">去哪里找你的备份？</string>
-    <string name="storage_fragment_backup_title">选择备份文件储存位置</string>
-    <string name="settings_backup_now">现在备份</string>
-    <string name="settings_backup_exclude_apps">排除的应用</string>
+    <string name="storage_fragment_backup_title">选择备份存储位置</string>
+    <string name="settings_backup_now">立即备份</string>
+    <string name="settings_backup_exclude_apps">排除应用</string>
     <string name="settings_backup_status_summary">上次备份: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">禁用应用程序备份</string>
+    <string name="settings_backup_apk_dialog_disable">禁用“备份应用程序”</string>
     <string name="settings_backup_apk_dialog_cancel">取消</string>
-    <string name="settings_backup_apk_dialog_message">禁用应用程序备份仍将备份应用数据。 但是，它不会自动还原。
+    <string name="settings_backup_apk_dialog_message">禁用“备份应用程序”仍将备份应用数据。 但是，应用数据不会自动恢复。
 \n
-\n您需要手动安装所有应用程序，同时打开“自动还原”。</string>
+\n您将需要在打开“自动恢复”的情况下手动安装所有应用程序。</string>
     <string name="settings_backup_apk_summary">备份应用程序本身。 否则，只备份应用程序数据。</string>
     <string name="settings_auto_restore_summary_usb">注意：要让该功能正常工作，需插入你的%1$s。</string>
-    <string name="restore_app_was_stopped">未备份，因为最近没有用过</string>
-    <string name="restore_app_not_yet_backed_up">尚未备份</string>
+    <string name="restore_app_was_stopped">最近没有使用，未备份</string>
+    <string name="restore_app_not_yet_backed_up">未备份</string>
     <string name="notification_success_text">已备份了%2$d个应用中的%1$d个。点击了解更多。</string>
-    <string name="notification_backup_already_running">备份进行中</string>
+    <string name="notification_backup_already_running">备份已在进行</string>
     <string name="storage_fake_nextcloud_summary_unavailable">帐户不可用。 设置一个（或禁用密码）。</string>
     <string name="current_destination_string">备份状态和设置</string>
-    <string name="data_management_label">种子库备份</string>
+    <string name="data_management_label">Seedvault 备份</string>
+    <string name="restore_restoring_error_message">您可以手动重装这些应用。自动恢复会尝试恢复它们的数据（在自动恢复启用时）。</string>
+    <string name="restore_installing_error_message">应用数据只能在应用安装后恢复。
+\n
+\n点击安装失败的应用来在继续进行恢复前手动安装他们。</string>
+    <string name="backup_app_quota_exceeded">超出备份配额</string>
+    <string name="backup_section_not_allowed">不允许备份的应用</string>
+    <string name="backup_app_was_stopped">最近没有使用，未备份</string>
+    <string name="backup_app_not_yet_backed_up">等待备份…</string>
+    <string name="restore_restoring_error_title">未能恢复某些应用</string>
+    <string name="restore_installing_tap_to_install">点击安装</string>
+    <string name="restore_installing_error_title">某些应用未安装</string>
+    <string name="backup_sms">短信</string>
+    <string name="backup_section_system">系统应用</string>
+    <string name="about_version">版本: %s</string>
+    <string name="backup_section_user">已安装的应用</string>
+    <string name="backup_contacts">本地联系人</string>
+    <string name="backup_call_log">通话记录</string>
+    <string name="backup_settings">设备设置</string>
+    <string name="settings_backup_status_title">备份状态</string>
+    <string name="recovery_code_recreated">新的恢复代码已成功创建</string>
+    <string name="recovery_code_verification_new_dialog_message">生成新代码将使你无法访问现有备份。 如果可能，我们将尝试删除它们。
+\n
+\n你确定想这么做吗？</string>
+    <string name="recovery_code_verification_new_dialog_title">等待一秒钟…</string>
+    <string name="recovery_code_verification_generate_new">生成新代码</string>
+    <string name="recovery_code_verification_try_again">重试</string>
+    <string name="recovery_code_verification_error_message">你输入了不正确的恢复代码。请重试！
+\n
+\n如果你丢失了代码，请轻按下面的“生成新代码”。</string>
+    <string name="recovery_code_verification_error_title">不正确的恢复代码</string>
+    <string name="recovery_code_verification_ok_message">你的代码正确无误，可用于还原你的备份。</string>
+    <string name="recovery_code_verification_ok_title">已验证恢复代码</string>
+    <string name="settings_backup_recovery_code_summary">验证现有代码或生成新代码</string>
+    <string name="settings_backup_recovery_code">恢复代码</string>
 </resources>

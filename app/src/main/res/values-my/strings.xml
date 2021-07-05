@@ -1,2 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="notification_error_text">ကူးယူမှုမအောင်မြင်ပါ။</string>
+    <string name="notification_error_title">မှားယွင်းနေပါသည်</string>
+    <string name="notification_error_channel_title">သတိပေးချက်အမှား</string>
+    <string name="notification_failed_title">မအောင်မြင်ပါ</string>
+    <string name="notification_success_title">Backup ပြီးဆုံးသွားပါပြီ</string>
+    <string name="notification_backup_already_running">Back upလုပ်နေပါသည်</string>
+    <string name="notification_title">Back up ပြန်ဆောင်ရွက်နေပါသည်။</string>
+    <string name="notification_channel_title">အရန်ကူးအကြောင်းကြားစာ</string>
+    <string name="recovery_code_error_checksum_word">သင်ကုဒ်မှားယွင်းနေပါသည်။ပြန်လည်စစ်ဆေးပြီပြန်ရိုက်ထည့်ပါ</string>
+    <string name="recovery_code_error_empty_word">စကာလုံးများမေ့လျော့ခြင်: .</string>
+    <string name="recovery_code_input_hint_12">စကားလုံးတစ်ဆယ်နှစ်</string>
+    <string name="recovery_code_input_hint_11">စကားလုံးတစ်ဆယ်တစ်</string>
+    <string name="recovery_code_input_hint_10">စကားလုံးတစ်ဆယ်လုံး</string>
+    <string name="recovery_code_input_hint_9">စကားလုံးကိုးလုံး</string>
+    <string name="recovery_code_input_hint_8">စကားလုံးရှစ်လုံ: .</string>
+    <string name="recovery_code_input_hint_7">စကားလုံးခုနှစ်လုံ:</string>
+    <string name="recovery_code_input_hint_6">စကားလုံး၆လုံး</string>
+    <string name="recovery_code_input_hint_5">စကားလုံးငါးလုံး</string>
+    <string name="recovery_code_input_hint_4">စကားလုံးလေးလုံး</string>
+    <string name="recovery_code_input_hint_3">စကားလုံးသုံးလုံး</string>
+    <string name="recovery_code_input_hint_2">စကားလုံးနှစ်လုံး</string>
+    <string name="recovery_code_input_hint_1">စကားလုံတလုံး</string>
+    <string name="recovery_code_done_button">ပြီဆုံးသည်။</string>
+    <string name="recovery_code_input_intro">အရန်ကူးခြင်းများကိုတပ်ဆင်သည့်အခါသင်ရေးခဲ့သော ၁၂- စကားလုံးပြန်လည်ဆယ်တင်ရေးကုဒ်ကိုထည့်ပါ ။</string>
+    <string name="recovery_code_confirm_intro">င်လိုအပ်သည့်အခါ၎င်းသည်အလုပ်လုပ်ရန်သေချာစေရန်သင်၏ ၁၂- စာလုံး recovery ကုဒ်ကိုထည့်ပါ ။</string>
+    <string name="recovery_code_confirm_button">ကုဒ်အတည်ပြုပါ</string>
+    <string name="recovery_code_write_it_down">စာရွက်ပေါ်တွင်ချရေးပါ ။</string>
+    <string name="recovery_code_12_word_intro">ရန်သင့်သိမ်းဆည်းထားသည့်ဒေတာများကိုပြန်လည်ထူထောင်ရန်သင့်တွင်စာလုံး ၁၂ လုံးပါသော recovery ကုဒ်လိုအပ်သည် ။</string>
+    <string name="recovery_code_title">ပြန်လည်ကယ်ဆယ်ရေးကုဒ်</string>
+    <string name="storage_check_fragment_error_button">အနောက်</string>
+    <string name="storage_check_fragment_permission_error">အရန်သိုလှောင်ထားသောနေရာကိုဝင်ရောက်၍မရပါ .</string>
+    <string name="storage_check_fragment_backup_error">အရန်ကူးထားသောနေရာကိုဝင်ရောက်စဉ်အမှားတစ်ခုဖြစ်ပွားခဲ့သည် ။</string>
+    <string name="storage_check_fragment_restore_title">အရန်သိုလှောင်ရန်ရှာဖွေခြင်း</string>
+    <string name="storage_check_fragment_backup_title">အရန်သိုလှောင်သည့်တည်နေရာတပ်ဆင်ခြင်း.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">အကောင့်မရနိုင်ပါ အသစ်ထပ်မှံပြုလုပ်ပါ .</string>
+    <string name="storage_fake_nextcloud_summary_installed">အကောင့်ပြုလုပ်ရန်နှိပ်ပါ ။</string>
+    <string name="storage_fake_nextcloud_summary">ထည့်သွင်းရန်နှိပ်ပါ</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> အခမဲ့.</string>
+    <string name="storage_fake_drive_summary">ထပ်မံဖြေသွင်းခြင်း</string>
+    <string name="storage_fake_drive_title">အချက်အလက်များသိုလှောင်သည့်ကဒ်</string>
+    <string name="storage_fragment_warning">သင်၏သိမ်းဆည်းခြင်းနေရာကိုကြည့်ရှုသူများသည်သင်မည်သည့်အက်ပ်များကိုသုံးသည်ကိုလေ့လာနိုင်သည်၊ သို့သော်အက်ပလီကေးရှင်းဒေတာကိုလက်လှမ်းမမှီပါ ။</string>
+    <string name="storage_fragment_restore_title">သင်၏ backups များကိုမည်သည့်နေရာတွင်ရှာဖွေရမည်နည်း ။</string>
+    <string name="storage_fragment_backup_title">အရန်ကူးယူမည့်နေရာကိုရွေးချယ်ပါ</string>
+    <string name="settings_backup_now">ယခု Backup လုပ်ပါ</string>
+    <string name="settings_backup_exclude_apps">အက်ပ်များကိုဖယ်ထုတ်ပါ</string>
+    <string name="settings_backup_status_summary">"နောက်ဆုံးအရန်ကူး  %1$s"</string>
+    <string name="settings_backup_status_title">အရန်ကူးအခြေအနေ</string>
+    <string name="settings_backup_apk_dialog_disable">အက်ပ်အရန်ကူးခြင်းကိုပိတ်ပါ</string>
+    <string name="settings_backup_apk_dialog_cancel">ပယ်ဖြတ်ခြင်း ။</string>
+    <string name="settings_backup_apk_dialog_message">ပိတ်ထားသောအက်ပလီကေးရှင်းသည်အက်ပ်ဒေတာကိုအရံသိမ်းလိမ့်မည်။ သို့သော်၎င်းသည်အလိုအလျောက်ပြန်လည်ရရှိမည်မဟုတ်ပါ။
+\n
+\n\"Automatic Restore\" ကိုဖွင့်ထားစဉ်သင်၏အက်ပ်များအားလုံးကိုကိုယ်တိုင်ထည့်သွင်းရန်လိုအပ်သည် ။</string>
+    <string name="settings_backup_apk_dialog_title">အက်ပလီကေးရှင်းအရန်ကူးခြင်းကိုအမှန်ပိတ်ထားသလား ။</string>
+    <string name="settings_backup_apk_summary">အက်ပ်များကိုသူတို့ကိုယ်တိုင်အရန်ကူးပါ။ ဒီလိုမှမဟုတ်ရင် app data များသာအရန်သင့်သိမ်းဆည်းလိမ့်မယ် ။</string>
+    <string name="settings_backup_apk_title">အက်ပ်ဒေတာအရံကူးခြင်း ။</string>
+    <string name="settings_category_app_data_backup">အက်ပ်ဒေတာအရံကူးခြင်း</string>
+    <string name="settings_auto_restore_summary_usb">သင်၏ %1$s ကိုဤအလုပ်မလုပ်ရန်ချိတ်ဆက်ရန်လိုအပ်သည်.</string>
+    <string name="settings_auto_restore_summary">အက်ပ်တစ်ခုကိုပြန်လည်တပ်ဆင်သောအခါအရန်ကူးထားသည့်ချိန်ညှိချက်များနှင့်အချက်အလက်များကိုပြန်ယူပါ.</string>
+    <string name="settings_auto_restore_title">အလိုအလျှောက် ပြန်လည်သိမ်းဆည်းခြင်း။</string>
+    <string name="settings_info">သင့်ဖုန်းတွင်အရန်သိမ်းဆည်းမှုများကိုသိုလှောင်ရန်ပြန်လည်အသုံးပြုသည့်ဂဏန်း၁၂လုံးလိုအပ်လိမ့်မည်.</string>
+    <string name="settings_backup_last_backup_never">ဘယ်တော့မှ</string>
+    <string name="settings_backup_location_internal">သိုလှောင်သည့်နေရာ</string>
+    <string name="settings_backup_location_none">ဘာမှမရှိ</string>
+    <string name="settings_backup_location">တည်နေရာသိမ်းဆည်းခြင်း</string>
+    <string name="settings_backup">အချက်အလက်များသိမ်းဆည်းခြင်း</string>
+    <string name="restore_backup_button">ပြန်လည်သိုလှောင်သိမ်းဆည်းမှု</string>
+    <string name="current_destination_string">သိမ်းဆည်းမှုအခြေအနေနှင်ချိန်ညှိချက်များ</string>
+    <string name="data_management_label">ဒေတာသိမ်းဆည်းခြင်</string>
+    <string name="backup">အရန်သိမ်းဆည်းခြင်း</string>
+</resources>

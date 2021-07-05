@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_success_title">バックアップが完了しました</string>
+    <string name="notification_title">バックアップが実行中です</string>
+    <string name="notification_failed_title">バックアップが失敗しました</string>
+    <string name="notification_backup_already_running">バックアップはすでに実行中です</string>
+    <string name="recovery_code_verification_error_title">不正なリカバリーコード</string>
+    <string name="recovery_code_verification_ok_title">リカバリーコードが確認できました</string>
+    <string name="recovery_code_verification_new_dialog_message">新規コードを作成すると、作成済みのバックアップにアクセスできなくなります。システムは作成済みのバックアップを削除します。
+\n
+\n本当に実行しますか？</string>
+    <string name="recovery_code_verification_new_dialog_title">しばらくお待ちください…</string>
+    <string name="recovery_code_verification_error_message">リカバリーコードが違います。もう一度入力してください！
+\n
+\nコードを紛失した場合は、下の「新規コードを作成」をタップしてください。</string>
+    <string name="recovery_code_verification_generate_new">新規コードを作成</string>
+    <string name="recovery_code_title">リカバリーコード</string>
+    <string name="storage_fake_drive_title">USBフラッシュドライブ</string>
+    <string name="settings_backup_recovery_code">リカバリーコード</string>
+    <string name="settings_backup_now">バックアップを実行する</string>
+    <string name="settings_backup_exclude_apps">除外するアプリ</string>
+    <string name="settings_backup_status_summary">最後のバックアップ： %1$s</string>
+    <string name="settings_backup_status_title">バックアップ状態</string>
+    <string name="settings_backup_apk_dialog_disable">アプリのバックアップを無効化する</string>
+    <string name="settings_backup_apk_dialog_cancel">キャンセル</string>
+    <string name="settings_backup_apk_title">アプリのバックアップ</string>
+    <string name="settings_category_app_data_backup">アプリのデータのバックアップ</string>
+    <string name="settings_auto_restore_summary_usb">注意：うまく動作するため、 %1$s を接続する必要があります。</string>
+    <string name="settings_auto_restore_summary">アプリを再インストールするとき、バックアップした設定とデータを復元する。</string>
+    <string name="settings_auto_restore_title">自動復元</string>
+    <string name="settings_info">すべてのバックアップは端末に暗号化した状態で保存されています。バックアップから復元するため、12単語のリカバリーコードが必要です。</string>
+    <string name="settings_backup_location_internal">内部ストレージ</string>
+    <string name="settings_backup_location_none">なし</string>
+    <string name="settings_backup_location">バックアップの場所</string>
+    <string name="settings_backup">自分のデータをバックアップする</string>
+    <string name="restore_backup_button">バックアップを復元する</string>
+    <string name="current_destination_string">状態と設定をバックアップする</string>
+    <string name="data_management_label">SeedVault バックアップ</string>
+    <string name="backup">バックアップ</string>
+</resources>

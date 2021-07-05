@@ -1,2 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="restore_backup_button">Restaurar backup</string>
+    <string name="current_destination_string">Status do backup e configurações</string>
+    <string name="backup">Backup</string>
+    <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licença: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Versão: %s</string>
+    <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
+    <string name="about_title">Sobre</string>
+    <string name="storage_internal_warning_use_anyway">Usar assim mesmo</string>
+    <string name="storage_internal_warning_choose_other">Escolha outro</string>
+    <string name="storage_internal_warning_message">Escolheu o armazenamento interno para o seu backup. Isto não estará disponível quando seu telefone for perdido ou quebrado.</string>
+    <string name="storage_internal_warning_title">Atenção</string>
+    <string name="restore_finished_button">Terminar</string>
+    <string name="restore_finished_error">Ocorreu um erro ao restaurar o backup.</string>
+    <string name="restore_finished_success">Restauração completa</string>
+    <string name="restore_magic_package">Gestor de pacote do sistema</string>
+    <string name="restore_restoring_error_message">Pode reinstalar essas apps manualmente e a restauração automática tentará restaurar os dados deles (quando ativado).</string>
+    <string name="restore_restoring_error_title">Não foi possível restaurar algumas apps</string>
+    <string name="restore_restoring">Restaurando backup</string>
+    <string name="restore_next">Próximo</string>
+    <string name="restore_installing_tap_to_install">Toque para instalar</string>
+    <string name="restore_installing_error_message">Dados apenas podem ser restaurados se uma app está instalada.
+\n
+\nToque apps falhadas para tentar instalá-las manualmente antes de prosseguir.</string>
+    <string name="restore_installing_error_title">Algumas apps não foram instaladas</string>
+    <string name="restore_installing_packages">Reinstalar apps</string>
+    <string name="restore_set_empty_result">Nenhum backup adequado encontrado no local dado.
+\n
+\nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
+    <string name="restore_set_error">Ocorreu um erro ao carregar os backups.</string>
+    <string name="restore_invalid_location_message">Não podemos encontrar nenhum backup neste local.
+\n
+\nEscolha outro local que contenha uma pasta %s.</string>
+    <string name="restore_invalid_location_title">Sem backups encontrados</string>
+    <string name="restore_back">Não restaurar</string>
+    <string name="restore_restore_set_times">Último backup %1$s · Primeiro %2$s.</string>
+    <string name="restore_choose_restore_set">Escolha um backup para restaurar</string>
+    <string name="restore_title">Restaurar do backup</string>
+    <string name="backup_section_not_allowed">Apps que não permitem backup dos dados</string>
+    <string name="restore_app_not_installed">App não instalado</string>
+    <string name="restore_app_quota_exceeded">Cota de backup excedida</string>
+    <string name="backup_app_quota_exceeded">Quota de backup excedida</string>
+    <string name="backup_app_no_data">App não relatou dados para backup</string>
+    <string name="restore_app_was_stopped">Não foi feito o backup por não ter sido usado recentemente</string>
+    <string name="backup_app_was_stopped">Backup não realizado por ter sido usado recentemente</string>
+    <string name="restore_app_not_yet_backed_up">Ainda não foi feito o backup</string>
+    <string name="backup_app_not_yet_backed_up">Aguardando back up…</string>
+    <string name="backup_contacts">Contatos locais</string>
+    <string name="backup_call_log">Histórico de chamadas</string>
+    <string name="backup_settings">Configurações do aparelho</string>
+    <string name="backup_sms">Mensagens de texto SMS</string>
+    <string name="notification_restore_error_action">Desinstalar app</string>
+    <string name="notification_restore_error_text">Conecte o seu %1$s antes de instalar a app para restaurar os seus dados do backup.</string>
+    <string name="notification_restore_error_title">Não foi possível restaurar os dados de %1$s</string>
+    <string name="notification_restore_error_channel_title">Erro de restauração automática do pen drive</string>
+    <string name="notification_error_action">Consertar</string>
+    <string name="notification_error_text">Falha ao executar um backup do aparelho.</string>
+    <string name="notification_error_title">Erro de backup</string>
+    <string name="notification_error_channel_title">Notificação de erro</string>
+    <string name="notification_failed_title">Backup falhou</string>
+    <string name="notification_success_text">Feito o backup da app %1$d de %2$d . Toque para saber mais.</string>
+    <string name="notification_success_title">Backup concluído</string>
+    <string name="notification_backup_already_running">Backup em andamento</string>
+    <string name="notification_channel_title">Notificação de backup</string>
+    <string name="recovery_code_error_checksum_word">O seu código é inválido. Por favor, verifique todas as palavras e tente novamente!</string>
+    <string name="recovery_code_error_invalid_word">Palavra errada. Quis dizer %1$s ou %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Se esqueceu de inserir esta palavra.</string>
+    <string name="recovery_code_input_hint_12">Palavra 12</string>
+    <string name="recovery_code_input_hint_11">Palavra 11</string>
+    <string name="recovery_code_input_hint_10">Palavra 10</string>
+    <string name="recovery_code_input_hint_9">Palavra 9</string>
+    <string name="recovery_code_input_hint_8">Palavra 8</string>
+    <string name="recovery_code_input_hint_7">Palavra 7</string>
+    <string name="recovery_code_input_hint_6">Palavra 6</string>
+    <string name="recovery_code_input_hint_5">Palavra 5</string>
+    <string name="recovery_code_input_hint_4">Palavra 4</string>
+    <string name="recovery_code_input_hint_3">Palavra 3</string>
+    <string name="recovery_code_input_hint_2">Palavra 2</string>
+    <string name="recovery_code_input_hint_1">Palavra 1</string>
+    <string name="recovery_code_input_intro">Digite o código de recuperação de 12 palavras que anotou ao configurar backups.</string>
+    <string name="recovery_code_confirm_intro">Digite o seu código de recuperação de 12 palavras para garantir que funcionará quando precisar.</string>
+    <string name="recovery_code_confirm_button">Confirmar código</string>
+    <string name="recovery_code_write_it_down">Escreva no papel agora!</string>
+    <string name="recovery_code_12_word_intro">Precisa do seu código de recuperação de 12 palavras para restaurar os dados de backup.</string>
+    <string name="recovery_code_title">Código de recuperação</string>
+    <string name="storage_check_fragment_error_button">Voltar</string>
+    <string name="storage_check_fragment_permission_error">Não foi possível obter permissão para gravar no local do backup.</string>
+    <string name="storage_check_fragment_backup_error">Ocorreu um erro ao acessar o local do backup.</string>
+    <string name="storage_check_fragment_restore_title">Procurando por backups…</string>
+    <string name="storage_check_fragment_backup_title">Inicializando local de backup…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Crie uma (ou desative a palavra-passe).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
+    <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
+    <string name="storage_fake_drive_summary">Precisa ser conectado</string>
+    <string name="storage_fake_drive_title">Pen drive USB</string>
+    <string name="storage_fragment_warning">Pessoas com acesso ao seu local de armazenamento podem saber quais apps usa, mas não têm acesso aos dados das apps.</string>
+    <string name="storage_fragment_restore_title">Onde encontrar os seus backups\?</string>
+    <string name="storage_fragment_backup_title">Escolha onde armazenar backups</string>
+    <string name="settings_backup_now">Fazer backup agora</string>
+    <string name="settings_backup_exclude_apps">Excluir apps</string>
+    <string name="settings_backup_status_summary">Último backup: %1$s</string>
+    <string name="settings_backup_status_title">Status do backup</string>
+    <string name="settings_backup_apk_dialog_disable">Desativar backup da app</string>
+    <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
+    <string name="settings_backup_apk_dialog_message">O backup da app desativado ainda fará o backup dos dados da app. Porém, ele não será restaurado automaticamente.
+\n
+\nPrecisará instalar todos as suas apps manualmente enquanto o \"Restauração automática\" está ativado.</string>
+    <string name="settings_backup_apk_dialog_title">Deseja realmente desativar o backup da app\?</string>
+    <string name="settings_backup_apk_summary">Faça backup das apps neles mesmos. Caso contrário, apenas os dados da app seriam armazenados em backup.</string>
+    <string name="settings_backup_apk_title">Backup da app</string>
+    <string name="settings_category_app_data_backup">Backup de dados da app</string>
+    <string name="settings_auto_restore_summary_usb">Observação: o seu %1$s precisa estar conectado para que isso funcione.</string>
+    <string name="settings_auto_restore_summary">Ao reinstalar uma app, restaura as configurações e dados do backup.</string>
+    <string name="settings_auto_restore_title">Restauração automática</string>
+    <string name="settings_info">Todos os backups são criptografados no seu telefone. Para restaurar do backup, precisará do código de recuperação de 12 palavras.</string>
+    <string name="settings_backup_last_backup_never">Nunca</string>
+    <string name="settings_backup_location_internal">Armazenamento interno</string>
+    <string name="settings_backup_location_none">Nenhum</string>
+    <string name="settings_backup_location">Local de backup</string>
+    <string name="settings_backup">Fazer backup dos meus dados</string>
+    <string name="data_management_label">Backup do Seedvault</string>
+</resources>

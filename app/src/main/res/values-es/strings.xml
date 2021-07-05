@@ -10,7 +10,7 @@
     <string name="restore_back">No restaurar</string>
     <string name="notification_restore_error_action">Desinstalar aplicación</string>
     <string name="notification_error_channel_title">Notificación de error</string>
-    <string name="recovery_code_error_empty_word">Olvidó escribir esta palabra.</string>
+    <string name="recovery_code_error_empty_word">Olvidaste escribir esta palabra.</string>
     <string name="recovery_code_input_hint_12">Palabra 12</string>
     <string name="recovery_code_input_hint_11">Palabra 11</string>
     <string name="recovery_code_input_hint_10">Palabra 10</string>
@@ -23,7 +23,7 @@
     <string name="recovery_code_input_hint_3">Palabra 3</string>
     <string name="recovery_code_input_hint_2">Palabra 2</string>
     <string name="recovery_code_input_hint_1">Palabra 1</string>
-    <string name="recovery_code_done_button">Hecho</string>
+    <string name="recovery_code_done_button">Verificar</string>
     <string name="recovery_code_title">Código de recuperación</string>
     <string name="storage_check_fragment_error_button">Atrás</string>
     <string name="storage_fake_nextcloud_summary_installed">Pulse para configurar una cuenta</string>
@@ -31,27 +31,27 @@
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
     <string name="settings_backup_location_none">Ninguna</string>
     <string name="settings_auto_restore_title">Restauración automática</string>
-    <string name="settings_auto_restore_summary_usb">Nota: su %1$s debe enchufarse para que esto funcione.</string>
+    <string name="settings_auto_restore_summary_usb">Nota: Su %1$s debe enchufarse para que esto funcione.</string>
     <string name="settings_backup_last_backup_never">Nunca</string>
     <string name="settings_backup_location_internal">Almacenamiento interno</string>
-    <string name="notification_restore_error_text">Conecta tus %1$s antes de instalar la aplicación para restaurar sus datos desde la copia de seguridad.</string>
-    <string name="notification_error_action">Arreglar</string>
+    <string name="notification_restore_error_text">Conecte sus %1$s antes de instalar la aplicación para restaurar sus datos desde la copia de seguridad.</string>
+    <string name="notification_error_action">Corregir</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org"> Calyx Institute </a> para su uso en <a href="https://calyxos.org"> CalyxOS </a></string>
     <string name="about_design">Diseño de: <a href="https://www.glennsorrentino.com/"> Glenn Sorrentino </a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys"> Steve Soltys </a> y <a href="https://blog.grobox.de"> Torsten Grote </a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0"> Apache2 </a></string>
-    <string name="about_summary">Una aplicación de respaldo que utiliza la API de respaldo interno de Android.</string>
+    <string name="about_summary">Una aplicación de copia de seguridad que utiliza la API de copia de seguridad interna de Android.</string>
     <string name="storage_internal_warning_choose_other">Escoger otro</string>
     <string name="storage_internal_warning_message">Ha elegido almacenamiento interno para su copia de seguridad. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
     <string name="restore_finished_error">Ocurrió un error al restaurar la copia de seguridad.</string>
     <string name="restore_finished_success">Restauración completada</string>
-    <string name="restore_app_quota_exceeded">Se ha superado la cuota de la copia de seguridad</string>
+    <string name="restore_app_quota_exceeded">Se superó la cuota de copias de seguridad</string>
     <string name="restore_app_not_installed">La aplicación no está instalada</string>
-    <string name="restore_app_not_allowed">La aplicación no permite copias de seguridad</string>
-    <string name="backup_app_no_data">La aplicación no reportó datos para la copia de seguridad</string>
+    <string name="restore_app_not_allowed">La aplicación no permitió hacer copias de seguridad</string>
+    <string name="backup_app_no_data">La aplicación informó de que no había datos para la copia de seguridad</string>
     <string name="restore_magic_package">Administrador de paquetes del sistema</string>
     <string name="restore_restoring">Restaurando copia de seguridad</string>
-    <string name="restore_installing_packages">Re-Instalando aplicaciones</string>
+    <string name="restore_installing_packages">Reinstalando aplicaciones</string>
     <string name="restore_set_empty_result">No se han encontrado copias de seguridad adecuadas en la ubicación determinada.
 \n
 \nEsto es más probable debido a un código de recuperación incorrecto o un error de almacenamiento.</string>
@@ -71,44 +71,78 @@
     <string name="notification_success_title">Copia de seguridad terminada</string>
     <string name="notification_title">Copia de seguridad en ejecución</string>
     <string name="notification_channel_title">Notificación de copia de seguridad</string>
-    <string name="recovery_code_error_checksum_word">Su código es inválido. Por favor, compruebe todas las palabras e inténtelo de nuevo!</string>
+    <string name="recovery_code_error_checksum_word">Su código no es válido. ¡Por favor, compruebe todas las palabras e inténtelo de nuevo!</string>
     <string name="recovery_code_error_invalid_word">Palabra equivocada. ¿Quisiste decir %1$s o %2$s \?</string>
-    <string name="recovery_code_input_intro">Ingrese su código de recuperación de 12 palabras que anotó al configurar las copias de seguridad.</string>
+    <string name="recovery_code_input_intro">Ingrese su código de recuperación de 12 palabras que anotaste al configurar las copias de seguridad.</string>
     <string name="recovery_code_confirm_intro">Ingrese su código de recuperación de 12 palabras para asegurarse de que funcionará cuando lo necesite.</string>
-    <string name="recovery_code_confirm_button">Confirma código</string>
+    <string name="recovery_code_confirm_button">Confirmar código</string>
     <string name="recovery_code_write_it_down">¡Escríbalo en papel ahora!</string>
-    <string name="recovery_code_12_word_intro">Necesita su código de recuperación de 12 palabras para restaurar los datos respaldados.</string>
+    <string name="recovery_code_12_word_intro">Necesita su código de recuperación de 12 palabras para restaurar los datos de la copia de seguridad.</string>
     <string name="storage_check_fragment_permission_error">No se pudo obtener el permiso para escribir en la ubicación de la copia de seguridad.</string>
     <string name="storage_check_fragment_backup_error">Se produjo un error al acceder a la ubicación de la copia de seguridad.</string>
     <string name="storage_check_fragment_restore_title">Buscando copias de seguridad…</string>
-    <string name="storage_check_fragment_backup_title">Iniciando la ubicación de la copia de seguridad…</string>
+    <string name="storage_check_fragment_backup_title">Inicializando la ubicación de la copia de seguridad…</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> libre</string>
     <string name="storage_fake_drive_summary">Necesita estar enchufado</string>
     <string name="storage_fake_drive_title">Unidad flash USB</string>
-    <string name="storage_fragment_restore_title">¿Dónde encontrar tus copias de seguridad\?</string>
+    <string name="storage_fragment_restore_title">¿Dónde encontrar sus copias de seguridad\?</string>
     <string name="storage_fragment_backup_title">Elija dónde almacenar las copias de seguridad</string>
-    <string name="settings_backup_now">Hacer copia de seguridad ahora</string>
+    <string name="settings_backup_now">Copia de seguridad ahora</string>
     <string name="settings_backup_exclude_apps">Excluir aplicaciones</string>
     <string name="settings_backup_status_summary">Última copia de seguridad: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Deshabilitar la copia de seguridad de la aplicación</string>
-    <string name="settings_backup_apk_dialog_message">La copia de seguridad de la aplicación aún desactivada seguirá respaldando los datos de la aplicación. Sin embargo, no se restaurará automáticamente.
+    <string name="settings_backup_apk_dialog_message">Si se desactiva la copia de seguridad de la aplicación, se seguirán guardando los datos de la misma. Sin embargo, no se restaurará automáticamente.
 \n
-\nDeberá instalar todas sus aplicaciones manualmente mientras tiene activada la \"Restauración automática\".</string>
-    <string name="settings_backup_apk_dialog_title">¿Realmente desactivar la copia de seguridad de la aplicación\?</string>
-    <string name="settings_backup_apk_summary">Realice una copia de seguridad de las aplicaciones. De lo contrario, solo se realizarían copias de seguridad de los datos de la aplicación.</string>
+\nDeberá instalar todas sus aplicaciones manualmente mientras tenga activada la \"Restauración automática\".</string>
+    <string name="settings_backup_apk_dialog_title">¿Desactivar realmente la copia de seguridad de la aplicación\?</string>
+    <string name="settings_backup_apk_summary">Realiza una copia de seguridad de las aplicaciones. De lo contrario, solo se realizarían copias de seguridad de los datos de la aplicación.</string>
     <string name="settings_backup_apk_title">Copia de seguridad de la aplicación</string>
-    <string name="settings_category_app_data_backup">Copia de seguridad de datos de la aplicación</string>
-    <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaure la configuración y los datos respaldados.</string>
+    <string name="settings_category_app_data_backup">Copia de seguridad de los datos de la aplicación</string>
+    <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaura la configuración y los datos de la copia de seguridad.</string>
     <string name="settings_info">Todas las copias de seguridad están encriptadas en su teléfono. Para restaurar desde la copia de seguridad, necesitará su código de recuperación de 12 palabras.</string>
     <string name="settings_backup_location">Ubicación de la copia de seguridad</string>
-    <string name="settings_backup">Respaldar mi información</string>
+    <string name="settings_backup">Copia de seguridad de mis datos</string>
     <string name="restore_backup_button">Restaurar la copia de seguridad</string>
     <string name="backup">Copia de seguridad</string>
-    <string name="notification_success_text">%1$d de %2$d aplicaciones respaldadas. Toque para obtener más información.</string>
-    <string name="notification_backup_already_running">Copia de seguridad en progreso</string>
-    <string name="restore_app_not_yet_backed_up">Sin respaldar aún</string>
-    <string name="restore_app_was_stopped">No está respaldado, ya que no se ha usado recientemente</string>
+    <string name="notification_success_text">%1$d de %2$d aplicaciones con copia de seguridad. Pulse para obtener más información.</string>
+    <string name="notification_backup_already_running">Copia de seguridad en curso</string>
+    <string name="restore_app_not_yet_backed_up">Todavía no se ha hecho una copia de seguridad</string>
+    <string name="restore_app_was_stopped">No se hizo una copia de seguridad porque no se había utilizado recientemente</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Cuenta no disponible. Configure una (o deshabilite la contraseña).</string>
     <string name="current_destination_string">Estado de la copia de seguridad y ajustes</string>
     <string name="data_management_label">Copia de seguridad de Seedvault</string>
+    <string name="restore_restoring_error_message">Puede reinstalar estas aplicaciones manualmente y la restauración automática intentará restaurar sus datos (cuando esté activada).</string>
+    <string name="backup_app_not_yet_backed_up">Esperando para la copia de seguridad…</string>
+    <string name="about_version">Versión: %s</string>
+    <string name="restore_restoring_error_title">No se pueden restaurar algunas aplicaciones</string>
+    <string name="restore_installing_tap_to_install">Pulse para instalar</string>
+    <string name="restore_installing_error_message">Los datos solo se pueden restaurar si se ha instalado una aplicación.
+\n
+\nPulse las aplicaciones fallidas para intentar instalarlas manualmente antes de continuar.</string>
+    <string name="restore_installing_error_title">Algunas aplicaciones no instaladas</string>
+    <string name="backup_section_not_allowed">Aplicaciones que no permiten la copia de seguridad de los datos</string>
+    <string name="backup_app_quota_exceeded">Se ha superado la cuota de copias de seguridad</string>
+    <string name="backup_app_was_stopped">No se ha hecho una copia de seguridad porque no se ha utilizado recientemente</string>
+    <string name="backup_section_user">Aplicaciones instaladas</string>
+    <string name="backup_contacts">Contactos locales</string>
+    <string name="backup_call_log">Historial de llamadas</string>
+    <string name="backup_settings">Ajustes del dispositivo</string>
+    <string name="backup_sms">Mensajes de texto SMS</string>
+    <string name="backup_section_system">Aplicaciones del sistema</string>
+    <string name="settings_backup_status_title">Estado de la copia de seguridad</string>
+    <string name="settings_backup_recovery_code_summary">Verifique el código existente o genere uno nuevo</string>
+    <string name="settings_backup_recovery_code">Código de recuperación</string>
+    <string name="recovery_code_verification_new_dialog_title">Espere un momento…</string>
+    <string name="recovery_code_verification_generate_new">Generar un código nuevo</string>
+    <string name="recovery_code_verification_try_again">Inténtelo de nuevo</string>
+    <string name="recovery_code_verification_error_message">Ha introducido un código de recuperación inválido. Inténtelo de nuevo. 
+\n
+\nSi ha perdido su código, pulse \'Generar un código nuevo\' debajo.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperación incorrecto</string>
+    <string name="recovery_code_verification_ok_message">Su código es correcto y funcionará al restaurar su copia de seguridad.</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperación verificado</string>
+    <string name="recovery_code_recreated">Se ha creado un código de recuperación nuevo satisfactoriamente</string>
+    <string name="recovery_code_verification_new_dialog_message">Generar un código nuevo hará que sus copias de seguridad existentes se vuelvan inaccesibles. Intentaremos eliminarlas si es posible.
+\n
+\n¿Está seguro de que quiere hacerlo\?</string>
 </resources>
