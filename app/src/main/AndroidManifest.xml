@@ -73,7 +73,13 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
-            android:exported="true" />
+            android:exported="true"
+            android:label="@string/backup">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.storage.StorageActivity"
