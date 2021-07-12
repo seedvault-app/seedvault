@@ -116,6 +116,15 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".SecretCodeReceiver">
+            <intent-filter>
+                <action android:name="android.telephony.action.SECRET_CODE" />
+                <!-- *#*#RESTORE#*#* -->
+                <data android:scheme="android_secret_code" android:host="7378673" />
+            </intent-filter>
+        </receiver>
+
         <!-- Used to start actual BackupService depending on scheduling criteria -->
         <service
             android:name=".storage.StorageBackupJobService"
