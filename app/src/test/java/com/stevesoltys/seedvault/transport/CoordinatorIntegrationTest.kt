@@ -65,10 +65,22 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
     private val backupPlugin = mockk<BackupPlugin>()
     private val kvBackupPlugin = mockk<KVBackupPlugin>()
-    private val kvBackup =
-        KVBackup(kvBackupPlugin, inputFactory, headerWriter, cryptoImpl, notificationManager)
+    private val kvBackup = KVBackup(
+        plugin = kvBackupPlugin,
+        settingsManager = settingsManager,
+        inputFactory = inputFactory,
+        headerWriter = headerWriter,
+        crypto = cryptoImpl,
+        nm = notificationManager
+    )
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
-    private val fullBackup = FullBackup(fullBackupPlugin, inputFactory, headerWriter, cryptoImpl)
+    private val fullBackup = FullBackup(
+        plugin = fullBackupPlugin,
+        settingsManager = settingsManager,
+        inputFactory = inputFactory,
+        headerWriter = headerWriter,
+        crypto = cryptoImpl
+    )
     private val apkBackup = mockk<ApkBackup>()
     private val packageService: PackageService = mockk()
     private val backup = BackupCoordinator(
@@ -277,6 +289,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val bInputStream = ByteArrayInputStream(appData)
         coEvery { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         coEvery {
             apkBackup.backupApkIfNecessary(

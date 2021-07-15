@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
@@ -27,6 +28,7 @@ private val TAG = KVBackup::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackup(
     private val plugin: KVBackupPlugin,
+    private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val headerWriter: HeaderWriter,
     private val crypto: Crypto,
@@ -39,7 +41,9 @@ internal class KVBackup(
 
     fun getCurrentPackage() = state?.packageInfo
 
-    fun getQuota(): Long = plugin.getQuota()
+    fun getQuota(): Long {
+        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else plugin.getQuota()
+    }
 
     suspend fun performBackup(
         packageInfo: PackageInfo,
@@ -94,7 +98,7 @@ internal class KVBackup(
             return backupError(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED)
         }
 
-        // TODO check if package is over-quota
+        // TODO check if package is over-quota and respect unlimited setting
 
         if (isNonIncremental && hasDataForPackage) {
             Log.w(TAG, "Requested non-incremental, deleting existing data.")

@@ -166,6 +166,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivity(Intent(requireContext(), RestoreActivity::class.java))
             true
         }
+        R.id.action_settings_expert -> {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment, ExpertSettingsFragment())
+                .addToBackStack(null)
+                .commit()
+            true
+        }
         R.id.action_about -> {
             AboutDialogFragment().show(parentFragmentManager, AboutDialogFragment.TAG)
             true

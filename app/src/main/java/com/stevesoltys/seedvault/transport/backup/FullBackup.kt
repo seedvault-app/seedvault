@@ -11,6 +11,7 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
@@ -35,6 +36,7 @@ private val TAG = FullBackup::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
     private val plugin: FullBackupPlugin,
+    private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val headerWriter: HeaderWriter,
     private val crypto: Crypto
@@ -46,7 +48,9 @@ internal class FullBackup(
 
     fun getCurrentPackage() = state?.packageInfo
 
-    fun getQuota(): Long = plugin.getQuota()
+    fun getQuota(): Long {
+        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else plugin.getQuota()
+    }
 
     fun checkFullBackupSize(size: Long): Int {
         Log.i(TAG, "Check full backup size of $size bytes.")
@@ -134,7 +138,7 @@ internal class FullBackup(
 
         // check if size fits quota
         state.size += numBytes
-        val quota = plugin.getQuota()
+        val quota = getQuota()
         if (state.size > quota) {
             Log.w(
                 TAG,

@@ -42,6 +42,10 @@
     <string name="settings_backup_storage_code_dialog_message">To enable storage backup, you need to first verify your recovery code or generate a new one.</string>
     <string name="settings_backup_storage_code_dialog_ok">Verify code</string>
 
+    <string name="settings_expert_title">Expert settings</string>
+    <string name="settings_expert_quota_title">Unlimited app quota</string>
+    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
+
     <!-- Storage Location -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>

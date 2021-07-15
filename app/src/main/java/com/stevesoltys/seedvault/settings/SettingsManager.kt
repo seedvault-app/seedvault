@@ -31,6 +31,7 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
 private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
+private const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
 
 class SettingsManager(private val context: Context) {
 
@@ -50,10 +51,10 @@ class SettingsManager(private val context: Context) {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
     }
 
-    fun getToken(): Long? = token ?: {
+    fun getToken(): Long? = token ?: run {
         val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
         if (value == 0L) null else value
-    }()
+    }
 
     /**
      * Sets a new RestoreSet token.
@@ -149,6 +150,7 @@ class SettingsManager(private val context: Context) {
         prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
     }
 
+    fun isQuotaUnlimited() = prefs.getBoolean(PREF_KEY_UNLIMITED_QUOTA, false)
 }
 
 data class Storage(
