@@ -36,7 +36,14 @@ internal class KVBackupTest : BackupTest() {
     private val dataInput = mockk<BackupDataInput>()
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backup = KVBackup(plugin, inputFactory, headerWriter, crypto, notificationManager)
+    private val backup = KVBackup(
+        plugin = plugin,
+        settingsManager = settingsManager,
+        inputFactory = inputFactory,
+        headerWriter = headerWriter,
+        crypto = crypto,
+        nm = notificationManager
+    )
 
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val key64 = Base64.getEncoder().encodeToString(key.toByteArray(Utf8))
