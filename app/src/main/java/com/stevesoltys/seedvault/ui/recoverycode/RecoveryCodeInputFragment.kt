@@ -30,7 +30,7 @@ import com.stevesoltys.seedvault.ui.LiveEventHandler
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.Locale
 
-internal const val ARG_FOR_NEW_CODE = "forVerifyingNewCode"
+internal const val ARG_FOR_NEW_CODE = "forStoringNewCode"
 
 class RecoveryCodeInputFragment : Fragment() {
 
@@ -57,7 +57,7 @@ class RecoveryCodeInputFragment : Fragment() {
     /**
      * True if this is for verifying a new recovery code, false for verifying an existing one.
      */
-    private var forVerifyingNewCode: Boolean = true
+    private var forStoringNewCode: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,7 +85,7 @@ class RecoveryCodeInputFragment : Fragment() {
         wordList = v.findViewById(R.id.wordList)
 
         arguments?.getBoolean(ARG_FOR_NEW_CODE, true)?.let {
-            forVerifyingNewCode = it
+            forStoringNewCode = it
         }
 
         return v
@@ -116,14 +116,14 @@ class RecoveryCodeInputFragment : Fragment() {
             editText.setAdapter(adapter)
         }
         doneButton.setOnClickListener { done() }
-        newCodeButton.visibility = if (forVerifyingNewCode) GONE else VISIBLE
+        newCodeButton.visibility = if (forStoringNewCode) GONE else VISIBLE
         newCodeButton.setOnClickListener { generateNewCode() }
 
         viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner,
             LiveEventHandler { verified -> onExistingCodeChecked(verified) }
         )
 
-        if (forVerifyingNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
+        if (forStoringNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
     }
 
     private fun getInput(): List<CharSequence> = ArrayList<String>(WORD_NUM).apply {
@@ -134,11 +134,18 @@ class RecoveryCodeInputFragment : Fragment() {
         val input = getInput()
         if (!allFilledOut(input)) return
         try {
-            viewModel.validateAndContinue(input, forVerifyingNewCode)
+            viewModel.validateCode(input)
         } catch (e: ChecksumException) {
             Toast.makeText(context, R.string.recovery_code_error_checksum_word, LENGTH_LONG).show()
+            return
         } catch (e: InvalidWordException) {
             showWrongWordError(input)
+            return
+        }
+        if (forStoringNewCode) {
+            viewModel.storeNewCode(input)
+        } else {
+            viewModel.verifyExistingCode(input)
         }
     }
 

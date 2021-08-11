@@ -57,23 +57,37 @@ internal class RecoveryCodeViewModel(
     internal var isRestore: Boolean = false
 
     @Throws(InvalidWordException::class, ChecksumException::class)
-    fun validateAndContinue(input: List<CharSequence>, forVerifyingNewCode: Boolean) {
+    fun validateCode(input: List<CharSequence>): Mnemonics.MnemonicCode {
         val code = Mnemonics.MnemonicCode(input.toMnemonicChars())
         try {
             code.validate()
         } catch (e: WordCountException) {
             throw AssertionError(e)
         }
-        val seed = code.toSeed()
-        if (forVerifyingNewCode) {
-            keyManager.storeBackupKey(seed)
-            keyManager.storeMainKey(seed)
-            mRecoveryCodeSaved.setEvent(true)
-        } else {
-            val verified = crypto.verifyBackupKey(seed)
-            if (verified && !keyManager.hasMainKey()) keyManager.storeMainKey(seed)
-            mExistingCodeChecked.setEvent(verified)
-        }
+        return code
+    }
+
+    /**
+     * Verifies existing recovery code and returns result via [existingCodeChecked].
+     */
+    fun verifyExistingCode(input: List<CharSequence>) {
+        // we validate the code again, just in case
+        val seed = validateCode(input).toSeed()
+        val verified = crypto.verifyBackupKey(seed)
+        // store main key at this opportunity if it is still missing
+        if (verified && !keyManager.hasMainKey()) keyManager.storeMainKey(seed)
+        mExistingCodeChecked.setEvent(verified)
+    }
+
+    /**
+     * Stores a new recovery code and returns result via [recoveryCodeSaved].
+     */
+    fun storeNewCode(input: List<CharSequence>) {
+        // we validate the code again, just in case
+        val seed = validateCode(input).toSeed()
+        keyManager.storeBackupKey(seed)
+        keyManager.storeMainKey(seed)
+        mRecoveryCodeSaved.setEvent(true)
     }
 
     /**
