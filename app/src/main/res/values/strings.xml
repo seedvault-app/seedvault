@@ -93,8 +93,8 @@
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
     <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.\n\nAre you sure you want to do this?</string>
     <string name="recovery_code_recreated">New recovery code has been created successfully</string>
-    <string name="recovery_code_auth_title">Confirm it\'s really you</string>
-    <string name="recovery_code_auth_description">This ensures that nobody else can get your data when finding your phone unlocked.</string>
+    <string name="recovery_code_auth_title">Re-enter your screen lock</string>
+    <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
 
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>
