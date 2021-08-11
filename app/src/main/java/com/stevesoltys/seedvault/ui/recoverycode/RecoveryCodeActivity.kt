@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.ui.recoverycode
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
@@ -17,6 +18,7 @@ class RecoveryCodeActivity : BackupActivity() {
         super.onCreate(savedInstanceState)
 
         if (isSetupWizard()) hideSystemUiNavigation()
+        window.addFlags(FLAG_SECURE)
 
         setContentView(R.layout.activity_recovery_code)
 
