@@ -148,8 +148,8 @@
     <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
     <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
-    <string name="restore_back">Don\'t restore</string>
-    <string name="restore_skip">Skip restoring apps</string>
+    <string name="restore_skip">Don\'t restore</string>
+    <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
     <string name="restore_set_error">An error occurred while loading the backups.</string>

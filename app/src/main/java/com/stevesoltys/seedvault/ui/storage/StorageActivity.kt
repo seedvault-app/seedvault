@@ -47,8 +47,6 @@ class StorageActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (isSetupWizard()) hideSystemUiNavigation()
-
         setContentView(R.layout.activity_fragment_container)
 
         viewModel = if (isRestore()) {

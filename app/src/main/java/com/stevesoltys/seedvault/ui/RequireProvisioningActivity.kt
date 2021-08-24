@@ -23,6 +23,7 @@ abstract class RequireProvisioningActivity : BackupActivity() {
 
     private val recoveryCodeRequest =
         registerForActivityResult(StartActivityForResult()) { result ->
+            setResult(result.resultCode)
             if (result.resultCode != RESULT_OK) {
                 Log.w(TAG, "Error in activity result for requesting recovery code")
                 if (!getViewModel().recoveryCodeIsSet()) {
@@ -32,6 +33,7 @@ abstract class RequireProvisioningActivity : BackupActivity() {
         }
     private val requestLocation =
         registerForActivityResult(StartActivityForResult()) { result ->
+            setResult(result.resultCode)
             if (result.resultCode != RESULT_OK) {
                 Log.w(TAG, "Error in activity result for requesting location")
                 if (!getViewModel().validLocationIsSet()) {
