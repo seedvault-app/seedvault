@@ -37,7 +37,7 @@
 \n
 \nPasirinkite kitą vietą, kurioje yra %s aplankas.</string>
     <string name="restore_invalid_location_title">Nerasta jokių atsarginių kopijų</string>
-    <string name="restore_back">Neatkurti</string>
+    <string name="restore_skip">Neatkurti</string>
     <string name="restore_restore_set_times">Paskutinė atsarginė kopija %1$s - Pirmoji %2$s.</string>
     <string name="restore_choose_restore_set">Pasirinkite atsarginę kopiją, kurią norite atkurti</string>
     <string name="restore_title">Atkurti iš atsarginės kopijos</string>
@@ -154,7 +154,7 @@
     <string name="restore_storage_in_progress_title">Failai atkuriami…</string>
     <string name="restore_storage_got_it">Supratau</string>
     <string name="settings_backup_storage_title">Sukurti atsarginę mano failų kopiją</string>
-    <string name="restore_skip">Praleisti programėlių atkūrimą</string>
+    <string name="restore_skip_apps">Praleisti programėlių atkūrimą</string>
     <string name="settings_category_apps">Programėlių atsarginės kopijos</string>
     <string name="settings_backup_storage_dialog_title">Eksperimentinė funkcija</string>
     <string name="settings_backup_storage_dialog_message">Failų atsarginių kopijų kūrimas vis dar eksperimentinis ir gali neveikti. Nepasikliaukite ja, jei norite išsaugoti svarbius duomenis.</string>

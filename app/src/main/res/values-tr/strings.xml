@@ -30,7 +30,7 @@
 \n
 \nLütfen %s klasörünü içeren başka bir konum seçin.</string>
     <string name="restore_invalid_location_title">Yedekleme bulunamadı</string>
-    <string name="restore_back">Geri yükleme</string>
+    <string name="restore_skip">Geri yükleme</string>
     <string name="restore_restore_set_times">Son yedekleme %1$s · İlk %2$s.</string>
     <string name="restore_choose_restore_set">Geri yüklemek için bir yedekleme seç</string>
     <string name="restore_title">Yedeklemeyi geri yükle</string>
@@ -152,7 +152,7 @@
     <string name="restore_storage_in_progress_title">Dosyalar geri yükleniyor…</string>
     <string name="restore_storage_choose_snapshot">Geri yüklenecek bir depolama yedeklemesi seçin (deneysel)</string>
     <string name="restore_storage_skip">Dosyaları geri yüklemeyi atla</string>
-    <string name="restore_skip">Uygulamaları geri yüklemeyi atla</string>
+    <string name="restore_skip_apps">Uygulamaları geri yüklemeyi atla</string>
     <string name="recovery_code_auth_description">Devam etmek için aygıt kimlik bilgilerinizi girin</string>
     <string name="recovery_code_auth_title">Ekran kilidinizi tekrar girin</string>
     <string name="storage_check_fragment_patience">Bu biraz zaman alabilir…</string>

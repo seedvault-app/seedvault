@@ -30,7 +30,7 @@
     <string name="restore_finished_success">Pemulihan selesai</string>
     <string name="restore_restoring">Memulihkan pencadangan</string>
     <string name="restore_installing_packages">Pasang ulang apl</string>
-    <string name="restore_back">Jangan pulihkan</string>
+    <string name="restore_skip">Jangan pulihkan</string>
     <string name="notification_restore_error_action">Copot apl</string>
     <string name="notification_error_title">Pencadangan galat</string>
     <string name="notification_error_channel_title">Pemberitahuan galat</string>

@@ -30,7 +30,7 @@
 \n
 \nVinsamlegast veldu annan afritageymslustað sem býður upp á %s möppu.</string>
     <string name="restore_invalid_location_title">Engin öryggisafrit fundust</string>
-    <string name="restore_back">Ekki endurvekja</string>
+    <string name="restore_skip">Ekki endurvekja</string>
     <string name="restore_restore_set_times">Síðasta öryggisafrit %1$s · Fyrsta %2$s.</string>
     <string name="restore_choose_restore_set">Veldu öryggisafrit til að endurvekja</string>
     <string name="restore_title">Endurvekja úr öryggisafriti</string>

@@ -32,7 +32,7 @@
 \n
 \nEscolha outro local que contenha uma pasta %s.</string>
     <string name="restore_invalid_location_title">Sem backups encontrados</string>
-    <string name="restore_back">Não restaurar</string>
+    <string name="restore_skip">Não restaurar</string>
     <string name="restore_restore_set_times">Último backup %1$s · Primeiro %2$s.</string>
     <string name="restore_choose_restore_set">Escolha um backup para restaurar</string>
     <string name="restore_title">Restaurar do backup</string>
@@ -164,7 +164,7 @@
     <string name="storage_check_fragment_patience">Isto pode levar algum tempo…</string>
     <string name="recovery_code_auth_title">Digite novamente o bloqueio de ecrã</string>
     <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
-    <string name="restore_skip">Pular restauração de apps</string>
+    <string name="restore_skip_apps">Pular restauração de apps</string>
     <string name="restore_storage_skip">Pular restauração de ficheiros</string>
     <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (experimental)</string>
     <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados …</string>

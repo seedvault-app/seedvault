@@ -34,7 +34,7 @@
 \n
 \nVyberte prosím jiné umístění, které obsahuje složku %s.</string>
     <string name="restore_invalid_location_title">Nebyly nalezeny žádné zálohy</string>
-    <string name="restore_back">Neobnovovat</string>
+    <string name="restore_skip">Neobnovovat</string>
     <string name="restore_restore_set_times">Poslední záloha %1$s – První %2$s.</string>
     <string name="restore_choose_restore_set">Výběr zálohy pro obnovení</string>
     <string name="restore_title">Obnovení ze zálohy</string>

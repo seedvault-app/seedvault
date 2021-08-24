@@ -12,7 +12,7 @@
     <string name="storage_internal_warning_title">Avertissement</string>
     <string name="restore_finished_button">Finir</string>
     <string name="restore_next">Suivant</string>
-    <string name="restore_back">Ne pas restaurer</string>
+    <string name="restore_skip">Ne pas restaurer</string>
     <string name="notification_error_action">Réparer</string>
     <string name="notification_channel_title">Notification de la sauvegarde</string>
     <string name="recovery_code_error_checksum_word">Votre code n\'est pas valide. Veuillez vérifier que tous les mots sont corrects et dans l\'ordre, puis réessayez.</string>
@@ -166,7 +166,7 @@
 \nCertaines applications (par exemple, Signal ou WhatsApp) peuvent exiger que les fichiers soient entièrement restaurés avant d\'importer une sauvegarde. Essayez d\'éviter de démarrer ces applications avant que la restauration des fichiers ne soit terminée.</string>
     <string name="restore_storage_choose_snapshot">Choisir une sauvegarde de fichiers à restaurer (expérimental)</string>
     <string name="restore_storage_got_it">Compris</string>
-    <string name="restore_skip">Ne pas restaurer les applications</string>
+    <string name="restore_skip_apps">Ne pas restaurer les applications</string>
     <string name="restore_storage_skip">Ne pas restaurer les fichiers</string>
     <string name="restore_storage_in_progress_title">Restauration des fichiers…</string>
     <string name="recovery_code_auth_description">Saisissez vos identifiants pour continer</string>

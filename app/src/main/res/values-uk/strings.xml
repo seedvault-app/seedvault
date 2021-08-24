@@ -69,7 +69,7 @@
 \n
 \nБудь ласка, виберіть інше розташування, що містить каталог %s.</string>
     <string name="restore_invalid_location_title">Резервні копії не знайдено</string>
-    <string name="restore_back">Не відновлювати</string>
+    <string name="restore_skip">Не відновлювати</string>
     <string name="restore_restore_set_times">Остання резервна копія %1$s · Перша %2$s.</string>
     <string name="restore_choose_restore_set">Виберіть резервну копію для відновлення</string>
     <string name="restore_title">Відновити з резервної копії</string>

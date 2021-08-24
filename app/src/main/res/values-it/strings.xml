@@ -97,7 +97,7 @@
 \n
 \nSi prega di scegliere un altro punto che contenga una %s cartella.</string>
     <string name="restore_invalid_location_title">Nessun backup trovato</string>
-    <string name="restore_back">Non ripristinare</string>
+    <string name="restore_skip">Non ripristinare</string>
     <string name="restore_restore_set_times">Ultimo backup %1$s · Primo %2$s.</string>
     <string name="restore_choose_restore_set">Selezionare un backup da ripristinare</string>
     <string name="restore_title">Ripristino del backup</string>

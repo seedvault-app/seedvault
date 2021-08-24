@@ -92,7 +92,7 @@
 \n
 \n%sフォルダを含む別の場所を選択してください。</string>
     <string name="restore_invalid_location_title">バックアップが見つかりません</string>
-    <string name="restore_back">復元しない</string>
+    <string name="restore_skip">復元しない</string>
     <string name="restore_restore_set_times">最後は%1$s · 最初は %2$s.</string>
     <string name="restore_choose_restore_set">復元するバックアップを選ぶ</string>
     <string name="backup_section_not_allowed">アプリはバックアップできません</string>
@@ -163,7 +163,7 @@
     <string name="settings_category_apps">アプリのバックアップ</string>
     <string name="settings_backup_files_summary">なし</string>
     <string name="settings_backup_files_title">含まれるファイルとフォルダー</string>
-    <string name="restore_skip">アプリの復元をスキップする</string>
+    <string name="restore_skip_apps">アプリの復元をスキップする</string>
     <string name="restore_storage_in_progress_info">ファイルはバックグラウンドで復元されます。実行されている間、あなたは電話を使うことができます。
 \n
 \n一部のアプリ(SignalやWhatsAppなど)では、バックアップをインポートするためにファイルが完全に復元されるまで待つ必要があります。ファイルの復元が完了する前に、これらのアプリを起動しないようにしてください。</string>

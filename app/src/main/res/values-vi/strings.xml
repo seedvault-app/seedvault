@@ -34,7 +34,7 @@
 \n
 \nVui lòng chọn một vị trí khác có chứa thư mục %s.</string>
     <string name="restore_invalid_location_title">Không tìm thấy bản sao lưu nào</string>
-    <string name="restore_back">Không khôi phục</string>
+    <string name="restore_skip">Không khôi phục</string>
     <string name="restore_restore_set_times">Sao lưu lần cuối %1$s · Lần đầu %2$s.</string>
     <string name="restore_choose_restore_set">Chọn bản sao lưu để khôi phục</string>
     <string name="restore_title">Khôi phục từ bản sao lưu</string>
@@ -157,7 +157,7 @@
     <string name="storage_check_fragment_patience">Việc này có thể mất một ít thời gian…</string>
     <string name="recovery_code_auth_title">Nhập lại mã khoá màn hình</string>
     <string name="recovery_code_auth_description">Nhập thông tin mở khoá thiết bị để tiếp tục</string>
-    <string name="restore_skip">Bỏ qua khôi phục ứng dụng</string>
+    <string name="restore_skip_apps">Bỏ qua khôi phục ứng dụng</string>
     <string name="restore_storage_in_progress_title">Các tệp đang được khôi phục…</string>
     <string name="restore_storage_got_it">Hiểu rồi</string>
     <string name="settings_category_apps">Bản sao lưu ứng dụng</string>

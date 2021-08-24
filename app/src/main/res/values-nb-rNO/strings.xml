@@ -48,7 +48,7 @@
     <string name="restore_restoring">Gjenoppretting av sikkerhetskopi</string>
     <string name="restore_next">Neste</string>
     <string name="restore_invalid_location_title">Fant ingen sikkerhetskopier</string>
-    <string name="restore_back">Ikke gjenopprett</string>
+    <string name="restore_skip">Ikke gjenopprett</string>
     <string name="restore_restore_set_times">Siste sikkerhetskopi %1$s · Første %2$s.</string>
     <string name="restore_choose_restore_set">Velg en sikkerhetskopi å gjenopprette</string>
     <string name="restore_title">Gjenopprett fra sikkerhetskopi</string>

@@ -48,7 +48,7 @@
 \n
 \nVyberte iné umiestnenie, ktoré obsahuje priečinok %s.</string>
     <string name="restore_invalid_location_title">Nenašli sa žiadne zálohy</string>
-    <string name="restore_back">Neobnovovať</string>
+    <string name="restore_skip">Neobnovovať</string>
     <string name="restore_restore_set_times">Posledná záloha %1$s · Prvá %2$s.</string>
     <string name="restore_choose_restore_set">Vyberte zálohu, ktorú chcete obnoviť</string>
     <string name="restore_title">Obnovenie zo zálohy</string>

@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.ui
 
 import android.view.MenuItem
-import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -23,10 +22,6 @@ abstract class BackupActivity : AppCompatActivity() {
             .replace(R.id.fragment, f)
         if (addToBackStack) fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    protected fun hideSystemUiNavigation() {
-        window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
 
 }

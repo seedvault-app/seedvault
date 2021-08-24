@@ -36,7 +36,7 @@
 \n
 \nПожалуйста, выберите другое расположение, содержащее папку %s.</string>
     <string name="restore_invalid_location_title">Резервные копии не найдены</string>
-    <string name="restore_back">Не восстанавливать</string>
+    <string name="restore_skip">Не восстанавливать</string>
     <string name="restore_restore_set_times">Последняя резервная копия %1$s · Первая %2$s.</string>
     <string name="restore_choose_restore_set">Выберите резервную копию для восстановления</string>
     <string name="restore_title">Восстановить из резервной копии</string>
@@ -151,7 +151,7 @@
     <string name="settings_backup_storage_dialog_ok">Включить в любом случае</string>
     <string name="settings_expert_title">Продвинутые настройки</string>
     <string name="settings_expert_quota_title">Неограниченная квота приложений</string>
-    <string name="restore_skip">Пропустить восстановление приложений</string>
+    <string name="restore_skip_apps">Пропустить восстановление приложений</string>
     <string name="restore_storage_got_it">Есть</string>
     <string name="settings_category_apps">Резервное копирование приложений</string>
     <string name="restore_storage_skip">Пропустить восстановление файлов</string>
