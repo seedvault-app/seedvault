@@ -175,13 +175,14 @@ data class Storage(
      * but it isn't available right now.
      */
     fun isUnavailableNetwork(context: Context): Boolean {
-        return requiresNetwork && !hasInternet(context)
+        return requiresNetwork && !hasUnmeteredInternet(context)
     }
 
-    private fun hasInternet(context: Context): Boolean {
+    private fun hasUnmeteredInternet(context: Context): Boolean {
         val cm = context.getSystemService(ConnectivityManager::class.java)
+        val isMetered = cm.isActiveNetworkMetered()
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered
     }
 }
 
