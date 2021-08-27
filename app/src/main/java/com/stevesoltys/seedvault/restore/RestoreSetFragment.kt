@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,21 +8,25 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.setupdesign.GlifLayout
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.ui.getColorAccent
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RestoreSetFragment : Fragment() {
 
     private val viewModel: RestoreViewModel by sharedViewModel()
 
+    private lateinit var suwLayout: GlifLayout
     private lateinit var listView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var errorView: TextView
-    private lateinit var skipView: TextView
+    private lateinit var skipView: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +35,15 @@ class RestoreSetFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_set, container, false)
 
+        suwLayout = v.findViewById(R.id.setup_wizard_layout)
         listView = v.findViewById(R.id.listView)
         progressBar = v.findViewById(R.id.progressBar)
         errorView = v.findViewById(R.id.errorView)
         skipView = v.findViewById(R.id.skipView)
+
+        val icon: Drawable = suwLayout.getIcon()
+        icon.setTintList(getColorAccent(requireContext()))
+        suwLayout.setIcon(icon)
 
         return v
     }

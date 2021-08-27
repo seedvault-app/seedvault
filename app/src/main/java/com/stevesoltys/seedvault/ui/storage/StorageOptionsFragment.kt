@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -21,9 +23,11 @@ import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTre
 import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.setupdesign.GlifLayout
 import com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.seedvault.ui.getColorAccent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
@@ -40,14 +44,14 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         }
     }
 
+    private lateinit var suwLayout: GlifLayout
     private lateinit var viewModel: StorageViewModel
-    private lateinit var titleView: TextView
     private lateinit var warningIcon: ImageView
     private lateinit var warningText: TextView
     private lateinit var divider: View
     private lateinit var listView: RecyclerView
     private lateinit var progressBar: ProgressBar
-    private lateinit var skipView: TextView
+    private lateinit var skipView: Button
 
     private val adapter by lazy { StorageOptionAdapter(viewModel.isRestoreOperation, this) }
 
@@ -58,13 +62,17 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
 
-        titleView = v.findViewById(R.id.titleView)
+        suwLayout = v.findViewById(R.id.setup_wizard_layout)
         warningIcon = v.findViewById(R.id.warningIcon)
         warningText = v.findViewById(R.id.warningText)
         divider = v.findViewById(R.id.divider)
         listView = v.findViewById(R.id.listView)
         progressBar = v.findViewById(R.id.progressBar)
         skipView = v.findViewById(R.id.skipView)
+
+        val icon: Drawable = suwLayout.getIcon()
+        icon.setTintList(getColorAccent(requireContext()))
+        suwLayout.setIcon(icon)
 
         return v
     }
@@ -79,7 +87,7 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         }
 
         if (viewModel.isRestoreOperation) {
-            titleView.text = getString(R.string.storage_fragment_restore_title)
+            suwLayout.setHeaderText(R.string.restore_restoring)
             skipView.visibility = VISIBLE
             skipView.setOnClickListener {
                 // SetupWizard handles this

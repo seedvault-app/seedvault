@@ -1,16 +1,18 @@
 package com.stevesoltys.seedvault.restore
 
 import android.app.Activity.RESULT_OK
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
+import com.google.android.setupdesign.GlifLayout
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.ui.getColorAccent
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.ui.restore.SnapshotFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -27,12 +29,16 @@ internal class RestoreFilesFragment : SnapshotFragment() {
 
         val topStub: ViewStub = v.findViewById(R.id.topStub)
         topStub.layoutResource = R.layout.header_snapshots
-        topStub.inflate()
+        val header = topStub.inflate()
+        val suwLayout: GlifLayout = header.findViewById(R.id.setup_wizard_layout)
+        val icon: Drawable = suwLayout.getIcon()
+        icon.setTintList(getColorAccent(requireContext()))
+        suwLayout.setIcon(icon)
 
         val bottomStub: ViewStub = v.findViewById(R.id.bottomStub)
         bottomStub.layoutResource = R.layout.footer_snapshots
         val footer = bottomStub.inflate()
-        val skipView: TextView = footer.findViewById(R.id.skipView)
+        val skipView: Button = footer.findViewById(R.id.skipView)
         skipView.setOnClickListener {
             requireActivity().apply {
                 // SetupWizard handles this
@@ -55,6 +61,11 @@ internal class RestoreFilesStartedFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_files_started, container, false)
+
+        val suwLayout: GlifLayout = v.findViewById(R.id.setup_wizard_layout)
+        val icon: Drawable = suwLayout.getIcon()
+        icon.setTintList(getColorAccent(requireContext()))
+        suwLayout.setIcon(icon)
 
         val button: Button = v.findViewById(R.id.button)
         button.setOnClickListener {
