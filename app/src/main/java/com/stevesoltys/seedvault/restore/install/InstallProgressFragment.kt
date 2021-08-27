@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.restore.install
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.setupdesign.GlifLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreViewModel
+import com.stevesoltys.seedvault.ui.getColorAccent
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class InstallProgressFragment : Fragment(), InstallItemListener {
@@ -30,8 +33,8 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = InstallProgressAdapter(this)
 
+    private lateinit var suw_layout: GlifLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var titleView: TextView
     private lateinit var backupNameView: TextView
     private lateinit var appList: RecyclerView
     private lateinit var button: Button
@@ -43,17 +46,21 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
+        suw_layout = v.findViewById(R.id.setup_wizard_layout)
         progressBar = v.findViewById(R.id.progressBar)
-        titleView = v.findViewById(R.id.titleView)
         backupNameView = v.findViewById(R.id.backupNameView)
         appList = v.findViewById(R.id.appList)
         button = v.findViewById(R.id.button)
+
+        val icon: Drawable = suw_layout.getIcon()
+        icon.setTintList(getColorAccent(requireContext()))
+        suw_layout.setIcon(icon)
 
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        titleView.setText(R.string.restore_installing_packages)
+        suw_layout.setHeaderText(R.string.restore_installing_packages)
 
         appList.apply {
             layoutManager = this@InstallProgressFragment.layoutManager

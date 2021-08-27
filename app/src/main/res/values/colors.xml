@@ -11,4 +11,6 @@
     <color name="divider">#20ffffff</color>
     <color name="green">#558B2F</color>
     <color name="yellow">#F9A825</color>
+
+    <color name="sud_color_accent_glif_v3_light">@color/accent</color>
 </resources>
