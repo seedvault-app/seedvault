@@ -3,6 +3,8 @@
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
+If you are having an issue/question, please look at our [FAQ](../../wiki/FAQ).
+
 ## Components
 
 * [Local Contacts Backup](contactsbackup) - an app that backs up local on-device contacts
