@@ -48,6 +48,9 @@ This project aims to adhere to the [official Kotlin coding style](https://develo
 
 ## Third-party tools
 
+> **⚠ WARNING**: the Seedvault developers make no guarantees about external software projects.
+> Please be aware that disclosing your secret recovery key to other software has security risks.
+
 The [Seedvault backup parser](https://github.com/tlambertz/seedvault_backup_parser)
 allows you to decrypt and inspect your backups.
 It can also re-encrypt them.
