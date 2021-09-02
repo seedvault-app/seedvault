@@ -244,11 +244,21 @@ The derived seed key (512 bit size) gets split into two parts:
 
 ## Local caches
 
+The local cache is implemented as a sqlite-based Room database
+which had shown promising performance in early tests.
+
+Most information in the cache is considered public knowledge
+also available to an attacker with access to the local filesystem
+(with root access or file management permission).
+Still, the cache data can only be accessed by the owning backup application
+and can not be accessed by other apps unless the attacker obtains root access
+or is otherwise able to break Android's security model.
+In that later case, the attacker will be able to access all files anyway
+making access to the cache worthless.
+
 ### Files cache
 
 This cache is needed to quickly look up if a file has changed and if we have all of its chunks.
-It is implemented as a sqlite-based Room database
-which had shown promising performance in early tests.
 
 Contents:
 
