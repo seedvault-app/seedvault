@@ -138,7 +138,9 @@ dependencies {
         exclude group: "com.google.auto.service", module: "auto-service"
     }
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"
     testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation 'org.bitcoinj:bitcoinj-core:0.15.10'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
 
