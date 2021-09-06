@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
-import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE // ktlint-disable no-unused-imports
+import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -37,6 +37,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var apkBackup: TwoStatePreference
     private lateinit var backupLocation: Preference
     private lateinit var backupStatus: Preference
+    private lateinit var backupStorage: TwoStatePreference
+    private lateinit var backupRecoveryCode: Preference
 
     private var menuBackupNow: MenuItem? = null
     private var menuRestore: MenuItem? = null
@@ -101,6 +103,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@OnPreferenceChangeListener false
         }
         backupStatus = findPreference("backup_status")!!
+
+        backupStorage = findPreference("backup_storage")!!
+        backupStorage.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
+            val disable = !(newValue as Boolean)
+            if (disable) {
+                viewModel.disableStorageBackup()
+                return@OnPreferenceChangeListener true
+            }
+            onEnablingStorageBackup()
+            return@OnPreferenceChangeListener false
+        }
+
+        backupRecoveryCode = findPreference("backup_recovery_code")!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,6 +123,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         viewModel.lastBackupTime.observe(viewLifecycleOwner, Observer { time ->
             setAppBackupStatusSummary(time)
+        })
+
+        val backupFiles: Preference = findPreference("backup_files")!!
+        viewModel.filesSummary.observe(viewLifecycleOwner, Observer { summary ->
+            backupFiles.summary = summary
         })
     }
 
@@ -187,6 +207,42 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // set time of last backup
         val lastBackup = lastBackupInMillis.toRelativeTime(requireContext())
         backupStatus.summary = getString(R.string.settings_backup_status_summary, lastBackup)
+    }
+
+    private fun onEnablingStorageBackup() {
+        AlertDialog.Builder(requireContext())
+            .setIcon(R.drawable.ic_warning)
+            .setTitle(R.string.settings_backup_storage_dialog_title)
+            .setMessage(R.string.settings_backup_storage_dialog_message)
+            .setPositiveButton(R.string.settings_backup_storage_dialog_ok) { dialog, _ ->
+                if (viewModel.hasMainKey()) {
+                    viewModel.enableStorageBackup()
+                    backupStorage.isChecked = true
+                } else {
+                    showCodeVerificationNeededDialog()
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun showCodeVerificationNeededDialog() {
+        AlertDialog.Builder(requireContext())
+            .setIcon(R.drawable.ic_vpn_key)
+            .setTitle(R.string.settings_backup_storage_code_dialog_title)
+            .setMessage(R.string.settings_backup_storage_code_dialog_message)
+            .setPositiveButton(R.string.settings_backup_storage_code_dialog_ok) { dialog, _ ->
+                val callback = (requireActivity() as OnPreferenceStartFragmentCallback)
+                callback.onPreferenceStartFragment(this, backupRecoveryCode)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 }

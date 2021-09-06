@@ -9,7 +9,7 @@
     <string name="notification_title">Backup in esecuzione</string>
     <string name="notification_channel_title">Notificazione backup</string>
     <string name="recovery_code_error_checksum_word">Il tuo codice non è valido, Controlla tutte le parole e riprova!</string>
-    <string name="recovery_code_error_invalid_word">Parola sbagliata. Intendevi %1$s o %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Parola sbagliata.</string>
     <string name="recovery_code_error_empty_word">Hai dimenticato di inserire questa parola.</string>
     <string name="recovery_code_input_hint_12">Parola 12</string>
     <string name="recovery_code_input_hint_11">Parola 11</string>

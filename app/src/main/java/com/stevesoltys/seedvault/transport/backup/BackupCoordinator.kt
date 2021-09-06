@@ -321,7 +321,7 @@ internal class BackupCoordinator(
             ?: throw AssertionError("Cancelling full backup, but no current package")
         Log.i(
             TAG, "Cancel full backup of ${packageInfo.packageName}" +
-                " because of $state.cancelReason"
+                " because of ${state.cancelReason}"
         )
         onPackageBackupError(packageInfo)
         full.cancelFullBackup()

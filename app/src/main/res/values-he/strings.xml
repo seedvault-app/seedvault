@@ -6,7 +6,7 @@
     <string name="notification_title">הגיבוי פועל</string>
     <string name="notification_channel_title">התראת גיבוי</string>
     <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ולנסות שוב!</string>
-    <string name="recovery_code_error_invalid_word">מילה שגויה. התכוונת למילה %1$s או %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">מילה שגויה.</string>
     <string name="recovery_code_error_empty_word">שכחת למלא את המילה הזאת.</string>
     <string name="recovery_code_input_hint_12">מילה 12</string>
     <string name="recovery_code_input_hint_11">מילה 11</string>

@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.protobuf'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "de.grobox.storagebackuptester"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 20
+        versionName "0.9.7"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments disableAnalytics: 'true'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+        exclude 'META-INF/androidx.*.version'
+        exclude 'META-INF/services/kotlin*'
+        exclude 'kotlin/internal/internal.kotlin_builtins'
+    }
+}
+
+dependencies {
+    implementation project(':storage:lib')
+
+    implementation rootProject.ext.std_libs.androidx_core
+    // A newer version gets pulled in with AOSP via core, so we include fragment here explicitly
+    implementation rootProject.ext.std_libs.androidx_fragment
+    implementation rootProject.ext.std_libs.androidx_lifecycle_viewmodel_ktx
+    implementation rootProject.ext.std_libs.androidx_lifecycle_livedata_ktx
+    implementation rootProject.ext.std_libs.androidx_constraintlayout
+    implementation rootProject.ext.std_libs.com_google_android_material
+
+    implementation rootProject.ext.storage_libs.com_google_protobuf_javalite
+}

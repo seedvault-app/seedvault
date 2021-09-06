@@ -9,7 +9,7 @@ import com.stevesoltys.seedvault.ui.storage.StorageViewModel
 abstract class RequireProvisioningViewModel(
     protected val app: Application,
     protected val settingsManager: SettingsManager,
-    private val keyManager: KeyManager
+    protected val keyManager: KeyManager
 ) : AndroidViewModel(app) {
 
     abstract val isRestoreOperation: Boolean

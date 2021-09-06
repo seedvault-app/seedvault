@@ -59,7 +59,7 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
         button.setText(R.string.restore_next)
-        button.setOnClickListener { viewModel.onNextClicked() }
+        button.setOnClickListener { viewModel.onNextClickedAfterInstallingApps() }
 
         viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, Observer { restorableBackup ->
             backupNameView.text = restorableBackup.name
@@ -76,7 +76,7 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
 
     private fun onInstallResult(installResult: InstallResult) {
         // skip this screen, if there are no apps to install
-        if (installResult.isEmpty) viewModel.onNextClicked()
+        if (installResult.isEmpty) viewModel.onNextClickedAfterInstallingApps()
 
         // if finished, treat all still queued apps as failed and resort/redisplay adapter items
         if (installResult.isFinished) {

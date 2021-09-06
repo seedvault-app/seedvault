@@ -50,16 +50,12 @@ def aospDeps = fileTree(include: [
 dependencies {
     implementation aospDeps
 
-    //noinspection GradleDependency
     testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation 'junit:junit:4.13.1'
-    def mockk_version = "1.10.2"
+    testImplementation "junit:junit:$junit4_version"
     testImplementation "io.mockk:mockk:$mockk_version"
 
-    //noinspection GradleDependency
     androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    def espresso_version = "3.3.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
 }

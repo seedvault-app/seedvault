@@ -17,8 +17,10 @@ import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
+import com.stevesoltys.seedvault.storage.storageModule
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
+import com.stevesoltys.seedvault.ui.files.FileSelectionViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
@@ -43,11 +45,12 @@ open class App : Application() {
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
         factory { AppListRetriever(this@App, get(), get(), get()) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get()) }
-        viewModel { RecoveryCodeViewModel(this@App, get(), get(), get()) }
-        viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get()) }
+        viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
-        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get()) }
+        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel { FileSelectionViewModel(this@App, get()) }
     }
 
     override fun onCreate() {
@@ -85,6 +88,7 @@ open class App : Application() {
                 backupModule,
                 restoreModule,
                 installModule,
+                storageModule,
                 appModule
             )
         )

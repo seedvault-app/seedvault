@@ -13,11 +13,13 @@ android_app {
     required: [
         "default-permissions_org.calyxos.backup.contacts",
     ],
+    product_specific: true,
     sdk_version: "current",
 }
 
 prebuilt_etc {
     name: "default-permissions_org.calyxos.backup.contacts",
+    product_specific: true,
     sub_dir: "default-permissions",
     src: "default-permissions_org.calyxos.backup.contacts.xml",
     filename_from_src: true,

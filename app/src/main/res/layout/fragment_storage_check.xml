@@ -29,6 +29,17 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:text="@string/storage_check_fragment_backup_title" />
 
+    <TextView
+        android:id="@+id/patienceView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/storage_check_fragment_patience"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleView" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:progressBarStyleLarge"
@@ -37,10 +48,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/backButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleView"
+        app:layout_constraintTop_toBottomOf="@+id/patienceView"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -50,20 +61,20 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="?android:colorError"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleView"
+        app:layout_constraintTop_toBottomOf="@+id/patienceView"
         app:layout_constraintVertical_bias="0.0"
         tools:text="@string/storage_check_fragment_backup_error"
         tools:visibility="visible" />
 
     <Button
         android:id="@+id/backButton"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/ActionPrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

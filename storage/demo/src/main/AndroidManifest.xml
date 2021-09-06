@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.grobox.storagebackuptester">
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.StorageBackupTester">
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Used to start actual BackupService depending on scheduling criteria -->
+        <service
+            android:name=".DemoBackupJobService"
+            android:exported="false"
+            android:label="BackupJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- Does the actual backup work as a foreground service -->
+        <service
+            android:name=".DemoBackupService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="BackupService" />
+        <!-- Does restore as a foreground service -->
+        <service
+            android:name=".DemoRestoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="RestoreService" />
+
+    </application>
+
+</manifest>

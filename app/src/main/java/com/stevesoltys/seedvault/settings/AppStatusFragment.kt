@@ -36,7 +36,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
         val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
 

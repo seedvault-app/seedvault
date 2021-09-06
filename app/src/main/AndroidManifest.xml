@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="30000011"
-    android:versionName="11-1.1">
+    android:versionCode="30000211"
+    android:versionName="11-2.1">
     <!--
     The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
     The version name is the targeted Android version followed by - and our own version name.
@@ -112,6 +112,25 @@
                 <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
             </intent-filter>
         </receiver>
+
+        <!-- Used to start actual BackupService depending on scheduling criteria -->
+        <service
+            android:name=".storage.StorageBackupJobService"
+            android:exported="false"
+            android:label="BackupJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- Does the actual backup work as a foreground service -->
+        <service
+            android:name=".storage.StorageBackupService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="BackupService" />
+        <!-- Does restore as a foreground service -->
+        <service
+            android:name=".storage.StorageRestoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="RestoreService" />
 
     </application>
 </manifest>

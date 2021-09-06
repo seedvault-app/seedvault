@@ -1,0 +1,95 @@
+plugins {
+    id 'com.android.library'
+    id 'com.google.protobuf'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
+    id 'org.jetbrains.dokka' version '1.4.20'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments disableAnalytics: 'true'
+
+        consumerProguardFiles "consumer-rules.pro"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    buildTypes {
+        all {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        freeCompilerArgs += '-Xexplicit-api=strict'
+    }
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:$protobuf_version"
+        }
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    java {
+                        option "lite"
+                    }
+                }
+            }
+        }
+    }
+}
+
+kotlin {
+    explicitApi = 'strict'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation rootProject.ext.std_libs.androidx_core
+    // A newer version gets pulled in with AOSP via core, so we include fragment here explicitly
+    implementation rootProject.ext.std_libs.androidx_fragment
+    implementation rootProject.ext.std_libs.androidx_lifecycle_viewmodel_ktx
+    implementation rootProject.ext.std_libs.androidx_lifecycle_livedata_ktx
+    implementation rootProject.ext.std_libs.androidx_constraintlayout
+    implementation rootProject.ext.std_libs.androidx_documentfile
+    implementation rootProject.ext.std_libs.com_google_android_material
+
+    implementation rootProject.ext.storage_libs.androidx_room_runtime
+    implementation rootProject.ext.storage_libs.com_google_protobuf_javalite
+    implementation rootProject.ext.storage_libs.com_google_crypto_tink_android
+    kapt('androidx.room:room-compiler') {
+        version { strictly "$room_version" }
+    }
+
+    lintChecks rootProject.ext.lint_libs.exceptions
+
+    testImplementation "junit:junit:$junit4_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+}
+
+apply from: "${rootProject.rootDir}/gradle/ktlint.gradle"

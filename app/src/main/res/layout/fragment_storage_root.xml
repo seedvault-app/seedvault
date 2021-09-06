@@ -22,24 +22,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:gravity="center"
         android:text="@string/storage_fragment_backup_title"
         android:textSize="24sp"
-        android:gravity="center"
-        tools:text="Choose where to store backup (is a short title, but it can be longer)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:text="Choose where to store backup (is a short title, but it can be longer)" />
 
     <ImageView
         android:id="@+id/warningIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
         android:src="@drawable/ic_warning"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/warningText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleView"
+        app:layout_constraintTop_toTopOf="@+id/warningText"
         tools:ignore="ContentDescription"
         tools:visibility="visible" />
 
@@ -96,7 +96,8 @@
         android:id="@+id/backView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:background="?android:selectableItemBackground"
+        android:padding="16dp"
         android:text="@string/restore_back"
         android:textColor="?android:colorAccent"
         android:visibility="gone"

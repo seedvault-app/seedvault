@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.calyxos.backup.storage.backup;
+
+import "backup_media_file.proto";
+import "backup_document_file.proto";
+
+option java_multiple_files = true;
+
+message BackupSnapshot {
+  int32 version = 1;
+  string name = 2;
+  repeated BackupMediaFile media_files = 3;
+  repeated BackupDocumentFile document_files = 4;
+  int64 size = 5;
+  int64 time_start = 6;
+  int64 time_end = 7;
+}

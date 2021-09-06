@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.restore
 
-import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +37,7 @@ class RestoreProgressFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
         progressBar = v.findViewById(R.id.progressBar)
@@ -61,8 +60,7 @@ class RestoreProgressFragment : Fragment() {
 
         button.setText(R.string.restore_finished_button)
         button.setOnClickListener {
-            requireActivity().setResult(RESULT_OK)
-            requireActivity().finishAfterTransition()
+            viewModel.onFinishClickedAfterRestoringAppData()
         }
 
         // decryption will fail when the device is locked, so keep the screen on to prevent locking

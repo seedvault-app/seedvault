@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="accent">#99cc00</color>
-    <color name="divider">#8A000000</color>
+    <color name="accent">@*android:color/accent_device_default_light</color>
+    <color name="primary">@*android:color/primary_device_default_settings_light</color>
+    <color name="primaryDark">@*android:color/primary_dark_device_default_settings_light</color>
+    <color name="background">@*android:color/background_device_default_light</color>
+    <color name="actionBarPrimary">@*android:color/primary_device_default_light</color>
+    <color name="statusBarColor">@*android:color/primary_dark_material_light_light_status_bar</color>
+    <color name="red">@*android:color/error_color_device_default_dark</color>
+    <color name="divider">#20ffffff</color>
     <color name="green">#558B2F</color>
-    <color name="red">#D32F2F</color>
     <color name="yellow">#F9A825</color>
 </resources>
