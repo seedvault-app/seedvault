@@ -47,6 +47,8 @@ fun ByteArray.toHexString(spacer: String = " "): String {
     return str.trimEnd()
 }
 
+fun String.toByteArrayFromHex() = chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+
 fun ByteArray.toIntString(): String {
     var str = ""
     for (b in this) {
