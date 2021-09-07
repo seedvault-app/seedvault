@@ -83,7 +83,7 @@ ext.std_libs = [
 ]
 
 ext.lint_libs = [
-    exceptions: 'com.github.thirdegg:lint-rules:0.0.6-beta'
+    exceptions: 'com.github.thirdegg:lint-rules:0.0.7-beta'
 ]
 
 ext.storage_libs = [

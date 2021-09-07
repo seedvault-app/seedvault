@@ -29,7 +29,7 @@ internal class MetadataReadWriteTest {
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
 
     private val writer = MetadataWriterImpl(cryptoImpl)
     private val reader = MetadataReaderImpl(cryptoImpl)
@@ -47,7 +47,6 @@ internal class MetadataReadWriteTest {
         writer.write(metadata, outputStream)
 
         val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-
 
         assertEquals(metadata, reader.readMetadata(inputStream, metadata.token))
     }

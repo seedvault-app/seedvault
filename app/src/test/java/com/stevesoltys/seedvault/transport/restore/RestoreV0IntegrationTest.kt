@@ -44,7 +44,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 

@@ -2,7 +2,7 @@ package com.stevesoltys.seedvault.header
 
 import com.stevesoltys.seedvault.crypto.GCM_AUTHENTICATION_TAG_LENGTH
 
-internal const val VERSION: Byte = 0
+internal const val VERSION: Byte = 1
 internal const val MAX_PACKAGE_LENGTH_SIZE = 255
 internal const val MAX_KEY_LENGTH_SIZE = MAX_PACKAGE_LENGTH_SIZE
 internal const val MAX_VERSION_HEADER_SIZE =

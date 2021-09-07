@@ -21,7 +21,7 @@ class CryptoIntegrationTest {
     private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
 
-    private val crypto = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val crypto = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
 
     private val cleartext = byteArrayOf(0x01, 0x02, 0x03)
 

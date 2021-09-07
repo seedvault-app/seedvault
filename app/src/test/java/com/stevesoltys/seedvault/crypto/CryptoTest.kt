@@ -36,11 +36,12 @@ import kotlin.random.Random
 @TestInstance(PER_METHOD)
 class CryptoTest {
 
+    private val keyManager = mockk<KeyManager>()
     private val cipherFactory = mockk<CipherFactory>()
     private val headerWriter = mockk<HeaderWriter>()
     private val headerReader = mockk<HeaderReader>()
 
-    private val crypto = CryptoImpl(cipherFactory, headerWriter, headerReader)
+    private val crypto = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
 
     private val cipher = mockk<Cipher>()
 

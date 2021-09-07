@@ -2,9 +2,12 @@ package com.stevesoltys.seedvault.metadata
 
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.os.Build
+import com.stevesoltys.seedvault.crypto.TYPE_METADATA
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
 import java.io.InputStream
+import java.nio.ByteBuffer
 
 typealias PackageMetadataMap = HashMap<String, PackageMetadata>
 
@@ -110,3 +113,9 @@ class EncryptedBackupMetadata private constructor(
      */
     constructor(token: Long) : this(token, null, true)
 }
+
+internal fun getAD(version: Byte, token: Long) = ByteBuffer.allocate(2 + 8)
+    .put(version)
+    .put(TYPE_METADATA)
+    .put(token.toByteArray())
+    .array()

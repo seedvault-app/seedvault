@@ -20,7 +20,9 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
     @Throws(IOException::class)
     override fun write(metadata: BackupMetadata, outputStream: OutputStream) {
         outputStream.write(ByteArray(1).apply { this[0] = metadata.version })
-        crypto.encryptMultipleSegments(outputStream, encode(metadata))
+        crypto.newEncryptingStream(outputStream, getAD(metadata.version, metadata.token)).use {
+            it.write(encode(metadata))
+        }
     }
 
     override fun encode(metadata: BackupMetadata): ByteArray {

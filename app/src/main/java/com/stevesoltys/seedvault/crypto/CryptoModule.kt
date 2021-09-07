@@ -15,5 +15,5 @@ val cryptoModule = module {
         }
         KeyManagerImpl(keyStore)
     }
-    single<Crypto> { CryptoImpl(get(), get(), get()) }
+    single<Crypto> { CryptoImpl(get(), get(), get(), get()) }
 }
