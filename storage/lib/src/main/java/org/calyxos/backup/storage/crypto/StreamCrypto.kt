@@ -77,7 +77,7 @@ public object StreamCrypto {
         ).newDecryptingStream(inputStream, associatedData)
     }
 
-    private fun Long.toByteArray() = ByteArray(8).apply {
+    public fun Long.toByteArray(): ByteArray = ByteArray(8).apply {
         var l = this@toByteArray
         for (i in 7 downTo 0) {
             this[i] = (l and 0xFF).toByte()

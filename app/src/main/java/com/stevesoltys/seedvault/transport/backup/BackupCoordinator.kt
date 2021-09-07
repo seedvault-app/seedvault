@@ -238,6 +238,7 @@ internal class BackupCoordinator(
         // We need to reject them manually when we can not do a backup now.
         // What else we tried can be found in: https://github.com/seedvault-app/seedvault/issues/102
         if (packageName == MAGIC_PACKAGE_MANAGER) {
+            val isIncremental = flags and FLAG_INCREMENTAL != 0
             if (!settingsManager.canDoBackupNow()) {
                 // Returning anything else here (except non-incremental-required which re-tries)
                 // will make the system consider the backup state compromised
@@ -248,9 +249,17 @@ internal class BackupCoordinator(
                 settingsManager.pmBackupNextTimeNonIncremental = true
                 data.close()
                 return TRANSPORT_OK
-            } else if (flags and FLAG_INCREMENTAL != 0 &&
-                settingsManager.pmBackupNextTimeNonIncremental
-            ) {
+            } else if (metadataManager.isLegacyFormat) {
+                // start a new restore set to upgrade from legacy format
+                // by starting a clean backup with all files using the new version
+                try {
+                    startNewRestoreSet()
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error starting new restore set", e)
+                }
+                // this causes a backup error, but things should go back to normal afterwards
+                return TRANSPORT_NOT_INITIALIZED
+            } else if (isIncremental && settingsManager.pmBackupNextTimeNonIncremental) {
                 settingsManager.pmBackupNextTimeNonIncremental = false
                 data.close()
                 return TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED

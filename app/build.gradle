@@ -105,6 +105,8 @@ dependencies {
     implementation rootProject.ext.std_libs.androidx_documentfile
     implementation rootProject.ext.std_libs.com_google_android_material
 
+    implementation rootProject.ext.storage_libs.com_google_crypto_tink_android
+
     /**
      * Storage Dependencies
      */

@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.transport.backup
 import android.app.backup.BackupTransport.FLAG_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
@@ -152,6 +153,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, data, 0))
 
         every { settingsManager.canDoBackupNow() } returns true
+        every { metadataManager.isLegacyFormat } returns false
         every { settingsManager.pmBackupNextTimeNonIncremental } returns true
         every { settingsManager.pmBackupNextTimeNonIncremental = false } just Runs
 
@@ -159,6 +161,27 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(
             TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
             backup.performIncrementalBackup(packageInfo, data, FLAG_INCREMENTAL)
+        )
+    }
+
+    @Test
+    fun `performIncrementalBackup of @pm@ causes re-init when legacy format`() = runBlocking {
+        val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
+
+        every { settingsManager.canDoBackupNow() } returns true
+        every { metadataManager.isLegacyFormat } returns true
+
+        // start new restore set
+        every { clock.time() } returns token + 1
+        every { settingsManager.setNewToken(token + 1) } just Runs
+        coEvery { plugin.startNewRestoreSet(token + 1) } just Runs
+
+        every { data.close() } just Runs
+
+        // returns TRANSPORT_NOT_INITIALIZED to re-init next time
+        assertEquals(
+            TRANSPORT_NOT_INITIALIZED,
+            backup.performIncrementalBackup(packageInfo, data, 0)
         )
     }
 
@@ -354,6 +377,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val packageMetadata: PackageMetadata = mockk()
 
         every { settingsManager.canDoBackupNow() } returns true
+        every { metadataManager.isLegacyFormat } returns false
         // do actual @pm@ backup
         coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
         // now check if we have opt-out apps that we need to back up APKs for

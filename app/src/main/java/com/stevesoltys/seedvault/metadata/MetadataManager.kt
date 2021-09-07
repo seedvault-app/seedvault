@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
@@ -204,6 +205,9 @@ class MetadataManager(
 
     private val mLastBackupTime = MutableLiveData<Long>()
     internal val lastBackupTime: LiveData<Long> = mLastBackupTime.distinctUntilChanged()
+
+    internal val isLegacyFormat: Boolean
+        @Synchronized get() = metadata.version < VERSION
 
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {

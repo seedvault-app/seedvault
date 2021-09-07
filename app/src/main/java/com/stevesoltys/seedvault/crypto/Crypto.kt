@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.crypto
 
+import com.google.crypto.tink.subtle.AesGcmHkdfStreaming
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
@@ -7,10 +8,13 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.MAX_VERSION_HEADER_SIZE
 import com.stevesoltys.seedvault.header.SegmentHeader
 import com.stevesoltys.seedvault.header.VersionHeader
+import org.calyxos.backup.storage.crypto.StreamCrypto
+import org.calyxos.backup.storage.crypto.StreamCrypto.deriveStreamKey
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.security.GeneralSecurityException
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.min
@@ -32,6 +36,22 @@ import kotlin.math.min
  * if the length of the segment is specified larger than allowed.
  */
 interface Crypto {
+
+    /**
+     * Returns a [AesGcmHkdfStreaming] encrypting stream
+     * that gets encrypted with the given secret.
+     */
+    @Throws(IOException::class, GeneralSecurityException::class)
+    fun newEncryptingStream(
+        outputStream: OutputStream,
+        associatedData: ByteArray = ByteArray(0)
+    ): OutputStream
+
+    @Throws(IOException::class, GeneralSecurityException::class)
+    fun newDecryptingStream(
+        inputStream: InputStream,
+        associatedData: ByteArray = ByteArray(0)
+    ): InputStream
 
     /**
      * Encrypts a backup stream header ([VersionHeader]) and writes it to the given [OutputStream].
@@ -105,11 +125,34 @@ interface Crypto {
     fun verifyBackupKey(seed: ByteArray): Boolean
 }
 
+internal const val TYPE_METADATA: Byte = 0x00
+internal const val TYPE_BACKUP_KV: Byte = 0x01
+internal const val TYPE_BACKUP_FULL: Byte = 0x02
+
 internal class CryptoImpl(
+    private val keyManager: KeyManager,
     private val cipherFactory: CipherFactory,
     private val headerWriter: HeaderWriter,
     private val headerReader: HeaderReader
 ) : Crypto {
+
+    private val key: ByteArray by lazy {
+        deriveStreamKey(keyManager.getMainKey(), "app data key".toByteArray())
+    }
+
+    override fun newEncryptingStream(
+        outputStream: OutputStream,
+        associatedData: ByteArray
+    ): OutputStream {
+        return StreamCrypto.newEncryptingStream(key, outputStream, associatedData)
+    }
+
+    override fun newDecryptingStream(
+        inputStream: InputStream,
+        associatedData: ByteArray
+    ): InputStream {
+        return StreamCrypto.newDecryptingStream(key, inputStream, associatedData)
+    }
 
     @Throws(IOException::class)
     override fun encryptHeader(outputStream: OutputStream, versionHeader: VersionHeader) {

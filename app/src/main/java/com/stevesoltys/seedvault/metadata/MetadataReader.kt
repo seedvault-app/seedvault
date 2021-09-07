@@ -14,6 +14,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
+import java.security.GeneralSecurityException
 import javax.crypto.AEADBadTagException
 
 interface MetadataReader {
@@ -47,12 +48,29 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         val version = inputStream.read().toByte()
         if (version < 0) throw IOException()
         if (version > VERSION) throw UnsupportedVersionException(version)
+        if (version == 0.toByte()) return readMetadataV0(inputStream, expectedToken)
+
+        val metadataBytes = try {
+            crypto.newDecryptingStream(inputStream, getAD(version, expectedToken)).readBytes()
+        } catch (e: GeneralSecurityException) {
+            throw DecryptionFailedException(e)
+        }
+        return decode(metadataBytes, version, expectedToken)
+    }
+
+    @Throws(
+        SecurityException::class,
+        DecryptionFailedException::class,
+        UnsupportedVersionException::class,
+        IOException::class
+    )
+    private fun readMetadataV0(inputStream: InputStream, expectedToken: Long): BackupMetadata {
         val metadataBytes = try {
             crypto.decryptMultipleSegments(inputStream)
         } catch (e: AEADBadTagException) {
             throw DecryptionFailedException(e)
         }
-        return decode(metadataBytes, version, expectedToken)
+        return decode(metadataBytes, 0.toByte(), expectedToken)
     }
 
     @Throws(SecurityException::class)
