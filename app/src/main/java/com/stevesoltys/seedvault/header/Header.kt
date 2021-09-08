@@ -1,6 +1,8 @@
 package com.stevesoltys.seedvault.header
 
 import com.stevesoltys.seedvault.crypto.GCM_AUTHENTICATION_TAG_LENGTH
+import com.stevesoltys.seedvault.crypto.TYPE_BACKUP_KV
+import java.nio.ByteBuffer
 
 internal const val VERSION: Byte = 1
 internal const val MAX_PACKAGE_LENGTH_SIZE = 255
@@ -27,6 +29,15 @@ data class VersionHeader(
             }
         }
     }
+}
+
+internal fun getADForKV(version: Byte, packageName: String): ByteArray {
+    val packageNameBytes = packageName.toByteArray()
+    return ByteBuffer.allocate(2 + packageNameBytes.size)
+        .put(version)
+        .put(TYPE_BACKUP_KV)
+        .put(packageNameBytes)
+        .array()
 }
 
 internal const val SEGMENT_LENGTH_SIZE: Int = Short.SIZE_BYTES

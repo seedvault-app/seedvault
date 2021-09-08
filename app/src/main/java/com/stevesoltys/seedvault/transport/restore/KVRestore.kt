@@ -13,6 +13,8 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.decodeBase64
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.header.getADForKV
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.util.ArrayList
@@ -146,8 +148,16 @@ internal class KVRestore(
     ) = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
         .use { inputStream ->
             val version = headerReader.readVersion(inputStream)
-            crypto.decryptHeader(inputStream, version, state.packageInfo.packageName, dKey.key)
-            val value = crypto.decryptMultipleSegments(inputStream)
+            val packageName = state.packageInfo.packageName
+            val value = if (version == 0.toByte()) {
+                crypto.decryptHeader(inputStream, version, packageName, dKey.key)
+                crypto.decryptMultipleSegments(inputStream)
+            } else {
+                val ad = getADForKV(VERSION, packageName)
+                crypto.newDecryptingStream(inputStream, ad).use { decryptedStream ->
+                    decryptedStream.readBytes()
+                }
+            }
             val size = value.size
             Log.v(TAG, "    ... key=${dKey.key} size=$size")
 

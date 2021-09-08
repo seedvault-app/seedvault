@@ -16,6 +16,7 @@ internal abstract class RestoreTest : TransportTest() {
 
     protected val data = getRandomByteArray()
     protected val inputStream = mockk<InputStream>()
+    protected val decryptedInputStream = mockk<InputStream>()
 
     protected val unsupportedVersion = (VERSION + 1).toByte()
 
