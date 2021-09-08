@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ internal class RecoveryCodeViewModel(
     private val keyManager: KeyManager,
     private val backupManager: IBackupManager,
     private val backupCoordinator: BackupCoordinator,
+    private val notificationManager: BackupNotificationManager,
     private val storageBackup: StorageBackup
 ) : AndroidViewModel(app) {
 
@@ -77,6 +79,7 @@ internal class RecoveryCodeViewModel(
         // store main key at this opportunity if it is still missing
         if (verified && !keyManager.hasMainKey()) keyManager.storeMainKey(seed)
         mExistingCodeChecked.setEvent(verified)
+        if (verified) notificationManager.onNoMainKeyErrorFixed()
     }
 
     /**
@@ -88,6 +91,7 @@ internal class RecoveryCodeViewModel(
         keyManager.storeBackupKey(seed)
         keyManager.storeMainKey(seed)
         mRecoveryCodeSaved.setEvent(true)
+        notificationManager.onNoMainKeyErrorFixed()
     }
 
     /**
@@ -109,7 +113,7 @@ internal class RecoveryCodeViewModel(
                 backupCoordinator.startNewRestoreSet()
 
                 // initialize the new location
-                backupManager.initializeTransportsForUser(
+                if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
                     UserHandle.myUserId(),
                     arrayOf(TRANSPORT_ID),
                     null

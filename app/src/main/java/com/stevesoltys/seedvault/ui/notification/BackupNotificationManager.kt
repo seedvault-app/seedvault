@@ -7,6 +7,7 @@ import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
@@ -33,6 +34,7 @@ private const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_ERROR = 2
 private const val NOTIFICATION_ID_RESTORE_ERROR = 3
 private const val NOTIFICATION_ID_BACKGROUND = 4
+private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 5
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -267,6 +269,30 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun onRestoreErrorSeen() {
         nm.cancel(NOTIFICATION_ID_RESTORE_ERROR)
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun onNoMainKeyError() {
+        val intent = Intent(context, SettingsActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
+        val actionText = context.getString(R.string.notification_error_action)
+        val action = Action(0, actionText, pendingIntent)
+        val notification = Builder(context, CHANNEL_ID_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
+            setContentTitle(context.getString(R.string.notification_error_no_main_key_title))
+            setContentText(context.getString(R.string.notification_error_no_main_key_text))
+            setWhen(System.currentTimeMillis())
+            setOnlyAlertOnce(true)
+            setAutoCancel(false)
+            setOngoing(true)
+            setContentIntent(pendingIntent)
+            mActions = arrayListOf(action)
+        }.build()
+        nm.notify(NOTIFICATION_ID_NO_MAIN_KEY_ERROR, notification)
+    }
+
+    fun onNoMainKeyErrorFixed() {
+        nm.cancel(NOTIFICATION_ID_NO_MAIN_KEY_ERROR)
     }
 
 }

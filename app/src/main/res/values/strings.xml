@@ -38,9 +38,9 @@
     <string name="settings_backup_storage_dialog_title">Experimental feature</string>
     <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
     <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
-    <string name="settings_backup_storage_code_dialog_title">Recovery code verification required</string>
-    <string name="settings_backup_storage_code_dialog_message">To enable storage backup, you need to first verify your recovery code or generate a new one.</string>
-    <string name="settings_backup_storage_code_dialog_ok">Verify code</string>
+    <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
+    <string name="settings_backup_new_code_dialog_message">To continue using app backups, you need to generate a new recovery code.\n\nWe are sorry for the inconvenience.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">New code</string>
 
     <string name="settings_expert_title">Expert settings</string>
     <string name="settings_expert_quota_title">Unlimited app quota</string>
@@ -119,6 +119,9 @@
     <string name="notification_restore_error_title">Could not restore data for %1$s</string>
     <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
     <string name="notification_restore_error_action">Uninstall app</string>
+
+    <string name="notification_error_no_main_key_title">Backups disabled</string>
+    <string name="notification_error_no_main_key_text">Generate a new recovery code to complete upgrade and continue to use backups.</string>
 
     <!-- App Backup and Restore State -->
 

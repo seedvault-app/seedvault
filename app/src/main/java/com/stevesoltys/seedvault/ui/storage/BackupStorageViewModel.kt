@@ -41,13 +41,15 @@ internal class BackupStorageViewModel(
                 // will also generate a new backup token for the new restore set
                 backupCoordinator.startNewRestoreSet()
 
-                // initialize the new location
-                backupManager.initializeTransportsForUser(
+                // initialize the new location (if backups are enabled)
+                if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
                     UserHandle.myUserId(),
                     arrayOf(TRANSPORT_ID),
                     // if storage is on USB and this is not SetupWizard, do a backup right away
                     InitializationObserver(isUsb && !isSetupWizard)
-                )
+                ) else {
+                    InitializationObserver(false).backupFinished(0)
+                }
             } catch (e: IOException) {
                 Log.e(TAG, "Error starting new RestoreSet", e)
                 onInitializationError()
