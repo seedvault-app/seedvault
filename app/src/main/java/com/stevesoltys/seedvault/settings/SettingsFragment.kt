@@ -54,12 +54,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         backup = findPreference("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
+            // don't enable if we don't have the main key
+            if (enabled && !viewModel.hasMainKey()) {
+                showCodeRegenerationNeededDialog()
+                backup.isChecked = false
+                return@OnPreferenceChangeListener false
+            }
+            // main key is present, so enable or disable normally
             try {
                 backupManager.isBackupEnabled = enabled
                 if (enabled) viewModel.enableCallLogBackup()
                 return@OnPreferenceChangeListener true
             } catch (e: RemoteException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error setting backup enabled to $enabled", e)
                 backup.isChecked = !enabled
                 return@OnPreferenceChangeListener false
             }
@@ -222,12 +229,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setTitle(R.string.settings_backup_storage_dialog_title)
             .setMessage(R.string.settings_backup_storage_dialog_message)
             .setPositiveButton(R.string.settings_backup_storage_dialog_ok) { dialog, _ ->
-                if (viewModel.hasMainKey()) {
-                    viewModel.enableStorageBackup()
-                    backupStorage.isChecked = true
-                } else {
-                    showCodeVerificationNeededDialog()
-                }
+                viewModel.enableStorageBackup()
+                backupStorage.isChecked = true
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
@@ -236,12 +239,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .show()
     }
 
-    private fun showCodeVerificationNeededDialog() {
+    private fun showCodeRegenerationNeededDialog() {
         AlertDialog.Builder(requireContext())
             .setIcon(R.drawable.ic_vpn_key)
-            .setTitle(R.string.settings_backup_storage_code_dialog_title)
-            .setMessage(R.string.settings_backup_storage_code_dialog_message)
-            .setPositiveButton(R.string.settings_backup_storage_code_dialog_ok) { dialog, _ ->
+            .setTitle(R.string.settings_backup_new_code_dialog_title)
+            .setMessage(R.string.settings_backup_new_code_dialog_message)
+            .setPositiveButton(R.string.settings_backup_new_code_code_dialog_ok) { dialog, _ ->
                 val callback = (requireActivity() as OnPreferenceStartFragmentCallback)
                 callback.onPreferenceStartFragment(this, backupRecoveryCode)
                 dialog.dismiss()

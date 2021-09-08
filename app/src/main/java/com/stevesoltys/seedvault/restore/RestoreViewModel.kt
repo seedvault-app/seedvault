@@ -126,6 +126,8 @@ internal class RestoreViewModel(
 
     @Throws(RemoteException::class)
     private fun getOrStartSession(): IRestoreSession {
+        // TODO consider not using the BackupManager for this, but our own API directly
+        //  this is less error-prone (hanging sessions) and can provide more data
         val session = this.session
             ?: backupManager.beginRestoreSessionForUser(UserHandle.myUserId(), null, TRANSPORT_ID)
             ?: throw RemoteException("beginRestoreSessionForUser returned null")
