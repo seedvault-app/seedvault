@@ -13,6 +13,7 @@ internal abstract class BackupTest : TransportTest() {
     protected val headerWriter = mockk<HeaderWriter>()
     protected val data = mockk<ParcelFileDescriptor>()
     protected val outputStream = mockk<OutputStream>()
+    protected val encryptedOutputStream = mockk<OutputStream>()
 
     protected val header = VersionHeader(packageName = packageInfo.packageName)
     protected val quota = 42L

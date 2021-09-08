@@ -12,7 +12,9 @@ import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -47,7 +49,7 @@ internal class KVBackupTest : BackupTest() {
 
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val key64 = Base64.getEncoder().encodeToString(key.toByteArray(Utf8))
-    private val value = ByteArray(23).apply { Random.nextBytes(this) }
+    private val dataValue = Random.nextBytes(23)
     private val versionHeader = VersionHeader(packageName = packageInfo.packageName, key = key)
 
     @Test
@@ -73,26 +75,26 @@ internal class KVBackupTest : BackupTest() {
         every { dataInput.readNextHeader() } returnsMany listOf(true, true, false)
         every { dataInput.key } returnsMany listOf("key1", "key2")
         // we don't care about values, so just use the same one always
-        every { dataInput.dataSize } returns value.size
-        every { dataInput.readEntityData(any(), 0, value.size) } returns value.size
+        every { dataInput.dataSize } returns dataValue.size
+        every { dataInput.readEntityData(any(), 0, dataValue.size) } returns dataValue.size
 
         // store first record and show notification for it
         every { notificationManager.onPmKvBackup("key1", 1, 2) } just Runs
         coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5MQ") } returns outputStream
         val versionHeader1 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key1")
         every { headerWriter.writeVersion(outputStream, versionHeader1) } just Runs
-        every { crypto.encryptHeader(outputStream, versionHeader1) } just Runs
 
         // store second record and show notification for it
         every { notificationManager.onPmKvBackup("key2", 2, 2) } just Runs
         coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5Mg") } returns outputStream
         val versionHeader2 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key2")
         every { headerWriter.writeVersion(outputStream, versionHeader2) } just Runs
-        every { crypto.encryptHeader(outputStream, versionHeader2) } just Runs
 
         // encrypt to and close output stream
-        every { crypto.encryptMultipleSegments(outputStream, any()) } just Runs
-        every { outputStream.write(value) } just Runs
+        every { crypto.newEncryptingStream(outputStream, any()) } returns encryptedOutputStream
+        every { encryptedOutputStream.write(any<ByteArray>()) } just Runs
+        every { encryptedOutputStream.flush() } just Runs
+        every { encryptedOutputStream.close() } just Runs
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
 
@@ -190,8 +192,8 @@ internal class KVBackupTest : BackupTest() {
         createBackupDataInput()
         every { dataInput.readNextHeader() } returns true
         every { dataInput.key } returns key
-        every { dataInput.dataSize } returns value.size
-        every { dataInput.readEntityData(any(), 0, value.size) } throws IOException()
+        every { dataInput.dataSize } returns dataValue.size
+        every { dataInput.readEntityData(any(), 0, dataValue.size) } throws IOException()
         every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
@@ -230,10 +232,7 @@ internal class KVBackupTest : BackupTest() {
         initPlugin(false)
         getDataInput(listOf(true))
         writeHeaderAndEncrypt()
-        coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
-        every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
-        every { crypto.encryptMultipleSegments(outputStream, any()) } throws IOException()
-        every { outputStream.close() } just Runs
+        every { encryptedOutputStream.write(dataValue) } throws IOException()
         every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.performBackup(packageInfo, data, 0))
@@ -247,8 +246,9 @@ internal class KVBackupTest : BackupTest() {
         initPlugin(false)
         getDataInput(listOf(true))
         writeHeaderAndEncrypt()
-        every { outputStream.write(value) } just Runs
-        every { outputStream.flush() } throws IOException()
+        every { encryptedOutputStream.write(dataValue) } just Runs
+        every { encryptedOutputStream.flush() } throws IOException()
+        every { encryptedOutputStream.close() } just Runs
         every { outputStream.close() } just Runs
         every { plugin.packageFinished(packageInfo) } just Runs
 
@@ -263,9 +263,10 @@ internal class KVBackupTest : BackupTest() {
         initPlugin(false)
         getDataInput(listOf(true, false))
         writeHeaderAndEncrypt()
-        every { outputStream.write(value) } just Runs
-        every { outputStream.flush() } just Runs
-        every { outputStream.close() } throws IOException()
+        every { encryptedOutputStream.write(dataValue) } just Runs
+        every { encryptedOutputStream.flush() } just Runs
+        every { encryptedOutputStream.close() } just Runs
+        every { outputStream.close() } just Runs
         every { plugin.packageFinished(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0))
@@ -278,8 +279,9 @@ internal class KVBackupTest : BackupTest() {
         initPlugin(hasDataForPackage)
         getDataInput(listOf(true, false))
         writeHeaderAndEncrypt()
-        every { outputStream.write(value) } just Runs
-        every { outputStream.flush() } just Runs
+        every { encryptedOutputStream.write(dataValue) } just Runs
+        every { encryptedOutputStream.flush() } just Runs
+        every { encryptedOutputStream.close() } just Runs
         every { outputStream.close() } just Runs
         every { plugin.packageFinished(packageInfo) } just Runs
     }
@@ -296,15 +298,19 @@ internal class KVBackupTest : BackupTest() {
         createBackupDataInput()
         every { dataInput.readNextHeader() } returnsMany returnValues
         every { dataInput.key } returns key
-        every { dataInput.dataSize } returns value.size
-        every { dataInput.readEntityData(any(), 0, value.size) } returns value.size
+        every { dataInput.dataSize } returns dataValue.size
+        val slot = CapturingSlot<ByteArray>()
+        every { dataInput.readEntityData(capture(slot), 0, dataValue.size) } answers {
+            dataValue.copyInto(slot.captured)
+            dataValue.size
+        }
     }
 
     private fun writeHeaderAndEncrypt() {
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
         every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
-        every { crypto.encryptHeader(outputStream, versionHeader) } just Runs
-        every { crypto.encryptMultipleSegments(outputStream, any()) } just Runs
+        val ad = getADForKV(versionHeader.version, packageInfo.packageName)
+        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
     }
 
 }

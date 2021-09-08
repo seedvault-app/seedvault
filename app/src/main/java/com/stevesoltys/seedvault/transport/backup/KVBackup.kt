@@ -13,10 +13,11 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderWriter
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 class KVBackupState(internal val packageInfo: PackageInfo)
@@ -166,18 +167,17 @@ internal class KVBackup(
             Log.e(TAG, "Deleting record with base64Key ${op.base64Key}")
             plugin.deleteRecord(packageInfo, op.base64Key)
         } else {
-            val outputStream = plugin.getOutputStreamForRecord(packageInfo, op.base64Key)
-            try {
+            plugin.getOutputStreamForRecord(packageInfo, op.base64Key).use { outputStream ->
                 val header = VersionHeader(
                     packageName = packageInfo.packageName,
                     key = op.key
                 )
                 headerWriter.writeVersion(outputStream, header)
-                crypto.encryptHeader(outputStream, header)
-                crypto.encryptMultipleSegments(outputStream, op.value)
-                outputStream.flush()
-            } finally {
-                closeQuietly(outputStream)
+                val ad = getADForKV(VERSION, packageInfo.packageName)
+                crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->
+                    encryptedStream.write(op.value)
+                    encryptedStream.flush()
+                }
             }
         }
     }
