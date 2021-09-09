@@ -140,6 +140,7 @@ internal class CryptoImpl(
         deriveStreamKey(keyManager.getMainKey(), "app data key".toByteArray())
     }
 
+    @Throws(IOException::class, GeneralSecurityException::class)
     override fun newEncryptingStream(
         outputStream: OutputStream,
         associatedData: ByteArray
@@ -147,6 +148,7 @@ internal class CryptoImpl(
         return StreamCrypto.newEncryptingStream(key, outputStream, associatedData)
     }
 
+    @Throws(IOException::class, GeneralSecurityException::class)
     override fun newDecryptingStream(
         inputStream: InputStream,
         associatedData: ByteArray

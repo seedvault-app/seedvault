@@ -9,16 +9,21 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.HeaderReader
+import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.header.getADForFull
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
+import java.security.GeneralSecurityException
 
 private class FullRestoreState(
     val token: Long,
     val packageInfo: PackageInfo
 ) {
+    var version: Byte? = null
     var inputStream: InputStream? = null
 }
 
@@ -81,7 +86,7 @@ internal class FullRestore(
      * Any other negative value such as [TRANSPORT_ERROR] is treated as a fatal error condition
      * that aborts all further restore operations on the current dataset.
      */
-    suspend fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int {
+    suspend fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int = socket.use { pfd ->
         val state = this.state ?: throw IllegalStateException("no state")
         val packageName = state.packageInfo.packageName
 
@@ -90,12 +95,21 @@ internal class FullRestore(
             try {
                 val inputStream = plugin.getInputStreamForPackage(state.token, state.packageInfo)
                 val version = headerReader.readVersion(inputStream)
-                crypto.decryptHeader(inputStream, version, packageName)
-                state.inputStream = inputStream
+                state.version = version
+                if (version == 0.toByte()) {
+                    crypto.decryptHeader(inputStream, version, packageName)
+                    state.inputStream = inputStream
+                } else {
+                    val ad = getADForFull(version, packageName)
+                    state.inputStream = crypto.newDecryptingStream(inputStream, ad)
+                }
             } catch (e: IOException) {
                 Log.w(TAG, "Error getting input stream for $packageName", e)
                 return TRANSPORT_PACKAGE_REJECTED
             } catch (e: SecurityException) {
+                Log.e(TAG, "Security Exception while getting input stream for $packageName", e)
+                return TRANSPORT_ERROR
+            } catch (e: GeneralSecurityException) {
                 Log.e(TAG, "Security Exception while getting input stream for $packageName", e)
                 return TRANSPORT_ERROR
             } catch (e: UnsupportedVersionException) {
@@ -104,19 +118,25 @@ internal class FullRestore(
             }
         }
 
-        return readInputStream(socket)
+        return outputFactory.getOutputStream(pfd).use { outputStream ->
+            try {
+                copyInputStream(outputStream)
+            } catch (e: IOException) {
+                Log.w(TAG, "Error copying stream for package $packageName.", e)
+                return TRANSPORT_PACKAGE_REJECTED
+            }
+        }
     }
 
-    private fun readInputStream(socket: ParcelFileDescriptor): Int = socket.use { fileDescriptor ->
+    @Throws(IOException::class)
+    private fun copyInputStream(outputStream: OutputStream): Int {
         val state = this.state ?: throw IllegalStateException("no state")
-        val packageName = state.packageInfo.packageName
         val inputStream = state.inputStream ?: throw IllegalStateException("no stream")
-        val outputStream = outputFactory.getOutputStream(fileDescriptor)
+        val version = state.version ?: throw IllegalStateException("no version")
 
-        try {
+        if (version == 0.toByte()) {
             // read segment from input stream and decrypt it
             val decrypted = try {
-                // TODO handle IOException
                 crypto.decryptSegment(inputStream)
             } catch (e: EOFException) {
                 Log.i(TAG, "   EOF")
@@ -129,12 +149,17 @@ internal class FullRestore(
             outputStream.write(decrypted)
             // return number of written bytes
             return decrypted.size
-        } catch (e: IOException) {
-            Log.w(TAG, "Error processing stream for package $packageName.", e)
-            closeQuietly(inputStream)
-            return TRANSPORT_PACKAGE_REJECTED
-        } finally {
-            closeQuietly(outputStream)
+        } else {
+            val buffer = ByteArray(MAX_SEGMENT_LENGTH)
+            val bytesRead = inputStream.read(buffer)
+            if (bytesRead == -1) {
+                Log.i(TAG, "   EOF")
+                // close input stream here as we won't need it anymore
+                closeQuietly(inputStream)
+                return NO_MORE_DATA
+            }
+            outputStream.write(buffer, 0, bytesRead)
+            return bytesRead
         }
     }
 
