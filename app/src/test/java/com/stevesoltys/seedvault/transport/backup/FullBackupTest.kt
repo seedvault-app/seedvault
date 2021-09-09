@@ -4,6 +4,8 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.header.getADForFull
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -25,8 +27,8 @@ internal class FullBackupTest : BackupTest() {
     private val backup = FullBackup(plugin, settingsManager, inputFactory, headerWriter, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
-    private val closeBytes = ByteArray(42).apply { Random.nextBytes(this) }
     private val inputStream = mockk<FileInputStream>()
+    private val ad = getADForFull(VERSION, packageInfo.packageName)
 
     @Test
     fun `has no initial state`() {
@@ -129,6 +131,7 @@ internal class FullBackupTest : BackupTest() {
         expectInitializeOutputStream()
         every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
+        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
         expectClearState()
 
@@ -183,8 +186,9 @@ internal class FullBackupTest : BackupTest() {
             expectInitializeOutputStream()
             every { settingsManager.isQuotaUnlimited() } returns false
             every { plugin.getQuota() } returns quota
+            every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
             every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
-            every { crypto.encryptSegment(outputStream, any()) } throws IOException()
+            every { encryptedOutputStream.write(any<ByteArray>()) } throws IOException()
             expectClearState()
 
             assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
@@ -256,8 +260,7 @@ internal class FullBackupTest : BackupTest() {
         expectInitializeOutputStream()
         val numBytes = 42
         expectSendData(numBytes)
-        every { outputStream.write(closeBytes) } just Runs
-        every { outputStream.flush() } throws IOException()
+        every { encryptedOutputStream.flush() } throws IOException()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
         assertTrue(backup.hasState())
@@ -314,18 +317,18 @@ internal class FullBackupTest : BackupTest() {
     private fun expectInitializeOutputStream() {
         coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
         every { headerWriter.writeVersion(outputStream, header) } just Runs
-        every { crypto.encryptHeader(outputStream, header) } just Runs
     }
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {
         every { plugin.getQuota() } returns quota
         every { inputStream.read(any(), any(), numBytes) } returns readBytes
-        every { crypto.encryptSegment(outputStream, any()) } just Runs
+        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+        every { encryptedOutputStream.write(any<ByteArray>()) } just Runs
     }
 
     private fun expectClearState() {
-        every { outputStream.write(closeBytes) } just Runs
-        every { outputStream.flush() } just Runs
+        every { encryptedOutputStream.flush() } just Runs
+        every { encryptedOutputStream.close() } just Runs
         every { outputStream.close() } just Runs
         every { inputStream.close() } just Runs
         every { data.close() } just Runs

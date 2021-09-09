@@ -337,8 +337,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         every { outputFactory.getOutputStream(fileDescriptor) } returns rOutputStream
 
         // restore data
-        assertEquals(appData.size / 2, restore.getNextFullRestoreDataChunk(fileDescriptor))
-        assertEquals(appData.size / 2, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertEquals(appData.size, restore.getNextFullRestoreDataChunk(fileDescriptor))
         assertEquals(NO_MORE_DATA, restore.getNextFullRestoreDataChunk(fileDescriptor))
         restore.finishRestore()
 

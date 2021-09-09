@@ -10,7 +10,9 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.HeaderWriter
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
@@ -24,6 +26,9 @@ private class FullBackupState(
     val inputStream: InputStream,
     var outputStreamInit: (suspend () -> OutputStream)?
 ) {
+    /**
+     * This is an encrypted stream that can be written to directly.
+     */
     var outputStream: OutputStream? = null
     val packageName: String = packageInfo.packageName
     var size: Long = 0
@@ -120,14 +125,8 @@ internal class FullBackup(
             // store version header
             val state = this.state ?: throw AssertionError()
             val header = VersionHeader(packageName = state.packageName)
-            try {
-                headerWriter.writeVersion(outputStream, header)
-                crypto.encryptHeader(outputStream, header)
-            } catch (e: IOException) {
-                Log.e(TAG, "Error writing backup header", e)
-                throw(e)
-            }
-            outputStream
+            headerWriter.writeVersion(outputStream, header)
+            crypto.newEncryptingStream(outputStream, getADForFull(VERSION, state.packageName))
         } // this lambda is only called before we actually write backup data the first time
         return TRANSPORT_OK
     }
@@ -159,11 +158,11 @@ internal class FullBackup(
             }()
             state.outputStreamInit = null // the stream init lambda is not needed beyond that point
 
-            // read backup data, encrypt it and write it to output stream
+            // read backup data and write it to encrypted output stream
             val payload = ByteArray(numBytes)
             val read = state.inputStream.read(payload, 0, numBytes)
             if (read != numBytes) throw EOFException("Read $read bytes instead of $numBytes.")
-            crypto.encryptSegment(outputStream, payload)
+            outputStream.write(payload)
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error handling backup data for ${state.packageName}: ", e)
