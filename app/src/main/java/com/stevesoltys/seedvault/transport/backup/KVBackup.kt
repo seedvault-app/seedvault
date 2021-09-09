@@ -12,9 +12,7 @@ import android.util.Log
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
-import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -31,7 +29,6 @@ internal class KVBackup(
     private val plugin: KVBackupPlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
-    private val headerWriter: HeaderWriter,
     private val crypto: Crypto,
     private val nm: BackupNotificationManager
 ) {
@@ -168,11 +165,7 @@ internal class KVBackup(
             plugin.deleteRecord(packageInfo, op.base64Key)
         } else {
             plugin.getOutputStreamForRecord(packageInfo, op.base64Key).use { outputStream ->
-                val header = VersionHeader(
-                    packageName = packageInfo.packageName,
-                    key = op.key
-                )
-                headerWriter.writeVersion(outputStream, header)
+                outputStream.write(ByteArray(1) { VERSION })
                 val ad = getADForKV(VERSION, packageInfo.packageName)
                 crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->
                     encryptedStream.write(op.value)

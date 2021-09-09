@@ -5,7 +5,6 @@ import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.header.HeaderWriterImpl
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.toByteArrayFromHex
@@ -27,9 +26,8 @@ internal class MetadataV0ReadTest {
     )
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
+    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
 
     private val reader = MetadataReaderImpl(cryptoImpl)
 

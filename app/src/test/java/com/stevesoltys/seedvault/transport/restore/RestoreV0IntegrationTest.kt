@@ -12,7 +12,6 @@ import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.header.HeaderWriterImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
@@ -42,9 +41,8 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     )
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
+    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 

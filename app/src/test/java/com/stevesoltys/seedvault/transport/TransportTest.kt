@@ -20,7 +20,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import kotlin.random.Random
 
 @TestInstance(PER_METHOD)
-abstract class TransportTest {
+internal abstract class TransportTest {
 
     protected val clock: Clock = mockk()
     protected val crypto = mockk<Crypto>()

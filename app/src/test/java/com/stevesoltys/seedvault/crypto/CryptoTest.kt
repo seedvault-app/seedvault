@@ -4,7 +4,6 @@ import com.stevesoltys.seedvault.assertContains
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.HeaderReader
-import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.IV_SIZE
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.MAX_PACKAGE_LENGTH_SIZE
@@ -13,10 +12,7 @@ import com.stevesoltys.seedvault.header.MAX_VERSION_HEADER_SIZE
 import com.stevesoltys.seedvault.header.SegmentHeader
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
-import io.mockk.CapturingSlot
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +22,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
@@ -38,10 +33,9 @@ class CryptoTest {
 
     private val keyManager = mockk<KeyManager>()
     private val cipherFactory = mockk<CipherFactory>()
-    private val headerWriter = mockk<HeaderWriter>()
     private val headerReader = mockk<HeaderReader>()
 
-    private val crypto = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
+    private val crypto = CryptoImpl(keyManager, cipherFactory, headerReader)
 
     private val cipher = mockk<Cipher>()
 
@@ -55,48 +49,11 @@ class CryptoTest {
     )
     private val versionCiphertext = getRandomByteArray(MAX_VERSION_HEADER_SIZE)
     private val versionSegmentHeader = SegmentHeader(versionCiphertext.size.toShort(), iv)
-    private val outputStream = ByteArrayOutputStream()
     private val segmentHeader = SegmentHeader(ciphertext.size.toShort(), iv)
 
     // the headerReader will not actually read the header, so only insert cipher text
     private val inputStream = ByteArrayInputStream(ciphertext)
     private val versionInputStream = ByteArrayInputStream(versionCiphertext)
-
-    // encrypting
-
-    @Test
-    fun `encrypt header works as expected`() {
-        val segmentHeader = CapturingSlot<SegmentHeader>()
-        every { headerWriter.getEncodedVersionHeader(versionHeader) } returns ciphertext
-        encryptSegmentHeader(ciphertext, segmentHeader)
-
-        crypto.encryptHeader(outputStream, versionHeader)
-        assertArrayEquals(iv, segmentHeader.captured.nonce)
-        assertEquals(ciphertext.size, segmentHeader.captured.segmentLength.toInt())
-    }
-
-    @Test
-    fun `encrypting segment works as expected`() {
-        val segmentHeader = CapturingSlot<SegmentHeader>()
-        encryptSegmentHeader(cleartext, segmentHeader)
-
-        crypto.encryptSegment(outputStream, cleartext)
-
-        assertArrayEquals(ciphertext, outputStream.toByteArray())
-        assertArrayEquals(iv, segmentHeader.captured.nonce)
-        assertEquals(ciphertext.size, segmentHeader.captured.segmentLength.toInt())
-    }
-
-    private fun encryptSegmentHeader(
-        toEncrypt: ByteArray,
-        segmentHeader: CapturingSlot<SegmentHeader>
-    ) {
-        every { cipherFactory.createEncryptionCipher() } returns cipher
-        every { cipher.getOutputSize(toEncrypt.size) } returns toEncrypt.size
-        every { cipher.iv } returns iv
-        every { headerWriter.writeSegmentHeader(outputStream, capture(segmentHeader)) } just Runs
-        every { cipher.doFinal(toEncrypt) } returns ciphertext
-    }
 
     // decrypting
 

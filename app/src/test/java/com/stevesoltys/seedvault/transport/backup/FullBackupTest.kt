@@ -24,7 +24,7 @@ import kotlin.random.Random
 internal class FullBackupTest : BackupTest() {
 
     private val plugin = mockk<FullBackupPlugin>()
-    private val backup = FullBackup(plugin, settingsManager, inputFactory, headerWriter, crypto)
+    private val backup = FullBackup(plugin, settingsManager, inputFactory, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
     private val inputStream = mockk<FileInputStream>()
@@ -168,7 +168,7 @@ internal class FullBackupTest : BackupTest() {
         every { plugin.getQuota() } returns quota
         coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { headerWriter.writeVersion(outputStream, header) } throws IOException()
+        every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
         expectClearState()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
@@ -316,7 +316,7 @@ internal class FullBackupTest : BackupTest() {
 
     private fun expectInitializeOutputStream() {
         coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
-        every { headerWriter.writeVersion(outputStream, header) } just Runs
+        every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
     }
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {

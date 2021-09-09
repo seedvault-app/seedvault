@@ -11,7 +11,7 @@ import android.content.pm.PackageInfo
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
-import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
@@ -42,7 +42,6 @@ internal class KVBackupTest : BackupTest() {
         plugin = plugin,
         settingsManager = settingsManager,
         inputFactory = inputFactory,
-        headerWriter = headerWriter,
         crypto = crypto,
         nm = notificationManager
     )
@@ -50,7 +49,6 @@ internal class KVBackupTest : BackupTest() {
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val key64 = Base64.getEncoder().encodeToString(key.toByteArray(Utf8))
     private val dataValue = Random.nextBytes(23)
-    private val versionHeader = VersionHeader(packageName = packageInfo.packageName, key = key)
 
     @Test
     fun `has no initial state`() {
@@ -81,14 +79,11 @@ internal class KVBackupTest : BackupTest() {
         // store first record and show notification for it
         every { notificationManager.onPmKvBackup("key1", 1, 2) } just Runs
         coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5MQ") } returns outputStream
-        val versionHeader1 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key1")
-        every { headerWriter.writeVersion(outputStream, versionHeader1) } just Runs
+        every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
 
         // store second record and show notification for it
         every { notificationManager.onPmKvBackup("key2", 2, 2) } just Runs
         coEvery { plugin.getOutputStreamForRecord(pmPackageInfo, "a2V5Mg") } returns outputStream
-        val versionHeader2 = VersionHeader(packageName = pmPackageInfo.packageName, key = "key2")
-        every { headerWriter.writeVersion(outputStream, versionHeader2) } just Runs
 
         // encrypt to and close output stream
         every { crypto.newEncryptingStream(outputStream, any()) } returns encryptedOutputStream
@@ -213,11 +208,11 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `exception while writing version header`() = runBlocking {
+    fun `exception while writing version`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
-        every { headerWriter.writeVersion(outputStream, versionHeader) } throws IOException()
+        every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
         every { outputStream.close() } just Runs
         every { plugin.packageFinished(packageInfo) } just Runs
 
@@ -231,7 +226,7 @@ internal class KVBackupTest : BackupTest() {
     fun `exception while writing encrypted value to output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
-        writeHeaderAndEncrypt()
+        writeVersionAndEncrypt()
         every { encryptedOutputStream.write(dataValue) } throws IOException()
         every { plugin.packageFinished(packageInfo) } just Runs
 
@@ -245,7 +240,7 @@ internal class KVBackupTest : BackupTest() {
     fun `exception while flushing output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true))
-        writeHeaderAndEncrypt()
+        writeVersionAndEncrypt()
         every { encryptedOutputStream.write(dataValue) } just Runs
         every { encryptedOutputStream.flush() } throws IOException()
         every { encryptedOutputStream.close() } just Runs
@@ -262,7 +257,7 @@ internal class KVBackupTest : BackupTest() {
     fun `ignoring exception while closing output stream`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true, false))
-        writeHeaderAndEncrypt()
+        writeVersionAndEncrypt()
         every { encryptedOutputStream.write(dataValue) } just Runs
         every { encryptedOutputStream.flush() } just Runs
         every { encryptedOutputStream.close() } just Runs
@@ -278,7 +273,7 @@ internal class KVBackupTest : BackupTest() {
     private fun singleRecordBackup(hasDataForPackage: Boolean = false) {
         initPlugin(hasDataForPackage)
         getDataInput(listOf(true, false))
-        writeHeaderAndEncrypt()
+        writeVersionAndEncrypt()
         every { encryptedOutputStream.write(dataValue) } just Runs
         every { encryptedOutputStream.flush() } just Runs
         every { encryptedOutputStream.close() } just Runs
@@ -306,10 +301,10 @@ internal class KVBackupTest : BackupTest() {
         }
     }
 
-    private fun writeHeaderAndEncrypt() {
+    private fun writeVersionAndEncrypt() {
         coEvery { plugin.getOutputStreamForRecord(packageInfo, key64) } returns outputStream
-        every { headerWriter.writeVersion(outputStream, versionHeader) } just Runs
-        val ad = getADForKV(versionHeader.version, packageInfo.packageName)
+        every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
+        val ad = getADForKV(VERSION, packageInfo.packageName)
         every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
     }
 

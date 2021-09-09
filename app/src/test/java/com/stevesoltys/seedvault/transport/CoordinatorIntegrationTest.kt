@@ -12,7 +12,6 @@ import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.header.HeaderWriterImpl
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
@@ -57,9 +56,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val outputFactory = mockk<OutputFactory>()
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerWriter = HeaderWriterImpl()
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerWriter, headerReader)
+    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 
@@ -69,7 +67,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         plugin = kvBackupPlugin,
         settingsManager = settingsManager,
         inputFactory = inputFactory,
-        headerWriter = headerWriter,
         crypto = cryptoImpl,
         nm = notificationManager
     )
@@ -78,7 +75,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         plugin = fullBackupPlugin,
         settingsManager = settingsManager,
         inputFactory = inputFactory,
-        headerWriter = headerWriter,
         crypto = cryptoImpl
     )
     private val apkBackup = mockk<ApkBackup>()

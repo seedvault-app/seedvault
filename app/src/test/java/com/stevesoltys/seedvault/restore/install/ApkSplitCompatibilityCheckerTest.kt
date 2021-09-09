@@ -10,7 +10,7 @@ import org.junit.Assert.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
-class ApkSplitCompatibilityCheckerTest : TransportTest() {
+internal class ApkSplitCompatibilityCheckerTest : TransportTest() {
 
     private val deviceInfo: DeviceInfo = mockk()
     private val deviceName = getRandomString()

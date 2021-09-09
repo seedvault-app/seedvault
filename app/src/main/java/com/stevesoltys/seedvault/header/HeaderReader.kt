@@ -6,13 +6,15 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
 
-interface HeaderReader {
+internal interface HeaderReader {
     @Throws(IOException::class, UnsupportedVersionException::class)
     fun readVersion(inputStream: InputStream): Byte
 
+    @Deprecated("")
     @Throws(SecurityException::class)
     fun getVersionHeader(byteArray: ByteArray): VersionHeader
 
+    @Deprecated("")
     @Throws(EOFException::class, IOException::class)
     fun readSegmentHeader(inputStream: InputStream): SegmentHeader
 }

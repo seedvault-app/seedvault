@@ -15,7 +15,8 @@ internal const val MAX_VERSION_HEADER_SIZE =
  * After the first version byte of each backup stream
  * must follow followed this header encrypted with authentication.
  */
-data class VersionHeader(
+@Deprecated("version header is in associated data now")
+internal data class VersionHeader(
     internal val version: Byte = VERSION, //  1 byte
     internal val packageName: String, // ?? bytes (max 255)
     internal val key: String? = null // ?? bytes
@@ -60,6 +61,7 @@ internal const val SEGMENT_HEADER_SIZE = SEGMENT_LENGTH_SIZE + IV_SIZE
 /**
  * Each data segment must start with this header
  */
+@Deprecated("Don't do manual segments, use Crypto interface instead.")
 class SegmentHeader(
     internal val segmentLength: Short, //  2 bytes
     internal val nonce: ByteArray // 12 bytes
