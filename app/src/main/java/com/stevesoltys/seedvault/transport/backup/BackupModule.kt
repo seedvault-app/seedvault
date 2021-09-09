@@ -23,7 +23,6 @@ val backupModule = module {
             plugin = get<BackupPlugin>().kvBackupPlugin,
             settingsManager = get(),
             inputFactory = get(),
-            headerWriter = get(),
             crypto = get(),
             nm = get()
         )
@@ -33,7 +32,6 @@ val backupModule = module {
             plugin = get<BackupPlugin>().fullBackupPlugin,
             settingsManager = get(),
             inputFactory = get(),
-            headerWriter = get(),
             crypto = get()
         )
     }

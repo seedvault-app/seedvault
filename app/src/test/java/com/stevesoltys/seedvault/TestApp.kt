@@ -21,7 +21,7 @@ class TestApp : App() {
     private val testCryptoModule = module {
         factory<CipherFactory> { CipherFactoryImpl(get()) }
         single<KeyManager> { KeyManagerTestImpl() }
-        single<Crypto> { CryptoImpl(get(), get(), get(), get()) }
+        single<Crypto> { CryptoImpl(get(), get(), get()) }
     }
     private val appModule = module {
         single { Clock() }

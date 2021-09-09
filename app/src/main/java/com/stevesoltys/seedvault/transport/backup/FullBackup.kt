@@ -9,9 +9,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.header.HeaderWriter
 import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
@@ -43,7 +41,6 @@ internal class FullBackup(
     private val plugin: FullBackupPlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
-    private val headerWriter: HeaderWriter,
     private val crypto: Crypto
 ) {
 
@@ -124,8 +121,7 @@ internal class FullBackup(
             }
             // store version header
             val state = this.state ?: throw AssertionError()
-            val header = VersionHeader(packageName = state.packageName)
-            headerWriter.writeVersion(outputStream, header)
+            outputStream.write(ByteArray(1) { VERSION })
             crypto.newEncryptingStream(outputStream, getADForFull(VERSION, state.packageName))
         } // this lambda is only called before we actually write backup data the first time
         return TRANSPORT_OK
