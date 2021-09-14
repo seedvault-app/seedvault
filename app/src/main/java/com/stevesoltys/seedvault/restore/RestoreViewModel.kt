@@ -20,7 +20,6 @@ import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
@@ -65,9 +64,6 @@ import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTA
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
@@ -126,8 +122,6 @@ internal class RestoreViewModel(
 
     @Throws(RemoteException::class)
     private fun getOrStartSession(): IRestoreSession {
-        // TODO consider not using the BackupManager for this, but our own API directly
-        //  this is less error-prone (hanging sessions) and can provide more data
         val session = this.session
             ?: backupManager.beginRestoreSessionForUser(UserHandle.myUserId(), null, TRANSPORT_ID)
             ?: throw RemoteException("beginRestoreSessionForUser returned null")
@@ -135,36 +129,27 @@ internal class RestoreViewModel(
         return session
     }
 
-    internal fun loadRestoreSets() = viewModelScope.launch {
-        mRestoreSetResults.value = getAvailableRestoreSets()
-    }
-
-    private suspend fun getAvailableRestoreSets() =
-        suspendCoroutine<RestoreSetResult> { continuation ->
-            val session = try {
-                getOrStartSession()
-            } catch (e: RemoteException) {
-                Log.e(TAG, "Error starting new session", e)
-                continuation.resume(RestoreSetResult(app.getString(R.string.restore_set_error)))
-                return@suspendCoroutine
-            }
-
-            val observer = RestoreObserver(continuation)
-            val setResult = session.getAvailableRestoreSets(observer, monitor)
-            if (setResult != 0) {
-                Log.e(TAG, "getAvailableRestoreSets() returned non-zero value")
-                continuation.resume(RestoreSetResult(app.getString(R.string.restore_set_error)))
-                return@suspendCoroutine
+    internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
+        val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->
+            when (metadata.time) {
+                0L -> {
+                    Log.d(TAG, "Ignoring RestoreSet with no last backup time: $token.")
+                    null
+                }
+                else -> RestorableBackup(metadata)
             }
         }
+        val result = when {
+            backups == null -> RestoreSetResult(app.getString(R.string.restore_set_error))
+            backups.isEmpty() -> RestoreSetResult(app.getString(R.string.restore_set_empty_result))
+            else -> RestoreSetResult(backups)
+        }
+        mRestoreSetResults.postValue(result)
+    }
 
     override fun onRestorableBackupClicked(restorableBackup: RestorableBackup) {
         mChosenRestorableBackup.value = restorableBackup
         mDisplayFragment.setEvent(RESTORE_APPS)
-
-        // re-installing apps will take some time and the session probably times out
-        // so better close it cleanly and re-open it later
-        closeSession()
     }
 
     private fun getInstallResult(backup: RestorableBackup): LiveData<InstallResult> {
@@ -193,7 +178,7 @@ internal class RestoreViewModel(
     }
 
     @WorkerThread
-    private suspend fun startRestore(token: Long) {
+    private fun startRestore(token: Long) {
         Log.d(TAG, "Starting new restore session to restore backup $token")
 
         // if we had no token before (i.e. restore from setup wizard),
@@ -202,25 +187,35 @@ internal class RestoreViewModel(
             settingsManager.setNewToken(token)
         }
 
-        // we need to start a new session and retrieve the restore sets before starting the restore
-        val restoreSetResult = getAvailableRestoreSets()
-        if (restoreSetResult.hasError()) {
+        // start a new restore session
+        val session = try {
+            getOrStartSession()
+        } catch (e: RemoteException) {
+            Log.e(TAG, "Error starting new session", e)
             mRestoreBackupResult.postValue(
-                RestoreBackupResult(app.getString(R.string.restore_finished_error))
+                RestoreBackupResult(app.getString(R.string.restore_set_error))
             )
             return
         }
 
-        // now we can start the restore of all available packages
-        val observer = RestoreObserver()
-        val restoreAllResult = session?.restoreAll(token, observer, monitor) ?: 1
-        if (restoreAllResult != 0) {
-            if (session == null) Log.e(TAG, "session was null")
-            else Log.e(TAG, "restoreAll() returned non-zero value")
+        // we need to retrieve the restore sets before starting the restore
+        // otherwise restoreAll() won't work as they need the restore sets cached internally
+        val observer = RestoreObserver { observer ->
+            // this lambda gets executed after we got the restore sets
+            // now we can start the restore of all available packages
+            val restoreAllResult = session.restoreAll(token, observer, monitor)
+            if (restoreAllResult != 0) {
+                Log.e(TAG, "restoreAll() returned non-zero value")
+                mRestoreBackupResult.postValue(
+                    RestoreBackupResult(app.getString(R.string.restore_finished_error))
+                )
+            }
+        }
+        if (session.getAvailableRestoreSets(observer, monitor) != 0) {
+            Log.e(TAG, "getAvailableRestoreSets() returned non-zero value")
             mRestoreBackupResult.postValue(
-                RestoreBackupResult(app.getString(R.string.restore_finished_error))
+                RestoreBackupResult(app.getString(R.string.restore_set_error))
             )
-            return
         }
     }
 
@@ -297,9 +292,8 @@ internal class RestoreViewModel(
     }
 
     @WorkerThread
-    private inner class RestoreObserver(
-        private val continuation: Continuation<RestoreSetResult>? = null
-    ) : IRestoreObserver.Stub() {
+    private inner class RestoreObserver(private val startRestore: (RestoreObserver) -> Unit) :
+        IRestoreObserver.Stub() {
 
         /**
          * Supply a list of the restore datasets available from the current transport.
@@ -311,39 +305,7 @@ internal class RestoreViewModel(
          *   the current device. If no applicable datasets exist, restoreSets will be null.
          */
         override fun restoreSetsAvailable(restoreSets: Array<out RestoreSet>?) {
-            check(continuation != null) { "Getting restore sets without continuation" }
-
-            val result = if (restoreSets == null || restoreSets.isEmpty()) {
-                RestoreSetResult(app.getString(R.string.restore_set_empty_result))
-            } else {
-                val backupMetadata = restoreCoordinator.getAndClearBackupMetadata()
-                if (backupMetadata == null) {
-                    Log.e(TAG, "RestoreCoordinator#getAndClearBackupMetadata() returned null")
-                    RestoreSetResult(app.getString(R.string.restore_set_error))
-                } else {
-                    val restorableBackups = restoreSets.mapNotNull { set ->
-                        getRestorableBackup(set, backupMetadata[set.token])
-                    }
-                    if (restorableBackups.isEmpty()) {
-                        RestoreSetResult(app.getString(R.string.restore_set_empty_result))
-                    } else RestoreSetResult(restorableBackups)
-                }
-            }
-            continuation.resume(result)
-        }
-
-        private fun getRestorableBackup(set: RestoreSet, metadata: BackupMetadata?) = when {
-            metadata == null -> {
-                Log.e(TAG, "No metadata for token ${set.token}.")
-                null
-            }
-            metadata.time == 0L -> {
-                Log.d(TAG, "Ignoring RestoreSet with no last backup time: ${set.token}.")
-                null
-            }
-            else -> {
-                RestorableBackup(set, metadata)
-            }
+            startRestore(this)
         }
 
         /**
