@@ -54,16 +54,9 @@ internal class RestoreCoordinator(
     private var backupMetadata: LongSparseArray<BackupMetadata>? = null
     private val failedPackages = ArrayList<String>()
 
-    /**
-     * Get the set of all backups currently available over this transport.
-     *
-     * @return Descriptions of the set of restore images available for this device,
-     *   or null if an error occurred (the attempt should be rescheduled).
-     **/
-    suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
+    suspend fun getAvailableMetadata(): Map<Long, BackupMetadata>? {
         val availableBackups = plugin.getAvailableBackups() ?: return null
-        val restoreSets = ArrayList<RestoreSet>()
-        val metadataMap = LongSparseArray<BackupMetadata>()
+        val metadataMap = HashMap<Long, BackupMetadata>()
         for (encryptedMetadata in availableBackups) {
             if (encryptedMetadata.error) continue
             check(encryptedMetadata.inputStream != null) {
@@ -74,9 +67,7 @@ internal class RestoreCoordinator(
                     encryptedMetadata.inputStream,
                     encryptedMetadata.token
                 )
-                metadataMap.put(encryptedMetadata.token, metadata)
-                val set = RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
-                restoreSets.add(set)
+                metadataMap[encryptedMetadata.token] = metadata
             } catch (e: IOException) {
                 Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
                 continue
@@ -93,9 +84,20 @@ internal class RestoreCoordinator(
                 closeQuietly(encryptedMetadata.inputStream)
             }
         }
-        Log.i(TAG, "Got available restore sets: $restoreSets")
-        this.backupMetadata = metadataMap
-        return restoreSets.toTypedArray()
+        Log.i(TAG, "Got available metadata for tokens: ${metadataMap.keys}")
+        return metadataMap
+    }
+
+    /**
+     * Get the set of all backups currently available over this transport.
+     *
+     * @return Descriptions of the set of restore images available for this device,
+     *   or null if an error occurred (the attempt should be rescheduled).
+     **/
+    suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
+        return getAvailableMetadata()?.map { (_, metadata) ->
+            RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
+        }?.toTypedArray()
     }
 
     /**
@@ -211,7 +213,8 @@ internal class RestoreCoordinator(
         } catch (e: IOException) {
             Log.e(TAG, "Error finding restore data for $packageName.", e)
             failedPackages.add(packageName)
-            return null
+            // don't return null and cause abort here, but try next package
+            return nextRestorePackage()
         }
         return RestoreDescription(packageName, type)
     }
