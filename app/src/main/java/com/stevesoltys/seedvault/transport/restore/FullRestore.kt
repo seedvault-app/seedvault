@@ -20,10 +20,10 @@ import java.io.OutputStream
 import java.security.GeneralSecurityException
 
 private class FullRestoreState(
+    val version: Byte,
     val token: Long,
     val packageInfo: PackageInfo
 ) {
-    var version: Byte? = null
     var inputStream: InputStream? = null
 }
 
@@ -55,8 +55,8 @@ internal class FullRestore(
      * It is possible that the system decides to not restore the package.
      * Then a new state will be initialized right away without calling other methods.
      */
-    fun initializeState(token: Long, packageInfo: PackageInfo) {
-        state = FullRestoreState(token, packageInfo)
+    fun initializeState(version: Byte, token: Long, packageInfo: PackageInfo) {
+        state = FullRestoreState(version, token, packageInfo)
     }
 
     /**
@@ -94,8 +94,7 @@ internal class FullRestore(
             Log.i(TAG, "First Chunk, initializing package input stream.")
             try {
                 val inputStream = plugin.getInputStreamForPackage(state.token, state.packageInfo)
-                val version = headerReader.readVersion(inputStream)
-                state.version = version
+                val version = headerReader.readVersion(inputStream, state.version)
                 if (version == 0.toByte()) {
                     crypto.decryptHeader(inputStream, version, packageName)
                     state.inputStream = inputStream
@@ -132,9 +131,8 @@ internal class FullRestore(
     private fun copyInputStream(outputStream: OutputStream): Int {
         val state = this.state ?: throw IllegalStateException("no state")
         val inputStream = state.inputStream ?: throw IllegalStateException("no stream")
-        val version = state.version ?: throw IllegalStateException("no version")
 
-        if (version == 0.toByte()) {
+        if (state.version == 0.toByte()) {
             // read segment from input stream and decrypt it
             val decrypted = try {
                 crypto.decryptSegment(inputStream)

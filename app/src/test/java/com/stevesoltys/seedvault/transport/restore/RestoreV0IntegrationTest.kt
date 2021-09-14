@@ -61,7 +61,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         kvRestore,
         fullRestore,
         metadataReader
-    ).apply { beforeStartRestore(metadata) }
+    ).apply { beforeStartRestore(metadata.copy(version = 0x00)) }
 
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
     private val appData = ("562AB665C3543120FC794D7CDA3AC18E5959235A4D" +

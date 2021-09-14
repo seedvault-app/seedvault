@@ -54,7 +54,7 @@ internal class FullRestoreTest : RestoreTest() {
     @Test
     fun `initializing state leaves a state`() {
         assertFalse(restore.hasState())
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
         assertTrue(restore.hasState())
     }
 
@@ -68,7 +68,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `getting InputStream for package when getting first chunk throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } throws IOException()
         every { fileDescriptor.close() } just Runs
@@ -81,10 +81,10 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `reading version header when getting first chunk throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } throws IOException()
+        every { headerReader.readVersion(inputStream, VERSION) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
@@ -95,11 +95,11 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `reading unsupported version when getting first chunk`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
         every {
-            headerReader.readVersion(inputStream)
+            headerReader.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(unsupportedVersion)
         every { fileDescriptor.close() } just Runs
 
@@ -111,10 +111,10 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `getting decrypted stream when getting first chunk throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
@@ -127,10 +127,10 @@ internal class FullRestoreTest : RestoreTest() {
     @Test
     fun `getting decrypted stream when getting first chunk throws general security exception`() =
         runBlocking {
-            restore.initializeState(token, packageInfo)
+            restore.initializeState(VERSION, token, packageInfo)
 
             coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-            every { headerReader.readVersion(inputStream) } returns VERSION
+            every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
             every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
             every { fileDescriptor.close() } just Runs
 
@@ -139,7 +139,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `full chunk gets decrypted`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         initInputStream()
         readAndEncryptInputStream(encrypted)
@@ -153,10 +153,10 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `full chunk gets decrypted from version 0`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(0.toByte(), token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns 0.toByte()
+        every { headerReader.readVersion(inputStream, 0.toByte()) } returns 0.toByte()
         every {
             crypto.decryptHeader(inputStream, 0.toByte(), packageInfo.packageName)
         } returns VersionHeader(0.toByte(), packageInfo.packageName)
@@ -173,13 +173,29 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
+    fun `unexpected version aborts with error`() = runBlocking {
+        restore.initializeState(Byte.MAX_VALUE, token, packageInfo)
+
+        coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        every {
+            headerReader.readVersion(inputStream, Byte.MAX_VALUE)
+        } throws GeneralSecurityException()
+        every { inputStream.close() } just Runs
+        every { fileDescriptor.close() } just Runs
+
+        assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        restore.abortFullRestore()
+        assertFalse(restore.hasState())
+    }
+
+    @Test
     fun `three full chunk get decrypted and then return no more data`() = runBlocking {
         val encryptedBytes = Random.nextBytes(MAX_SEGMENT_LENGTH * 2 + 1)
         val decryptedInputStream = ByteArrayInputStream(encryptedBytes)
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         every { fileDescriptor.close() } just Runs
@@ -197,7 +213,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `aborting full restore closes stream, resets state`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         initInputStream()
         readAndEncryptInputStream(encrypted)
@@ -212,7 +228,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     private fun initInputStream() {
         coEvery { plugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
     }
 

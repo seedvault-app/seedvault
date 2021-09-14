@@ -26,7 +26,7 @@ internal class HeaderReaderTest {
         val input = byteArrayOf(VERSION)
         val inputStream = ByteArrayInputStream(input)
 
-        assertEquals(VERSION, reader.readVersion(inputStream))
+        assertEquals(VERSION, reader.readVersion(inputStream, VERSION))
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class HeaderReaderTest {
         val input = ByteArray(0)
         val inputStream = ByteArrayInputStream(input)
         assertThrows(IOException::class.javaObjectType) {
-            reader.readVersion(inputStream)
+            reader.readVersion(inputStream, VERSION)
         }
     }
 
@@ -43,7 +43,7 @@ internal class HeaderReaderTest {
         val input = byteArrayOf((VERSION + 1).toByte())
         val inputStream = ByteArrayInputStream(input)
         assertThrows(UnsupportedVersionException::class.javaObjectType) {
-            reader.readVersion(inputStream)
+            reader.readVersion(inputStream, VERSION)
         }
     }
 
@@ -52,7 +52,7 @@ internal class HeaderReaderTest {
         val input = byteArrayOf((-1).toByte())
         val inputStream = ByteArrayInputStream(input)
         assertThrows(IOException::class.javaObjectType) {
-            reader.readVersion(inputStream)
+            reader.readVersion(inputStream, VERSION)
         }
     }
 
@@ -61,7 +61,16 @@ internal class HeaderReaderTest {
         val input = byteArrayOf(Byte.MAX_VALUE)
         val inputStream = ByteArrayInputStream(input)
         assertThrows(UnsupportedVersionException::class.javaObjectType) {
-            reader.readVersion(inputStream)
+            reader.readVersion(inputStream, Byte.MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `unexpected version throws exception`() {
+        val input = byteArrayOf(VERSION + 1)
+        val inputStream = ByteArrayInputStream(input)
+        assertThrows(UnsupportedVersionException::class.javaObjectType) {
+            reader.readVersion(inputStream, VERSION)
         }
     }
 

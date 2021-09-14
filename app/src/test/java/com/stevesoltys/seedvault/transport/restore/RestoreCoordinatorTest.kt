@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
@@ -213,7 +214,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(token, packageInfo) } just Runs
+        every { kv.initializeState(VERSION, token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -226,7 +227,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo) } returns true
-        every { full.initializeState(token, packageInfo) } just Runs
+        every { full.initializeState(VERSION, token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_FULL_STREAM)
         assertEquals(expected, restore.nextRestorePackage())
@@ -249,14 +250,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray2)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(token, packageInfo) } just Runs
+        every { kv.initializeState(VERSION, token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
         coEvery { kv.hasDataForPackage(token, packageInfo2) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo2) } returns true
-        every { full.initializeState(token, packageInfo2) } just Runs
+        every { full.initializeState(VERSION, token, packageInfo2) } just Runs
 
         val expected2 = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
         assertEquals(expected2, restore.nextRestorePackage())
