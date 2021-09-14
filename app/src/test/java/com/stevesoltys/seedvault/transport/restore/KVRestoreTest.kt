@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.io.InputStream
+import java.security.GeneralSecurityException
 import kotlin.random.Random
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -60,7 +61,7 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `listing records throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         coEvery { plugin.listRecords(token, packageInfo) } throws IOException()
 
@@ -69,12 +70,12 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `reading VersionHeader with unsupported version throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
         every {
-            headerReader.readVersion(inputStream)
+            headerReader.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(unsupportedVersion)
         streamsGetClosed()
 
@@ -84,11 +85,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `error reading VersionHeader throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } throws IOException()
+        every { headerReader.readVersion(inputStream, VERSION) } throws IOException()
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -97,11 +98,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `decrypting stream throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } throws IOException()
         streamsGetClosed()
 
@@ -111,11 +112,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `decrypting stream throws security exception`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } throws SecurityException()
         streamsGetClosed()
 
@@ -125,11 +126,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `writing header throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { decryptedInputStream.readBytes() } returns data
         every { output.writeEntityHeader(key, data.size) } throws IOException()
@@ -141,11 +142,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `writing value throws`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { decryptedInputStream.readBytes() } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
@@ -158,11 +159,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `writing value succeeds`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { decryptedInputStream.readBytes() } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
@@ -175,11 +176,11 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `writing value uses old v0 code`() = runBlocking {
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(0.toByte(), token, packageInfo)
 
         getRecordsAndOutput()
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns 0.toByte()
+        every { headerReader.readVersion(inputStream, 0.toByte()) } returns 0.toByte()
         every {
             crypto.decryptHeader(inputStream, 0.toByte(), packageInfo.packageName, key)
         } returns VersionHeader(VERSION, packageInfo.packageName, key)
@@ -193,23 +194,38 @@ internal class KVRestoreTest : RestoreTest() {
     }
 
     @Test
+    fun `unexpected version aborts with error`() = runBlocking {
+        restore.initializeState(Byte.MAX_VALUE, token, packageInfo)
+
+        getRecordsAndOutput()
+        coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
+        every {
+            headerReader.readVersion(inputStream, Byte.MAX_VALUE)
+        } throws GeneralSecurityException()
+        streamsGetClosed()
+
+        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
+        verifyStreamWasClosed()
+    }
+
+    @Test
     fun `writing two values succeeds`() = runBlocking {
         val data2 = getRandomByteArray()
         val inputStream2 = mockk<InputStream>()
         val decryptedInputStream2 = mockk<InputStream>()
-        restore.initializeState(token, packageInfo)
+        restore.initializeState(VERSION, token, packageInfo)
 
         getRecordsAndOutput(listOf(key64, key264))
         // first key/value
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key64) } returns inputStream
-        every { headerReader.readVersion(inputStream) } returns VERSION
+        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { decryptedInputStream.readBytes() } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
         // second key/value
         coEvery { plugin.getInputStreamForRecord(token, packageInfo, key264) } returns inputStream2
-        every { headerReader.readVersion(inputStream2) } returns VERSION
+        every { headerReader.readVersion(inputStream2, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream2, ad) } returns decryptedInputStream2
         every { decryptedInputStream2.readBytes() } returns data2
         every { output.writeEntityHeader(key2, data2.size) } returns 42

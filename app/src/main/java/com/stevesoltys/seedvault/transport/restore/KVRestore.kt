@@ -17,10 +17,12 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
+import java.security.GeneralSecurityException
 import java.util.ArrayList
 import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
+    val version: Byte,
     val token: Long,
     val packageInfo: PackageInfo,
     /**
@@ -57,8 +59,13 @@ internal class KVRestore(
      *
      * @param pmPackageInfo single optional [PackageInfo] to optimize restore of @pm@
      */
-    fun initializeState(token: Long, packageInfo: PackageInfo, pmPackageInfo: PackageInfo? = null) {
-        state = KVRestoreState(token, packageInfo, pmPackageInfo)
+    fun initializeState(
+        version: Byte,
+        token: Long,
+        packageInfo: PackageInfo,
+        pmPackageInfo: PackageInfo? = null
+    ) {
+        state = KVRestoreState(version, token, packageInfo, pmPackageInfo)
     }
 
     /**
@@ -97,6 +104,9 @@ internal class KVRestore(
             TRANSPORT_ERROR
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception while reading backup records", e)
+            TRANSPORT_ERROR
+        } catch (e: GeneralSecurityException) {
+            Log.e(TAG, "General security exception while reading backup records", e)
             TRANSPORT_ERROR
         } catch (e: UnsupportedVersionException) {
             Log.e(TAG, "Unsupported version in backup: ${e.version}", e)
@@ -140,14 +150,14 @@ internal class KVRestore(
     /**
      * Read the encrypted value for the given key and write it to the given [BackupDataOutput].
      */
-    @Throws(IOException::class, UnsupportedVersionException::class, SecurityException::class)
+    @Throws(IOException::class, UnsupportedVersionException::class, GeneralSecurityException::class)
     private suspend fun readAndWriteValue(
         state: KVRestoreState,
         dKey: DecodedKey,
         out: BackupDataOutput
     ) = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
         .use { inputStream ->
-            val version = headerReader.readVersion(inputStream)
+            val version = headerReader.readVersion(inputStream, state.version)
             val packageName = state.packageInfo.packageName
             val value = if (version == 0.toByte()) {
                 crypto.decryptHeader(inputStream, version, packageName, dKey.key)

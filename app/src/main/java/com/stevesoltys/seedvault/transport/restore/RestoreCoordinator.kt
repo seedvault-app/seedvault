@@ -200,6 +200,7 @@ internal class RestoreCoordinator(
         val state = this.state ?: throw IllegalStateException("no state")
 
         if (!state.packages.hasNext()) return NO_MORE_PACKAGES
+        val version = state.backupMetadata.version
         val packageInfo = state.packages.next()
         val packageName = packageInfo.packageName
 
@@ -208,13 +209,13 @@ internal class RestoreCoordinator(
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(state.token, packageInfo, state.pmPackageInfo)
+                    kv.initializeState(version, state.token, packageInfo, state.pmPackageInfo)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
-                    full.initializeState(state.token, packageInfo)
+                    full.initializeState(version, state.token, packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }

@@ -5,10 +5,11 @@ import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
+import java.security.GeneralSecurityException
 
 internal interface HeaderReader {
     @Throws(IOException::class, UnsupportedVersionException::class)
-    fun readVersion(inputStream: InputStream): Byte
+    fun readVersion(inputStream: InputStream, expectedVersion: Byte): Byte
 
     @Deprecated("")
     @Throws(SecurityException::class)
@@ -21,11 +22,14 @@ internal interface HeaderReader {
 
 internal class HeaderReaderImpl : HeaderReader {
 
-    @Throws(IOException::class, UnsupportedVersionException::class)
-    override fun readVersion(inputStream: InputStream): Byte {
+    @Throws(IOException::class, UnsupportedVersionException::class, GeneralSecurityException::class)
+    override fun readVersion(inputStream: InputStream, expectedVersion: Byte): Byte {
         val version = inputStream.read().toByte()
         if (version < 0) throw IOException()
         if (version > VERSION) throw UnsupportedVersionException(version)
+        if (expectedVersion != version) throw GeneralSecurityException(
+            "Expected version ${expectedVersion.toInt()}, but got ${version.toInt()}"
+        )
         return version
     }
 
