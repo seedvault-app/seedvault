@@ -2,7 +2,6 @@ package com.stevesoltys.seedvault.transport.restore
 
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
-import android.app.backup.IBackupManager
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.NO_MORE_PACKAGES
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
@@ -12,7 +11,6 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import androidx.collection.LongSparseArray
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
@@ -31,7 +29,8 @@ private data class RestoreCoordinatorState(
     /**
      * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
      */
-    val pmPackageInfo: PackageInfo?
+    val pmPackageInfo: PackageInfo?,
+    val backupMetadata: BackupMetadata
 ) {
     var currentPackage: String? = null
 }
@@ -51,7 +50,7 @@ internal class RestoreCoordinator(
 ) {
 
     private var state: RestoreCoordinatorState? = null
-    private var backupMetadata: LongSparseArray<BackupMetadata>? = null
+    private var backupMetadata: BackupMetadata? = null
     private val failedPackages = ArrayList<String>()
 
     suspend fun getAvailableMetadata(): Map<Long, BackupMetadata>? {
@@ -114,18 +113,26 @@ internal class RestoreCoordinator(
     }
 
     /**
+     * Call this before starting the restore as an optimization to prevent re-fetching metadata.
+     */
+    fun beforeStartRestore(backupMetadata: BackupMetadata) {
+        this.backupMetadata = backupMetadata
+    }
+
+    /**
      * Start restoring application data from backup.
      * After calling this function,
      * there will be alternate calls to [nextRestorePackage] and [getRestoreData]
      * to walk through the actual application data.
      *
-     * @param token A backup token as returned by [getAvailableRestoreSets] or [getCurrentRestoreSet].
+     * @param token A backup token as returned by [getAvailableRestoreSets]
+     * or [getCurrentRestoreSet].
      * @param packages List of applications to restore (if data is available).
      * Application data will be restored in the order given.
      * @return One of [TRANSPORT_OK] (OK so far, call [nextRestorePackage])
      * or [TRANSPORT_ERROR] (an error occurred, the restore should be aborted and rescheduled).
      */
-    fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
+    suspend fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
         check(state == null) { "Started new restore with existing state: $state" }
         Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
 
@@ -151,7 +158,13 @@ internal class RestoreCoordinator(
                 packages[1]
             } else null
 
-        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo)
+        val metadata = if (backupMetadata?.token == token) {
+            backupMetadata!! // if token matches, backupMetadata is non-null
+        } else {
+            getAvailableMetadata()?.get(token) ?: return TRANSPORT_ERROR
+        }
+        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo, metadata)
+        backupMetadata = null
         failedPackages.clear()
         return TRANSPORT_OK
     }
@@ -267,18 +280,6 @@ internal class RestoreCoordinator(
         Log.d(TAG, "finishRestore")
         if (full.hasState()) full.finishRestore()
         state = null
-    }
-
-    /**
-     * Call this after calling [IBackupManager.getAvailableRestoreTokenForUser]
-     * to retrieve additional [BackupMetadata] that is not available in [RestoreSet].
-     *
-     * It will also clear the saved metadata, so that subsequent calls will return null.
-     */
-    fun getAndClearBackupMetadata(): LongSparseArray<BackupMetadata>? {
-        val result = backupMetadata
-        backupMetadata = null
-        return result
     }
 
     fun isFailedPackage(packageName: String) = packageName in failedPackages

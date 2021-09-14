@@ -10,6 +10,8 @@ import android.util.Log
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
@@ -41,6 +43,12 @@ internal abstract class TransportTest {
     protected val pmPackageInfo = PackageInfo().apply {
         packageName = MAGIC_PACKAGE_MANAGER
     }
+    protected val metadata = BackupMetadata(
+        token = token,
+        androidVersion = Random.nextInt(),
+        androidIncremental = getRandomString(),
+        deviceName = getRandomString()
+    )
 
     init {
         mockkStatic(Log::class)

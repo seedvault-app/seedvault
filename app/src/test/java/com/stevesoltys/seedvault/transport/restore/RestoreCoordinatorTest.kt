@@ -10,7 +10,6 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
@@ -26,7 +25,6 @@ import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -69,18 +67,13 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
         val encryptedMetadata = EncryptedBackupMetadata(token, inputStream)
-        val metadata = BackupMetadata(
-            token = token,
-            androidVersion = Random.nextInt(),
-            androidIncremental = getRandomString(),
-            deviceName = getRandomString()
-        )
 
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
             encryptedMetadata,
-            encryptedMetadata
+            EncryptedBackupMetadata(token + 1, inputStream)
         )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
+        every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
         every { inputStream.close() } just Runs
 
         val sets = restore.getAvailableRestoreSets() ?: fail()
@@ -97,68 +90,102 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `startRestore() returns OK`() {
+    fun `startRestore() returns OK`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
     }
 
     @Test
-    fun `startRestore() can not be called twice`() {
+    fun `startRestore() fetches metadata if missing`() = runBlocking {
+        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+            EncryptedBackupMetadata(token, inputStream),
+            EncryptedBackupMetadata(token + 1, inputStream)
+        )
+        every { metadataReader.readMetadata(inputStream, token) } returns metadata
+        every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
+        every { inputStream.close() } just Runs
+
+        assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
+    }
+
+    @Test
+    fun `startRestore() errors if metadata is not matching token`() = runBlocking {
+        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+            EncryptedBackupMetadata(token + 42, inputStream)
+        )
+        every { metadataReader.readMetadata(inputStream, token + 42) } returns metadata
+        every { inputStream.close() } just Runs
+
+        assertEquals(TRANSPORT_ERROR, restore.startRestore(token, packageInfoArray))
+    }
+
+    @Test
+    fun `startRestore() can not be called twice`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
         assertThrows(IllegalStateException::class.javaObjectType) {
-            restore.startRestore(token, packageInfoArray)
+            runBlocking {
+                restore.startRestore(token, packageInfoArray)
+            }
         }
+        Unit
     }
 
     @Test
-    fun `startRestore() can be be called again after restore finished`() {
+    fun `startRestore() can be be called again after restore finished`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
 
         every { full.hasState() } returns false
         restore.finishRestore()
 
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
     }
 
     @Test
-    fun `startRestore() optimized auto-restore with removed storage shows notification`() {
-        every { settingsManager.getStorage() } returns storage
-        every { storage.isUnavailableUsb(context) } returns true
-        every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
-        every { storage.name } returns storageName
-        every {
-            notificationManager.onRemovableStorageNotAvailableForRestore(
-                packageName,
-                storageName
-            )
-        } just Runs
+    fun `startRestore() optimized auto-restore with removed storage shows notification`() =
+        runBlocking {
+            every { settingsManager.getStorage() } returns storage
+            every { storage.isUnavailableUsb(context) } returns true
+            every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
+            every { storage.name } returns storageName
+            every {
+                notificationManager.onRemovableStorageNotAvailableForRestore(
+                    packageName,
+                    storageName
+                )
+            } just Runs
 
-        assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
+            assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
 
-        verify(exactly = 1) {
-            notificationManager.onRemovableStorageNotAvailableForRestore(
-                packageName,
-                storageName
-            )
+            verify(exactly = 1) {
+                notificationManager.onRemovableStorageNotAvailableForRestore(
+                    packageName,
+                    storageName
+                )
+            }
         }
-    }
 
     @Test
-    fun `startRestore() optimized auto-restore with available storage shows no notification`() {
-        every { settingsManager.getStorage() } returns storage
-        every { storage.isUnavailableUsb(context) } returns false
+    fun `startRestore() optimized auto-restore with available storage shows no notification`() =
+        runBlocking {
+            every { settingsManager.getStorage() } returns storage
+            every { storage.isUnavailableUsb(context) } returns false
 
-        assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
+            restore.beforeStartRestore(metadata)
+            assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
 
-        verify(exactly = 0) {
-            notificationManager.onRemovableStorageNotAvailableForRestore(
-                packageName,
-                storageName
-            )
+            verify(exactly = 0) {
+                notificationManager.onRemovableStorageNotAvailableForRestore(
+                    packageName,
+                    storageName
+                )
+            }
         }
-    }
 
     @Test
-    fun `startRestore() with removed storage shows no notification`() {
+    fun `startRestore() with removed storage shows no notification`() = runBlocking {
         every { settingsManager.getStorage() } returns storage
         every { storage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
@@ -182,6 +209,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `nextRestorePackage() returns KV description and takes precedence`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
@@ -193,6 +221,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `nextRestorePackage() returns full description if no KV data found`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
@@ -205,6 +234,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `nextRestorePackage() returns NO_MORE_PACKAGES if data found`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
@@ -215,6 +245,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `nextRestorePackage() returns all packages from startRestore()`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
@@ -234,22 +265,24 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `when kv#hasDataForPackage() throws return null`() = runBlocking {
+    fun `when kv#hasDataForPackage() throws, it tries next package`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } throws IOException()
 
-        assertNull(restore.nextRestorePackage())
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
     }
 
     @Test
-    fun `when full#hasDataForPackage() throws return null`() = runBlocking {
+    fun `when full#hasDataForPackage() throws, it tries next package`() = runBlocking {
+        restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo) } throws IOException()
 
-        assertNull(restore.nextRestorePackage())
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
     }
 
     @Test
