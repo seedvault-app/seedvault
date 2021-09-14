@@ -204,8 +204,8 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return restoreCoordinator.getCurrentRestoreSet()
     }
 
-    override fun startRestore(token: Long, packages: Array<PackageInfo>): Int {
-        return restoreCoordinator.startRestore(token, packages)
+    override fun startRestore(token: Long, packages: Array<PackageInfo>): Int = runBlocking {
+        restoreCoordinator.startRestore(token, packages)
     }
 
     override fun getNextFullRestoreDataChunk(socket: ParcelFileDescriptor): Int = runBlocking {

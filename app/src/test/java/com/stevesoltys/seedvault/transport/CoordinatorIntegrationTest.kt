@@ -181,6 +181,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
@@ -251,6 +252,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
@@ -311,6 +313,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
+        restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data only for full backup

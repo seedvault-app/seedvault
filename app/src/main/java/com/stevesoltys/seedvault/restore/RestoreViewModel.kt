@@ -148,6 +148,7 @@ internal class RestoreViewModel(
     }
 
     override fun onRestorableBackupClicked(restorableBackup: RestorableBackup) {
+        restoreCoordinator.beforeStartRestore(restorableBackup.backupMetadata)
         mChosenRestorableBackup.value = restorableBackup
         mDisplayFragment.setEvent(RESTORE_APPS)
     }
