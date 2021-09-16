@@ -310,7 +310,9 @@ internal class BackupCoordinator(
         flags: Int
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
-        return full.performFullBackup(targetPackage, fileDescriptor, flags)
+        val token = settingsManager.getToken() ?: error("no token in performFullBackup")
+        val salt = metadataManager.salt
+        return full.performFullBackup(targetPackage, fileDescriptor, flags, token, salt)
     }
 
     suspend fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
@@ -336,7 +338,9 @@ internal class BackupCoordinator(
                 " because of ${state.cancelReason}"
         )
         onPackageBackupError(packageInfo, BackupType.FULL)
-        full.cancelFullBackup()
+        val token = settingsManager.getToken() ?: error("no token in cancelFullBackup")
+        val salt = metadataManager.salt
+        full.cancelFullBackup(token, salt)
     }
 
     // Clear and Finish
@@ -353,6 +357,8 @@ internal class BackupCoordinator(
     suspend fun clearBackupData(packageInfo: PackageInfo): Int {
         val packageName = packageInfo.packageName
         Log.i(TAG, "Clear Backup Data of $packageName.")
+        val token = settingsManager.getToken() ?: error("no token in clearBackupData")
+        val salt = metadataManager.salt
         try {
             kv.clearBackupData(packageInfo)
         } catch (e: IOException) {
@@ -360,7 +366,7 @@ internal class BackupCoordinator(
             return TRANSPORT_ERROR
         }
         try {
-            full.clearBackupData(packageInfo)
+            full.clearBackupData(packageInfo, token, salt)
         } catch (e: IOException) {
             Log.w(TAG, "Error clearing full backup data for $packageName", e)
             return TRANSPORT_ERROR

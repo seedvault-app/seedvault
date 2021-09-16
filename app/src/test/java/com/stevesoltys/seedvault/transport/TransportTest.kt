@@ -58,6 +58,7 @@ internal abstract class TransportTest {
             put(packageInfo.packageName, PackageMetadata(backupType = BackupType.KV))
         }
     )
+    protected val salt = metadata.salt
     protected val name = getRandomString(12)
     protected val name2 = getRandomString(23)
 

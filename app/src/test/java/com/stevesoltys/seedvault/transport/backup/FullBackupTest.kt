@@ -23,7 +23,7 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackupTest : BackupTest() {
 
-    private val plugin = mockk<FullBackupPlugin>()
+    private val plugin = mockk<BackupPlugin>()
     private val backup = FullBackup(plugin, settingsManager, inputFactory, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
@@ -38,9 +38,8 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `checkFullBackupSize exceeds quota`() {
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
 
-        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.checkFullBackupSize(quota + 1))
+        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1))
     }
 
     @Test
@@ -63,7 +62,6 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `checkFullBackupSize accepts min data`() {
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(1))
     }
@@ -71,7 +69,6 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `checkFullBackupSize accepts max data`() {
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(quota))
     }
@@ -81,7 +78,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
@@ -96,7 +93,7 @@ internal class FullBackupTest : BackupTest() {
         expectSendData(numBytes)
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.sendBackupData(numBytes))
         assertTrue(backup.hasState())
@@ -115,7 +112,7 @@ internal class FullBackupTest : BackupTest() {
         expectSendData(numBytes2)
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes1))
         assertTrue(backup.hasState())
@@ -130,12 +127,11 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
         every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState())
@@ -148,11 +144,11 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
 
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
-        coEvery { plugin.getOutputStream(packageInfo) } throws IOException()
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.getOutputStream(token, name) } throws IOException()
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState())
@@ -165,13 +161,13 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
 
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { plugin.getQuota() } returns quota
-        coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.getOutputStream(token, name) } returns outputStream
         every { inputFactory.getInputStream(data) } returns inputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState())
@@ -185,13 +181,12 @@ internal class FullBackupTest : BackupTest() {
             every { inputFactory.getInputStream(data) } returns inputStream
             expectInitializeOutputStream()
             every { settingsManager.isQuotaUnlimited() } returns false
-            every { plugin.getQuota() } returns quota
             every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
             every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
             every { encryptedOutputStream.write(any<ByteArray>()) } throws IOException()
             expectClearState()
 
-            assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+            assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
             assertTrue(backup.hasState())
             assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
             assertTrue(backup.hasState())
@@ -210,7 +205,7 @@ internal class FullBackupTest : BackupTest() {
         expectSendData(numBytes2)
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes1))
         assertTrue(backup.hasState())
@@ -222,9 +217,10 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `clearBackupData delegates to plugin`() = runBlocking {
-        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.removeData(token, name) } just Runs
 
-        backup.clearBackupData(packageInfo)
+        backup.clearBackupData(packageInfo, token, salt)
     }
 
     @Test
@@ -232,11 +228,12 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         expectClearState()
-        coEvery { plugin.removeDataOfPackage(packageInfo) } just Runs
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.removeData(token, name) } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
-        backup.cancelFullBackup()
+        backup.cancelFullBackup(token, salt)
         assertFalse(backup.hasState())
     }
 
@@ -245,11 +242,12 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         expectClearState()
-        coEvery { plugin.removeDataOfPackage(packageInfo) } throws IOException()
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.removeData(token, name) } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
-        backup.cancelFullBackup()
+        backup.cancelFullBackup(token, salt)
         assertFalse(backup.hasState())
     }
 
@@ -262,7 +260,7 @@ internal class FullBackupTest : BackupTest() {
         expectSendData(numBytes)
         every { encryptedOutputStream.flush() } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes))
         assertEquals(TRANSPORT_ERROR, backup.finishBackup())
@@ -278,7 +276,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputStream.close() } just Runs
         every { data.close() } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
@@ -293,7 +291,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputStream.close() } throws IOException()
         every { data.close() } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
@@ -308,19 +306,19 @@ internal class FullBackupTest : BackupTest() {
         every { inputStream.close() } just Runs
         every { data.close() } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data))
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
     }
 
     private fun expectInitializeOutputStream() {
-        coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        coEvery { plugin.getOutputStream(token, name) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
     }
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {
-        every { plugin.getQuota() } returns quota
         every { inputStream.read(any(), any(), numBytes) } returns readBytes
         every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
         every { encryptedOutputStream.write(any<ByteArray>()) } just Runs

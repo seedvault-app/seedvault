@@ -219,6 +219,9 @@ internal class MetadataManager(
     private val mLastBackupTime = MutableLiveData<Long>()
     internal val lastBackupTime: LiveData<Long> = mLastBackupTime.distinctUntilChanged()
 
+    internal val salt: String
+        @Synchronized get() = metadata.salt
+
     internal val isLegacyFormat: Boolean
         @Synchronized get() = metadata.version < VERSION
 

@@ -220,6 +220,8 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `clearing KV backup data throws`() = runBlocking {
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
         coEvery { kv.clearBackupData(packageInfo) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
@@ -227,16 +229,20 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `clearing full backup data throws`() = runBlocking {
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
         coEvery { kv.clearBackupData(packageInfo) } just Runs
-        coEvery { full.clearBackupData(packageInfo) } throws IOException()
+        coEvery { full.clearBackupData(packageInfo, token, salt) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
     }
 
     @Test
     fun `clearing backup data succeeds`() = runBlocking {
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
         coEvery { kv.clearBackupData(packageInfo) } just Runs
-        coEvery { full.clearBackupData(packageInfo) } just Runs
+        coEvery { full.clearBackupData(packageInfo, token, salt) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.clearBackupData(packageInfo))
 
@@ -288,7 +294,11 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `metadata does not get updated when no APK was backed up`() = runBlocking {
-        coEvery { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
+        coEvery {
+            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+        } returns TRANSPORT_OK
         coEvery { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
@@ -296,7 +306,11 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `app exceeding quota gets cancelled and reason written to metadata`() = runBlocking {
-        coEvery { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
+        coEvery {
+            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+        } returns TRANSPORT_OK
         expectApkBackupAndMetadataWrite()
         every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         every {
@@ -311,7 +325,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup() } just Runs
+        coEvery { full.cancelFullBackup(token, metadata.salt) } just Runs
         every { settingsManager.getStorage() } returns storage
         every { metadataOutputStream.close() } just Runs
 
@@ -343,7 +357,11 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `app with no data gets cancelled and reason written to metadata`() = runBlocking {
-        coEvery { full.performFullBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
+        coEvery {
+            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+        } returns TRANSPORT_OK
         expectApkBackupAndMetadataWrite()
         every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
         every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
@@ -356,7 +374,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup() } just Runs
+        coEvery { full.cancelFullBackup(token, metadata.salt) } just Runs
         every { settingsManager.getStorage() } returns storage
         every { metadataOutputStream.close() } just Runs
 
