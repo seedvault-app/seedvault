@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.crypto
 
 import com.google.crypto.tink.subtle.AesGcmHkdfStreaming
+import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.MAX_VERSION_HEADER_SIZE
@@ -13,6 +14,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.GeneralSecurityException
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import javax.crypto.spec.SecretKeySpec
 
@@ -38,6 +41,10 @@ internal interface Crypto {
      * Returns a ByteArray with bytes retrieved from [SecureRandom].
      */
     fun getRandomBytes(size: Int): ByteArray
+
+    fun getNameForPackage(salt: String, packageName: String): String
+
+    fun getNameForApk(salt: String, packageName: String, suffix: String = ""): String
 
     /**
      * Returns a [AesGcmHkdfStreaming] encrypting stream
@@ -117,6 +124,24 @@ internal class CryptoImpl(
 
     override fun getRandomBytes(size: Int) = ByteArray(size).apply {
         secureRandom.nextBytes(this)
+    }
+
+    override fun getNameForPackage(salt: String, packageName: String): String {
+        return sha256("$salt$packageName".toByteArray()).encodeBase64()
+    }
+
+    override fun getNameForApk(salt: String, packageName: String, suffix: String): String {
+        return sha256("${salt}APK$packageName$suffix".toByteArray()).encodeBase64()
+    }
+
+    private fun sha256(bytes: ByteArray): ByteArray {
+        val messageDigest: MessageDigest = try {
+            MessageDigest.getInstance("SHA-256")
+        } catch (e: NoSuchAlgorithmException) {
+            throw AssertionError(e)
+        }
+        messageDigest.update(bytes)
+        return messageDigest.digest()
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
