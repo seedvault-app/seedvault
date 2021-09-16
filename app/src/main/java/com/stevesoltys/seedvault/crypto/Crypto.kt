@@ -13,6 +13,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.GeneralSecurityException
+import java.security.SecureRandom
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -32,6 +33,11 @@ import javax.crypto.spec.SecretKeySpec
  * if the length of the segment is specified larger than allowed.
  */
 internal interface Crypto {
+
+    /**
+     * Returns a ByteArray with bytes retrieved from [SecureRandom].
+     */
+    fun getRandomBytes(size: Int): ByteArray
 
     /**
      * Returns a [AesGcmHkdfStreaming] encrypting stream
@@ -106,6 +112,11 @@ internal class CryptoImpl(
 
     private val key: ByteArray by lazy {
         deriveStreamKey(keyManager.getMainKey(), "app data key".toByteArray())
+    }
+    private val secureRandom: SecureRandom by lazy { SecureRandom() }
+
+    override fun getRandomBytes(size: Int) = ByteArray(size).apply {
+        secureRandom.nextBytes(this)
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
