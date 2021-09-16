@@ -36,7 +36,6 @@ import org.junit.runner.RunWith
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.io.IOException
-import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -63,7 +62,7 @@ class PluginTest : KoinComponent {
     private val restorePlugin: RestorePlugin =
         DocumentsProviderRestorePlugin(context, storage, kvRestorePlugin, fullRestorePlugin)
 
-    private val token = Random.nextLong()
+    private val token = System.currentTimeMillis() - 365L * 24L * 60L * 60L * 1000L
     private val packageInfo = PackageInfoBuilder.newBuilder().setPackageName("org.example").build()
     private val packageInfo2 = PackageInfoBuilder.newBuilder().setPackageName("net.example").build()
 
@@ -117,14 +116,14 @@ class PluginTest : KoinComponent {
         // initializing again (with another restore set) does add a restore set
         backupPlugin.startNewRestoreSet(token + 1)
         backupPlugin.initializeDevice()
-        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        backupPlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
         assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
         assertTrue(backupPlugin.hasBackup(uri))
 
         // initializing again (without new restore set) doesn't change number of restore sets
         backupPlugin.initializeDevice()
-        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        backupPlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
         assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
 
@@ -172,7 +171,7 @@ class PluginTest : KoinComponent {
 
         // write random bytes as APK
         val apk1 = getRandomByteArray(1337 * 1024)
-        backupPlugin.getApkOutputStream(packageInfo, "").writeAndClose(apk1)
+        backupPlugin.getOutputStream(token, "${packageInfo.packageName}.apk").writeAndClose(apk1)
 
         // assert that read APK bytes match what was written
         assertReadEquals(apk1, restorePlugin.getApkInputStream(token, packageInfo.packageName, ""))
@@ -180,7 +179,9 @@ class PluginTest : KoinComponent {
         // write random bytes as another APK
         val suffix2 = getRandomBase64(23)
         val apk2 = getRandomByteArray(23 * 1024 * 1024)
-        backupPlugin.getApkOutputStream(packageInfo2, suffix2).writeAndClose(apk2)
+
+        backupPlugin.getOutputStream(token, "${packageInfo2.packageName}$suffix2.apk")
+            .writeAndClose(apk2)
 
         // assert that read APK bytes match what was written
         assertReadEquals(
