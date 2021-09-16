@@ -19,8 +19,8 @@ import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 
 private data class RestoreCoordinatorState(
@@ -43,7 +43,7 @@ internal class RestoreCoordinator(
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
-    private val plugin: RestorePlugin,
+    private val plugin: BackupPlugin,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader
@@ -57,15 +57,10 @@ internal class RestoreCoordinator(
         val availableBackups = plugin.getAvailableBackups() ?: return null
         val metadataMap = HashMap<Long, BackupMetadata>()
         for (encryptedMetadata in availableBackups) {
-            if (encryptedMetadata.error) continue
-            check(encryptedMetadata.inputStream != null) {
-                "No error when getting encrypted metadata, but stream is still missing."
-            }
             try {
-                val metadata = metadataReader.readMetadata(
-                    encryptedMetadata.inputStream,
-                    encryptedMetadata.token
-                )
+                val metadata = encryptedMetadata.inputStreamRetriever().use { inputStream ->
+                    metadataReader.readMetadata(inputStream, encryptedMetadata.token)
+                }
                 metadataMap[encryptedMetadata.token] = metadata
             } catch (e: IOException) {
                 Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
@@ -79,8 +74,6 @@ internal class RestoreCoordinator(
             } catch (e: UnsupportedVersionException) {
                 Log.w(TAG, "Backup with unsupported version read", e)
                 continue
-            } finally {
-                closeQuietly(encryptedMetadata.inputStream)
             }
         }
         Log.i(TAG, "Got available metadata for tokens: ${metadataMap.keys}")

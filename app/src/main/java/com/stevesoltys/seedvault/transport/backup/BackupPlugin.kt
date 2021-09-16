@@ -58,7 +58,7 @@ interface BackupPlugin {
      * Returns an [OutputStream] for writing backup metadata.
      */
     @Throws(IOException::class)
-    @Deprecated("use getOutputStream() instead")
+    @Deprecated("use getOutputStream(token, FILE_BACKUP_METADATA) instead")
     suspend fun getMetadataOutputStream(token: Long): OutputStream
 
     /**

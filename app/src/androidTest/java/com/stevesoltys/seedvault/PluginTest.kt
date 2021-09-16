@@ -10,6 +10,7 @@ import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVBackup
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
+import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH
 import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
@@ -94,9 +95,9 @@ class PluginTest : KoinComponent {
     @Test
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
-        assertEquals(0, restorePlugin.getAvailableBackups()?.toList()?.size)
+        assertEquals(0, backupPlugin.getAvailableBackups()?.toList()?.size)
         val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
-        assertFalse(restorePlugin.hasBackup(uri))
+        assertFalse(backupPlugin.hasBackup(uri))
 
         // prepare returned tokens requested when initializing device
         every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
@@ -106,23 +107,26 @@ class PluginTest : KoinComponent {
         backupPlugin.initializeDevice()
 
         // write metadata (needed for backup to be recognized)
-        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
+        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+            .writeAndClose(getRandomByteArray())
 
         // one backup available now
-        assertEquals(1, restorePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(restorePlugin.hasBackup(uri))
+        assertEquals(1, backupPlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(backupPlugin.hasBackup(uri))
 
         // initializing again (with another restore set) does add a restore set
         backupPlugin.startNewRestoreSet(token + 1)
         backupPlugin.initializeDevice()
-        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
-        assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(restorePlugin.hasBackup(uri))
+        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+            .writeAndClose(getRandomByteArray())
+        assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(backupPlugin.hasBackup(uri))
 
         // initializing again (without new restore set) doesn't change number of restore sets
         backupPlugin.initializeDevice()
-        backupPlugin.getMetadataOutputStream().writeAndClose(getRandomByteArray())
-        assertEquals(2, restorePlugin.getAvailableBackups()?.toList()?.size)
+        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+            .writeAndClose(getRandomByteArray())
+        assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
 
         // ensure that the new backup dirs exist
         assertTrue(storage.currentKvBackupDir!!.exists())
@@ -138,29 +142,27 @@ class PluginTest : KoinComponent {
 
         // write metadata
         val metadata = getRandomByteArray()
-        backupPlugin.getMetadataOutputStream().writeAndClose(metadata)
+        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
 
         // get available backups, expect only one with our token and no error
-        var availableBackups = restorePlugin.getAvailableBackups()?.toList()
+        var availableBackups = backupPlugin.getAvailableBackups()?.toList()
         check(availableBackups != null)
         assertEquals(1, availableBackups.size)
         assertEquals(token, availableBackups[0].token)
-        assertFalse(availableBackups[0].error)
 
         // read metadata matches what was written earlier
-        assertReadEquals(metadata, availableBackups[0].inputStream)
+        assertReadEquals(metadata, availableBackups[0].inputStreamRetriever())
 
         // initializing again (without changing storage) keeps restore set with same token
         backupPlugin.initializeDevice()
-        backupPlugin.getMetadataOutputStream().writeAndClose(metadata)
-        availableBackups = restorePlugin.getAvailableBackups()?.toList()
+        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
+        availableBackups = backupPlugin.getAvailableBackups()?.toList()
         check(availableBackups != null)
         assertEquals(1, availableBackups.size)
         assertEquals(token, availableBackups[0].token)
-        assertFalse(availableBackups[0].error)
 
         // metadata hasn't changed
-        assertReadEquals(metadata, availableBackups[0].inputStream)
+        assertReadEquals(metadata, availableBackups[0].inputStreamRetriever())
     }
 
     @Test

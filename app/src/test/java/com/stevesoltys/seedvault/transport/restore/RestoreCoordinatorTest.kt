@@ -11,11 +11,12 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.metadata.EncryptedBackupMetadata
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.EncryptedMetadata
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -37,7 +38,7 @@ import kotlin.random.Random
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
-    private val plugin = mockk<RestorePlugin>()
+    private val plugin = mockk<BackupPlugin>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
@@ -67,11 +68,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
-        val encryptedMetadata = EncryptedBackupMetadata(token, inputStream)
+        val encryptedMetadata = EncryptedMetadata(token) { inputStream }
 
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
             encryptedMetadata,
-            EncryptedBackupMetadata(token + 1, inputStream)
+            EncryptedMetadata(token + 1) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
@@ -99,8 +100,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() fetches metadata if missing`() = runBlocking {
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
-            EncryptedBackupMetadata(token, inputStream),
-            EncryptedBackupMetadata(token + 1, inputStream)
+            EncryptedMetadata(token) { inputStream },
+            EncryptedMetadata(token + 1) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
@@ -112,7 +113,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() errors if metadata is not matching token`() = runBlocking {
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
-            EncryptedBackupMetadata(token + 42, inputStream)
+            EncryptedMetadata(token + 42) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token + 42) } returns metadata
         every { inputStream.close() } just Runs

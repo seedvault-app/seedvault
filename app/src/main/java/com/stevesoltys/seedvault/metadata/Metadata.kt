@@ -6,7 +6,6 @@ import com.stevesoltys.seedvault.crypto.TYPE_METADATA
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
-import java.io.InputStream
 import java.nio.ByteBuffer
 
 typealias PackageMetadataMap = HashMap<String, PackageMetadata>
@@ -99,20 +98,6 @@ internal const val JSON_PACKAGE_SHA256 = "sha256"
 internal const val JSON_PACKAGE_SIGNATURES = "signatures"
 
 internal class DecryptionFailedException(cause: Throwable) : Exception(cause)
-
-class EncryptedBackupMetadata private constructor(
-    val token: Long,
-    val inputStream: InputStream?,
-    val error: Boolean
-) {
-
-    constructor(token: Long, inputStream: InputStream) : this(token, inputStream, false)
-
-    /**
-     * Indicates that there was an error retrieving the encrypted backup metadata.
-     */
-    constructor(token: Long) : this(token, null, true)
-}
 
 internal fun getAD(version: Byte, token: Long) = ByteBuffer.allocate(2 + 8)
     .put(version)

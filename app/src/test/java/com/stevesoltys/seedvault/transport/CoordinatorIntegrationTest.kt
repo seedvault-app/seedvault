@@ -104,7 +104,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         settingsManager,
         metadataManager,
         notificationManager,
-        restorePlugin,
+        backupPlugin,
         kvRestore,
         fullRestore,
         metadataReader
