@@ -55,6 +55,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
+        crypto,
         settingsManager,
         metadataManager,
         notificationManager,

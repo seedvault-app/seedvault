@@ -100,6 +100,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
+        crypto,
         settingsManager,
         metadataManager,
         notificationManager,
@@ -186,7 +187,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
-        coEvery { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -262,7 +264,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
-        coEvery { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -288,6 +291,11 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
     @Test
     fun `test full backup and restore with two chunks`() = runBlocking {
+        // package is of type FULL
+        val packageMetadata = metadata.packageMetadataMap[packageInfo.packageName]!!
+        metadata.packageMetadataMap[packageInfo.packageName] =
+            packageMetadata.copy(backupType = BackupType.FULL)
+
         // return streams from plugin and app data
         val bOutputStream = ByteArrayOutputStream()
         val bInputStream = ByteArrayInputStream(appData)
@@ -327,9 +335,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
-        // find data only for full backup
-        coEvery { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns false
-        coEvery { fullRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+        // finds data for full backup
+        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)

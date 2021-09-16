@@ -13,8 +13,11 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.METADATA_SALT_SIZE
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
 import io.mockk.mockk
@@ -50,8 +53,13 @@ internal abstract class TransportTest {
         salt = getRandomBase64(METADATA_SALT_SIZE),
         androidVersion = Random.nextInt(),
         androidIncremental = getRandomString(),
-        deviceName = getRandomString()
+        deviceName = getRandomString(),
+        packageMetadataMap = PackageMetadataMap().apply {
+            put(packageInfo.packageName, PackageMetadata(backupType = BackupType.KV))
+        }
     )
+    protected val name = getRandomString(12)
+    protected val name2 = getRandomString(23)
 
     init {
         mockkStatic(Log::class)
