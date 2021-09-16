@@ -28,9 +28,11 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
+import java.io.OutputStream
 import java.util.concurrent.TimeUnit.DAYS
 import java.util.concurrent.TimeUnit.HOURS
 
@@ -490,6 +492,11 @@ internal class BackupCoordinator(
             // otherwise no back off
             else -> 0L
         }
+    }
+
+    private suspend fun BackupPlugin.getMetadataOutputStream(): OutputStream {
+        val token = settingsManager.getToken() ?: throw IOException("no current token")
+        return getOutputStream(token, FILE_BACKUP_METADATA)
     }
 
 }

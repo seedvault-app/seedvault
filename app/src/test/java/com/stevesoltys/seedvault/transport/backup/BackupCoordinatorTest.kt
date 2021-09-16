@@ -21,6 +21,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -85,7 +86,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
         every { settingsManager.getToken() } returns token
         coEvery { plugin.initializeDevice() } just Runs
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
@@ -251,7 +252,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.hasState() } returns true
         every { full.hasState() } returns false
         every { kv.getCurrentPackage() } returns packageInfo
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
         every { kv.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
@@ -268,7 +270,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.hasState() } returns false
         every { full.hasState() } returns true
         every { full.getCurrentPackage() } returns packageInfo
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
         every { full.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
@@ -412,7 +415,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             apkBackup.backupApkIfNecessary(notAllowedPackages[1], WAS_STOPPED, any())
         } returns packageMetadata
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onApkBackedUp(
                 notAllowedPackages[1],
@@ -445,7 +449,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         } returns oldPackageMetadata
         // state differs now, was stopped before
         every { oldPackageMetadata.state } returns WAS_STOPPED
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onPackageBackupError(
                 packageInfo,
@@ -473,7 +478,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         every {
             metadataManager.getPackageMetadata(packageInfo.packageName)
         } returns null
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onPackageBackupError(
                 packageInfo,
@@ -499,7 +505,8 @@ internal class BackupCoordinatorTest : BackupTest() {
                 any()
             )
         } returns packageMetadata
-        coEvery { plugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onApkBackedUp(
                 any(),

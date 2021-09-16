@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.transport.backup.ApkBackup
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
@@ -166,7 +167,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 any()
             )
         } returns packageMetadata
-        coEvery { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery {
+            backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        } returns metadataOutputStream
         every {
             metadataManager.onApkBackedUp(
                 packageInfo,
@@ -244,7 +248,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         } returns bOutputStream
         every { kvBackupPlugin.packageFinished(packageInfo) } just Runs
         coEvery { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
-        coEvery { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery {
+            backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        } returns metadataOutputStream
         every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
 
         // start and finish K/V backup
@@ -296,7 +303,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 any()
             )
         } returns packageMetadata
-        coEvery { backupPlugin.getMetadataOutputStream() } returns metadataOutputStream
+        every { settingsManager.getToken() } returns token
+        coEvery {
+            backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        } returns metadataOutputStream
         every {
             metadataManager.onApkBackedUp(
                 packageInfo,
