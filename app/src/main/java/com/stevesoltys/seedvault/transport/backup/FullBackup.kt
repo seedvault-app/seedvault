@@ -38,7 +38,7 @@ private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-    private val plugin: FullBackupPlugin,
+    private val plugin: BackupPlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto
@@ -51,7 +51,7 @@ internal class FullBackup(
     fun getCurrentPackage() = state?.packageInfo
 
     fun getQuota(): Long {
-        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else plugin.getQuota()
+        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else DEFAULT_QUOTA_FULL_BACKUP
     }
 
     fun checkFullBackupSize(size: Long): Int {
@@ -101,20 +101,24 @@ internal class FullBackup(
     suspend fun performFullBackup(
         targetPackage: PackageInfo,
         socket: ParcelFileDescriptor,
-        @Suppress("UNUSED_PARAMETER") flags: Int = 0
+        @Suppress("UNUSED_PARAMETER") flags: Int = 0,
+        token: Long,
+        salt: String
     ): Int {
         if (state != null) throw AssertionError()
-        Log.i(TAG, "Perform full backup for ${targetPackage.packageName}.")
+        val packageName = targetPackage.packageName
+        Log.i(TAG, "Perform full backup for $packageName.")
 
         // create new state
         val inputStream = inputFactory.getInputStream(socket)
         state = FullBackupState(targetPackage, socket, inputStream) {
-            Log.d(TAG, "Initializing OutputStream for ${targetPackage.packageName}.")
+            Log.d(TAG, "Initializing OutputStream for $packageName.")
+            val name = crypto.getNameForPackage(salt, packageName)
             // get OutputStream to write backup data into
             val outputStream = try {
-                plugin.getOutputStream(targetPackage)
+                plugin.getOutputStream(token, name)
             } catch (e: IOException) {
-                "Error getting OutputStream for full backup of ${targetPackage.packageName}".let {
+                "Error getting OutputStream for full backup of $packageName".let {
                     Log.e(TAG, it, e)
                 }
                 throw(e)
@@ -167,15 +171,16 @@ internal class FullBackup(
     }
 
     @Throws(IOException::class)
-    suspend fun clearBackupData(packageInfo: PackageInfo) {
-        plugin.removeDataOfPackage(packageInfo)
+    suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
+        val name = crypto.getNameForPackage(salt, packageInfo.packageName)
+        plugin.removeData(token, name)
     }
 
-    suspend fun cancelFullBackup() {
+    suspend fun cancelFullBackup(token: Long, salt: String) {
         Log.i(TAG, "Cancel full backup")
         val state = this.state ?: throw AssertionError("No state when canceling")
         try {
-            plugin.removeDataOfPackage(state.packageInfo)
+            clearBackupData(state.packageInfo, token, salt)
         } catch (e: IOException) {
             Log.w(TAG, "Error cancelling full backup for ${state.packageName}", e)
         }

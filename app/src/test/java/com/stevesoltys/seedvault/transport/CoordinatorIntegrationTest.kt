@@ -73,7 +73,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     )
     private val fullBackupPlugin = mockk<FullBackupPlugin>()
     private val fullBackup = FullBackup(
-        plugin = fullBackupPlugin,
+        plugin = backupPlugin,
         settingsManager = settingsManager,
         inputFactory = inputFactory,
         crypto = cryptoImpl
@@ -295,11 +295,13 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val packageMetadata = metadata.packageMetadataMap[packageInfo.packageName]!!
         metadata.packageMetadataMap[packageInfo.packageName] =
             packageMetadata.copy(backupType = BackupType.FULL)
+        // as we use real crypto, we need a real name for packageInfo
+        val name = cryptoImpl.getNameForPackage(salt, packageInfo.packageName)
 
         // return streams from plugin and app data
         val bOutputStream = ByteArrayOutputStream()
         val bInputStream = ByteArrayInputStream(appData)
-        coEvery { fullBackupPlugin.getOutputStream(packageInfo) } returns bOutputStream
+        coEvery { backupPlugin.getOutputStream(token, name) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { settingsManager.isQuotaUnlimited() } returns false
         every { fullBackupPlugin.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
@@ -311,6 +313,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             )
         } returns packageMetadata
         every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
         coEvery {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
@@ -336,7 +339,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // finds data for full backup
-        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
         coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()

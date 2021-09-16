@@ -29,7 +29,7 @@ val backupModule = module {
     }
     single {
         FullBackup(
-            plugin = get<BackupPlugin>().fullBackupPlugin,
+            plugin = get(),
             settingsManager = get(),
             inputFactory = get(),
             crypto = get()
