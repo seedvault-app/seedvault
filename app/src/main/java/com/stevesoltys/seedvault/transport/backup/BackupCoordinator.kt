@@ -441,7 +441,9 @@ internal class BackupCoordinator(
         val packageName = packageInfo.packageName
         return try {
             apkBackup.backupApkIfNecessary(packageInfo, packageState) { suffix ->
-                plugin.getApkOutputStream(packageInfo, suffix)
+                val token = settingsManager.getToken() ?: throw IOException("no current token")
+                val name = "${packageInfo.packageName}$suffix.apk"
+                plugin.getOutputStream(token, name)
             }?.let { packageMetadata ->
                 plugin.getMetadataOutputStream().use {
                     metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)
@@ -494,9 +496,9 @@ internal class BackupCoordinator(
         }
     }
 
-    private suspend fun BackupPlugin.getMetadataOutputStream(): OutputStream {
-        val token = settingsManager.getToken() ?: throw IOException("no current token")
-        return getOutputStream(token, FILE_BACKUP_METADATA)
+    private suspend fun BackupPlugin.getMetadataOutputStream(token: Long? = null): OutputStream {
+        val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
+        return getOutputStream(t, FILE_BACKUP_METADATA)
     }
 
 }

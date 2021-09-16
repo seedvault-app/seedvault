@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.RestoreSet
-import android.content.pm.PackageInfo
 import android.net.Uri
 import androidx.annotation.WorkerThread
 import java.io.IOException
@@ -55,13 +54,6 @@ interface BackupPlugin {
     suspend fun removeData(token: Long, name: String)
 
     /**
-     * Returns an [OutputStream] for writing backup metadata.
-     */
-    @Throws(IOException::class)
-    @Deprecated("use getOutputStream(token, FILE_BACKUP_METADATA) instead")
-    suspend fun getMetadataOutputStream(token: Long): OutputStream
-
-    /**
      * Searches if there's really a backup available in the given location.
      * Returns true if at least one was found and false otherwise.
      *
@@ -78,13 +70,6 @@ interface BackupPlugin {
      * or null if an error occurred (the attempt should be rescheduled).
      **/
     suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>?
-
-    /**
-     * Returns an [OutputStream] for writing an APK to be backed up.
-     */
-    @Throws(IOException::class)
-    @Deprecated("Use getOutputStream() instead")
-    suspend fun getApkOutputStream(packageInfo: PackageInfo, suffix: String): OutputStream
 
     /**
      * Returns the package name of the app that provides the backend storage

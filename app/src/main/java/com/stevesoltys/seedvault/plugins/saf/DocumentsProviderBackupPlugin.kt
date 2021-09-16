@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
@@ -16,7 +15,6 @@ import java.io.InputStream
 import java.io.OutputStream
 
 private val TAG = DocumentsProviderBackupPlugin::class.java.simpleName
-private const val MIME_TYPE_APK = "application/vnd.android.package-archive"
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderBackupPlugin(
@@ -79,13 +77,6 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun getMetadataOutputStream(token: Long): OutputStream {
-        val setDir = storage.getSetDir(token) ?: throw IOException()
-        val metadataFile = setDir.createOrGetFile(context, FILE_BACKUP_METADATA)
-        return storage.getOutputStream(metadataFile)
-    }
-
-    @Throws(IOException::class)
     override suspend fun hasBackup(uri: Uri): Boolean {
         val parent = DocumentFile.fromTreeUri(context, uri) ?: throw AssertionError()
         val rootDir = parent.findFileBlocking(context, DIRECTORY_ROOT) ?: return false
@@ -104,17 +95,6 @@ internal class DocumentsProviderBackupPlugin(
                 storage.getInputStream(backupSet.metadataFile)
             }
         }
-    }
-
-    @Throws(IOException::class)
-    override suspend fun getApkOutputStream(
-        packageInfo: PackageInfo,
-        suffix: String
-    ): OutputStream {
-        val setDir = storage.getSetDir() ?: throw IOException()
-        val name = "${packageInfo.packageName}$suffix.apk"
-        val file = setDir.createOrGetFile(context, name, MIME_TYPE_APK)
-        return storage.getOutputStream(file)
     }
 
     override val providerPackageName: String? by lazy {
