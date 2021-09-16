@@ -22,7 +22,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
 import java.io.IOException
-import java.security.SecureRandom
 
 internal const val WORD_NUM = 12
 
@@ -40,8 +39,7 @@ internal class RecoveryCodeViewModel(
 
     internal val wordList: List<CharArray> by lazy {
         // we use our own entropy to not having to trust the library to use SecureRandom
-        val entropy = ByteArray(Mnemonics.WordCount.COUNT_12.bitLength / 8)
-        SecureRandom().nextBytes(entropy)
+        val entropy = crypto.getRandomBytes(Mnemonics.WordCount.COUNT_12.bitLength / 8)
         // create the words from the entropy
         Mnemonics.MnemonicCode(entropy).words
     }

@@ -2,6 +2,9 @@ package com.stevesoltys.seedvault.crypto
 
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -20,6 +23,14 @@ class CryptoIntegrationTest {
     private val crypto = CryptoImpl(keyManager, cipherFactory, headerReader)
 
     private val cleartext = Random.nextBytes(Random.nextInt(1, 422300))
+
+    @Test
+    fun `sanity check for getRandomBytes()`() {
+        assertThat(crypto.getRandomBytes(42), not(equalTo(crypto.getRandomBytes(42))))
+        assertThat(crypto.getRandomBytes(42), not(equalTo(crypto.getRandomBytes(42))))
+        assertThat(crypto.getRandomBytes(42), not(equalTo(crypto.getRandomBytes(42))))
+        assertThat(crypto.getRandomBytes(42), not(equalTo(crypto.getRandomBytes(42))))
+    }
 
     @Test
     fun `decrypting encrypted cleartext works`() {
