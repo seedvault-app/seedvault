@@ -13,6 +13,7 @@ typealias PackageMetadataMap = HashMap<String, PackageMetadata>
 data class BackupMetadata(
     internal val version: Byte = VERSION,
     internal val token: Long,
+    internal val salt: String,
     internal var time: Long = 0L,
     internal val androidVersion: Int = Build.VERSION.SDK_INT,
     internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
@@ -23,6 +24,7 @@ data class BackupMetadata(
 internal const val JSON_METADATA = "@meta@"
 internal const val JSON_METADATA_VERSION = "version"
 internal const val JSON_METADATA_TOKEN = "token"
+internal const val JSON_METADATA_SALT = "salt"
 internal const val JSON_METADATA_TIME = "time"
 internal const val JSON_METADATA_SDK_INT = "sdk_int"
 internal const val JSON_METADATA_INCREMENTAL = "incremental"
@@ -69,6 +71,7 @@ data class PackageMetadata(
      */
     internal var time: Long = 0L,
     internal var state: PackageState = UNKNOWN_ERROR,
+    internal var backupType: BackupType? = null,
     internal val system: Boolean = false,
     internal val version: Long? = null,
     internal val installer: String? = null,
@@ -87,7 +90,10 @@ data class ApkSplit(
     // There's also a revisionCode, but it doesn't seem to be used just yet
 )
 
+enum class BackupType { KV, FULL }
+
 internal const val JSON_PACKAGE_TIME = "time"
+internal const val JSON_PACKAGE_BACKUP_TYPE = "backupType"
 internal const val JSON_PACKAGE_STATE = "state"
 internal const val JSON_PACKAGE_SYSTEM = "system"
 internal const val JSON_PACKAGE_VERSION = "version"

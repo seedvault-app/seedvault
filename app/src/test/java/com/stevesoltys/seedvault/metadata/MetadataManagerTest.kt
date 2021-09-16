@@ -9,6 +9,8 @@ import android.content.pm.PackageInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.TestApp
+import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
@@ -46,10 +48,11 @@ class MetadataManagerTest {
 
     private val context: Context = mockk()
     private val clock: Clock = mockk()
+    private val crypto: Crypto = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
 
-    private val manager = MetadataManager(context, clock, metadataWriter, metadataReader)
+    private val manager = MetadataManager(context, clock, crypto, metadataWriter, metadataReader)
 
     private val time = 42L
     private val token = Random.nextLong()
@@ -58,7 +61,9 @@ class MetadataManagerTest {
         packageName = this@MetadataManagerTest.packageName
         applicationInfo = ApplicationInfo().apply { flags = FLAG_ALLOW_BACKUP }
     }
-    private val initialMetadata = BackupMetadata(token = token)
+    private val saltBytes = Random.nextBytes(METADATA_SALT_SIZE)
+    private val salt = saltBytes.encodeBase64()
+    private val initialMetadata = BackupMetadata(token = token, salt = salt)
     private val storageOutputStream = ByteArrayOutputStream()
     private val cacheOutputStream: FileOutputStream = mockk()
     private val cacheInputStream: FileInputStream = mockk()
@@ -72,6 +77,7 @@ class MetadataManagerTest {
     @Test
     fun `test onDeviceInitialization()`() {
         every { clock.time() } returns time
+        every { crypto.getRandomBytes(METADATA_SALT_SIZE) } returns saltBytes
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
@@ -233,10 +239,10 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(initialMetadata)
 
-        manager.onPackageBackedUp(packageInfo, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
 
         assertEquals(
-            packageMetadata.copy(state = APK_AND_DATA, system = true),
+            packageMetadata.copy(state = APK_AND_DATA, backupType = BackupType.FULL, system = true),
             manager.getPackageMetadata(packageName)
         )
         assertEquals(time, manager.getLastBackupTime())
@@ -254,14 +260,15 @@ class MetadataManagerTest {
             time = updateTime,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
         )
-        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(updateTime, APK_AND_DATA)
+        updatedMetadata.packageMetadataMap[packageName] =
+            PackageMetadata(updateTime, APK_AND_DATA, BackupType.KV)
 
         expectReadFromCache()
         every { clock.time() } returns updateTime
         every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
 
         try {
-            manager.onPackageBackedUp(packageInfo, storageOutputStream)
+            manager.onPackageBackedUp(packageInfo, BackupType.KV, storageOutputStream)
             fail()
         } catch (e: IOException) {
             // expected
@@ -294,7 +301,7 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackedUp(packageInfo, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
 
         assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))

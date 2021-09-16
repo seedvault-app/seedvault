@@ -15,6 +15,7 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
@@ -254,7 +255,9 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.getCurrentPackage() } returns packageInfo
         every { settingsManager.getToken() } returns token
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
-        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+        } just Runs
         every { kv.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
 
@@ -272,7 +275,9 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { full.getCurrentPackage() } returns packageInfo
         every { settingsManager.getToken() } returns token
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
-        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
+        } just Runs
         every { full.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
 
@@ -302,7 +307,8 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 QUOTA_EXCEEDED,
-                metadataOutputStream
+                metadataOutputStream,
+                BackupType.FULL
             )
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
@@ -325,7 +331,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(0L, backup.requestFullBackupTime())
 
         verify(exactly = 1) {
-            metadataManager.onPackageBackupError(packageInfo, QUOTA_EXCEEDED, metadataOutputStream)
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                QUOTA_EXCEEDED,
+                metadataOutputStream,
+                BackupType.FULL
+            )
         }
         verify { metadataOutputStream.close() }
     }
@@ -341,7 +352,8 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 NO_DATA,
-                metadataOutputStream
+                metadataOutputStream,
+                BackupType.FULL
             )
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
@@ -361,7 +373,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(0L, backup.requestFullBackupTime())
 
         verify(exactly = 1) {
-            metadataManager.onPackageBackupError(packageInfo, NO_DATA, metadataOutputStream)
+            metadataManager.onPackageBackupError(
+                packageInfo,
+                NO_DATA,
+                metadataOutputStream,
+                BackupType.FULL
+            )
         }
         verify { metadataOutputStream.close() }
     }

@@ -4,6 +4,7 @@ import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
+import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.VERSION
@@ -33,8 +34,8 @@ internal class MetadataReadWriteTest {
     private val reader = MetadataReaderImpl(cryptoImpl)
 
     private val packages = HashMap<String, PackageMetadata>().apply {
-        put(getRandomString(), PackageMetadata(Random.nextLong(), APK_AND_DATA))
-        put(getRandomString(), PackageMetadata(Random.nextLong(), WAS_STOPPED))
+        put(getRandomString(), PackageMetadata(Random.nextLong(), APK_AND_DATA, BackupType.FULL))
+        put(getRandomString(), PackageMetadata(Random.nextLong(), WAS_STOPPED, BackupType.KV))
     }
 
     @Test
@@ -55,6 +56,7 @@ internal class MetadataReadWriteTest {
         return BackupMetadata(
             version = VERSION,
             token = Random.nextLong(),
+            salt = getRandomBase64(32),
             time = Random.nextLong(),
             androidVersion = Random.nextInt(),
             androidIncremental = getRandomString(),

@@ -112,6 +112,13 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     WAS_STOPPED.name -> WAS_STOPPED
                     else -> UNKNOWN_ERROR
                 }
+                val pBackupType = when (p.optString(JSON_PACKAGE_BACKUP_TYPE)) {
+                    BackupType.KV.name -> BackupType.KV
+                    BackupType.FULL.name -> BackupType.FULL
+                    // we can't fail when format version is 0,
+                    // because when only backing up the APK for example, there's no type
+                    else -> null
+                }
                 val pSystem = p.optBoolean(JSON_PACKAGE_SYSTEM, false)
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
                 val pInstaller = p.optString(JSON_PACKAGE_INSTALLER)
@@ -127,6 +134,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                 packageMetadataMap[packageName] = PackageMetadata(
                     time = p.getLong(JSON_PACKAGE_TIME),
                     state = pState,
+                    backupType = pBackupType,
                     system = pSystem,
                     version = if (pVersion == 0L) null else pVersion,
                     installer = if (pInstaller == "") null else pInstaller,
@@ -138,6 +146,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
             return BackupMetadata(
                 version = version,
                 token = token,
+                salt = if (version == 0.toByte()) "" else meta.getString(JSON_METADATA_SALT),
                 time = meta.getLong(JSON_METADATA_TIME),
                 androidVersion = meta.getInt(JSON_METADATA_SDK_INT),
                 androidIncremental = meta.getString(JSON_METADATA_INCREMENTAL),

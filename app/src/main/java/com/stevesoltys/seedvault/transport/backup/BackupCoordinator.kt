@@ -21,6 +21,7 @@ import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
@@ -334,7 +335,7 @@ internal class BackupCoordinator(
             TAG, "Cancel full backup of ${packageInfo.packageName}" +
                 " because of ${state.cancelReason}"
         )
-        onPackageBackupError(packageInfo)
+        onPackageBackupError(packageInfo, BackupType.FULL)
         full.cancelFullBackup()
     }
 
@@ -381,14 +382,16 @@ internal class BackupCoordinator(
             check(!full.hasState()) {
                 "K/V backup has state, but full backup has dangling state as well"
             }
-            onPackageBackedUp(kv.getCurrentPackage()!!) // not-null because we have state
+            // getCurrentPackage() not-null because we have state
+            onPackageBackedUp(kv.getCurrentPackage()!!, BackupType.KV)
             kv.finishBackup()
         }
         full.hasState() -> {
             check(!kv.hasState()) {
                 "Full backup has state, but K/V backup has dangling state as well"
             }
-            onPackageBackedUp(full.getCurrentPackage()!!) // not-null because we have state
+            // getCurrentPackage() not-null because we have state
+            onPackageBackedUp(full.getCurrentPackage()!!, BackupType.FULL)
             full.finishBackup()
         }
         state.expectFinish -> {
@@ -456,10 +459,10 @@ internal class BackupCoordinator(
         }
     }
 
-    private suspend fun onPackageBackedUp(packageInfo: PackageInfo) {
+    private suspend fun onPackageBackedUp(packageInfo: PackageInfo, type: BackupType) {
         try {
             plugin.getMetadataOutputStream().use {
-                metadataManager.onPackageBackedUp(packageInfo, it)
+                metadataManager.onPackageBackedUp(packageInfo, type, it)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for ${packageInfo.packageName}", e)
@@ -468,13 +471,13 @@ internal class BackupCoordinator(
         }
     }
 
-    private suspend fun onPackageBackupError(packageInfo: PackageInfo) {
+    private suspend fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
         // don't bother with system apps that have no data
         if (state.cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
             plugin.getMetadataOutputStream().use {
-                metadataManager.onPackageBackupError(packageInfo, state.cancelReason, it)
+                metadataManager.onPackageBackupError(packageInfo, state.cancelReason, it, type)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)

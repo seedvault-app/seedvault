@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
@@ -24,16 +26,18 @@ private val TAG = MetadataManager::class.java.simpleName
 
 @VisibleForTesting
 internal const val METADATA_CACHE_FILE = "metadata.cache"
+internal const val METADATA_SALT_SIZE = 32
 
 @WorkerThread
-class MetadataManager(
+internal class MetadataManager(
     private val context: Context,
     private val clock: Clock,
+    private val crypto: Crypto,
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader
 ) {
 
-    private val uninitializedMetadata = BackupMetadata(token = 0L)
+    private val uninitializedMetadata = BackupMetadata(token = 0L, salt = "")
     private var metadata: BackupMetadata = uninitializedMetadata
         get() {
             if (field == uninitializedMetadata) {
@@ -57,8 +61,9 @@ class MetadataManager(
     @Synchronized
     @Throws(IOException::class)
     fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
+        val salt = crypto.getRandomBytes(METADATA_SALT_SIZE).encodeBase64()
         modifyMetadata(metadataOutputStream) {
-            metadata = BackupMetadata(token = token)
+            metadata = BackupMetadata(token = token, salt = salt)
         }
     }
 
@@ -121,7 +126,11 @@ class MetadataManager(
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onPackageBackedUp(packageInfo: PackageInfo, metadataOutputStream: OutputStream) {
+    fun onPackageBackedUp(
+        packageInfo: PackageInfo,
+        type: BackupType,
+        metadataOutputStream: OutputStream
+    ) {
         val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
             val now = clock.time()
@@ -129,10 +138,12 @@ class MetadataManager(
             if (metadata.packageMetadataMap.containsKey(packageName)) {
                 metadata.packageMetadataMap[packageName]!!.time = now
                 metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA
+                metadata.packageMetadataMap[packageName]!!.backupType = type
             } else {
                 metadata.packageMetadataMap[packageName] = PackageMetadata(
                     time = now,
                     state = APK_AND_DATA,
+                    backupType = type,
                     system = packageInfo.isSystemApp()
                 )
             }
@@ -150,7 +161,8 @@ class MetadataManager(
     internal fun onPackageBackupError(
         packageInfo: PackageInfo,
         packageState: PackageState,
-        metadataOutputStream: OutputStream
+        metadataOutputStream: OutputStream,
+        backupType: BackupType? = null
     ) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
         val packageName = packageInfo.packageName
@@ -161,6 +173,7 @@ class MetadataManager(
                 metadata.packageMetadataMap[packageName] = PackageMetadata(
                     time = 0L,
                     state = packageState,
+                    backupType = backupType,
                     system = packageInfo.isSystemApp()
                 )
             }

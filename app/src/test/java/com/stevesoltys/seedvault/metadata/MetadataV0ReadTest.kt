@@ -54,6 +54,7 @@ internal class MetadataV0ReadTest {
     ) = BackupMetadata(
         version = 0x00,
         token = 1337L,
+        salt = "",
         time = 2342L,
         androidVersion = 30,
         androidIncremental = "sdfqefpojlfj",

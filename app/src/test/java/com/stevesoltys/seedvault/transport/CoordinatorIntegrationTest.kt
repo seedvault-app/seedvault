@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
@@ -33,7 +34,6 @@ import com.stevesoltys.seedvault.transport.restore.KVRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
-import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -93,7 +93,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         notificationManager
     )
 
-    private val restorePlugin = mockk<RestorePlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
@@ -172,13 +171,11 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
         every {
-            metadataManager.onApkBackedUp(
-                packageInfo,
-                packageMetadata,
-                metadataOutputStream
-            )
+            metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream)
         } just Runs
-        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+        } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -252,7 +249,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         coEvery {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
-        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+        } just Runs
 
         // start and finish K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
@@ -314,7 +313,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 metadataOutputStream
             )
         } just Runs
-        every { metadataManager.onPackageBackedUp(packageInfo, metadataOutputStream) } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
+        } just Runs
 
         // perform backup to output stream
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
