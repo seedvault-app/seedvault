@@ -13,8 +13,10 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.metadata.BackupMetadata
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
@@ -40,6 +42,7 @@ private val TAG = RestoreCoordinator::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinator(
     private val context: Context,
+    private val crypto: Crypto,
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
@@ -193,22 +196,59 @@ internal class RestoreCoordinator(
         val state = this.state ?: throw IllegalStateException("no state")
 
         if (!state.packages.hasNext()) return NO_MORE_PACKAGES
-        val version = state.backupMetadata.version
         val packageInfo = state.packages.next()
-        val packageName = packageInfo.packageName
+        val version = state.backupMetadata.version
+        if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
 
+        val packageName = packageInfo.packageName
+        val type = try {
+            when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
+                BackupType.KV -> {
+                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                    if (plugin.hasData(state.token, name)) {
+                        Log.i(TAG, "Found K/V data for $packageName.")
+                        kv.initializeState(version, state.token, packageInfo, state.pmPackageInfo)
+                        state.currentPackage = packageName
+                        TYPE_KEY_VALUE
+                    } else throw IOException("No data found for $packageName. Skipping.")
+                }
+                BackupType.FULL -> {
+                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                    if (plugin.hasData(state.token, name)) {
+                        Log.i(TAG, "Found full backup data for $packageName.")
+                        full.initializeState(version, state.token, packageInfo)
+                        state.currentPackage = packageName
+                        TYPE_FULL_STREAM
+                    } else throw IOException("No data found for $packageName. Skipping.")
+                }
+                null -> throw IOException("No backup type found for $packageName. Skipping.")
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Error finding restore data for $packageName.", e)
+            failedPackages.add(packageName)
+            // don't return null and cause abort here, but try next package
+            return nextRestorePackage()
+        }
+        return RestoreDescription(packageName, type)
+    }
+
+    private suspend fun nextRestorePackageV0(
+        state: RestoreCoordinatorState,
+        packageInfo: PackageInfo
+    ): RestoreDescription? {
+        val packageName = packageInfo.packageName
         val type = try {
             when {
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(version, state.token, packageInfo, state.pmPackageInfo)
+                    kv.initializeState(0x00, state.token, packageInfo, state.pmPackageInfo)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
-                    full.initializeState(version, state.token, packageInfo)
+                    full.initializeState(0x00, state.token, packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }

@@ -11,6 +11,7 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.settings.Storage
@@ -45,6 +46,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     private val restore = RestoreCoordinator(
         context,
+        crypto,
         settingsManager,
         metadataManager,
         notificationManager,
@@ -65,6 +67,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
     )
     private val packageName = packageInfo.packageName
     private val storageName = getRandomString()
+
+    init {
+        metadata.packageMetadataMap[packageInfo2.packageName] =
+            PackageMetadata(backupType = BackupType.FULL)
+    }
 
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
@@ -210,37 +217,69 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `nextRestorePackage() returns KV description and takes precedence`() = runBlocking {
+    fun `nextRestorePackage() returns KV description`() = runBlocking {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
-        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
+        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, packageInfo) } just Runs
+
+        val expected = RestoreDescription(packageName, TYPE_KEY_VALUE)
+        assertEquals(expected, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `v0 nextRestorePackage() returns KV description and takes precedence`() = runBlocking {
+        restore.beforeStartRestore(metadata.copy(version = 0x00))
+        restore.startRestore(token, packageInfoArray)
+
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
+        every { kv.initializeState(0x00, token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
     }
 
     @Test
-    fun `nextRestorePackage() returns full description if no KV data found`() = runBlocking {
-        restore.beforeStartRestore(metadata)
+    fun `v0 nextRestorePackage() returns full description if no KV data found`() = runBlocking {
+        restore.beforeStartRestore(metadata.copy(version = 0x00))
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo) } returns true
-        every { full.initializeState(VERSION, token, packageInfo) } just Runs
+        every { full.initializeState(0x00, token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_FULL_STREAM)
         assertEquals(expected, restore.nextRestorePackage())
     }
 
     @Test
-    fun `nextRestorePackage() returns NO_MORE_PACKAGES if data found`() = runBlocking {
+    fun `nextRestorePackage() returns NO_MORE_PACKAGES if data not found`() = runBlocking {
         restore.beforeStartRestore(metadata)
-        restore.startRestore(token, packageInfoArray)
+        restore.startRestore(token, packageInfoArray2)
 
-        coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
-        coEvery { full.hasDataForPackage(token, packageInfo) } returns false
+        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        coEvery { plugin.hasData(token, name) } returns false
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        coEvery { plugin.hasData(token, name2) } returns false
+
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `nextRestorePackage() tries next package if one has no backup type()`() = runBlocking {
+        metadata.packageMetadataMap[packageName] =
+            metadata.packageMetadataMap[packageName]!!.copy(backupType = null)
+        restore.beforeStartRestore(metadata)
+        restore.startRestore(token, packageInfoArray2)
+
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        coEvery { plugin.hasData(token, name2) } returns true
+        every { full.initializeState(VERSION, token, packageInfo2) } just Runs
+
+        val expected = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
+        assertEquals(expected, restore.nextRestorePackage())
 
         assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
     }
@@ -250,15 +289,38 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
-        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
+        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, packageInfo) } just Runs
+
+        val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
+        assertEquals(expected, restore.nextRestorePackage())
+
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        coEvery { plugin.hasData(token, name2) } returns true
+        every { full.initializeState(VERSION, token, packageInfo2) } just Runs
+
+        val expected2 =
+            RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
+        assertEquals(expected2, restore.nextRestorePackage())
+
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `v0 nextRestorePackage() returns all packages from startRestore()`() = runBlocking {
+        restore.beforeStartRestore(metadata.copy(version = 0x00))
+        restore.startRestore(token, packageInfoArray2)
+
+        coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
+        every { kv.initializeState(0.toByte(), token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
         coEvery { kv.hasDataForPackage(token, packageInfo2) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo2) } returns true
-        every { full.initializeState(VERSION, token, packageInfo2) } just Runs
+        every { full.initializeState(0.toByte(), token, packageInfo2) } just Runs
 
         val expected2 = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
         assertEquals(expected2, restore.nextRestorePackage())
@@ -267,8 +329,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `when kv#hasDataForPackage() throws, it tries next package`() = runBlocking {
-        restore.beforeStartRestore(metadata)
+    fun `v0 when kv#hasDataForPackage() throws, it tries next package`() = runBlocking {
+        restore.beforeStartRestore(metadata.copy(version = 0x00))
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } throws IOException()
@@ -277,8 +339,21 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `when full#hasDataForPackage() throws, it tries next package`() = runBlocking {
+    fun `when plugin#hasData() throws, it tries next package`() = runBlocking {
         restore.beforeStartRestore(metadata)
+        restore.startRestore(token, packageInfoArray2)
+
+        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        coEvery { plugin.hasData(token, name) } returns false
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        coEvery { plugin.hasData(token, name2) } throws IOException()
+
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `v0 when full#hasDataForPackage() throws, it tries next package`() = runBlocking {
+        restore.beforeStartRestore(metadata.copy(version = 0x00))
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false

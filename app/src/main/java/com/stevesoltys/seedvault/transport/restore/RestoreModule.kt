@@ -7,5 +7,7 @@ val restoreModule = module {
     single { OutputFactory() }
     single { KVRestore(get<RestorePlugin>().kvRestorePlugin, get(), get(), get()) }
     single { FullRestore(get<RestorePlugin>().fullRestorePlugin, get(), get(), get()) }
-    single { RestoreCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
+    single {
+        RestoreCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get(), get())
+    }
 }
