@@ -30,6 +30,7 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
             put(JSON_METADATA, JSONObject().apply {
                 put(JSON_METADATA_VERSION, metadata.version.toInt())
                 put(JSON_METADATA_TOKEN, metadata.token)
+                put(JSON_METADATA_SALT, metadata.salt)
                 put(JSON_METADATA_TIME, metadata.time)
                 put(JSON_METADATA_SDK_INT, metadata.androidVersion)
                 put(JSON_METADATA_INCREMENTAL, metadata.androidIncremental)
@@ -41,6 +42,11 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 put(JSON_PACKAGE_TIME, packageMetadata.time)
                 if (packageMetadata.state != APK_AND_DATA) {
                     put(JSON_PACKAGE_STATE, packageMetadata.state.name)
+                }
+                // We can't require a backup type in metadata at this point,
+                // only when version > 0 and we have actual restore data
+                if (packageMetadata.backupType != null) {
+                    put(JSON_PACKAGE_BACKUP_TYPE, packageMetadata.backupType!!.name)
                 }
                 if (packageMetadata.system) {
                     put(JSON_PACKAGE_SYSTEM, packageMetadata.system)

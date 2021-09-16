@@ -10,8 +10,10 @@ import android.util.Log
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
+import com.stevesoltys.seedvault.metadata.METADATA_SALT_SIZE
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
@@ -45,6 +47,7 @@ internal abstract class TransportTest {
     }
     protected val metadata = BackupMetadata(
         token = token,
+        salt = getRandomBase64(METADATA_SALT_SIZE),
         androidVersion = Random.nextInt(),
         androidIncremental = getRandomString(),
         deviceName = getRandomString()

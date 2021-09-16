@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.metadata
 
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
@@ -35,8 +36,8 @@ internal class MetadataWriterDecoderTest {
     fun `encoded metadata matches decoded metadata (with package, no apk info)`() {
         val time = Random.nextLong()
         val packages = HashMap<String, PackageMetadata>().apply {
-            put(getRandomString(), PackageMetadata(time, APK_AND_DATA))
-            put(getRandomString(), PackageMetadata(time, WAS_STOPPED))
+            put(getRandomString(), PackageMetadata(time, APK_AND_DATA, BackupType.FULL))
+            put(getRandomString(), PackageMetadata(time, WAS_STOPPED, BackupType.KV))
         }
         val metadata = getMetadata(packages)
         assertEquals(
@@ -52,6 +53,7 @@ internal class MetadataWriterDecoderTest {
                 getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = APK_AND_DATA,
+                    backupType = BackupType.FULL,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     splits = listOf(
@@ -78,6 +80,7 @@ internal class MetadataWriterDecoderTest {
                 getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = QUOTA_EXCEEDED,
+                    backupType = BackupType.FULL,
                     system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
@@ -89,6 +92,7 @@ internal class MetadataWriterDecoderTest {
                 getRandomString(), PackageMetadata(
                     time = Random.nextLong(),
                     state = NO_DATA,
+                    backupType = BackupType.KV,
                     system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
@@ -121,6 +125,7 @@ internal class MetadataWriterDecoderTest {
         return BackupMetadata(
             version = Random.nextBytes(1)[0],
             token = Random.nextLong(),
+            salt = getRandomBase64(32),
             time = Random.nextLong(),
             androidVersion = Random.nextInt(),
             androidIncremental = getRandomString(),

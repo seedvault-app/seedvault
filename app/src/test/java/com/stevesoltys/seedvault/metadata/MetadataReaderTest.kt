@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.metadata
 
 import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
@@ -90,6 +91,7 @@ class MetadataReaderTest {
                 "org.example", PackageMetadata(
                     time = Random.nextLong(),
                     state = QUOTA_EXCEEDED,
+                    backupType = BackupType.FULL,
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -123,6 +125,7 @@ class MetadataReaderTest {
         json.put("org.example", JSONObject().apply {
             put(JSON_PACKAGE_TIME, Random.nextLong())
             put(JSON_PACKAGE_STATE, getRandomString())
+            put(JSON_PACKAGE_BACKUP_TYPE, BackupType.FULL.name)
             put(JSON_PACKAGE_VERSION, Random.nextLong())
             put(JSON_PACKAGE_INSTALLER, getRandomString())
             put(JSON_PACKAGE_SHA256, getRandomString())
@@ -130,7 +133,9 @@ class MetadataReaderTest {
         })
         val jsonBytes = json.toString().toByteArray(Utf8)
         val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
+        assertEquals(this.metadata.salt, metadata.salt)
         assertEquals(UNKNOWN_ERROR, metadata.packageMetadataMap["org.example"]!!.state)
+        assertEquals(BackupType.FULL, metadata.packageMetadataMap["org.example"]!!.backupType)
     }
 
     @Test
@@ -142,6 +147,7 @@ class MetadataReaderTest {
         val jsonBytes = json.toString().toByteArray(Utf8)
         val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
         assertFalse(metadata.packageMetadataMap["org.example"]!!.system)
+        assertNull(metadata.packageMetadataMap["org.example"]!!.backupType)
     }
 
     @Test
@@ -149,12 +155,14 @@ class MetadataReaderTest {
         val json = JSONObject(metadataByteArray.toString(Utf8))
         json.put("org.example", JSONObject().apply {
             put(JSON_PACKAGE_TIME, Random.nextLong())
+            put(JSON_PACKAGE_BACKUP_TYPE, BackupType.KV.name)
         })
         val jsonBytes = json.toString().toByteArray(Utf8)
         val result = decoder.decode(jsonBytes, metadata.version, metadata.token)
 
         assertEquals(1, result.packageMetadataMap.size)
         val packageMetadata = result.packageMetadataMap.getOrElse("org.example") { fail() }
+        assertEquals(BackupType.KV, packageMetadata.backupType)
         assertNull(packageMetadata.version)
         assertNull(packageMetadata.installer)
         assertNull(packageMetadata.signatures)
@@ -166,6 +174,7 @@ class MetadataReaderTest {
         return BackupMetadata(
             version = 1.toByte(),
             token = Random.nextLong(),
+            salt = getRandomBase64(METADATA_SALT_SIZE),
             time = Random.nextLong(),
             androidVersion = Random.nextInt(),
             androidIncremental = getRandomString(),

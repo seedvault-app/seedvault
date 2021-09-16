@@ -25,7 +25,7 @@ import java.security.MessageDigest
 private val TAG = ApkBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
-class ApkBackup(
+internal class ApkBackup(
     private val pm: PackageManager,
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager
