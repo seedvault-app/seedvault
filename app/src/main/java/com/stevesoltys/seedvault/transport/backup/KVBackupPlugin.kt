@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo
 import java.io.IOException
 import java.io.OutputStream
 
+@Deprecated("Use BackupPlugin instead")
 interface KVBackupPlugin {
 
     /**
