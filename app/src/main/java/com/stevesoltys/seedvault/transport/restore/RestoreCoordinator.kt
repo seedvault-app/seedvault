@@ -216,7 +216,7 @@ internal class RestoreCoordinator(
                     val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
                     if (plugin.hasData(state.token, name)) {
                         Log.i(TAG, "Found full backup data for $packageName.")
-                        full.initializeState(version, state.token, packageInfo)
+                        full.initializeState(version, state.token, name, packageInfo)
                         state.currentPackage = packageName
                         TYPE_FULL_STREAM
                     } else throw IOException("No data found for $packageName. Skipping.")
@@ -232,6 +232,7 @@ internal class RestoreCoordinator(
         return RestoreDescription(packageName, type)
     }
 
+    @Suppress("deprecation")
     private suspend fun nextRestorePackageV0(
         state: RestoreCoordinatorState,
         packageInfo: PackageInfo
@@ -248,7 +249,7 @@ internal class RestoreCoordinator(
                 }
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
-                    full.initializeState(0x00, state.token, packageInfo)
+                    full.initializeState(0x00, state.token, "", packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }
