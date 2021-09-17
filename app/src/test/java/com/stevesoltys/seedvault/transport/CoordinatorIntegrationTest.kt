@@ -97,7 +97,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
-        FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
         crypto,
@@ -122,7 +122,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val key264 = key2.encodeBase64()
 
     init {
+        @Suppress("deprecation")
         every { backupPlugin.kvBackupPlugin } returns kvBackupPlugin
+        @Suppress("deprecation")
         every { backupPlugin.fullBackupPlugin } returns fullBackupPlugin
     }
 
@@ -349,12 +351,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // reverse the backup streams into restore input
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
         val rOutputStream = ByteArrayOutputStream()
-        coEvery {
-            fullRestorePlugin.getInputStreamForPackage(
-                token,
-                packageInfo
-            )
-        } returns rInputStream
+        coEvery { backupPlugin.getInputStream(token, name) } returns rInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns rOutputStream
 
         // restore data

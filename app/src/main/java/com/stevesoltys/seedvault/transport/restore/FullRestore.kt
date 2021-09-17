@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
@@ -22,6 +23,7 @@ import java.security.GeneralSecurityException
 private class FullRestoreState(
     val version: Byte,
     val token: Long,
+    val name: String,
     val packageInfo: PackageInfo
 ) {
     var inputStream: InputStream? = null
@@ -31,7 +33,8 @@ private val TAG = FullRestore::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestore(
-    private val plugin: FullRestorePlugin,
+    private val plugin: BackupPlugin,
+    private val legacyPlugin: FullRestorePlugin,
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
     private val crypto: Crypto
@@ -43,10 +46,13 @@ internal class FullRestore(
 
     /**
      * Return true if there is data stored for the given package.
+     *
+     * Deprecated. Use only for v0 backups.
      */
     @Throws(IOException::class)
+    @Deprecated("Use BackupPlugin#hasData() instead")
     suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
-        return plugin.hasDataForPackage(token, packageInfo)
+        return legacyPlugin.hasDataForPackage(token, packageInfo)
     }
 
     /**
@@ -55,8 +61,8 @@ internal class FullRestore(
      * It is possible that the system decides to not restore the package.
      * Then a new state will be initialized right away without calling other methods.
      */
-    fun initializeState(version: Byte, token: Long, packageInfo: PackageInfo) {
-        state = FullRestoreState(version, token, packageInfo)
+    fun initializeState(version: Byte, token: Long, name: String, packageInfo: PackageInfo) {
+        state = FullRestoreState(version, token, name, packageInfo)
     }
 
     /**
@@ -93,12 +99,16 @@ internal class FullRestore(
         if (state.inputStream == null) {
             Log.i(TAG, "First Chunk, initializing package input stream.")
             try {
-                val inputStream = plugin.getInputStreamForPackage(state.token, state.packageInfo)
-                val version = headerReader.readVersion(inputStream, state.version)
-                if (version == 0.toByte()) {
+                if (state.version == 0.toByte()) {
+                    val inputStream =
+                        legacyPlugin.getInputStreamForPackage(state.token, state.packageInfo)
+                    val version = headerReader.readVersion(inputStream, state.version)
+                    @Suppress("deprecation")
                     crypto.decryptHeader(inputStream, version, packageName)
                     state.inputStream = inputStream
                 } else {
+                    val inputStream = plugin.getInputStream(state.token, state.name)
+                    val version = headerReader.readVersion(inputStream, state.version)
                     val ad = getADForFull(version, packageName)
                     state.inputStream = crypto.newDecryptingStream(inputStream, ad)
                 }
@@ -135,6 +145,7 @@ internal class FullRestore(
         if (state.version == 0.toByte()) {
             // read segment from input stream and decrypt it
             val decrypted = try {
+                @Suppress("deprecation")
                 crypto.decryptSegment(inputStream)
             } catch (e: EOFException) {
                 Log.i(TAG, "   EOF")

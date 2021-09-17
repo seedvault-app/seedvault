@@ -52,7 +52,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
-        FullRestore(fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
         crypto,
