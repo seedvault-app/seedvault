@@ -268,7 +268,9 @@ internal class BackupCoordinator(
                 return TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
             }
         }
-        val result = kv.performBackup(packageInfo, data, flags)
+        val token = settingsManager.getToken() ?: error("no token in performFullBackup")
+        val salt = metadataManager.salt
+        val result = kv.performBackup(packageInfo, data, flags, token, salt)
         if (result == TRANSPORT_OK && packageName == MAGIC_PACKAGE_MANAGER) {
             // hook in here to back up APKs of apps that are otherwise not allowed for backup
             backUpApksOfNotBackedUpPackages()
@@ -360,7 +362,7 @@ internal class BackupCoordinator(
         val token = settingsManager.getToken() ?: error("no token in clearBackupData")
         val salt = metadataManager.salt
         try {
-            kv.clearBackupData(packageInfo)
+            kv.clearBackupData(packageInfo, token, salt)
         } catch (e: IOException) {
             Log.w(TAG, "Error clearing K/V backup data for $packageName", e)
             return TRANSPORT_ERROR

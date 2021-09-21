@@ -39,7 +39,10 @@ internal class FullBackupTest : BackupTest() {
     fun `checkFullBackupSize exceeds quota`() {
         every { settingsManager.isQuotaUnlimited() } returns false
 
-        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1))
+        assertEquals(
+            TRANSPORT_QUOTA_EXCEEDED,
+            backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
+        )
     }
 
     @Test

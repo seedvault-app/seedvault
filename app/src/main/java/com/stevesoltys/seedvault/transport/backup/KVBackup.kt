@@ -9,16 +9,21 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
+import java.util.zip.GZIPOutputStream
 
-class KVBackupState(internal val packageInfo: PackageInfo)
+class KVBackupState(
+    internal val packageInfo: PackageInfo,
+    val token: Long,
+    val name: String,
+    val db: KVDb
+) {
+    var needsUpload: Boolean = false
+}
 
 const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 
@@ -26,11 +31,11 @@ private val TAG = KVBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackup(
-    private val plugin: KVBackupPlugin,
+    private val plugin: BackupPlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
-    private val nm: BackupNotificationManager
+    private val dbManager: KvDbManager
 ) {
 
     private var state: KVBackupState? = null
@@ -39,14 +44,18 @@ internal class KVBackup(
 
     fun getCurrentPackage() = state?.packageInfo
 
-    fun getQuota(): Long {
-        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else plugin.getQuota()
+    fun getQuota(): Long = if (settingsManager.isQuotaUnlimited()) {
+        Long.MAX_VALUE
+    } else {
+        DEFAULT_QUOTA_KEY_VALUE_BACKUP
     }
 
     suspend fun performBackup(
         packageInfo: PackageInfo,
         data: ParcelFileDescriptor,
-        flags: Int
+        flags: Int,
+        token: Long,
+        salt: String
     ): Int {
         val dataNotChanged = flags and FLAG_DATA_NOT_CHANGED != 0
         val isIncremental = flags and FLAG_INCREMENTAL != 0
@@ -73,7 +82,9 @@ internal class KVBackup(
         if (state != null) {
             throw AssertionError("Have state for ${state.packageInfo.packageName}")
         }
-        this.state = KVBackupState(packageInfo)
+        val name = crypto.getNameForPackage(salt, packageName)
+        val db = dbManager.getDb(packageName)
+        this.state = KVBackupState(packageInfo, token, name, db)
 
         // no need for backup when no data has changed
         if (dataNotChanged) {
@@ -82,12 +93,7 @@ internal class KVBackup(
         }
 
         // check if we have existing data for the given package
-        val hasDataForPackage = try {
-            plugin.hasDataForPackage(packageInfo)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error checking for existing data for ${packageInfo.packageName}.", e)
-            return backupError(TRANSPORT_ERROR)
-        }
+        val hasDataForPackage = dbManager.existsDb(packageName)
         if (isIncremental && !hasDataForPackage) {
             Log.w(
                 TAG, "Requested incremental, but transport currently stores no data" +
@@ -101,78 +107,34 @@ internal class KVBackup(
         if (isNonIncremental && hasDataForPackage) {
             Log.w(TAG, "Requested non-incremental, deleting existing data.")
             try {
-                clearBackupData(packageInfo)
+                clearBackupData(packageInfo, token, salt)
             } catch (e: IOException) {
                 Log.w(TAG, "Error clearing backup data for ${packageInfo.packageName}.", e)
             }
         }
 
         // parse and store the K/V updates
-        return storeRecords(packageInfo, data)
+        return storeRecords(data)
     }
 
-    private suspend fun storeRecords(packageInfo: PackageInfo, data: ParcelFileDescriptor): Int {
-        val backupSequence: Iterable<Result<KVOperation>>
-        val pmRecordNumber: Int?
-        if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER) {
-            // Since the package manager has many small keys to store,
-            // and this can be slow, especially on cloud-based storage,
-            // we get the entire data set first, so we can show progress notifications.
-            val list = parseBackupStream(data).toList()
-            backupSequence = list
-            pmRecordNumber = list.size
-        } else {
-            backupSequence = parseBackupStream(data).asIterable()
-            pmRecordNumber = null
-        }
+    private fun storeRecords(data: ParcelFileDescriptor): Int {
+        val state = this.state ?: error("No state in storeRecords")
         // apply the delta operations
-        var i = 1
-        for (result in backupSequence) {
+        for (result in parseBackupStream(data)) {
             if (result is Result.Error) {
                 Log.e(TAG, "Exception reading backup input", result.exception)
                 return backupError(TRANSPORT_ERROR)
             }
+            state.needsUpload = true
             val op = (result as Result.Ok).result
-            try {
-                storeRecord(packageInfo, op, i++, pmRecordNumber)
-            } catch (e: IOException) {
-                Log.e(TAG, "Unable to update base64Key file for base64Key ${op.base64Key}", e)
-                // Returning something more forgiving such as TRANSPORT_PACKAGE_REJECTED
-                // will still make the entire backup fail.
-                // TODO However, TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED might buy us a retry,
-                //  we would just need to be careful not to create an infinite loop
-                //  for permanent errors.
-                return backupError(TRANSPORT_ERROR)
+            if (op.value == null) {
+                Log.e(TAG, "Deleting record with key ${op.key}")
+                state.db.delete(op.key)
+            } else {
+                state.db.put(op.key, op.value)
             }
         }
         return TRANSPORT_OK
-    }
-
-    @Throws(IOException::class)
-    private suspend fun storeRecord(
-        packageInfo: PackageInfo,
-        op: KVOperation,
-        currentNum: Int,
-        pmRecordNumber: Int?
-    ) {
-        // update notification for package manager backup
-        if (pmRecordNumber != null) {
-            nm.onPmKvBackup(op.key, currentNum, pmRecordNumber)
-        }
-        // check if record should get deleted
-        if (op.value == null) {
-            Log.e(TAG, "Deleting record with base64Key ${op.base64Key}")
-            plugin.deleteRecord(packageInfo, op.base64Key)
-        } else {
-            plugin.getOutputStreamForRecord(packageInfo, op.base64Key).use { outputStream ->
-                outputStream.write(ByteArray(1) { VERSION })
-                val ad = getADForKV(VERSION, packageInfo.packageName)
-                crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->
-                    encryptedStream.write(op.value)
-                    encryptedStream.flush()
-                }
-            }
-        }
     }
 
     /**
@@ -194,12 +156,11 @@ internal class KVBackup(
             }
             // encode key
             val key = changeSet.key
-            val base64Key = key.encodeBase64()
             val dataSize = changeSet.dataSize
 
             // read value
             val value = if (dataSize >= 0) {
-                Log.v(TAG, "  Delta operation key $key   size $dataSize   key64 $base64Key")
+                Log.v(TAG, "  Delta operation key $key   size $dataSize")
                 val bytes = ByteArray(dataSize)
                 val bytesRead = try {
                     changeSet.readEntityData(bytes, 0, dataSize)
@@ -213,19 +174,31 @@ internal class KVBackup(
                 bytes
             } else null
             // add change operation to the sequence
-            Result.Ok(KVOperation(key, base64Key, value))
+            Result.Ok(KVOperation(key, value))
         }
     }
 
     @Throws(IOException::class)
-    suspend fun clearBackupData(packageInfo: PackageInfo) {
-        plugin.removeDataOfPackage(packageInfo)
+    suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
+        Log.i(TAG, "Clearing K/V data of ${packageInfo.packageName}")
+        val name = state?.name ?: crypto.getNameForPackage(salt, packageInfo.packageName)
+        plugin.removeData(token, name)
+        if (!dbManager.deleteDb(packageInfo.packageName)) throw IOException()
     }
 
-    fun finishBackup(): Int {
-        Log.i(TAG, "Finish K/V Backup of ${state!!.packageInfo.packageName}")
-        plugin.packageFinished(state!!.packageInfo)
-        state = null
+    @Throws(IOException::class)
+    suspend fun finishBackup(): Int {
+        val state = this.state ?: error("No state in finishBackup")
+        val packageName = state.packageInfo.packageName
+        Log.i(TAG, "Finish K/V Backup of $packageName")
+
+        try {
+            if (state.needsUpload) uploadDb(state.token, state.name, packageName, state.db)
+        } catch (e: IOException) {
+            return TRANSPORT_ERROR
+        } finally {
+            this.state = null
+        }
         return TRANSPORT_OK
     }
 
@@ -234,17 +207,43 @@ internal class KVBackup(
      * because [finishBackup] is not called when we don't return [TRANSPORT_OK].
      */
     private fun backupError(result: Int): Int {
-        "Resetting state because of K/V Backup error of ${state!!.packageInfo.packageName}".let {
-            Log.i(TAG, it)
-        }
-        plugin.packageFinished(state!!.packageInfo)
-        state = null
+        val state = this.state ?: error("No state in backupError")
+        val packageName = state.packageInfo.packageName
+        Log.i(TAG, "Resetting state because of K/V Backup error of $packageName")
+
+        state.db.close()
+
+        this.state = null
         return result
+    }
+
+    @Throws(IOException::class)
+    private suspend fun uploadDb(
+        token: Long,
+        name: String,
+        packageName: String,
+        db: KVDb
+    ) {
+        db.vacuum()
+        db.close()
+
+        plugin.getOutputStream(token, name).use { outputStream ->
+            outputStream.write(ByteArray(1) { VERSION })
+            val ad = getADForKV(VERSION, packageName)
+            crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->
+                GZIPOutputStream(encryptedStream).use { gZipStream ->
+                    dbManager.getDbInputStream(packageName).use { inputStream ->
+                        inputStream.copyTo(gZipStream)
+                    }
+                    // TODO remove log
+                    Log.d(TAG, "=> Uploaded db file for $packageName")
+                }
+            }
+        }
     }
 
     private class KVOperation(
         val key: String,
-        val base64Key: String,
         /**
          * value is null when this is a deletion operation
          */

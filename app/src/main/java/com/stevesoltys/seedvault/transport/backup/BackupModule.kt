@@ -18,13 +18,14 @@ val backupModule = module {
             metadataManager = get()
         )
     }
+    single<KvDbManager> { KvDbManagerImpl(androidContext()) }
     single {
         KVBackup(
-            plugin = get<BackupPlugin>().kvBackupPlugin,
+            plugin = get(),
             settingsManager = get(),
             inputFactory = get(),
             crypto = get(),
-            nm = get()
+            dbManager = get()
         )
     }
     single {

@@ -222,7 +222,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `clearing KV backup data throws`() = runBlocking {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
-        coEvery { kv.clearBackupData(packageInfo) } throws IOException()
+        coEvery { kv.clearBackupData(packageInfo, token, salt) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
     }
@@ -231,7 +231,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `clearing full backup data throws`() = runBlocking {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
-        coEvery { kv.clearBackupData(packageInfo) } just Runs
+        coEvery { kv.clearBackupData(packageInfo, token, salt) } just Runs
         coEvery { full.clearBackupData(packageInfo, token, salt) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
@@ -241,7 +241,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `clearing backup data succeeds`() = runBlocking {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
-        coEvery { kv.clearBackupData(packageInfo) } just Runs
+        coEvery { kv.clearBackupData(packageInfo, token, salt) } just Runs
         coEvery { full.clearBackupData(packageInfo, token, salt) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.clearBackupData(packageInfo))
@@ -264,7 +264,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         every {
             metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
         } just Runs
-        every { kv.finishBackup() } returns result
+        coEvery { kv.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
 
         assertEquals(result, backup.finishBackup())
@@ -416,8 +416,12 @@ internal class BackupCoordinatorTest : BackupTest() {
 
         every { settingsManager.canDoBackupNow() } returns true
         every { metadataManager.isLegacyFormat } returns false
+        every { settingsManager.getToken() } returns token
+        every { metadataManager.salt } returns salt
         // do actual @pm@ backup
-        coEvery { kv.performBackup(packageInfo, fileDescriptor, 0) } returns TRANSPORT_OK
+        coEvery {
+            kv.performBackup(packageInfo, fileDescriptor, 0, token, salt)
+        } returns TRANSPORT_OK
         // now check if we have opt-out apps that we need to back up APKs for
         every { packageService.notBackedUpPackages } returns notAllowedPackages
         // update notification
