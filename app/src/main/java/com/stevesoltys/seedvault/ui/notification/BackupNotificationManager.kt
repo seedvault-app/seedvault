@@ -90,6 +90,7 @@ internal class BackupNotificationManager(private val context: Context) {
     /**
      * This is expected to get called before [onOptOutAppBackup] and [onBackupUpdate].
      */
+    // TODO remove?
     fun onPmKvBackup(packageName: String, transferred: Int, expected: Int) {
         val text = "@pm@ record for $packageName"
         if (expectedApps == null) {
