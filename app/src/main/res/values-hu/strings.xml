@@ -1,2 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="recovery_code_verification_ok_title">Visszaállító kód ellenőrizve</string>
+    <string name="recovery_code_error_checksum_word">A kódod érvénytelen. Kérlek ellenőrizd a szavakat és próbáld újra!</string>
+    <string name="recovery_code_error_invalid_word">Rossz szó. Lehet, hogy %1$s vagy %2$s-ra/re gondoltál\?</string>
+    <string name="recovery_code_error_empty_word">Elfelejtetted beírni ezt a szót.</string>
+    <string name="recovery_code_input_hint_12">12. szó</string>
+    <string name="recovery_code_input_hint_11">11. szó</string>
+    <string name="recovery_code_input_hint_10">10. szó</string>
+    <string name="recovery_code_input_hint_9">9. szó</string>
+    <string name="recovery_code_input_hint_8">8. szó</string>
+    <string name="recovery_code_input_hint_7">7. szó</string>
+    <string name="recovery_code_input_hint_6">6. szó</string>
+    <string name="recovery_code_input_hint_5">5. szó</string>
+    <string name="recovery_code_input_hint_4">4. szó</string>
+    <string name="recovery_code_input_hint_3">3. szó</string>
+    <string name="recovery_code_input_hint_2">2. szó</string>
+    <string name="recovery_code_input_hint_1">1. szó</string>
+    <string name="recovery_code_done_button">Ellenőriz</string>
+    <string name="recovery_code_input_intro">Add meg a 12 szavas visszaállító kódod, amit leírtál amikor mentéseket hoztál létre.</string>
+    <string name="recovery_code_confirm_intro">Add meg a 12 szavas visszaállító kódod, hogy biztosan működjön, amikor kelleni fog.</string>
+    <string name="recovery_code_write_it_down">Írd le papírra most!</string>
+    <string name="recovery_code_12_word_intro">Kelleni fog a 12-szavas helyreállító kódod, hogy vissza lehessen állítani a mentett adatokat.</string>
+    <string name="recovery_code_confirm_button">Kód megerősítése</string>
+    <string name="recovery_code_title">Helyreállítási kód</string>
+    <string name="storage_check_fragment_error_button">Vissza</string>
+    <string name="storage_check_fragment_permission_error">Nem lehet hozzáférést szerezni, hogy írni lehessen a mentés helyére.</string>
+    <string name="storage_check_fragment_backup_error">Hiba történt mentés helyének elérése közben.</string>
+    <string name="storage_check_fragment_restore_title">Mentések keresése…</string>
+    <string name="storage_check_fragment_backup_title">Mentés hely inicializálása…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Fiók nem elérhető. Hozz létre egyet (vagy kapcsold ki a jelszót).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Koppints, hogy létrehozz egy fiókot</string>
+    <string name="storage_fake_nextcloud_summary">Koppints a telepítéshez</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> szabad</string>
+    <string name="storage_fake_drive_summary">Be kell hogy legyen dugva</string>
+    <string name="storage_fake_drive_title">USB flash meghajtó</string>
+    <string name="storage_fragment_warning">Személyek akik hozzáférnek a tárolási helyedhez meg tudhatják mely appokat használod, de nem férhetnek hozzá az app adataihoz.</string>
+    <string name="storage_fragment_restore_title">Hol találhatóak a mentéseid\?</string>
+    <string name="storage_fragment_backup_title">Válaszd ki a mentések tárolásának helyét</string>
+    <string name="settings_backup_recovery_code_summary">Létező kód ellenőrzése vagy új generálása</string>
+    <string name="settings_backup_recovery_code">Visszaállítási kód</string>
+    <string name="settings_backup_now">Mentés most</string>
+    <string name="settings_backup_exclude_apps">Appok kizárása</string>
+    <string name="settings_backup_status_summary">Utolsó mentés: %1$s</string>
+    <string name="settings_backup_status_title">Biztonsági mentés állapota</string>
+    <string name="settings_backup_apk_dialog_disable">App mentés kikapcsolása</string>
+    <string name="settings_backup_apk_dialog_cancel">Mégsem</string>
+    <string name="settings_backup_apk_dialog_message">A kikapcsolt app biztonsági mentés továbbra is fog app adat mentést készíteni. Viszont, nem lesz automatikusan helyreállítva.
+\n
+\nManuálisan kell majd az összes appodat telepítened amíg az \"Automatikus Visszaállítás\" be van kapcsolva.</string>
+    <string name="settings_backup_apk_dialog_title">Biztos, hogy ki legyen kapcsolva az appok biztonsági mentése\?</string>
+    <string name="settings_backup_apk_summary">Mentsd el magukat az appokat. Egyébként, csak app adat lesz elmentve.</string>
+    <string name="settings_backup_apk_title">App biztonsági mentés</string>
+    <string name="settings_category_app_data_backup">App adat biztonsági mentés</string>
+    <string name="settings_auto_restore_summary_usb">Megjegyzés: A %1$s-d be kell hogy legyen dugva, hogy ez működjön.</string>
+    <string name="settings_auto_restore_summary">Egy app újratelepítésénél, a mentett beállítások és adatok legyenek visszaállítva.</string>
+    <string name="settings_auto_restore_title">Automatikus visszaállítás</string>
+    <string name="settings_info">Az összes mentés a telefonodon van titkosítva. Hogy visszaállíts mentésből, kelleni fog a 12-szavas visszaállító kódod.</string>
+    <string name="settings_backup_last_backup_never">Soha</string>
+    <string name="settings_backup_location_internal">Belső tárhely</string>
+    <string name="settings_backup_location_none">Nincs</string>
+    <string name="settings_backup_location">Mentés helye</string>
+    <string name="settings_backup">Mentsd el az adataim</string>
+    <string name="restore_backup_button">Biztonsági mentés visszaállítása</string>
+    <string name="current_destination_string">Mentési állapot és beállítások</string>
+    <string name="data_management_label">Seedvault biztonsági mentés</string>
+    <string name="backup">Biztonsági mentés</string>
+</resources>
