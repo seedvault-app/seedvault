@@ -223,19 +223,20 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns true
-        every { kv.initializeState(VERSION, token, packageInfo) } just Runs
+        every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
     }
 
     @Test
+    @Suppress("Deprecation")
     fun `v0 nextRestorePackage() returns KV description and takes precedence`() = runBlocking {
         restore.beforeStartRestore(metadata.copy(version = 0x00))
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(0x00, token, packageInfo) } just Runs
+        every { kv.initializeState(0x00, token, "", packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -292,7 +293,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns true
-        every { kv.initializeState(VERSION, token, packageInfo) } just Runs
+        every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -315,7 +316,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray2)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(0.toByte(), token, packageInfo) } just Runs
+        every { kv.initializeState(0.toByte(), token, "", packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -331,6 +332,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
+    @Suppress("Deprecation")
     fun `v0 when kv#hasDataForPackage() throws, it tries next package`() = runBlocking {
         restore.beforeStartRestore(metadata.copy(version = 0x00))
         restore.startRestore(token, packageInfoArray)

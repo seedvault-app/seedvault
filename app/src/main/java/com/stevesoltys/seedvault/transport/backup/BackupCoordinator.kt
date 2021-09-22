@@ -272,6 +272,7 @@ internal class BackupCoordinator(
         val salt = metadataManager.salt
         val result = kv.performBackup(packageInfo, data, flags, token, salt)
         if (result == TRANSPORT_OK && packageName == MAGIC_PACKAGE_MANAGER) {
+            // TODO move to finish backup of @pm@ so we can upload the DB before
             // hook in here to back up APKs of apps that are otherwise not allowed for backup
             backUpApksOfNotBackedUpPackages()
         }
@@ -392,7 +393,9 @@ internal class BackupCoordinator(
             }
             // getCurrentPackage() not-null because we have state
             onPackageBackedUp(kv.getCurrentPackage()!!, BackupType.KV)
+            val isPmBackup = kv.getCurrentPackage()!!.packageName == MAGIC_PACKAGE_MANAGER
             kv.finishBackup()
+            // TODO move @pm@ backup hook here
         }
         full.hasState() -> {
             check(!kv.hasState()) {

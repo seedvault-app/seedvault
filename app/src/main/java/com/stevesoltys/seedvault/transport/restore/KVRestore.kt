@@ -15,19 +15,25 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.KVDb
+import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.ArrayList
+import java.util.zip.GZIPInputStream
 import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
     val version: Byte,
     val token: Long,
+    val name: String,
     val packageInfo: PackageInfo,
     /**
      * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
      */
+    @Deprecated("TODO remove?")
     val pmPackageInfo: PackageInfo?
 )
 
@@ -35,20 +41,25 @@ private val TAG = KVRestore::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestore(
-    private val plugin: KVRestorePlugin,
+    private val plugin: BackupPlugin,
+    private val legacyPlugin: KVRestorePlugin,
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
-    private val crypto: Crypto
+    private val crypto: Crypto,
+    private val dbManager: KvDbManager
 ) {
 
     private var state: KVRestoreState? = null
 
     /**
      * Return true if there are records stored for the given package.
+     *
+     * Deprecated. Use only for v0 backups.
      */
     @Throws(IOException::class)
+    @Deprecated("Use BackupPlugin#hasData() instead")
     suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
-        return plugin.hasDataForPackage(token, packageInfo)
+        return legacyPlugin.hasDataForPackage(token, packageInfo)
     }
 
     /**
@@ -62,10 +73,11 @@ internal class KVRestore(
     fun initializeState(
         version: Byte,
         token: Long,
+        name: String,
         packageInfo: PackageInfo,
         pmPackageInfo: PackageInfo? = null
     ) {
-        state = KVRestoreState(version, token, packageInfo, pmPackageInfo)
+        state = KVRestoreState(version, token, name, packageInfo, pmPackageInfo)
     }
 
     /**
@@ -78,12 +90,66 @@ internal class KVRestore(
     suspend fun getRestoreData(data: ParcelFileDescriptor): Int {
         val state = this.state ?: throw IllegalStateException("no state")
 
+        // take legacy path for version 0
+        if (state.version == 0x00.toByte()) return getRestoreDataV0(state, data)
+
+        return try {
+            val db = getRestoreDb(state)
+            val out = outputFactory.getBackupDataOutput(data)
+            db.getAll().sortedBy { it.first }.forEach { (key, value) ->
+                val size = value.size
+                Log.v(TAG, "    ... key=$key size=$size")
+                out.writeEntityHeader(key, size)
+                out.writeEntityData(value, size)
+            }
+            TRANSPORT_OK
+        } catch (e: UnsupportedVersionException) {
+            Log.e(TAG, "Unsupported version in backup: ${e.version}", e)
+            TRANSPORT_ERROR
+        } catch (e: IOException) {
+            Log.e(TAG, "Unable to process K/V backup database", e)
+            TRANSPORT_ERROR
+        } catch (e: GeneralSecurityException) {
+            Log.e(TAG, "General security exception while reading backup database", e)
+            TRANSPORT_ERROR
+        } catch (e: AEADBadTagException) {
+            Log.e(TAG, "Decryption failed", e)
+            TRANSPORT_ERROR
+        } finally {
+            dbManager.deleteDb(state.packageInfo.packageName, true)
+            this.state = null
+            closeQuietly(data)
+        }
+    }
+
+    @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
+    private suspend fun getRestoreDb(state: KVRestoreState): KVDb {
+        val packageName = state.packageInfo.packageName
+        plugin.getInputStream(state.token, state.name).use { inputStream ->
+            headerReader.readVersion(inputStream, state.version)
+            val ad = getADForKV(VERSION, packageName)
+            crypto.newDecryptingStream(inputStream, ad).use { decryptedStream ->
+                GZIPInputStream(decryptedStream).use { gzipStream ->
+                    dbManager.getDbOutputStream(packageName).use { outputStream ->
+                        gzipStream.copyTo(outputStream)
+                    }
+                }
+            }
+        }
+        return dbManager.getDb(packageName, true)
+    }
+
+    //
+    // v0 restore legacy code below
+    //
+
+    private suspend fun getRestoreDataV0(state: KVRestoreState, data: ParcelFileDescriptor): Int {
         // The restore set is the concatenation of the individual record blobs,
         // each of which is a file in the package's directory.
         // We return the data in lexical order sorted by key,
         // so that apps which use synthetic keys like BLOB_1, BLOB_2, etc
         // will see the date in the most obvious order.
-        val sortedKeys = getSortedKeys(state.token, state.packageInfo)
+        val sortedKeys = getSortedKeysV0(state.token, state.packageInfo)
         if (sortedKeys == null) {
             // nextRestorePackage() ensures the dir exists, so this is an error
             Log.e(TAG, "No keys for package: ${state.packageInfo.packageName}")
@@ -96,7 +162,7 @@ internal class KVRestore(
         return try {
             val dataOutput = outputFactory.getBackupDataOutput(data)
             for (keyEntry in sortedKeys) {
-                readAndWriteValue(state, keyEntry, dataOutput)
+                readAndWriteValueV0(state, keyEntry, dataOutput)
             }
             TRANSPORT_OK
         } catch (e: IOException) {
@@ -104,9 +170,6 @@ internal class KVRestore(
             TRANSPORT_ERROR
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception while reading backup records", e)
-            TRANSPORT_ERROR
-        } catch (e: GeneralSecurityException) {
-            Log.e(TAG, "General security exception while reading backup records", e)
             TRANSPORT_ERROR
         } catch (e: UnsupportedVersionException) {
             Log.e(TAG, "Unsupported version in backup: ${e.version}", e)
@@ -124,9 +187,9 @@ internal class KVRestore(
      * Return a list of the records (represented by key files) in the given directory,
      * sorted lexically by the Base64-decoded key file name, not by the on-disk filename.
      */
-    private suspend fun getSortedKeys(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
+    private suspend fun getSortedKeysV0(token: Long, packageInfo: PackageInfo): List<DecodedKey>? {
         val records: List<String> = try {
-            plugin.listRecords(token, packageInfo)
+            legacyPlugin.listRecords(token, packageInfo)
         } catch (e: IOException) {
             return null
         }
@@ -150,24 +213,18 @@ internal class KVRestore(
     /**
      * Read the encrypted value for the given key and write it to the given [BackupDataOutput].
      */
+    @Suppress("Deprecation")
     @Throws(IOException::class, UnsupportedVersionException::class, GeneralSecurityException::class)
-    private suspend fun readAndWriteValue(
+    private suspend fun readAndWriteValueV0(
         state: KVRestoreState,
         dKey: DecodedKey,
         out: BackupDataOutput
-    ) = plugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
+    ) = legacyPlugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
         .use { inputStream ->
             val version = headerReader.readVersion(inputStream, state.version)
             val packageName = state.packageInfo.packageName
-            val value = if (version == 0.toByte()) {
-                crypto.decryptHeader(inputStream, version, packageName, dKey.key)
-                crypto.decryptMultipleSegments(inputStream)
-            } else {
-                val ad = getADForKV(VERSION, packageName)
-                crypto.newDecryptingStream(inputStream, ad).use { decryptedStream ->
-                    decryptedStream.readBytes()
-                }
-            }
+            crypto.decryptHeader(inputStream, version, packageName, dKey.key)
+            val value = crypto.decryptMultipleSegments(inputStream)
             val size = value.size
             Log.v(TAG, "    ... key=${dKey.key} size=$size")
 

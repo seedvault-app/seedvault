@@ -3,22 +3,29 @@ package com.stevesoltys.seedvault.transport.backup
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.toHexString
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertNull
-import junit.framework.Assert.assertTrue
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 import kotlin.random.Random
 
 class TestKvDbManager : KvDbManager {
 
     private var db: TestKVDb? = null
+    private val outputStream = ByteArrayOutputStream()
 
-    override fun getDb(packageName: String): KVDb {
+    override fun getDb(packageName: String, isRestore: Boolean): KVDb {
+        if (isRestore) {
+            readDbFromStream(ByteArrayInputStream(outputStream.toByteArray()))
+            return this.db!!
+        }
         return TestKVDb().apply { db = this }
     }
 
@@ -26,11 +33,16 @@ class TestKvDbManager : KvDbManager {
         return ByteArrayInputStream(db!!.serialize().toByteArray())
     }
 
+    override fun getDbOutputStream(packageName: String): OutputStream {
+        outputStream.reset()
+        return outputStream
+    }
+
     override fun existsDb(packageName: String): Boolean {
         return db != null
     }
 
-    override fun deleteDb(packageName: String): Boolean {
+    override fun deleteDb(packageName: String, isRestore: Boolean): Boolean {
         clearDb()
         return true
     }
