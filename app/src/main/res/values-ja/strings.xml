@@ -54,4 +54,6 @@
     <string name="storage_fake_drive_summary">ケーブルを接続してください</string>
     <string name="storage_fragment_backup_title">バックアップを保存する場所の選択してください</string>
     <string name="settings_backup_recovery_code_summary">既存のコードで認証するか、新しいコードを生成する</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">アカウントが見つかりません。新たなアカウントを作成する（もしくはパスコードを無効にする）。</string>
+    <string name="settings_backup_apk_summary">アプリそのものをバックアップする。さもなければアプリのデータのみがバックアップされます。</string>
 </resources>
