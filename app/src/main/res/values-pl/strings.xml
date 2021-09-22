@@ -3,8 +3,8 @@
     <string name="storage_check_fragment_backup_error">Wystąpił błąd podczas uzyskiwania dostępu do lokalizacji kopii zapasowej.</string>
     <string name="storage_check_fragment_restore_title">Szukanie kopii zapasowych…</string>
     <string name="storage_check_fragment_backup_title">Inicjowanie lokalizacji kopii zapasowej…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Kliknij, aby skonfigurować konto</string>
-    <string name="storage_fake_nextcloud_summary">Kliknij by zainstalować</string>
+    <string name="storage_fake_nextcloud_summary_installed">Stuknij, aby skonfigurować konto</string>
+    <string name="storage_fake_nextcloud_summary">Stuknij, aby zainstalować</string>
     <string name="storage_fragment_backup_title">Wybierz miejsce przechowywania kopii zapasowych</string>
     <string name="settings_backup_now">Utwórz kopię zapasową teraz</string>
     <string name="settings_backup_exclude_apps">Wyklucz aplikacje</string>
@@ -30,9 +30,9 @@
     <string name="settings_auto_restore_summary_usb">Uwaga: Twój %1$s musi być podłączony, aby to zadziałało.</string>
     <string name="backup">Kopia zapasowa</string>
     <string name="settings_backup_status_title">Status kopii zapasowej</string>
-    <string name="settings_backup_apk_dialog_message">Wyłączona kopia zapasowa aplikacji w dalszym ciągu zapisuje kopie danych aplikacji. Nie przywróci ich jednak automatycznie. 
+    <string name="settings_backup_apk_dialog_message">Wyłączona kopia zapasowa aplikacji w dalszym ciągu zapisuje kopie danych aplikacji. Nie przywróci ich jednak automatycznie.
 \n
-\nBędzie trzeba zainstalować ręcznie wszystkie twoje aplikacje, gdy funkcja \"Przywracania Automatycznego\" jest włączona.</string>
+\nBędziesz musiał ręcznie zainstalować wszystkie swoje aplikacje jednocześnie mając funkcję \"Przywracania Automatycznego\" włączoną.</string>
     <string name="current_destination_string">Kopia zapasowa statusu i ustawień</string>
     <string name="data_management_label">Kopia zapasowa Seedvault</string>
     <string name="recovery_code_verification_new_dialog_message">Wygenerowanie nowego kodu sprawi, że istniejące kopie zapasowe przestaną być dostępne. Spróbujemy je usunąć, jeśli będzie to możliwe.
@@ -74,7 +74,7 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> wolne</string>
     <string name="storage_fragment_warning">Osoby z dostępem do pamięci mogą dowiedzieć się, jakich aplikacji używasz, ale nie uzyskają dostępu do danych aplikacji.</string>
     <string name="settings_backup_recovery_code_summary">Weryfikuj istniejący kod lub wygeneruj nowy</string>
-    <string name="settings_backup_recovery_code">Kod przywracania</string>
+    <string name="settings_backup_recovery_code">Kod odzyskiwania</string>
     <string name="about_version">Wersja: %s</string>
     <string name="restore_restoring_error_message">Możesz zainstalować te aplikacje ręcznie, a Automatyczne przywracanie spróbuje przywrócić ich dane (jeżeli włączone).</string>
     <string name="restore_restoring_error_title">Nie udało się przywrócić niektórych aplikacji</string>
@@ -102,7 +102,7 @@
     <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji. Naciśnij, aby dowiedzieć się więcej.</string>
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
-    <string name="about_source_code">Kod źródłowy: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Kod źródłowy: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Sponsorowano przez: <a href="https://www.calyxinstitute.org">Calyx Institute</a> dla wykorzystania w <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Zaprojektowano przez: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Napisano przez: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
