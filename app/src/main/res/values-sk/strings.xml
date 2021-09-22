@@ -1,2 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="settings_backup_apk_title">Záloha aplikácií</string>
+    <string name="settings_category_app_data_backup">Zálohovanie údajov aplikácie</string>
+    <string name="settings_auto_restore_summary_usb">Poznámka: Aby to fungovalo, musí byť Váš %1$s zapojený.</string>
+    <string name="settings_auto_restore_summary">Pri preinštalovaní aplikácie obnoviť zálohované nastavenia a údaje.</string>
+    <string name="settings_auto_restore_title">Automatické obnovenie</string>
+    <string name="settings_info">Všetky zálohy sú zašifrované na Vašom zariadení. Pre obnovenie zo zálohy budete potrebovať 12 slovný obnovovací kód.</string>
+    <string name="settings_backup_last_backup_never">Nikdy</string>
+    <string name="settings_backup_location_internal">Vnútorné úložisko</string>
+    <string name="settings_backup_location_none">Žiadne</string>
+    <string name="settings_backup_location">Umiestnenie zálohy</string>
+    <string name="settings_backup">Zálohovať moje dáta</string>
+    <string name="restore_backup_button">Obnoviť zálohu</string>
+    <string name="current_destination_string">Stav a nastavenia zálohy</string>
+    <string name="backup">Záloha</string>
+    <string name="about_source_code">Zdrojový kód: https://github.com/seedvault-app/seedvault</string>
+    <string name="recovery_code_verification_try_again">Skúsiť znova</string>
+    <string name="about_sponsor">Sponzorované: <a href="https://www.calyxinstitute.org">Calyx Institute</a> na použitie v <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Návrh: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Autor: <a href="https://github.com/stevesoltys">Steve Soltys</a> a <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Verzia: %s</string>
+    <string name="about_summary">Zálohovacia aplikácia využívajúca interné rozhranie API systému Android pre zálohovanie.</string>
+    <string name="storage_internal_warning_use_anyway">Aj tak použiť</string>
+    <string name="storage_internal_warning_choose_other">Vyberte iné</string>
+    <string name="storage_internal_warning_message">Ako zálohu ste vybrali interné úložisko. Toto nebude k dispozícii, ak dôjde k strate alebo rozbitiu telefónu.</string>
+    <string name="storage_internal_warning_title">Upozornenie</string>
+    <string name="restore_finished_button">Dokončiť</string>
+    <string name="restore_finished_error">Pri obnovovaní zálohy sa vyskytla chyba.</string>
+    <string name="restore_finished_success">Obnovenie dokončené</string>
+    <string name="restore_magic_package">Správca systémových balíkov</string>
+    <string name="restore_restoring_error_message">Tieto aplikácie môžete znova nainštalovať ručne a funkcia Automatické obnovenie sa pokúsi obnoviť ich údaje (ak je povolené).</string>
+    <string name="restore_restoring_error_title">Niektoré aplikácie nie je možné obnoviť</string>
+    <string name="restore_restoring">Obnovuje sa záloha</string>
+    <string name="restore_next">Ďalej</string>
+    <string name="restore_installing_tap_to_install">Kliknutím nainštalujete</string>
+    <string name="restore_installing_error_message">Údaje je možné obnoviť iba vtedy, ak je nainštalovaná aplikácia.
+\n
+\nPred pokračovaním klepnite na neúspešné aplikácie a pokúste sa ich nainštalovať manuálne.</string>
+    <string name="restore_installing_error_title">Niektoré aplikácie nie sú nainštalované</string>
+    <string name="restore_installing_packages">Opätovná inštalácia aplikácií</string>
+    <string name="restore_set_empty_result">Na danom mieste neboli nájdené žiadne vhodné zálohy.
+\n
+\nPríčinou je pravdepodobne nesprávny kód obnovy alebo chyba úložiska.</string>
+    <string name="restore_set_error">Pri načítavaní záloh sa vyskytla chyba.</string>
+    <string name="restore_invalid_location_message">Na tomto mieste sme nenašli žiadne zálohy.
+\n
+\nVyberte iné umiestnenie, ktoré obsahuje priečinok %s.</string>
+    <string name="restore_invalid_location_title">Nenašli sa žiadne zálohy</string>
+    <string name="restore_back">Neobnovovať</string>
+    <string name="restore_restore_set_times">Posledná záloha %1$s · Prvá %2$s.</string>
+    <string name="restore_choose_restore_set">Vyberte zálohu, ktorú chcete obnoviť</string>
+    <string name="restore_title">Obnovenie zo zálohy</string>
+    <string name="backup_section_not_allowed">Aplikácie, ktoré neumožňujú zálohovanie údajov</string>
+    <string name="restore_app_not_installed">Aplikácia nie je nainštalovaná</string>
+    <string name="restore_app_quota_exceeded">Bola prekročená kvóta zálohovania</string>
+    <string name="backup_app_quota_exceeded">Prekročenie kvóty zálohovania</string>
+    <string name="restore_app_not_allowed">Aplikácia nepovolila zálohovanie</string>
+    <string name="backup_app_no_data">Aplikácia nenahlásila žiadne údaje na zálohovanie</string>
+    <string name="restore_app_was_stopped">Nebolo zálohované, pretože nebolo v poslednom čase používané</string>
+    <string name="backup_app_was_stopped">Nebolo zálohované, pretože nebolo v poslednom čase používané</string>
+    <string name="restore_app_not_yet_backed_up">Nebolo ešte zálohované</string>
+    <string name="backup_app_not_yet_backed_up">Čaká sa na zálohovanie…</string>
+    <string name="backup_section_user">Nainštalované aplikácie</string>
+    <string name="backup_contacts">Miestne kontakty</string>
+    <string name="backup_call_log">História hovorov</string>
+    <string name="backup_settings">Nastavenia zariadenia</string>
+    <string name="backup_sms">SMS správy</string>
+    <string name="backup_section_system">Systémové aplikácie</string>
+    <string name="notification_restore_error_action">Odinštalovať aplikáciu</string>
+    <string name="notification_restore_error_text">Pred inštaláciou aplikácie zapojte %1$s a obnovte tak údaje zo zálohy.</string>
+    <string name="notification_restore_error_title">Nepodarilo sa obnoviť údaje pre %1$s</string>
+    <string name="notification_restore_error_channel_title">Chyba automatického obnovenia jednotky flash</string>
+    <string name="notification_error_action">Oprava</string>
+    <string name="notification_error_text">Zálohovanie zariadenia sa nepodarilo spustiť.</string>
+    <string name="notification_error_title">Chyba zálohovania</string>
+    <string name="notification_error_channel_title">Oznámenie o chybe</string>
+    <string name="notification_failed_title">Zálohovanie zlyhalo</string>
+    <string name="notification_success_text">Zálohované %1$d z %2$d aplikácií. Klepnutím získate ďalšie informácie.</string>
+    <string name="notification_success_title">Zálohovanie ukončené</string>
+    <string name="notification_backup_already_running">Zálohovanie už prebieha</string>
+    <string name="notification_title">Zálohovanie je spustené</string>
+    <string name="notification_channel_title">Oznámenie o zálohovaní</string>
+    <string name="recovery_code_recreated">Nový kód obnovy bol úspešne vytvorený</string>
+    <string name="recovery_code_verification_new_dialog_message">Vygenerovaním nového kódu budú vaše existujúce zálohy neprístupné. Pokúsime sa ich odstrániť, ak je to možné.
+\n
+\nSte si istí, že to chcete urobiť\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Počkajte chvíľu…</string>
+    <string name="recovery_code_verification_generate_new">Generovanie nového kódu</string>
+    <string name="recovery_code_verification_error_message">Zadali ste neplatný kód na obnovenie. Prosím skúste znova!
+\n
+\nAk ste kód stratili, kliknite na položku „Vygenerovať nový kód“.</string>
+    <string name="recovery_code_verification_error_title">Nesprávny kód na obnovenie</string>
+    <string name="recovery_code_verification_ok_message">Váš kód je správny a bude fungovať pri obnove zálohy.</string>
+    <string name="recovery_code_verification_ok_title">Kód obnovy bol overený</string>
+    <string name="recovery_code_error_checksum_word">Váš kód je neplatný. Skontrolujte všetky slová a skúste to znova!</string>
+    <string name="recovery_code_error_invalid_word">Nesprávne slovo. Mysleli ste %1$s alebo %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Zabudli ste zadať toto slovo.</string>
+    <string name="recovery_code_input_hint_12">Slovo 12</string>
+    <string name="recovery_code_input_hint_11">Slovo 11</string>
+    <string name="recovery_code_input_hint_10">Slovo 10</string>
+    <string name="recovery_code_input_hint_9">Slovo 9</string>
+    <string name="recovery_code_input_hint_8">Slovo 8</string>
+    <string name="recovery_code_input_hint_7">Slovo 7</string>
+    <string name="recovery_code_input_hint_6">Slovo 6</string>
+    <string name="recovery_code_input_hint_5">Slovo 5</string>
+    <string name="recovery_code_input_hint_4">Slovo 4</string>
+    <string name="recovery_code_input_hint_3">Slovo 3</string>
+    <string name="recovery_code_input_hint_2">Slovo 2</string>
+    <string name="recovery_code_input_hint_1">Slovo 1</string>
+    <string name="recovery_code_done_button">Overiť</string>
+    <string name="recovery_code_input_intro">Zadajte svoj 12-slovný kód na obnovu, ktorý ste si zapísali pri nastavovaní záloh.</string>
+    <string name="recovery_code_confirm_intro">Zadajte 12-slovný kód na obnovenie, aby ste sa uistili, že bude fungovať, keď ho budete potrebovať.</string>
+    <string name="recovery_code_confirm_button">Potvrdiť kód</string>
+    <string name="recovery_code_write_it_down">Zapíšte si to na papier!</string>
+    <string name="recovery_code_12_word_intro">Na obnovu zálohovaných údajov potrebujete svoj 12-slovný kód na obnovenie.</string>
+    <string name="recovery_code_title">Obnovovací kód</string>
+    <string name="storage_check_fragment_error_button">Späť</string>
+    <string name="storage_check_fragment_permission_error">Nedá sa získať povolenie na zápis na miesto zálohovania.</string>
+    <string name="storage_check_fragment_backup_error">Pri prístupe k umiestneniu zálohy sa vyskytla chyba.</string>
+    <string name="storage_check_fragment_restore_title">Hľadajú sa zálohy…</string>
+    <string name="storage_check_fragment_backup_title">Inicializuje sa umiestnenie zálohy…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Účet nie je dostupný. Nastavte si ho (alebo vypnite prístupový kód).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Kliknite pre nastavenie účtu</string>
+    <string name="storage_fake_nextcloud_summary">Kliknutím nainštalujete</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> zadarmo</string>
+    <string name="storage_fake_drive_summary">Musí byť pripojený</string>
+    <string name="storage_fake_drive_title">USB flash disk</string>
+    <string name="storage_fragment_warning">Osoby s prístupom k vášmu úložisku môžu zistiť, ktoré aplikácie používate, ale nemajú prístup k údajom aplikácií.</string>
+    <string name="storage_fragment_restore_title">Kde nájdete svoje zálohy\?</string>
+    <string name="storage_fragment_backup_title">Vybrať umiestnenie zálohy</string>
+    <string name="settings_backup_recovery_code_summary">Overenie existujúceho kódu alebo vygenerovanie nového kódu</string>
+    <string name="settings_backup_recovery_code">Obnovovací kód</string>
+    <string name="settings_backup_now">Zálohovať teraz</string>
+    <string name="settings_backup_exclude_apps">Vynechať aplikácie</string>
+    <string name="settings_backup_status_summary">Posledná záloha: %1$s</string>
+    <string name="settings_backup_status_title">Stav zálohovania</string>
+    <string name="settings_backup_apk_dialog_disable">Vypnúť zálohovanie aplikácií</string>
+    <string name="settings_backup_apk_dialog_cancel">Zrušiť</string>
+    <string name="settings_backup_apk_dialog_message">Vypnuté zálohovanie aplikácií bude stále zálohovať údaje aplikácií. Nebudú sa však automaticky obnovovať.
+\n
+\nVšetky aplikácie budete musieť nainštalovať ručne, pričom budete mať zapnutú funkciu \"Automatická obnova\".</string>
+    <string name="settings_backup_apk_dialog_title">Ste si istý, že chcete vypnúť zálohu aplikácií\?</string>
+    <string name="settings_backup_apk_summary">Zálohovať samotné aplikácie. V opačnom prípade by sa zálohovali len údaje aplikácií.</string>
+    <string name="data_management_label">Záloha Seedvault</string>
+</resources>
