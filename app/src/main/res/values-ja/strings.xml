@@ -37,4 +37,8 @@
     <string name="current_destination_string">状態と設定をバックアップする</string>
     <string name="data_management_label">SeedVault バックアップ</string>
     <string name="backup">バックアップ</string>
+    <string name="storage_fake_nextcloud_summary_installed">タップしてアカウントをセットアップする</string>
+    <string name="storage_fake_nextcloud_summary">タップしてインストールする</string>
+    <string name="settings_backup_apk_dialog_title">本当にアプリのバックアップを無効にしますか？</string>
+    <string name="settings_backup_last_backup_never">未実施</string>
 </resources>
