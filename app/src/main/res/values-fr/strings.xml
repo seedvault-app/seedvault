@@ -56,7 +56,7 @@
     <string name="settings_category_app_data_backup">Sauvegarde des données de l’appli</string>
     <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une appli, restaurer les paramètres et les données sauvegardés.</string>
-    <string name="settings_auto_restore_title">Restauration automatique</string>
+    <string name="settings_auto_restore_title">Restaurer automatiquement</string>
     <string name="settings_info">Toutes les sauvegardes sont stockées sur votre téléphone et chiffrées. Pour restaurer une sauvegarde, vous aurez besoin de votre code de récupération constitué de 12 mots.</string>
     <string name="settings_backup_last_backup_never">Jamais</string>
     <string name="settings_backup_location_internal">Stockage interne</string>
@@ -101,8 +101,8 @@
     <string name="storage_fragment_warning">Les personnes ayant accès à votre lieu de stockage peuvent savoir quelles applications vous utilisez mais n\'ont pas accès aux données des applications.</string>
     <string name="settings_backup_apk_dialog_message">La sauvegarde d\'une application désactivée enregistre toujours les données de l\'application. Celles-ci ne seront toutefois pas restaurées automatiquement.
 \n
-\nVous devrez installer toutes vos applications manuellement en vous assurant que le paramètre « Restauration automatique » est activé.</string>
-    <string name="settings_backup_apk_dialog_title">Vraiment désactiver la sauvegarde des applications \?</string>
+\nVous devrez installer toutes vos applications manuellement en vous assurant que le paramètre « Restaurer automatiquement » est activé.</string>
+    <string name="settings_backup_apk_dialog_title">Êtes-vous sûr(e) de vouloir désactiver la sauvegarde des applications \?</string>
     <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
     <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
     <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
@@ -129,7 +129,7 @@
     <string name="backup_sms">Message SMS</string>
     <string name="backup_section_system">Applications système</string>
     <string name="settings_backup_status_title">Statut du backup</string>
-    <string name="data_management_label">Backup Seedvault</string>
+    <string name="data_management_label">Sauvegarde Seedvault</string>
     <string name="settings_backup_recovery_code_summary">Vérifier un code existant ou en générer un nouveau</string>
     <string name="settings_backup_recovery_code">Code de récupération</string>
     <string name="recovery_code_recreated">Le nouveau code de récupération a été généré avec succès</string>
