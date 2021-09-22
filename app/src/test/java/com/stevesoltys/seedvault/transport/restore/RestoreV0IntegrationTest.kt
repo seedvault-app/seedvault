@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.coEvery
 import io.mockk.every
@@ -44,12 +45,20 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
     private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val dbManager = mockk<KvDbManager>()
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 
     private val backupPlugin = mockk<BackupPlugin>()
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
-    private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
+    private val kvRestore = KVRestore(
+        backupPlugin,
+        kvRestorePlugin,
+        outputFactory,
+        headerReader,
+        cryptoImpl,
+        dbManager
+    )
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
         FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)

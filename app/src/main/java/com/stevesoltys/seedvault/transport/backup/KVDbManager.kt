@@ -8,37 +8,59 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 
 interface KvDbManager {
-    fun getDb(packageName: String): KVDb
+    fun getDb(packageName: String, isRestore: Boolean = false): KVDb
+
+    /**
+     * Use only for backup.
+     */
     fun getDbInputStream(packageName: String): InputStream
+
+    /**
+     * Use only for restore.
+     */
+    fun getDbOutputStream(packageName: String): OutputStream
+
+    /**
+     * Use only for backup.
+     */
     fun existsDb(packageName: String): Boolean
-    fun deleteDb(packageName: String): Boolean
+    fun deleteDb(packageName: String, isRestore: Boolean = false): Boolean
 }
 
 class KvDbManagerImpl(private val context: Context) : KvDbManager {
 
-    override fun getDb(packageName: String): KVDb {
-        return KVDbImpl(context, getFileName(packageName))
+    override fun getDb(packageName: String, isRestore: Boolean): KVDb {
+        return KVDbImpl(context, getFileName(packageName, isRestore))
     }
 
-    private fun getFileName(packageName: String) = "kv_$packageName.db"
+    private fun getFileName(packageName: String, isRestore: Boolean): String {
+        val prefix = if (isRestore) "restore_" else ""
+        return "${prefix}kv_$packageName.db"
+    }
 
-    private fun getDbFile(packageName: String): File {
-        return context.getDatabasePath(getFileName(packageName))
+    private fun getDbFile(packageName: String, isRestore: Boolean = false): File {
+        return context.getDatabasePath(getFileName(packageName, isRestore))
     }
 
     override fun getDbInputStream(packageName: String): InputStream {
         return FileInputStream(getDbFile(packageName))
     }
 
+    override fun getDbOutputStream(packageName: String): OutputStream {
+        return FileOutputStream(getDbFile(packageName, true))
+    }
+
     override fun existsDb(packageName: String): Boolean {
         return getDbFile(packageName).isFile
     }
 
-    override fun deleteDb(packageName: String): Boolean {
-        return getDbFile(packageName).delete()
+    override fun deleteDb(packageName: String, isRestore: Boolean): Boolean {
+        return getDbFile(packageName, isRestore).delete()
     }
 }
 

@@ -207,7 +207,13 @@ internal class RestoreCoordinator(
                     val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
                     if (plugin.hasData(state.token, name)) {
                         Log.i(TAG, "Found K/V data for $packageName.")
-                        kv.initializeState(version, state.token, packageInfo, state.pmPackageInfo)
+                        kv.initializeState(
+                            version = version,
+                            token = state.token,
+                            name = name,
+                            packageInfo = packageInfo,
+                            pmPackageInfo = state.pmPackageInfo
+                        )
                         state.currentPackage = packageName
                         TYPE_KEY_VALUE
                     } else throw IOException("No data found for $packageName. Skipping.")
@@ -243,7 +249,7 @@ internal class RestoreCoordinator(
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(0x00, state.token, packageInfo, state.pmPackageInfo)
+                    kv.initializeState(0x00, state.token, "", packageInfo, state.pmPackageInfo)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }

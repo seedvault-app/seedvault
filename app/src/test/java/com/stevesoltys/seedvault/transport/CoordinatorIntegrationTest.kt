@@ -10,7 +10,6 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
-import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.BackupType
@@ -39,6 +38,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -81,7 +81,14 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     )
 
     private val kvRestorePlugin = mockk<KVRestorePlugin>()
-    private val kvRestore = KVRestore(kvRestorePlugin, outputFactory, headerReader, cryptoImpl)
+    private val kvRestore = KVRestore(
+        backupPlugin,
+        kvRestorePlugin,
+        outputFactory,
+        headerReader,
+        cryptoImpl,
+        dbManager
+    )
     private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
         FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
@@ -104,9 +111,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val metadataOutputStream = ByteArrayOutputStream()
     private val packageMetadata = PackageMetadata(time = 0L)
     private val key = "RestoreKey"
-    private val key64 = key.encodeBase64()
     private val key2 = "RestoreKey2"
-    private val key264 = key2.encodeBase64()
 
     // as we use real crypto, we need a real name for packageInfo
     private val realName = cryptoImpl.getNameForPackage(salt, packageInfo.packageName)
@@ -116,7 +121,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val value = CapturingSlot<ByteArray>()
         val value2 = CapturingSlot<ByteArray>()
         val bOutputStream = ByteArrayOutputStream()
-        val bOutputStream2 = ByteArrayOutputStream()
 
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
@@ -170,29 +174,21 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // restore finds the backed up key and writes the decrypted value
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
-        val rInputStream2 = ByteArrayInputStream(bOutputStream2.toByteArray())
-        coEvery { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64, key264)
+        coEvery { backupPlugin.getInputStream(token, name) } returns rInputStream
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
-        coEvery {
-            kvRestorePlugin.getInputStreamForRecord(
-                token,
-                packageInfo,
-                key64
-            )
-        } returns rInputStream
         every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
-        coEvery {
-            kvRestorePlugin.getInputStreamForRecord(
-                token,
-                packageInfo,
-                key264
-            )
-        } returns rInputStream2
         every { backupDataOutput.writeEntityHeader(key2, appData2.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData2, appData2.size) } returns appData2.size
 
         assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
+
+        verify {
+            backupDataOutput.writeEntityHeader(key, appData.size)
+            backupDataOutput.writeEntityData(appData, appData.size)
+            backupDataOutput.writeEntityHeader(key2, appData2.size)
+            backupDataOutput.writeEntityData(appData2, appData2.size)
+        }
     }
 
     @Test
@@ -246,19 +242,17 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // restore finds the backed up key and writes the decrypted value
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
-        coEvery { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64)
+        coEvery { backupPlugin.getInputStream(token, name) } returns rInputStream
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
-        coEvery {
-            kvRestorePlugin.getInputStreamForRecord(
-                token,
-                packageInfo,
-                key64
-            )
-        } returns rInputStream
         every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
 
         assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
+
+        verify {
+            backupDataOutput.writeEntityHeader(key, appData.size)
+            backupDataOutput.writeEntityData(appData, appData.size)
+        }
     }
 
     @Test
