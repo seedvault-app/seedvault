@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_text">Feito o backup da app %1$d de %2$d . Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup em andamento</string>
-    <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Código-fonte: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
@@ -18,7 +18,7 @@
     <string name="restore_finished_success">Restauração completa</string>
     <string name="restore_app_quota_exceeded">Cota de backup excedida</string>
     <string name="restore_app_not_installed">App não instalado</string>
-    <string name="restore_app_not_allowed">A app não permite backup</string>
+    <string name="restore_app_not_allowed">A app não permitiu um backup</string>
     <string name="backup_app_no_data">App não relatou dados para backup</string>
     <string name="restore_magic_package">Gestor de pacote do sistema</string>
     <string name="restore_restoring">Restaurando backup</string>
@@ -63,7 +63,7 @@
     <string name="recovery_code_input_hint_3">Palavra 3</string>
     <string name="recovery_code_input_hint_2">Palavra 2</string>
     <string name="recovery_code_input_hint_1">Palavra 1</string>
-    <string name="recovery_code_done_button">Concluído</string>
+    <string name="recovery_code_done_button">Verificar</string>
     <string name="recovery_code_input_intro">Digite o código de recuperação de 12 palavras que anotou ao configurar backups.</string>
     <string name="recovery_code_confirm_intro">Digite o seu código de recuperação de 12 palavras para garantir que funcionará quando precisar.</string>
     <string name="recovery_code_confirm_button">Confirmar código</string>
@@ -75,8 +75,8 @@
     <string name="storage_check_fragment_backup_error">Ocorreu um erro ao acessar o local do backup.</string>
     <string name="storage_check_fragment_restore_title">Procurando por backups…</string>
     <string name="storage_check_fragment_backup_title">Inicializando local de backup…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
-    <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
+    <string name="storage_fake_nextcloud_summary_installed">Toque para configurar a conta</string>
+    <string name="storage_fake_nextcloud_summary">Toque para instalar</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
@@ -120,7 +120,7 @@
     <string name="backup_app_was_stopped">Backup não realizado por ter sido usado recentemente</string>
     <string name="restore_app_not_yet_backed_up">Ainda não foi feito o backup</string>
     <string name="backup_app_not_yet_backed_up">Aguardando back up…</string>
-    <string name="backup_section_user">Apps Instaladas</string>
+    <string name="backup_section_user">Apps instaladas</string>
     <string name="backup_contacts">Contatos locais</string>
     <string name="backup_call_log">Histórico de chamadas</string>
     <string name="backup_settings">Configurações do aparelho</string>
@@ -130,4 +130,19 @@
     <string name="settings_backup_status_title">Estado do backup</string>
     <string name="current_destination_string">Estado do backup e configurações</string>
     <string name="data_management_label">Backup do Seedvault</string>
+    <string name="recovery_code_recreated">O novo código de recuperação foi criado com sucesso</string>
+    <string name="recovery_code_verification_new_dialog_message">A geração de um novo código fará os backups existentes inacessíveis. Vamos tentar apagá-los, se possível.
+\n
+\nTem a certeza que quer fazer isto\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Espere um segundo…</string>
+    <string name="recovery_code_verification_generate_new">Gerar um novo código</string>
+    <string name="recovery_code_verification_try_again">Tente novamente</string>
+    <string name="recovery_code_verification_error_message">Inseriu um código de recuperação inválido. Por favor, tente novamente!
+\n
+\nSe perdeu o seu código, toque em \'Gerar novo código\' abaixo.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperação incorreto</string>
+    <string name="recovery_code_verification_ok_message">O seu código está correto e irá funcionar para restaurar o seu backup.</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
+    <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
+    <string name="settings_backup_recovery_code">Código de recuperação</string>
 </resources>
