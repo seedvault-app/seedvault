@@ -1,2 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="about_source_code">Mã nguồn: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">Tài trợ bởi: <a href="https://www.calyxinstitute.org">Học viện Calyx</a> để sử dụng trong <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Thiết kế bởi: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Được viết bởi: <a href="https://github.com/stevesoltys">Steve Soltys</a> và <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Giấy phép: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Phiên bản: %s</string>
+    <string name="about_summary">Một ứng dụng sao lưu sử dụng API sao lưu của Android.</string>
+    <string name="about_title">Giới thiệu</string>
+    <string name="storage_internal_warning_use_anyway">Vẫn sử dụng</string>
+    <string name="storage_internal_warning_choose_other">Chọn mục khác</string>
+    <string name="storage_internal_warning_message">Bạn đã chọn bộ nhớ trong cho bản sao lưu của bạn. Nó sẽ không có sẵn khi điện thoại bị mất hoặc hỏng.</string>
+    <string name="storage_internal_warning_title">Cảnh báo</string>
+    <string name="restore_finished_button">Hoàn tất</string>
+    <string name="restore_finished_error">Đã xảy ra lỗi khi khôi phục bản sao lưu.</string>
+    <string name="restore_finished_success">Khôi phục hoàn tất</string>
+    <string name="restore_magic_package">Trình quản lý gói hệ thống</string>
+    <string name="restore_restoring_error_message">Bạn có thể cài đặt lại các ứng dụng này theo cách thủ công và Khôi phục tự động sẽ thử khôi phục dữ liệu của chúng (nếu được bật).</string>
+    <string name="restore_restoring_error_title">Không thể khôi phục một số ứng dụng</string>
+    <string name="restore_restoring">Đang khôi phục bản sao lưu</string>
+    <string name="restore_next">Tiếp</string>
+    <string name="restore_installing_tap_to_install">Nhấn để cài đặt</string>
+    <string name="restore_installing_error_message">Dữ liệu chỉ có thể được khôi phục nếu ứng dụng đã được cài đặt.
+\n
+\nHãy nhấn vào các ứng dụng thất bại để cố gắng cài đặt chúng theo cách thủ công trước khi tiếp tục.</string>
+    <string name="restore_installing_error_title">Một số ứng dụng không được cài đặt</string>
+    <string name="restore_installing_packages">Đang cài đặt lại các ứng dụng</string>
+    <string name="restore_set_empty_result">Không tìm thấy bản sao lưu phù hợp nào tại vị trí được cho.
+\n
+\nĐiều này có khả năng là do mã phục hồi sai hoặc lỗi bộ nhớ.</string>
+    <string name="restore_set_error">Đã xảy ra lỗi khi tải các bản sao lưu.</string>
+    <string name="restore_invalid_location_message">Chúng tôi không thể tìm thấy bản sao lưu nào tại vị trí này.
+\n
+\nVui lòng chọn một vị trí khác có chứa thư mục %s.</string>
+    <string name="restore_invalid_location_title">Không tìm thấy bản sao lưu nào</string>
+    <string name="restore_back">Không khôi phục</string>
+    <string name="restore_restore_set_times">Sao lưu lần cuối %1$s · Lần đầu %2$s.</string>
+    <string name="restore_choose_restore_set">Chọn bản sao lưu để khôi phục</string>
+    <string name="restore_title">Khôi phục từ bản sao lưu</string>
+    <string name="backup_section_not_allowed">Ứng dụng không cho phép sao lưu dữ liệu</string>
+    <string name="restore_app_not_installed">Ứng dụng không được cài đặt</string>
+    <string name="restore_app_quota_exceeded">Đã vượt quá hạn mức sao lưu</string>
+    <string name="backup_app_quota_exceeded">Đã vượt quá hạn mức sao lưu</string>
+    <string name="restore_app_not_allowed">Ứng dụng không cho phép sao lưu</string>
+    <string name="backup_app_no_data">Ứng dụng báo cáo là không có dữ liệu để sao lưu</string>
+    <string name="restore_app_was_stopped">Không được sao lưu vì nó không được sử dụng gần đây</string>
+    <string name="backup_app_was_stopped">Không được sao lưu vì nó không được sử dụng gần đây</string>
+    <string name="restore_app_not_yet_backed_up">Chưa được sao lưu</string>
+    <string name="backup_app_not_yet_backed_up">Đang đợi để sao lưu…</string>
+    <string name="backup_section_user">Ứng dụng đã cài đặt</string>
+    <string name="backup_contacts">Danh bạ cục bộ</string>
+    <string name="backup_call_log">Lịch sử gọi</string>
+    <string name="backup_settings">Cài đặt thiết bị</string>
+    <string name="backup_sms">Tin nhắn SMS</string>
+    <string name="backup_section_system">Ứng dụng hệ thống</string>
+    <string name="notification_restore_error_action">Gỡ cài đặt ứng dụng</string>
+    <string name="notification_restore_error_text">Hãy cắm %1$s của bạn vào trước khi cài đặt ứng dụng để khôi phục dữ liệu từ bản sao lưu.</string>
+    <string name="notification_restore_error_title">Không thể khôi phục dữ liệu cho %1$s</string>
+    <string name="notification_restore_error_channel_title">Tự động khôi phục lỗi ổ flash</string>
+    <string name="notification_error_action">Sửa</string>
+    <string name="notification_error_text">Bản sao lưu thiết bị đã không thể chạy.</string>
+    <string name="notification_error_title">Lỗi sao lưu</string>
+    <string name="notification_error_channel_title">Thông báo lỗi</string>
+    <string name="notification_failed_title">Sao lưu thất bại</string>
+    <string name="notification_success_text">Đã sao lưu %1$d trong số %2$d ứng dụng. Nhấn để tìm hiểu thêm.</string>
+    <string name="notification_success_title">Sao lưu hoàn tất</string>
+    <string name="notification_backup_already_running">Bản sao lưu đã đang được thực hiện rồi</string>
+    <string name="notification_title">Bản sao lưu đang chạy</string>
+    <string name="notification_channel_title">Thông báo sao lưu</string>
+    <string name="recovery_code_recreated">Mã phục hồi mới đã được tạo thành công</string>
+    <string name="recovery_code_verification_new_dialog_message">Việc tạo mã mới sẽ làm các bản sao lưu hiện có của bạn không thể truy cập được. Chúng tôi sẽ cố gắng xóa chúng nếu có thể.
+\n
+\nBạn có chắc bạn muốn làm việc này không\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Đợi một chút…</string>
+    <string name="recovery_code_verification_generate_new">Tạo mã mới</string>
+    <string name="recovery_code_verification_try_again">Thử lại</string>
+    <string name="recovery_code_verification_error_message">Bạn đã nhập mã phục hồi không hợp lệ. Vui lòng thử lại!
+\n
+\nNếu bạn đã mất mã, hãy nhấn vào \'Tạo mã mới\' ở dưới.</string>
+    <string name="recovery_code_verification_error_title">Mã phục hồi không đúng</string>
+    <string name="recovery_code_verification_ok_message">Mã của bạn đã đúng và sẽ có thể dùng để khôi phục bản sao lưu của bạn.</string>
+    <string name="recovery_code_verification_ok_title">Đã xác minh mã phục hồi</string>
+    <string name="recovery_code_error_checksum_word">Mã không hợp lệ. Vui lòng kiểm tra tất cả từ và thử lại!</string>
+    <string name="recovery_code_error_invalid_word">Sai từ. Ý bạn là %1$s hay %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Bạn đã quên nhập từ này.</string>
+    <string name="recovery_code_input_hint_12">Từ 12</string>
+    <string name="recovery_code_input_hint_11">Từ 11</string>
+    <string name="recovery_code_input_hint_10">Từ 10</string>
+    <string name="recovery_code_input_hint_9">Từ 9</string>
+    <string name="recovery_code_input_hint_8">Từ 8</string>
+    <string name="recovery_code_input_hint_7">Từ 7</string>
+    <string name="recovery_code_input_hint_6">Từ 6</string>
+    <string name="recovery_code_input_hint_5">Từ 5</string>
+    <string name="recovery_code_input_hint_4">Từ 4</string>
+    <string name="recovery_code_input_hint_3">Từ 3</string>
+    <string name="recovery_code_input_hint_2">Từ 2</string>
+    <string name="recovery_code_input_hint_1">Từ 1</string>
+    <string name="recovery_code_done_button">Xác minh</string>
+    <string name="recovery_code_input_intro">Hãy nhập mã phục hồi 12 từ của bạn mà bạn đã viết ra khi thiết lập bản sao lưu.</string>
+    <string name="recovery_code_confirm_intro">Hãy nhập mã phục hồi 12 từ của bạn để bảo đảm là nó sẽ hoạt động khi bạn cần nó.</string>
+    <string name="recovery_code_confirm_button">Xác nhận mã</string>
+    <string name="recovery_code_write_it_down">Hãy ghi nó vào giấy ngay!</string>
+    <string name="recovery_code_12_word_intro">Bạn cần mã phục hồi 12 từ của bạn để khôi phục dữ liệu đã sao lưu.</string>
+    <string name="recovery_code_title">Mã phục hồi</string>
+    <string name="storage_check_fragment_error_button">Quay lại</string>
+    <string name="storage_check_fragment_permission_error">Không thể lấy quyền để ghi vào vị trí sao lưu.</string>
+    <string name="storage_check_fragment_backup_error">Đã xảy ra lỗi khi truy cập vị trí sao lưu.</string>
+    <string name="storage_check_fragment_restore_title">Đang tìm bản sao lưu…</string>
+    <string name="storage_check_fragment_backup_title">Đang khởi tạo vị trí sao lưu…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Tài khoản không có sẵn. Hãy thiết lập một tài khoản (hoặc tắt mật khẩu).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Nhấn để thiết lập tài khoản</string>
+    <string name="storage_fake_nextcloud_summary">Nhấn để cài đặt</string>
+    <string name="storage_available_bytes">Còn trống <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="storage_fake_drive_summary">Cần phải được cắm vào</string>
+    <string name="storage_fake_drive_title">Ổ USB</string>
+    <string name="storage_fragment_warning">Những người có quyền truy cập vào vị trí lưu trữ có thể biết bạn sử dụng các ứng dụng gì, nhưng không thể truy cập vào dữ liệu ứng dụng.</string>
+    <string name="storage_fragment_restore_title">Tìm bản sao lưu của bạn ở đâu\?</string>
+    <string name="storage_fragment_backup_title">Chọn nơi lưu trữ bản sao lưu</string>
+    <string name="settings_backup_recovery_code_summary">Xác minh mã hiện có hoặc tạo mã mới</string>
+    <string name="settings_backup_recovery_code">Mã phục hồi</string>
+    <string name="settings_backup_now">Sao lưu ngay</string>
+    <string name="settings_backup_exclude_apps">Loại trừ ứng dụng</string>
+    <string name="settings_backup_status_summary">Sao lưu lần cuối: %1$s</string>
+    <string name="settings_backup_status_title">Trạng thái sao lưu</string>
+    <string name="settings_backup_apk_dialog_disable">Tắt sao lưu ứng dụng</string>
+    <string name="settings_backup_apk_dialog_cancel">Hủy</string>
+    <string name="settings_backup_apk_dialog_message">Bản sao lưu ứng dụng bị tắt vẫn sẽ sao lưu dữ liệu ứng dụng. Tuy nhiên, nó sẽ không được tự động khôi phục.
+\n
+\nBạn sẽ cần phải cài đặt thủ công tất cả ứng dụng trong khi \"Khôi phục tự động\" được bật.</string>
+    <string name="settings_backup_apk_dialog_title">Thực sự tắt sao lưu ứng dụng\?</string>
+    <string name="settings_backup_apk_summary">Sao lưu bản thân các ứng dụng. Nếu không, chỉ có dữ liệu ứng dụng được sao lưu.</string>
+    <string name="settings_backup_apk_title">Sao lưu ứng dụng</string>
+    <string name="settings_category_app_data_backup">Sao lưu dữ liệu ứng dụng</string>
+    <string name="settings_auto_restore_summary_usb">Lưu ý: %1$s của bạn cần phải được cắm điện để thực hiện việc này.</string>
+    <string name="settings_auto_restore_summary">Khi cài đặt lại ứng dụng, khôi phục cài đặt và dữ liệu đã sao lưu.</string>
+    <string name="settings_auto_restore_title">Khôi phục tự động</string>
+    <string name="settings_info">Tất cả bản sao lưu được mã hóa trên điện thoại. Để khôi phục từ bản sao lưu, bạn sẽ cần mã phục hồi 12 từ của bạn.</string>
+    <string name="data_management_label">Sao lưu Seedvault</string>
+    <string name="current_destination_string">Trạng thái và cài đặt sao lưu</string>
+    <string name="settings_backup_last_backup_never">Không bao giờ</string>
+    <string name="settings_backup_location_internal">Bộ nhớ trong</string>
+    <string name="settings_backup_location_none">Không có</string>
+    <string name="settings_backup_location">Vị trí sao lưu</string>
+    <string name="settings_backup">Sao lưu dữ liệu của tôi</string>
+    <string name="restore_backup_button">Khôi phục bản sao lưu</string>
+    <string name="backup">Sao lưu</string>
+</resources>
