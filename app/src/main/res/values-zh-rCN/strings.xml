@@ -28,7 +28,7 @@
     <string name="recovery_code_confirm_intro">输入您的12个单词的恢复代码，以确保它在您需要时可以使用。</string>
     <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来恢复备份的数据。</string>
     <string name="settings_info">所有备份均已加密。 要从备份恢复，您需要12个单词的恢复代码。</string>
-    <string name="about_source_code">源代码:https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">源代码：https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">赞助者: <a href="https://www.calyxinstitute.org">Calyx Institute</a>, 用于<a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">设计师:<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">开发者: <a href="https://github.com/stevesoltys">Steve Soltys</a>和<a href="https://blog.grobox.de">Torsten Grote</a></string>
@@ -86,7 +86,7 @@
     <string name="storage_check_fragment_backup_error">访问备份位置时发生错误。</string>
     <string name="storage_check_fragment_restore_title">正在寻找备份…</string>
     <string name="storage_check_fragment_backup_title">初始化备份位置中…</string>
-    <string name="storage_fake_nextcloud_summary_installed">点击设置账户</string>
+    <string name="storage_fake_nextcloud_summary_installed">轻按设置账户</string>
     <string name="storage_fake_nextcloud_summary">点击安装</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用</string>
     <string name="storage_fake_drive_summary">需要插入</string>
