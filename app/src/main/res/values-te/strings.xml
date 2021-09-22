@@ -13,17 +13,130 @@
     <string name="recovery_code_input_hint_3">పదం 3</string>
     <string name="recovery_code_input_hint_2">పదం 2</string>
     <string name="recovery_code_input_hint_1">పదం 1</string>
-    <string name="recovery_code_done_button">పూర్తి</string>
-    <string name="storage_check_fragment_error_button">తిరిగి వెనకకు</string>
+    <string name="recovery_code_done_button">ద్రువీకరించండి</string>
+    <string name="storage_check_fragment_error_button">వెనకకు</string>
     <string name="settings_backup_status_title">బ్యాకప్ స్థితి</string>
     <string name="settings_backup_apk_dialog_cancel">రద్దు చేయండి</string>
     <string name="settings_auto_restore_title">స్వయంచాలక పునరుద్ధరణ</string>
-    <string name="settings_info">అన్ని బ్యాకప్‌లు మీ చరవాణి లో గుప్తీకరించబడతాయి. బ్యాకప్ నుండి పునరుద్ధరించడానికి మీకు మీ 12-పదాల రికవరీ కోడ్ అవసరం.</string>
-    <string name="settings_backup_last_backup_never">ఎప్పుడూ</string>
+    <string name="settings_info">అన్ని బ్యాకప్‌లు మీ ఫోన్ లో గుప్తీకరించబడతాయి. బ్యాకప్ నుండి పునరుద్ధరించడానికి మీకు మీ 12-పదాల రికవరీ కోడ్ అవసరం.</string>
+    <string name="settings_backup_last_backup_never">ఎప్పుడూ కాదు</string>
     <string name="settings_backup_location_internal">అంతర్గత నిల్వ</string>
     <string name="settings_backup_location_none">ఏమియును లేదు</string>
     <string name="restore_backup_button">బ్యాకప్‌ను పునరుద్ధరించండి</string>
     <string name="current_destination_string">బ్యాకప్ స్థితి మరియు సెట్టింగ్‌లు</string>
     <string name="data_management_label">సీడ్‌వాల్ట్ బ్యాకప్</string>
     <string name="about_title">గురించి</string>
+    <string name="backup_settings">డివైస్ సెట్టింగులు</string>
+    <string name="backup_sms">SMS సందేశాలు</string>
+    <string name="backup_section_system">సిస్టమ్ యాప్స్</string>
+    <string name="notification_restore_error_action">యాప్‌ని అన్‌ఇన్‌స్టాల్ చేయండి</string>
+    <string name="notification_restore_error_text">బ్యాకప్ నుండి దాని డేటాను పునరుద్ధరించడానికి యాప్‌ని ఇన్‌స్టాల్ చేయడానికి ముందు మీ %1$s ని ప్లగ్ చేయండి.</string>
+    <string name="notification_restore_error_title">%1$s డేటాను పునరుద్ధరించడం సాధ్యపడలేదు</string>
+    <string name="notification_restore_error_channel_title">ఆటో పునరుద్ధరణ ఫ్లాష్ డ్రైవ్ లోపం ఉంది</string>
+    <string name="notification_error_action">పరిష్కరించండి</string>
+    <string name="notification_error_text">డివైస్ బ్యాకప్ అమలు చేయడంలో విఫలమైంది.</string>
+    <string name="notification_error_title">బ్యాకప్ లోపం అయ్యింది</string>
+    <string name="notification_failed_title">బ్యాకప్ విఫలమైంది</string>
+    <string name="notification_success_text">%2$d యాప్‌లలో %1$d బ్యాకప్ చేయబడినవి . మరింత తెలుసుకోవడానికి ఇక్కడ నొక్కండి.</string>
+    <string name="notification_success_title">బ్యాకప్ పూర్తయింది</string>
+    <string name="notification_backup_already_running">బ్యాకప్ ఇప్పటికే ప్రారంభించబడింది</string>
+    <string name="notification_title">బ్యాకప్ జరుగుతుంది</string>
+    <string name="notification_channel_title">బ్యాకప్ నోటిఫికేషన్</string>
+    <string name="recovery_code_recreated">కొత్త రికవరీ కోడ్ విజయవంతంగా సృష్టించబడింది</string>
+    <string name="recovery_code_verification_new_dialog_message">క్రొత్త కోడ్‌ను రూపొందించడం వలన మీ ప్రస్తుత బ్యాకప్‌లు తిరిగి పొందలేరు . వీలైతే మేము వాటిని తొలగించడానికి ప్రయత్నిస్తాము.
+\n
+\nమీరు దీన్ని ఖచ్చితంగా చేయాలనుకుంటున్నారా\?</string>
+    <string name="recovery_code_verification_new_dialog_title">ఒక్క సెకను ఆగండి …</string>
+    <string name="recovery_code_verification_generate_new">కొత్త కోడ్‌ని రూపొందించు</string>
+    <string name="recovery_code_verification_try_again">మళ్లీ ప్రయత్నించండి</string>
+    <string name="recovery_code_verification_error_message">మీరు చెల్లని రికవరీ కోడ్‌ని ఎంటర్ చేసారు. దయచేసి మళ్లీ ప్రయత్నించండి!
+\n
+\nమీరు మీ కోడ్‌ను కోల్పోయినట్లయితే, దిగువ \'కొత్త కోడ్‌ని రూపొందించు\' పై నొక్కండి.</string>
+    <string name="recovery_code_verification_error_title">రికవరీ కోడ్ తప్పు</string>
+    <string name="recovery_code_verification_ok_message">మీ కోడ్ సరైనది మరియు మీ బ్యాకప్‌ను పునరుద్ధరించబడుతుంది.</string>
+    <string name="recovery_code_verification_ok_title">రికవరీ కోడ్ ధృవీకరించబడింది</string>
+    <string name="recovery_code_error_checksum_word">మీ కోడ్ చెల్లదు. దయచేసి అన్ని పదాలను సరి చూసుకొని, మళ్లీ ప్రయత్నించండి!</string>
+    <string name="recovery_code_error_empty_word">మీరు ఈ పదాన్ని ఎంటర్ చేయడం మర్చిపోయారు.</string>
+    <string name="recovery_code_input_intro">బ్యాకప్‌లను సెటప్ చేసేటప్పుడు మీరు వ్రాసిన మీ 12-పదాల రికవరీ కోడ్‌ని నమోదు చేయండి.</string>
+    <string name="recovery_code_confirm_intro">మీకు అవసరమైనప్పుడు పని చేస్తుందని నిర్ధారించుకోవడానికి మీ 12-పదాల రికవరీ కోడ్‌ని ఎంటర్ చేయండి.</string>
+    <string name="recovery_code_confirm_button">కోడ్ ని నిర్దారించండి</string>
+    <string name="recovery_code_write_it_down">ఇప్పుడు కాగితంపై వ్రాసుకోండి !</string>
+    <string name="recovery_code_12_word_intro">బ్యాకప్ చేసిన డేటాను పునరుద్ధరించడానికి మీకు మీ 12-పదాల రికవరీ కోడ్ అవసరం.</string>
+    <string name="recovery_code_title">రికవరీ కోడ్</string>
+    <string name="storage_check_fragment_permission_error">బ్యాకప్ స్థానం లో వ్రాయడానికి అనుమతి ఇవ్వబడలేదు.</string>
+    <string name="storage_check_fragment_backup_error">బ్యాకప్ స్థానాన్ని యాక్సెస్ చేస్తున్నప్పుడు లోపం సంభవించింది.</string>
+    <string name="storage_check_fragment_restore_title">బ్యాకప్‌ల కోసం వెతుకుతోంది …</string>
+    <string name="storage_check_fragment_backup_title">బ్యాకప్ స్థానం ప్రారంభించబడుతుంది…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">ఖాతా అందుబాటులో లేదు. క్రొత్తదాన్ని సెటప్ చేయండి (లేదా పాస్‌కోడ్‌ను తీసివేయండి ).</string>
+    <string name="storage_fake_nextcloud_summary_installed">ఖాతాను సెటప్ చేయడానికి నొక్కండి</string>
+    <string name="storage_fake_nextcloud_summary">ఇన్‌స్టాల్ చేయడానికి నొక్కండి</string>
+    <string name="storage_fake_drive_summary">USB ని పెట్టండి</string>
+    <string name="storage_fake_drive_title">USB ఫ్లాష్ డ్రైవ్</string>
+    <string name="storage_fragment_warning">మీ ఫోన్ ని ఇతరులు చూసినప్పుడు మీరు ఏ యాప్‌లను ఉపయోగిస్తారో తెలుసుకోవచ్చు , కానీ యాప్‌ల లో డేటాకు తెలుసుకోలేరు .</string>
+    <string name="storage_fragment_restore_title">మీ బ్యాకప్‌లను ఎక్కడ కనుగొనాలి\?</string>
+    <string name="settings_backup_apk_summary">యాప్‌లను వారే బ్యాకప్ చేయండి. లేకపోతే, యాప్ డేటా మాత్రమే బ్యాకప్ చేయబడుతుంది.</string>
+    <string name="settings_backup_status_summary">చివరి బ్యాకప్: %1$s</string>
+    <string name="storage_fragment_backup_title">బ్యాకప్‌లను ఎక్కడ నిల్వ చేయాలో ఎంచుకోండి</string>
+    <string name="settings_backup_recovery_code_summary">ఇప్పడు ఉన్న కోడ్‌ని ధృవీకరించండి లేదా కొత్త కోడ్‌ని రూపొందించండి</string>
+    <string name="settings_backup_recovery_code">పునరుద్దరన కోడ్</string>
+    <string name="settings_backup_now">ఇప్పుడు బ్యాకప్ చేయండి</string>
+    <string name="settings_backup_exclude_apps">యాప్‌లను మినహాయించండి</string>
+    <string name="settings_backup_apk_dialog_disable">యాప్ బ్యాకుప్ ని నిలిపివేయండి</string>
+    <string name="settings_backup_apk_dialog_title">యాప్ బ్యాకప్‌ను చేయకుండా నిలిపివేయాలా \?</string>
+    <string name="settings_backup_apk_dialog_message">నిలిపివేయబడిన యాప్ బ్యాకప్ ఇప్పటికీ యాప్ డేటాను బ్యాకప్ చేస్తుంది. అయితే, ఇది స్వయంచాలకంగా పునరుద్ధరించబడదు.
+\n
+\n\"ఆటోమేటిక్ రీస్టోర్\" స్విచ్ ఆన్ చేస్తున్నప్పుడు మీరు మీ అన్ని యాప్‌లను మాన్యువల్‌గా ఇన్‌స్టాల్ చేయాలి.</string>
+    <string name="settings_backup_apk_title">యాప్ బ్యాకప్</string>
+    <string name="settings_category_app_data_backup">యాప్ డేటా బ్యాకప్</string>
+    <string name="settings_auto_restore_summary">యాప్‌ని మళ్లీ ఇన్‌స్టాల్ చేస్తున్నప్పుడు, బ్యాకప్ చేసిన సెట్టింగ్‌లు మరియు డేటాను పునరుద్ధరించండి</string>
+    <string name="settings_backup_location">బ్యాకుప్ చేయు స్థానం</string>
+    <string name="settings_backup">డేటా ను బ్యాకుప్ చెయ్యి</string>
+    <string name="backup">బ్యాకప్‌</string>
+    <string name="about_source_code">సోర్స్ కోడ్: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">సమర్పించినవారు: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">రూపకల్పన చేసిన వారు: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_license">లైసెన్స్: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Version: %s</string>
+    <string name="storage_internal_warning_use_anyway">అయినా ఉపయోగించండి</string>
+    <string name="storage_internal_warning_choose_other">వేరేది ఎంచుకోండి</string>
+    <string name="storage_internal_warning_message">మీరు మీ బ్యాకప్ కోసం ఇంటర్నల్ మెమరీ ని ఎంచుకున్నారు. మీ ఫోన్ పోయినప్పుడు లేదా పగిలినప్పుడు ఇది అందుబాటులో ఉండదు.</string>
+    <string name="storage_internal_warning_title">హెచ్చరిక</string>
+    <string name="restore_finished_button">ముగించు</string>
+    <string name="restore_finished_error">బ్యాకప్‌ను పునరుద్ధరించేటప్పుడు లోపం సంభవించింది.</string>
+    <string name="restore_finished_success">పునరుద్ధరణ పూర్తయింది</string>
+    <string name="restore_magic_package">సిస్టమ్ ప్యాకేజీ మేనేజర్</string>
+    <string name="restore_restoring_error_message">మీరు ఈ యాప్‌లను మాన్యువల్‌గా మళ్లీ ఇన్‌స్టాల్ చేయవచ్చు మరియు ఆటోమేటిక్ రీస్టోర్ వారి డేటాను పునరుద్ధరించడానికి ప్రయత్నిస్తుంది (ఎనేబుల్ చేసినప్పుడు).</string>
+    <string name="restore_restoring_error_title">కొన్ని యాప్‌లను పునరుద్ధరించడం సాధ్యపడలేదు</string>
+    <string name="restore_restoring">బ్యాకప్‌ను పునరుద్ధరిస్తోంది</string>
+    <string name="restore_next">తరువాత</string>
+    <string name="restore_installing_tap_to_install">ఇన్‌స్టాల్ చేయడానికి నొక్కండి</string>
+    <string name="restore_installing_error_message">యాప్ ఇన్‌స్టాల్ చేయబడితే మాత్రమే డేటా పునరుద్ధరించబడుతుంది.
+\n
+\nకొనసాగడానికి ముందు వాటిని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయడానికి ప్రయత్నించడానికి విఫలమైన యాప్‌లను నొక్కండి.</string>
+    <string name="restore_installing_error_title">కొన్ని యాప్‌లు ఇన్‌స్టాల్ చేయబడలేదు</string>
+    <string name="restore_installing_packages">యాప్‌లను మళ్లీ ఇన్‌స్టాల్ చేస్తోంది</string>
+    <string name="restore_set_empty_result">ఇక్కడ తగిన బ్యాకప్‌లు కనుగొనబడలేదు.
+\n
+\nఇది తప్పు రికవరీ కోడ్ లేదా నిల్వ లోపం వల్ల కావచ్చు.</string>
+    <string name="restore_set_error">బ్యాకప్‌లను లోడ్ చేస్తున్నప్పుడు లోపం సంభవించింది.</string>
+    <string name="restore_invalid_location_message">మేము ఇక్కడ బ్యాకప్‌లను కనుగొనలేకపోయాము.
+\n
+\nదయచేసి %s ఫోల్డర్ లో ఉన్న మరొక స్థానాన్ని ఎంచుకోండి.</string>
+    <string name="restore_invalid_location_title">బ్యాకప్‌లు గుర్తించబడలేదు</string>
+    <string name="restore_back">పునరుద్ధరించవద్దు</string>
+    <string name="restore_restore_set_times">చివరి బ్యాకప్ %1$s· మొదటి %2$s.</string>
+    <string name="restore_choose_restore_set">పునరుద్ధరించడానికి బ్యాకప్‌ని ఎంచుకోండి</string>
+    <string name="restore_title">బ్యాకప్ నుండి పునరుద్ధరించండి</string>
+    <string name="backup_section_not_allowed">డేటా బ్యాకప్‌ని అనుమతించని యాప్‌లు</string>
+    <string name="restore_app_not_installed">యాప్ ఇన్‌స్టాల్ చేయబడలేదు</string>
+    <string name="restore_app_quota_exceeded">బ్యాకప్ కోటా మించిపోయింది</string>
+    <string name="backup_app_quota_exceeded">బ్యాకప్ కోటా మించిపోయింది</string>
+    <string name="restore_app_not_allowed">బ్యాకప్‌ను యాప్ అనుమతించలేదు</string>
+    <string name="backup_app_no_data">బ్యాకప్ డేటా లేదని యాప్ చెపుతుంది</string>
+    <string name="restore_app_was_stopped">ఇటీవల ఉపయోగించబడనందున బ్యాకప్ చేయబడలేదు</string>
+    <string name="backup_app_was_stopped">ఇటీవల ఉపయోగించబడనందున బ్యాకప్ చేయబడలేదు</string>
+    <string name="restore_app_not_yet_backed_up">ఇంకా బ్యాకప్ చేయబడలేదు</string>
+    <string name="backup_app_not_yet_backed_up">బ్యాకప్ చేయడం కోసం వేచి చూస్తుంది…</string>
+    <string name="backup_section_user">ఇన్‌స్టాల్ చేసిన యాప్‌లు</string>
+    <string name="backup_call_log">కాల్ హిస్టరీ</string>
 </resources>
