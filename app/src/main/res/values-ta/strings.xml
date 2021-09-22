@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="about_author">எழுதியவர்: <a href="https://github.com/stevesoltys">ஸ்டீவ் சோல்டிஸ்</a> மற்றும் <a href="https://blog.grobox.de">டோர்ஸ்டன் க்ரோட்</a></string>
+</resources>
