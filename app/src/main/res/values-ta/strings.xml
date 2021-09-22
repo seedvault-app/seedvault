@@ -1,4 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="about_author">எழுதியவர்: <a href="https://github.com/stevesoltys">ஸ்டீவ் சோல்டிஸ்</a> மற்றும் <a href="https://blog.grobox.de">டோர்ஸ்டன் க்ரோட்</a></string>
+    <string name="restore_invalid_location_message">இந்த இடத்தில் எந்த காப்புப்பிரதிகளையும் எங்களால் கண்டுபிடிக்க முடியவில்லை.
+\n
+\n%s கோப்புறையைக் கொண்ட மற்றொரு இடத்தைத் தேர்வு செய்யவும்.</string>
+    <string name="about_source_code">மூல குறியீடு: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">நிதியுதவி: <a href="https://www.calyxinstitute.org">Calyx நிறுவனத்தில்</a> பயன்படுத்த <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">வடிவமைப்பு: <a href="https://www.glennsorrentino.com/"> க்ளென் சோரெண்டினோ </a></string>
+    <string name="about_license">உரிமம்: <a href="https://www.apache.org/licenses/LICENSE-2.0"> அப்பாச்சி 2 </a></string>
+    <string name="about_version">பதிப்பு: %s</string>
+    <string name="about_summary">Android இல் உள்ள காப்பு API ஐப் பயன்படுத்தி ஒரு காப்புப்பெடுப்பு பயன்பாடு.</string>
+    <string name="about_title">பற்றி</string>
+    <string name="storage_internal_warning_use_anyway">எப்படியாவது பயன்படுத்தவும்</string>
+    <string name="storage_internal_warning_choose_other">மற்றதை தேர்வு செய்யவும்</string>
+    <string name="storage_internal_warning_message">உங்கள் காப்பெடுப்புக்காக உள் சேமிப்பகத்தைத் தேர்ந்தெடுத்துள்ளீர்கள். உங்கள் தொலைபேசி தொலைந்து போகும்போது அல்லது உடைந்தால் தகவல்களை மீட்டெடுக்க முடியாது.</string>
+    <string name="storage_internal_warning_title">எச்சரிக்கை</string>
+    <string name="restore_finished_button">முடிக்கவும்</string>
+    <string name="restore_finished_error">காப்புப்பிரதியை மீட்டெடுக்கும் போது பிழை ஏற்பட்டது.</string>
+    <string name="restore_finished_success">மீட்பு முடிந்தது</string>
+    <string name="restore_magic_package">கணினி தொகுப்பு மேலாளர்</string>
+    <string name="restore_restoring_error_message">நீங்கள் இந்த பயன்பாடுகளை கைமுறையாக மீண்டும் நிறுவலாம் மற்றும் தானியங்கி மீட்பு அவற்றின் தரவை மீட்டெடுக்க முயற்சிக்கும் (இயக்கப்பட்ட போது).</string>
+    <string name="restore_restoring_error_title">சில பயன்பாடுகளை மீட்டெடுக்க முடியவில்லை</string>
+    <string name="restore_restoring">காப்புப்பிரதியை மீட்டமைத்தல்</string>
+    <string name="restore_next">அடுத்தது</string>
+    <string name="restore_installing_tap_to_install">நிறுவ தட்டவும்</string>
+    <string name="restore_installing_error_message">பயன்பாடு நிறுவப்பட்டிருந்தால் மட்டுமே தரவை மீட்டெடுக்க முடியும்.
+\n
+\nதொடர்வதற்கு முன் அவற்றை கைமுறையாக நிறுவ முயற்சிக்க தோல்வியுற்ற பயன்பாடுகளைத் தட்டவும்.</string>
+    <string name="restore_installing_error_title">சில பயன்பாடுகள் நிறுவப்படவில்லை</string>
+    <string name="restore_installing_packages">பயன்பாடுகளை மீண்டும் நிறுவுதல்</string>
+    <string name="restore_set_empty_result">கொடுக்கப்பட்ட இடத்தில் பொருத்தமான காப்புப்பிரதிகள் இல்லை.
+\n
+\nஇது பெரும்பாலும் தவறான மீட்பு குறியீடு அல்லது சேமிப்பக பிழை காரணமாக இருக்கலாம்.</string>
+    <string name="restore_set_error">காப்புப்பிரதிகளை ஏற்றும்போது பிழை ஏற்பட்டது.</string>
+    <string name="restore_invalid_location_title">காப்பு இல்லை</string>
+    <string name="restore_back">மீட்டெடுக்க வேண்டாம்</string>
+    <string name="restore_restore_set_times">கடைசி காப்பு %1$s · முதல் %2$s.</string>
+    <string name="restore_choose_restore_set">மீட்டமைக்க ஒரு காப்புப்பிரதியைத் தேர்வு செய்யவும்</string>
+    <string name="restore_title">காப்புப்பிரதியிலிருந்து மீட்டெடுக்கவும்</string>
+    <string name="backup_section_not_allowed">தரவு காப்புப்பிரதியை அனுமதிக்காத பயன்பாடுகள்</string>
+    <string name="restore_app_not_installed">பயன்பாடு நிறுவப்படவில்லை</string>
+    <string name="restore_app_quota_exceeded">காப்புபிரதி ஒதுக்கீடு முன்பே முடிவுற்றது</string>
+    <string name="backup_app_quota_exceeded">காப்புபிரதி ஒதுக்கீடு முடிவுற்றது</string>
+    <string name="restore_app_not_allowed">காப்புப்பிரதியை ஆப்ஸ் அனுமதிக்கவில்லை</string>
+    <string name="backup_app_no_data">காப்புப்பிரதிக்கு தரவு இல்லை என்று பயன்பாடு தெரிவித்தது</string>
+    <string name="restore_app_was_stopped">சமீபத்தில் பயன்படுத்தப்படாததால் காப்புப் பிரதி எடுக்கப்படவில்லை</string>
+    <string name="backup_app_was_stopped">சமீபத்தில் பயன்படுத்தப்படாததால் காப்புப் பிரதி எடுக்கப்படவில்லை</string>
+    <string name="restore_app_not_yet_backed_up">இன்னும் காப்புப் பிரதி எடுக்கப்படவில்லை</string>
+    <string name="backup_app_not_yet_backed_up">காப்புப் பிரதி எடுக்க காத்திருக்கிறது …</string>
+    <string name="backup_section_user">நிறுவப்பட்ட பயன்பாடுகள்</string>
+    <string name="backup_contacts">உள்ளூர் தொடர்புகள்</string>
+    <string name="backup_call_log">அழைப்பு வரலாறு</string>
+    <string name="backup_settings">சாதன அமைப்புகள்</string>
+    <string name="backup_sms">எஸ்எம்எஸ் உரை செய்திகள்</string>
+    <string name="backup_section_system">கணினி பயன்பாடுகள்</string>
+    <string name="notification_restore_error_action">பயன்பாட்டை நிறுவல் நீக்கவும்</string>
+    <string name="notification_restore_error_text">உங்கள் தரவை காப்புப்பிரதியிலிருந்து மீட்டமைக்க பயன்பாட்டை நிறுவும் முன் உங்கள் %1$s ஐ செருகவும்.</string>
+    <string name="notification_restore_error_title">%1$s க்கான தரவை மீட்டெடுக்க முடியவில்லை</string>
+    <string name="notification_restore_error_channel_title">ஃபிளாஷ் டிரைவ் பிழையை தானாக மீட்டெடுக்கவும்</string>
+    <string name="notification_error_action">சரிசெய்</string>
+    <string name="notification_error_text">சாதன காப்புப்பிரதியை இயக்க முடியவில்லை.</string>
+    <string name="notification_error_title">காப்புப் பிழை</string>
+    <string name="notification_error_channel_title">பிழை அறிவிப்பு</string>
+    <string name="notification_failed_title">காப்புப் பிரதி எடுக்க முடியவில்லை</string>
+    <string name="notification_success_text">%1$d / %2$d பயன்பாடுகள் காப்புப் பிரதி எடுக்கப்பட்டது. மேலும் அறிய தட்டவும்.</string>
+    <string name="notification_success_title">காப்புப்பிரதி முடிந்தது</string>
+    <string name="notification_channel_title">காப்புப்பிரதி அறிவிப்பு</string>
+    <string name="notification_title">காப்புப்பிரதி இயங்குகிறது</string>
+    <string name="notification_backup_already_running">காப்புப்பிரதி ஏற்கனவே செயல்பாட்டில் உள்ளது</string>
+    <string name="recovery_code_recreated">புதிய மீட்பு குறியீடு வெற்றிகரமாக உருவாக்கப்பட்டது</string>
+    <string name="recovery_code_verification_new_dialog_message">புதிய குறியீட்டை உருவாக்குவது உங்கள் இருக்கும் காப்புப்பிரதிகளை அணுக முடியாததாக ஆக்கும். முடிந்தால் அவற்றை நீக்க முயற்சிப்போம்.
+\n
+\nநீங்கள் இதை நிச்சயமாக செய்ய விரும்புகிறீர்களா\?</string>
+    <string name="recovery_code_verification_new_dialog_title">ஒரு நொடி காத்திருங்கள் …</string>
+    <string name="recovery_code_verification_generate_new">புதிய குறியீட்டை உருவாக்கவும்</string>
+    <string name="recovery_code_verification_try_again">மீண்டும் முயற்சி செய்</string>
+    <string name="recovery_code_verification_error_message">நீங்கள் ஒரு தவறான மீட்பு குறியீட்டை உள்ளிட்டுள்ளீர்கள். தயவு செய்து மீண்டும் முயற்சிக்கவும்!
+\n
+\nஉங்கள் குறியீட்டை இழந்திருந்தால், கீழே உள்ள \'புதிய குறியீட்டை உருவாக்கு\' என்பதைத் தட்டவும்.</string>
+    <string name="recovery_code_verification_error_title">தவறான மீட்பு குறியீடு</string>
+    <string name="recovery_code_verification_ok_message">உங்கள் குறியீடு சரியானது மற்றும் உங்கள் காப்புப்பிரதியை மீட்டமைக்க வேலை செய்யும்.</string>
+    <string name="recovery_code_verification_ok_title">மீட்பு குறியீடு சரிபார்க்கப்பட்டது</string>
+    <string name="recovery_code_error_checksum_word">உங்கள் குறியீடு தவறானது. எல்லா வார்த்தைகளையும் சரிபார்த்து மீண்டும் முயற்சிக்கவும்!</string>
+    <string name="recovery_code_error_invalid_word">தவறான வார்த்தை. நீங்கள் %1$s அல்லது %2$s என்று சொன்னீர்களா\?</string>
+    <string name="recovery_code_error_empty_word">இந்த வார்த்தையை உள்ளிட மறந்துவிட்டீர்கள்.</string>
+    <string name="recovery_code_input_hint_12">வார்த்தை 12</string>
+    <string name="recovery_code_input_hint_11">வார்த்தை 11</string>
+    <string name="recovery_code_input_hint_10">வார்த்தை 10</string>
+    <string name="recovery_code_input_hint_9">வார்த்தை 9</string>
+    <string name="recovery_code_input_hint_8">வார்த்தை 8</string>
+    <string name="recovery_code_input_hint_7">வார்த்தை 7</string>
+    <string name="recovery_code_input_hint_6">வார்த்தை 6</string>
+    <string name="recovery_code_input_hint_5">வார்த்தை 5</string>
+    <string name="recovery_code_input_hint_4">வார்த்தை 4</string>
+    <string name="recovery_code_input_hint_3">வார்த்தை 3</string>
+    <string name="recovery_code_input_hint_2">வார்த்தை 2</string>
+    <string name="recovery_code_input_hint_1">வார்த்தை 1</string>
+    <string name="recovery_code_done_button">சரிபார்</string>
+    <string name="recovery_code_input_intro">காப்புப்பிரதிகளை அமைக்கும்போது நீங்கள் எழுதிய உங்கள் 12-வார்த்தை மீட்பு குறியீட்டை உள்ளிடவும்.</string>
+    <string name="recovery_code_confirm_intro">உங்களுக்கு தேவையான போது அது வேலை செய்யும் என்பதை உறுதிப்படுத்த உங்கள் 12-வார்த்தை மீட்பு குறியீட்டை உள்ளிடவும்.</string>
+    <string name="recovery_code_confirm_button">குறியீட்டை உறுதிப்படுத்தவும்</string>
+    <string name="recovery_code_write_it_down">இப்போது அதை காகிதத்தில் எழுதுங்கள்!</string>
+    <string name="recovery_code_12_word_intro">காப்புப் பிரதி எடுக்கப்பட்ட தரவை மீட்டெடுக்க உங்களுக்கு உங்கள் 12-வார்த்தை மீட்பு குறியீடு தேவை.</string>
+    <string name="recovery_code_title">மீட்பு குறியீடு</string>
+    <string name="storage_check_fragment_error_button">பின்செல்</string>
+    <string name="storage_check_fragment_permission_error">காப்பு இடத்திற்கு எழுத அனுமதி பெற முடியவில்லை.</string>
+    <string name="storage_check_fragment_backup_error">காப்பு இருப்பிடத்தை அணுகும்போது பிழை ஏற்பட்டது.</string>
+    <string name="storage_check_fragment_restore_title">காப்புப்பிரதிகளைத் தேடுகிறது …</string>
+    <string name="storage_check_fragment_backup_title">காப்பு இருப்பிடத்தைத் தொடங்குகிறது …</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">கணக்கு கிடைக்கவில்லை. ஒன்றை அமைக்கவும் (அல்லது கடவுக்குறியீட்டை முடக்கவும்).</string>
+    <string name="storage_fake_nextcloud_summary_installed">கணக்கை அமைக்க தட்டவும்</string>
+    <string name="storage_fake_nextcloud_summary">நிறுவ தட்டவும்</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> மீதமுள்ளது</string>
+    <string name="storage_fake_drive_summary">செருகப்பட வேண்டும்</string>
+    <string name="storage_fragment_warning">உங்கள் சேமிப்பு இருப்பிடத்திற்கான அணுகல் உள்ளவர்கள் நீங்கள் எந்த செயலியை பயன்படுத்துகிறீர்கள் என்பதை அறியலாம், ஆனால் செயலியின் தரவை அணுக முடியாது.</string>
+    <string name="storage_fragment_restore_title">உங்கள் காப்புப்பிரதிகளை எங்கே கண்டுபிடிப்பது\?</string>
+    <string name="storage_fragment_backup_title">காப்புப்பிரதிகளை எங்கே சேமிப்பது என்பதைத் தேர்வு செய்</string>
+    <string name="settings_backup_recovery_code_summary">ஏற்கனவே உள்ள குறியீட்டைச் சரிபார்க்கவும் அல்லது புதிய குறியீட்டை உருவாக்கவும்</string>
+    <string name="settings_backup_recovery_code">மீட்பு குறியீடு</string>
+    <string name="settings_backup_now">இப்பொழுது காப்பெடு</string>
+    <string name="settings_backup_exclude_apps">செயலிகளை விலக்கு</string>
+    <string name="settings_backup_status_summary">கடைசி காப்பு: %1$s</string>
+    <string name="settings_backup_status_title">காப்பு நிலை</string>
+    <string name="settings_backup_apk_dialog_disable">செயலி காப்புப்பிரதியை முடக்கு</string>
+    <string name="settings_backup_apk_dialog_cancel">ரத்து</string>
+    <string name="settings_backup_apk_dialog_message">முடக்கப்பட்ட செயலி காப்புப்பிரதி இன்னும் செயலி தரவை காப்புப் பிரதி எடுக்கும். இருப்பினும், அது தானாகவே மீட்டமைக்கப்படாது.
+\n
+\n\"தானியங்கி மீட்பு\" இயக்கப்பட்டிருக்கும் போது உங்கள் எல்லா செயலிகளையும் நீங்களாகவே நிறுவ வேண்டும்.</string>
+    <string name="settings_backup_apk_dialog_title">பயன்பாட்டு காப்புப்பிரதியை உண்மையில் முடக்கவா\?</string>
+    <string name="settings_backup_apk_summary">செயலிகள் தாங்களே காப்புப் பிரதி எடுக்கவும். இல்லையெனில், செயலித் தரவு மட்டுமே காப்புப் பிரதி எடுக்கப்படும்.</string>
+    <string name="settings_auto_restore_summary_usb">குறிப்பு: இது வேலை செய்ய உங்கள் %1$s செருகப்பட வேண்டும்.</string>
+    <string name="settings_auto_restore_summary">ஒரு செயலியை மீண்டும் நிறுவும் போது, காப்புப் பிரதி எடுத்த அமைப்புகள் மற்றும் தரவை மீட்டெடுக்கவும்.</string>
+    <string name="settings_category_app_data_backup">செயலி தரவு காப்பு</string>
+    <string name="settings_backup_apk_title">செயலி காப்பு</string>
+    <string name="settings_auto_restore_title">தானியங்கி மீட்பு</string>
+    <string name="settings_info">அனைத்து காப்புப்பிரதிகளும் உங்கள் தொலைபேசியில் குறியாக்கம் செய்யப்பட்டுள்ளன. காப்புப்பிரதியிலிருந்து மீட்டமைக்க உங்களுக்கு உங்கள் 12-வார்த்தை மீட்பு குறியீடு தேவைப்படும்.</string>
+    <string name="settings_backup_last_backup_never">ஒருபோதும்</string>
+    <string name="settings_backup_location_internal">உள் நினைவகம்</string>
+    <string name="settings_backup_location_none">எதுவுமில்லை</string>
+    <string name="settings_backup_location">காப்பு இடம்</string>
+    <string name="settings_backup">எனது தரவை காப்புப் பிரதி எடு</string>
+    <string name="restore_backup_button">காப்புப்பிரதியை மீட்டெடு</string>
+    <string name="current_destination_string">காப்பு நிலை மற்றும் அமைப்புகள்</string>
+    <string name="data_management_label">விதை பெட்டக காப்பு</string>
+    <string name="backup">காப்பு</string>
 </resources>
