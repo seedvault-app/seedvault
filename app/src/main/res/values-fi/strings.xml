@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size"> %1$s </xliff:g> vapaana</string>
-    <string name="about_source_code">Lähdekoodi: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Lähdekoodi: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Sponsoroi: <a href="https://www.calyxinstitute.org"> Calyx Institute </a> käytettäväksi <a href="https://calyxos.org"> CalyxOS </a></string>
     <string name="about_design">Suunnittelija: <a href="https://www.glennsorrentino.com/"> Glenn Sorrentino </a></string>
     <string name="about_author">Kehittänyt: <a href="https://github.com/stevesoltys"> Steve Soltys </a> ja <a href="https://blog.grobox.de"> Torsten Grote </a></string>
@@ -49,7 +49,7 @@
     <string name="backup_app_was_stopped">Ei varmuuskopioitu, koska sitä ei käytetty äskettäin</string>
     <string name="restore_app_not_yet_backed_up">Ei vielä varmuuskopioitu</string>
     <string name="backup_app_not_yet_backed_up">Odottaa varmuuskopiointia…</string>
-    <string name="backup_section_user">Asennetut Sovellukset</string>
+    <string name="backup_section_user">Asennetut sovellukset</string>
     <string name="backup_contacts">Paikalliset yhteystiedot</string>
     <string name="backup_call_log">Puheluhistoria</string>
     <string name="backup_settings">Laiteasetukset</string>
@@ -84,7 +84,7 @@
     <string name="recovery_code_input_hint_3">Sana 3</string>
     <string name="recovery_code_input_hint_2">Sana 2</string>
     <string name="recovery_code_input_hint_1">Sana 1</string>
-    <string name="recovery_code_done_button">Valmis</string>
+    <string name="recovery_code_done_button">Vahvista</string>
     <string name="recovery_code_input_intro">Kirjoita 12-sanan palautuskoodi, jonka kirjoitit muistiin varmuuskopioita määritettäessä.</string>
     <string name="recovery_code_confirm_intro">Anna 12-sanainen palautuskoodi varmistaaksesi, että se toimii, kun tarvitset sitä.</string>
     <string name="recovery_code_confirm_button">Vahvista koodi</string>
@@ -130,4 +130,19 @@
     <string name="current_destination_string">Varmuuskopioinnin tila ja asetukset</string>
     <string name="data_management_label">Seedvault Varmuuskopio</string>
     <string name="backup">Varmuuskopio</string>
+    <string name="recovery_code_recreated">Uusi palautuskoodi on luotu onnistuneesti</string>
+    <string name="recovery_code_verification_new_dialog_message">Uuden koodin luominen tekee nykyisistä varmuuskopioista saavuttamattomia. Yritämme poistaa ne, jos mahdollista.
+\n
+\nHaluatko varmasti tehdä tämän\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Odota hetki…</string>
+    <string name="recovery_code_verification_generate_new">Luo uusi koodi</string>
+    <string name="recovery_code_verification_try_again">Yritä uudelleen</string>
+    <string name="recovery_code_verification_error_message">Olet antanut väärän palautuskoodin. Yritä uudelleen!
+\n
+\nJos olet hukannut koodisi, napauta \"Luo uusi koodi\" alta.</string>
+    <string name="recovery_code_verification_error_title">Väärä palautuskoodi</string>
+    <string name="recovery_code_verification_ok_message">Koodisi on oikein ja sen avulla voidaan palauttaa varmuuskopio.</string>
+    <string name="recovery_code_verification_ok_title">Palautuskoodi vahvistettu</string>
+    <string name="settings_backup_recovery_code_summary">Vahvista olemassa oleva koodi tai luo uusi</string>
+    <string name="settings_backup_recovery_code">Palautuskoodi</string>
 </resources>
