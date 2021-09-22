@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_source_code">Kaynak Kodları: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Kaynak kodları: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Sponsor: <a href="https://calyxos.org">CalyxOS</a>\'de kullanmak için <a href="https://www.calyxinstitute.org">Calyx Institute</a></string>
     <string name="about_design">Tasarım: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Yazanlar: <a href="https://github.com/stevesoltys">Steve Soltys</a> ve <a href="https://blog.grobox.de">Torsten Grote</a></string>
@@ -74,8 +74,8 @@
     <string name="storage_check_fragment_backup_error">Yedekleme konumuna erişilirken bir hata oluştu.</string>
     <string name="storage_check_fragment_restore_title">Yedeklemeler aranıyor…</string>
     <string name="storage_check_fragment_backup_title">Yedekleme konumu başlatılıyor…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Hesap oluşturmak için tıklayın</string>
-    <string name="storage_fake_nextcloud_summary">Kurmak için tıklayın</string>
+    <string name="storage_fake_nextcloud_summary_installed">Hesap oluşturmak için dokunun</string>
+    <string name="storage_fake_nextcloud_summary">Kurmak için dokunun</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> boş</string>
     <string name="storage_fake_drive_summary">Takılı olması gerekiyor</string>
     <string name="storage_fake_drive_title">USB flash bellek</string>
@@ -144,5 +144,5 @@
     <string name="recovery_code_verification_ok_message">Kodunuz doğru ve yedeklemenizi geri yüklemek için kullanılabilir.</string>
     <string name="recovery_code_verification_ok_title">Kurtarma kodu doğrulandı</string>
     <string name="settings_backup_recovery_code_summary">Var olan kodu doğrulayın veya yeni bir tane oluşturun</string>
-    <string name="settings_backup_recovery_code">Kurtarma Kodu</string>
+    <string name="settings_backup_recovery_code">Kurtarma kodu</string>
 </resources>
