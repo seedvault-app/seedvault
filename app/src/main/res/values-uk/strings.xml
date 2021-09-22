@@ -1,2 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="storage_fake_nextcloud_summary">Торкніться, щоб установити</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> вільно</string>
+    <string name="storage_fake_drive_summary">Потрібно під\'єднати</string>
+    <string name="storage_fake_drive_title">USB-накопичувач</string>
+    <string name="storage_fragment_warning">Люди, які мають доступ до вашого сховища, можуть дізнатися, які застосунки ви використовуєте, але не отримають доступу до даних застосунків.</string>
+    <string name="storage_fragment_restore_title">Де знайти резервні копії\?</string>
+    <string name="storage_fragment_backup_title">Вибір місця зберігання резервних копій</string>
+    <string name="settings_backup_recovery_code_summary">Перевірка наявного коду або створення нового</string>
+    <string name="settings_backup_recovery_code">Код відновлення</string>
+    <string name="settings_backup_now">Створити резервну копію зараз</string>
+    <string name="settings_backup_exclude_apps">Виключити застосунки</string>
+    <string name="settings_backup_status_summary">Остання резервна копія: %1$s</string>
+    <string name="settings_backup_status_title">Стан резервного копіювання</string>
+    <string name="settings_backup_apk_dialog_disable">Вимкнути резервне копіювання застосунків</string>
+    <string name="settings_backup_apk_dialog_cancel">Скасувати</string>
+    <string name="settings_backup_apk_dialog_message">При вимкненому резервному копіюванні застосунків як і раніше будуть виконуватися резервні копії даних застосунків. Однак їх не буде відновлено автоматично.
+\n
+\nВам потрібно буде встановити всі свої застосунки вручну при увімкненому \"автоматичному відновленні\".</string>
+    <string name="settings_backup_apk_dialog_title">Дійсно вимкнути резервне копіювання застосунків\?</string>
+    <string name="settings_backup_apk_summary">Зробіть резервну копію самих застосунків. В іншому випадку буде виконано резервне копіювання тільки даних застосунків.</string>
+    <string name="settings_backup_apk_title">Резервне копіювання застосунків</string>
+    <string name="settings_category_app_data_backup">Резервне копіювання даних застосунків</string>
+    <string name="settings_auto_restore_summary_usb">Примітка: Ваш %1$s повинен бути під\'єднаний до електромережі, щоб це працювало.</string>
+    <string name="settings_auto_restore_summary">При перевстановленні застосунків відновіть резервні копії налаштувань і даних.</string>
+    <string name="settings_auto_restore_title">Автоматичне відновлення</string>
+    <string name="settings_info">Усі резервні копії на вашому телефоні зашифровані. Для відновлення з резервної копії вам знадобиться код відновлення з 12 слів.</string>
+    <string name="settings_backup_last_backup_never">Ніколи</string>
+    <string name="settings_backup_location_internal">Внутрішня пам\'ять</string>
+    <string name="settings_backup_location_none">Жодного</string>
+    <string name="settings_backup_location">Розташування резервної копії</string>
+    <string name="settings_backup">Резервне копіювання моїх даних</string>
+    <string name="restore_backup_button">Відновлення резервної копії</string>
+    <string name="current_destination_string">Стан і налаштування резервного копіювання</string>
+    <string name="data_management_label">Резервне копіювання Seedvault</string>
+    <string name="backup">Резервна копія</string>
+    <string name="about_source_code">Сирцевий код: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">Спонсується: <a href="https://www.calyxinstitute.org">Calyx Institute</a> для користування в <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Дизайн: <a href="https://www.glennsorrentino.com/">Ґленн Соррентіно (Glenn Sorrentino)</a></string>
+    <string name="about_author">Творці: <a href="https://github.com/stevesoltys">Стів Солтіс (Steve Soltys)</a> і <a href="https://blog.grobox.de">Торстен Ґрот (Torsten Grote)</a></string>
+    <string name="about_license">Ліцензія: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_version">Версія: %s</string>
+    <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android.</string>
+    <string name="about_title">Про застосунок</string>
+    <string name="storage_internal_warning_use_anyway">Однаково використовувати</string>
+    <string name="storage_internal_warning_choose_other">Обрати інше</string>
+    <string name="storage_internal_warning_message">Ви вибрали карту пам\'яті для резервної копії. Це буде недоступно, якщо ваш телефон загублений або зламаний.</string>
+    <string name="storage_internal_warning_title">Попередження</string>
+    <string name="restore_finished_button">Готово</string>
+    <string name="restore_finished_error">Під час відновлення резервної копії сталася помилка.</string>
+    <string name="restore_finished_success">Відновлення завершено</string>
+    <string name="restore_magic_package">Менеджер системних пакетів</string>
+    <string name="restore_restoring_error_message">Ви можете повторно встановити ці застосунки вручну, і автоматичне відновлення спробує відновити їх дані (якщо це ввімкнено).</string>
+    <string name="restore_restoring_error_title">Не вдалося відновити деякі застосунки</string>
+    <string name="restore_restoring">Відновлення резервної копії</string>
+    <string name="restore_next">Далі</string>
+    <string name="restore_installing_tap_to_install">Торкніться, щоб установити</string>
+    <string name="restore_installing_error_message">Дані можуть бути відновлені, якщо застосунок установлено.
+\n
+\nНатисніть на застосунок, щоб установити вручну перед тим як продовжити.</string>
+    <string name="restore_installing_error_title">Деякі застосунки не встановлено</string>
+    <string name="restore_installing_packages">Перевстановлення застосунків</string>
+    <string name="restore_set_empty_result">За цим розташуванням не знайдено відповідних резервних копій.
+\n
+\nШвидше за все, це пов\'язано з неправильним кодом відновлення або помилкою сховища.</string>
+    <string name="restore_set_error">Під час завантаження резервних копій сталася помилка.</string>
+    <string name="restore_invalid_location_message">Ми не змогли знайти жодних резервних копій у цьому розташуванні.
+\n
+\nБудь ласка, виберіть інше розташування, що містить каталог %s.</string>
+    <string name="restore_invalid_location_title">Резервні копії не знайдено</string>
+    <string name="restore_back">Не відновлювати</string>
+    <string name="restore_restore_set_times">Остання резервна копія %1$s · Перша %2$s.</string>
+    <string name="restore_choose_restore_set">Виберіть резервну копію для відновлення</string>
+    <string name="restore_title">Відновити з резервної копії</string>
+    <string name="backup_section_not_allowed">Застосунки, які забороняють резервне копіювання</string>
+    <string name="restore_app_not_installed">Застосунок не встановлено</string>
+    <string name="restore_app_quota_exceeded">Перевищено ліміт резервного копіювання</string>
+    <string name="backup_app_quota_exceeded">Перевищено ліміт резервного копіювання</string>
+    <string name="restore_app_not_allowed">Застосунок не дозволяє резервне копіювання</string>
+    <string name="backup_app_no_data">Застосунок повідомив про відсутність даних для резервного копіювання</string>
+    <string name="restore_app_was_stopped">Резервна копія не збережена, оскільки застосунок давно не використовувався</string>
+    <string name="backup_app_was_stopped">Резервна копія не збережена, оскільки застосунок давно не використовувався</string>
+    <string name="restore_app_not_yet_backed_up">Ще не було зроблено резервну копію</string>
+    <string name="backup_app_not_yet_backed_up">Очікування резервного копіювання…</string>
+    <string name="backup_section_user">Установлені застосунки</string>
+    <string name="backup_contacts">Контакти на пристрої</string>
+    <string name="backup_call_log">Історія дзвінків</string>
+    <string name="backup_settings">Налаштування пристрою</string>
+    <string name="backup_sms">SMS-повідомлення</string>
+    <string name="backup_section_system">Системні застосунки</string>
+    <string name="notification_restore_error_action">Видалити застосунок</string>
+    <string name="notification_restore_error_text">Підключіть %1$s перед установленням застосунку, щоб відновити його дані з резервної копії.</string>
+    <string name="notification_restore_error_title">Не вдалося відновити дані для %1$s</string>
+    <string name="notification_restore_error_channel_title">Помилка автоматичного відновлення флеш-накопичувача</string>
+    <string name="notification_error_action">Виправити</string>
+    <string name="notification_error_text">Не вдалося запустити резервне копіювання пристрою.</string>
+    <string name="notification_error_title">Помилка резервного копіювання</string>
+    <string name="notification_error_channel_title">Сповіщення про помилку</string>
+    <string name="notification_failed_title">Не вдалося виконати резервне копіювання</string>
+    <string name="notification_success_text">Резервне копіювання %1$d з %2$d застосунків виконано. Натисніть, щоб дізнатися більше.</string>
+    <string name="notification_success_title">Резервне копіювання завершено</string>
+    <string name="notification_backup_already_running">Резервне копіювання вже виконується</string>
+    <string name="notification_title">Резервне копіювання запущено</string>
+    <string name="notification_channel_title">Сповіщення про резервне копіювання</string>
+    <string name="recovery_code_recreated">Новий код відновлення успішно створено</string>
+    <string name="recovery_code_verification_new_dialog_message">Утворення нового коду зробить наявні резервні копії недоступними. Ми спробуємо видалити їх, якщо це можливо.
+\n
+\nВи дійсно бажаєте це зробити\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Зачекайте одну секунду…</string>
+    <string name="recovery_code_verification_generate_new">Утворити новий код</string>
+    <string name="recovery_code_verification_try_again">Спробувати ще раз</string>
+    <string name="recovery_code_verification_error_message">Уведено неправильний код відновлення. Будь ласка, спробуйте ще раз!
+\n
+\nЯкщо ви втратили код, натисніть кнопку \"Утворити новий код\" нижче.</string>
+    <string name="recovery_code_verification_error_title">Неправильний код відновлення</string>
+    <string name="recovery_code_verification_ok_message">Ваш код правильний і буде працювати для відновлення резервної копії.</string>
+    <string name="recovery_code_verification_ok_title">Код відновлення перевірено</string>
+    <string name="recovery_code_error_checksum_word">Ваш код недійсний. Перевірте всі слова та повторіть спробу!</string>
+    <string name="recovery_code_error_invalid_word">Неправильне слово. Ви маєте на увазі %1$s або %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Ви забули ввести це слово.</string>
+    <string name="recovery_code_input_hint_12">Слово 12</string>
+    <string name="recovery_code_input_hint_11">Слово 11</string>
+    <string name="recovery_code_input_hint_10">Слово 10</string>
+    <string name="recovery_code_input_hint_9">Слово 9</string>
+    <string name="recovery_code_input_hint_8">Слово 8</string>
+    <string name="recovery_code_input_hint_7">Слово 7</string>
+    <string name="recovery_code_input_hint_6">Слово 6</string>
+    <string name="recovery_code_input_hint_5">Слово 5</string>
+    <string name="recovery_code_input_hint_4">Слово 4</string>
+    <string name="recovery_code_input_hint_3">Слово 3</string>
+    <string name="recovery_code_input_hint_2">Слово 2</string>
+    <string name="recovery_code_input_hint_1">Слово 1</string>
+    <string name="recovery_code_done_button">Перевірити</string>
+    <string name="recovery_code_input_intro">Введіть свій код відновлення з 12 слів, який ви записали під час налаштування резервних копій.</string>
+    <string name="recovery_code_confirm_intro">Уведіть код відновлення з 12 слів, щоб переконатися, що він буде працювати, коли вам це потрібно.</string>
+    <string name="recovery_code_confirm_button">Підтвердити код</string>
+    <string name="recovery_code_write_it_down">Запишіть його на папері прямо зараз!</string>
+    <string name="recovery_code_12_word_intro">Щоб відновити резервні копії даних, потрібен код відновлення з 12 слів.</string>
+    <string name="recovery_code_title">Код відновлення</string>
+    <string name="storage_check_fragment_error_button">Назад</string>
+    <string name="storage_check_fragment_permission_error">Не вдалося отримати дозвіл на запис до розташування резервної копії.</string>
+    <string name="storage_check_fragment_backup_error">Сталася помилка під час доступу до розташування резервної копії.</string>
+    <string name="storage_check_fragment_restore_title">Пошук резервних копій…</string>
+    <string name="storage_check_fragment_backup_title">Ініціалізація розташування резервної копії…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Обліковий запис недоступний. Налаштуйте його (або вимкніть код доступу).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Торкніться, щоб налаштувати обліковий запис</string>
+</resources>
