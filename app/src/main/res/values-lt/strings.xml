@@ -1,2 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="backup_app_not_yet_backed_up">Laukiama sukurti atsarginę kopiją…</string>
+    <string name="notification_restore_error_channel_title">Automatinio atkūrimo atmintuko klaida</string>
+    <string name="notification_error_text">Nepavyko paleisti atsarginės įrenginio kopijos.</string>
+    <string name="about_source_code">Pirminis kodas: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">Remia: <a href="https://www.calyxinstitute.org">Calyx institutas</a>, skirta naudoti <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Dizainas: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Parašė: <a href="https://github.com/stevesoltys">Steve Soltys</a> ir <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_license">Licencija: <a href="https://www.apache.org/licenses/LICENSE-2.0"> „Apache2“ </a></string>
+    <string name="about_version">Versija: %s</string>
+    <string name="about_summary">Atsarginės kopijos kūrimo programa, naudojanti „Android“ vidinę atsarginės kopijos kūrimo API.</string>
+    <string name="about_title">Apie</string>
+    <string name="storage_internal_warning_use_anyway">Vis tiek naudoti</string>
+    <string name="storage_internal_warning_choose_other">Pasirinkite kitą</string>
+    <string name="storage_internal_warning_message">Atsarginei kopijai sukurti pasirinkote vidinę saugyklą. Praradus ar sudaužius telefoną, jo nebus galima naudoti.</string>
+    <string name="storage_internal_warning_title">Įspėjimas</string>
+    <string name="restore_finished_button">Baigti</string>
+    <string name="restore_finished_error">Atkuriant atsarginę kopiją įvyko klaida.</string>
+    <string name="restore_finished_success">Atkūrimas baigtas</string>
+    <string name="restore_magic_package">Sistemos paketų tvarkyklė</string>
+    <string name="restore_restoring_error_message">Šias programėles galite iš naujo įdiegti rankiniu būdu, o automatinis atkūrimas bandys atkurti jų duomenis (kai tai įjungta).</string>
+    <string name="restore_restoring_error_title">Neįmanoma atkurti kai kurių programėlių</string>
+    <string name="restore_restoring">Atkuriama atsarginė kopija</string>
+    <string name="restore_next">Toliau</string>
+    <string name="restore_installing_tap_to_install">Bakstelėkite, kad įdiegtumėte</string>
+    <string name="restore_installing_error_message">Duomenis galima atkurti tik tada, jei yra įdiegta programėlė.
+\n
+\nBakstelėkite nepavykusias programėles ir prieš tęsdami bandykite jas įdiegti rankiniu būdu.</string>
+    <string name="restore_installing_error_title">Kai kurios programėlės neįdiegtos</string>
+    <string name="restore_installing_packages">Iš naujo įdiegiamos programėlės</string>
+    <string name="restore_set_empty_result">Nerasta tinkamų atsarginių kopijų nurodytoje vietoje.
+\n
+\nTaip greičiausiai atsitiko dėl neteisingo atkūrimo kodo arba saugojimo klaidos.</string>
+    <string name="restore_set_error">Įkeliant atsargines kopijas įvyko klaida.</string>
+    <string name="restore_invalid_location_message">Šioje vietoje nepavyko rasti jokių atsarginių kopijų.
+\n
+\nPasirinkite kitą vietą, kurioje yra %s aplankas.</string>
+    <string name="restore_invalid_location_title">Nerasta jokių atsarginių kopijų</string>
+    <string name="restore_back">Neatkurti</string>
+    <string name="restore_restore_set_times">Paskutinė atsarginė kopija %1$s - Pirmoji %2$s.</string>
+    <string name="restore_choose_restore_set">Pasirinkite atsarginę kopiją, kurią norite atkurti</string>
+    <string name="restore_title">Atkurti iš atsarginės kopijos</string>
+    <string name="backup_section_not_allowed">Programėlės, kurios neleidžia kurti atsarginių duomenų kopijų</string>
+    <string name="restore_app_not_installed">Programėlė neįdiegta</string>
+    <string name="restore_app_quota_exceeded">Buvo viršyta atsarginių kopijų kvota</string>
+    <string name="backup_app_quota_exceeded">Viršyta atsarginių kopijų kvota</string>
+    <string name="restore_app_not_allowed">Programėlė neleido sukurti atsarginės kopijos</string>
+    <string name="backup_app_no_data">Programa nepranešė apie duomenis atsarginei kopijai sukurti</string>
+    <string name="backup_app_was_stopped">Atsarginė kopija nepadaryta, nes programėlė neseniai nebuvo naudojama</string>
+    <string name="restore_app_was_stopped">Atsarginė kopija nebuvo daryta, nes programėlė neseniai nebuvo naudojama</string>
+    <string name="restore_app_not_yet_backed_up">Dar nebuvo sukurta atsarginė kopija</string>
+    <string name="backup_section_user">Įdiegtos programėlės</string>
+    <string name="backup_contacts">Vietiniai kontaktai</string>
+    <string name="backup_call_log">Skambučių istorija</string>
+    <string name="backup_settings">Įrenginio nustatymai</string>
+    <string name="backup_sms">SMS žinutės</string>
+    <string name="backup_section_system">Sistemos programėlės</string>
+    <string name="notification_restore_error_action">Pašalinti programėlę</string>
+    <string name="notification_restore_error_text">Prieš diegdami programėlę prijunkite %1$s, kad atkurtumėte jos duomenis iš atsarginės kopijos.</string>
+    <string name="notification_restore_error_title">Nepavyko atkurti %1$s duomenų</string>
+    <string name="notification_error_action">Pataisyti</string>
+    <string name="notification_error_title">Atsarginės kopijos kūrimo klaida</string>
+    <string name="notification_error_channel_title">Klaidos pranešimas</string>
+    <string name="notification_failed_title">Atsarginė kopija nepavyko</string>
+    <string name="notification_success_text">%1$d iš %2$d programėlių atsarginės kopijos sukurtos. Palieskite, kad sužinotumėte daugiau.</string>
+    <string name="notification_success_title">Atsarginė kopija baigta</string>
+    <string name="notification_backup_already_running">Jau yra kuriama atsarginė kopija</string>
+    <string name="notification_title">Atsarginis kopijavimas veikia</string>
+    <string name="notification_channel_title">Pranešimas apie atsarginę kopiją</string>
+    <string name="recovery_code_recreated">Sėkmingai sukurtas naujas atkūrimo kodas</string>
+    <string name="recovery_code_verification_new_dialog_message">Sukūrus naują kodą, esamos atsarginės kopijos taps neprieinamos. Jei įmanoma, pasistengsime jas ištrinti.
+\n
+\nAr tikrai norite tai padaryti\?</string>
+    <string name="recovery_code_verification_new_dialog_title">Palaukite vieną sekundę…</string>
+    <string name="recovery_code_verification_generate_new">Generuoti naują kodą</string>
+    <string name="recovery_code_verification_try_again">Bandykite dar kartą</string>
+    <string name="recovery_code_verification_error_message">Įvedėte negaliojantį atkūrimo kodą. Bandykite dar kartą!
+\n
+\nJei praradote kodą, toliau bakstelėkite „Generuoti naują kodą“.</string>
+    <string name="recovery_code_verification_error_title">Neteisingas atkūrimo kodas</string>
+    <string name="recovery_code_verification_ok_message">Jūsų kodas yra teisingas ir veiks atkuriant atsarginę kopiją.</string>
+    <string name="recovery_code_verification_ok_title">Atkūrimo kodas patvirtintas</string>
+    <string name="recovery_code_error_checksum_word">Jūsų kodas negalioja. Patikrinkite visus žodžius ir bandykite dar kartą!</string>
+    <string name="recovery_code_error_invalid_word">Neteisingas žodis. Turėjote omenyje %1$s ar %2$s\?</string>
+    <string name="recovery_code_error_empty_word">Pamiršote įvesti šį žodį.</string>
+    <string name="recovery_code_input_hint_12">12 žodis</string>
+    <string name="recovery_code_input_hint_11">11 žodis</string>
+    <string name="recovery_code_input_hint_10">10 žodis</string>
+    <string name="recovery_code_input_hint_9">9 žodis</string>
+    <string name="recovery_code_input_hint_8">8 žodis</string>
+    <string name="recovery_code_input_hint_7">7 žodis</string>
+    <string name="recovery_code_input_hint_6">6 žodis</string>
+    <string name="recovery_code_input_hint_5">5 žodis</string>
+    <string name="recovery_code_input_hint_4">4 žodis</string>
+    <string name="recovery_code_input_hint_3">3 žodis</string>
+    <string name="recovery_code_input_hint_2">2 žodis</string>
+    <string name="recovery_code_input_hint_1">1 žodis</string>
+    <string name="recovery_code_done_button">Patvirtinti</string>
+    <string name="recovery_code_input_intro">Įveskite 12 žodžių atkūrimo kodą, kurį užrašėte nustatydami atsargines kopijas.</string>
+    <string name="recovery_code_confirm_intro">Įveskite 12 žodžių atkūrimo kodą, kad įsitikintumėte, jog jis veiks tada, kai jums to prireiks.</string>
+    <string name="recovery_code_confirm_button">Patvirtinti kodą</string>
+    <string name="recovery_code_write_it_down">Užsirašykite jį ant popieriaus lapo dabar!</string>
+    <string name="recovery_code_12_word_intro">Norint atkurti atsarginę duomenų kopiją, reikia 12 žodžių atkūrimo kodo.</string>
+    <string name="recovery_code_title">Atkūrimo kodas</string>
+    <string name="storage_check_fragment_error_button">Atgal</string>
+    <string name="storage_check_fragment_permission_error">Nepavyksta gauti leidimo rašyti į atsarginės kopijos vietą.</string>
+    <string name="storage_check_fragment_backup_error">Bandant pasiekti atsarginės kopijos vietą įvyko klaida.</string>
+    <string name="storage_check_fragment_restore_title">Ieškoma atsarginių kopijų…</string>
+    <string name="storage_check_fragment_backup_title">Inicijuojama atsarginės kopijos vieta…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Paskyra neprieinama. Sukurkite ją dabar (arba išjunkite slaptažodžio kodą).</string>
+    <string name="storage_fake_nextcloud_summary_installed">Bakstelėkite, kad nustatytumėte paskyrą</string>
+    <string name="storage_fake_nextcloud_summary">Bakstelėkite, kad įdiegtumėte</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laisvi</string>
+    <string name="storage_fake_drive_summary">Turi būti prijungta prie elektros tinklo</string>
+    <string name="storage_fake_drive_title">USB atmintinė</string>
+    <string name="storage_fragment_warning">Asmenys, turintys prieigą prie jūsų saugyklos vietos, gali sužinoti, kokias programėles naudojate, tačiau negali gauti prieigos prie programėlių duomenų.</string>
+    <string name="storage_fragment_restore_title">Kur rasti mano atsargines kopijas\?</string>
+    <string name="storage_fragment_backup_title">Pasirinkite, kur saugoti atsargines kopijas</string>
+    <string name="settings_backup_recovery_code_summary">Patikrinkite esamą kodą arba sugeneruokite naują</string>
+    <string name="settings_backup_recovery_code">Atkūrimo kodas</string>
+    <string name="settings_backup_now">Kurti atsarginę kopiją dabar</string>
+    <string name="settings_backup_exclude_apps">Neįtraukiamos programėlės</string>
+    <string name="settings_backup_status_summary">Paskutinė atsarginė kopija: %1$s</string>
+    <string name="settings_backup_status_title">Atsarginės kopijos būsena</string>
+    <string name="settings_backup_apk_dialog_disable">Išjungti atsargines programėlių kopijas</string>
+    <string name="settings_backup_apk_dialog_cancel">Atšaukti</string>
+    <string name="settings_backup_apk_dialog_message">Išjungus atsargines programėlių kopijas vis tiek bus sukurtos atsarginės programėlių duomenų kopijos. Tačiau jos nebus atkuriami automatiškai.
+\n
+\nVisas programėles turėsite įdiegti rankiniu būdu, net ir turint įjungtą \"Automatinis atkūrimas\" funkciją.</string>
+    <string name="settings_backup_apk_dialog_title">Tikrai išjungti atsargines programėlių kopijas\?</string>
+    <string name="settings_backup_apk_summary">Padarykite atsarginę pačių programėlių kopiją. Priešingu atveju atsarginė kopija bus daroma tik programėlių duomenims.</string>
+    <string name="settings_backup_apk_title">Programėlių atsarginės kopijos</string>
+    <string name="settings_category_app_data_backup">Programėlių duomenų atsarginės kopijos</string>
+    <string name="settings_auto_restore_summary_usb">Pastaba: kad ši funkcija veiktų, jūsų %1$s turi būti prijungtas prie elektros tinklo.</string>
+    <string name="settings_auto_restore_summary">Iš naujo diegiant programėlę atkurti atsargines nustatymų ir duomenų kopijas.</string>
+    <string name="settings_auto_restore_title">Automatinis atkūrimas</string>
+    <string name="settings_info">Visos atsarginės kopijos šifruojamos telefone. Norėdami atkurti iš atsarginės kopijos, jums reikės 12 žodžių atkūrimo kodo.</string>
+    <string name="settings_backup_last_backup_never">Niekada</string>
+    <string name="settings_backup_location_internal">Vidinė saugykla</string>
+    <string name="settings_backup_location_none">Nėra</string>
+    <string name="settings_backup_location">Atsarginės kopijos vieta</string>
+    <string name="settings_backup">Sukurti atsarginę mano duomenų kopiją</string>
+    <string name="restore_backup_button">Atkurti atsarginę kopiją</string>
+    <string name="current_destination_string">Atsarginės kopijos būsena ir nustatymai</string>
+    <string name="data_management_label">Seedvault atsarginė kopija</string>
+    <string name="backup">Atsarginė kopija</string>
+</resources>
