@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_fragment_warning">Quienes tengan acceso a su ubicación de almacenamiento pueden ver qué aplicaciones utiliza, pero no podrán acceder a los datos de estas.</string>
-    <string name="about_source_code">Código fuente: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Código fuente: https://github.com/seedvault-app/seedvault</string>
     <string name="about_title">Acerca de</string>
     <string name="storage_internal_warning_use_anyway">Usar de todos modos</string>
     <string name="storage_internal_warning_title">Atención</string>
