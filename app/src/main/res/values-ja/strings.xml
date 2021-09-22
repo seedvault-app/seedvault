@@ -41,4 +41,17 @@
     <string name="storage_fake_nextcloud_summary">タップしてインストールする</string>
     <string name="settings_backup_apk_dialog_title">本当にアプリのバックアップを無効にしますか？</string>
     <string name="settings_backup_last_backup_never">未実施</string>
+    <string name="storage_check_fragment_backup_error">バックアップアクセス時にエラー発生。</string>
+    <string name="notification_error_title">バックアップエラー</string>
+    <string name="recovery_code_recreated">新規リカバリーコードの作成に成功しました</string>
+    <string name="recovery_code_verification_try_again">もう一度、入力してください</string>
+    <string name="recovery_code_error_checksum_word">入力したコードが違います。再度確認して入力してください!</string>
+    <string name="recovery_code_done_button">確認する</string>
+    <string name="recovery_code_input_intro">バックアップの作成時に書いた12文字のリカバリーコードを入力してください。</string>
+    <string name="recovery_code_confirm_button">コードを確認する</string>
+    <string name="recovery_code_write_it_down">紙などにリカバリーコードを書いてください!</string>
+    <string name="recovery_code_12_word_intro">データのバックアップを作成するために12文字のリカバリーコードが必要です</string>
+    <string name="storage_fake_drive_summary">ケーブルを接続してください</string>
+    <string name="storage_fragment_backup_title">バックアップを保存する場所の選択してください</string>
+    <string name="settings_backup_recovery_code_summary">既存のコードで認証するか、新しいコードを生成する</string>
 </resources>
