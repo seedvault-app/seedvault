@@ -50,8 +50,8 @@
     <string name="storage_check_fragment_error_button">Zurück</string>
     <string name="storage_check_fragment_permission_error">Es fehlen Schreib-Berechtigungen am Speicherort.</string>
     <string name="storage_check_fragment_backup_error">Ein Fehler trat beim Zugriff auf den Speicherort auf.</string>
-    <string name="storage_fake_nextcloud_summary_installed">Klicke hier, um ein Konto einzurichten</string>
-    <string name="storage_fake_nextcloud_summary">Jetzt installieren</string>
+    <string name="storage_fake_nextcloud_summary_installed">Tippen, um ein Konto einzurichten</string>
+    <string name="storage_fake_nextcloud_summary">Tippen zum Installieren</string>
     <string name="storage_fake_drive_summary">muss angeschlossen sein</string>
     <string name="storage_fake_drive_title">USB-Speichergerät</string>
     <string name="storage_fragment_warning">Personen mit Zugriff auf deinen Speicherort können herausfinden, welche Apps du nutzt, allerdings nicht auf deine App-Daten zugreifen.</string>
@@ -68,7 +68,7 @@
     <string name="settings_auto_restore_summary_usb">Achtung: Dein %1$s muss für diese Aktion verbunden sein.</string>
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer App die gesicherten Daten und Einstellungen wiederherstellen.</string>
     <string name="settings_auto_restore_title">Automatische Wiederherstellung</string>
-    <string name="about_source_code">Quellcode: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Quellcode: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Gesponsert von: <a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design von: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Geschrieben von: <a href="https://github.com/stevesoltys">Steve Soltys</a> und <a href="https://blog.grobox.de">Torsten Grote</a></string>
