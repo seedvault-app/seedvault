@@ -37,7 +37,7 @@
 \n
 \nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.</string>
     <string name="about_source_code">Kildekode: https://github.com/stevesoltys/seedvault</string>
-    <string name="about_sponsor">Sponset av: <a href="https://www.calyxinstitute.org">Calyx-instituttet</a> for for bruk i <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_sponsor">Sponset av: <a href="https://www.calyxinstitute.org">Calyx-instituttet</a> for bruk i <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design av: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Skrevet av: <a href="https://github.com/stevesoltys">Steve Soltys</a> og <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_title">Om</string>
