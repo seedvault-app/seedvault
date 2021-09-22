@@ -49,7 +49,7 @@
     <string name="recovery_code_title">복구 코드</string>
     <string name="storage_check_fragment_error_button">뒤로</string>
     <string name="storage_fake_drive_title">USB 플래시 드라이브</string>
-    <string name="about_source_code">소스 코드: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">소스 코드: https://github.com/seedvault-app/seedvault</string>
     <string name="about_title">정보</string>
     <string name="storage_internal_warning_title">경고</string>
     <string name="restore_next">다음</string>
@@ -128,10 +128,21 @@
     <string name="notification_restore_error_text">백업에서 데이터를 복원하려면 앱을 설치하기 전에 %1$s을(를) 연결하세요.</string>
     <string name="notification_error_action">문제 수정</string>
     <string name="settings_backup_status_title">백업 상태</string>
-    <string name="recovery_code_verification_generate_new">새 코드 생성</string>
+    <string name="recovery_code_verification_generate_new">새 코드 만들기</string>
     <string name="recovery_code_verification_try_again">다시 시도</string>
     <string name="recovery_code_verification_ok_message">코드가 일치합니다. 백업을 복원할 때 사용할 수 있습니다.</string>
     <string name="recovery_code_verification_ok_title">복구 코드 확인 완료</string>
-    <string name="settings_backup_recovery_code_summary">설정되어 있는 코드 검증 또는 새 복구 코드 생성</string>
+    <string name="settings_backup_recovery_code_summary">설정되어 있는 코드 검증 또는 새 복구 코드 만들기</string>
     <string name="settings_backup_recovery_code">복구 코드</string>
+    <string name="recovery_code_recreated">새 복구 코드를 성공적으로 생성했습니다</string>
+    <string name="storage_fake_drive_summary">연결 필요</string>
+    <string name="settings_auto_restore_summary_usb">정보: 이 작업을 진행하려면 %1$s을(를) 연결해야 합니다.</string>
+    <string name="recovery_code_verification_new_dialog_message">새 코드를 만들면 전에 했던 백업을 사용할 수 없게 됩니다. 이전 백업은 삭제됩니다.
+\n
+\n정말 새 코드를 만드시겠습니까\?</string>
+    <string name="recovery_code_verification_error_message">잘못된 복구 코드를 입력했습니다. 다시 시도해 주세요!
+\n
+\n코드를 잊었다면 아래에 있는 \'새 코드 만들기\'를 누르세요.</string>
+    <string name="recovery_code_verification_new_dialog_title">잠시만 기다려 주세요…</string>
+    <string name="recovery_code_verification_error_title">잘못된 복구 코드</string>
 </resources>
