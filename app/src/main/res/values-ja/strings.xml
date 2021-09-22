@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_title">バックアップが完了しました</string>
-    <string name="notification_title">バックアップが実行中です</string>
+    <string name="notification_title">バックアップを実行しています</string>
     <string name="notification_failed_title">バックアップが失敗しました</string>
-    <string name="notification_backup_already_running">バックアップはすでに実行中です</string>
-    <string name="recovery_code_verification_error_title">不正なリカバリーコード</string>
-    <string name="recovery_code_verification_ok_title">リカバリーコードが確認できました</string>
-    <string name="recovery_code_verification_new_dialog_message">新規コードを作成すると、作成済みのバックアップにアクセスできなくなります。システムは作成済みのバックアップを削除します。
+    <string name="notification_backup_already_running">バックアップはすでに進行しています</string>
+    <string name="recovery_code_verification_error_title">リカバリーコードが違っています</string>
+    <string name="recovery_code_verification_ok_title">リカバリーコードが確認されました</string>
+    <string name="recovery_code_verification_new_dialog_message">新しくコードを生成すると、作成済みのバックアップにアクセスできなくなります。システムはいままでのバックアップを削除します。
 \n
 \n本当に実行しますか？</string>
-    <string name="recovery_code_verification_new_dialog_title">しばらくお待ちください…</string>
+    <string name="recovery_code_verification_new_dialog_title">ちょっと待って…</string>
     <string name="recovery_code_verification_error_message">リカバリーコードが違います。もう一度入力してください！
 \n
-\nコードを紛失した場合は、下の「新規コードを作成」をタップしてください。</string>
-    <string name="recovery_code_verification_generate_new">新規コードを作成</string>
+\nコードを紛失した場合は、下の「新しいコードを生成」をタップしてください。</string>
+    <string name="recovery_code_verification_generate_new">新しいコードを生成</string>
     <string name="recovery_code_title">リカバリーコード</string>
     <string name="storage_fake_drive_title">USBフラッシュドライブ</string>
     <string name="settings_backup_recovery_code">リカバリーコード</string>
@@ -50,10 +50,99 @@
     <string name="recovery_code_input_intro">バックアップの作成時に書いた12文字のリカバリーコードを入力してください。</string>
     <string name="recovery_code_confirm_button">コードを確認する</string>
     <string name="recovery_code_write_it_down">紙などにリカバリーコードを書いてください!</string>
-    <string name="recovery_code_12_word_intro">データのバックアップを作成するために12文字のリカバリーコードが必要です</string>
+    <string name="recovery_code_12_word_intro">データのバックアップを作成するために12文字のリカバリーコードが必要です。</string>
     <string name="storage_fake_drive_summary">ケーブルを接続してください</string>
     <string name="storage_fragment_backup_title">バックアップを保存する場所の選択してください</string>
     <string name="settings_backup_recovery_code_summary">既存のコードで認証するか、新しいコードを生成する</string>
     <string name="storage_fake_nextcloud_summary_unavailable">アカウントが見つかりません。新たなアカウントを作成する（もしくはパスコードを無効にする）。</string>
     <string name="settings_backup_apk_summary">アプリそのものをバックアップする。さもなければアプリのデータのみがバックアップされます。</string>
+    <string name="about_title">このアプリに関して</string>
+    <string name="recovery_code_confirm_intro">必要な時に使えるように12文字のリカバリーコードを入力してください。</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 空き</string>
+    <string name="about_license">ライセンス: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_author">筆者: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_design">デザイン: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_source_code">ソースコード: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">スポンサー: <a href="https://www.calyxinstitute.org">Calyx Institute</a> <a href="https://calyxos.org">CalyxOS</a>の為に</string>
+    <string name="about_version">バージョン: %s</string>
+    <string name="about_summary">Androidに内蔵されているバックアップAPIを利用したバックアップアプリケーションです。</string>
+    <string name="storage_internal_warning_use_anyway">とにかく使う</string>
+    <string name="storage_internal_warning_choose_other">それ以外を選ぶ</string>
+    <string name="storage_internal_warning_message">バックアップに内部ストレージを選択しました。スマホの紛失や故障の際には利用することができません。</string>
+    <string name="storage_internal_warning_title">警告</string>
+    <string name="restore_finished_button">終了</string>
+    <string name="restore_finished_error">バックアップの復元中にエラーが発生しました。</string>
+    <string name="restore_finished_success">復元完了</string>
+    <string name="restore_magic_package">システムパッケージマネージャー</string>
+    <string name="restore_restoring_error_message">これらのアプリは手動で再インストールすることができ、自動復元ではデータの復元が試みられます（有効な場合）。</string>
+    <string name="restore_restoring_error_title">一部のアプリを復元できません</string>
+    <string name="restore_restoring">バックアップの復元</string>
+    <string name="restore_next">次</string>
+    <string name="restore_installing_tap_to_install">タップしてインストール</string>
+    <string name="restore_installing_error_message">データの復元は、アプリがインストールされている場合のみ可能です。
+\n
+\n 続行する前に、失敗したアプリをタップして手動でインストールしてみてください。</string>
+    <string name="restore_installing_error_title">一部のアプリがインストールされていません</string>
+    <string name="restore_installing_packages">アプリの再インストール</string>
+    <string name="restore_set_empty_result">指定された場所に適切なバックアップが見つかりませんでした。
+\n
+\nリカバリーコードが間違っているか、ストレージのエラーが原因である可能性が高いです。</string>
+    <string name="restore_set_error">バックアップの読み込み時にエラーが発生しました。</string>
+    <string name="restore_invalid_location_message">この場所にはバックアップが見つかりませんでした。
+\n
+\n%sフォルダを含む別の場所を選択してください。</string>
+    <string name="restore_invalid_location_title">バックアップが見つかりません</string>
+    <string name="restore_back">復元しない</string>
+    <string name="restore_restore_set_times">最後は%1$s · 最初は %2$s.</string>
+    <string name="restore_choose_restore_set">復元するバックアップを選ぶ</string>
+    <string name="backup_section_not_allowed">アプリはバックアップできません</string>
+    <string name="restore_title">バックアップからの復元</string>
+    <string name="restore_app_not_installed">アプリはインストールされていません</string>
+    <string name="backup_app_quota_exceeded">バックアップの制限を超えました</string>
+    <string name="restore_app_quota_exceeded">バックアップの制限を超えました</string>
+    <string name="backup_app_no_data">アプリにはバックアップのデータがありません</string>
+    <string name="backup_app_was_stopped">最近使われていないためバックアップがされていません</string>
+    <string name="restore_app_was_stopped">最近使っていなかったのでバックアップされませんでした</string>
+    <string name="restore_app_not_allowed">アプリがバックアップが許可しませんでした</string>
+    <string name="restore_app_not_yet_backed_up">まだバックアップされていません</string>
+    <string name="backup_app_not_yet_backed_up">バックアップを待っています…</string>
+    <string name="backup_section_user">インストールされたアプリ</string>
+    <string name="backup_contacts">連絡先</string>
+    <string name="backup_call_log">通話履歴</string>
+    <string name="backup_settings">デバイスの設定</string>
+    <string name="backup_sms">SMSメッセージ</string>
+    <string name="backup_section_system">システムアプリ</string>
+    <string name="notification_restore_error_action">アプリをアンインストールする</string>
+    <string name="notification_restore_error_channel_title">フラッシュドライブの復元に失敗しました</string>
+    <string name="notification_restore_error_text">アプリをインストールする前に%1$sを接続してバックアップからデータを復元してください。</string>
+    <string name="notification_restore_error_title">%1$sのデータを復元できませんでした</string>
+    <string name="notification_error_action">修正する</string>
+    <string name="notification_error_text">デバイスのバックアップを実行できませんでした。</string>
+    <string name="notification_error_channel_title">エラーのお知らせ</string>
+    <string name="notification_success_text">%2$dアプリの%1$dがバックアップされました。タップして詳細を確認してください。</string>
+    <string name="notification_channel_title">バックアップのお知らせ</string>
+    <string name="recovery_code_verification_ok_message">コードが正しく、バックアップを復元するために機能します。</string>
+    <string name="recovery_code_error_invalid_word">単語が間違っています。%1$s もしくは %2$sですか？</string>
+    <string name="recovery_code_error_empty_word">ワードの入力を忘れています。</string>
+    <string name="recovery_code_input_hint_12">ワード12</string>
+    <string name="recovery_code_input_hint_11">ワード11</string>
+    <string name="recovery_code_input_hint_10">ワード10</string>
+    <string name="recovery_code_input_hint_9">ワード9</string>
+    <string name="recovery_code_input_hint_8">ワード8</string>
+    <string name="recovery_code_input_hint_7">ワード7</string>
+    <string name="recovery_code_input_hint_6">ワード6</string>
+    <string name="recovery_code_input_hint_5">ワード5</string>
+    <string name="recovery_code_input_hint_4">ワード4</string>
+    <string name="recovery_code_input_hint_3">ワード3</string>
+    <string name="recovery_code_input_hint_2">ワード2</string>
+    <string name="recovery_code_input_hint_1">ワード1</string>
+    <string name="storage_check_fragment_error_button">戻る</string>
+    <string name="storage_check_fragment_permission_error">バックアップ先への書き込むための権限の取得ができません。</string>
+    <string name="storage_check_fragment_restore_title">バックアップを探しています…</string>
+    <string name="storage_check_fragment_backup_title">バックアップの場所を初期化しています…</string>
+    <string name="storage_fragment_warning">ストレージの場所にアクセスできる人は、あなたがどのアプリを使っているかを知ることができますが、アプリのデータにはアクセスできません。</string>
+    <string name="storage_fragment_restore_title">バックアップの保存先はどこですか？</string>
+    <string name="settings_backup_apk_dialog_message">アプリのバックアップを無効にしても、まだアプリのデータがバックアップされます。ただし、自動復元はされません。
+\n
+\n自動復元をオンにした状態でアプリを手動でインストールする必要があります。</string>
 </resources>
