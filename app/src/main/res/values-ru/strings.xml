@@ -6,7 +6,7 @@
     <string name="settings_backup_last_backup_never">Никогда</string>
     <string name="backup">Резервная копия</string>
     <string name="settings_backup_location">Расположение Резервной Копии</string>
-    <string name="about_source_code">Исходный код: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Исходный код: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Спонсировано: <a href="https://www.calyxinstitute.org">Calyx Institute</a> для использования в <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Дизайн: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Авторы: <a href="https://github.com/stevesoltys">Steve Soltys</a> и <a href="https://blog.grobox.de">Torsten Grote</a></string>
