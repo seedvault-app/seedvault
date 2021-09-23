@@ -8,8 +8,14 @@ data class RestorableBackup(val backupMetadata: BackupMetadata) {
     val name: String
         get() = backupMetadata.deviceName
 
+    val version: Byte
+        get() = backupMetadata.version
+
     val token: Long
         get() = backupMetadata.token
+
+    val salt: String
+        get() = backupMetadata.salt
 
     val time: Long
         get() = backupMetadata.time

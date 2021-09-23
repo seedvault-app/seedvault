@@ -122,6 +122,7 @@ internal class RestoreViewModel(
 
     @Throws(RemoteException::class)
     private fun getOrStartSession(): IRestoreSession {
+        @Suppress("UNRESOLVED_REFERENCE")
         val session = this.session
             ?: backupManager.beginRestoreSessionForUser(UserHandle.myUserId(), null, TRANSPORT_ID)
             ?: throw RemoteException("beginRestoreSessionForUser returned null")
@@ -155,7 +156,7 @@ internal class RestoreViewModel(
 
     private fun getInstallResult(backup: RestorableBackup): LiveData<InstallResult> {
         @Suppress("EXPERIMENTAL_API_USAGE")
-        return apkRestore.restore(backup.token, backup.deviceName, backup.packageMetadataMap)
+        return apkRestore.restore(backup)
             .onStart {
                 Log.d(TAG, "Start InstallResult Flow")
             }.catch { e ->

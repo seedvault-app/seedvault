@@ -36,9 +36,9 @@ import kotlin.random.Random
 internal class ApkBackupTest : BackupTest() {
 
     private val pm: PackageManager = mockk()
-    private val streamGetter: suspend (suffix: String) -> OutputStream = mockk()
+    private val streamGetter: suspend (name: String) -> OutputStream = mockk()
 
-    private val apkBackup = ApkBackup(pm, settingsManager, metadataManager)
+    private val apkBackup = ApkBackup(pm, crypto, settingsManager, metadataManager)
 
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
     private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
@@ -140,7 +140,9 @@ internal class ApkBackupTest : BackupTest() {
         )
 
         expectChecks()
-        coEvery { streamGetter.invoke("") } returns apkOutputStream
+        every { metadataManager.salt } returns salt
+        every { crypto.getNameForApk(salt, packageInfo.packageName) } returns name
+        coEvery { streamGetter.invoke(name) } returns apkOutputStream
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)
         } returns InstallSourceInfo(null, null, null, updatedMetadata.installer)
@@ -197,11 +199,21 @@ internal class ApkBackupTest : BackupTest() {
             sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
             signatures = packageMetadata.signatures
         )
+        val suffixName1 = getRandomString()
+        val suffixName2 = getRandomString()
 
         expectChecks()
-        coEvery { streamGetter.invoke("") } returns apkOutputStream
-        coEvery { streamGetter.invoke("_$split1Sha256") } returns split1OutputStream
-        coEvery { streamGetter.invoke("_$split2Sha256") } returns split2OutputStream
+        every { metadataManager.salt } returns salt
+        every { crypto.getNameForApk(salt, packageInfo.packageName) } returns name
+        every {
+            crypto.getNameForApk(salt, packageInfo.packageName, split1Name)
+        } returns suffixName1
+        every {
+            crypto.getNameForApk(salt, packageInfo.packageName, split2Name)
+        } returns suffixName2
+        coEvery { streamGetter.invoke(name) } returns apkOutputStream
+        coEvery { streamGetter.invoke(suffixName1) } returns split1OutputStream
+        coEvery { streamGetter.invoke(suffixName2) } returns split2OutputStream
 
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)

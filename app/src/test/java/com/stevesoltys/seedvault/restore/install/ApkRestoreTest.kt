@@ -14,12 +14,14 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.coEvery
 import io.mockk.every
@@ -48,16 +50,23 @@ internal class ApkRestoreTest : TransportTest() {
     private val strictContext: Context = mockk<Context>().apply {
         every { packageManager } returns pm
     }
+    private val backupPlugin: BackupPlugin = mockk()
     private val restorePlugin: RestorePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
 
-    private val apkRestore: ApkRestore =
-        ApkRestore(strictContext, restorePlugin, splitCompatChecker, apkInstaller)
+    private val apkRestore: ApkRestore = ApkRestore(
+        strictContext,
+        backupPlugin,
+        restorePlugin,
+        crypto,
+        splitCompatChecker,
+        apkInstaller
+    )
 
     private val icon: Drawable = mockk()
 
-    private val deviceName = getRandomString()
+    private val deviceName = metadata.deviceName
     private val packageName = packageInfo.packageName
     private val packageMetadata = PackageMetadata(
         time = Random.nextLong(),
@@ -71,6 +80,8 @@ internal class ApkRestoreTest : TransportTest() {
     private val apkInputStream = ByteArrayInputStream(apkBytes)
     private val appName = getRandomString()
     private val installerName = packageMetadata.installer
+    private val backup = RestorableBackup(metadata.copy(packageMetadataMap = packageMetadataMap))
+    private val suffixName = getRandomString()
 
     init {
         // as we don't do strict signature checking, we can use a relaxed mock
@@ -81,12 +92,13 @@ internal class ApkRestoreTest : TransportTest() {
     fun `signature mismatch causes FAILED status`(@TempDir tmpDir: Path) = runBlocking {
         // change SHA256 signature to random
         val packageMetadata = packageMetadata.copy(sha256 = getRandomString())
-        val packageMetadataMap: PackageMetadataMap = hashMapOf(packageName to packageMetadata)
+        val backup = swapPackages(hashMapOf(packageName to packageMetadata))
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
+        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedFailFinished(i, value)
         }
     }
@@ -97,10 +109,11 @@ internal class ApkRestoreTest : TransportTest() {
         packageInfo.packageName = getRandomString()
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
+        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedFailFinished(i, value)
         }
     }
@@ -112,7 +125,7 @@ internal class ApkRestoreTest : TransportTest() {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } throws SecurityException()
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
         }
     }
@@ -134,7 +147,43 @@ internal class ApkRestoreTest : TransportTest() {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
+            assertQueuedProgressSuccessFinished(i, value)
+        }
+    }
+
+    @Test
+    fun `v0 test successful run`(@TempDir tmpDir: Path) = runBlocking {
+        // This is a legacy backup with version 0
+        val backup = backup.copy(backupMetadata = backup.backupMetadata.copy(version = 0))
+        // Install will be successful
+        val installResult = MutableInstallResult(1).apply {
+            set(
+                packageName, ApkInstallResult(
+                    packageName,
+                    progress = 1,
+                    state = SUCCEEDED
+                )
+            )
+        }
+
+        every { strictContext.cacheDir } returns File(tmpDir.toString())
+        @Suppress("Deprecation")
+        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
+        every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every {
+            @Suppress("UNRESOLVED_REFERENCE")
+            pm.loadItemIcon(
+                packageInfo.applicationInfo,
+                packageInfo.applicationInfo
+            )
+        } returns icon
+        every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
+        coEvery {
+            apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
+        } returns installResult
+
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressSuccessFinished(i, value)
         }
     }
@@ -181,7 +230,7 @@ internal class ApkRestoreTest : TransportTest() {
                 }
             }
 
-            apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+            apkRestore.restore(backup).collectIndexed { i, value ->
                 when (i) {
                     0 -> {
                         val result = value[packageName]
@@ -231,7 +280,7 @@ internal class ApkRestoreTest : TransportTest() {
             splitCompatChecker.isCompatible(deviceName, listOf(split1Name, split2Name))
         } returns false
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
         }
     }
@@ -240,20 +289,20 @@ internal class ApkRestoreTest : TransportTest() {
     fun `split signature mismatch causes FAILED state`(@TempDir tmpDir: Path) = runBlocking {
         // add one APK split to metadata
         val splitName = getRandomString()
-        val sha256 = getRandomBase64(23)
         packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
-            splits = listOf(ApkSplit(splitName, sha256))
+            splits = listOf(ApkSplit(splitName, getRandomBase64(23)))
         )
 
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
         every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
+        every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
         coEvery {
-            restorePlugin.getApkInputStream(token, packageName, "_$sha256")
+            backupPlugin.getInputStream(token, suffixName)
         } returns ByteArrayInputStream(getRandomByteArray())
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
         }
     }
@@ -272,11 +321,10 @@ internal class ApkRestoreTest : TransportTest() {
             cacheBaseApkAndGetInfo(tmpDir)
 
             every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
-            coEvery {
-                restorePlugin.getApkInputStream(token, packageName, "_$sha256")
-            } throws IOException()
+            every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
+            coEvery { backupPlugin.getInputStream(token, suffixName) } throws IOException()
 
-            apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+            apkRestore.restore(backup).collectIndexed { i, value ->
                 assertQueuedProgressFailFinished(i, value)
             }
         }
@@ -307,12 +355,12 @@ internal class ApkRestoreTest : TransportTest() {
         val split2Bytes = byteArrayOf(0x07, 0x08, 0x09)
         val split1InputStream = ByteArrayInputStream(split1Bytes)
         val split2InputStream = ByteArrayInputStream(split2Bytes)
-        coEvery {
-            restorePlugin.getApkInputStream(token, packageName, "_$split1sha256")
-        } returns split1InputStream
-        coEvery {
-            restorePlugin.getApkInputStream(token, packageName, "_$split2sha256")
-        } returns split2InputStream
+        val suffixName1 = getRandomString()
+        val suffixName2 = getRandomString()
+        every { crypto.getNameForApk(salt, packageName, split1Name) } returns suffixName1
+        coEvery { backupPlugin.getInputStream(token, suffixName1) } returns split1InputStream
+        every { crypto.getNameForApk(salt, packageName, split2Name) } returns suffixName2
+        coEvery { backupPlugin.getInputStream(token, suffixName2) } returns split2InputStream
 
         coEvery {
             apkInstaller.install(match { it.size == 3 }, packageName, installerName, any())
@@ -326,16 +374,23 @@ internal class ApkRestoreTest : TransportTest() {
             )
         }
 
-        apkRestore.restore(token, deviceName, packageMetadataMap).collectIndexed { i, value ->
+        apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressSuccessFinished(i, value)
         }
     }
 
+    private fun swapPackages(packageMetadataMap: PackageMetadataMap): RestorableBackup {
+        val metadata = metadata.copy(packageMetadataMap = packageMetadataMap)
+        return backup.copy(backupMetadata = metadata)
+    }
+
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
+        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every {
+            @Suppress("UNRESOLVED_REFERENCE")
             pm.loadItemIcon(
                 packageInfo.applicationInfo,
                 packageInfo.applicationInfo
