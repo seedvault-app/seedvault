@@ -453,9 +453,8 @@ internal class BackupCoordinator(
     ): Boolean {
         val packageName = packageInfo.packageName
         return try {
-            apkBackup.backupApkIfNecessary(packageInfo, packageState) { suffix ->
+            apkBackup.backupApkIfNecessary(packageInfo, packageState) { name ->
                 val token = settingsManager.getToken() ?: throw IOException("no current token")
-                val name = "${packageInfo.packageName}$suffix.apk"
                 plugin.getOutputStream(token, name)
             }?.let { packageMetadata ->
                 plugin.getMetadataOutputStream().use {

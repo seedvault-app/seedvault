@@ -13,6 +13,7 @@ interface RestorePlugin {
      * Returns an [InputStream] for the given token, for reading an APK that is to be restored.
      */
     @Throws(IOException::class)
+    @Deprecated("Use only for v0 restores")
     suspend fun getApkInputStream(token: Long, packageName: String, suffix: String): InputStream
 
 }

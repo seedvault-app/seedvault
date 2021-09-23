@@ -5,13 +5,15 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.util.Log
+import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
+import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
@@ -26,16 +28,19 @@ private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
     private val context: Context,
+    private val backupPlugin: BackupPlugin,
     private val restorePlugin: RestorePlugin,
+    private val crypto: Crypto,
     private val splitCompatChecker: ApkSplitCompatibilityChecker,
     private val apkInstaller: ApkInstaller
 ) {
 
     private val pm = context.packageManager
 
-    fun restore(token: Long, deviceName: String, packageMetadataMap: PackageMetadataMap) = flow {
+    @Suppress("BlockingMethodInNonBlockingContext")
+    fun restore(backup: RestorableBackup) = flow {
         // filter out packages without APK and get total
-        val packages = packageMetadataMap.filter { it.value.hasApk() }
+        val packages = backup.packageMetadataMap.filter { it.value.hasApk() }
         val total = packages.size
         var progress = 0
 
@@ -55,7 +60,7 @@ internal class ApkRestore(
         // re-install individual packages and emit updates
         for ((packageName, metadata) in packages) {
             try {
-                restore(this, token, deviceName, packageName, metadata, installResult)
+                restore(this, backup, packageName, metadata, installResult)
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
                 emit(installResult.fail(packageName))
@@ -75,14 +80,13 @@ internal class ApkRestore(
     @Throws(IOException::class, SecurityException::class)
     private suspend fun restore(
         collector: FlowCollector<InstallResult>,
-        token: Long,
-        deviceName: String,
+        backup: RestorableBackup,
         packageName: String,
         metadata: PackageMetadata,
         installResult: MutableInstallResult
     ) {
         // cache the APK and get its hash
-        val (cachedApk, sha256) = cacheApk(token, packageName)
+        val (cachedApk, sha256) = cacheApk(backup.version, backup.token, backup.salt, packageName)
 
         // check APK's SHA-256 hash
         if (metadata.sha256 != sha256) throw SecurityException(
@@ -139,7 +143,7 @@ internal class ApkRestore(
 
         // process further APK splits, if available
         val cachedApks =
-            cacheSplitsIfNeeded(token, deviceName, packageName, cachedApk, metadata.splits)
+            cacheSplitsIfNeeded(backup, packageName, cachedApk, metadata.splits)
         if (cachedApks == null) {
             Log.w(TAG, "Not installing $packageName because of incompatible splits.")
             collector.emit(installResult.fail(packageName))
@@ -161,8 +165,7 @@ internal class ApkRestore(
      */
     @Throws(IOException::class, SecurityException::class)
     private suspend fun cacheSplitsIfNeeded(
-        token: Long,
-        deviceName: String,
+        backup: RestorableBackup,
         packageName: String,
         cachedApk: File,
         splits: List<ApkSplit>?
@@ -171,15 +174,16 @@ internal class ApkRestore(
         val splitNames = splits?.map { it.name } ?: return listOf(cachedApk)
 
         // return null when splits are incompatible
-        if (!splitCompatChecker.isCompatible(deviceName, splitNames)) return null
+        if (!splitCompatChecker.isCompatible(backup.deviceName, splitNames)) return null
 
         // store coming splits in a list
         val cachedApks = ArrayList<File>(splits.size + 1).apply {
             add(cachedApk) // don't forget the base APK
         }
         splits.forEach { apkSplit -> // cache and check all splits
-            val suffix = "_${apkSplit.sha256}"
-            val (file, sha256) = cacheApk(token, packageName, suffix)
+            val suffix = if (backup.version == 0.toByte()) "_${apkSplit.sha256}" else apkSplit.name
+            val salt = backup.salt
+            val (file, sha256) = cacheApk(backup.version, backup.token, salt, packageName, suffix)
             // check APK split's SHA-256 hash
             if (apkSplit.sha256 != sha256) throw SecurityException(
                 "$packageName:${apkSplit.name} has sha256 '$sha256'," +
@@ -199,14 +203,22 @@ internal class ApkRestore(
     @Throws(IOException::class)
     @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
     private suspend fun cacheApk(
+        version: Byte,
         token: Long,
+        salt: String,
         packageName: String,
         suffix: String = ""
     ): Pair<File, String> {
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName + suffix, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
-        val inputStream = restorePlugin.getApkInputStream(token, packageName, suffix)
+        val inputStream = if (version == 0.toByte()) {
+            @Suppress("Deprecation")
+            restorePlugin.getApkInputStream(token, packageName, suffix)
+        } else {
+            val name = crypto.getNameForApk(salt, packageName, suffix)
+            backupPlugin.getInputStream(token, name)
+        }
         val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
         return Pair(cachedApk, sha256)
     }

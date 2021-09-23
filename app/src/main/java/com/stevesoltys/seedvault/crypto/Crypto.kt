@@ -44,6 +44,10 @@ internal interface Crypto {
 
     fun getNameForPackage(salt: String, packageName: String): String
 
+    /**
+     * Returns the name that identifies an APK in the backup storage plugin.
+     * @param suffix empty string for normal APKs and the name of the split in case of an APK split
+     */
     fun getNameForApk(salt: String, packageName: String, suffix: String = ""): String
 
     /**

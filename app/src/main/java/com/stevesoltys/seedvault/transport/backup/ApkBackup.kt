@@ -8,6 +8,7 @@ import android.content.pm.SigningInfo
 import android.util.Log
 import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -27,6 +28,7 @@ private val TAG = ApkBackup::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackup(
     private val pm: PackageManager,
+    private val crypto: Crypto,
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager
 ) {
@@ -44,7 +46,7 @@ internal class ApkBackup(
     suspend fun backupApkIfNecessary(
         packageInfo: PackageInfo,
         packageState: PackageState,
-        streamGetter: suspend (suffix: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream
     ): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
@@ -102,7 +104,8 @@ internal class ApkBackup(
         // get an InputStream for the APK
         val inputStream = getApkInputStream(packageInfo.applicationInfo.sourceDir)
         // copy the APK to the storage's output and calculate SHA-256 hash while at it
-        val sha256 = copyStreamsAndGetHash(inputStream, streamGetter(""))
+        val name = crypto.getNameForApk(metadataManager.salt, packageName)
+        val sha256 = copyStreamsAndGetHash(inputStream, streamGetter(name))
 
         // back up splits if they exist
         val splits =
@@ -148,7 +151,7 @@ internal class ApkBackup(
     @Throws(IOException::class)
     private suspend fun backupSplitApks(
         packageInfo: PackageInfo,
-        streamGetter: suspend (suffix: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream
     ): List<ApkSplit> {
         check(packageInfo.splitNames != null)
         val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs
@@ -159,7 +162,12 @@ internal class ApkBackup(
         }
         val splits = ArrayList<ApkSplit>(packageInfo.splitNames.size)
         for (i in packageInfo.splitNames.indices) {
-            val split = backupSplitApk(packageInfo.splitNames[i], splitSourceDirs[i], streamGetter)
+            val split = backupSplitApk(
+                packageName = packageInfo.packageName,
+                splitName = packageInfo.splitNames[i],
+                sourceDir = splitSourceDirs[i],
+                streamGetter = streamGetter
+            )
             splits.add(split)
         }
         return splits
@@ -167,9 +175,10 @@ internal class ApkBackup(
 
     @Throws(IOException::class)
     private suspend fun backupSplitApk(
-        name: String,
+        packageName: String,
+        splitName: String,
         sourceDir: String,
-        streamGetter: suspend (suffix: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream
     ): ApkSplit {
         // Calculate sha256 hash first to determine file name suffix.
         // We could also just use the split name as a suffix, but there is a theoretical risk
@@ -185,14 +194,14 @@ internal class ApkBackup(
             }
         }
         val sha256 = messageDigest.digest().encodeBase64()
-        val suffix = "_$sha256"
+        val name = crypto.getNameForApk(metadataManager.salt, packageName, splitName)
         // copy the split APK to the storage stream
         getApkInputStream(sourceDir).use { inputStream ->
-            streamGetter(suffix).use { outputStream ->
+            streamGetter(name).use { outputStream ->
                 inputStream.copyTo(outputStream)
             }
         }
-        return ApkSplit(name, sha256)
+        return ApkSplit(splitName, sha256)
     }
 
 }

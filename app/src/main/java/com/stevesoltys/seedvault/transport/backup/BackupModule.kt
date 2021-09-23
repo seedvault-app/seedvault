@@ -14,6 +14,7 @@ val backupModule = module {
     single {
         ApkBackup(
             pm = androidContext().packageManager,
+            crypto = get(),
             settingsManager = get(),
             metadataManager = get()
         )
