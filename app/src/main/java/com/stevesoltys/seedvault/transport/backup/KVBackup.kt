@@ -186,20 +186,19 @@ internal class KVBackup(
         if (!dbManager.deleteDb(packageInfo.packageName)) throw IOException()
     }
 
-    @Throws(IOException::class)
     suspend fun finishBackup(): Int {
         val state = this.state ?: error("No state in finishBackup")
         val packageName = state.packageInfo.packageName
         Log.i(TAG, "Finish K/V Backup of $packageName")
 
-        try {
+        return try {
             if (state.needsUpload) uploadDb(state.token, state.name, packageName, state.db)
+            TRANSPORT_OK
         } catch (e: IOException) {
-            return TRANSPORT_ERROR
+            TRANSPORT_ERROR
         } finally {
             this.state = null
         }
-        return TRANSPORT_OK
     }
 
     /**
@@ -235,11 +234,10 @@ internal class KVBackup(
                     dbManager.getDbInputStream(packageName).use { inputStream ->
                         inputStream.copyTo(gZipStream)
                     }
-                    // TODO remove log
-                    Log.d(TAG, "=> Uploaded db file for $packageName")
                 }
             }
         }
+        Log.d(TAG, "Uploaded db file for $packageName")
     }
 
     private class KVOperation(
