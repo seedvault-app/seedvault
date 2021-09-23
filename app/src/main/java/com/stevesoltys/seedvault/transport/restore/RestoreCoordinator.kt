@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 
@@ -31,7 +31,7 @@ private data class RestoreCoordinatorState(
     /**
      * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
      */
-    val pmPackageInfo: PackageInfo?,
+    val autoRestorePackageInfo: PackageInfo?,
     val backupMetadata: BackupMetadata
 ) {
     var currentPackage: String? = null
@@ -212,7 +212,7 @@ internal class RestoreCoordinator(
                             token = state.token,
                             name = name,
                             packageInfo = packageInfo,
-                            pmPackageInfo = state.pmPackageInfo
+                            autoRestorePackageInfo = state.autoRestorePackageInfo
                         )
                         state.currentPackage = packageName
                         TYPE_KEY_VALUE
@@ -249,7 +249,7 @@ internal class RestoreCoordinator(
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(0x00, state.token, "", packageInfo, state.pmPackageInfo)
+                    kv.initializeState(0x00, state.token, "", packageInfo, null)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }

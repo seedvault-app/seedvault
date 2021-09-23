@@ -34,8 +34,7 @@ private class KVRestoreState(
     /**
      * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
      */
-    @Deprecated("TODO remove?")
-    val pmPackageInfo: PackageInfo?
+    val autoRestorePackageInfo: PackageInfo?
 )
 
 private val TAG = KVRestore::class.java.simpleName
@@ -70,16 +69,16 @@ internal class KVRestore(
      * It is possible that the system decides to not restore the package.
      * Then a new state will be initialized right away without calling other methods.
      *
-     * @param pmPackageInfo single optional [PackageInfo] to optimize restore of @pm@
+     * @param autoRestorePackageInfo single optional [PackageInfo] to optimize restore of @pm@
      */
     fun initializeState(
         version: Byte,
         token: Long,
         name: String,
         packageInfo: PackageInfo,
-        pmPackageInfo: PackageInfo? = null
+        autoRestorePackageInfo: PackageInfo? = null
     ) {
-        state = KVRestoreState(version, token, name, packageInfo, pmPackageInfo)
+        state = KVRestoreState(version, token, name, packageInfo, autoRestorePackageInfo)
     }
 
     /**
@@ -95,10 +94,20 @@ internal class KVRestore(
         // take legacy path for version 0
         if (state.version == 0x00.toByte()) return getRestoreDataV0(state, data)
 
+        val pmPackageName = state.autoRestorePackageInfo?.packageName
+        val isAutoRestore = state.packageInfo.packageName == MAGIC_PACKAGE_MANAGER &&
+            pmPackageName != null
         return try {
-            val db = getRestoreDb(state)
+            val db = if (isAutoRestore) getCachedRestoreDb(state) else downloadRestoreDb(state)
             val out = outputFactory.getBackupDataOutput(data)
-            db.getAll().sortedBy { it.first }.forEach { (key, value) ->
+            val records = if (isAutoRestore) {
+                val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
+                Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
+                db.getAll().filter { it.first in keys }
+            } else {
+                db.getAll()
+            }
+            records.sortedBy { it.first }.forEach { (key, value) ->
                 val size = value.size
                 Log.v(TAG, "    ... key=$key size=$size")
                 out.writeEntityHeader(key, size)
@@ -125,7 +134,17 @@ internal class KVRestore(
     }
 
     @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
-    private suspend fun getRestoreDb(state: KVRestoreState): KVDb {
+    private suspend fun getCachedRestoreDb(state: KVRestoreState): KVDb {
+        val packageName = state.packageInfo.packageName
+        return if (dbManager.existsDb(packageName)) {
+            dbManager.getDb(packageName)
+        } else {
+            downloadRestoreDb(state)
+        }
+    }
+
+    @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
+    private suspend fun downloadRestoreDb(state: KVRestoreState): KVDb {
         val packageName = state.packageInfo.packageName
         plugin.getInputStream(state.token, state.name).use { inputStream ->
             headerReader.readVersion(inputStream, state.version)
@@ -198,18 +217,11 @@ internal class KVRestore(
         if (records.isEmpty()) return null
 
         // Decode the key filenames into keys then sort lexically by key
-        val contents = ArrayList<DecodedKey>()
-        for (recordKey in records) contents.add(DecodedKey(recordKey))
-        // remove keys that are not needed for single package @pm@ restore
-        val pmPackageName = state?.pmPackageInfo?.packageName
-        val sortedKeys =
-            if (packageInfo.packageName == MAGIC_PACKAGE_MANAGER && pmPackageName != null) {
-                val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
-                Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
-                contents.filterTo(ArrayList()) { it.key in keys }
-            } else contents
-        sortedKeys.sort()
-        return sortedKeys
+        val contents = ArrayList<DecodedKey>().apply {
+            for (recordKey in records) add(DecodedKey(recordKey))
+        }
+        contents.sort()
+        return contents
     }
 
     /**
