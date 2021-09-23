@@ -1,4 +1,4 @@
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.plugins
 
 import android.app.backup.RestoreSet
 import android.net.Uri
@@ -7,7 +7,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-interface BackupPlugin {
+interface StoragePlugin {
 
     /**
      * Start a new [RestoreSet] with the given token.

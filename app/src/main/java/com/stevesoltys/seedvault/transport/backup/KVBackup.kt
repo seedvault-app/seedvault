@@ -12,6 +12,7 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 import java.util.zip.GZIPOutputStream
@@ -31,7 +32,7 @@ private val TAG = KVBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackup(
-    private val plugin: BackupPlugin,
+    private val plugin: StoragePlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,

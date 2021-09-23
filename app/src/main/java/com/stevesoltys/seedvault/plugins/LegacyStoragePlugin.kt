@@ -1,10 +1,11 @@
-package com.stevesoltys.seedvault.transport.restore
+package com.stevesoltys.seedvault.plugins
 
 import android.content.pm.PackageInfo
 import java.io.IOException
 import java.io.InputStream
 
-interface KVRestorePlugin {
+@Deprecated("Only for old v0 backup format")
+interface LegacyStoragePlugin {
 
     /**
      * Return true if there is data stored for the given package.
@@ -35,5 +36,20 @@ interface KVRestorePlugin {
         packageInfo: PackageInfo,
         key: String
     ): InputStream
+
+    /**
+     * Return true if there is data stored for the given package.
+     */
+    @Throws(IOException::class)
+    suspend fun hasDataForFullPackage(token: Long, packageInfo: PackageInfo): Boolean
+
+    @Throws(IOException::class)
+    suspend fun getInputStreamForPackage(token: Long, packageInfo: PackageInfo): InputStream
+
+    /**
+     * Returns an [InputStream] for the given token, for reading an APK that is to be restored.
+     */
+    @Throws(IOException::class)
+    suspend fun getApkInputStream(token: Long, packageName: String, suffix: String): InputStream
 
 }

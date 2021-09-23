@@ -5,20 +5,20 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
-import com.stevesoltys.seedvault.transport.backup.EncryptedMetadata
+import com.stevesoltys.seedvault.plugins.EncryptedMetadata
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-private val TAG = DocumentsProviderBackupPlugin::class.java.simpleName
+private val TAG = DocumentsProviderStoragePlugin::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
-internal class DocumentsProviderBackupPlugin(
+internal class DocumentsProviderStoragePlugin(
     private val context: Context,
     private val storage: DocumentsStorage
-) : BackupPlugin {
+) : StoragePlugin {
 
     private val packageManager: PackageManager = context.packageManager
 

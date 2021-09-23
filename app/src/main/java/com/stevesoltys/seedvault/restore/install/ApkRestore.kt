@@ -8,16 +8,16 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.transport.backup.getSignatures
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
-import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -28,8 +28,9 @@ private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
     private val context: Context,
-    private val backupPlugin: BackupPlugin,
-    private val restorePlugin: RestorePlugin,
+    private val storagePlugin: StoragePlugin,
+    @Suppress("Deprecation")
+    private val legacyStoragePlugin: LegacyStoragePlugin,
     private val crypto: Crypto,
     private val splitCompatChecker: ApkSplitCompatibilityChecker,
     private val apkInstaller: ApkInstaller
@@ -157,7 +158,7 @@ internal class ApkRestore(
     }
 
     /**
-     * Retrieves APK splits from [RestorePlugin] and caches them locally.
+     * Retrieves APK splits from [StoragePlugin] and caches them locally.
      *
      * @throws SecurityException if a split has an unexpected SHA-256 hash.
      * @return a list of all APKs that need to be installed
@@ -195,7 +196,7 @@ internal class ApkRestore(
     }
 
     /**
-     * Retrieves an APK from the [RestorePlugin] and caches it locally
+     * Retrieves an APK from the [StoragePlugin] and caches it locally
      * while calculating its SHA-256 hash.
      *
      * @return a [Pair] of the cached [File] and SHA-256 hash.
@@ -214,10 +215,10 @@ internal class ApkRestore(
         // copy APK to cache file and calculate SHA-256 hash while we are at it
         val inputStream = if (version == 0.toByte()) {
             @Suppress("Deprecation")
-            restorePlugin.getApkInputStream(token, packageName, suffix)
+            legacyStoragePlugin.getApkInputStream(token, packageName, suffix)
         } else {
             val name = crypto.getNameForApk(salt, packageName, suffix)
-            backupPlugin.getInputStream(token, name)
+            storagePlugin.getInputStream(token, name)
         }
         val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
         return Pair(cachedApk, sha256)

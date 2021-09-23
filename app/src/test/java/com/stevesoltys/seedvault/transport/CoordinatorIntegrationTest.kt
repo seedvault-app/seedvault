@@ -16,19 +16,18 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.transport.backup.ApkBackup
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.FullBackup
 import com.stevesoltys.seedvault.transport.backup.InputFactory
 import com.stevesoltys.seedvault.transport.backup.KVBackup
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.TestKvDbManager
 import com.stevesoltys.seedvault.transport.restore.FullRestore
-import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.KVRestore
-import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -61,7 +60,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dbManager = TestKvDbManager()
 
-    private val backupPlugin = mockk<BackupPlugin>()
+    @Suppress("Deprecation")
+    private val legacyPlugin = mockk<LegacyStoragePlugin>()
+    private val backupPlugin = mockk<StoragePlugin>()
     private val kvBackup =
         KVBackup(backupPlugin, settingsManager, inputFactory, cryptoImpl, dbManager)
     private val fullBackup = FullBackup(backupPlugin, settingsManager, inputFactory, cryptoImpl)
@@ -80,18 +81,16 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         notificationManager
     )
 
-    private val kvRestorePlugin = mockk<KVRestorePlugin>()
     private val kvRestore = KVRestore(
         backupPlugin,
-        kvRestorePlugin,
+        legacyPlugin,
         outputFactory,
         headerReader,
         cryptoImpl,
         dbManager
     )
-    private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
-        FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
         crypto,

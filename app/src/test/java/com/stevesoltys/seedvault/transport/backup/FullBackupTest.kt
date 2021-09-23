@@ -6,6 +6,7 @@ import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -23,7 +24,7 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackupTest : BackupTest() {
 
-    private val plugin = mockk<BackupPlugin>()
+    private val plugin = mockk<StoragePlugin>()
     private val backup = FullBackup(plugin, settingsManager, inputFactory, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }

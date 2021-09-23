@@ -10,9 +10,10 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -35,8 +36,8 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestoreTest : RestoreTest() {
 
-    private val plugin = mockk<BackupPlugin>()
-    private val legacyPlugin = mockk<KVRestorePlugin>()
+    private val plugin = mockk<StoragePlugin>()
+    private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
     private val restore =
