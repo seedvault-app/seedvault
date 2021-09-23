@@ -64,13 +64,12 @@ class KvDbManagerImpl(private val context: Context) : KvDbManager {
     }
 }
 
-interface KVDb {
+interface KVDb : AutoCloseable {
     fun put(key: String, value: ByteArray)
     fun get(key: String): ByteArray?
     fun getAll(): List<Pair<String, ByteArray>>
     fun delete(key: String)
     fun vacuum()
-    fun close()
 }
 
 class KVDbImpl(context: Context, fileName: String) :

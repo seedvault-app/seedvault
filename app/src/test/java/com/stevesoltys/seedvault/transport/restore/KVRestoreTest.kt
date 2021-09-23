@@ -11,9 +11,9 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -148,6 +148,7 @@ internal class KVRestoreTest : RestoreTest() {
         every { output.writeEntityHeader(key2, data2.size) } returns 42
         every { output.writeEntityData(data2, data2.size) } returns data2.size
 
+        every { db.close() } just Runs
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
         streamsGetClosed()
 
@@ -159,6 +160,7 @@ internal class KVRestoreTest : RestoreTest() {
             output.writeEntityData(data, data.size)
             output.writeEntityHeader(key2, data2.size)
             output.writeEntityData(data2, data2.size)
+            db.close()
             dbManager.deleteDb(packageInfo.packageName, true)
         }
     }
