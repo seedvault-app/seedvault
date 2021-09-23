@@ -2,17 +2,19 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 
-@Suppress("BlockingMethodInNonBlockingContext", "Deprecation")
-@Deprecated("Use only for v0 restore")
-internal class DocumentsProviderKVRestorePlugin(
+@WorkerThread
+@Suppress("BlockingMethodInNonBlockingContext", "Deprecation") // all methods do I/O
+internal class DocumentsProviderLegacyPlugin(
     private val context: Context,
     private val storage: DocumentsStorage
-) : KVRestorePlugin {
+) : LegacyStoragePlugin {
 
     private var packageDir: DocumentFile? = null
     private var packageChildren: List<DocumentFile>? = null
@@ -57,6 +59,35 @@ internal class DocumentsProviderKVRestorePlugin(
             ?: packageDir.findFileBlocking(context, key)
             ?: throw IOException()
         return storage.getInputStream(keyFile)
+    }
+
+    @Throws(IOException::class)
+    override suspend fun hasDataForFullPackage(token: Long, packageInfo: PackageInfo): Boolean {
+        val backupDir = storage.getFullBackupDir(token) ?: return false
+        return backupDir.findFileBlocking(context, packageInfo.packageName) != null
+    }
+
+    @Throws(IOException::class)
+    override suspend fun getInputStreamForPackage(
+        token: Long,
+        packageInfo: PackageInfo
+    ): InputStream {
+        val backupDir = storage.getFullBackupDir(token) ?: throw IOException()
+        val packageFile =
+            backupDir.findFileBlocking(context, packageInfo.packageName) ?: throw IOException()
+        return storage.getInputStream(packageFile)
+    }
+
+    @Throws(IOException::class)
+    override suspend fun getApkInputStream(
+        token: Long,
+        packageName: String,
+        suffix: String
+    ): InputStream {
+        val setDir = storage.getSetDir(token) ?: throw IOException()
+        val file = setDir.findFileBlocking(context, "$packageName$suffix.apk")
+            ?: throw FileNotFoundException()
+        return storage.getInputStream(file)
     }
 
 }

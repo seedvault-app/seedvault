@@ -14,6 +14,8 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -21,8 +23,6 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
-import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -50,15 +50,15 @@ internal class ApkRestoreTest : TransportTest() {
     private val strictContext: Context = mockk<Context>().apply {
         every { packageManager } returns pm
     }
-    private val backupPlugin: BackupPlugin = mockk()
-    private val restorePlugin: RestorePlugin = mockk()
+    private val storagePlugin: StoragePlugin = mockk()
+    private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
 
     private val apkRestore: ApkRestore = ApkRestore(
         strictContext,
-        backupPlugin,
-        restorePlugin,
+        storagePlugin,
+        legacyStoragePlugin,
         crypto,
         splitCompatChecker,
         apkInstaller
@@ -96,7 +96,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
+        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedFailFinished(i, value)
@@ -110,7 +110,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
+        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
 
         apkRestore.restore(backup).collectIndexed { i, value ->
@@ -169,7 +169,9 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         @Suppress("Deprecation")
-        coEvery { restorePlugin.getApkInputStream(token, packageName, "") } returns apkInputStream
+        coEvery {
+            legacyStoragePlugin.getApkInputStream(token, packageName, "")
+        } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every {
             @Suppress("UNRESOLVED_REFERENCE")
@@ -299,7 +301,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
         coEvery {
-            backupPlugin.getInputStream(token, suffixName)
+            storagePlugin.getInputStream(token, suffixName)
         } returns ByteArrayInputStream(getRandomByteArray())
 
         apkRestore.restore(backup).collectIndexed { i, value ->
@@ -322,7 +324,7 @@ internal class ApkRestoreTest : TransportTest() {
 
             every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
             every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
-            coEvery { backupPlugin.getInputStream(token, suffixName) } throws IOException()
+            coEvery { storagePlugin.getInputStream(token, suffixName) } throws IOException()
 
             apkRestore.restore(backup).collectIndexed { i, value ->
                 assertQueuedProgressFailFinished(i, value)
@@ -358,9 +360,9 @@ internal class ApkRestoreTest : TransportTest() {
         val suffixName1 = getRandomString()
         val suffixName2 = getRandomString()
         every { crypto.getNameForApk(salt, packageName, split1Name) } returns suffixName1
-        coEvery { backupPlugin.getInputStream(token, suffixName1) } returns split1InputStream
+        coEvery { storagePlugin.getInputStream(token, suffixName1) } returns split1InputStream
         every { crypto.getNameForApk(salt, packageName, split2Name) } returns suffixName2
-        coEvery { backupPlugin.getInputStream(token, suffixName2) } returns split2InputStream
+        coEvery { storagePlugin.getInputStream(token, suffixName2) } returns split2InputStream
 
         coEvery {
             apkInstaller.install(match { it.size == 3 }, packageName, installerName, any())
@@ -387,7 +389,7 @@ internal class ApkRestoreTest : TransportTest() {
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { backupPlugin.getInputStream(token, name) } returns apkInputStream
+        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
         every {
             @Suppress("UNRESOLVED_REFERENCE")

@@ -12,7 +12,8 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
@@ -33,8 +34,9 @@ private val TAG = FullRestore::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestore(
-    private val plugin: BackupPlugin,
-    private val legacyPlugin: FullRestorePlugin,
+    private val plugin: StoragePlugin,
+    @Suppress("Deprecation")
+    private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
     private val crypto: Crypto
@@ -52,7 +54,7 @@ internal class FullRestore(
     @Throws(IOException::class)
     @Deprecated("Use BackupPlugin#hasData() instead")
     suspend fun hasDataForPackage(token: Long, packageInfo: PackageInfo): Boolean {
-        return legacyPlugin.hasDataForPackage(token, packageInfo)
+        return legacyPlugin.hasDataForFullPackage(token, packageInfo)
     }
 
     /**

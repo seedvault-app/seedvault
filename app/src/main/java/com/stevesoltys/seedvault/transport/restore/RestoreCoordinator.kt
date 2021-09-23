@@ -21,7 +21,7 @@ import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 
@@ -46,7 +46,7 @@ internal class RestoreCoordinator(
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
-    private val plugin: BackupPlugin,
+    private val plugin: StoragePlugin,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader

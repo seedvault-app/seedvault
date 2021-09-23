@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -31,7 +32,7 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackupTest : BackupTest() {
 
-    private val plugin = mockk<BackupPlugin>()
+    private val plugin = mockk<StoragePlugin>()
     private val dataInput = mockk<BackupDataInput>()
     private val dbManager = mockk<KvDbManager>()
 

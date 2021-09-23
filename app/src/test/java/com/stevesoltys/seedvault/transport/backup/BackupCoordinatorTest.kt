@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -44,7 +45,7 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupCoordinatorTest : BackupTest() {
 
-    private val plugin = mockk<BackupPlugin>()
+    private val plugin = mockk<StoragePlugin>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
     private val apkBackup = mockk<ApkBackup>()

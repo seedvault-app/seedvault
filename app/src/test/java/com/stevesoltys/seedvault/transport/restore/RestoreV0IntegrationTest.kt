@@ -13,10 +13,11 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.coEvery
 import io.mockk.every
@@ -49,19 +50,19 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 
-    private val backupPlugin = mockk<BackupPlugin>()
-    private val kvRestorePlugin = mockk<KVRestorePlugin>()
+    @Suppress("Deprecation")
+    private val legacyPlugin = mockk<LegacyStoragePlugin>()
+    private val backupPlugin = mockk<StoragePlugin>()
     private val kvRestore = KVRestore(
         backupPlugin,
-        kvRestorePlugin,
+        legacyPlugin,
         outputFactory,
         headerReader,
         cryptoImpl,
         dbManager
     )
-    private val fullRestorePlugin = mockk<FullRestorePlugin>()
     private val fullRestore =
-        FullRestore(backupPlugin, fullRestorePlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
         crypto,
@@ -161,7 +162,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
-        coEvery { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+        coEvery { legacyPlugin.hasDataForPackage(token, packageInfo) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -171,10 +172,10 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(encryptedAppData)
         val rInputStream2 = ByteArrayInputStream(encryptedAppData2)
-        coEvery { kvRestorePlugin.listRecords(token, packageInfo) } returns listOf(key64, key264)
+        coEvery { legacyPlugin.listRecords(token, packageInfo) } returns listOf(key64, key264)
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
         coEvery {
-            kvRestorePlugin.getInputStreamForRecord(
+            legacyPlugin.getInputStreamForRecord(
                 token,
                 packageInfo,
                 key64
@@ -183,7 +184,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
         coEvery {
-            kvRestorePlugin.getInputStreamForRecord(
+            legacyPlugin.getInputStreamForRecord(
                 token,
                 packageInfo,
                 key264
@@ -212,8 +213,8 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data only for full backup
-        coEvery { kvRestorePlugin.hasDataForPackage(token, packageInfo) } returns false
-        coEvery { fullRestorePlugin.hasDataForPackage(token, packageInfo) } returns true
+        coEvery { legacyPlugin.hasDataForPackage(token, packageInfo) } returns false
+        coEvery { legacyPlugin.hasDataForFullPackage(token, packageInfo) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -223,7 +224,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         val inputStream = ByteArrayInputStream(encryptedData)
         val outputStream = ByteArrayOutputStream()
         coEvery {
-            fullRestorePlugin.getInputStreamForPackage(
+            legacyPlugin.getInputStreamForPackage(
                 token,
                 packageInfo
             )

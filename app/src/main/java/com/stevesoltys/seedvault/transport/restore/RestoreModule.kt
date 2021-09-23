@@ -5,8 +5,8 @@ import org.koin.dsl.module
 
 val restoreModule = module {
     single { OutputFactory() }
-    single { KVRestore(get(), get<RestorePlugin>().kvRestorePlugin, get(), get(), get(), get()) }
-    single { FullRestore(get(), get<RestorePlugin>().fullRestorePlugin, get(), get(), get()) }
+    single { KVRestore(get(), get(), get(), get(), get(), get()) }
+    single { FullRestore(get(), get(), get(), get(), get()) }
     single {
         RestoreCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get(), get())
     }

@@ -11,7 +11,8 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -33,8 +34,8 @@ import kotlin.random.Random
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestoreTest : RestoreTest() {
 
-    private val plugin = mockk<BackupPlugin>()
-    private val legacyPlugin = mockk<FullRestorePlugin>()
+    private val plugin = mockk<StoragePlugin>()
+    private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val restore = FullRestore(plugin, legacyPlugin, outputFactory, headerReader, crypto)
 
     private val encrypted = getRandomByteArray()
@@ -50,7 +51,7 @@ internal class FullRestoreTest : RestoreTest() {
     @Suppress("deprecation")
     fun `v0 hasDataForPackage() delegates to plugin`() = runBlocking {
         val result = Random.nextBoolean()
-        coEvery { legacyPlugin.hasDataForPackage(token, packageInfo) } returns result
+        coEvery { legacyPlugin.hasDataForFullPackage(token, packageInfo) } returns result
         assertEquals(result, restore.hasDataForPackage(token, packageInfo))
     }
 

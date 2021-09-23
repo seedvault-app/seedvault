@@ -15,7 +15,8 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
@@ -41,8 +42,9 @@ private val TAG = KVRestore::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestore(
-    private val plugin: BackupPlugin,
-    private val legacyPlugin: KVRestorePlugin,
+    private val plugin: StoragePlugin,
+    @Suppress("Deprecation")
+    private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
     private val crypto: Crypto,

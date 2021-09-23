@@ -12,11 +12,11 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 @Suppress("BlockingMethodInNonBlockingContext")
-internal class BackupPluginTest : BackupTest() {
+internal class StoragePluginTest : BackupTest() {
 
     private val storage = mockk<DocumentsStorage>()
 
-    private val plugin = DocumentsProviderBackupPlugin(context, storage)
+    private val plugin = DocumentsProviderStoragePlugin(context, storage)
 
     private val setDir: DocumentFile = mockk()
     private val backupFile: DocumentFile = mockk()

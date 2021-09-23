@@ -11,6 +11,7 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
@@ -38,7 +39,7 @@ private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-    private val plugin: BackupPlugin,
+    private val plugin: StoragePlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto

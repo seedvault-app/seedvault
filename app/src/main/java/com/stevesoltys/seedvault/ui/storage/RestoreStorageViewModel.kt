@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.saf.DIRECTORY_ROOT
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -16,7 +16,7 @@ private val TAG = RestoreStorageViewModel::class.java.simpleName
 
 internal class RestoreStorageViewModel(
     private val app: Application,
-    private val backupPlugin: BackupPlugin,
+    private val storagePlugin: StoragePlugin,
     settingsManager: SettingsManager
 ) : StorageViewModel(app, settingsManager) {
 
@@ -25,7 +25,7 @@ internal class RestoreStorageViewModel(
     override fun onLocationSet(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val hasBackup = try {
-                backupPlugin.hasBackup(uri)
+                storagePlugin.hasBackup(uri)
             } catch (e: IOException) {
                 Log.e(TAG, "Error reading URI: $uri", e)
                 false

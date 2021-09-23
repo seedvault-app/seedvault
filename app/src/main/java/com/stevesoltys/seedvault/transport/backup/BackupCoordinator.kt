@@ -29,6 +29,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -64,7 +65,7 @@ private class CoordinatorState(
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupCoordinator(
     private val context: Context,
-    private val plugin: BackupPlugin,
+    private val plugin: StoragePlugin,
     private val kv: KVBackup,
     private val full: FullBackup,
     private val apkBackup: ApkBackup,
@@ -508,7 +509,7 @@ internal class BackupCoordinator(
         }
     }
 
-    private suspend fun BackupPlugin.getMetadataOutputStream(token: Long? = null): OutputStream {
+    private suspend fun StoragePlugin.getMetadataOutputStream(token: Long? = null): OutputStream {
         val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
         return getOutputStream(t, FILE_BACKUP_METADATA)
     }

@@ -3,18 +3,14 @@ package com.stevesoltys.seedvault
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderBackupPlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderFullRestorePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVRestorePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
+import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderLegacyPlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.BackupPlugin
-import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
-import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
-import com.stevesoltys.seedvault.transport.restore.RestorePlugin
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -39,14 +35,10 @@ class PluginTest : KoinComponent {
     private val mockedSettingsManager: SettingsManager = mockk()
     private val storage = DocumentsStorage(context, mockedSettingsManager)
 
-    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(context, storage)
-
-    private val kvRestorePlugin: KVRestorePlugin =
-        DocumentsProviderKVRestorePlugin(context, storage)
-    private val fullRestorePlugin: FullRestorePlugin =
-        DocumentsProviderFullRestorePlugin(context, storage)
-    private val restorePlugin: RestorePlugin =
-        DocumentsProviderRestorePlugin(context, storage, kvRestorePlugin, fullRestorePlugin)
+    private val storagePlugin: StoragePlugin = DocumentsProviderStoragePlugin(context, storage)
+    @Suppress("Deprecation")
+    private val legacyStoragePlugin: LegacyStoragePlugin =
+        DocumentsProviderLegacyPlugin(context, storage)
 
     private val token = System.currentTimeMillis() - 365L * 24L * 60L * 60L * 1000L
     private val packageInfo = PackageInfoBuilder.newBuilder().setPackageName("org.example").build()
@@ -67,7 +59,7 @@ class PluginTest : KoinComponent {
 
     @Test
     fun testProviderPackageName() {
-        assertNotNull(backupPlugin.providerPackageName)
+        assertNotNull(storagePlugin.providerPackageName)
     }
 
     /**
@@ -80,38 +72,38 @@ class PluginTest : KoinComponent {
     @Test
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
-        assertEquals(0, backupPlugin.getAvailableBackups()?.toList()?.size)
+        assertEquals(0, storagePlugin.getAvailableBackups()?.toList()?.size)
         val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
-        assertFalse(backupPlugin.hasBackup(uri))
+        assertFalse(storagePlugin.hasBackup(uri))
 
         // prepare returned tokens requested when initializing device
         every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
 
         // start new restore set and initialize device afterwards
-        backupPlugin.startNewRestoreSet(token)
-        backupPlugin.initializeDevice()
+        storagePlugin.startNewRestoreSet(token)
+        storagePlugin.initializeDevice()
 
         // write metadata (needed for backup to be recognized)
-        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
+        storagePlugin.getOutputStream(token, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
 
         // one backup available now
-        assertEquals(1, backupPlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(backupPlugin.hasBackup(uri))
+        assertEquals(1, storagePlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(storagePlugin.hasBackup(uri))
 
         // initializing again (with another restore set) does add a restore set
-        backupPlugin.startNewRestoreSet(token + 1)
-        backupPlugin.initializeDevice()
-        backupPlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
+        storagePlugin.startNewRestoreSet(token + 1)
+        storagePlugin.initializeDevice()
+        storagePlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
-        assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(backupPlugin.hasBackup(uri))
+        assertEquals(2, storagePlugin.getAvailableBackups()?.toList()?.size)
+        assertTrue(storagePlugin.hasBackup(uri))
 
         // initializing again (without new restore set) doesn't change number of restore sets
-        backupPlugin.initializeDevice()
-        backupPlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
+        storagePlugin.initializeDevice()
+        storagePlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
-        assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
+        assertEquals(2, storagePlugin.getAvailableBackups()?.toList()?.size)
 
         // ensure that the new backup dir exist
         assertTrue(storage.currentSetDir!!.exists())
@@ -121,15 +113,15 @@ class PluginTest : KoinComponent {
     fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
         every { mockedSettingsManager.getToken() } returns token
 
-        backupPlugin.startNewRestoreSet(token)
-        backupPlugin.initializeDevice()
+        storagePlugin.startNewRestoreSet(token)
+        storagePlugin.initializeDevice()
 
         // write metadata
         val metadata = getRandomByteArray()
-        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
+        storagePlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
 
         // get available backups, expect only one with our token and no error
-        var availableBackups = backupPlugin.getAvailableBackups()?.toList()
+        var availableBackups = storagePlugin.getAvailableBackups()?.toList()
         check(availableBackups != null)
         assertEquals(1, availableBackups.size)
         assertEquals(token, availableBackups[0].token)
@@ -138,9 +130,9 @@ class PluginTest : KoinComponent {
         assertReadEquals(metadata, availableBackups[0].inputStreamRetriever())
 
         // initializing again (without changing storage) keeps restore set with same token
-        backupPlugin.initializeDevice()
-        backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
-        availableBackups = backupPlugin.getAvailableBackups()?.toList()
+        storagePlugin.initializeDevice()
+        storagePlugin.getOutputStream(token, FILE_BACKUP_METADATA).writeAndClose(metadata)
+        availableBackups = storagePlugin.getAvailableBackups()?.toList()
         check(availableBackups != null)
         assertEquals(1, availableBackups.size)
         assertEquals(token, availableBackups[0].token)
@@ -157,22 +149,25 @@ class PluginTest : KoinComponent {
 
         // write random bytes as APK
         val apk1 = getRandomByteArray(1337 * 1024)
-        backupPlugin.getOutputStream(token, "${packageInfo.packageName}.apk").writeAndClose(apk1)
+        storagePlugin.getOutputStream(token, "${packageInfo.packageName}.apk").writeAndClose(apk1)
 
         // assert that read APK bytes match what was written
-        assertReadEquals(apk1, restorePlugin.getApkInputStream(token, packageInfo.packageName, ""))
+        assertReadEquals(
+            apk1,
+            legacyStoragePlugin.getApkInputStream(token, packageInfo.packageName, "")
+        )
 
         // write random bytes as another APK
         val suffix2 = getRandomBase64(23)
         val apk2 = getRandomByteArray(23 * 1024 * 1024)
 
-        backupPlugin.getOutputStream(token, "${packageInfo2.packageName}$suffix2.apk")
+        storagePlugin.getOutputStream(token, "${packageInfo2.packageName}$suffix2.apk")
             .writeAndClose(apk2)
 
         // assert that read APK bytes match what was written
         assertReadEquals(
             apk2,
-            restorePlugin.getApkInputStream(token, packageInfo2.packageName, suffix2)
+            legacyStoragePlugin.getApkInputStream(token, packageInfo2.packageName, suffix2)
         )
     }
 
@@ -185,41 +180,41 @@ class PluginTest : KoinComponent {
         val name2 = getRandomBase64()
 
         // no data available initially
-        assertFalse(backupPlugin.hasData(token, name1))
-        assertFalse(backupPlugin.hasData(token, name2))
+        assertFalse(storagePlugin.hasData(token, name1))
+        assertFalse(storagePlugin.hasData(token, name2))
 
         // write full backup data
         val data = getRandomByteArray(5 * 1024 * 1024)
-        backupPlugin.getOutputStream(token, name1).writeAndClose(data)
+        storagePlugin.getOutputStream(token, name1).writeAndClose(data)
 
         // data is available now, but only this token
-        assertTrue(backupPlugin.hasData(token, name1))
-        assertFalse(backupPlugin.hasData(token + 1, name1))
+        assertTrue(storagePlugin.hasData(token, name1))
+        assertFalse(storagePlugin.hasData(token + 1, name1))
 
         // restore data matches backed up data
-        assertReadEquals(data, backupPlugin.getInputStream(token, name1))
+        assertReadEquals(data, storagePlugin.getInputStream(token, name1))
 
         // write and check data for second package
         val data2 = getRandomByteArray(5 * 1024 * 1024)
-        backupPlugin.getOutputStream(token, name2).writeAndClose(data2)
-        assertTrue(backupPlugin.hasData(token, name2))
-        assertReadEquals(data2, backupPlugin.getInputStream(token, name2))
+        storagePlugin.getOutputStream(token, name2).writeAndClose(data2)
+        assertTrue(storagePlugin.hasData(token, name2))
+        assertReadEquals(data2, storagePlugin.getInputStream(token, name2))
 
         // remove data of first package again and ensure that no more data is found
-        backupPlugin.removeData(token, name1)
-        assertFalse(backupPlugin.hasData(token, name1))
+        storagePlugin.removeData(token, name1)
+        assertFalse(storagePlugin.hasData(token, name1))
 
         // second package is still there
-        assertTrue(backupPlugin.hasData(token, name2))
+        assertTrue(storagePlugin.hasData(token, name2))
 
         // ensure that it gets deleted as well
-        backupPlugin.removeData(token, name2)
-        assertFalse(backupPlugin.hasData(token, name2))
+        storagePlugin.removeData(token, name2)
+        assertFalse(storagePlugin.hasData(token, name2))
     }
 
     private fun initStorage(token: Long) = runBlocking {
         every { mockedSettingsManager.getToken() } returns token
-        backupPlugin.initializeDevice()
+        storagePlugin.initializeDevice()
     }
 
 }
