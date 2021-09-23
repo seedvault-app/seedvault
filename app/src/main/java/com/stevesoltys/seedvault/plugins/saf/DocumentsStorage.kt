@@ -27,7 +27,9 @@ import java.io.OutputStream
 import kotlin.coroutines.resume
 
 const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
+@Deprecated("")
 const val DIRECTORY_FULL_BACKUP = "full"
+@Deprecated("")
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
 const val FILE_NO_MEDIA = ".nomedia"
@@ -73,7 +75,7 @@ internal class DocumentsStorage(
             return field
         }
 
-    private var currentSetDir: DocumentFile? = null
+    var currentSetDir: DocumentFile? = null
         get() = runBlocking {
             if (field == null) {
                 if (currentToken == 0L) return@runBlocking null
@@ -86,32 +88,7 @@ internal class DocumentsStorage(
             }
             field
         }
-
-    var currentFullBackupDir: DocumentFile? = null
-        get() = runBlocking {
-            if (field == null) {
-                field = try {
-                    currentSetDir?.createOrGetDirectory(context, DIRECTORY_FULL_BACKUP)
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error creating full backup dir.", e)
-                    null
-                }
-            }
-            field
-        }
-
-    var currentKvBackupDir: DocumentFile? = null
-        get() = runBlocking {
-            if (field == null) {
-                field = try {
-                    currentSetDir?.createOrGetDirectory(context, DIRECTORY_KEY_VALUE_BACKUP)
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error creating K/V backup dir.", e)
-                    null
-                }
-            }
-            field
-        }
+        private set
 
     /**
      * Resets this storage abstraction, forcing it to re-fetch cached values on next access.
@@ -121,8 +98,6 @@ internal class DocumentsStorage(
         currentToken = newToken
         rootBackupDir = null
         currentSetDir = null
-        currentKvBackupDir = null
-        currentFullBackupDir = null
     }
 
     fun getAuthority(): String? = storage?.uri?.authority
@@ -134,23 +109,16 @@ internal class DocumentsStorage(
     }
 
     @Throws(IOException::class)
-    suspend fun getKVBackupDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
-        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
+    @Suppress("Deprecation")
+    @Deprecated("Use only for v0 restore")
+    suspend fun getKVBackupDir(token: Long): DocumentFile? {
         return getSetDir(token)?.findFileBlocking(context, DIRECTORY_KEY_VALUE_BACKUP)
     }
 
     @Throws(IOException::class)
-    suspend fun getOrCreateKVBackupDir(
-        token: Long = currentToken ?: error("no token")
-    ): DocumentFile {
-        if (token == currentToken) return currentKvBackupDir ?: throw IOException()
-        val setDir = getSetDir(token) ?: throw IOException()
-        return setDir.createOrGetDirectory(context, DIRECTORY_KEY_VALUE_BACKUP)
-    }
-
-    @Throws(IOException::class)
-    suspend fun getFullBackupDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
-        if (token == currentToken) return currentFullBackupDir ?: throw IOException()
+    @Suppress("Deprecation")
+    @Deprecated("Use only for v0 restore")
+    suspend fun getFullBackupDir(token: Long): DocumentFile? {
         return getSetDir(token)?.findFileBlocking(context, DIRECTORY_FULL_BACKUP)
     }
 

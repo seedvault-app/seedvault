@@ -7,7 +7,8 @@ import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import java.io.IOException
 import java.io.InputStream
 
-@Suppress("BlockingMethodInNonBlockingContext")
+@Suppress("BlockingMethodInNonBlockingContext", "Deprecation")
+@Deprecated("Use only for v0 restore")
 internal class DocumentsProviderKVRestorePlugin(
     private val context: Context,
     private val storage: DocumentsStorage

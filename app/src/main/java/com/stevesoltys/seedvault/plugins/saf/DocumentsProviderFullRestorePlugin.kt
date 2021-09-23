@@ -6,7 +6,8 @@ import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import java.io.IOException
 import java.io.InputStream
 
-@Suppress("BlockingMethodInNonBlockingContext")
+@Suppress("BlockingMethodInNonBlockingContext", "Deprecation")
+@Deprecated("Use only for v0 restore")
 internal class DocumentsProviderFullRestorePlugin(
     private val context: Context,
     private val documentsStorage: DocumentsStorage

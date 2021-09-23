@@ -2,8 +2,6 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.transport.backup.BackupTest
-import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
-import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -17,19 +15,11 @@ import org.junit.jupiter.api.Test
 internal class BackupPluginTest : BackupTest() {
 
     private val storage = mockk<DocumentsStorage>()
-    private val kvBackupPlugin: KVBackupPlugin = mockk<DocumentsProviderKVBackup>()
-    private val fullBackupPlugin: FullBackupPlugin = mockk<DocumentsProviderFullBackup>()
 
-    private val plugin = DocumentsProviderBackupPlugin(
-        context,
-        storage,
-        kvBackupPlugin,
-        fullBackupPlugin
-    )
+    private val plugin = DocumentsProviderBackupPlugin(context, storage)
 
     private val setDir: DocumentFile = mockk()
-    private val kvDir: DocumentFile = mockk()
-    private val fullDir: DocumentFile = mockk()
+    private val backupFile: DocumentFile = mockk()
 
     init {
         // to mock extension functions on DocumentFile
@@ -51,13 +41,12 @@ internal class BackupPluginTest : BackupTest() {
         every { settingsManager.getToken() } returns token
         coEvery { storage.getSetDir(token) } returns setDir
         // delete contents of current set dir
-        coEvery { setDir.listFilesBlocking(context) } returns listOf(kvDir)
-        every { kvDir.delete() } returns true
+        coEvery { setDir.listFilesBlocking(context) } returns listOf(backupFile)
+        every { backupFile.delete() } returns true
         // reset storage
         every { storage.reset(null) } just Runs
-        // create kv and full dir
-        every { storage getProperty "currentKvBackupDir" } returns kvDir
-        every { storage getProperty "currentFullBackupDir" } returns fullDir
+        // create new set dir
+        every { storage getProperty "currentSetDir" } returns setDir
 
         plugin.initializeDevice()
     }
