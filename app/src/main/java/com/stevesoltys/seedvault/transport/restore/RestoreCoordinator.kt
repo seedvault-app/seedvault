@@ -225,9 +225,16 @@ internal class RestoreCoordinator(
                         full.initializeState(version, state.token, name, packageInfo)
                         state.currentPackage = packageName
                         TYPE_FULL_STREAM
-                    } else throw IOException("No data found for $packageName. Skipping.")
+                    } else throw IOException("No data found for $packageName. Skipping...")
                 }
-                null -> throw IOException("No backup type found for $packageName. Skipping.")
+                null -> {
+                    Log.i(TAG, "No backup type found for $packageName. Skipping...")
+                    state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
+                        Log.w(TAG, "State was ${s.name}")
+                    }
+                    failedPackages.add(packageName)
+                    return nextRestorePackage()
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error finding restore data for $packageName.", e)

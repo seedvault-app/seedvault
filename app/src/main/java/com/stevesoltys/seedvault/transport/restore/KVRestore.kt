@@ -98,20 +98,26 @@ internal class KVRestore(
         val isAutoRestore = state.packageInfo.packageName == MAGIC_PACKAGE_MANAGER &&
             pmPackageName != null
         return try {
-            val db = if (isAutoRestore) getCachedRestoreDb(state) else downloadRestoreDb(state)
-            val out = outputFactory.getBackupDataOutput(data)
-            val records = if (isAutoRestore) {
-                val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
-                Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
-                db.getAll().filter { it.first in keys }
+            val database = if (isAutoRestore) {
+                getCachedRestoreDb(state)
             } else {
-                db.getAll()
+                downloadRestoreDb(state)
             }
-            records.sortedBy { it.first }.forEach { (key, value) ->
-                val size = value.size
-                Log.v(TAG, "    ... key=$key size=$size")
-                out.writeEntityHeader(key, size)
-                out.writeEntityData(value, size)
+            database.use { db ->
+                val out = outputFactory.getBackupDataOutput(data)
+                val records = if (isAutoRestore) {
+                    val keys = listOf(ANCESTRAL_RECORD_KEY, GLOBAL_METADATA_KEY, pmPackageName)
+                    Log.d(TAG, "Single package restore, restrict restore keys to $pmPackageName")
+                    db.getAll().filter { it.first in keys }
+                } else {
+                    db.getAll()
+                }
+                records.sortedBy { it.first }.forEach { (key, value) ->
+                    val size = value.size
+                    Log.v(TAG, "    ... key=$key size=$size")
+                    out.writeEntityHeader(key, size)
+                    out.writeEntityData(value, size)
+                }
             }
             TRANSPORT_OK
         } catch (e: UnsupportedVersionException) {
