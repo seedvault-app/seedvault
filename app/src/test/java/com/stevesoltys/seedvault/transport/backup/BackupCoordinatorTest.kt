@@ -402,7 +402,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `not allowed apps get their APKs backed up during @pm@ backup`() = runBlocking {
+    fun `not allowed apps get their APKs backed up after @pm@ backup`() = runBlocking {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
         val notAllowedPackages = listOf(
             PackageInfo().apply { packageName = "org.example.1" },
@@ -422,6 +422,21 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             kv.performBackup(packageInfo, fileDescriptor, 0, token, salt)
         } returns TRANSPORT_OK
+
+        assertEquals(
+            TRANSPORT_OK,
+            backup.performIncrementalBackup(packageInfo, fileDescriptor, 0)
+        )
+
+        // finish @pm@ backup
+        every { kv.hasState() } returns true
+        every { full.hasState() } returns false
+        every { kv.getCurrentPackage() } returns pmPackageInfo
+        every {
+            metadataManager.onPackageBackedUp(pmPackageInfo, BackupType.KV, metadataOutputStream)
+        } just Runs
+        coEvery { kv.finishBackup() } returns TRANSPORT_OK
+
         // now check if we have opt-out apps that we need to back up APKs for
         every { packageService.notBackedUpPackages } returns notAllowedPackages
         // update notification
@@ -465,7 +480,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         every { metadataOutputStream.close() } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         coVerify {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], NOT_ALLOWED, any())

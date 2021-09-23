@@ -270,13 +270,7 @@ internal class BackupCoordinator(
         }
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")
         val salt = metadataManager.salt
-        val result = kv.performBackup(packageInfo, data, flags, token, salt)
-        if (result == TRANSPORT_OK && packageName == MAGIC_PACKAGE_MANAGER) {
-            // TODO move to finish backup of @pm@ so we can upload the DB before
-            // hook in here to back up APKs of apps that are otherwise not allowed for backup
-            backUpApksOfNotBackedUpPackages()
-        }
-        return result
+        return kv.performBackup(packageInfo, data, flags, token, salt)
     }
 
     // ------------------------------------------------------------------------------------
@@ -392,10 +386,15 @@ internal class BackupCoordinator(
                 "K/V backup has state, but full backup has dangling state as well"
             }
             // getCurrentPackage() not-null because we have state
-            onPackageBackedUp(kv.getCurrentPackage()!!, BackupType.KV)
-            val isPmBackup = kv.getCurrentPackage()!!.packageName == MAGIC_PACKAGE_MANAGER
-            kv.finishBackup()
-            // TODO move @pm@ backup hook here
+            val packageInfo = kv.getCurrentPackage()!!
+            onPackageBackedUp(packageInfo, BackupType.KV)
+            val isPmBackup = packageInfo.packageName == MAGIC_PACKAGE_MANAGER
+            val result = kv.finishBackup()
+            // hook in here to back up APKs of apps that are otherwise not allowed for backup
+            if (result == TRANSPORT_OK && isPmBackup) {
+                backUpApksOfNotBackedUpPackages()
+            }
+            result
         }
         full.hasState() -> {
             check(!kv.hasState()) {
