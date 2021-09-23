@@ -237,7 +237,7 @@ internal class FullBackupTest : BackupTest() {
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
-        backup.cancelFullBackup(token, salt)
+        backup.cancelFullBackup(token, salt, false)
         assertFalse(backup.hasState())
     }
 
@@ -251,7 +251,7 @@ internal class FullBackupTest : BackupTest() {
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
-        backup.cancelFullBackup(token, salt)
+        backup.cancelFullBackup(token, salt, false)
         assertFalse(backup.hasState())
     }
 

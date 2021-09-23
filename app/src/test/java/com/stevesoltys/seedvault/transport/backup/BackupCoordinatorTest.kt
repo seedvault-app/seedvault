@@ -326,7 +326,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup(token, metadata.salt) } just Runs
+        coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
         every { settingsManager.getStorage() } returns storage
         every { metadataOutputStream.close() } just Runs
 
@@ -375,7 +375,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup(token, metadata.salt) } just Runs
+        coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
         every { settingsManager.getStorage() } returns storage
         every { metadataOutputStream.close() } just Runs
 
