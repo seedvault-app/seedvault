@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault
 
-import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -32,7 +31,7 @@ fun getRandomString(size: Int = Random.nextInt(1, 255)): String {
 private val base64CharPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9') // + '+' + '_' + '='
 
 @Suppress("MagicNumber")
-fun getRandomBase64(size: Int = Random.nextInt(1, MAX_KEY_LENGTH_NEXTCLOUD)): String {
+fun getRandomBase64(size: Int = Random.nextInt(1, 64)): String {
     return (1..size)
         .map { Random.nextInt(0, base64CharPool.size) }
         .map(base64CharPool::get)

@@ -7,8 +7,6 @@ import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
 import com.stevesoltys.seedvault.transport.backup.EncryptedMetadata
-import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
-import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -19,9 +17,7 @@ private val TAG = DocumentsProviderBackupPlugin::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderBackupPlugin(
     private val context: Context,
-    private val storage: DocumentsStorage,
-    override val kvBackupPlugin: KVBackupPlugin,
-    override val fullBackupPlugin: FullBackupPlugin
+    private val storage: DocumentsStorage
 ) : BackupPlugin {
 
     private val packageManager: PackageManager = context.packageManager
@@ -45,8 +41,7 @@ internal class DocumentsProviderBackupPlugin(
         storage.reset(null)
 
         // create backup folders
-        storage.currentKvBackupDir ?: throw IOException()
-        storage.currentFullBackupDir ?: throw IOException()
+        storage.currentSetDir ?: throw IOException()
     }
 
     @Throws(IOException::class)

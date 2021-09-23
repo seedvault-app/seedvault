@@ -4,20 +4,14 @@ import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderBackupPlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderFullBackup
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderFullRestorePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVBackup
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderKVRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderRestorePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH
-import com.stevesoltys.seedvault.plugins.saf.MAX_KEY_LENGTH_NEXTCLOUD
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupPlugin
-import com.stevesoltys.seedvault.transport.backup.FullBackupPlugin
-import com.stevesoltys.seedvault.transport.backup.KVBackupPlugin
 import com.stevesoltys.seedvault.transport.restore.FullRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.KVRestorePlugin
 import com.stevesoltys.seedvault.transport.restore.RestorePlugin
@@ -35,7 +29,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -46,14 +39,7 @@ class PluginTest : KoinComponent {
     private val mockedSettingsManager: SettingsManager = mockk()
     private val storage = DocumentsStorage(context, mockedSettingsManager)
 
-    private val kvBackupPlugin: KVBackupPlugin = DocumentsProviderKVBackup(context, storage)
-    private val fullBackupPlugin: FullBackupPlugin = DocumentsProviderFullBackup(context, storage)
-    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(
-        context,
-        storage,
-        kvBackupPlugin,
-        fullBackupPlugin
-    )
+    private val backupPlugin: BackupPlugin = DocumentsProviderBackupPlugin(context, storage)
 
     private val kvRestorePlugin: KVRestorePlugin =
         DocumentsProviderKVRestorePlugin(context, storage)
@@ -127,9 +113,8 @@ class PluginTest : KoinComponent {
             .writeAndClose(getRandomByteArray())
         assertEquals(2, backupPlugin.getAvailableBackups()?.toList()?.size)
 
-        // ensure that the new backup dirs exist
-        assertTrue(storage.currentKvBackupDir!!.exists())
-        assertTrue(storage.currentFullBackupDir!!.exists())
+        // ensure that the new backup dir exist
+        assertTrue(storage.currentSetDir!!.exists())
     }
 
     @Test
@@ -165,7 +150,8 @@ class PluginTest : KoinComponent {
     }
 
     @Test
-    fun testApkWriteRead() = runBlocking {
+    @Suppress("Deprecation")
+    fun v0testApkWriteRead() = runBlocking {
         // initialize storage with given token
         initStorage(token)
 
@@ -191,166 +177,49 @@ class PluginTest : KoinComponent {
     }
 
     @Test
-    fun testKvBackupRestore() = runBlocking {
-        // define shortcuts
-        val kvBackup = backupPlugin.kvBackupPlugin
-        val kvRestore = restorePlugin.kvRestorePlugin
-
+    fun testBackupRestore() = runBlocking {
         // initialize storage with given token
         initStorage(token)
 
-        // no data available for given package
-        assertFalse(kvBackup.hasDataForPackage(packageInfo))
-        assertFalse(kvRestore.hasDataForPackage(token, packageInfo))
-
-        // define key/value pair records
-        val record1 = Pair(getRandomBase64(23), getRandomByteArray(1337))
-        val record2 = Pair(getRandomBase64(42), getRandomByteArray(42 * 1024))
-        val record3 = Pair(getRandomBase64(128), getRandomByteArray(5 * 1024 * 1024))
-
-        // write first record
-        kvBackup.getOutputStreamForRecord(packageInfo, record1.first).writeAndClose(record1.second)
-
-        // data is now available for current token and given package, but not for different token
-        assertTrue(kvBackup.hasDataForPackage(packageInfo))
-        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        assertFalse(kvRestore.hasDataForPackage(token + 1, packageInfo))
-
-        // record for package is found and returned properly
-        var records = kvRestore.listRecords(token, packageInfo)
-        assertEquals(1, records.size)
-        assertEquals(record1.first, records[0])
-        assertReadEquals(
-            record1.second,
-            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
-        )
-
-        // write second and third record
-        kvBackup.getOutputStreamForRecord(packageInfo, record2.first).writeAndClose(record2.second)
-        kvBackup.getOutputStreamForRecord(packageInfo, record3.first).writeAndClose(record3.second)
-
-        // all records for package are found and returned properly
-        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        records = kvRestore.listRecords(token, packageInfo)
-        assertEquals(listOf(record1.first, record2.first, record3.first).sorted(), records.sorted())
-        assertReadEquals(
-            record1.second,
-            kvRestore.getInputStreamForRecord(token, packageInfo, record1.first)
-        )
-        assertReadEquals(
-            record2.second,
-            kvRestore.getInputStreamForRecord(token, packageInfo, record2.first)
-        )
-        assertReadEquals(
-            record3.second,
-            kvRestore.getInputStreamForRecord(token, packageInfo, record3.first)
-        )
-
-        // delete record3 and ensure that the other two are still found
-        kvBackup.deleteRecord(packageInfo, record3.first)
-        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        records = kvRestore.listRecords(token, packageInfo)
-        assertEquals(listOf(record1.first, record2.first).sorted(), records.sorted())
-
-        // remove all data of package and ensure that it is gone
-        kvBackup.removeDataOfPackage(packageInfo)
-        assertFalse(kvBackup.hasDataForPackage(packageInfo))
-        assertFalse(kvRestore.hasDataForPackage(token, packageInfo))
-    }
-
-    @Test
-    fun testMaxKvKeyLength() = runBlocking {
-        // define shortcuts
-        val kvBackup = backupPlugin.kvBackupPlugin
-        val kvRestore = restorePlugin.kvRestorePlugin
-
-        // initialize storage with given token
-        initStorage(token)
-        assertFalse(kvBackup.hasDataForPackage(packageInfo))
-
-        // FIXME get Nextcloud to have the same limit
-        //  Since Nextcloud is using WebDAV and that seems to have undefined lower file name limits
-        //  we might have to lower our maximum to accommodate for that.
-        val max = if (isNextcloud()) MAX_KEY_LENGTH_NEXTCLOUD else MAX_KEY_LENGTH
-        val maxOver = if (isNextcloud()) max + 10 else max + 1
-
-        // define record with maximum key length and one above the maximum
-        val recordMax = Pair(getRandomBase64(max), getRandomByteArray(1024))
-        val recordOver = Pair(getRandomBase64(maxOver), getRandomByteArray(1024))
-
-        // write max record
-        kvBackup.getOutputStreamForRecord(packageInfo, recordMax.first)
-            .writeAndClose(recordMax.second)
-
-        // max record is found correctly
-        assertTrue(kvRestore.hasDataForPackage(token, packageInfo))
-        val records = kvRestore.listRecords(token, packageInfo)
-        assertEquals(listOf(recordMax.first), records)
-
-        // write exceeding key length record
-        if (isNextcloud()) {
-            // Nextcloud simply refuses to write long filenames
-            coAssertThrows(IOException::class.java) {
-                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
-                    .writeAndClose(recordOver.second)
-            }
-        } else {
-            coAssertThrows(IllegalStateException::class.java) {
-                kvBackup.getOutputStreamForRecord(packageInfo, recordOver.first)
-                    .writeAndClose(recordOver.second)
-            }
-        }
-    }
-
-    @Test
-    fun testFullBackupRestore() = runBlocking {
-        // define shortcuts
-        val fullBackup = backupPlugin.fullBackupPlugin
-        val fullRestore = restorePlugin.fullRestorePlugin
-
-        // initialize storage with given token
-        initStorage(token)
+        val name1 = getRandomBase64()
+        val name2 = getRandomBase64()
 
         // no data available initially
-        assertFalse(fullRestore.hasDataForPackage(token, packageInfo))
-        assertFalse(fullRestore.hasDataForPackage(token, packageInfo2))
+        assertFalse(backupPlugin.hasData(token, name1))
+        assertFalse(backupPlugin.hasData(token, name2))
 
         // write full backup data
         val data = getRandomByteArray(5 * 1024 * 1024)
-        fullBackup.getOutputStream(packageInfo).writeAndClose(data)
+        backupPlugin.getOutputStream(token, name1).writeAndClose(data)
 
         // data is available now, but only this token
-        assertTrue(fullRestore.hasDataForPackage(token, packageInfo))
-        assertFalse(fullRestore.hasDataForPackage(token + 1, packageInfo))
+        assertTrue(backupPlugin.hasData(token, name1))
+        assertFalse(backupPlugin.hasData(token + 1, name1))
 
         // restore data matches backed up data
-        assertReadEquals(data, fullRestore.getInputStreamForPackage(token, packageInfo))
+        assertReadEquals(data, backupPlugin.getInputStream(token, name1))
 
         // write and check data for second package
         val data2 = getRandomByteArray(5 * 1024 * 1024)
-        fullBackup.getOutputStream(packageInfo2).writeAndClose(data2)
-        assertTrue(fullRestore.hasDataForPackage(token, packageInfo2))
-        assertReadEquals(data2, fullRestore.getInputStreamForPackage(token, packageInfo2))
+        backupPlugin.getOutputStream(token, name2).writeAndClose(data2)
+        assertTrue(backupPlugin.hasData(token, name2))
+        assertReadEquals(data2, backupPlugin.getInputStream(token, name2))
 
         // remove data of first package again and ensure that no more data is found
-        fullBackup.removeDataOfPackage(packageInfo)
-        assertFalse(fullRestore.hasDataForPackage(token, packageInfo))
+        backupPlugin.removeData(token, name1)
+        assertFalse(backupPlugin.hasData(token, name1))
 
         // second package is still there
-        assertTrue(fullRestore.hasDataForPackage(token, packageInfo2))
+        assertTrue(backupPlugin.hasData(token, name2))
 
         // ensure that it gets deleted as well
-        fullBackup.removeDataOfPackage(packageInfo2)
-        assertFalse(fullRestore.hasDataForPackage(token, packageInfo2))
+        backupPlugin.removeData(token, name2)
+        assertFalse(backupPlugin.hasData(token, name2))
     }
 
     private fun initStorage(token: Long) = runBlocking {
         every { mockedSettingsManager.getToken() } returns token
         backupPlugin.initializeDevice()
-    }
-
-    private fun isNextcloud(): Boolean {
-        return backupPlugin.providerPackageName?.startsWith("com.nextcloud") ?: false
     }
 
 }

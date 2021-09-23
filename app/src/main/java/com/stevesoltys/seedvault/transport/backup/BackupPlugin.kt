@@ -9,12 +9,6 @@ import java.io.OutputStream
 
 interface BackupPlugin {
 
-    @Deprecated("Use methods in this interface instead")
-    val kvBackupPlugin: KVBackupPlugin
-
-    @Deprecated("Use methods in this interface instead")
-    val fullBackupPlugin: FullBackupPlugin
-
     /**
      * Start a new [RestoreSet] with the given token.
      *
