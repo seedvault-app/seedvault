@@ -177,11 +177,11 @@ internal class FullBackup(
         plugin.removeData(token, name)
     }
 
-    suspend fun cancelFullBackup(token: Long, salt: String) {
+    suspend fun cancelFullBackup(token: Long, salt: String, ignoreApp: Boolean) {
         Log.i(TAG, "Cancel full backup")
         val state = this.state ?: throw AssertionError("No state when canceling")
         try {
-            clearBackupData(state.packageInfo, token, salt)
+            if (!ignoreApp) clearBackupData(state.packageInfo, token, salt)
         } catch (e: IOException) {
             Log.w(TAG, "Error cancelling full backup for ${state.packageName}", e)
         }

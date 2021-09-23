@@ -335,10 +335,12 @@ internal class BackupCoordinator(
             TAG, "Cancel full backup of ${packageInfo.packageName}" +
                 " because of ${state.cancelReason}"
         )
-        onPackageBackupError(packageInfo, BackupType.FULL)
+        // don't bother with system apps that have no data
+        val ignoreApp = state.cancelReason == NO_DATA && packageInfo.isSystemApp()
+        if (!ignoreApp) onPackageBackupError(packageInfo, BackupType.FULL)
         val token = settingsManager.getToken() ?: error("no token in cancelFullBackup")
         val salt = metadataManager.salt
-        full.cancelFullBackup(token, salt)
+        full.cancelFullBackup(token, salt, ignoreApp)
     }
 
     // Clear and Finish
@@ -482,8 +484,6 @@ internal class BackupCoordinator(
     }
 
     private suspend fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
-        // don't bother with system apps that have no data
-        if (state.cancelReason == NO_DATA && packageInfo.isSystemApp()) return
         val packageName = packageInfo.packageName
         try {
             plugin.getMetadataOutputStream().use {
