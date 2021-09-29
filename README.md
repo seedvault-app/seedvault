@@ -1,4 +1,8 @@
 # Seedvault
+> This branch has been deprecated.
+> Development is now directly done on version branches (such as [android12](https://github.com/seedvault-app/seedvault/tree/android12))
+> Please see https://github.com/seedvault-app/seedvault/issues/301
+
 [![Build](https://github.com/seedvault-app/seedvault/workflows/Build/badge.svg?branch=master)](https://github.com/seedvault-app/seedvault/actions?query=branch%3Amaster+workflow%3ABuild)
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
