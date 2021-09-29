@@ -22,7 +22,7 @@ import kotlin.random.Random
 internal class FullBackupTest : BackupTest() {
 
     private val plugin = mockk<FullBackupPlugin>()
-    private val backup = FullBackup(plugin, inputFactory, headerWriter, crypto)
+    private val backup = FullBackup(plugin, settingsManager, inputFactory, headerWriter, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
     private val closeBytes = ByteArray(42).apply { Random.nextBytes(this) }
@@ -35,9 +35,17 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `checkFullBackupSize exceeds quota`() {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
 
         assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.checkFullBackupSize(quota + 1))
+    }
+
+    @Test
+    fun `checkFullBackupSize does not exceed quota when unlimited`() {
+        every { settingsManager.isQuotaUnlimited() } returns true
+
+        assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(quota + 1))
     }
 
     @Test
@@ -52,6 +60,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `checkFullBackupSize accepts min data`() {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(1))
@@ -59,6 +68,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `checkFullBackupSize accepts max data`() {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(quota))
@@ -77,6 +87,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData first call over quota`() = runBlocking {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         val numBytes = (quota + 1).toInt()
@@ -93,6 +104,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData second call over quota`() = runBlocking {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         val numBytes1 = quota.toInt()
@@ -115,6 +127,7 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData throws exception when reading from InputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
         expectClearState()
@@ -131,6 +144,7 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData throws exception when getting outputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
 
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
         coEvery { plugin.getOutputStream(packageInfo) } throws IOException()
         expectClearState()
@@ -147,6 +161,7 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData throws exception when writing header`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
 
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { plugin.getQuota() } returns quota
         coEvery { plugin.getOutputStream(packageInfo) } returns outputStream
         every { inputFactory.getInputStream(data) } returns inputStream
@@ -166,6 +181,7 @@ internal class FullBackupTest : BackupTest() {
         runBlocking {
             every { inputFactory.getInputStream(data) } returns inputStream
             expectInitializeOutputStream()
+            every { settingsManager.isQuotaUnlimited() } returns false
             every { plugin.getQuota() } returns quota
             every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
             every { crypto.encryptSegment(outputStream, any()) } throws IOException()
@@ -181,6 +197,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData runs ok`() = runBlocking {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         val numBytes1 = (quota / 2).toInt()
@@ -234,6 +251,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `clearState throws exception when flushing OutputStream`() = runBlocking {
+        every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         val numBytes = 42

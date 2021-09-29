@@ -1,6 +1,66 @@
+## [11-2.2] - 2021-09-29
+### User-facing changes
+* Don't backup on metered networks
+* Disable spell-checker on recovery code input
+* Disable Nextcloud restore when not installed and no store available
+* Ask for system authentication before storing a new recovery code
+* Prevent screenshots of recovery code
+* Add expert settings with an option for unlimited quota
+* Allow launching restore through a dialer code
+* Restrict exported components
+
+### Others
+* Improve .editorconfig setup
+* Move LocalContactsBackup to product partition
+* Link FAQ in Readme to make it more discoverable
+* Compares kotlin-bip39 library with bitcoinj library
+* Provide an overview over key derivations
+* document potential information leakage through the long-lived SQL caches
+* Add warning for third-party tools to README
+
+## [11-2.1] - 2021-07-06
+### Updated
+* Switch to a different BIP39 library due to licensing
+
+### Notes
+* Not tagged as a stable release
+
+## [11-2.0] - 2021-07-05
+### Added
+* Storage backup!
+
+### Notes
+* Not tagged as a stable release
+
+## [11-1.2] - 2021-07-05
+### Fixed
+* Fix local contacts backup on LineageOS.
+* Minor string fixes.
+* Make recovery code fit on smaller screens / larger densities
+* Sync app colors with system Settings theme for consistency
+
+### Updated
+* Translations update, both existing languages and new.
+* Switch all text references to github.com/seedvault-app
+
+## [11-1.1] - 2021-04-16
+### Fixed
+* Don't crash when storage app gets uninstalled
+
+### Added
+* Allow verifying and re-generating the 12 word recovery code
+* Prepare for storage backup
+* gradle: Use AOSP platform key for signing
+
+## [11-1.0] - 2021-04-16
+### Notes
+* Change versioning scheme to include Android version
+* 11-1.0 is the first release for Android 11
+* Incomplete changelog entry, lots of changes done
+
 ## [1.0.0] - 2020-03-07
 
-## Added
+### Added
 - APK backup and restore support with the option to toggle them off.
 - Note to auto-restore setting in case removable storage is used.
 - UX for showing which packages were restored and which failed.
@@ -8,7 +68,7 @@
 - Show list of apps and their backup status.
 - Support for excluding apps from backups.
 
-## Fixed
+### Fixed
 - Device initialization and generation of new backup tokens.
 
 ## [1.0.0-alpha1] - 2019-12-14

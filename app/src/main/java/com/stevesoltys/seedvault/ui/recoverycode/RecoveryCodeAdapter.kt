@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.stevesoltys.seedvault.R
 
-class RecoveryCodeAdapter(private val items: List<CharSequence>) :
+class RecoveryCodeAdapter(private val items: List<CharArray>) :
     Adapter<RecoveryCodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecoveryCodeViewHolder {
@@ -30,9 +30,9 @@ class RecoveryCodeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     private val num = v.findViewById<TextView>(R.id.num)
     private val word = v.findViewById<TextView>(R.id.word)
 
-    internal fun bind(number: Int, item: CharSequence) {
+    internal fun bind(number: Int, item: CharArray) {
         num.text = number.toString()
-        word.text = item
+        word.text = String(item)
     }
 
 }

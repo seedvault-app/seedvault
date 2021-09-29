@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -37,7 +38,7 @@ class StorageCheckFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_check, container, false)
 
         titleView = v.findViewById(R.id.titleView)
@@ -55,6 +56,7 @@ class StorageCheckFragment : Fragment() {
 
         val errorMsg = requireArguments().getString(ERROR_MSG)
         if (errorMsg != null) {
+            view.findViewById<View>(R.id.patienceView).visibility = GONE
             progressBar.visibility = INVISIBLE
             errorView.text = errorMsg
             errorView.visibility = VISIBLE

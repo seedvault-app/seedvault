@@ -31,10 +31,17 @@ android_app {
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
         "com.google.android.material_material",
+        // storage
+        "seedvault-lib-storage", // did not manage to add this as transitive dependency
+        "seedvault-lib-tink-android",
+        "androidx.room_room-runtime",
+        "libprotobuf-java-lite",
+        // koin
         "seedvault-lib-koin-core", // did not manage to add this as transitive dependency
         "seedvault-lib-koin-android",
         "seedvault-lib-koin-androidx-viewmodel",
-        "seedvault-lib-novacrypto-bip39",
+        // bip39
+        "seedvault-lib-kotlin-bip39",
     ],
     manifest: "app/src/main/AndroidManifest.xml",
 

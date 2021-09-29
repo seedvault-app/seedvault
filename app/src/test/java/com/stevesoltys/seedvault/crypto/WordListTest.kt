@@ -1,11 +1,10 @@
 package com.stevesoltys.seedvault.crypto
 
+import cash.z.ecc.android.bip39.Mnemonics
+import cash.z.ecc.android.bip39.WordList
+import cash.z.ecc.android.bip39.toSeed
 import com.stevesoltys.seedvault.toHexString
-import io.github.novacrypto.bip39.JavaxPBKDF2WithHmacSHA512
-import io.github.novacrypto.bip39.MnemonicGenerator
-import io.github.novacrypto.bip39.SeedCalculator
-import io.github.novacrypto.bip39.Words
-import io.github.novacrypto.bip39.wordlists.English
+import com.stevesoltys.seedvault.ui.recoverycode.toMnemonicChars
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -2067,62 +2066,197 @@ class WordListTest {
 
     @Test
     fun `word list of library did not change`() {
+        val libWords = WordList().words
         for (i in words.indices) {
-            assertEquals(words[i], English.INSTANCE.getWord(i))
+            assertEquals(words[i], libWords[i])
         }
     }
 
     @Test
-    fun `test createMnemonic`() {
-        val entropy = ByteArray(Words.TWELVE.byteLength())
+    fun `test creating MnemonicCode from entropy`() {
+        val entropy = ByteArray(Mnemonics.WordCount.COUNT_12.bitLength / 8)
         Random.nextBytes(entropy)
-        val list = ArrayList<String>(12)
-        MnemonicGenerator(English.INSTANCE).createMnemonic(entropy) {
-            if (it != " ") list.add(it.toString())
-        }
-        assertEquals(12, list.size)
-        for (word in list) {
-            assertTrue(word in words)
+        val code = Mnemonics.MnemonicCode(entropy)
+        assertEquals(12, code.words.size)
+        for (word in code) {
+            assertTrue(word in words, "$word unknown")
         }
     }
 
     @Test
-    @Suppress("MaxLineLength")
-    fun `12 words generate expected seed`() {
+    fun `12 not validating words generate seed that novacrypt generated`() {
         assertEquals(
             "64AA8C388EC0F3A13C7E51653BC766E30668D30952AB34381C4B174BF3278774" +
                 "B4EE43D0BA08BCBCE0D0B806DEB7AA364A83525C34847078B2A8002A3E116066",
-            SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(
-                "write wrong yard year yellow you young youth zebra zero zone zoo", ""
-            ).toHexString("")
+            Mnemonics.MnemonicCode(
+                "write wrong yard year yellow you young youth zebra zero zone zoo"
+            ).toSeed(validate = false).toHexString("")
         )
         assertEquals(
             "E911FAA42F389AA9F6D5A40B2ECB876B06D6D1FFBD5885C54720398EB11918CA" +
                 "B8F7BAD70FD5BE39BEB4EB065610700D1CFF1D4BFAA26F998357E15E79002779",
-            SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(
-                "matrix lava they brand negative spray floor gym purity picture ritual disorder", ""
-            ).toHexString("")
+            Mnemonics.MnemonicCode(
+                "matrix lava they brand negative spray floor gym purity picture ritual disorder"
+            ).toSeed(validate = false).toHexString("")
         )
         assertEquals(
             "DDB26091680CF30D0DC615546E4612327DB287B6B2B8B8947A3E12580315D38C" +
                 "3BF7DD0EB4E9E50B10A41925332E0C8ED43C80DBA29281EF331A1DFA858BF1C9",
-            SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(
-                "middle rack south alert ribbon tube hope involve defy oxygen gloom rabbit", ""
-            ).toHexString("")
+            Mnemonics.MnemonicCode(
+                "middle rack south alert ribbon tube hope involve defy oxygen gloom rabbit"
+            ).toSeed(validate = false).toHexString("")
         )
         assertEquals(
             "4815B580D0DCDA08334C92B3CB9A8436CD581C55841FB2794FB1E3D6E389F447" +
                 "C8C6520B2FE567720950F5B39BE7EC42C0BC98D3C63F8FEF642B5BD3EE4CDD7B",
-            SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(
-                "interest mask trial hold foot segment fade page monitor apple garden shuffle", ""
-            ).toHexString("")
+            Mnemonics.MnemonicCode(
+                "interest mask trial hold foot segment fade page monitor apple garden shuffle"
+            ).toSeed(validate = false).toHexString("")
         )
         assertEquals(
             "FF462543D8FB9DAE6C17FA7BA047238664207FCC797D6688E10DD1B3CFD183D4" +
                 "928AD088E8287B69BABCAEB0F87A2DFF2ADD49A7FDB7EB2554D7344F09C41A76",
-            SeedCalculator(JavaxPBKDF2WithHmacSHA512.INSTANCE).calculateSeed(
-                "palace glory gospel garment obscure person edge total hunt fix setup uphold\n", ""
-            ).toHexString("")
+            Mnemonics.MnemonicCode(
+                "palace glory gospel garment obscure person edge total hunt fix setup uphold\n"
+            ).toSeed(validate = false).toHexString("")
+        )
+    }
+
+    @Test
+    fun `12 valid words generate seed that novacrypt generated`() {
+        assertEquals(
+            "C6F9762718449C9D0794FEC140D2C8D4E23FF8E3701D64C03DDD13C69BC73E48" +
+                "6AB89AB2C7C9BEA43F4AF839F2078595851D5D48FEC6A9FC6C25F399DBB909F9",
+            Mnemonics.MnemonicCode(
+                "script vault basic album cotton car entire jaguar correct anger select flower"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "13C5188428B1DF8A5333E60BA7EC47F7E75585315C73BD19812D3591C5F4C52B" +
+                "B2FC1FF40B1942E2A1EF9F34F586114ED37D46A5A3907A43B317E937C1D9D2CD",
+            Mnemonics.MnemonicCode(
+                "drastic toy fatal goose treat saddle chalk fame dismiss employ super behind"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "40B41BB22AC3A507F26A78E027A3B3C5C8F45FF0F5593D82762C74AE69FA548B" +
+                "A72C0CED31DED6211884B412E7B80F932F9830FA7A67CDB5B28604213DE6599C",
+            Mnemonics.MnemonicCode(
+                "nation infant heart virus argue two vivid slam lend decorate turn wish"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "B6D755172B6E9353A25EB3559336C17A8619F3EBE55E8A9A74A44E1AB88EF5E2" +
+                "C6E12FE132E42A55CC3F8F9224E6A0ABC9C3FF4EB9523A4E9750CDAAEFBA6282",
+            Mnemonics.MnemonicCode(
+                "elbow boy powder robot eagle rival neutral pigeon oil shrimp demand health"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "3EDB1292B4D124426201AC523FCC2572184E0B63667DA7DF105AD8FCCD16C074" +
+                "C6DAF9C7D644B4B48AF75185D21B9E7D778FFE55F836C539581DEBB98C331526",
+            Mnemonics.MnemonicCode(
+                "build setup screen solution prepare spice organ ten loud seek ask attract"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "65986351CD054822B40E417855AC2B5651C5F87892F17ED2A984F6B59DD5FB4E" +
+                "6A4568ABF7E06D93CBCC69BB68F2625E3E8AF2751106380922D49C0D0D0B456B",
+            Mnemonics.MnemonicCode(
+                "unhappy welcome pizza inflict inherit village minimum orient cheap swear grunt giraffe" // ktlint-disable max-line-length
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "639034B381740A9FA5B8A84715CF18B21EBD343DD91F7B6124A0EFC32A636619" +
+                "49B02A7810B1A99D8E8CC4CD7D046CE59EAAADBB52DDC0B5036EFED007E1CFF6",
+            Mnemonics.MnemonicCode(
+                "rather suit pluck afford avocado diary swap library earn song rival fiber"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "43E1417221BFB40851DE286B543B51DEE9C01D239B2C2E8A355D45B3DF95DFAA" +
+                "C8DBCAEF1D864D91759A07057DBDB891900D583CAB09BD0655493912108AE65A",
+            Mnemonics.MnemonicCode(
+                "toss note family morning silk edge high error appear tilt almost myth"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "14084AAF9CFCAC386D4CE5B9140BEADBF727B1B09786A67A574B668A1A4AE0A3" +
+                "21B8D4E7BC005980B088A160B6EC08A1CB892C2090C58D95A7C6AAD16C14EE1E",
+            Mnemonics.MnemonicCode(
+                "parrot burden release bronze section fantasy ridge blood direct physical spoil asthma" // ktlint-disable max-line-length
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "E11E8737327EE6A640761B3888C349D829A60FEAEFB7914D2AE1616F0AC45B9A" +
+                "322F41D0030C89E209300FA25615FE6B5BDEF73F3E5CE21167685E8A27EE0790",
+            Mnemonics.MnemonicCode(
+                "version deliver worry sick flee submit pledge adapt night swear glare adult"
+            ).toSeed().toHexString("")
+        )
+        assertEquals(
+            "02652896F67695C03F379A354685A8A0B92D0F303F77461476E80BB594EAD84B" +
+                "D00B2943C2229ED843C65F6C53A376005871FF74F834E6B6E3B57FFD83D3FB12",
+            Mnemonics.MnemonicCode(
+                "exercise curtain initial model travel client twist neutral peace unfold start shell" // ktlint-disable max-line-length
+            ).toSeed().toHexString("")
+        )
+    }
+
+    @Test
+    fun `entropy generates same words that novacrypt generated`() {
+        assertEquals(
+            "B8 3F 0D 49 7F 2A F4 69 13 71 47 D5 54 9D 17 0B",
+            Mnemonics.MnemonicCode(
+                "return wear false wrestle quantum cruel evidence cigar stem pilot easy blood"
+            ).toEntropy().toHexString()
+        )
+        assertEquals(
+            "AA 8E 3F 1C EF 60 20 D7 D2 BB FD A0 AA AD 69 09",
+            Mnemonics.MnemonicCode(
+                "pride impose shrimp tell acoustic hip enough leisure pass fever fog basket"
+            ).toEntropy().toHexString()
+        )
+        assertEquals(
+            "CE E8 17 7E AB 9E 49 8A 0B 32 3C 97 94 07 0C 32",
+            Mnemonics.MnemonicCode(
+                "solve doll text fire tonight shallow coast elegant nurse parent seek grass"
+            ).toEntropy().toHexString()
+        )
+        assertEquals(
+            "AA 27 4B D8 7B 0D 18 EB 5D 08 BD 11 73 36 C1 06",
+            Mnemonics.MnemonicCode(
+                "pretty demise voyage voyage spice interest injury bless badge often raccoon artefact" // ktlint-disable max-line-length
+            ).toEntropy().toHexString()
+        )
+        assertEquals(
+            "16 5F A7 40 26 E9 51 70 1B 7A 5C D2 AB CD 73 7E",
+            Mnemonics.MnemonicCode(
+                "bind wood source evidence never retreat hospital entire sport fury fresh woman"
+            ).toEntropy().toHexString()
+        )
+    }
+
+    @Test
+    fun `test create MnemonicCode from List of CharSequence`() {
+        assertEquals(
+            "B8 3F 0D 49 7F 2A F4 69 13 71 47 D5 54 9D 17 0B",
+            Mnemonics.MnemonicCode(
+                listOf<CharSequence>(
+                    "return",
+                    "wear",
+                    "false",
+                    "wrestle",
+                    "quantum",
+                    "cruel",
+                    "evidence",
+                    "cigar",
+                    "stem",
+                    "pilot",
+                    "easy",
+                    "blood"
+                ).toMnemonicChars()
+            ).toEntropy().toHexString()
         )
     }
 

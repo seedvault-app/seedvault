@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package org.calyxos.backup.storage.backup;
+
+option java_multiple_files = true;
+
+/**
+ * A file in Android's MediaStore.
+ *
+ * Excluded for now, but maybe interesting for later:
+ *   - MediaStore.MediaColumns.VOLUME_NAME
+ *   - MediaStore.MediaColumns.IS_DRM
+ *   - MediaStore.Images.ImageColumns.IS_PRIVATE
+ *   - MediaStore.Images.ImageColumns.DESCRIPTION
+ *   - MediaStore.Video.VideoColumns.IS_PRIVATE
+ *   - MediaStore.Video.VideoColumns.DESCRIPTION
+ *   - MediaStore.Video.VideoColumns.TAGS
+ *   - MediaStore.Video.VideoColumns.CATEGORY
+ *   - MediaStore.Video.VideoColumns.LANGUAGE
+ *   - MediaStore.Video.VideoColumns.BOOKMARK
+ *   - MediaStore.Audio.AudioColumns.BOOKMARK
+ */
+message BackupMediaFile {
+  enum MediaType {
+    IMAGES = 0;
+    VIDEO = 1;
+    AUDIO = 2;
+    DOWNLOADS = 3;
+  }
+  MediaType type = 1;
+  /**
+   * MediaStore.MediaColumns.DISPLAY_NAME
+   */
+  string name = 2;
+  /**
+   * MediaStore.MediaColumns.RELATIVE_PATH
+   */
+  string path = 3;
+  /**
+   * MediaStore.MediaColumns.DATE_MODIFIED
+   */
+  int64 last_modified = 4;
+  /**
+   * MediaStore.MediaColumns.OWNER_PACKAGE_NAME
+   */
+  string owner_package_name = 5;
+  /**
+   * MediaStore.MediaColumns.IS_FAVORITE
+   */
+  bool is_favorite = 6;
+  /**
+   * The size of the file in bytes.
+   *
+   * MediaStore.MediaColumns.SIZE
+   */
+  int64 size = 7;
+  /**
+   * This is empty for MediaStore.VOLUME_EXTERNAL_PRIMARY
+   */
+  string volume = 8;
+  /**
+   * An ordered list of chunk IDs whose chunks that make up the file's content.
+   */
+  repeated string chunk_ids = 9;
+  /**
+    * If there is a single chunk ID and this is not 0, then the chunk ID refers to a zip chunk
+    * and this file can be found at the zip entry with this index name.
+    */
+  int32 zip_index = 10;
+}
