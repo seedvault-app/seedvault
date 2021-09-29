@@ -1,3 +1,23 @@
+## [11-2.2] - 2021-09-29
+### User-facing changes
+* Don't backup on metered networks
+* Disable spell-checker on recovery code input
+* Disable Nextcloud restore when not installed and no store available
+* Ask for system authentication before storing a new recovery code
+* Prevent screenshots of recovery code
+* Add expert settings with an option for unlimited quota
+* Allow launching restore through a dialer code
+* Restrict exported components
+
+### Others
+* Improve .editorconfig setup
+* Move LocalContactsBackup to product partition
+* Link FAQ in Readme to make it more discoverable
+* Compares kotlin-bip39 library with bitcoinj library
+* Provide an overview over key derivations
+* document potential information leakage through the long-lived SQL caches
+* Add warning for third-party tools to README
+
 ## [11-2.1] - 2021-07-06
 ### Updated
 * Switch to a different BIP39 library due to licensing
