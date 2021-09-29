@@ -8,7 +8,8 @@
     <string name="restore_backup_button">Restore backup</string>
 
     <!-- Settings -->
-    <string name="settings_backup">Backup my data</string>
+    <string name="settings_category_apps">App backup</string>
+    <string name="settings_backup">Backup my apps</string>
     <string name="settings_backup_location">Backup location</string>
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal storage</string>
@@ -28,13 +29,28 @@
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
+    <string name="settings_category_storage">Storage backup (experimental)</string>
+    <string name="settings_backup_storage_title">Backup my files</string>
+    <string name="settings_backup_files_title">Included files and folders</string>
+    <string name="settings_backup_files_summary">None</string>
     <string name="settings_backup_recovery_code">Recovery code</string>
     <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
+    <string name="settings_backup_storage_dialog_title">Experimental feature</string>
+    <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
+    <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
+    <string name="settings_backup_storage_code_dialog_title">Recovery code verification required</string>
+    <string name="settings_backup_storage_code_dialog_message">To enable storage backup, you need to first verify your recovery code or generate a new one.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Verify code</string>
 
-    <!-- Storage -->
+    <string name="settings_expert_title">Expert settings</string>
+    <string name="settings_expert_quota_title">Unlimited app quota</string>
+    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
+
+    <!-- Storage Location -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
+    <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
@@ -42,7 +58,9 @@
     <string name="storage_fake_nextcloud_summary">Tap to install</string>
     <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Not installed</string>
     <string name="storage_check_fragment_backup_title">Initializing backup location…</string>
+    <string name="storage_check_fragment_patience">This may take some time…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
     <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
@@ -69,8 +87,8 @@
     <string name="recovery_code_input_hint_11">Word 11</string>
     <string name="recovery_code_input_hint_12">Word 12</string>
     <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
-    <string name="recovery_code_error_invalid_word">Wrong word. Did you mean %1$s or %2$s?</string>
-    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words and try again!</string>
+    <string name="recovery_code_error_invalid_word">Wrong word.</string>
+    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words as well as their position and try again!</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
     <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
     <string name="recovery_code_verification_error_title">Incorrect recovery code</string>
@@ -80,6 +98,8 @@
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
     <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.\n\nAre you sure you want to do this?</string>
     <string name="recovery_code_recreated">New recovery code has been created successfully</string>
+    <string name="recovery_code_auth_title">Re-enter your screen lock</string>
+    <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
 
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>
@@ -125,6 +145,7 @@
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
     <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
     <string name="restore_back">Don\'t restore</string>
+    <string name="restore_skip">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
     <string name="restore_set_error">An error occurred while loading the backups.</string>
@@ -141,6 +162,13 @@
     <string name="restore_finished_success">Restore complete</string>
     <string name="restore_finished_error">An error occurred while restoring the backup.</string>
     <string name="restore_finished_button">Finish</string>
+
+    <string name="restore_storage_skip">Skip restoring files</string>
+    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (experimental)</string>
+    <string name="restore_storage_in_progress_title">Files are being restored…</string>
+    <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is not complete.</string>
+    <string name="restore_storage_got_it">Got it</string>
+
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
     <string name="storage_internal_warning_choose_other">Choose other</string>

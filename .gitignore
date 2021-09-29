@@ -6,11 +6,12 @@ hs_err_pid*
 
 ## Intellij
 out/
-lib/
+/lib/
 .idea/*
 !.idea/runConfigurations*
 !.idea/inspectionProfiles*
 !.idea/codeStyles*
+!.idea/dictionaries*
 *.ipr
 *.iws
 *.iml
@@ -33,7 +34,8 @@ local.properties
 
 ## NetBeans
 **/nbproject/private/
-build/
+/build/
+/app/build/
 nbbuild/
 dist/
 nbdist/
@@ -50,6 +52,3 @@ gradle-app.setting
 
 ## Android
 gen/
-
-## Prebuilt
-Backup.apk

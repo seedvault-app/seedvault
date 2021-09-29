@@ -83,6 +83,9 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
             backView.setOnClickListener { requireActivity().finishAfterTransition() }
         } else {
             warningIcon.visibility = VISIBLE
+            if (viewModel.hasStorageSet) {
+                warningText.setText(R.string.storage_fragment_warning_delete)
+            }
             warningText.visibility = VISIBLE
             divider.visibility = VISIBLE
         }

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="30000021"
-    android:versionName="11-1.2">
+    android:versionCode="30000221"
+    android:versionName="11-2.2">
     <!--
     The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
     The version name is the targeted Android version followed by - and our own version name.
@@ -47,6 +47,19 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+    <!-- Used to authenticate saving a new recovery code -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Permission used to open settings -->
+    <permission
+        android:name="com.stevesoltys.seedvault.OPEN_SETTINGS"
+        android:protectionLevel="system|signature" />
+
+    <!-- Permission used to open backup gui -->
+    <permission
+        android:name="com.stevesoltys.seedvault.RESTORE_BACKUP"
+        android:protectionLevel="system|signature" />
+
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -59,6 +72,7 @@
 
         <activity
             android:name=".settings.SettingsActivity"
+            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
             android:exported="true" />
 
         <activity
@@ -77,6 +91,7 @@
 
         <activity
             android:name=".restore.RestoreActivity"
+            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
             android:exported="true"
             android:label="@string/restore_title"
             android:theme="@style/AppTheme.NoActionBar">
@@ -112,6 +127,34 @@
                 <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".SecretCodeReceiver">
+            <intent-filter>
+                <action android:name="android.telephony.action.SECRET_CODE" />
+                <!-- *#*#RESTORE#*#* -->
+                <data android:scheme="android_secret_code" android:host="7378673" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Used to start actual BackupService depending on scheduling criteria -->
+        <service
+            android:name=".storage.StorageBackupJobService"
+            android:exported="false"
+            android:label="BackupJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- Does the actual backup work as a foreground service -->
+        <service
+            android:name=".storage.StorageBackupService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="BackupService" />
+        <!-- Does restore as a foreground service -->
+        <service
+            android:name=".storage.StorageRestoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="RestoreService" />
 
     </application>
 </manifest>

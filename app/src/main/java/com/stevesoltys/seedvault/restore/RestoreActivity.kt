@@ -5,6 +5,8 @@ import androidx.annotation.CallSuper
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES_STARTED
 import com.stevesoltys.seedvault.restore.install.InstallProgressFragment
 import com.stevesoltys.seedvault.ui.LiveEventHandler
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
@@ -28,6 +30,8 @@ class RestoreActivity : RequireProvisioningActivity() {
             when (fragment) {
                 RESTORE_APPS -> showFragment(InstallProgressFragment())
                 RESTORE_BACKUP -> showFragment(RestoreProgressFragment())
+                RESTORE_FILES -> showFragment(RestoreFilesFragment())
+                RESTORE_FILES_STARTED -> showFragment(RestoreFilesStartedFragment())
                 else -> throw AssertionError()
             }
         })

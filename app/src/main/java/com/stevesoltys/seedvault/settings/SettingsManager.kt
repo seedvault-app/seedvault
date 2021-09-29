@@ -30,6 +30,9 @@ private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
+private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
+private const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
+
 class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
@@ -48,10 +51,10 @@ class SettingsManager(private val context: Context) {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
     }
 
-    fun getToken(): Long? = token ?: {
+    fun getToken(): Long? = token ?: run {
         val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
         if (value == 0L) null else value
-    }()
+    }
 
     /**
      * Sets a new RestoreSet token.
@@ -138,6 +141,8 @@ class SettingsManager(private val context: Context) {
 
     fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
 
+    fun isStorageBackupEnabled() = prefs.getBoolean(PREF_KEY_BACKUP_STORAGE, false)
+
     @UiThread
     fun onAppBackupStatusChanged(status: AppStatus) {
         if (status.enabled) blacklistedApps.remove(status.packageName)
@@ -145,6 +150,7 @@ class SettingsManager(private val context: Context) {
         prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
     }
 
+    fun isQuotaUnlimited() = prefs.getBoolean(PREF_KEY_UNLIMITED_QUOTA, false)
 }
 
 data class Storage(
@@ -171,13 +177,14 @@ data class Storage(
      * but it isn't available right now.
      */
     fun isUnavailableNetwork(context: Context): Boolean {
-        return requiresNetwork && !hasInternet(context)
+        return requiresNetwork && !hasUnmeteredInternet(context)
     }
 
-    private fun hasInternet(context: Context): Boolean {
+    private fun hasUnmeteredInternet(context: Context): Boolean {
         val cm = context.getSystemService(ConnectivityManager::class.java)
+        val isMetered = cm.isActiveNetworkMetered()
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered
     }
 }
 

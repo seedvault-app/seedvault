@@ -2,10 +2,8 @@ package com.stevesoltys.seedvault.transport
 
 import android.app.Service
 import android.app.backup.BackupManager
-import android.app.backup.BackupManager.FLAG_NON_INCREMENTAL_BACKUP // ktlint-disable no-unused-imports
 import android.app.backup.IBackupManager
 import android.content.Context
-import android.content.Context.BACKUP_SERVICE // ktlint-disable no-unused-imports
 import android.content.Intent
 import android.os.IBinder
 import android.os.RemoteException
@@ -55,22 +53,27 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
 
 @WorkerThread
 fun requestBackup(context: Context) {
-    val packageService: PackageService = get().get()
-    val packages = packageService.eligiblePackages
-    val appTotals = packageService.expectedAppTotals
+    val backupManager: IBackupManager = get().get()
+    if (backupManager.isBackupEnabled) {
+        val packageService: PackageService = get().get()
+        val packages = packageService.eligiblePackages
+        val appTotals = packageService.expectedAppTotals
 
-    val observer = NotificationBackupObserver(context, packages.size, appTotals)
-    val result = try {
-        val backupManager: IBackupManager = get().get()
-        backupManager.requestBackup(packages, observer, BackupMonitor(), 0)
-    } catch (e: RemoteException) {
-        Log.e(TAG, "Error during backup: ", e)
-        val nm: BackupNotificationManager = get().get()
-        nm.onBackupError()
-    }
-    if (result == BackupManager.SUCCESS) {
-        Log.i(TAG, "Backup succeeded ")
+        val result = try {
+            Log.d(TAG, "Backup is enabled, request backup...")
+            val observer = NotificationBackupObserver(context, packages.size, appTotals)
+            backupManager.requestBackup(packages, observer, BackupMonitor(), 0)
+        } catch (e: RemoteException) {
+            Log.e(TAG, "Error during backup: ", e)
+            val nm: BackupNotificationManager = get().get()
+            nm.onBackupError()
+        }
+        if (result == BackupManager.SUCCESS) {
+            Log.i(TAG, "Backup succeeded ")
+        } else {
+            Log.e(TAG, "Backup failed: $result")
+        }
     } else {
-        Log.e(TAG, "Backup failed: $result")
+        Log.i(TAG, "Backup is not enabled")
     }
 }

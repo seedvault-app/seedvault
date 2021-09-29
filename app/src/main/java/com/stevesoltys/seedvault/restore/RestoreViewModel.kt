@@ -5,9 +5,11 @@ import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
+import android.content.Intent
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
+import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,11 +29,14 @@ import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES_STARTED
 import com.stevesoltys.seedvault.restore.install.ApkRestore
 import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
 import com.stevesoltys.seedvault.restore.install.InstallResult
 import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.storage.StorageRestoreService
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.AppBackupState
@@ -54,6 +59,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.calyxos.backup.storage.api.SnapshotItem
+import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTAMP_START
+import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
+import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -68,8 +78,10 @@ internal class RestoreViewModel(
     private val backupManager: IBackupManager,
     private val restoreCoordinator: RestoreCoordinator,
     private val apkRestore: ApkRestore,
+    storageBackup: StorageBackup,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : RequireProvisioningViewModel(app, settingsManager, keyManager), RestorableBackupClickListener {
+) : RequireProvisioningViewModel(app, settingsManager, keyManager),
+    RestorableBackupClickListener, SnapshotViewModel {
 
     override val isRestoreOperation = true
 
@@ -109,6 +121,8 @@ internal class RestoreViewModel(
 
     private val mRestoreBackupResult = MutableLiveData<RestoreBackupResult>()
     internal val restoreBackupResult: LiveData<RestoreBackupResult> get() = mRestoreBackupResult
+
+    override val snapshots = storageBackup.getBackupSnapshots().asLiveData(ioDispatcher)
 
     @Throws(RemoteException::class)
     private fun getOrStartSession(): IRestoreSession {
@@ -168,7 +182,7 @@ internal class RestoreViewModel(
             .asLiveData(ioDispatcher)
     }
 
-    internal fun onNextClicked() {
+    internal fun onNextClickedAfterInstallingApps() {
         mDisplayFragment.postEvent(RESTORE_BACKUP)
         val token = mChosenRestorableBackup.value?.token ?: throw AssertionError()
         viewModelScope.launch(ioDispatcher) {
@@ -371,6 +385,20 @@ internal class RestoreViewModel(
 
     }
 
+    @UiThread
+    internal fun onFinishClickedAfterRestoringAppData() {
+        mDisplayFragment.setEvent(RESTORE_FILES)
+    }
+
+    @UiThread
+    internal fun startFilesRestore(item: SnapshotItem) {
+        val i = Intent(app, StorageRestoreService::class.java)
+        i.putExtra(EXTRA_USER_ID, item.storedSnapshot.userId)
+        i.putExtra(EXTRA_TIMESTAMP_START, item.time)
+        app.startForegroundService(i)
+        mDisplayFragment.setEvent(RESTORE_FILES_STARTED)
+    }
+
 }
 
 internal class RestoreSetResult(
@@ -389,4 +417,6 @@ internal class RestoreBackupResult(val errorMsg: String? = null) {
     internal fun hasError(): Boolean = errorMsg != null
 }
 
-internal enum class DisplayFragment { RESTORE_APPS, RESTORE_BACKUP }
+internal enum class DisplayFragment {
+    RESTORE_APPS, RESTORE_BACKUP, RESTORE_FILES, RESTORE_FILES_STARTED
+}

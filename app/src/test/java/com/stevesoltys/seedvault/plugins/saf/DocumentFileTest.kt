@@ -1,11 +1,13 @@
 package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.TestApp
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -27,6 +29,14 @@ internal class DocumentFileTest {
         "content://com.android.externalstorage.documents/tree/" +
             "primary%3A/document/primary%3A.SeedVaultAndroidBackup"
     )
+
+    init {
+        // needed since 'androidx.documentfile:documentfile:1.0.1'
+        val pm: PackageManager = mockk()
+        every { context.packageManager } returns pm
+        every { pm.queryIntentContentProviders(any(), 0) } returns emptyList()
+    }
+
     private val parentFile: DocumentFile = DocumentFile.fromTreeUri(context, parentUri)!!
     private val uri: Uri = Uri.parse(
         "content://com.android.externalstorage.documents/tree/" +

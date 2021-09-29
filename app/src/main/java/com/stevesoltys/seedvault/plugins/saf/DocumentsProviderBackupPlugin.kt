@@ -45,11 +45,6 @@ internal class DocumentsProviderBackupPlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun deleteAllBackups() {
-        storage.rootBackupDir?.deleteContents(context)
-    }
-
-    @Throws(IOException::class)
     override suspend fun getMetadataOutputStream(): OutputStream {
         val setDir = storage.getSetDir() ?: throw IOException()
         val metadataFile = setDir.createOrGetFile(context, FILE_BACKUP_METADATA)

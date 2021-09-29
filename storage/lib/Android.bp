@@ -1,0 +1,15 @@
+android_library_import {
+    name: "seedvault-lib-storage",
+    aars: ["libs/storage.aar"],
+    sdk_version: "current",
+    static_libs: [
+        "androidx-constraintlayout_constraintlayout",
+        "com.google.android.material_material",
+    ]
+}
+
+java_import {
+    name: "seedvault-lib-tink-android",
+    jars: ["libs/tink-android-1.5.0.jar"],
+    sdk_version: "current",
+}
