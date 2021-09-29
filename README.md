@@ -19,7 +19,7 @@ If you are having an issue/question, please look at our [FAQ](../../wiki/FAQ).
 
 ## Requirements
 
-- Android 11
+- Android 12
 
 For older versions of Android, check out [the branches](https://github.com/seedvault-app/seedvault/branches).
 
