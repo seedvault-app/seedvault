@@ -50,6 +50,16 @@
     <!-- Used to authenticate saving a new recovery code -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
+    <!-- Permission used to open settings -->
+    <permission
+        android:name="com.stevesoltys.seedvault.OPEN_SETTINGS"
+        android:protectionLevel="system|signature" />
+
+    <!-- Permission used to open backup gui -->
+    <permission
+        android:name="com.stevesoltys.seedvault.RESTORE_BACKUP"
+        android:protectionLevel="system|signature" />
+
     <application
         android:name=".App"
         android:allowBackup="false"
@@ -62,6 +72,7 @@
 
         <activity
             android:name=".settings.SettingsActivity"
+            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
             android:exported="true" />
 
         <activity
@@ -80,6 +91,7 @@
 
         <activity
             android:name=".restore.RestoreActivity"
+            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
             android:exported="true"
             android:label="@string/restore_title"
             android:theme="@style/AppTheme.NoActionBar">
@@ -113,6 +125,15 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".SecretCodeReceiver">
+            <intent-filter>
+                <action android:name="android.telephony.action.SECRET_CODE" />
+                <!-- *#*#RESTORE#*#* -->
+                <data android:scheme="android_secret_code" android:host="7378673" />
             </intent-filter>
         </receiver>
 
