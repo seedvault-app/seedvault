@@ -3,7 +3,7 @@
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="current_destination_string">Status do backup e configurações</string>
     <string name="backup">Backup</string>
-    <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Código Fonte: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
