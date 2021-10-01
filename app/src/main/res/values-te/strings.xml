@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="recovery_code_error_invalid_word">తప్పు పదం. మీ ఉద్దేశ్యం %1$s లేదా %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">తప్పు పదం.</string>
     <string name="recovery_code_input_hint_12">పదం 12</string>
     <string name="recovery_code_input_hint_11">పదం 11</string>
     <string name="recovery_code_input_hint_10">పదం 10</string>

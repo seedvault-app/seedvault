@@ -80,7 +80,7 @@
     <string name="notification_title">Εκτελείται δημιουργία αντιγράφων ασφαλείας</string>
     <string name="notification_channel_title">Ειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις και δοκιμάστε ξανά!</string>
-    <string name="recovery_code_error_invalid_word">Λάθος λέξη. Εννοείτε %1$s ή %2$s;</string>
+    <string name="recovery_code_error_invalid_word">Λάθος λέξη.</string>
     <string name="recovery_code_error_empty_word">Ξεχάσατε να εισαγάγετε αυτήν τη λέξη.</string>
     <string name="recovery_code_input_hint_12">Λέξη 12</string>
     <string name="recovery_code_input_hint_11">Λέξη 11</string>

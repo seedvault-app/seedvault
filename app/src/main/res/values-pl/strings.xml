@@ -48,7 +48,7 @@
     <string name="recovery_code_verification_ok_message">Twój kod jest prawidłowy i będzie działał przy przywracaniu kopii zapasowej.</string>
     <string name="recovery_code_verification_ok_title">Zweryfikowano kod przywracania</string>
     <string name="recovery_code_error_checksum_word">Twój kod jest nieprawidłowy. Sprawdź wszystkie słowa i spróbuj ponownie!</string>
-    <string name="recovery_code_error_invalid_word">Nieprawidłowe słowo. Czy chodziło o %1$s lub %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Nieprawidłowe słowo.</string>
     <string name="recovery_code_error_empty_word">Nie wpisano tego słowa.</string>
     <string name="recovery_code_input_hint_12">Słowo 12</string>
     <string name="recovery_code_input_hint_11">Słowo 11</string>

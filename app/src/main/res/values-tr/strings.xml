@@ -48,7 +48,7 @@
     <string name="notification_title">Yedekleme çalışıyor</string>
     <string name="notification_channel_title">Yedekleme bildirimi</string>
     <string name="recovery_code_error_checksum_word">Kodunuz geçersiz. Lütfen tüm sözcükleri gözden geçirin ve tekrar deneyin!</string>
-    <string name="recovery_code_error_invalid_word">Yanlış sözcük. %1$s veya %2$s demek mi istediniz\?</string>
+    <string name="recovery_code_error_invalid_word">Yanlış sözcük.</string>
     <string name="recovery_code_error_empty_word">Bu sözcüğü girmeyi unuttunuz.</string>
     <string name="recovery_code_input_hint_12">12. sözcük</string>
     <string name="recovery_code_input_hint_11">11. sözcük</string>
