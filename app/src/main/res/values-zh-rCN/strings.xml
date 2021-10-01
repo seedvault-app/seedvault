@@ -75,7 +75,7 @@
     <string name="notification_title">备份运行中</string>
     <string name="notification_channel_title">备份通知</string>
     <string name="recovery_code_error_checksum_word">您的代码无效。请检查所有单词，然后重试！</string>
-    <string name="recovery_code_error_invalid_word">错误的单词。你的意思是%1$s或%2$s？</string>
+    <string name="recovery_code_error_invalid_word">错误的单词。</string>
     <string name="recovery_code_error_empty_word">你忘了输入这个单词。</string>
     <string name="recovery_code_done_button">验证</string>
     <string name="recovery_code_confirm_button">确认代码</string>

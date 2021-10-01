@@ -72,7 +72,7 @@
     <string name="notification_title">Copia de seguridad en ejecución</string>
     <string name="notification_channel_title">Notificación de copia de seguridad</string>
     <string name="recovery_code_error_checksum_word">Su código no es válido. ¡Por favor, compruebe todas las palabras e inténtelo de nuevo!</string>
-    <string name="recovery_code_error_invalid_word">Palabra equivocada. ¿Quisiste decir %1$s o %2$s \?</string>
+    <string name="recovery_code_error_invalid_word">Palabra equivocada.</string>
     <string name="recovery_code_input_intro">Ingrese su código de recuperación de 12 palabras que anotaste al configurar las copias de seguridad.</string>
     <string name="recovery_code_confirm_intro">Ingrese su código de recuperación de 12 palabras para asegurarse de que funcionará cuando lo necesite.</string>
     <string name="recovery_code_confirm_button">Confirmar código</string>

@@ -18,7 +18,7 @@
     <string name="notification_title">Sicherung läuft</string>
     <string name="notification_channel_title">Sicherungsbenachrichtigung</string>
     <string name="recovery_code_error_checksum_word">Dein Wiederherstellungsschlüssel ist ungültig. Bitte prüfe alle eingegebenen Wörter und versuche es erneut!</string>
-    <string name="recovery_code_error_invalid_word">Falsches Wort. Hast du %1$s oder %2$s gemeint\?</string>
+    <string name="recovery_code_error_invalid_word">Falsches Wort.</string>
     <string name="recovery_code_error_empty_word">Du hast vergessen, dieses Wort einzugeben.</string>
     <string name="recovery_code_input_hint_12">Wort 12</string>
     <string name="recovery_code_input_hint_11">Wort 11</string>

@@ -82,7 +82,7 @@
     <string name="recovery_code_verification_ok_message">Jūsų kodas yra teisingas ir veiks atkuriant atsarginę kopiją.</string>
     <string name="recovery_code_verification_ok_title">Atkūrimo kodas patvirtintas</string>
     <string name="recovery_code_error_checksum_word">Jūsų kodas negalioja. Patikrinkite visus žodžius ir bandykite dar kartą!</string>
-    <string name="recovery_code_error_invalid_word">Neteisingas žodis. Turėjote omenyje %1$s ar %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Neteisingas žodis.</string>
     <string name="recovery_code_error_empty_word">Pamiršote įvesti šį žodį.</string>
     <string name="recovery_code_input_hint_12">12 žodis</string>
     <string name="recovery_code_input_hint_11">11 žodis</string>

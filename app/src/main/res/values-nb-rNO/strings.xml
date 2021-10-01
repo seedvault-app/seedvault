@@ -61,7 +61,7 @@
     <string name="notification_title">Sikkerhetskopiering utføres</string>
     <string name="notification_channel_title">Sikkerhetskopieringsmerknad</string>
     <string name="recovery_code_error_checksum_word">Koden din er ugyldig. Sjekk alle ordene og prøv igjen.</string>
-    <string name="recovery_code_error_invalid_word">Feil ord. Mente du %1$s eller %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Feil ord.</string>
     <string name="recovery_code_error_empty_word">Du glemte å skrive inn dette ordet.</string>
     <string name="recovery_code_input_hint_12">Ord 12</string>
     <string name="recovery_code_input_hint_11">Ord 11</string>

@@ -46,7 +46,7 @@
     <string name="notification_success_title">Respaldo terminó</string>
     <string name="notification_title">Ejecución de respaldo</string>
     <string name="recovery_code_error_checksum_word">Tu código no es válido. Por favor revise todas las palabras e intente nuevamente!</string>
-    <string name="recovery_code_error_invalid_word">Palabra equivocada. ¿Quisiste decir %1$s o %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Palabra equivocada.</string>
     <string name="recovery_code_error_empty_word">Olvidaste ingresar esta palabra.</string>
     <string name="recovery_code_input_hint_12">Palabra 12</string>
     <string name="recovery_code_input_hint_11">Palabra 11</string>

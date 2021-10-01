@@ -95,7 +95,7 @@
     <string name="recovery_code_verification_ok_message">Váš kód je správny a bude fungovať pri obnove zálohy.</string>
     <string name="recovery_code_verification_ok_title">Kód obnovy bol overený</string>
     <string name="recovery_code_error_checksum_word">Váš kód je neplatný. Skontrolujte všetky slová a skúste to znova!</string>
-    <string name="recovery_code_error_invalid_word">Nesprávne slovo. Mysleli ste %1$s alebo %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Nesprávne slovo.</string>
     <string name="recovery_code_error_empty_word">Zabudli ste zadať toto slovo.</string>
     <string name="recovery_code_input_hint_12">Slovo 12</string>
     <string name="recovery_code_input_hint_11">Slovo 11</string>

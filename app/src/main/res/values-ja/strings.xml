@@ -122,7 +122,7 @@
     <string name="notification_success_text">%2$dアプリの%1$dがバックアップされました。タップして詳細を確認してください。</string>
     <string name="notification_channel_title">バックアップのお知らせ</string>
     <string name="recovery_code_verification_ok_message">コードが正しく、バックアップを復元するために機能します。</string>
-    <string name="recovery_code_error_invalid_word">単語が間違っています。%1$s もしくは %2$sですか？</string>
+    <string name="recovery_code_error_invalid_word">単語が間違っています。</string>
     <string name="recovery_code_error_empty_word">ワードの入力を忘れています。</string>
     <string name="recovery_code_input_hint_12">ワード12</string>
     <string name="recovery_code_input_hint_11">ワード11</string>
