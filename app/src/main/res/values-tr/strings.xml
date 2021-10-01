@@ -47,8 +47,8 @@
     <string name="notification_success_title">Yedekleme bitti</string>
     <string name="notification_title">Yedekleme çalışıyor</string>
     <string name="notification_channel_title">Yedekleme bildirimi</string>
-    <string name="recovery_code_error_checksum_word">Kodunuz geçersiz. Lütfen tüm sözcükleri gözden geçirin ve tekrar deneyin!</string>
-    <string name="recovery_code_error_invalid_word">Yanlış sözcük. %1$s veya %2$s demek mi istediniz\?</string>
+    <string name="recovery_code_error_checksum_word">Kodunuz geçersiz. Lütfen tüm sözcükleri ve konumlarını gözden geçirin ve tekrar deneyin!</string>
+    <string name="recovery_code_error_invalid_word">Yanlış sözcük.</string>
     <string name="recovery_code_error_empty_word">Bu sözcüğü girmeyi unuttunuz.</string>
     <string name="recovery_code_input_hint_12">12. sözcük</string>
     <string name="recovery_code_input_hint_11">11. sözcük</string>
@@ -102,7 +102,7 @@
     <string name="settings_backup_location_internal">Dahili depolama</string>
     <string name="settings_backup_location_none">Yok</string>
     <string name="settings_backup_location">Yedekleme konumu</string>
-    <string name="settings_backup">Verilerimi yedekle</string>
+    <string name="settings_backup">Uygulamalarımı yedekle</string>
     <string name="restore_backup_button">Yedeklemeyi geri yükle</string>
     <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmemişti</string>
     <string name="restore_app_not_yet_backed_up">Henüz yedeklenmemişti</string>
@@ -145,4 +145,33 @@
     <string name="recovery_code_verification_ok_title">Kurtarma kodu doğrulandı</string>
     <string name="settings_backup_recovery_code_summary">Var olan kodu doğrulayın veya yeni bir tane oluşturun</string>
     <string name="settings_backup_recovery_code">Kurtarma kodu</string>
+    <string name="restore_storage_got_it">Anladım</string>
+    <string name="restore_storage_in_progress_info">Dosyalarınız arka planda geri yükleniyor. Bu çalışırken telefonunuzu kullanmaya başlayabilirsiniz.
+\n
+\nBazı uygulamalar (örn. Signal veya WhatsApp), bir yedeklemeyi içe aktarmak için dosyaların tamamen geri yüklenmesini gerektirebilir. Dosya geri yükleme işlemi tamamlanmadan bu uygulamaları başlatmaktan kaçının.</string>
+    <string name="restore_storage_in_progress_title">Dosyalar geri yükleniyor…</string>
+    <string name="restore_storage_choose_snapshot">Geri yüklenecek bir depolama yedeklemesi seçin (deneysel)</string>
+    <string name="restore_storage_skip">Dosyaları geri yüklemeyi atla</string>
+    <string name="restore_skip">Uygulamaları geri yüklemeyi atla</string>
+    <string name="recovery_code_auth_description">Devam etmek için aygıt kimlik bilgilerinizi girin</string>
+    <string name="recovery_code_auth_title">Ekran kilidinizi tekrar girin</string>
+    <string name="storage_check_fragment_patience">Bu biraz zaman alabilir…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Kurulu değil</string>
+    <string name="storage_fragment_warning_delete">Bu konumdaki mevcut yedeklemeler silinecek.</string>
+    <string name="settings_expert_quota_summary">Uygulama yedeklemelerinin boyutuna bir sınırlama getirme.
+\n
+\nUyarı: Bu, depolama konumunuzu hızla doldurabilir. Çoğu uygulama için gerekli değildir.</string>
+    <string name="settings_expert_quota_title">Sınırsız uygulama kotası</string>
+    <string name="settings_expert_title">Uzman ayarları</string>
+    <string name="settings_backup_storage_code_dialog_ok">Kodu doğrula</string>
+    <string name="settings_backup_storage_code_dialog_message">Depolama yedeklemesini etkinleştirmek için önce kurtarma kodunuzu doğrulamanız veya yeni bir tane oluşturmanız gerekmektedir.</string>
+    <string name="settings_backup_storage_code_dialog_title">Kurtarma kodu doğrulaması gerekli</string>
+    <string name="settings_backup_storage_dialog_ok">Yine de etkinleştir</string>
+    <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek hala deneyseldir ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
+    <string name="settings_backup_storage_dialog_title">Deneysel özellik</string>
+    <string name="settings_backup_files_summary">Yok</string>
+    <string name="settings_backup_files_title">Dahil edilen dosya ve klasörler</string>
+    <string name="settings_backup_storage_title">Dosyalarımı yedekle</string>
+    <string name="settings_category_storage">Depolama yedekle (deneysel)</string>
+    <string name="settings_category_apps">Uygulama yedekle</string>
 </resources>
