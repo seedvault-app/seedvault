@@ -1,3 +1,8 @@
+## [11-2.3] - 2021-10-02
+### Fixed
+* Fix translations for the new BIP39 library
+* Switch all translations references to github.com/seedvault-app
+
 ## [11-2.2] - 2021-09-29
 ### User-facing changes
 * Don't backup on metered networks
