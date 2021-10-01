@@ -82,7 +82,7 @@
     <string name="recovery_code_verification_ok_message">Mã của bạn đã đúng và sẽ có thể dùng để khôi phục bản sao lưu của bạn.</string>
     <string name="recovery_code_verification_ok_title">Đã xác minh mã phục hồi</string>
     <string name="recovery_code_error_checksum_word">Mã không hợp lệ. Vui lòng kiểm tra tất cả từ và thử lại!</string>
-    <string name="recovery_code_error_invalid_word">Sai từ. Ý bạn là %1$s hay %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Sai từ.</string>
     <string name="recovery_code_error_empty_word">Bạn đã quên nhập từ này.</string>
     <string name="recovery_code_input_hint_12">Từ 12</string>
     <string name="recovery_code_input_hint_11">Từ 11</string>

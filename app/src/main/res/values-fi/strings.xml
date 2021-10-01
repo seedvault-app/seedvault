@@ -70,7 +70,7 @@
     <string name="notification_title">Varmuuskopiointi on käynnissä</string>
     <string name="notification_channel_title">Varmuuskopiointi-ilmoitus</string>
     <string name="recovery_code_error_checksum_word">Koodisi on virheellinen. Tarkista kaikki sanat ja yritä uudelleen!</string>
-    <string name="recovery_code_error_invalid_word">Väärä sana. Tarkoititko %1$s tai %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Väärä sana.</string>
     <string name="recovery_code_error_empty_word">Unohdit kirjoittaa tämän sanan.</string>
     <string name="recovery_code_input_hint_12">Sana 12</string>
     <string name="recovery_code_input_hint_11">Sana 11</string>

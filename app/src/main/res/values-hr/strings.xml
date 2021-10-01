@@ -49,7 +49,7 @@
     <string name="notification_title">Sigurnosna kopija pokrenuta</string>
     <string name="notification_channel_title">Obavijest sigurnosne kopije</string>
     <string name="recovery_code_error_checksum_word">Tvoja lozinka je neispravna. Provjeri sve riječi i pokušaj ponovo!</string>
-    <string name="recovery_code_error_invalid_word">Kriva riječ. Je li misliš %1$s ili %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Kriva riječ.</string>
     <string name="recovery_code_error_empty_word">Ova riječ nije upisana.</string>
     <string name="recovery_code_input_hint_12">Riječ 12</string>
     <string name="recovery_code_input_hint_11">Riječ 11</string>

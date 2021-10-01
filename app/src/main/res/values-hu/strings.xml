@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recovery_code_verification_ok_title">Visszaállító kód ellenőrizve</string>
     <string name="recovery_code_error_checksum_word">A kódod érvénytelen. Kérlek ellenőrizd a szavakat és próbáld újra!</string>
-    <string name="recovery_code_error_invalid_word">Rossz szó. Lehet, hogy %1$s vagy %2$s-ra/re gondoltál\?</string>
+    <string name="recovery_code_error_invalid_word">Rossz szó.</string>
     <string name="recovery_code_error_empty_word">Elfelejtetted beírni ezt a szót.</string>
     <string name="recovery_code_input_hint_12">12. szó</string>
     <string name="recovery_code_input_hint_11">11. szó</string>

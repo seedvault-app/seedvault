@@ -47,7 +47,7 @@
     <string name="notification_title">Öryggisafritun í gangi</string>
     <string name="notification_channel_title">Tilkynning um öryggisafritatöku</string>
     <string name="recovery_code_error_checksum_word">Kóðinn er ógildur. Athugað öll orðin og prófaðu aftur!</string>
-    <string name="recovery_code_error_invalid_word">Rangt orð. Meintirðu %1$s or %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Rangt orð.</string>
     <string name="recovery_code_error_empty_word">Þú gleymdir að slá inn þetta orð.</string>
     <string name="recovery_code_input_hint_12">Orð 12</string>
     <string name="recovery_code_input_hint_11">Orð 11</string>
