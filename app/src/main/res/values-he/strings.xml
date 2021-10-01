@@ -95,7 +95,7 @@
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
     <string name="restore_app_not_yet_backed_up">עדיין לא מגובה</string>
     <string name="storage_fake_nextcloud_summary_unavailable">החשבון אינו זמין. ניתן להקים אחד (או להשבית את קוד הגישה).</string>
-    <string name="about_source_code">קוד המקור: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">קוד המקור: https://github.com/seedvault-app/seedvault</string>
     <string name="settings_backup_apk_title">גיבוי יישומונים</string>
     <string name="settings_category_app_data_backup">גיבוי נתוני יישומונים</string>
     <string name="settings_auto_restore_summary_usb">לתשומת לבך: עליך לחבר את %1$s שלך לחשמל כדי שזה יפעל.</string>

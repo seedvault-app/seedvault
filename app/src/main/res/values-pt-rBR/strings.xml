@@ -80,7 +80,7 @@
     <string name="restore_choose_restore_set">Escolha um backup para restaurar</string>
     <string name="restore_title">Restaurar do backup</string>
     <string name="notification_restore_error_action">Desinstalar aplicativo</string>
-    <string name="about_source_code">Código Fonte: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Código Fonte: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para seu uso em <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
