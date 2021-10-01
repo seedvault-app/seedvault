@@ -4,7 +4,7 @@
     <string name="settings_backup_location_internal">Interner Speicher</string>
     <string name="settings_backup_location_none">Keiner</string>
     <string name="settings_backup_location">Sicherungsort</string>
-    <string name="settings_backup">Meine Daten sichern</string>
+    <string name="settings_backup">Meine Apps sichern</string>
     <string name="restore_backup_button">Sicherung wiederherstellen</string>
     <string name="backup">Sicherung</string>
     <string name="notification_restore_error_title">Daten von %1$s konnten nicht wiederhergestellt werden</string>
@@ -17,8 +17,8 @@
     <string name="notification_success_title">Sicherung fertiggestellt</string>
     <string name="notification_title">Sicherung läuft</string>
     <string name="notification_channel_title">Sicherungsbenachrichtigung</string>
-    <string name="recovery_code_error_checksum_word">Dein Wiederherstellungsschlüssel ist ungültig. Bitte prüfe alle eingegebenen Wörter und versuche es erneut!</string>
-    <string name="recovery_code_error_invalid_word">Falsches Wort. Hast du %1$s oder %2$s gemeint\?</string>
+    <string name="recovery_code_error_checksum_word">Dein Wiederherstellungsschlüssel ist ungültig. Bitte prüfe alle Wörter sowie deren Position und versuche es erneut!</string>
+    <string name="recovery_code_error_invalid_word">Falsches Wort.</string>
     <string name="recovery_code_error_empty_word">Du hast vergessen, dieses Wort einzugeben.</string>
     <string name="recovery_code_input_hint_12">Wort 12</string>
     <string name="recovery_code_input_hint_11">Wort 11</string>
@@ -145,4 +145,33 @@
     <string name="recovery_code_verification_ok_title">Wiederherstellungscode überprüft</string>
     <string name="settings_backup_recovery_code_summary">Vorhandenen Code überprüfen oder einen neuen Code erzeugen</string>
     <string name="settings_backup_recovery_code">Wiederherstellungscode</string>
+    <string name="settings_backup_storage_code_dialog_ok">Code überprüfen</string>
+    <string name="settings_backup_storage_code_dialog_message">Um die Speichersicherung zu aktivieren, musst du zunächst deinen Wiederherstellungscode überprüfen oder einen neuen Code generieren.</string>
+    <string name="restore_storage_got_it">Verstanden</string>
+    <string name="restore_storage_in_progress_info">Deine Dateien werden im Hintergrund wiederhergestellt. Du kannst dein Telefon benutzen, während dieser Vorgang läuft.
+\n
+\nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien nicht abgeschlossen ist.</string>
+    <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
+    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (experimentell)</string>
+    <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
+    <string name="restore_skip">Wiederherstellen von Apps überspringen</string>
+    <string name="recovery_code_auth_description">Eingabe deiner Geräteanmeldedaten zum Fortfahren</string>
+    <string name="recovery_code_auth_title">Deine Bildschirmsperre erneut eingeben</string>
+    <string name="storage_check_fragment_patience">Das kann einige Zeit dauern…</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nicht installiert</string>
+    <string name="storage_fragment_warning_delete">Vorhandene Sicherungen an diesem Speicherort werden gelöscht.</string>
+    <string name="settings_expert_quota_summary">Beschränke die Größe von App-Sicherungen nicht.
+\n
+\nAchtung: Dadurch kann dein Speicherplatz schnell voll werden. Für die meisten Apps nicht erforderlich.</string>
+    <string name="settings_expert_quota_title">Unbegrenztes App-Kontingent</string>
+    <string name="settings_expert_title">Experteneinstellungen</string>
+    <string name="settings_backup_storage_code_dialog_title">Überprüfung des Wiederherstellungscodes erforderlich</string>
+    <string name="settings_backup_storage_dialog_ok">Trotzdem aktivieren</string>
+    <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist noch experimentell und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
+    <string name="settings_backup_storage_dialog_title">Experimentelle Funktion</string>
+    <string name="settings_backup_files_summary">Keine</string>
+    <string name="settings_backup_files_title">Enthaltene Dateien und Ordner</string>
+    <string name="settings_backup_storage_title">Meine Dateien sichern</string>
+    <string name="settings_category_storage">Speichersicherung (experimentell)</string>
+    <string name="settings_category_apps">App-Sicherung</string>
 </resources>
