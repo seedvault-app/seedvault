@@ -5,7 +5,7 @@
     <string name="about_design">Design de : <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Écrit par : <a href="https://github.com/stevesoltys">Steve Soltys</a> et <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_source_code">Code source : https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Code source : https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Parrainé par : <a href="https://www.calyxinstitute.org">Calyx Institute</a> pour usage dans <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="storage_internal_warning_use_anyway">Utiliser quand même</string>
     <string name="about_title">À propos</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_source_code">Grunnkóði: https://github.com/stevesoltys/seedvault</string>
+    <string name="about_source_code">Grunnkóði: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Kostað af: <a href="https://www.calyxinstitute.org">Calyx Institute</a> til notkunar á <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Hönnun: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Skrifað af: <a href="https://github.com/stevesoltys">Steve Soltys</a> og <a href="https://blog.grobox.de">Torsten Grote</a></string>
