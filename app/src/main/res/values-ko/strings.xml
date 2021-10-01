@@ -41,7 +41,7 @@
     <string name="notification_restore_error_action">앱 설치 제거</string>
     <string name="notification_backup_already_running">백업이 이미 진행 중</string>
     <string name="recovery_code_error_checksum_word">코드가 잘못되었습니다. 모든 단어를 확인하고 다시 시도하세요!</string>
-    <string name="recovery_code_error_invalid_word">단어가 틀렸습니다. %1$s 또는 %2$s를 입력하려고 하셨나요\?</string>
+    <string name="recovery_code_error_invalid_word">단어가 틀렸습니다.</string>
     <string name="recovery_code_error_empty_word">이 단어를 입력하지 않았습니다.</string>
     <string name="recovery_code_confirm_intro">복구 코드가 맞는지 확인하려면 12개 단어로 이루어진 복구 코드를 입력하세요.</string>
     <string name="recovery_code_input_intro">백업을 설정할 때 지정했던 12개 단어로 이루어진 복구 코드를 입력하세요.</string>

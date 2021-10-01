@@ -53,7 +53,7 @@
     <string name="notification_title">Резервное копирование запущено</string>
     <string name="notification_channel_title">Уведомление о резервном копировании</string>
     <string name="recovery_code_error_checksum_word">Ваш код недействителен. Пожалуйста, проверьте все слова и попробуйте еще раз!</string>
-    <string name="recovery_code_error_invalid_word">Неверное слово. Вы имели в виду %1$s или %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Неверное слово.</string>
     <string name="recovery_code_error_empty_word">Вы забыли ввести это слово.</string>
     <string name="recovery_code_input_hint_12">Слово 12</string>
     <string name="recovery_code_input_hint_11">Слово 11</string>

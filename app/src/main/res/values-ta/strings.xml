@@ -82,7 +82,7 @@
     <string name="recovery_code_verification_ok_message">உங்கள் குறியீடு சரியானது மற்றும் உங்கள் காப்புப்பிரதியை மீட்டமைக்க வேலை செய்யும்.</string>
     <string name="recovery_code_verification_ok_title">மீட்பு குறியீடு சரிபார்க்கப்பட்டது</string>
     <string name="recovery_code_error_checksum_word">உங்கள் குறியீடு தவறானது. எல்லா வார்த்தைகளையும் சரிபார்த்து மீண்டும் முயற்சிக்கவும்!</string>
-    <string name="recovery_code_error_invalid_word">தவறான வார்த்தை. நீங்கள் %1$s அல்லது %2$s என்று சொன்னீர்களா\?</string>
+    <string name="recovery_code_error_invalid_word">தவறான வார்த்தை.</string>
     <string name="recovery_code_error_empty_word">இந்த வார்த்தையை உள்ளிட மறந்துவிட்டீர்கள்.</string>
     <string name="recovery_code_input_hint_12">வார்த்தை 12</string>
     <string name="recovery_code_input_hint_11">வார்த்தை 11</string>

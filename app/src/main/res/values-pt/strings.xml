@@ -49,7 +49,7 @@
     <string name="notification_title">Backup em execução</string>
     <string name="notification_channel_title">Notificação de backup</string>
     <string name="recovery_code_error_checksum_word">O seu código é inválido. Por favor, verifique todas as palavras e tente novamente!</string>
-    <string name="recovery_code_error_invalid_word">Palavra errada. Quis dizer %1$s ou %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Palavra errada.</string>
     <string name="recovery_code_error_empty_word">Se esqueceu de inserir esta palavra.</string>
     <string name="recovery_code_input_hint_12">Palavra 12</string>
     <string name="recovery_code_input_hint_11">Palavra 11</string>

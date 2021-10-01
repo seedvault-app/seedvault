@@ -117,7 +117,7 @@
     <string name="recovery_code_verification_ok_message">Ваш код правильний і буде працювати для відновлення резервної копії.</string>
     <string name="recovery_code_verification_ok_title">Код відновлення перевірено</string>
     <string name="recovery_code_error_checksum_word">Ваш код недійсний. Перевірте всі слова та повторіть спробу!</string>
-    <string name="recovery_code_error_invalid_word">Неправильне слово. Ви маєте на увазі %1$s або %2$s\?</string>
+    <string name="recovery_code_error_invalid_word">Неправильне слово.</string>
     <string name="recovery_code_error_empty_word">Ви забули ввести це слово.</string>
     <string name="recovery_code_input_hint_12">Слово 12</string>
     <string name="recovery_code_input_hint_11">Слово 11</string>
