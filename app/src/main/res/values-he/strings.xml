@@ -106,9 +106,23 @@
     <string name="settings_backup_location_internal">אחסון פנימי</string>
     <string name="settings_backup_location_none">אף מקום</string>
     <string name="settings_backup_location">מיקום גיבוי</string>
-    <string name="settings_backup">גיבוי הנתונים שלי</string>
+    <string name="settings_backup">גיבוי היישומונים שלי</string>
     <string name="restore_backup_button">שחזור גיבוי</string>
     <string name="backup">גיבוי</string>
     <string name="current_destination_string">מצב והגדרות גיבוי</string>
     <string name="data_management_label">גיבוי Seedvault</string>
+    <string name="settings_backup_storage_dialog_title">יכולת ניסיונית</string>
+    <string name="settings_backup_storage_dialog_message">גיבוי קבצים היא עדיין יכולת ניסיונית ויכול להיות שלא תעבוד. אין לסמוך עליה כשמדובר בנתונים חשובים.</string>
+    <string name="settings_backup_storage_dialog_ok">לאפשר בכל זאת</string>
+    <string name="settings_backup_storage_code_dialog_title">נדרש אימות קוד שחזור</string>
+    <string name="settings_backup_storage_code_dialog_ok">אימות קוד</string>
+    <string name="settings_category_apps">גיבוי יישומונים</string>
+    <string name="settings_category_storage">אחסון לגיבוי (ניסיוני)</string>
+    <string name="settings_expert_title">הגדרות מומחים</string>
+    <string name="settings_backup_status_title">מצב גיבוי</string>
+    <string name="settings_backup_files_summary">אין</string>
+    <string name="settings_backup_recovery_code">קוד שחזור</string>
+    <string name="settings_expert_quota_title">מיכסה בלתי מוגבלת ליישומונים</string>
+    <string name="settings_backup_storage_title">גיבוי הקבצים שלי</string>
+    <string name="settings_backup_files_title">קבצים ותיקיות שיוכללו</string>
 </resources>
