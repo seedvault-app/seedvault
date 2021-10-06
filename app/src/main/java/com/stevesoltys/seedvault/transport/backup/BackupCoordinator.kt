@@ -136,8 +136,8 @@ internal class BackupCoordinator(
         TRANSPORT_OK
     } catch (e: IOException) {
         Log.e(TAG, "Error initializing device", e)
-        // Show error notification if we were ready for backups
-        if (settingsManager.canDoBackupNow()) nm.onBackupError()
+        // Show error notification if we needed init or were ready for backups
+        if (metadataManager.requiresInit || settingsManager.canDoBackupNow()) nm.onBackupError()
         TRANSPORT_ERROR
     }
 
@@ -243,17 +243,7 @@ internal class BackupCoordinator(
         // What else we tried can be found in: https://github.com/seedvault-app/seedvault/issues/102
         if (packageName == MAGIC_PACKAGE_MANAGER) {
             val isIncremental = flags and FLAG_INCREMENTAL != 0
-            if (!settingsManager.canDoBackupNow()) {
-                // Returning anything else here (except non-incremental-required which re-tries)
-                // will make the system consider the backup state compromised
-                // and force re-initialization on next run.
-                // Errors for other packages are OK, but this one is not allowed to fail.
-                Log.w(TAG, "Skipping @pm@ backup as we can't do backup right now.")
-                state.skippedPmBackup = true
-                settingsManager.pmBackupNextTimeNonIncremental = true
-                data.close()
-                return TRANSPORT_OK
-            } else if (metadataManager.isLegacyFormat) {
+            if (metadataManager.requiresInit) {
                 // start a new restore set to upgrade from legacy format
                 // by starting a clean backup with all files using the new version
                 try {
@@ -263,6 +253,16 @@ internal class BackupCoordinator(
                 }
                 // this causes a backup error, but things should go back to normal afterwards
                 return TRANSPORT_NOT_INITIALIZED
+            } else if (!settingsManager.canDoBackupNow()) {
+                // Returning anything else here (except non-incremental-required which re-tries)
+                // will make the system consider the backup state compromised
+                // and force re-initialization on next run.
+                // Errors for other packages are OK, but this one is not allowed to fail.
+                Log.w(TAG, "Skipping @pm@ backup as we can't do backup right now.")
+                state.skippedPmBackup = true
+                settingsManager.pmBackupNextTimeNonIncremental = true
+                data.close()
+                return TRANSPORT_OK
             } else if (isIncremental && settingsManager.pmBackupNextTimeNonIncremental) {
                 settingsManager.pmBackupNextTimeNonIncremental = false
                 data.close()

@@ -222,8 +222,8 @@ internal class MetadataManager(
     internal val salt: String
         @Synchronized get() = metadata.salt
 
-    internal val isLegacyFormat: Boolean
-        @Synchronized get() = metadata.version < VERSION
+    internal val requiresInit: Boolean
+        @Synchronized get() = metadata == uninitializedMetadata || metadata.version < VERSION
 
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {
