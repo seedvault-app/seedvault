@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.plugins.StoragePlugin
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -116,6 +117,7 @@ internal class KVBackupTest : BackupTest() {
         assertTrue(backup.hasState())
 
         verify { data.close() }
+        every { db.close() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
@@ -153,6 +155,9 @@ internal class KVBackupTest : BackupTest() {
 
         assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
+
+        every { db.close() } just Runs
+
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertFalse(backup.hasState())
     }
@@ -218,6 +223,29 @@ internal class KVBackupTest : BackupTest() {
         verify {
             encryptedOutputStream.close()
             outputStream.close()
+        }
+    }
+
+    @Test
+    fun `no upload when we back up @pm@ while we can't do backups`() = runBlocking {
+        every { dbManager.existsDb(pmPackageInfo.packageName) } returns false
+        every { crypto.getNameForPackage(salt, pmPackageInfo.packageName) } returns name
+        every { dbManager.getDb(pmPackageInfo.packageName) } returns db
+        every { settingsManager.canDoBackupNow() } returns false
+        every { db.put(key, dataValue) } just Runs
+        getDataInput(listOf(true, false))
+
+        assertEquals(TRANSPORT_OK, backup.performBackup(pmPackageInfo, data, 0, token, salt))
+        assertTrue(backup.hasState())
+        assertEquals(pmPackageInfo, backup.getCurrentPackage())
+
+        every { db.close() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
+        assertFalse(backup.hasState())
+
+        coVerify(exactly = 0) {
+            plugin.getOutputStream(token, name)
         }
     }
 

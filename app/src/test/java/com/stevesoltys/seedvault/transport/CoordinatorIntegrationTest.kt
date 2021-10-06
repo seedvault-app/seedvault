@@ -121,6 +121,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val value2 = CapturingSlot<ByteArray>()
         val bOutputStream = ByteArrayOutputStream()
 
+        every { metadataManager.requiresInit } returns false
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         // read one key/value record and write it to output stream
@@ -197,6 +198,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val appData = ByteArray(size).apply { Random.nextBytes(this) }
         val bOutputStream = ByteArrayOutputStream()
 
+        every { metadataManager.requiresInit } returns false
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         // read one key/value record and write it to output stream

@@ -9,14 +9,12 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
 internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
-internal const val PREF_KEY_REDO_PM = "redoPm"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -125,15 +123,6 @@ class SettingsManager(private val context: Context) {
         val storage = getStorage() ?: return false
         return !storage.isUnavailableUsb(context) && !storage.isUnavailableNetwork(context)
     }
-
-    /**
-     * Set this to true if the next backup run for [MAGIC_PACKAGE_MANAGER]
-     * needs to be non-incremental,
-     * because we need to fake an OK backup now even though we can't do one right now.
-     */
-    var pmBackupNextTimeNonIncremental: Boolean
-        get() = prefs.getBoolean(PREF_KEY_REDO_PM, false)
-        set(value) = prefs.edit().putBoolean(PREF_KEY_REDO_PM, value).apply()
 
     fun backupApks(): Boolean {
         return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)

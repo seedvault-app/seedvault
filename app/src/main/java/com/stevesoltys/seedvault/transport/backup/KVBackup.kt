@@ -9,6 +9,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
@@ -126,7 +127,18 @@ internal class KVBackup(
                 Log.e(TAG, "Exception reading backup input", result.exception)
                 return backupError(TRANSPORT_ERROR)
             }
-            state.needsUpload = true
+            state.needsUpload = if (state.packageInfo.packageName == MAGIC_PACKAGE_MANAGER) {
+                // Don't upload, if we currently can't do backups.
+                // If we tried, we would fail @pm@ backup which causes the system to do a re-init.
+                // See: https://github.com/seedvault-app/seedvault/issues/102
+                // K/V backups (typically starting with package manager metadata - @pm@)
+                // are scheduled with JobInfo.Builder#setOverrideDeadline()
+                // and thus do not respect backoff.
+                settingsManager.canDoBackupNow()
+            } else {
+                // all other packages always need upload
+                true
+            }
             val op = (result as Result.Ok).result
             if (op.value == null) {
                 Log.e(TAG, "Deleting record with key ${op.key}")
@@ -190,10 +202,11 @@ internal class KVBackup(
     suspend fun finishBackup(): Int {
         val state = this.state ?: error("No state in finishBackup")
         val packageName = state.packageInfo.packageName
-        Log.i(TAG, "Finish K/V Backup of $packageName")
+        Log.i(TAG, "Finish K/V Backup of $packageName - needs upload: ${state.needsUpload}")
 
         return try {
             if (state.needsUpload) uploadDb(state.token, state.name, packageName, state.db)
+            else state.db.close()
             TRANSPORT_OK
         } catch (e: IOException) {
             TRANSPORT_ERROR
