@@ -156,7 +156,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, data, 0))
 
         every { settingsManager.canDoBackupNow() } returns true
-        every { metadataManager.isLegacyFormat } returns false
+        every { metadataManager.requiresInit } returns false
         every { settingsManager.pmBackupNextTimeNonIncremental } returns true
         every { settingsManager.pmBackupNextTimeNonIncremental = false } just Runs
 
@@ -172,7 +172,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
 
         every { settingsManager.canDoBackupNow() } returns true
-        every { metadataManager.isLegacyFormat } returns true
+        every { metadataManager.requiresInit } returns true
 
         // start new restore set
         every { clock.time() } returns token + 1
@@ -416,7 +416,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val packageMetadata: PackageMetadata = mockk()
 
         every { settingsManager.canDoBackupNow() } returns true
-        every { metadataManager.isLegacyFormat } returns false
+        every { metadataManager.requiresInit } returns false
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         // do actual @pm@ backup
