@@ -43,16 +43,14 @@ private val TAG = BackupCoordinator::class.java.simpleName
 private class CoordinatorState(
     var calledInitialize: Boolean,
     var calledClearBackupData: Boolean,
-    var skippedPmBackup: Boolean,
     var cancelReason: PackageState
 ) {
     val expectFinish: Boolean
-        get() = calledInitialize || calledClearBackupData || skippedPmBackup
+        get() = calledInitialize || calledClearBackupData
 
     fun onFinish() {
         calledInitialize = false
         calledClearBackupData = false
-        skippedPmBackup = false
         cancelReason = UNKNOWN_ERROR
     }
 }
@@ -79,7 +77,6 @@ internal class BackupCoordinator(
     private val state = CoordinatorState(
         calledInitialize = false,
         calledClearBackupData = false,
-        skippedPmBackup = false,
         cancelReason = UNKNOWN_ERROR
     )
 
@@ -236,38 +233,16 @@ internal class BackupCoordinator(
         flags: Int
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
-        val packageName = packageInfo.packageName
-        // K/V backups (typically starting with package manager metadata - @pm@)
-        // are scheduled with JobInfo.Builder#setOverrideDeadline() and thus do not respect backoff.
-        // We need to reject them manually when we can not do a backup now.
-        // What else we tried can be found in: https://github.com/seedvault-app/seedvault/issues/102
-        if (packageName == MAGIC_PACKAGE_MANAGER) {
-            val isIncremental = flags and FLAG_INCREMENTAL != 0
-            if (metadataManager.requiresInit) {
-                // start a new restore set to upgrade from legacy format
-                // by starting a clean backup with all files using the new version
-                try {
-                    startNewRestoreSet()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error starting new restore set", e)
-                }
-                // this causes a backup error, but things should go back to normal afterwards
-                return TRANSPORT_NOT_INITIALIZED
-            } else if (!settingsManager.canDoBackupNow()) {
-                // Returning anything else here (except non-incremental-required which re-tries)
-                // will make the system consider the backup state compromised
-                // and force re-initialization on next run.
-                // Errors for other packages are OK, but this one is not allowed to fail.
-                Log.w(TAG, "Skipping @pm@ backup as we can't do backup right now.")
-                state.skippedPmBackup = true
-                settingsManager.pmBackupNextTimeNonIncremental = true
-                data.close()
-                return TRANSPORT_OK
-            } else if (isIncremental && settingsManager.pmBackupNextTimeNonIncremental) {
-                settingsManager.pmBackupNextTimeNonIncremental = false
-                data.close()
-                return TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
+        if (metadataManager.requiresInit) {
+            // start a new restore set to upgrade from legacy format
+            // by starting a clean backup with all files using the new version
+            try {
+                startNewRestoreSet()
+            } catch (e: IOException) {
+                Log.e(TAG, "Error starting new restore set", e)
             }
+            // this causes a backup error, but things should go back to normal afterwards
+            return TRANSPORT_NOT_INITIALIZED
         }
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")
         val salt = metadataManager.salt
@@ -388,14 +363,26 @@ internal class BackupCoordinator(
             check(!full.hasState()) {
                 "K/V backup has state, but full backup has dangling state as well"
             }
-            // getCurrentPackage() not-null because we have state
+            // getCurrentPackage() not-null because we have state, call before finishing
             val packageInfo = kv.getCurrentPackage()!!
-            onPackageBackedUp(packageInfo, BackupType.KV)
-            val isPmBackup = packageInfo.packageName == MAGIC_PACKAGE_MANAGER
-            val result = kv.finishBackup()
-            // hook in here to back up APKs of apps that are otherwise not allowed for backup
-            if (result == TRANSPORT_OK && isPmBackup) {
-                backUpApksOfNotBackedUpPackages()
+            val packageName = packageInfo.packageName
+            // tell K/V backup to finish
+            var result = kv.finishBackup()
+            if (result == TRANSPORT_OK) {
+                val isPmBackup = packageName == MAGIC_PACKAGE_MANAGER
+                // call onPackageBackedUp for @pm@ only if we can do backups right now
+                if (!isPmBackup || settingsManager.canDoBackupNow()) {
+                    try {
+                        onPackageBackedUp(packageInfo, BackupType.KV)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
+                        result = TRANSPORT_PACKAGE_REJECTED
+                    }
+                }
+                // hook in here to back up APKs of apps that are otherwise not allowed for backup
+                if (isPmBackup && settingsManager.canDoBackupNow()) {
+                    backUpApksOfNotBackedUpPackages()
+                }
             }
             result
         }
@@ -404,8 +391,17 @@ internal class BackupCoordinator(
                 "Full backup has state, but K/V backup has dangling state as well"
             }
             // getCurrentPackage() not-null because we have state
-            onPackageBackedUp(full.getCurrentPackage()!!, BackupType.FULL)
-            full.finishBackup()
+            val packageInfo = full.getCurrentPackage()!!
+            val packageName = packageInfo.packageName
+            // tell full backup to finish
+            var result = full.finishBackup()
+            try {
+                onPackageBackedUp(packageInfo, BackupType.FULL)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
+                result = TRANSPORT_PACKAGE_REJECTED
+            }
+            result
         }
         state.expectFinish -> {
             state.onFinish()
@@ -472,14 +468,8 @@ internal class BackupCoordinator(
     }
 
     private suspend fun onPackageBackedUp(packageInfo: PackageInfo, type: BackupType) {
-        try {
-            plugin.getMetadataOutputStream().use {
-                metadataManager.onPackageBackedUp(packageInfo, type, it)
-            }
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while writing metadata for ${packageInfo.packageName}", e)
-            // we are not re-throwing this as there's nothing we can do now
-            // except hoping the current metadata gets written with the next package
+        plugin.getMetadataOutputStream().use {
+            metadataManager.onPackageBackedUp(packageInfo, type, it)
         }
     }
 

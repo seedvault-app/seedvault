@@ -1,8 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.FLAG_INCREMENTAL
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
-import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
 import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
@@ -112,9 +110,12 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `error notification when device initialization fails`() = runBlocking {
+        val maybeTrue = Random.nextBoolean()
+
         every { settingsManager.getToken() } returns token
         coEvery { plugin.initializeDevice() } throws IOException()
-        every { settingsManager.canDoBackupNow() } returns true
+        every { metadataManager.requiresInit } returns maybeTrue
+        every { settingsManager.canDoBackupNow() } returns !maybeTrue
         every { notificationManager.onBackupError() } just Runs
 
         assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
@@ -132,6 +133,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         runBlocking {
             every { settingsManager.getToken() } returns token
             coEvery { plugin.initializeDevice() } throws IOException()
+            every { metadataManager.requiresInit } returns false
             every { settingsManager.canDoBackupNow() } returns false
 
             assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
@@ -143,29 +145,6 @@ internal class BackupCoordinatorTest : BackupTest() {
                 backup.finishBackup()
             }
         }
-
-    @Test
-    fun `performIncrementalBackup fakes @pm@ when no backup possible`() = runBlocking {
-        val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
-
-        every { settingsManager.canDoBackupNow() } returns false
-        every { settingsManager.pmBackupNextTimeNonIncremental = true } just Runs
-        every { data.close() } just Runs
-
-        // returns OK even though we can't do backups
-        assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, data, 0))
-
-        every { settingsManager.canDoBackupNow() } returns true
-        every { metadataManager.requiresInit } returns false
-        every { settingsManager.pmBackupNextTimeNonIncremental } returns true
-        every { settingsManager.pmBackupNextTimeNonIncremental = false } just Runs
-
-        // now that we can do backups again, it requests a full non-incremental backup of @pm@
-        assertEquals(
-            TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED,
-            backup.performIncrementalBackup(packageInfo, data, FLAG_INCREMENTAL)
-        )
-    }
 
     @Test
     fun `performIncrementalBackup of @pm@ causes re-init when legacy format`() = runBlocking {
@@ -255,22 +234,32 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `finish backup delegates to KV plugin if it has state`() = runBlocking {
-        val result = Random.nextInt()
-
         every { kv.hasState() } returns true
         every { full.hasState() } returns false
         every { kv.getCurrentPackage() } returns packageInfo
+        coEvery { kv.finishBackup() } returns TRANSPORT_OK
         every { settingsManager.getToken() } returns token
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
         } just Runs
-        coEvery { kv.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
 
-        assertEquals(result, backup.finishBackup())
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         verify { metadataOutputStream.close() }
+    }
+
+    @Test
+    fun `finish backup does not upload @pm@ metadata, if it can't do backups`() = runBlocking {
+        every { kv.hasState() } returns true
+        every { full.hasState() } returns false
+        every { kv.getCurrentPackage() } returns pmPackageInfo
+
+        coEvery { kv.finishBackup() } returns TRANSPORT_OK
+        every { settingsManager.canDoBackupNow() } returns false
+
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
     }
 
     @Test
@@ -280,12 +269,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.hasState() } returns false
         every { full.hasState() } returns true
         every { full.getCurrentPackage() } returns packageInfo
+        every { full.finishBackup() } returns result
         every { settingsManager.getToken() } returns token
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every {
             metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
         } just Runs
-        every { full.finishBackup() } returns result
         every { metadataOutputStream.close() } just Runs
 
         assertEquals(result, backup.finishBackup())
