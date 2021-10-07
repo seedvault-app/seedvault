@@ -81,7 +81,7 @@
     <string name="recovery_code_verification_error_title">Neteisingas atkūrimo kodas</string>
     <string name="recovery_code_verification_ok_message">Jūsų kodas yra teisingas ir veiks atkuriant atsarginę kopiją.</string>
     <string name="recovery_code_verification_ok_title">Atkūrimo kodas patvirtintas</string>
-    <string name="recovery_code_error_checksum_word">Jūsų kodas negalioja. Patikrinkite visus žodžius ir bandykite dar kartą!</string>
+    <string name="recovery_code_error_checksum_word">Jūsų kodas negalioja. Patikrinkite visus žodžius bei jų padėtį ir bandykite dar kartą!</string>
     <string name="recovery_code_error_invalid_word">Neteisingas žodis.</string>
     <string name="recovery_code_error_empty_word">Pamiršote įvesti šį žodį.</string>
     <string name="recovery_code_input_hint_12">12 žodis</string>
@@ -140,9 +140,38 @@
     <string name="settings_backup_location_internal">Vidinė saugykla</string>
     <string name="settings_backup_location_none">Nėra</string>
     <string name="settings_backup_location">Atsarginės kopijos vieta</string>
-    <string name="settings_backup">Sukurti atsarginę mano duomenų kopiją</string>
+    <string name="settings_backup">Sukurti atsarginę mano programėlių kopiją</string>
     <string name="restore_backup_button">Atkurti atsarginę kopiją</string>
     <string name="current_destination_string">Atsarginės kopijos būsena ir nustatymai</string>
     <string name="data_management_label">Seedvault atsarginė kopija</string>
     <string name="backup">Atsarginė kopija</string>
+    <string name="settings_backup_files_title">Įtraukiami failai ir aplankai</string>
+    <string name="settings_backup_storage_dialog_ok">Vis tiek įjungti</string>
+    <string name="settings_backup_storage_code_dialog_title">Reikalingas atkūrimo kodo patikrinimas</string>
+    <string name="settings_backup_storage_code_dialog_message">Norėdami įjungti atsarginių kopijų saugyklą, pirmiausia turite patvirtinti atkūrimo kodą arba sukurti naują.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Patvirtinti kodą</string>
+    <string name="settings_expert_title">Eksperto nustatymai</string>
+    <string name="settings_expert_quota_title">Neribota programėlių kvota</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Neįdiegta</string>
+    <string name="recovery_code_auth_description">Jei norite tęsti, įveskite įrenginio prisijungimo duomenis</string>
+    <string name="restore_storage_in_progress_title">Failai atkuriami…</string>
+    <string name="restore_storage_got_it">Supratau</string>
+    <string name="settings_backup_storage_title">Sukurti atsarginę mano failų kopiją</string>
+    <string name="restore_skip">Praleisti programėlių atkūrimą</string>
+    <string name="settings_category_apps">Programėlių atsarginės kopijos</string>
+    <string name="settings_backup_storage_dialog_title">Eksperimentinė funkcija</string>
+    <string name="settings_backup_storage_dialog_message">Failų atsarginių kopijų kūrimas vis dar eksperimentinis ir gali neveikti. Nepasikliaukite ja, jei norite išsaugoti svarbius duomenis.</string>
+    <string name="settings_expert_quota_summary">Netaikyti apribojimų programėlių atsarginių kopijų dydžiui.
+\n
+\nĮspėjimas: Tai gali greitai užpildyti jūsų saugyklą. Nereikalinga daugumai programėlių.</string>
+    <string name="settings_category_storage">Saugyklos atsarginė kopija (eksperimentinis pasirinkimas)</string>
+    <string name="settings_backup_files_summary">Jokie</string>
+    <string name="storage_fragment_warning_delete">Šioje vietoje esamos atsarginės kopijos bus ištrintos.</string>
+    <string name="storage_check_fragment_patience">Tai gali užtrukti…</string>
+    <string name="recovery_code_auth_title">Pakartotinai įveskite ekrano užraktą</string>
+    <string name="restore_storage_skip">Praleisti failų atkūrimą</string>
+    <string name="restore_storage_choose_snapshot">Pasirinkite saugyklos atsarginę kopiją atkūrimui (eksperimentinis pasirinkimas)</string>
+    <string name="restore_storage_in_progress_info">Jūsų failai atkuriami fone. Kol tai vyksta, galite pradėti naudotis telefonu.
+\n
+\nNorint importuoti atsarginę kopiją, kai kuriose programėlėse (pvz., Signal arba WhatsApp) gali reikėti, kad failai būtų visiškai atkurti. Stenkitės vengti paleisti šias programėles, kol failų atkūrimas nebaigtas.</string>
 </resources>
