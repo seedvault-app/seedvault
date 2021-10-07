@@ -29,7 +29,7 @@ private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 fun scanDocument(
     context: Context,
     documentFiles: List<BackupFile>,
-    sb: StringBuilder? = null
+    sb: StringBuilder? = null,
 ): ScanResult {
     var totalSize = 0L
     val warnings = StringBuilder()

@@ -19,7 +19,7 @@ class DemoSnapshotFragment : SnapshotFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
         val bottomStub: ViewStub = v.findViewById(R.id.bottomStub)

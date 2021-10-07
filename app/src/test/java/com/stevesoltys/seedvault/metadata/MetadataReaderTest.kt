@@ -169,7 +169,7 @@ class MetadataReaderTest {
     }
 
     private fun getMetadata(
-        packageMetadata: PackageMetadataMap = PackageMetadataMap()
+        packageMetadata: PackageMetadataMap = PackageMetadataMap(),
     ): BackupMetadata {
         return BackupMetadata(
             version = 1.toByte(),

@@ -50,7 +50,7 @@ internal class MetadataV0ReadTest {
     }
 
     private fun getMetadata(
-        packageMetadata: HashMap<String, PackageMetadata> = HashMap()
+        packageMetadata: HashMap<String, PackageMetadata> = HashMap(),
     ) = BackupMetadata(
         version = 0x00,
         token = 1337L,

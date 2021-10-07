@@ -26,7 +26,7 @@ internal class BackupStorageViewModel(
     private val backupManager: IBackupManager,
     private val backupCoordinator: BackupCoordinator,
     private val storageBackup: StorageBackup,
-    settingsManager: SettingsManager
+    settingsManager: SettingsManager,
 ) : StorageViewModel(app, settingsManager) {
 
     override val isRestoreOperation = false

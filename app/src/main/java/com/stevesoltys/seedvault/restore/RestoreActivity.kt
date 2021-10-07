@@ -8,7 +8,6 @@ import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES_STARTED
 import com.stevesoltys.seedvault.restore.install.InstallProgressFragment
-import com.stevesoltys.seedvault.ui.LiveEventHandler
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,7 +25,7 @@ class RestoreActivity : RequireProvisioningActivity() {
 
         setContentView(R.layout.activity_fragment_container)
 
-        viewModel.displayFragment.observeEvent(this, LiveEventHandler { fragment ->
+        viewModel.displayFragment.observeEvent(this, { fragment ->
             when (fragment) {
                 RESTORE_APPS -> showFragment(InstallProgressFragment())
                 RESTORE_BACKUP -> showFragment(RestoreProgressFragment())

@@ -120,7 +120,7 @@ internal class MetadataWriterDecoderTest {
     }
 
     private fun getMetadata(
-        packageMetadata: HashMap<String, PackageMetadata> = HashMap()
+        packageMetadata: HashMap<String, PackageMetadata> = HashMap(),
     ): BackupMetadata {
         return BackupMetadata(
             version = Random.nextBytes(1)[0],

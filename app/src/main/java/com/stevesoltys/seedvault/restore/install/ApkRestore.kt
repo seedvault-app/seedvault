@@ -33,7 +33,7 @@ internal class ApkRestore(
     private val legacyStoragePlugin: LegacyStoragePlugin,
     private val crypto: Crypto,
     private val splitCompatChecker: ApkSplitCompatibilityChecker,
-    private val apkInstaller: ApkInstaller
+    private val apkInstaller: ApkInstaller,
 ) {
 
     private val pm = context.packageManager
@@ -84,7 +84,7 @@ internal class ApkRestore(
         backup: RestorableBackup,
         packageName: String,
         metadata: PackageMetadata,
-        installResult: MutableInstallResult
+        installResult: MutableInstallResult,
     ) {
         // cache the APK and get its hash
         val (cachedApk, sha256) = cacheApk(backup.version, backup.token, backup.salt, packageName)
@@ -169,7 +169,7 @@ internal class ApkRestore(
         backup: RestorableBackup,
         packageName: String,
         cachedApk: File,
-        splits: List<ApkSplit>?
+        splits: List<ApkSplit>?,
     ): List<File>? {
         // if null, there are no splits, so we just have a single base APK to consider
         val splitNames = splits?.map { it.name } ?: return listOf(cachedApk)
@@ -208,7 +208,7 @@ internal class ApkRestore(
         token: Long,
         salt: String,
         packageName: String,
-        suffix: String = ""
+        suffix: String = "",
     ): Pair<File, String> {
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName + suffix, ".apk", context.cacheDir)
@@ -231,7 +231,7 @@ internal class ApkRestore(
     private fun shouldInstallSystemApp(
         packageName: String,
         metadata: PackageMetadata,
-        installResult: MutableInstallResult
+        installResult: MutableInstallResult,
     ): InstallResult? {
         val installedPackageInfo = try {
             pm.getPackageInfo(packageName, 0)

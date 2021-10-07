@@ -63,7 +63,7 @@ interface KeyManager {
 }
 
 internal class KeyManagerImpl(
-    private val keyStore: KeyStore
+    private val keyStore: KeyStore,
 ) : KeyManager {
 
     override fun storeBackupKey(seed: ByteArray) {

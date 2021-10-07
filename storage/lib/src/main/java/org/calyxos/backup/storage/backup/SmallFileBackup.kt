@@ -27,7 +27,7 @@ internal class SmallFileBackup(
     suspend fun backupFiles(
         files: List<ContentFile>,
         availableChunkIds: HashSet<String>,
-        backupObserver: BackupObserver?
+        backupObserver: BackupObserver?,
     ): BackupResult {
         val chunkIds = HashSet<String>()
         val missingChunkIds = ArrayList<String>()
@@ -105,7 +105,7 @@ internal class SmallFileBackup(
     @Throws(IOException::class, GeneralSecurityException::class)
     private fun makeZipChunk(
         window: List<ContentFile>,
-        missingChunkIds: List<String>
+        missingChunkIds: List<String>,
     ): SmallFileBackupResult? {
         val file = window[0]
         val nextFile = window.getOrNull(1)
@@ -124,7 +124,7 @@ internal class SmallFileBackup(
     @Throws(IOException::class, GeneralSecurityException::class)
     private fun finalizeAndReset(
         zipChunker: ZipChunker,
-        missingChunkIds: List<String>
+        missingChunkIds: List<String>,
     ): SmallFileBackupResult {
         val zipChunk = zipChunker.finalizeAndReset(missingChunkIds)
         val chunkIds = listOf(zipChunk.id)

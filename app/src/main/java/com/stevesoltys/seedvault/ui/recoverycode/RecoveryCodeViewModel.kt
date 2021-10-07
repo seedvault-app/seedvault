@@ -34,7 +34,7 @@ internal class RecoveryCodeViewModel(
     private val backupManager: IBackupManager,
     private val backupCoordinator: BackupCoordinator,
     private val notificationManager: BackupNotificationManager,
-    private val storageBackup: StorageBackup
+    private val storageBackup: StorageBackup,
 ) : AndroidViewModel(app) {
 
     internal val wordList: List<CharArray> by lazy {

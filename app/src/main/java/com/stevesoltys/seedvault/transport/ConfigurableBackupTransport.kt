@@ -117,7 +117,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     override fun isAppEligibleForBackup(
         targetPackage: PackageInfo,
-        isFullBackup: Boolean
+        isFullBackup: Boolean,
     ): Boolean {
         return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
     }
@@ -145,14 +145,14 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     override fun performBackup(
         packageInfo: PackageInfo,
         inFd: ParcelFileDescriptor,
-        flags: Int
+        flags: Int,
     ): Int = runBlocking {
         backupCoordinator.performIncrementalBackup(packageInfo, inFd, flags)
     }
 
     override fun performBackup(
         targetPackage: PackageInfo,
-        fileDescriptor: ParcelFileDescriptor
+        fileDescriptor: ParcelFileDescriptor,
     ): Int {
         Log.w(TAG, "Warning: Legacy performBackup() method called.")
         return performBackup(targetPackage, fileDescriptor, 0)
@@ -173,14 +173,14 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     override fun performFullBackup(
         targetPackage: PackageInfo,
         socket: ParcelFileDescriptor,
-        flags: Int
+        flags: Int,
     ): Int = runBlocking {
         backupCoordinator.performFullBackup(targetPackage, socket, flags)
     }
 
     override fun performFullBackup(
         targetPackage: PackageInfo,
-        fileDescriptor: ParcelFileDescriptor
+        fileDescriptor: ParcelFileDescriptor,
     ): Int = runBlocking {
         Log.w(TAG, "Warning: Legacy performFullBackup() method called.")
         backupCoordinator.performFullBackup(targetPackage, fileDescriptor, 0)

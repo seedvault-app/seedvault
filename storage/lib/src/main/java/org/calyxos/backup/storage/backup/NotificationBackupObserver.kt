@@ -25,7 +25,7 @@ public open class NotificationBackupObserver internal constructor(private val n:
         totalSize: Long,
         numFiles: Int,
         numSmallFiles: Int,
-        numLargeFiles: Int
+        numLargeFiles: Int,
     ) {
         totalFiles = numFiles
         n.updateBackupNotification(
@@ -40,7 +40,7 @@ public open class NotificationBackupObserver internal constructor(private val n:
         wasUploaded: Boolean,
         reusedChunks: Int,
         bytesWritten: Long,
-        tag: String
+        tag: String,
     ) {
         filesBackedUp++
         n.updateBackupNotification(

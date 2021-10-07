@@ -25,7 +25,7 @@ private val TAG = StorageViewModel::class.java.simpleName
 
 internal abstract class StorageViewModel(
     private val app: Application,
-    protected val settingsManager: SettingsManager
+    protected val settingsManager: SettingsManager,
 ) : AndroidViewModel(app), RemovableStorageListener {
 
     private val mStorageRoots = MutableLiveData<List<StorageRoot>>()
@@ -48,7 +48,7 @@ internal abstract class StorageViewModel(
     companion object {
         internal fun validLocationIsSet(
             context: Context,
-            settingsManager: SettingsManager
+            settingsManager: SettingsManager,
         ): Boolean {
             val storage = settingsManager.getStorage() ?: return false
             if (storage.isUsb) return true

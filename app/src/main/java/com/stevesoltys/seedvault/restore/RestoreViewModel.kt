@@ -75,7 +75,7 @@ internal class RestoreViewModel(
     private val restoreCoordinator: RestoreCoordinator,
     private val apkRestore: ApkRestore,
     storageBackup: StorageBackup,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager),
     RestorableBackupClickListener, SnapshotViewModel {
 
@@ -247,7 +247,7 @@ internal class RestoreViewModel(
     @WorkerThread
     private fun getFailedStatus(
         packageName: String,
-        restorableBackup: RestorableBackup = chosenRestorableBackup.value!!
+        restorableBackup: RestorableBackup = chosenRestorableBackup.value!!,
     ): AppBackupState {
         val metadata = restorableBackup.packageMetadataMap[packageName] ?: return FAILED
         return when (metadata.state) {
@@ -369,7 +369,7 @@ internal class RestoreViewModel(
 
 internal class RestoreSetResult(
     internal val restorableBackups: List<RestorableBackup>,
-    internal val errorMsg: String?
+    internal val errorMsg: String?,
 ) {
 
     internal constructor(restorableBackups: List<RestorableBackup>) : this(restorableBackups, null)

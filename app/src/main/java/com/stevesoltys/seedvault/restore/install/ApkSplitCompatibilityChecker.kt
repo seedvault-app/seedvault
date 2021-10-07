@@ -58,7 +58,7 @@ class ApkSplitCompatibilityChecker(private val deviceInfo: DeviceInfo) {
     private fun isCompatible(
         deviceName: String,
         unknownAllowed: Boolean,
-        splitName: String
+        splitName: String,
     ): Boolean {
         val index = splitName.indexOf(CONFIG_PREFIX)
         // If this is not a standardized config split

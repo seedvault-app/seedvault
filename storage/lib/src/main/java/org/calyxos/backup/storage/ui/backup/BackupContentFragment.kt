@@ -33,7 +33,7 @@ public class OpenTree : OpenDocumentTree() {
         return super.createIntent(context, input).apply {
             addFlags(
                 FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION or
-                        FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                    FLAG_GRANT_PERSISTABLE_URI_PERMISSION
             )
         }
     }
@@ -50,7 +50,7 @@ public abstract class BackupContentFragment : Fragment(), ContentClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v = inflater.inflate(R.layout.fragment_backup_content, container, false)
         val list: RecyclerView = v.findViewById(R.id.list)

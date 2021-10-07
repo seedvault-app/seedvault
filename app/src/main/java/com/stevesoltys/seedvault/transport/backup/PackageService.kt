@@ -28,7 +28,7 @@ private const val LOG_MAX_PACKAGES = 100
  */
 internal class PackageService(
     private val context: Context,
-    private val backupManager: IBackupManager
+    private val backupManager: IBackupManager,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
@@ -144,7 +144,7 @@ internal data class ExpectedAppTotals(
     /**
      * The number of non-system apps that has opted-out of backup.
      */
-    val appsOptOut: Int
+    val appsOptOut: Int,
 )
 
 internal fun PackageInfo.isUserVisible(context: Context): Boolean {

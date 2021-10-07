@@ -48,7 +48,7 @@ internal class SettingsViewModel(
     private val notificationManager: BackupNotificationManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
-    private val storageBackup: StorageBackup
+    private val storageBackup: StorageBackup,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
@@ -56,7 +56,7 @@ internal class SettingsViewModel(
 
     override val isRestoreOperation = false
 
-    private val mBackupPossible = MutableLiveData<Boolean>(false)
+    private val mBackupPossible = MutableLiveData(false)
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
     internal val lastBackupTime = metadataManager.lastBackupTime

@@ -28,7 +28,7 @@ public val mediaUris: List<Uri> = listOf(
 
 public sealed class BackupContentType(
     @DrawableRes
-    public val drawableRes: Int
+    public val drawableRes: Int,
 ) {
     public object Custom : BackupContentType(R.drawable.ic_folder) {
         public fun getName(uri: Uri): String {

@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 
 internal class InstallIntentCreator(
-    private val packageManager: PackageManager
+    private val packageManager: PackageManager,
 ) {
 
     private val installerToPackage = mapOf(

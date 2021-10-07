@@ -30,7 +30,7 @@ internal class ApkBackup(
     private val pm: PackageManager,
     private val crypto: Crypto,
     private val settingsManager: SettingsManager,
-    private val metadataManager: MetadataManager
+    private val metadataManager: MetadataManager,
 ) {
 
     /**
@@ -46,7 +46,7 @@ internal class ApkBackup(
     suspend fun backupApkIfNecessary(
         packageInfo: PackageInfo,
         packageState: PackageState,
-        streamGetter: suspend (name: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream,
     ): PackageMetadata? {
         // do not back up @pm@
         val packageName = packageInfo.packageName
@@ -126,7 +126,7 @@ internal class ApkBackup(
 
     private fun signaturesChanged(
         packageMetadata: PackageMetadata,
-        signatures: List<String>
+        signatures: List<String>,
     ): Boolean {
         // no signatures in package metadata counts as them not having changed
         if (packageMetadata.signatures == null) return false
@@ -151,7 +151,7 @@ internal class ApkBackup(
     @Throws(IOException::class)
     private suspend fun backupSplitApks(
         packageInfo: PackageInfo,
-        streamGetter: suspend (name: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream,
     ): List<ApkSplit> {
         check(packageInfo.splitNames != null)
         val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs
@@ -178,7 +178,7 @@ internal class ApkBackup(
         packageName: String,
         splitName: String,
         sourceDir: String,
-        streamGetter: suspend (name: String) -> OutputStream
+        streamGetter: suspend (name: String) -> OutputStream,
     ): ApkSplit {
         // Calculate sha256 hash first to determine file name suffix.
         // We could also just use the split name as a suffix, but there is a theoretical risk

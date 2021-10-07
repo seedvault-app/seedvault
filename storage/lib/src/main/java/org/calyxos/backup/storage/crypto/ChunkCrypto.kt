@@ -21,7 +21,7 @@ internal object ChunkCrypto {
     @Throws(GeneralSecurityException::class)
     fun deriveChunkIdKey(
         masterKey: SecretKey,
-        info: ByteArray = INFO_CHUNK_ID.toByteArray()
+        info: ByteArray = INFO_CHUNK_ID.toByteArray(),
     ): ByteArray = Hkdf.expand(
         secretKey = masterKey,
         info = info,

@@ -8,7 +8,7 @@ import org.calyxos.backup.storage.ui.backup.BackupContentViewModel
 
 class FileSelectionViewModel(
     app: Application,
-    override val storageBackup: StorageBackup
+    override val storageBackup: StorageBackup,
 ) : BackupContentViewModel(app) {
 
     init {

@@ -34,7 +34,7 @@ private class KVRestoreState(
     /**
      * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
      */
-    val autoRestorePackageInfo: PackageInfo?
+    val autoRestorePackageInfo: PackageInfo?,
 )
 
 private val TAG = KVRestore::class.java.simpleName
@@ -47,7 +47,7 @@ internal class KVRestore(
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
     private val crypto: Crypto,
-    private val dbManager: KvDbManager
+    private val dbManager: KvDbManager,
 ) {
 
     private var state: KVRestoreState? = null
@@ -76,7 +76,7 @@ internal class KVRestore(
         token: Long,
         name: String,
         packageInfo: PackageInfo,
-        autoRestorePackageInfo: PackageInfo? = null
+        autoRestorePackageInfo: PackageInfo? = null,
     ) {
         state = KVRestoreState(version, token, name, packageInfo, autoRestorePackageInfo)
     }
@@ -238,7 +238,7 @@ internal class KVRestore(
     private suspend fun readAndWriteValueV0(
         state: KVRestoreState,
         dKey: DecodedKey,
-        out: BackupDataOutput
+        out: BackupDataOutput,
     ) = legacyPlugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
         .use { inputStream ->
             val version = headerReader.readVersion(inputStream, state.version)

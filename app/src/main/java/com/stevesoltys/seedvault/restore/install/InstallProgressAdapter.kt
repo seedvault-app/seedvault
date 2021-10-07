@@ -23,12 +23,12 @@ internal interface InstallItemListener {
 }
 
 internal class InstallProgressAdapter(
-    private val listener: InstallItemListener
+    private val listener: InstallItemListener,
 ) : Adapter<InstallProgressAdapter.AppInstallViewHolder>() {
 
     private var finished = false
     private val finishedComparator = FailedFirstComparator()
-    private val items = SortedList<ApkInstallResult>(
+    private val items = SortedList(
         ApkInstallResult::class.java,
         object : SortedListAdapterCallback<ApkInstallResult>(this) {
             override fun areItemsTheSame(item1: ApkInstallResult, item2: ApkInstallResult) =

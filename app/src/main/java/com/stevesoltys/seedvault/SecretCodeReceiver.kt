@@ -8,13 +8,13 @@ import android.util.Log
 import com.stevesoltys.seedvault.restore.RestoreActivity
 
 private val TAG = BroadcastReceiver::class.java.simpleName
-private val RESTORE_SECRET_CODE = "7378673"
+private const val RESTORE_SECRET_CODE = "7378673"
 
 class SecretCodeReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val host = intent.data.host
-        if (!RESTORE_SECRET_CODE.equals(host)) return
+        if (RESTORE_SECRET_CODE != host) return
         Log.d(TAG, "Restore secret code received.")
         val i = Intent(context, RestoreActivity::class.java).apply {
             flags = FLAG_ACTIVITY_NEW_TASK

@@ -17,7 +17,7 @@ private val TAG = DocumentsProviderStoragePlugin::class.java.simpleName
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderStoragePlugin(
     private val context: Context,
-    private val storage: DocumentsStorage
+    private val storage: DocumentsStorage,
 ) : StoragePlugin {
 
     private val packageManager: PackageManager = context.packageManager

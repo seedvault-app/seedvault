@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -41,7 +42,7 @@ internal class ApkInstaller(private val context: Context) {
         cachedApks: List<File>,
         packageName: String,
         installerPackageName: String?,
-        installResult: MutableInstallResult
+        installResult: MutableInstallResult,
     ) = suspendCancellableCoroutine<InstallResult> { cont ->
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, i: Intent) {
@@ -84,8 +85,12 @@ internal class ApkInstaller(private val context: Context) {
             flags = FLAG_RECEIVER_FOREGROUND
             setPackage(context.packageName)
         }
-        val pendingIntent =
-            PendingIntent.getBroadcast(context, 0, broadcastIntent, FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            broadcastIntent,
+            FLAG_UPDATE_CURRENT or FLAG_MUTABLE, // needs to be mutable, otherwise no extras
+        )
         return pendingIntent.intentSender
     }
 
@@ -93,7 +98,7 @@ internal class ApkInstaller(private val context: Context) {
         i: Intent,
         expectedPackageName: String,
         cachedApks: List<File>,
-        installResult: MutableInstallResult
+        installResult: MutableInstallResult,
     ): InstallResult {
         val packageName = i.getStringExtra(EXTRA_PACKAGE_NAME)!!
         val success = i.getIntExtra(EXTRA_STATUS, -1) == STATUS_SUCCESS

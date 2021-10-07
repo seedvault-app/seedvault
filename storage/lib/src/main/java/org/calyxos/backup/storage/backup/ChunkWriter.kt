@@ -36,7 +36,7 @@ internal class ChunkWriter(
     fun writeChunk(
         inputStream: InputStream,
         chunks: List<Chunk>,
-        missingChunkIds: List<String>
+        missingChunkIds: List<String>,
     ): ChunkWriterResult {
         var writtenChunks = 0
         var writtenBytes = 0L
@@ -77,7 +77,7 @@ internal class ChunkWriter(
     private fun copyChunkFromInputStream(
         inputStream: InputStream,
         chunk: Chunk,
-        outputStream: OutputStream
+        outputStream: OutputStream,
     ) {
         var totalBytesRead = 0L
         do {
@@ -101,7 +101,7 @@ internal class ChunkWriter(
     fun writeZipChunk(
         chunk: ZipChunk,
         zip: ByteArrayOutputStream,
-        missingChunkIds: List<String>
+        missingChunkIds: List<String>,
     ): Boolean {
         val cachedChunk = chunksCache.get(chunk.id)
         val isMissing = chunk.id in missingChunkIds

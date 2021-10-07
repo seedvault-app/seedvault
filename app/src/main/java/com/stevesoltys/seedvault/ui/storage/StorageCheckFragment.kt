@@ -37,7 +37,7 @@ class StorageCheckFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_check, container, false)
 

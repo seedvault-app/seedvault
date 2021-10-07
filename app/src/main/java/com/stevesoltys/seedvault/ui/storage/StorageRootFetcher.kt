@@ -41,7 +41,7 @@ data class StorageRoot(
     internal val isUsb: Boolean,
     internal val requiresNetwork: Boolean,
     internal val enabled: Boolean = true,
-    internal val overrideClickListener: (() -> Unit)? = null
+    internal val overrideClickListener: (() -> Unit)? = null,
 ) {
 
     internal val uri: Uri by lazy {

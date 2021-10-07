@@ -23,7 +23,7 @@ private class FullBackupState(
     val packageInfo: PackageInfo,
     val inputFileDescriptor: ParcelFileDescriptor,
     val inputStream: InputStream,
-    var outputStreamInit: (suspend () -> OutputStream)?
+    var outputStreamInit: (suspend () -> OutputStream)?,
 ) {
     /**
      * This is an encrypted stream that can be written to directly.
@@ -42,7 +42,7 @@ internal class FullBackup(
     private val plugin: StoragePlugin,
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
-    private val crypto: Crypto
+    private val crypto: Crypto,
 ) {
 
     private var state: FullBackupState? = null
@@ -104,7 +104,7 @@ internal class FullBackup(
         socket: ParcelFileDescriptor,
         @Suppress("UNUSED_PARAMETER") flags: Int = 0,
         token: Long,
-        salt: String
+        salt: String,
     ): Int {
         if (state != null) throw AssertionError()
         val packageName = targetPackage.packageName

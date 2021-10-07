@@ -108,7 +108,7 @@ public object DocumentFileExt {
     public fun getTreeDocumentFile(
         parent: DocumentFile,
         context: Context,
-        uri: Uri
+        uri: Uri,
     ): DocumentFile {
         @SuppressWarnings("MagicNumber")
         val constructor = parent.javaClass.declaredConstructors.find {
@@ -128,7 +128,7 @@ public object DocumentFileExt {
      */
     public suspend fun DocumentFile.findFileBlocking(
         context: Context,
-        displayName: String
+        displayName: String,
     ): DocumentFile? {
         val files = try {
             listFilesBlocking(context)

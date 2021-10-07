@@ -51,7 +51,7 @@ internal class MetadataReadWriteTest {
     }
 
     private fun getMetadata(
-        packageMetadata: HashMap<String, PackageMetadata> = HashMap()
+        packageMetadata: HashMap<String, PackageMetadata> = HashMap(),
     ): BackupMetadata {
         return BackupMetadata(
             version = VERSION,

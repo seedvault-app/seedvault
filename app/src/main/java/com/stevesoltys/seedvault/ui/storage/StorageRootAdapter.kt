@@ -17,7 +17,7 @@ import com.stevesoltys.seedvault.ui.storage.StorageRootAdapter.StorageRootViewHo
 
 internal class StorageRootAdapter(
     private val isRestore: Boolean,
-    private val listener: StorageRootClickedListener
+    private val listener: StorageRootClickedListener,
 ) : Adapter<StorageRootViewHolder>() {
 
     private val items = ArrayList<StorageRoot>()

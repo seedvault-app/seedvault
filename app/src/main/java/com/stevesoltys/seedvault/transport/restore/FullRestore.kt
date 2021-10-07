@@ -25,7 +25,7 @@ private class FullRestoreState(
     val version: Byte,
     val token: Long,
     val name: String,
-    val packageInfo: PackageInfo
+    val packageInfo: PackageInfo,
 ) {
     var inputStream: InputStream? = null
 }
@@ -39,7 +39,7 @@ internal class FullRestore(
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
     private val headerReader: HeaderReader,
-    private val crypto: Crypto
+    private val crypto: Crypto,
 ) {
 
     private var state: FullRestoreState? = null

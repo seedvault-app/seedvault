@@ -72,8 +72,8 @@
 
         <activity
             android:name=".settings.SettingsActivity"
-            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS" />
 
         <activity
             android:name=".ui.storage.StorageActivity"
@@ -91,9 +91,9 @@
 
         <activity
             android:name=".restore.RestoreActivity"
-            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
             android:exported="true"
             android:label="@string/restore_title"
+            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="com.stevesoltys.seedvault.RESTORE_BACKUP" />
@@ -134,7 +134,9 @@
             <intent-filter>
                 <action android:name="android.telephony.action.SECRET_CODE" />
                 <!-- *#*#RESTORE#*#* -->
-                <data android:scheme="android_secret_code" android:host="7378673" />
+                <data
+                    android:host="7378673"
+                    android:scheme="android_secret_code" />
             </intent-filter>
         </receiver>
 

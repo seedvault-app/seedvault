@@ -11,7 +11,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
@@ -35,7 +34,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         setHasOptionsMenu(true)
         val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
@@ -57,7 +56,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         }
 
         progressBar.visibility = VISIBLE
-        viewModel.appStatusList.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.appStatusList.observe(viewLifecycleOwner, { result ->
             adapter.update(result.appStatusList, result.diff)
             progressBar.visibility = INVISIBLE
         })
@@ -69,7 +68,7 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         appEditMenuItem = menu.findItem(R.id.edit_app_blacklist)
 
         // observe edit mode changes here where we are sure to have the MenuItem
-        viewModel.appEditMode.observe(viewLifecycleOwner, Observer { enabled ->
+        viewModel.appEditMode.observe(viewLifecycleOwner, { enabled ->
             appEditMenuItem.isChecked = enabled
             adapter.setEditMode(enabled)
         })

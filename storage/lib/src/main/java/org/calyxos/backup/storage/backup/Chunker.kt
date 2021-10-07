@@ -10,7 +10,7 @@ import kotlin.math.min
 internal data class Chunk(
     val id: String,
     val offset: Long,
-    val size: Long
+    val size: Long,
 ) {
     fun toCachedChunk() = CachedChunk(id, 0, size)
 }
