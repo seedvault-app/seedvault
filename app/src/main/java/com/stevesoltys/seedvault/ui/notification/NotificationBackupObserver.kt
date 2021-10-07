@@ -11,8 +11,8 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 private val TAG = NotificationBackupObserver::class.java.simpleName
 

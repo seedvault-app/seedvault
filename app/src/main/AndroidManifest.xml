@@ -129,7 +129,8 @@
         </receiver>
 
         <receiver
-            android:name=".SecretCodeReceiver">
+            android:name=".SecretCodeReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.telephony.action.SECRET_CODE" />
                 <!-- *#*#RESTORE#*#* -->

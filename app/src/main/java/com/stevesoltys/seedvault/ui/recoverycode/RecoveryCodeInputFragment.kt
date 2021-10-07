@@ -166,6 +166,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
     @RequiresApi(30)
     private fun storeNewCodeAfterAuth(input: List<CharSequence>) {
+        val context = requireContext()
         val biometricPrompt = BiometricPrompt.Builder(context)
             .setConfirmationRequired(true)
             .setTitle(getString(R.string.recovery_code_auth_title))

@@ -27,6 +27,7 @@ android_app {
         "kotlin-stdlib-jdk8",
         "androidx.core_core-ktx",
         "androidx.preference_preference",
+        "androidx.documentfile_documentfile",
         "androidx.lifecycle_lifecycle-viewmodel-ktx",
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
@@ -37,9 +38,8 @@ android_app {
         "androidx.room_room-runtime",
         "libprotobuf-java-lite",
         // koin
-        "seedvault-lib-koin-core", // did not manage to add this as transitive dependency
+        "seedvault-lib-koin-core-jvm", // did not manage to add this as transitive dependency
         "seedvault-lib-koin-android",
-        "seedvault-lib-koin-androidx-viewmodel",
         // bip39
         "seedvault-lib-kotlin-bip39",
     ],

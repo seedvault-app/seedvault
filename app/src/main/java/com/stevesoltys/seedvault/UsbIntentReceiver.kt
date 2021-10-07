@@ -22,7 +22,7 @@ import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
-import org.koin.core.context.KoinContextHandler.get
+import org.koin.core.context.GlobalContext.get
 import java.util.concurrent.TimeUnit.HOURS
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
@@ -32,8 +32,8 @@ private const val HOURS_AUTO_BACKUP: Long = 24
 class UsbIntentReceiver : UsbMonitor() {
 
     // using KoinComponent would crash robolectric tests :(
-    private val settingsManager: SettingsManager by lazy { get().get<SettingsManager>() }
-    private val metadataManager: MetadataManager by lazy { get().get<MetadataManager>() }
+    private val settingsManager: SettingsManager by lazy { get().get() }
+    private val metadataManager: MetadataManager by lazy { get().get() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false

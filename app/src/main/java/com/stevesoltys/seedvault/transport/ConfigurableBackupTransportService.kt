@@ -14,9 +14,9 @@ import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
-import org.koin.core.KoinComponent
-import org.koin.core.context.KoinContextHandler.get
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.context.GlobalContext.get
 
 private val TAG = ConfigurableBackupTransportService::class.java.simpleName
 

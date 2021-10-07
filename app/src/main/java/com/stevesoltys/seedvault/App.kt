@@ -7,6 +7,7 @@ import android.content.Context.BACKUP_SERVICE
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.os.StrictMode
+import org.koin.core.logger.Level
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -77,7 +78,7 @@ open class App : Application() {
     }
 
     protected open fun startKoin() = startKoin {
-        androidLogger()
+        androidLogger(Level.ERROR)
         androidContext(this@App)
         modules(
             listOf(
