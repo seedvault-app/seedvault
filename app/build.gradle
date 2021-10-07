@@ -1,9 +1,7 @@
-import groovy.xml.XmlUtil
-
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "org.jlleitschuh.gradle.ktlint" version "9.4.0"
+    id "org.jlleitschuh.gradle.ktlint" version "10.2.0"
 }
 
 def gitDescribe = { ->
@@ -34,7 +32,9 @@ android {
     }
 
     lintOptions {
-        disable "CheckedExceptions"
+        disable "DialogFragmentCallbacksDetector",
+                "InvalidFragmentVersionForActivityResult",
+                "CheckedExceptions"
         abortOnError true
     }
     compileOptions {
@@ -43,7 +43,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        languageVersion = "1.3"
+        languageVersion = "1.4"
     }
     testOptions {
         unitTests.all {
@@ -98,6 +98,7 @@ dependencies {
     implementation rootProject.ext.std_libs.androidx_core
     // A newer version gets pulled in with AOSP via core, so we include fragment here explicitly
     implementation rootProject.ext.std_libs.androidx_fragment
+    implementation rootProject.ext.std_libs.androidx_activity
     implementation rootProject.ext.std_libs.androidx_preference
     implementation rootProject.ext.std_libs.androidx_lifecycle_viewmodel_ktx
     implementation rootProject.ext.std_libs.androidx_lifecycle_livedata_ktx
@@ -119,12 +120,15 @@ dependencies {
      * If the dependencies below are updated,
      * please make sure to update the prebuilt libraries and the Android.bp files
      * in the top-level `libs` folder to reflect that.
-     * You can copy these libraries from ~/.gradle/caches/modules-2
+     * You can copy these libraries from ~/.gradle/caches/modules-2/files-2.1
      */
     // later versions than 2.1.1 require newer kotlin version
+//    implementation "io.insert-koin:koin-core-jvm:3.1.2"
+//    implementation "io.insert-koin:koin-android:3.1.2"
     implementation fileTree(include: ['*.jar'], dir: "${rootProject.rootDir}/libs/koin-android")
     implementation fileTree(include: ['*.aar'], dir: "${rootProject.rootDir}/libs/koin-android")
 
+//    implementation "cash.z.ecc.android:kotlin-bip39:1.0.2"
     implementation fileTree(include: ['kotlin-bip39-1.0.2.jar'], dir: "${rootProject.rootDir}/libs")
 
     /**
@@ -134,7 +138,7 @@ dependencies {
 
     // anything less than 'implementation' fails tests run with gradlew
     testImplementation rootProject.ext.aosp_libs
-    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'androidx.test.ext:junit:1.1.3'
     testImplementation('org.robolectric:robolectric:4.3.1') { // 4.4 has issue with non-idle Looper
         // https://github.com/robolectric/robolectric/issues/5245
         exclude group: "com.google.auto.service", module: "auto-service"
@@ -146,9 +150,9 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
 
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test:rules:1.3.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
 }
 
@@ -160,30 +164,6 @@ gradle.projectsEvaluated {
             options.compilerArgs.addAll(['--release', '8'])
         }
         options.compilerArgs.add('-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar')
-    }
-}
-
-// http://www.31mins.com/android-studio-build-system-application/
-preBuild.doLast {
-    def imlFile = file(project.name + ".iml")
-
-    try {
-        def parsedXml = (new XmlParser()).parse(imlFile)
-        def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
-        parsedXml.component[1].remove(jdkNode)
-
-        def apiString = android.compileSdkVersion.substring("android-".length())
-        def sdkString = "Android API " + apiString + " Platform"
-        //noinspection GroovyResultOfObjectAllocationIgnored // the note gets inserted
-        new Node(parsedXml.component[1], 'orderEntry', [
-                'type'   : 'jdk',
-                'jdkName': sdkString,
-                'jdkType': 'Android SDK'
-        ])
-        XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
-
-    } catch (NullPointerException | FileNotFoundException ex) {
-        ex.printStackTrace()
     }
 }
 

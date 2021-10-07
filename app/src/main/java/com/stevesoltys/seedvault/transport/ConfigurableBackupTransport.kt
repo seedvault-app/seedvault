@@ -14,8 +14,8 @@ import com.stevesoltys.seedvault.settings.SettingsActivity
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import kotlinx.coroutines.runBlocking
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 // If we ever change this, we should use a ComponentName like the other backup transports.
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name

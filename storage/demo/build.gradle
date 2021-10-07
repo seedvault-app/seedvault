@@ -34,6 +34,10 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
+    lintOptions {
+        disable "DialogFragmentCallbacksDetector",
+                "InvalidFragmentVersionForActivityResult"
+    }
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
         exclude 'META-INF/androidx.*.version'
@@ -45,9 +49,12 @@ android {
 dependencies {
     implementation project(':storage:lib')
 
+    implementation rootProject.ext.kotlin_libs.std
+
     implementation rootProject.ext.std_libs.androidx_core
     // A newer version gets pulled in with AOSP via core, so we include fragment here explicitly
     implementation rootProject.ext.std_libs.androidx_fragment
+    implementation rootProject.ext.std_libs.androidx_activity
     implementation rootProject.ext.std_libs.androidx_lifecycle_viewmodel_ktx
     implementation rootProject.ext.std_libs.androidx_lifecycle_livedata_ktx
     implementation rootProject.ext.std_libs.androidx_constraintlayout
