@@ -48,14 +48,6 @@ fun ByteArray.toHexString(spacer: String = " "): String {
 
 fun String.toByteArrayFromHex() = chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 
-fun ByteArray.toIntString(): String {
-    var str = ""
-    for (b in this) {
-        str += String.format("%02d ", b)
-    }
-    return str
-}
-
 fun OutputStream.writeAndClose(data: ByteArray) = use {
     it.write(data)
 }

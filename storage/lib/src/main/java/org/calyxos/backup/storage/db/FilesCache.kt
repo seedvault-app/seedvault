@@ -23,7 +23,7 @@ internal data class CachedFile(
      */
     @ColumnInfo(name = "zip_index") val zipIndex: Int? = null,
     // TODO also purge files from the cache from time to time
-    @ColumnInfo(name = "last_seen") val lastSeen: Long
+    @ColumnInfo(name = "last_seen") val lastSeen: Long,
 )
 
 @Dao

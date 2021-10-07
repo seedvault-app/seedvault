@@ -1,5 +1,9 @@
 package org.calyxos.backup.contacts;
 
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.WRITE_CONTACTS;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 import android.app.backup.BackupAgent;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
@@ -15,10 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
-
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.WRITE_CONTACTS;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class ContactsBackupAgent extends BackupAgent implements FullBackupFileHandler {
 

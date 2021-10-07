@@ -13,7 +13,7 @@ import java.io.InputStream
 @Suppress("BlockingMethodInNonBlockingContext", "Deprecation") // all methods do I/O
 internal class DocumentsProviderLegacyPlugin(
     private val context: Context,
-    private val storage: DocumentsStorage
+    private val storage: DocumentsStorage,
 ) : LegacyStoragePlugin {
 
     private var packageDir: DocumentFile? = null
@@ -50,7 +50,7 @@ internal class DocumentsProviderLegacyPlugin(
     override suspend fun getInputStreamForRecord(
         token: Long,
         packageInfo: PackageInfo,
-        key: String
+        key: String,
     ): InputStream {
         val packageDir = this.packageDir
             ?: throw AssertionError("No cached packageDir for ${packageInfo.packageName}")
@@ -70,7 +70,7 @@ internal class DocumentsProviderLegacyPlugin(
     @Throws(IOException::class)
     override suspend fun getInputStreamForPackage(
         token: Long,
-        packageInfo: PackageInfo
+        packageInfo: PackageInfo,
     ): InputStream {
         val backupDir = storage.getFullBackupDir(token) ?: throw IOException()
         val packageFile =
@@ -82,7 +82,7 @@ internal class DocumentsProviderLegacyPlugin(
     override suspend fun getApkInputStream(
         token: Long,
         packageName: String,
-        suffix: String
+        suffix: String,
     ): InputStream {
         val setDir = storage.getSetDir(token) ?: throw IOException()
         val file = setDir.findFileBlocking(context, "$packageName$suffix.apk")

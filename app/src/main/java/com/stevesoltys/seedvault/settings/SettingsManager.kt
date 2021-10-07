@@ -146,7 +146,7 @@ data class Storage(
     val uri: Uri,
     val name: String,
     val isUsb: Boolean,
-    val requiresNetwork: Boolean
+    val requiresNetwork: Boolean,
 ) {
     fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
         ?: throw AssertionError("Should only happen on API < 21.")
@@ -171,7 +171,7 @@ data class Storage(
 
     private fun hasUnmeteredInternet(context: Context): Boolean {
         val cm = context.getSystemService(ConnectivityManager::class.java)
-        val isMetered = cm.isActiveNetworkMetered()
+        val isMetered = cm.isActiveNetworkMetered
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered
     }
@@ -181,7 +181,7 @@ data class FlashDrive(
     val name: String,
     val serialNumber: String?,
     val vendorId: Int,
-    val productId: Int
+    val productId: Int,
 ) {
     companion object {
         fun from(device: UsbDevice) = FlashDrive(

@@ -17,7 +17,7 @@ internal class ZipChunkRestore(
     storagePlugin: StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
-    streamKey: ByteArray
+    streamKey: ByteArray,
 ) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
 
     /**
@@ -27,7 +27,7 @@ internal class ZipChunkRestore(
         version: Int,
         storedSnapshot: StoredSnapshot,
         zipChunks: Collection<RestorableChunk>,
-        observer: RestoreObserver?
+        observer: RestoreObserver?,
     ): Int {
         var restoredFiles = 0
         zipChunks.forEach { zipChunk ->
@@ -51,7 +51,7 @@ internal class ZipChunkRestore(
     private suspend fun restoreZipChunk(
         zipChunk: RestorableChunk,
         decryptedStream: InputStream,
-        observer: RestoreObserver?
+        observer: RestoreObserver?,
     ): Int {
         var restoredFiles = 0
         ZipInputStream(decryptedStream).use { zip ->

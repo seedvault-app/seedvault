@@ -30,7 +30,7 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         requireActivity().setTitle(R.string.snapshots_title)
 

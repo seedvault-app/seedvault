@@ -7,7 +7,6 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
-import com.stevesoltys.seedvault.ui.LiveEventHandler
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecoveryCodeActivity : BackupActivity() {
@@ -23,10 +22,10 @@ class RecoveryCodeActivity : BackupActivity() {
         setContentView(R.layout.activity_recovery_code)
 
         viewModel.isRestore = isRestore()
-        viewModel.confirmButtonClicked.observeEvent(this, LiveEventHandler { clicked ->
+        viewModel.confirmButtonClicked.observeEvent(this, { clicked ->
             if (clicked) showInput(true)
         })
-        viewModel.recoveryCodeSaved.observeEvent(this, LiveEventHandler { saved ->
+        viewModel.recoveryCodeSaved.observeEvent(this, { saved ->
             if (saved) {
                 setResult(RESULT_OK)
                 finishAfterTransition()

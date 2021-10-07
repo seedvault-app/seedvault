@@ -19,7 +19,7 @@ internal const val MAX_VERSION_HEADER_SIZE =
 internal data class VersionHeader(
     internal val version: Byte = VERSION, //  1 byte
     internal val packageName: String, // ?? bytes (max 255)
-    internal val key: String? = null // ?? bytes
+    internal val key: String? = null, // ?? bytes
 ) {
     init {
         check(packageName.length <= MAX_PACKAGE_LENGTH_SIZE) {
@@ -64,7 +64,7 @@ internal const val SEGMENT_HEADER_SIZE = SEGMENT_LENGTH_SIZE + IV_SIZE
 @Deprecated("Don't do manual segments, use Crypto interface instead.")
 class SegmentHeader(
     internal val segmentLength: Short, //  2 bytes
-    internal val nonce: ByteArray // 12 bytes
+    internal val nonce: ByteArray, // 12 bytes
 ) {
     init {
         check(nonce.size == IV_SIZE) {

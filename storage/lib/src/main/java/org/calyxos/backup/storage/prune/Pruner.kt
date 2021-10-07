@@ -53,7 +53,7 @@ internal class Pruner(
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun pruneSnapshot(
         storedSnapshot: StoredSnapshot,
-        backupObserver: BackupObserver?
+        backupObserver: BackupObserver?,
     ) {
         val snapshot = snapshotRetriever.getSnapshot(streamKey, storedSnapshot)
         val chunks = HashSet<String>()

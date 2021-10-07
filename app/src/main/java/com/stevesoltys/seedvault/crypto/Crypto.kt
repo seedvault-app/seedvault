@@ -57,7 +57,7 @@ internal interface Crypto {
     @Throws(IOException::class, GeneralSecurityException::class)
     fun newEncryptingStream(
         outputStream: OutputStream,
-        associatedData: ByteArray
+        associatedData: ByteArray,
     ): OutputStream
 
     /**
@@ -67,7 +67,7 @@ internal interface Crypto {
     @Throws(IOException::class, GeneralSecurityException::class)
     fun newDecryptingStream(
         inputStream: InputStream,
-        associatedData: ByteArray
+        associatedData: ByteArray,
     ): InputStream
 
     /**
@@ -78,13 +78,14 @@ internal interface Crypto {
      *
      * @return The read [VersionHeader] present in the beginning of the given [InputStream].
      */
+    @Suppress("Deprecation")
     @Deprecated("Use newDecryptingStream instead")
     @Throws(IOException::class, SecurityException::class)
     fun decryptHeader(
         inputStream: InputStream,
         expectedVersion: Byte,
         expectedPackageName: String,
-        expectedKey: String? = null
+        expectedKey: String? = null,
     ): VersionHeader
 
     /**
@@ -118,7 +119,7 @@ internal const val TYPE_BACKUP_FULL: Byte = 0x02
 internal class CryptoImpl(
     private val keyManager: KeyManager,
     private val cipherFactory: CipherFactory,
-    private val headerReader: HeaderReader
+    private val headerReader: HeaderReader,
 ) : Crypto {
 
     private val key: ByteArray by lazy {
@@ -151,7 +152,7 @@ internal class CryptoImpl(
     @Throws(IOException::class, GeneralSecurityException::class)
     override fun newEncryptingStream(
         outputStream: OutputStream,
-        associatedData: ByteArray
+        associatedData: ByteArray,
     ): OutputStream {
         return StreamCrypto.newEncryptingStream(key, outputStream, associatedData)
     }
@@ -159,18 +160,19 @@ internal class CryptoImpl(
     @Throws(IOException::class, GeneralSecurityException::class)
     override fun newDecryptingStream(
         inputStream: InputStream,
-        associatedData: ByteArray
+        associatedData: ByteArray,
     ): InputStream {
         return StreamCrypto.newDecryptingStream(key, inputStream, associatedData)
     }
 
+    @Suppress("Deprecation")
     @Throws(IOException::class, SecurityException::class)
     @Deprecated("Use newDecryptingStream instead")
     override fun decryptHeader(
         inputStream: InputStream,
         expectedVersion: Byte,
         expectedPackageName: String,
-        expectedKey: String?
+        expectedKey: String?,
     ): VersionHeader {
         val decrypted = decryptSegment(inputStream, MAX_VERSION_HEADER_SIZE)
         val header = headerReader.getVersionHeader(decrypted)
@@ -214,6 +216,7 @@ internal class CryptoImpl(
         }
     }
 
+    @Suppress("Deprecation")
     @Throws(EOFException::class, IOException::class, SecurityException::class)
     private fun decryptSegment(inputStream: InputStream, maxSegmentLength: Int): ByteArray {
         val segmentHeader = headerReader.readSegmentHeader(inputStream)

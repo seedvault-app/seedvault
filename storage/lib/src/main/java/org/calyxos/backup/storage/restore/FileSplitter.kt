@@ -6,7 +6,7 @@ import org.calyxos.backup.storage.backup.BackupMediaFile
 import org.calyxos.backup.storage.backup.BackupSnapshot
 
 internal data class RestorableChunk(
-    val chunkId: String
+    val chunkId: String,
 ) {
     val files: ArrayList<RestorableFile> = ArrayList()
     val isSingle: Boolean get() = files.size == 1 && files[0].chunkIdsCount == 1

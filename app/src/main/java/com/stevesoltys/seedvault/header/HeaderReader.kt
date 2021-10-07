@@ -11,11 +11,13 @@ internal interface HeaderReader {
     @Throws(IOException::class, UnsupportedVersionException::class)
     fun readVersion(inputStream: InputStream, expectedVersion: Byte): Byte
 
-    @Deprecated("")
+    @Suppress("Deprecation")
+    @Deprecated("For restoring v0 backups only")
     @Throws(SecurityException::class)
     fun getVersionHeader(byteArray: ByteArray): VersionHeader
 
-    @Deprecated("")
+    @Suppress("Deprecation")
+    @Deprecated("For restoring v0 backups only")
     @Throws(EOFException::class, IOException::class)
     fun readSegmentHeader(inputStream: InputStream): SegmentHeader
 }
@@ -33,6 +35,7 @@ internal class HeaderReaderImpl : HeaderReader {
         return version
     }
 
+    @Suppress("OverridingDeprecatedMember", "Deprecation")
     override fun getVersionHeader(byteArray: ByteArray): VersionHeader {
         val buffer = ByteBuffer.wrap(byteArray)
         val version = buffer.get()
@@ -65,6 +68,7 @@ internal class HeaderReaderImpl : HeaderReader {
     }
 
     @Throws(EOFException::class, IOException::class)
+    @Suppress("OverridingDeprecatedMember", "Deprecation")
     override fun readSegmentHeader(inputStream: InputStream): SegmentHeader {
         val buffer = ByteArray(SEGMENT_HEADER_SIZE)
         val bytesRead = inputStream.read(buffer)

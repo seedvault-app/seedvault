@@ -24,7 +24,7 @@
         android:usesCleartextTraffic="false"
         tools:ignore="AllowBackup,MissingApplicationIcon">
 
-        <!-- We are using the receiver to not get FLAG_STOPPED with which we won't get backed up  -->
+        <!-- We are using the receiver to not get FLAG_STOPPED with which we won't get backed up -->
         <receiver
             android:name=".StartBroadcastReceiver"
             android:exported="false">

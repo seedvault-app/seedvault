@@ -34,7 +34,7 @@ interface LegacyStoragePlugin {
     suspend fun getInputStreamForRecord(
         token: Long,
         packageInfo: PackageInfo,
-        key: String
+        key: String,
     ): InputStream
 
     /**

@@ -37,7 +37,7 @@ internal class BackupStats(
         totalSize: Long,
         numFiles: Int,
         numSmallFiles: Int,
-        numLargeFiles: Int
+        numLargeFiles: Int,
     ) {
         super.onBackupStart(totalSize, numFiles, numSmallFiles, numLargeFiles)
 
@@ -46,7 +46,7 @@ internal class BackupStats(
 
         val totalSizeStr = Formatter.formatShortFileSize(context, totalSize)
         val text = "Backing up $totalFiles file(s) $totalSizeStr...\n" +
-                "  ($numSmallFiles small, $numLargeFiles large)\n"
+            "  ($numSmallFiles small, $numLargeFiles large)\n"
         liveData.postValue(BackupProgress(filesProcessed, totalFiles, text))
     }
 

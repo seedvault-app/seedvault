@@ -139,7 +139,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
 
 internal class AppStatusDiff(
     private val oldItems: List<AppListItem>,
-    private val newItems: List<AppListItem>
+    private val newItems: List<AppListItem>,
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldItems.size
@@ -163,5 +163,5 @@ internal class AppStatusDiff(
 
 internal class AppStatusResult(
     val appStatusList: List<AppListItem>,
-    val diff: DiffResult
+    val diff: DiffResult,
 )

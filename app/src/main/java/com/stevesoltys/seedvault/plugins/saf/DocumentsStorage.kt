@@ -27,8 +27,10 @@ import java.io.OutputStream
 import kotlin.coroutines.resume
 
 const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
+
 @Deprecated("")
 const val DIRECTORY_FULL_BACKUP = "full"
+
 @Deprecated("")
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
 const val FILE_BACKUP_METADATA = ".backup.metadata"
@@ -39,7 +41,7 @@ private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
     private val context: Context,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
 ) {
 
     private val contentResolver = context.contentResolver
@@ -143,7 +145,7 @@ internal class DocumentsStorage(
 internal suspend fun DocumentFile.createOrGetFile(
     context: Context,
     name: String,
-    mimeType: String = MIME_TYPE
+    mimeType: String = MIME_TYPE,
 ): DocumentFile {
     return try {
         findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {

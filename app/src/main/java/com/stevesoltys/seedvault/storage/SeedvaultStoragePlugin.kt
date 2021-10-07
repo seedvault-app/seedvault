@@ -10,7 +10,7 @@ import javax.crypto.SecretKey
 internal class SeedvaultStoragePlugin(
     context: Context,
     private val storage: DocumentsStorage,
-    private val keyManager: KeyManager
+    private val keyManager: KeyManager,
 ) : SafStoragePlugin(context) {
     override val root: DocumentFile
         get() = storage.rootBackupDir ?: error("No storage set")

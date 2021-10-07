@@ -84,7 +84,7 @@ public abstract class SafStoragePlugin(
     private suspend fun populateChunkFolders(
         folder: DocumentFile,
         chunkFolders: HashMap<String, DocumentFile>,
-        fileOp: ((DocumentFile, String) -> Unit)? = null
+        fileOp: ((DocumentFile, String) -> Unit)? = null,
     ) {
         val expectedChunkFolders = (0x00..0xff).map {
             Integer.toHexString(it).padStart(2, '0')
@@ -121,7 +121,7 @@ public abstract class SafStoragePlugin(
     private fun createMissingChunkFolders(
         root: DocumentFile,
         chunkFolders: HashMap<String, DocumentFile>,
-        expectedChunkFolders: Set<String>
+        expectedChunkFolders: Set<String>,
     ) {
         val s = expectedChunkFolders.size
         val duration = measure {
@@ -194,7 +194,7 @@ public abstract class SafStoragePlugin(
     @Throws(IOException::class)
     override suspend fun getChunkInputStream(
         snapshot: StoredSnapshot,
-        chunkId: String
+        chunkId: String,
     ): InputStream {
         if (cache.restoreChunkFolders.size < CHUNK_FOLDER_COUNT) {
             populateChunkFolders(getFolder(snapshot), cache.restoreChunkFolders)

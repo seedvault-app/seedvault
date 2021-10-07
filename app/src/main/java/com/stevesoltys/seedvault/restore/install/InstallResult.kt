@@ -89,7 +89,7 @@ internal class MutableInstallResult(override val total: Int) : InstallResult {
 
     fun update(
         packageName: String,
-        updateFun: (ApkInstallResult) -> ApkInstallResult
+        updateFun: (ApkInstallResult) -> ApkInstallResult,
     ): MutableInstallResult {
         val result = get(packageName)
         check(result != null) { "ApkRestoreResult for $packageName does not exist." }
@@ -118,7 +118,7 @@ data class ApkInstallResult(
     val state: ApkInstallState,
     val name: CharSequence? = null,
     val icon: Drawable? = null,
-    val installerPackageName: CharSequence? = null
+    val installerPackageName: CharSequence? = null,
 ) : Comparable<ApkInstallResult> {
     override fun compareTo(other: ApkInstallResult): Int {
         return other.progress.compareTo(progress)

@@ -34,7 +34,7 @@ internal class MetadataManager(
     private val clock: Clock,
     private val crypto: Crypto,
     private val metadataWriter: MetadataWriter,
-    private val metadataReader: MetadataReader
+    private val metadataReader: MetadataReader,
 ) {
 
     private val uninitializedMetadata = BackupMetadata(token = 0L, salt = "")
@@ -80,7 +80,7 @@ internal class MetadataManager(
     fun onApkBackedUp(
         packageInfo: PackageInfo,
         packageMetadata: PackageMetadata,
-        metadataOutputStream: OutputStream
+        metadataOutputStream: OutputStream,
     ) {
         val packageName = packageInfo.packageName
         metadata.packageMetadataMap[packageName]?.let {
@@ -129,7 +129,7 @@ internal class MetadataManager(
     fun onPackageBackedUp(
         packageInfo: PackageInfo,
         type: BackupType,
-        metadataOutputStream: OutputStream
+        metadataOutputStream: OutputStream,
     ) {
         val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
@@ -162,7 +162,7 @@ internal class MetadataManager(
         packageInfo: PackageInfo,
         packageState: PackageState,
         metadataOutputStream: OutputStream,
-        backupType: BackupType? = null
+        backupType: BackupType? = null,
     ) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
         val packageName = packageInfo.packageName

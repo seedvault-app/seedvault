@@ -12,7 +12,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -128,12 +127,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.lastBackupTime.observe(viewLifecycleOwner, Observer { time ->
+        viewModel.lastBackupTime.observe(viewLifecycleOwner, { time ->
             setAppBackupStatusSummary(time)
         })
 
         val backupFiles: Preference = findPreference("backup_files")!!
-        viewModel.filesSummary.observe(viewLifecycleOwner, Observer { summary ->
+        viewModel.filesSummary.observe(viewLifecycleOwner, { summary ->
             backupFiles.summary = summary
         })
     }
@@ -158,7 +157,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         if (resources.getBoolean(R.bool.show_restore_in_settings)) {
             menuRestore?.isVisible = true
         }
-        viewModel.backupPossible.observe(viewLifecycleOwner, Observer { possible ->
+        viewModel.backupPossible.observe(viewLifecycleOwner, { possible ->
             menuBackupNow?.isEnabled = possible
             menuRestore?.isEnabled = possible
         })

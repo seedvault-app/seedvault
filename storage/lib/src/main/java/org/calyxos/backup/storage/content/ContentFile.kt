@@ -81,7 +81,7 @@ internal data class MediaFile(
         if (generationMod) {
             Log.e(
                 "TEST", "$path has changed, because generation was " +
-                        "${cachedFile.generationModified}, now is $generationModified."
+                    "${cachedFile.generationModified}, now is $generationModified."
             )
         }
         return super.hasNotChanged(cachedFile) && !generationMod

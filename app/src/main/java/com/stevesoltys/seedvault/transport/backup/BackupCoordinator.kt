@@ -43,7 +43,7 @@ private val TAG = BackupCoordinator::class.java.simpleName
 private class CoordinatorState(
     var calledInitialize: Boolean,
     var calledClearBackupData: Boolean,
-    var cancelReason: PackageState
+    var cancelReason: PackageState,
 ) {
     val expectFinish: Boolean
         get() = calledInitialize || calledClearBackupData
@@ -71,7 +71,7 @@ internal class BackupCoordinator(
     private val packageService: PackageService,
     private val metadataManager: MetadataManager,
     private val settingsManager: SettingsManager,
-    private val nm: BackupNotificationManager
+    private val nm: BackupNotificationManager,
 ) {
 
     private val state = CoordinatorState(
@@ -140,7 +140,7 @@ internal class BackupCoordinator(
 
     fun isAppEligibleForBackup(
         targetPackage: PackageInfo,
-        @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean
+        @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean,
     ): Boolean {
         val packageName = targetPackage.packageName
         // Check that the app is not blacklisted by the user
@@ -230,7 +230,7 @@ internal class BackupCoordinator(
     suspend fun performIncrementalBackup(
         packageInfo: PackageInfo,
         data: ParcelFileDescriptor,
-        flags: Int
+        flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
         if (metadataManager.requiresInit) {
@@ -280,7 +280,7 @@ internal class BackupCoordinator(
     suspend fun performFullBackup(
         targetPackage: PackageInfo,
         fileDescriptor: ParcelFileDescriptor,
-        flags: Int
+        flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")
@@ -448,7 +448,7 @@ internal class BackupCoordinator(
      */
     private suspend fun backUpApk(
         packageInfo: PackageInfo,
-        packageState: PackageState = UNKNOWN_ERROR
+        packageState: PackageState = UNKNOWN_ERROR,
     ): Boolean {
         val packageName = packageInfo.packageName
         return try {

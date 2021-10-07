@@ -15,9 +15,7 @@ internal const val REQUEST_CODE_UNINSTALL = 4576841
 class RestoreErrorBroadcastReceiver : BroadcastReceiver() {
 
     // using KoinComponent would crash robolectric tests :(
-    private val notificationManager: BackupNotificationManager by lazy {
-        get().get<BackupNotificationManager>()
-    }
+    private val notificationManager: BackupNotificationManager by lazy { get().get() }
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != ACTION_RESTORE_ERROR_UNINSTALL) return

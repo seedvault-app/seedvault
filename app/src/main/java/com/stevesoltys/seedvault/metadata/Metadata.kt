@@ -18,7 +18,7 @@ data class BackupMetadata(
     internal val androidVersion: Int = Build.VERSION.SDK_INT,
     internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
     internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
-    internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap()
+    internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap(),
 )
 
 internal const val JSON_METADATA = "@meta@"
@@ -77,7 +77,7 @@ data class PackageMetadata(
     internal val installer: String? = null,
     internal val splits: List<ApkSplit>? = null,
     internal val sha256: String? = null,
-    internal val signatures: List<String>? = null
+    internal val signatures: List<String>? = null,
 ) {
     fun hasApk(): Boolean {
         return version != null && sha256 != null && signatures != null
@@ -86,7 +86,7 @@ data class PackageMetadata(
 
 data class ApkSplit(
     val name: String,
-    val sha256: String
+    val sha256: String,
     // There's also a revisionCode, but it doesn't seem to be used just yet
 )
 

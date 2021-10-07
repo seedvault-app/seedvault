@@ -20,7 +20,7 @@ internal class RestoreFilesFragment : SnapshotFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
@@ -50,7 +50,7 @@ internal class RestoreFilesStartedFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_files_started, container, false)
 

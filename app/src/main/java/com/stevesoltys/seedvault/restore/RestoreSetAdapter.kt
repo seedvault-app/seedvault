@@ -14,7 +14,7 @@ import com.stevesoltys.seedvault.restore.RestoreSetAdapter.RestoreSetViewHolder
 
 internal class RestoreSetAdapter(
     private val listener: RestorableBackupClickListener,
-    private val items: List<RestorableBackup>
+    private val items: List<RestorableBackup>,
 ) : Adapter<RestoreSetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestoreSetViewHolder {

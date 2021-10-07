@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -36,7 +35,7 @@ class RestoreProgressFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
@@ -66,17 +65,17 @@ class RestoreProgressFragment : Fragment() {
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, Observer { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, { restorableBackup ->
             backupNameView.text = restorableBackup.name
             progressBar.max = restorableBackup.packageMetadataMap.size
         })
 
-        viewModel.restoreProgress.observe(viewLifecycleOwner, Observer { list ->
+        viewModel.restoreProgress.observe(viewLifecycleOwner, { list ->
             stayScrolledAtTop { adapter.update(list) }
             progressBar.progress = list.size
         })
 
-        viewModel.restoreBackupResult.observe(viewLifecycleOwner, Observer { finished ->
+        viewModel.restoreBackupResult.observe(viewLifecycleOwner, { finished ->
             button.isEnabled = true
             if (finished.hasError()) {
                 backupNameView.text = finished.errorMsg

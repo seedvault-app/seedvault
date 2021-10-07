@@ -33,7 +33,7 @@ private data class RestoreCoordinatorState(
      * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
      */
     val autoRestorePackageInfo: PackageInfo?,
-    val backupMetadata: BackupMetadata
+    val backupMetadata: BackupMetadata,
 ) {
     var currentPackage: String? = null
 }
@@ -50,7 +50,7 @@ internal class RestoreCoordinator(
     private val plugin: StoragePlugin,
     private val kv: KVRestore,
     private val full: FullRestore,
-    private val metadataReader: MetadataReader
+    private val metadataReader: MetadataReader,
 ) {
 
     private var state: RestoreCoordinatorState? = null
@@ -249,7 +249,7 @@ internal class RestoreCoordinator(
     @Suppress("deprecation")
     private suspend fun nextRestorePackageV0(
         state: RestoreCoordinatorState,
-        packageInfo: PackageInfo
+        packageInfo: PackageInfo,
     ): RestoreDescription? {
         val packageName = packageInfo.packageName
         val type = try {

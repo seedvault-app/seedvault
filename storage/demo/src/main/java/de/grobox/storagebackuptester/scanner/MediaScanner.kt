@@ -14,7 +14,7 @@ import kotlin.time.measureTimedValue
 
 data class ScanResult(
     var itemsFound: Long,
-    var totalSize: Long
+    var totalSize: Long,
 ) {
     operator fun plusAssign(other: ScanResult) {
         itemsFound += other.itemsFound
@@ -57,7 +57,7 @@ fun appendStats(
     context: Context,
     sb: StringBuilder,
     timedResult: TimedValue<ScanResult>,
-    title: String? = null
+    title: String? = null,
 ): String {
     val result = timedResult.value
     if (title != null || sb.isNotEmpty()) {

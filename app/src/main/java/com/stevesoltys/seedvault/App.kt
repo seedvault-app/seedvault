@@ -7,7 +7,6 @@ import android.content.Context.BACKUP_SERVICE
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.os.StrictMode
-import org.koin.core.logger.Level
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -31,6 +30,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 
 /**

@@ -39,7 +39,7 @@ data class AppStatus(
     val name: String,
     val time: Long,
     val status: AppBackupState,
-    val isSpecial: Boolean = false
+    val isSpecial: Boolean = false,
 ) : AppListItem()
 
 class AppSectionTitle(@StringRes val titleRes: Int) : AppListItem()
@@ -48,7 +48,7 @@ internal class AppListRetriever(
     private val context: Context,
     private val packageService: PackageService,
     private val settingsManager: SettingsManager,
-    private val metadataManager: MetadataManager
+    private val metadataManager: MetadataManager,
 ) {
 
     private val pm: PackageManager = context.packageManager

@@ -55,7 +55,7 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
 
     override fun onPreferenceStartFragment(
         caller: PreferenceFragmentCompat,
-        pref: Preference
+        pref: Preference,
     ): Boolean {
         val fragment =
             supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)

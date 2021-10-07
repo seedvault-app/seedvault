@@ -119,7 +119,7 @@ internal class Backup(
     private suspend fun backupFiles(
         filesResult: FileScannerResult,
         availableChunkIds: HashSet<String>,
-        backupObserver: BackupObserver?
+        backupObserver: BackupObserver?,
     ) {
         val startTime = System.currentTimeMillis()
         val numSmallFiles = filesResult.smallFiles.size
@@ -132,7 +132,7 @@ internal class Backup(
         }
         val result = largeResult + smallResult
         val backupSize = result.backupMediaFiles.sumOf { it.size } +
-                result.backupDocumentFiles.sumOf { it.size }
+            result.backupDocumentFiles.sumOf { it.size }
         val endTime = System.currentTimeMillis()
 
         val backupSnapshot: BackupSnapshot

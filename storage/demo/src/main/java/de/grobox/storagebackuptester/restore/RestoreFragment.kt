@@ -33,7 +33,7 @@ class RestoreFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         setHasOptionsMenu(true)
         val v = inflater.inflate(R.layout.fragment_log, container, false)

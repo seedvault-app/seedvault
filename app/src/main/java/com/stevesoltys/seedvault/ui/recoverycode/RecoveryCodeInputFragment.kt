@@ -34,7 +34,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
-import com.stevesoltys.seedvault.ui.LiveEventHandler
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.Locale
 
@@ -70,7 +69,7 @@ class RecoveryCodeInputFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
 
@@ -127,9 +126,9 @@ class RecoveryCodeInputFragment : Fragment() {
         newCodeButton.visibility = if (forStoringNewCode) GONE else VISIBLE
         newCodeButton.setOnClickListener { generateNewCode() }
 
-        viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner,
-            LiveEventHandler { verified -> onExistingCodeChecked(verified) }
-        )
+        viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner, { verified ->
+            onExistingCodeChecked(verified)
+        })
 
         if (forStoringNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
     }

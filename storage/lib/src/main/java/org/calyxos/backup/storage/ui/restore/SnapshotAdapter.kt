@@ -23,7 +23,7 @@ private class SnapshotItemCallback : DiffUtil.ItemCallback<SnapshotItem>() {
         val newSnapshot = newItem.snapshot
         val oldSnapshot = oldItem.snapshot
         return newSnapshot?.name == oldSnapshot?.name &&
-                newSnapshot?.size == oldSnapshot?.size
+            newSnapshot?.size == oldSnapshot?.size
     }
 }
 

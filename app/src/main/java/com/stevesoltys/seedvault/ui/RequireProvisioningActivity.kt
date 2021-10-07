@@ -49,7 +49,7 @@ abstract class RequireProvisioningActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getViewModel().chooseBackupLocation.observeEvent(this, LiveEventHandler { show ->
+        getViewModel().chooseBackupLocation.observeEvent(this, { show ->
             if (show) showStorageActivity()
         })
     }

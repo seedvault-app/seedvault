@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -37,8 +36,8 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?,
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
         progressBar = v.findViewById(R.id.progressBar)
@@ -61,15 +60,15 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         button.setText(R.string.restore_next)
         button.setOnClickListener { viewModel.onNextClickedAfterInstallingApps() }
 
-        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, Observer { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, { restorableBackup ->
             backupNameView.text = restorableBackup.name
         })
 
-        viewModel.installResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.installResult.observe(viewLifecycleOwner, { result ->
             onInstallResult(result)
         })
 
-        viewModel.nextButtonEnabled.observe(viewLifecycleOwner, Observer { enabled ->
+        viewModel.nextButtonEnabled.observe(viewLifecycleOwner, { enabled ->
             button.isEnabled = enabled
         })
     }

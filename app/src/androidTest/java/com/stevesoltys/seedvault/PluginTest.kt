@@ -5,8 +5,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderLegacyPlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.deleteContents
@@ -36,6 +36,7 @@ class PluginTest : KoinComponent {
     private val storage = DocumentsStorage(context, mockedSettingsManager)
 
     private val storagePlugin: StoragePlugin = DocumentsProviderStoragePlugin(context, storage)
+
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin =
         DocumentsProviderLegacyPlugin(context, storage)

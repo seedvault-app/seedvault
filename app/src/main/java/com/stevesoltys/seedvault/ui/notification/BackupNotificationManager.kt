@@ -70,7 +70,7 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onBackupStarted(
         expectedPackages: Int,
-        appTotals: ExpectedAppTotals
+        appTotals: ExpectedAppTotals,
     ) {
         updateBackupNotification(
             infoText = "", // This passes quickly, no need to show something here
@@ -112,7 +112,7 @@ internal class BackupNotificationManager(private val context: Context) {
     private fun updateBackupNotification(
         infoText: CharSequence,
         transferred: Int,
-        expected: Int
+        expected: Int,
     ) {
         @Suppress("MagicNumber")
         val percentage = (transferred.toFloat() / expected) * 100
@@ -223,7 +223,7 @@ internal class BackupNotificationManager(private val context: Context) {
             setPackage(context.packageName)
             putExtra(EXTRA_PACKAGE_NAME, packageName)
         }
-        val flags = FLAG_UPDATE_CURRENT and FLAG_IMMUTABLE
+        val flags = FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
         val pendingIntent =
             PendingIntent.getBroadcast(context, REQUEST_CODE_UNINSTALL, intent, flags)
         val actionText = context.getString(R.string.notification_restore_error_action)

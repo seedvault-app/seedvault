@@ -40,7 +40,7 @@ public class DocumentScanner(context: Context) {
     internal fun scanDocumentUri(
         uri: Uri,
         dir: String = uri.getDocumentPath() ?: "",
-        maxSize: Long = Long.MAX_VALUE
+        maxSize: Long = Long.MAX_VALUE,
     ): List<DocFile> {
         // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/core/java/com/android/internal/content/FileSystemProvider.java
         // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java

@@ -84,7 +84,7 @@ internal class SmallFileBackupTest {
     private suspend fun singleFileBackup(
         files: List<DocFile>,
         cachedFile: CachedFile?,
-        availableChunkIds: HashSet<String>
+        availableChunkIds: HashSet<String>,
     ) {
         val file = files[0]
         val zipChunk = ZipChunk(getRandomString(6), listOf(file), Random.nextLong(), true)

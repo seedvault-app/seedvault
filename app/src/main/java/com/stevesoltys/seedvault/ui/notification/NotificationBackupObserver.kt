@@ -19,7 +19,7 @@ private val TAG = NotificationBackupObserver::class.java.simpleName
 internal class NotificationBackupObserver(
     private val context: Context,
     private val expectedPackages: Int,
-    appTotals: ExpectedAppTotals
+    appTotals: ExpectedAppTotals,
 ) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()

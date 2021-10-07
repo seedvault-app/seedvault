@@ -42,7 +42,7 @@ class SettingsFragment : BackupContentFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         setHasOptionsMenu(true)
         requireActivity().title = "Settings"

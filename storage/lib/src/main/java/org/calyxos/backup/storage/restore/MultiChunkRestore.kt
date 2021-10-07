@@ -22,7 +22,7 @@ internal class MultiChunkRestore(
     storagePlugin: StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
-    streamKey: ByteArray
+    streamKey: ByteArray,
 ) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
 
     suspend fun restore(

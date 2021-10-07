@@ -35,7 +35,7 @@ internal class ChunksCacheRepopulater(
     @OptIn(ExperimentalTime::class)
     private suspend fun repopulateInternal(
         streamKey: ByteArray,
-        availableChunkIds: HashSet<String>
+        availableChunkIds: HashSet<String>,
     ) {
         val start = System.currentTimeMillis()
         val snapshots = storagePlugin.getCurrentBackupSnapshots().mapNotNull { storedSnapshot ->
@@ -85,7 +85,7 @@ internal class ChunksCacheRepopulater(
         snapshotTimeStamp: Long,
         availableChunks: HashSet<String>,
         chunkMap: HashMap<String, CachedChunk>,
-        chunksInSnapshot: HashSet<String>
+        chunksInSnapshot: HashSet<String>,
     ) = chunksInSnapshot.forEach { chunkId ->
         if (!availableChunks.contains(chunkId)) {
             Log.w(TAG, "ChunkId $chunkId referenced in $snapshotTimeStamp, but not in storage.")

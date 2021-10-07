@@ -46,6 +46,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
     private val strictContext: Context = mockk<Context>().apply {
         every { packageManager } returns pm
     }
+
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val storagePlugin: StoragePlugin = mockk()

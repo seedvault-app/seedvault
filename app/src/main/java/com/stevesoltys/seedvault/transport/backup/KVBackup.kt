@@ -22,7 +22,7 @@ class KVBackupState(
     internal val packageInfo: PackageInfo,
     val token: Long,
     val name: String,
-    val db: KVDb
+    val db: KVDb,
 ) {
     var needsUpload: Boolean = false
 }
@@ -37,7 +37,7 @@ internal class KVBackup(
     private val settingsManager: SettingsManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
-    private val dbManager: KvDbManager
+    private val dbManager: KvDbManager,
 ) {
 
     private var state: KVBackupState? = null
@@ -57,7 +57,7 @@ internal class KVBackup(
         data: ParcelFileDescriptor,
         flags: Int,
         token: Long,
-        salt: String
+        salt: String,
     ): Int {
         val dataNotChanged = flags and FLAG_DATA_NOT_CHANGED != 0
         val isIncremental = flags and FLAG_INCREMENTAL != 0
@@ -235,7 +235,7 @@ internal class KVBackup(
         token: Long,
         name: String,
         packageName: String,
-        db: KVDb
+        db: KVDb,
     ) {
         db.vacuum()
         db.close()
@@ -259,7 +259,7 @@ internal class KVBackup(
         /**
          * value is null when this is a deletion operation
          */
-        val value: ByteArray?
+        val value: ByteArray?,
     )
 
     private sealed class Result<out T> {

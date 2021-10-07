@@ -111,7 +111,7 @@ internal class Notifications(private val context: Context) {
     internal fun showRestoreCompleteNotification(
         restored: Int,
         total: Int,
-        intent: PendingIntent?
+        intent: PendingIntent?,
     ) {
         val title = context.getString(R.string.notification_restore_complete_title, restored, total)
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_BACKUP).apply {

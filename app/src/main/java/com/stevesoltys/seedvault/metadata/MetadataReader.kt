@@ -31,7 +31,7 @@ interface MetadataReader {
     fun decode(
         bytes: ByteArray,
         expectedVersion: Byte? = null,
-        expectedToken: Long? = null
+        expectedToken: Long? = null,
     ): BackupMetadata
 
 }
@@ -64,6 +64,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         UnsupportedVersionException::class,
         IOException::class
     )
+    @Suppress("Deprecation")
     private fun readMetadataV0(inputStream: InputStream, expectedToken: Long): BackupMetadata {
         val metadataBytes = try {
             crypto.decryptMultipleSegments(inputStream)
@@ -77,7 +78,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
     override fun decode(
         bytes: ByteArray,
         expectedVersion: Byte?,
-        expectedToken: Long?
+        expectedToken: Long?,
     ): BackupMetadata {
         // NOTE: We don't do extensive validation of the parsed input here,
         // because it was encrypted with authentication, so we should be able to trust it.

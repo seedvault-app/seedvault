@@ -13,14 +13,14 @@ internal class SingleChunkRestore(
     storagePlugin: StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
-    streamKey: ByteArray
+    streamKey: ByteArray,
 ) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
 
     suspend fun restore(
         version: Int,
         storedSnapshot: StoredSnapshot,
         chunks: Collection<RestorableChunk>,
-        observer: RestoreObserver?
+        observer: RestoreObserver?,
     ): Int {
         var restoredFiles = 0
         chunks.forEach { chunk ->

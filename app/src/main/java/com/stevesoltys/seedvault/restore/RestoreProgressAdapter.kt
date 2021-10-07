@@ -38,7 +38,7 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 
     private class Diff(
         private val oldItems: LinkedList<AppRestoreResult>,
-        private val newItems: LinkedList<AppRestoreResult>
+        private val newItems: LinkedList<AppRestoreResult>,
     ) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldItems.size
@@ -74,5 +74,5 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
 internal data class AppRestoreResult(
     val packageName: String,
     val name: CharSequence,
-    val state: AppBackupState
+    val state: AppBackupState,
 )

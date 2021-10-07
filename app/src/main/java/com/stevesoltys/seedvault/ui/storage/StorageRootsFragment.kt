@@ -20,7 +20,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree
 import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
@@ -53,8 +52,8 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?,
+    ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
 
         titleView = v.findViewById(R.id.titleView)
@@ -92,7 +91,7 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
         listView.adapter = adapter
 
-        viewModel.storageRoots.observe(viewLifecycleOwner, Observer { roots ->
+        viewModel.storageRoots.observe(viewLifecycleOwner, { roots ->
             onRootsLoaded(roots)
         })
     }

@@ -22,7 +22,7 @@ public object StreamCrypto {
     @Throws(GeneralSecurityException::class)
     public fun deriveStreamKey(
         masterKey: SecretKey,
-        info: ByteArray = INFO_STREAM_KEY.toByteArray()
+        info: ByteArray = INFO_STREAM_KEY.toByteArray(),
     ): ByteArray = Hkdf.expand(
         secretKey = masterKey,
         info = info,
@@ -51,7 +51,7 @@ public object StreamCrypto {
     public fun newEncryptingStream(
         secret: ByteArray,
         outputStream: OutputStream,
-        associatedData: ByteArray = ByteArray(0)
+        associatedData: ByteArray = ByteArray(0),
     ): OutputStream {
         return AesGcmHkdfStreaming(
             secret,
@@ -66,7 +66,7 @@ public object StreamCrypto {
     public fun newDecryptingStream(
         secret: ByteArray,
         inputStream: InputStream,
-        associatedData: ByteArray = ByteArray(0)
+        associatedData: ByteArray = ByteArray(0),
     ): InputStream {
         return AesGcmHkdfStreaming(
             secret,
