@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 
@@ -91,7 +92,7 @@ internal class RestoreCoordinator(
      **/
     suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
         return getAvailableMetadata()?.map { (_, metadata) ->
-            RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token)
+            RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token, TRANSPORT_FLAGS)
         }?.toTypedArray()
     }
 

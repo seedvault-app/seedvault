@@ -20,6 +20,8 @@ import org.koin.core.component.inject
 // If we ever change this, we should use a ComponentName like the other backup transports.
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
+const val TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+
 private const val TRANSPORT_DIRECTORY_NAME =
     "com.stevesoltys.seedvault.transport.ConfigurableBackupTransport"
 private val TAG = ConfigurableBackupTransport::class.java.simpleName
@@ -52,7 +54,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
      * This allows the agent to decide what to do based on properties of the transport.
      */
     override fun getTransportFlags(): Int {
-        return FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+        return TRANSPORT_FLAGS
     }
 
     /**
