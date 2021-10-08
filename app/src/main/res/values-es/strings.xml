@@ -71,7 +71,7 @@
     <string name="notification_success_title">Copia de seguridad terminada</string>
     <string name="notification_title">Copia de seguridad en ejecución</string>
     <string name="notification_channel_title">Notificación de copia de seguridad</string>
-    <string name="recovery_code_error_checksum_word">Su código no es válido. ¡Por favor, compruebe todas las palabras e inténtelo de nuevo!</string>
+    <string name="recovery_code_error_checksum_word">Su código no es válido. ¡Por favor, compruebe todas las palabras así como su posición e inténtelo de nuevo!</string>
     <string name="recovery_code_error_invalid_word">Palabra equivocada.</string>
     <string name="recovery_code_input_intro">Ingrese su código de recuperación de 12 palabras que anotaste al configurar las copias de seguridad.</string>
     <string name="recovery_code_confirm_intro">Ingrese su código de recuperación de 12 palabras para asegurarse de que funcionará cuando lo necesite.</string>
@@ -101,7 +101,7 @@
     <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaura la configuración y los datos de la copia de seguridad.</string>
     <string name="settings_info">Todas las copias de seguridad están encriptadas en su teléfono. Para restaurar desde la copia de seguridad, necesitará su código de recuperación de 12 palabras.</string>
     <string name="settings_backup_location">Ubicación de la copia de seguridad</string>
-    <string name="settings_backup">Copia de seguridad de mis datos</string>
+    <string name="settings_backup">Copia de seguridad de mis apps</string>
     <string name="restore_backup_button">Restaurar la copia de seguridad</string>
     <string name="backup">Copia de seguridad</string>
     <string name="notification_success_text">%1$d de %2$d aplicaciones con copia de seguridad. Pulse para obtener más información.</string>
@@ -145,4 +145,33 @@
     <string name="recovery_code_verification_new_dialog_message">Generar un código nuevo hará que sus copias de seguridad existentes se vuelvan inaccesibles. Intentaremos eliminarlas si es posible.
 \n
 \n¿Está seguro de que quiere hacerlo\?</string>
+    <string name="settings_backup_storage_title">Copia de seguridad de mis archivos</string>
+    <string name="settings_backup_files_summary">Ninguno</string>
+    <string name="settings_backup_storage_dialog_ok">Activar de todos modos</string>
+    <string name="settings_backup_storage_code_dialog_title">Se requiere la verificación del código de recuperación</string>
+    <string name="settings_backup_storage_code_dialog_message">Para activar la copia de seguridad del almacenamiento, primero tiene que verificar su código de recuperación o generar uno nuevo.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Verificar código</string>
+    <string name="settings_expert_title">Opciones avanzadas</string>
+    <string name="settings_expert_quota_title">Cuota ilimitada de apps</string>
+    <string name="settings_expert_quota_summary">No imponga una limitación en el tamaño de las copias de seguridad de las apps.
+\n
+\nAdvertencia: Esto puede llenar su espacio de almacenamiento rápidamente. No es necesario para la mayoría de las aplicaciones.</string>
+    <string name="storage_fragment_warning_delete">Las copias de seguridad existentes en esta ubicación se eliminarán.</string>
+    <string name="storage_check_fragment_patience">Esto puede llevar un tiempo…</string>
+    <string name="recovery_code_auth_title">Vuelva a introducir su bloqueo de pantalla</string>
+    <string name="recovery_code_auth_description">Introduzca las credenciales de su dispositivo para continuar</string>
+    <string name="restore_storage_skip">Omitir la restauración de archivos</string>
+    <string name="restore_storage_in_progress_title">Los archivos se están restaurando…</string>
+    <string name="restore_storage_got_it">Listo</string>
+    <string name="settings_backup_files_title">Archivos y carpetas incluidos</string>
+    <string name="settings_category_apps">Copia de seguridad de la app</string>
+    <string name="settings_category_storage">Copia de seguridad del almacenamiento (experimental)</string>
+    <string name="settings_backup_storage_dialog_title">Característica experimental</string>
+    <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía experimental y podría no funcionar. No confíe en ella para los datos importantes.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">No instalada</string>
+    <string name="restore_skip">Omitir la restauración de apps</string>
+    <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (experimental)</string>
+    <string name="restore_storage_in_progress_info">Sus archivos se están restaurando en segundo plano. Puede empezar a usar su teléfono mientras se está ejecutando.
+\n
+\nAlgunas aplicaciones (por ejemplo, Signal o WhatsApp) pueden requerir que los archivos estén completamente restaurados para importar una copia de seguridad. Intente evitar iniciar esas aplicaciones antes de que la restauración de los archivos no se haya completado.</string>
 </resources>
