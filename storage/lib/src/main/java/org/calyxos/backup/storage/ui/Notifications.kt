@@ -9,6 +9,7 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import org.calyxos.backup.storage.R
 
@@ -143,6 +144,7 @@ internal class Notifications(private val context: Context) {
         setShowWhen(false)
         setWhen(System.currentTimeMillis())
         setProgress(expected, transferred, expected == 0)
+        foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
         priority = PRIORITY_DEFAULT
     }.build()
 
