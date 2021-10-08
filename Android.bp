@@ -32,11 +32,8 @@ android_app {
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
         "com.google.android.material_material",
-        // storage
-        "seedvault-lib-storage", // did not manage to add this as transitive dependency
-        "seedvault-lib-tink-android",
-        "androidx.room_room-runtime",
-        "libprotobuf-java-lite",
+        // storage backup lib
+        "seedvault-lib-storage",
         // koin
         "seedvault-lib-koin-core-jvm", // did not manage to add this as transitive dependency
         "seedvault-lib-koin-android",

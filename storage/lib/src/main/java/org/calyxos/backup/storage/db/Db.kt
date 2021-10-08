@@ -8,7 +8,11 @@ import androidx.room.TypeConverters
 
 internal const val DB_MAX_OP = 750
 
-@Database(entities = [StoredUri::class, CachedFile::class, CachedChunk::class], version = 1)
+@Database(
+    version = 1,
+    exportSchema = false,
+    entities = [StoredUri::class, CachedFile::class, CachedChunk::class],
+)
 @TypeConverters(Converters::class)
 internal abstract class Db : RoomDatabase() {
     abstract fun getUriStore(): UriStore
