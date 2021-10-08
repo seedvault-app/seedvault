@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.settings
 import android.app.backup.IBackupManager
 import android.content.Intent
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.RemoteException
 import android.provider.Settings
 import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
@@ -11,6 +12,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
@@ -228,6 +231,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setTitle(R.string.settings_backup_storage_dialog_title)
             .setMessage(R.string.settings_backup_storage_dialog_message)
             .setPositiveButton(R.string.settings_backup_storage_dialog_ok) { dialog, _ ->
+                // warn if battery optimization is active
+                // we don't bother with yet another dialog, because the ROM should handle it
+                val context = requireContext()
+                val powerManager = context.getSystemService(PowerManager::class.java)
+                if (!powerManager.isIgnoringBatteryOptimizations(context.packageName)) {
+                    Toast.makeText(context, R.string.settings_backup_storage_battery_optimization,
+                        LENGTH_LONG).show()
+                }
                 viewModel.enableStorageBackup()
                 backupStorage.isChecked = true
                 dialog.dismiss()
