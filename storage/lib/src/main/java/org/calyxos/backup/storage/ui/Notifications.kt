@@ -1,15 +1,16 @@
 package org.calyxos.backup.storage.ui
 
 import android.app.Notification
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build.VERSION.SDK_INT
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import org.calyxos.backup.storage.R
 
@@ -136,7 +137,7 @@ internal class Notifications(private val context: Context) {
         infoText: CharSequence?,
         transferred: Int = 0,
         expected: Int = 0,
-    ) = NotificationCompat.Builder(context, CHANNEL_ID_BACKUP).apply {
+    ) = Notification.Builder(context, CHANNEL_ID_BACKUP).apply {
         setSmallIcon(icon)
         setContentTitle(title)
         setContentText(infoText)
@@ -144,8 +145,7 @@ internal class Notifications(private val context: Context) {
         setShowWhen(false)
         setWhen(System.currentTimeMillis())
         setProgress(expected, transferred, expected == 0)
-        foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
-        priority = PRIORITY_DEFAULT
+        if (SDK_INT >= 31) setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
     }.build()
 
 }

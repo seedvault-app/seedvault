@@ -18,6 +18,9 @@ public abstract class BackupJobService(private val serviceClass: Class<out Servi
     JobService() {
 
     public companion object {
+        /**
+         * Warning: This works only if battery optimization is disabled for the app using this.
+         */
         public fun scheduleJob(
             context: Context,
             jobServiceClass: Class<*>,
