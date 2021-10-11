@@ -40,8 +40,8 @@
     <string name="storage_check_fragment_backup_error">Une erreur est survenue lors de l’accès à l’emplacement de la sauvegarde.</string>
     <string name="storage_check_fragment_restore_title">Recherche de sauvegardes…</string>
     <string name="storage_check_fragment_backup_title">Initialisation de l’emplacement de la sauvegarde…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Cliquez pour configurer un compte</string>
-    <string name="storage_fake_nextcloud_summary">Cliquez pour installer</string>
+    <string name="storage_fake_nextcloud_summary_installed">Appuyez pour configurer un compte</string>
+    <string name="storage_fake_nextcloud_summary">Appuyez pour installer</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> de libre</string>
     <string name="storage_fake_drive_summary">A besoin d’être branché</string>
     <string name="storage_fake_drive_title">Clé USB</string>
@@ -62,7 +62,7 @@
     <string name="settings_backup_location_internal">Stockage interne</string>
     <string name="settings_backup_location_none">Aucun</string>
     <string name="settings_backup_location">Emplacement de la sauvegarde</string>
-    <string name="settings_backup">Sauvegarder mes données</string>
+    <string name="settings_backup">Sauvegarder mes applis</string>
     <string name="restore_backup_button">Restaurer la sauvegarde</string>
     <string name="backup">Sauvegarde</string>
     <string name="storage_internal_warning_message">Vous avez choisi le stockage interne pour votre sauvegarde. Ceci ne sera pas disponible lorsque votre téléphone sera perdu ou cassé.</string>
@@ -145,4 +145,21 @@
     <string name="recovery_code_verification_error_title">Code de récupération incorrect</string>
     <string name="recovery_code_verification_ok_message">Votre code est correct est permettra la restauration de votre sauvegarde.</string>
     <string name="recovery_code_verification_ok_title">Code de récupération vérifié</string>
+    <string name="settings_backup_storage_title">Sauvegarder mes fichiers</string>
+    <string name="settings_backup_files_title">Fichiers et dossier inclus</string>
+    <string name="settings_backup_storage_code_dialog_title">Code de vérification requis</string>
+    <string name="settings_backup_files_summary">Aucun</string>
+    <string name="settings_backup_storage_dialog_title">Fonctionnalité expérimentale</string>
+    <string name="settings_backup_storage_code_dialog_ok">Vérifier le code</string>
+    <string name="settings_expert_title">Paramètres experts</string>
+    <string name="storage_fragment_warning_delete">Les sauvegardes existantes à cet emplacement seront supprimées.</string>
+    <string name="settings_category_apps">Sauvegarde des applis</string>
+    <string name="settings_category_storage">Sauvegarde des données (expérimental)</string>
+    <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
+    <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
+    <string name="settings_backup_storage_code_dialog_message">Pour activer la sauvegarde des fichiers, vous devez d\'abord vérifier votre code de récupération ou en générer un nouveau.</string>
+    <string name="settings_expert_quota_title">Quota illimité d\'applications</string>
+    <string name="settings_expert_quota_summary">Ne pas limiter la taille de la sauvegarde des applications.
+\n
+\nAttention : cela peut remplir rapidement votre espace de stockage. N\'est pas nécessaire pour la plupart des applications.</string>
 </resources>
