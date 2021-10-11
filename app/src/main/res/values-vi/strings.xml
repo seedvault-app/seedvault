@@ -81,7 +81,7 @@
     <string name="recovery_code_verification_error_title">Mã phục hồi không đúng</string>
     <string name="recovery_code_verification_ok_message">Mã của bạn đã đúng và sẽ có thể dùng để khôi phục bản sao lưu của bạn.</string>
     <string name="recovery_code_verification_ok_title">Đã xác minh mã phục hồi</string>
-    <string name="recovery_code_error_checksum_word">Mã không hợp lệ. Vui lòng kiểm tra tất cả từ và thử lại!</string>
+    <string name="recovery_code_error_checksum_word">Mã không hợp lệ. Vui lòng kiểm tra tất cả các từ và vị trí của chúng và thử lại!</string>
     <string name="recovery_code_error_invalid_word">Sai từ.</string>
     <string name="recovery_code_error_empty_word">Bạn đã quên nhập từ này.</string>
     <string name="recovery_code_input_hint_12">Từ 12</string>
@@ -142,7 +142,36 @@
     <string name="settings_backup_location_internal">Bộ nhớ trong</string>
     <string name="settings_backup_location_none">Không có</string>
     <string name="settings_backup_location">Vị trí sao lưu</string>
-    <string name="settings_backup">Sao lưu dữ liệu của tôi</string>
+    <string name="settings_backup">Sao lưu ứng dụng của tôi</string>
     <string name="restore_backup_button">Khôi phục bản sao lưu</string>
     <string name="backup">Sao lưu</string>
+    <string name="settings_backup_storage_title">Sao lưu tệp của tôi</string>
+    <string name="settings_backup_files_summary">Không có</string>
+    <string name="settings_backup_storage_dialog_title">Tính năng thử nghiệm</string>
+    <string name="settings_backup_storage_dialog_ok">Vẫn bật</string>
+    <string name="settings_backup_storage_code_dialog_title">Bắt buộc xác minh mã phục hồi</string>
+    <string name="settings_backup_storage_code_dialog_ok">Xác minh mã</string>
+    <string name="settings_expert_quota_title">Không giới hạn ứng dụng</string>
+    <string name="settings_expert_quota_summary">Không giới hạn kích cỡ của bản sao lưu ứng dụng.
+\n
+\nCảnh báo: Việc này có thể nhanh chóng lấp đầy vị trí lưu trữ. Không cần thiết đối với đa số ứng dụng.</string>
+    <string name="storage_fragment_warning_delete">Các bản sao lưu đã có trong vị trí này sẽ bị xoá.</string>
+    <string name="storage_check_fragment_patience">Việc này có thể mất một ít thời gian…</string>
+    <string name="recovery_code_auth_title">Nhập lại mã khoá màn hình</string>
+    <string name="recovery_code_auth_description">Nhập thông tin mở khoá thiết bị để tiếp tục</string>
+    <string name="restore_skip">Bỏ qua khôi phục ứng dụng</string>
+    <string name="restore_storage_in_progress_title">Các tệp đang được khôi phục…</string>
+    <string name="restore_storage_got_it">Hiểu rồi</string>
+    <string name="settings_category_apps">Bản sao lưu ứng dụng</string>
+    <string name="settings_category_storage">Sao lưu bộ nhớ (thử nghiệm)</string>
+    <string name="settings_backup_files_title">Tệp và thư mục được bao gồm</string>
+    <string name="settings_backup_storage_dialog_message">Tính năng sao lưu tệp vẫn đang được thử nghiệm và có thể không hoạt động. Đừng dựa vào nó để sao lưu các tệp quan trọng.</string>
+    <string name="settings_backup_storage_code_dialog_message">Để bật sao lưu bộ nhớ, trước hết bạn cần phải xác minh mã phục hồi hoặc tạo mã mới.</string>
+    <string name="settings_expert_title">Cài đặt chuyên gia</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Không được cài đặt</string>
+    <string name="restore_storage_skip">Bỏ qua khôi phục tệp</string>
+    <string name="restore_storage_choose_snapshot">Chọn bản sao lưu bộ nhớ để khôi phục (thử nghiệm)</string>
+    <string name="restore_storage_in_progress_info">Các tệp của bạn đang được khôi phục trong nền. Bạn có thể bắt đầu sử dụng điện thoại trong khi việc này đang chạy.
+\n
+\nMột số ứng dụng (vd: Signal hoặc WhatsApp) có thể yêu cầu các tệp phải được khôi phục đầy đủ để nhập bản sao lưu. Hãy cố tránh sử dụng các ứng dụng đó trước khi khôi phục tệp hoàn tất.</string>
 </resources>
