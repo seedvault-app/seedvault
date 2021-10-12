@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore.install
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -117,7 +120,11 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     }
 
     override fun onFailedItemClicked(item: ApkInstallResult) {
-        installAppLauncher.launch(item)
+        try {
+            installAppLauncher.launch(item)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), R.string.error_no_store, LENGTH_LONG).show()
+        }
     }
 
     private val installAppLauncher = registerForActivityResult(InstallApp()) { packageName ->

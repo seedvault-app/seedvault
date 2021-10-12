@@ -158,6 +158,7 @@
     <string name="restore_installing_error_title">Some apps not installed</string>
     <string name="restore_installing_error_message">Data can only be restored if an app is installed.\n\nTap failed apps to try to install them manually before proceeding.</string>
     <string name="restore_installing_tap_to_install">Tap to install</string>
+    <string name="error_no_store">Error: No app store installed</string>
     <string name="restore_next">Next</string>
     <string name="restore_restoring">Restoring backup</string>
     <string name="restore_restoring_error_title">Unable to restore some apps</string>
