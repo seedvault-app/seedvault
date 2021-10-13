@@ -144,8 +144,22 @@ internal class BackupNotificationManager(private val context: Context) {
         nm.notify(NOTIFICATION_ID_BACKGROUND, notification)
     }
 
-    fun onBackupBackgroundFinished() {
+    fun onServiceDestroyed() {
         nm.cancel(NOTIFICATION_ID_BACKGROUND)
+        // Cancel left-over notifications that are still ongoing.
+        //
+        // We have seen a race condition where the service was taken down at the same time
+        // as BackupObserver#backupFinished() was called, early enough to miss the cancel.
+        //
+        // This won't bring back the expected finish notification in this case,
+        // but at least we don't leave stuck notifications laying around.
+        nm.activeNotifications.forEach { notification ->
+            // only consider ongoing notifications in our ID space (storage backup uses > 1000)
+            if (notification.isOngoing && notification.id < 1000) {
+                Log.w(TAG, "Needed to clean up notification with ID ${notification.id}")
+                nm.cancel(notification.id)
+            }
+        }
     }
 
     fun onBackupFinished(success: Boolean, numBackedUp: Int?) {

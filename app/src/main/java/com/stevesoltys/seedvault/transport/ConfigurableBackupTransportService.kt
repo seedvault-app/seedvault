@@ -53,7 +53,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
 
     override fun onDestroy() {
         super.onDestroy()
-        notificationManager.onBackupBackgroundFinished()
+        notificationManager.onServiceDestroyed()
         transport = null
         Log.d(TAG, "Service destroyed.")
     }
