@@ -5,7 +5,7 @@
 \nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
     <string name="notification_title">הגיבוי פועל</string>
     <string name="notification_channel_title">התראת גיבוי</string>
-    <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ולנסות שוב!</string>
+    <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ואת מיקומן ולנסות שוב!</string>
     <string name="recovery_code_error_invalid_word">מילה שגויה.</string>
     <string name="recovery_code_error_empty_word">שכחת למלא את המילה הזאת.</string>
     <string name="recovery_code_input_hint_12">מילה 12</string>
@@ -20,7 +20,7 @@
     <string name="recovery_code_input_hint_3">מילה 3</string>
     <string name="recovery_code_input_hint_2">מילה 2</string>
     <string name="recovery_code_input_hint_1">מילה 1</string>
-    <string name="recovery_code_done_button">בוצע</string>
+    <string name="recovery_code_done_button">אימות</string>
     <string name="recovery_code_input_intro">נא להקליד את קוד השחזור שלך באורך 12 מילים שכתבת בעת הקמת הגיבויים.</string>
     <string name="recovery_code_confirm_intro">נא להקליד את קוד השחזור שלך באורך 12 מילים כדי לוודא שהוא יפעל כשיהיה לך צורך בו.</string>
     <string name="recovery_code_confirm_button">אישור הקוד</string>
@@ -32,8 +32,8 @@
     <string name="storage_check_fragment_backup_error">אירעה שגיאה בעת ניסיון הגישה למיקום הגיבויים.</string>
     <string name="storage_check_fragment_restore_title">מתבצע חיפוש אחר גיבויים…</string>
     <string name="storage_check_fragment_backup_title">מיקום הגיבוי נערך…</string>
-    <string name="storage_fake_nextcloud_summary_installed">יש ללחוץ כדי להקים חשבון</string>
-    <string name="storage_fake_nextcloud_summary">יש ללחוץ כדי להתקין</string>
+    <string name="storage_fake_nextcloud_summary_installed">יש לגעת כדי להקים חשבון</string>
+    <string name="storage_fake_nextcloud_summary">יש לגעת כדי להתקין</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> פנויים</string>
     <string name="storage_fake_drive_summary">יש לחבר אותו</string>
     <string name="storage_fake_drive_title">כונן USB נייד</string>
@@ -86,14 +86,14 @@
     <string name="restore_finished_success">השחזור הושלם</string>
     <string name="restore_app_quota_exceeded">חרגת ממיכסת הגיבוי</string>
     <string name="restore_app_not_installed">היישומון לא מותקן</string>
-    <string name="restore_app_not_allowed">היישומון לא מאפשר גיבוי</string>
+    <string name="restore_app_not_allowed">היישומון לא אפשר גיבוי</string>
     <string name="backup_app_no_data">היישומון דיווח שאין לו נתונים לגיבוי</string>
     <string name="restore_magic_package">מנהל חבילות המערכת</string>
     <string name="restore_restoring">הגיבוי משוחזר</string>
     <string name="restore_next">הבא</string>
     <string name="restore_installing_packages">היישומונים מותקנים מחדש</string>
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
-    <string name="restore_app_not_yet_backed_up">עדיין לא מגובה</string>
+    <string name="restore_app_not_yet_backed_up">עדיין לא גובה</string>
     <string name="storage_fake_nextcloud_summary_unavailable">החשבון אינו זמין. ניתן להקים אחד (או להשבית את קוד הגישה).</string>
     <string name="about_source_code">קוד המקור: https://github.com/seedvault-app/seedvault</string>
     <string name="settings_backup_apk_title">גיבוי יישומונים</string>
@@ -125,4 +125,41 @@
     <string name="settings_expert_quota_title">מיכסה בלתי מוגבלת ליישומונים</string>
     <string name="settings_backup_storage_title">גיבוי הקבצים שלי</string>
     <string name="settings_backup_files_title">קבצים ותיקיות שיוכללו</string>
+    <string name="backup_section_not_allowed">יישומונים שלא מרשים גיבוי נתונים</string>
+    <string name="restore_installing_tap_to_install">יש לגעת כדי להתקין</string>
+    <string name="restore_restoring_error_title">לא ניתן לשחזר חלק מהיישומונים</string>
+    <string name="about_version">גירסה: %s</string>
+    <string name="storage_fragment_warning_delete">גיבויים קיימים במקום הזה יימחקו.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">לא מותקן</string>
+    <string name="storage_check_fragment_patience">עשוי לארוך זמן מה…</string>
+    <string name="recovery_code_verification_ok_title">קוד השחזור אומת</string>
+    <string name="recovery_code_verification_ok_message">הקוד שלך נכון והוא יעבוד לשחזור הגיבוי שלך.</string>
+    <string name="recovery_code_verification_error_title">קוד שחזור שגוי</string>
+    <string name="recovery_code_verification_try_again">לנסות שוב</string>
+    <string name="recovery_code_verification_generate_new">יצירת קוד חדש</string>
+    <string name="recovery_code_verification_new_dialog_title">נא להמתין רגע קט…</string>
+    <string name="recovery_code_auth_title">נא להיכנס מחדש למסך הנעילה שלך</string>
+    <string name="recovery_code_auth_description">נא לספק את פרטי הגישה למכשיר כדי להמשיך</string>
+    <string name="restore_skip">דילוג על שחזור יישומונים</string>
+    <string name="backup_app_quota_exceeded">מיכסת הגיבוי הושגה</string>
+    <string name="restore_restoring_error_message">אפשר להתקין את היישומונים האלה ידנית מחדש והשחזור האוטומטי ינסה לשחזר את הנתונים שלהם (אם הוא מופעל).</string>
+    <string name="settings_backup_recovery_code_summary">אימות קוד קיים או יצירת אחד חדש</string>
+    <string name="settings_backup_storage_code_dialog_message">כדי להפעיל גיבוי לאחסון, עליך לאמת תחילה את קוד השחזור שלך או לייצר אחד חדש.</string>
+    <string name="restore_storage_skip">דילוג על שחזור קבצים</string>
+    <string name="settings_expert_quota_summary">לא לאכוף מגבלה על גודל גיבויי היישומונים.
+\n
+\nאזהרה: הגדרה זו עשויה לגרום למילוי מקום האחסון שלך במהירות. לא נחוץ לרוב היישומונים.</string>
+    <string name="recovery_code_recreated">קוד שחזור חדש נוצר בהצלחה</string>
+    <string name="restore_storage_choose_snapshot">נא לבחור גיבוי אחסון לשחזור (ניסיוני)</string>
+    <string name="restore_storage_got_it">הבנתי</string>
+    <string name="backup_section_system">יישומוני מערכת</string>
+    <string name="backup_sms">מסרוני טקסט SMS</string>
+    <string name="backup_app_not_yet_backed_up">בהמתנה לגיבוי…</string>
+    <string name="backup_app_was_stopped">לא גובה כיוון שלא היה בשימוש לאחרונה</string>
+    <string name="restore_installing_error_title">יישומונים מסוימים לא מותקנים</string>
+    <string name="restore_storage_in_progress_title">קבצים משוחזרים…</string>
+    <string name="backup_settings">הגדרות מכשיר</string>
+    <string name="backup_call_log">היסטוריית שיחות</string>
+    <string name="backup_contacts">אנשי קשר מקומיים</string>
+    <string name="backup_section_user">יישומונים מותקנים</string>
 </resources>
