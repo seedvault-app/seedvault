@@ -125,7 +125,7 @@
     <string name="settings_backup_last_backup_never">Ei koskaan</string>
     <string name="settings_backup_location_none">Ei määritelty</string>
     <string name="settings_backup_location">Varmuuskopioinnin sijainti</string>
-    <string name="settings_backup">Varmuuskopioi tietoni</string>
+    <string name="settings_backup">Varmuuskopioi sovellukseni</string>
     <string name="restore_backup_button">Palauta varmuuskopio</string>
     <string name="current_destination_string">Varmuuskopioinnin tila ja asetukset</string>
     <string name="data_management_label">Seedvault Varmuuskopio</string>
@@ -145,4 +145,7 @@
     <string name="recovery_code_verification_ok_title">Palautuskoodi vahvistettu</string>
     <string name="settings_backup_recovery_code_summary">Vahvista olemassa oleva koodi tai luo uusi</string>
     <string name="settings_backup_recovery_code">Palautuskoodi</string>
+    <string name="settings_category_storage">Tallennustilan varmuuskopiointi (kokeellinen)</string>
+    <string name="settings_backup_storage_title">Varmuuskopioi tiedostoni</string>
+    <string name="settings_category_apps">Sovelluksen varmuuskopiointi</string>
 </resources>
