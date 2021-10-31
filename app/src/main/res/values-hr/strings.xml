@@ -16,9 +16,9 @@
     <string name="restore_finished_button">Završi</string>
     <string name="restore_finished_error">Došlo je do greške prilikom vraćanja sigurnosne kopije.</string>
     <string name="restore_finished_success">Vraćanje završeno</string>
-    <string name="restore_app_quota_exceeded">Kvota za sigurnosne kopije premašena</string>
+    <string name="restore_app_quota_exceeded">Količina sigurnosnih kopija je premašena</string>
     <string name="restore_app_not_installed">Aplikacija nije instalirana</string>
-    <string name="restore_app_not_allowed">Aplikacija ne dozvoljava sigurnosne kopije</string>
+    <string name="restore_app_not_allowed">Aplikacija nije dozvolila spremanje sigurnosne kopije</string>
     <string name="backup_app_no_data">Aplikacija nema podataka za sigurnosnu kopiju</string>
     <string name="restore_magic_package">Upravljanje paketima sustava</string>
     <string name="restore_restoring">Vraćanje sigurnosne kopije</string>
@@ -48,7 +48,7 @@
     <string name="notification_success_title">Sigurnosna kopija gotova</string>
     <string name="notification_title">Sigurnosna kopija pokrenuta</string>
     <string name="notification_channel_title">Obavijest sigurnosne kopije</string>
-    <string name="recovery_code_error_checksum_word">Tvoja lozinka je neispravna. Provjeri sve riječi i pokušaj ponovo!</string>
+    <string name="recovery_code_error_checksum_word">Tvoja lozinka je neispravna. Provjeri sve riječi i njihove položaje te pokušaj ponovo!</string>
     <string name="recovery_code_error_invalid_word">Kriva riječ.</string>
     <string name="recovery_code_error_empty_word">Ova riječ nije upisana.</string>
     <string name="recovery_code_input_hint_12">Riječ 12</string>
@@ -63,7 +63,7 @@
     <string name="recovery_code_input_hint_3">Riječ 3</string>
     <string name="recovery_code_input_hint_2">Riječ 2</string>
     <string name="recovery_code_input_hint_1">Riječ 1</string>
-    <string name="recovery_code_done_button">Završeno</string>
+    <string name="recovery_code_done_button">Provjeri</string>
     <string name="recovery_code_input_intro">Upiši kod za obnovu od 12 riječi koji si zapisao/la prilikom postavljanja sigurnosnih kopija.</string>
     <string name="recovery_code_confirm_intro">Upiši kod za obnovu od 12 riječi. Tako osiguravaš, da će raditi kad ti zatreba.</string>
     <string name="recovery_code_confirm_button">Kod za potvrdu</string>
@@ -75,8 +75,8 @@
     <string name="storage_check_fragment_backup_error">Došlo je do greške pri pristupanju mjestu sigurnosne kopije.</string>
     <string name="storage_check_fragment_restore_title">Pretraga za sigurnosnim kopijama …</string>
     <string name="storage_check_fragment_backup_title">Inicijaliziranje mjesta sigurnosne kopije …</string>
-    <string name="storage_fake_nextcloud_summary_installed">Pritisni za postavljanje računa</string>
-    <string name="storage_fake_nextcloud_summary">Pritisni za instaliranje</string>
+    <string name="storage_fake_nextcloud_summary_installed">Dodirni za postavljanje računa</string>
+    <string name="storage_fake_nextcloud_summary">Dodirni za instaliranje</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> slobodno</string>
     <string name="storage_fake_drive_summary">Mora biti priključeno</string>
     <string name="storage_fake_drive_title">USB flash pogon</string>
@@ -103,7 +103,7 @@
     <string name="settings_backup_location_internal">Interno spremište</string>
     <string name="settings_backup_location_none">Bez</string>
     <string name="settings_backup_location">Mjesto za sigurnosne kopije</string>
-    <string name="settings_backup">Spremi sigurnosnu kopiju mojih podataka</string>
+    <string name="settings_backup">Spremi sigurnosnu kopiju mojih aplikacija</string>
     <string name="restore_backup_button">Vrati sigurnosnu kopiju</string>
     <string name="backup">Sigurnosna kopija</string>
     <string name="restore_app_was_stopped">Sigurnosna kopija nije spremljena, jer nije nedavno korištena</string>
@@ -111,4 +111,67 @@
     <string name="storage_fake_nextcloud_summary_unavailable">Račun nije dostupan. Postavi jedan račun (ili deaktiviraj pristupni kod).</string>
     <string name="current_destination_string">Stanje sigurnosne kopije i postavke</string>
     <string name="data_management_label">Seedvault sigurnosna kopija</string>
+    <string name="settings_backup_status_title">Stanje sigurnosne kopije</string>
+    <string name="backup_section_system">Aplikacije sustava</string>
+    <string name="backup_sms">Tekstualne SMS poruke</string>
+    <string name="backup_app_was_stopped">Nije sigurnosno kopirana jer nije nedavno korištena</string>
+    <string name="backup_app_quota_exceeded">Količina sigurnosnih kopija premašena</string>
+    <string name="backup_settings">Postavke uređaja</string>
+    <string name="recovery_code_verification_generate_new">Generiraj novi kod</string>
+    <string name="recovery_code_verification_new_dialog_title">Čekaj jednu sekundu …</string>
+    <string name="recovery_code_verification_new_dialog_message">Generiranjem novog koda, tvoje postojeće sigurnosne kopije više neće biti dostupne. Pokušat ćemo ih izbrisati ako je moguće.
+\n
+\nStvarno to želiš učiniti\?</string>
+    <string name="about_version">Verzija: %s</string>
+    <string name="settings_backup_files_summary">Ništa</string>
+    <string name="settings_backup_recovery_code">Kod za obnovu</string>
+    <string name="settings_backup_recovery_code_summary">Potvrdi postojeći kod ili generiraj novi</string>
+    <string name="settings_backup_storage_code_dialog_title">Potrebna je provjera koda za oporavak</string>
+    <string name="settings_backup_storage_code_dialog_message">Za spremanje sigurnosnih kopija spremišta, najprije moraš potvrditi svoj kod za oporavak ili generirati novi.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Potvrdi kod</string>
+    <string name="settings_expert_title">Stručne postavke</string>
+    <string name="settings_expert_quota_title">Neograničena količina aplikacija</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nije instalirano</string>
+    <string name="storage_check_fragment_patience">Ovo može potrajati neko vrijeme …</string>
+    <string name="recovery_code_verification_ok_title">Kod za oporavak potvrđen</string>
+    <string name="recovery_code_verification_ok_message">Tvoj kod je ispravan i poslužit će za obnavljanje tvoje sigurnosne kopije.</string>
+    <string name="recovery_code_verification_error_title">Neispravan kod za oporavak</string>
+    <string name="recovery_code_verification_try_again">Pokušaj ponovo</string>
+    <string name="recovery_code_recreated">Novi kod za oporavak uspješno je stvoren</string>
+    <string name="recovery_code_auth_description">Nastavi upisom svojih podataka za prijavu</string>
+    <string name="recovery_code_auth_title">Ponovo upiši podatke za zaključavanje ekrana</string>
+    <string name="backup_section_not_allowed">Aplikacije koje ne dopuštaju spremanje sigurnosne kopije</string>
+    <string name="restore_skip">Preskoči obnavljanje aplikacija</string>
+    <string name="restore_storage_skip">Preskoči obnavljanje datoteka</string>
+    <string name="restore_storage_choose_snapshot">Odaberi spremište sigurnosnih kopija za obnavljanje (eksperimentalno)</string>
+    <string name="restore_storage_in_progress_title">Datoteke se obnavljaju …</string>
+    <string name="restore_storage_got_it">Shvaćam</string>
+    <string name="backup_app_not_yet_backed_up">Čeka se na izradu sigurnosne kopije …</string>
+    <string name="backup_section_user">Instalirane aplikacije</string>
+    <string name="settings_category_apps">Sigurnosna kopija aplikacije</string>
+    <string name="backup_call_log">Povijest poziva</string>
+    <string name="backup_contacts">Lokalni kontakti</string>
+    <string name="restore_restoring_error_title">Nije moguće obnoviti neke aplikacije</string>
+    <string name="restore_installing_tap_to_install">Dodirni za instaliranje</string>
+    <string name="restore_installing_error_title">Neke aplikacije nisu instalirane</string>
+    <string name="settings_category_storage">Sigurnosna kopija spremišta (eksperimentalno)</string>
+    <string name="settings_backup_storage_title">Spremi sigurnosne kopije mojih datoteka</string>
+    <string name="settings_backup_storage_dialog_ok">Svejedno aktiviraj</string>
+    <string name="restore_installing_error_message">Podaci se mogu vratiti samo ako je aplikacija instalirana.
+\n
+\nDodirom neuspjelih aplikacija pokušaj ih ručno instalirati prije nego što nastaviš.</string>
+    <string name="restore_restoring_error_message">Te aplikacije možeš ponovo instalirati ručno, a automatsko obnavljanje pokušat će obnoviti njihove podatke (kad je aktivirano).</string>
+    <string name="settings_backup_files_title">Uključi datoteke i mape</string>
+    <string name="settings_backup_storage_dialog_title">Eksperimentalna funkcija</string>
+    <string name="settings_backup_storage_dialog_message">Spremanje sigurnosnih kopija datoteka još uvijek se nalazi u eksperimentalnoj fazi i možda neće raditi. Nemoj ga koristiti za važne podatke.</string>
+    <string name="settings_expert_quota_summary">Nemoj nametati ograničenje za veličinu sigurnosnih kopija aplikacija.
+\n
+\nUpozorenje: ovo može brzo popuniti mjesto tvog spremišta. Za većinu aplikacija nije potrebno.</string>
+    <string name="storage_fragment_warning_delete">Postojeće sigurnosne kopije na ovom mjestu će se izbrisati.</string>
+    <string name="recovery_code_verification_error_message">Upisan je nevaljan kod za oporavak. Pokušaj ponovo!
+\n
+\nAko si izgubio/la kod, dolje dodirni „Generiraj novi kod”.</string>
+    <string name="restore_storage_in_progress_info">Tvoje se datoteke obnavljaju u pozadini. Za vrijeme ove radnje možeš početi koristiti svoj telefon.
+\n
+\nNeke aplikacije (npr. Signal ili WhatsApp) mogu zahtijevati potpuno obnavljanje datoteka za uvoz sigurnosne kopije. Pokušaj izbjeći pokretanje tih aplikacija prije nego što završi obnavljanje datoteka.</string>
 </resources>
