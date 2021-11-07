@@ -22,7 +22,7 @@
     <string name="settings_backup_location_internal">Penyimpanan internal</string>
     <string name="settings_backup_location_none">Tidak ada</string>
     <string name="settings_backup_location">Lokasi pencadangan</string>
-    <string name="settings_backup">Cadangkan data saya</string>
+    <string name="settings_backup">Cadangkan aplikasi saya</string>
     <string name="restore_backup_button">Pulihkan cadangan</string>
     <string name="backup">Cadangan</string>
     <string name="recovery_code_verification_try_again">Coba lagi</string>
@@ -65,4 +65,23 @@
     <string name="settings_backup_recovery_code">Kode pemulihan</string>
     <string name="current_destination_string">Status pencadangan dan pengaturan</string>
     <string name="data_management_label">Pencadangan Seedvault</string>
+    <string name="settings_backup_storage_title">Cadangkan file saya</string>
+    <string name="settings_category_apps">Pencadangan aplikasi</string>
+    <string name="settings_category_storage">Cadangan penyimpanan (eksperimental)</string>
+    <string name="settings_backup_storage_code_dialog_title">Verifikasi kode pemulihan diperlukan</string>
+    <string name="about_license">Lisensi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_author">Ditulis oleh: <a href="https://github.com/stevesoltys">Steve Soltys</a> dan <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_design">Desain oleh: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="restore_title">Pulihkan dari cadangan</string>
+    <string name="restore_restore_set_times">Cadangan terakhir %1$s · Pertama %2$s.</string>
+    <string name="restore_installing_tap_to_install">Ketuk untuk menginstal</string>
+    <string name="restore_choose_restore_set">Pilih cadangan untuk dipulihkan</string>
+    <string name="about_source_code">Kode sumber: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_sponsor">Disponsori oleh: <a href="https://www.calyxinstitute.org">Calyx Institute</a> untuk digunakan di <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="settings_backup_files_title">Termasuk file dan folder</string>
+    <string name="settings_backup_files_summary">Tidak ada</string>
+    <string name="settings_backup_storage_dialog_title">Fitur eksperimental</string>
+    <string name="settings_backup_storage_dialog_ok">Tetap aktifkan</string>
+    <string name="about_version">Versi: %s</string>
+    <string name="restore_storage_got_it">Oke</string>
 </resources>
