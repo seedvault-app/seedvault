@@ -145,4 +145,22 @@
     <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
     <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
     <string name="settings_backup_recovery_code">Código de recuperação</string>
+    <string name="settings_backup_files_summary">Nenhum</string>
+    <string name="settings_backup_storage_dialog_title">Recurso experimental</string>
+    <string name="settings_backup_storage_dialog_ok">Habilitar mesmo assim</string>
+    <string name="settings_backup_storage_code_dialog_title">Verificação do código de recuperação necessária</string>
+    <string name="settings_backup_storage_code_dialog_ok">Verificar código</string>
+    <string name="settings_expert_title">Configurações para especialistas</string>
+    <string name="settings_expert_quota_title">Cota ilimitada de aplicativos</string>
+    <string name="settings_expert_quota_summary">Não imponha uma limitação ao tamanho dos backups de aplicativos.
+\n
+\nAviso: isso pode encher seu local de armazenamento rapidamente. Não é necessário para a maioria dos aplicativos.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
+    <string name="restore_skip">Pular restauração de aplicativos</string>
+    <string name="storage_fragment_warning_delete">Os backups existentes neste local serão excluídos.</string>
+    <string name="settings_backup_files_title">Arquivos e pastas incluídos</string>
+    <string name="storage_check_fragment_patience">Isto pode levar algum tempo…</string>
+    <string name="recovery_code_auth_description">Digite as credenciais do seu dispositivo para continuar</string>
+    <string name="settings_backup_storage_code_dialog_message">Para habilitar o backup de armazenamento, você precisa primeiro verificar seu código de recuperação ou gerar um novo.</string>
+    <string name="settings_backup_storage_dialog_message">O backup de arquivos ainda é experimental e pode não funcionar. Não confie nele para dados importantes.</string>
 </resources>
