@@ -1,2 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings_auto_restore_summary">當重新安裝應用程式，從備份恢復設定與資料。</string>
+    <string name="settings_category_app_data_backup">應用程式資料備份</string>
+    <string name="settings_backup_apk_title">應用程式備份</string>
+    <string name="settings_backup_apk_dialog_cancel">取消</string>
+    <string name="settings_backup_status_title">備份狀態</string>
+    <string name="backup">備份</string>
+    <string name="settings_backup">備份我的應用程式</string>
+    <string name="restore_backup_button">從備份恢復資料</string>
+    <string name="settings_backup_location_none">無</string>
+    <string name="current_destination_string">備份狀態和設定</string>
+    <string name="settings_backup_location_internal">內部儲存空間</string>
+    <string name="settings_backup_last_backup_never">永不</string>
+    <string name="data_management_label">Seedvault備份</string>
+    <string name="settings_backup_apk_dialog_title">真的要關閉應用程式備份嗎？</string>
+    <string name="settings_backup_storage_title">備份我的檔案</string>
+    <string name="settings_backup_files_title">包括檔案與資料夾</string>
+    <string name="settings_backup_recovery_code">回復模式</string>
+    <string name="settings_backup_storage_dialog_title">實驗階段功能</string>
+    <string name="settings_backup_storage_dialog_ok">還是開啟</string>
+    <string name="storage_fragment_warning_delete">已存在之備份路徑將會被刪除。</string>
+    <string name="storage_fragment_backup_title">選擇備份儲存地點</string>
+    <string name="settings_expert_title">進階設定</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">尚未安裝</string>
+    <string name="storage_fake_nextcloud_summary_installed">點擊設置帳號</string>
+    <string name="settings_backup_now">立即開始備份</string>
+    <string name="settings_category_storage">備份儲存空間（實驗階段）</string>
+    <string name="settings_backup_storage_dialog_message">檔案備份還在實驗階段，部分功能可能無法正常使用。重要的資料請不要依賴此功能。</string>
+    <string name="storage_fake_drive_title">USB儲存碟</string>
+    <string name="storage_fake_nextcloud_summary">點擊安裝</string>
+    <string name="storage_fragment_restore_title">在哪裡可以找到您的備份？</string>
+    <string name="settings_category_apps">應用程式備份</string>
+    <string name="settings_backup_location">備份儲存路徑</string>
+    <string name="settings_info">所有備份資料都已加密。如需要從備份恢復資料，您需要12位加密密碼。</string>
+</resources>
