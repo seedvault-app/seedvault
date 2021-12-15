@@ -43,6 +43,7 @@ android_app {
     manifest: "app/src/main/AndroidManifest.xml",
 
     platform_apis: true,
+    system_ext_specific: true,
     certificate: "platform",
     privileged: true,
     required: [
@@ -57,6 +58,7 @@ android_app {
 
 prebuilt_etc {
     name: "privapp_whitelist_com.stevesoltys.backup",
+    system_ext_specific: true,
     sub_dir: "permissions",
     src: "permissions_com.stevesoltys.seedvault.xml",
     filename_from_src: true,
@@ -64,6 +66,7 @@ prebuilt_etc {
 
 prebuilt_etc {
     name: "com.stevesoltys.backup_whitelist",
+    system_ext_specific: true,
     sub_dir: "sysconfig",
     src: "whitelist_com.stevesoltys.seedvault.xml",
     filename_from_src: true,
