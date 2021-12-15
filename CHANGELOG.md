@@ -1,3 +1,13 @@
+## [12-3.0] - 2021-10-13
+* Initial release for Android 12
+* Use the same (faster and more secure) crypto that storage backups use,
+  for app backup.
+* Avoid leaking installed app list through filenames by using salted names
+* Old backups can still be restored, but new backups will be made with this format
+* If you generated the recovery code / setup Seedvault before 11-1.2, you will be prompted
+  to generate a new code.
+* Improve backup behavior in general
+
 ## [11-2.3] - 2021-10-02
 ### Fixed
 * Fix translations for the new BIP39 library
