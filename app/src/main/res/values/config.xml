@@ -17,6 +17,7 @@
     <string-array name="storage_authority_whitelist" tools:ignore="InconsistentArrays">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
+        <item>at.bitfire.davdroid.webdav</item>
     </string-array>
 
     <!--

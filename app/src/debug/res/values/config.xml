@@ -6,5 +6,6 @@
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
         <item>org.nextcloud.beta.documents</item>
+        <item>at.bitfire.davdroid.webdav</item>
     </string-array>
 </resources>
