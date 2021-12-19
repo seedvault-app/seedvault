@@ -10,7 +10,7 @@
 \n
 \n本当に実行しますか？</string>
     <string name="recovery_code_verification_new_dialog_title">ちょっと待って…</string>
-    <string name="recovery_code_verification_error_message">リカバリーコードが違います。もう一度入力してください！
+    <string name="recovery_code_verification_error_message">リカバリーコードが無効です。もう一度入力してください！
 \n
 \nコードを紛失した場合は、下の「新しいコードを生成」をタップしてください。</string>
     <string name="recovery_code_verification_generate_new">新しいコードを生成</string>
@@ -32,7 +32,7 @@
     <string name="settings_backup_location_internal">内部ストレージ</string>
     <string name="settings_backup_location_none">なし</string>
     <string name="settings_backup_location">バックアップの場所</string>
-    <string name="settings_backup">自分のデータをバックアップする</string>
+    <string name="settings_backup">自分のアプリをバックアップする</string>
     <string name="restore_backup_button">バックアップを復元する</string>
     <string name="current_destination_string">状態と設定をバックアップする</string>
     <string name="data_management_label">SeedVault バックアップ</string>
@@ -45,7 +45,7 @@
     <string name="notification_error_title">バックアップエラー</string>
     <string name="recovery_code_recreated">新規リカバリーコードの作成に成功しました</string>
     <string name="recovery_code_verification_try_again">もう一度、入力してください</string>
-    <string name="recovery_code_error_checksum_word">入力したコードが違います。再度確認して入力してください!</string>
+    <string name="recovery_code_error_checksum_word">入力したコードは無効です。すべての単語と、その位置をもう一度確認してください!</string>
     <string name="recovery_code_done_button">確認する</string>
     <string name="recovery_code_input_intro">バックアップの作成時に書いた12文字のリカバリーコードを入力してください。</string>
     <string name="recovery_code_confirm_button">コードを確認する</string>
@@ -145,4 +145,33 @@
     <string name="settings_backup_apk_dialog_message">アプリのバックアップを無効にしても、まだアプリのデータがバックアップされます。ただし、自動復元はされません。
 \n
 \n自動復元をオンにした状態でアプリを手動でインストールする必要があります。</string>
+    <string name="settings_category_storage">ストレージ・バックアップ (試験的)</string>
+    <string name="settings_backup_storage_title">ファイルをバックアップする</string>
+    <string name="settings_backup_storage_dialog_ok">とにかく有効にする</string>
+    <string name="settings_backup_storage_code_dialog_title">リカバリーコードの確認が必要</string>
+    <string name="settings_backup_storage_code_dialog_ok">コードの確認</string>
+    <string name="settings_expert_quota_summary">アプリのバックアップのサイズに制限をかけないでください。
+\n
+\n警告：これにより、保管場所がすぐにいっぱいになる可能性があります。ほとんどのアプリには必要ありません。</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">インストールされていません</string>
+    <string name="storage_check_fragment_patience">しばらくお待ちください…</string>
+    <string name="restore_storage_skip">ファイルの復元をスキップする</string>
+    <string name="restore_storage_choose_snapshot">復元するストレージバックアップを選択してください（試験的）</string>
+    <string name="restore_storage_got_it">OK</string>
+    <string name="settings_expert_title">エキスパート設定</string>
+    <string name="settings_backup_storage_dialog_message">ファイルのバックアップはまだ試験段階であり、機能しない可能性があります。重要なデータはこの機能に頼らないでください。</string>
+    <string name="storage_fragment_warning_delete">この場所にある既存のバックアップは削除されます。</string>
+    <string name="settings_backup_storage_dialog_title">試験的機能</string>
+    <string name="settings_category_apps">アプリのバックアップ</string>
+    <string name="settings_backup_files_summary">なし</string>
+    <string name="settings_backup_storage_code_dialog_message">ストレージバックアップを有効にするには、まずリカバリーコードを確認するか、新しいコードを生成する必要があります。</string>
+    <string name="settings_backup_files_title">含まれるファイルとフォルダー</string>
+    <string name="restore_skip">アプリの復元をスキップする</string>
+    <string name="restore_storage_in_progress_info">ファイルはバックグラウンドで復元されます。実行されている間、あなたは電話を使うことができます。
+\n
+\n一部のアプリ(SignalやWhatsAppなど)では、バックアップをインポートするためにファイルが完全に復元されるまで待つ必要があります。ファイルの復元が完了する前に、これらのアプリを起動しないようにしてください。</string>
+    <string name="restore_storage_in_progress_title">ファイルを復元中です…</string>
+    <string name="recovery_code_auth_title">スクリーンロックを再入力してください</string>
+    <string name="settings_expert_quota_title">無制限のアプリ枠</string>
+    <string name="recovery_code_auth_description">デバイスの認証情報を入力して続行します</string>
 </resources>
