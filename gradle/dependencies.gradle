@@ -21,6 +21,10 @@ ext.aosp_libs = fileTree(include: [
     'android.jar',
     // out/target/common/obj/JAVA_LIBRARIES/core-libart.com.android.art_intermediates/classes.jar
     'libcore.jar',
+    // out/target/product/device/obj/JAVA_LIBRARIES/setupcompat_intermediates/javalib.jar
+    'setupcompat.jar',
+    // out/target/product/device/obj/JAVA_LIBRARIES/setupdesign_intermediates/javalib.jar
+    'setupdesign.jar',
 ], dir: "$projectDir/app/libs")
 
 ext.kotlin_libs = [

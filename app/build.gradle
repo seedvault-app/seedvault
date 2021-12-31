@@ -162,7 +162,8 @@ gradle.projectsEvaluated {
         if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
             options.compilerArgs.addAll(['--release', '8'])
         }
-        options.compilerArgs.add('-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar')
+        options.compilerArgs.add('-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar:\
+            app/libs/setupcompat.jar:app/libs/setupdesign.jar')
     }
 }
 
