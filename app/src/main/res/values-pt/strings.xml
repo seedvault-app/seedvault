@@ -103,7 +103,7 @@
     <string name="settings_backup_location_internal">Armazenamento interno</string>
     <string name="settings_backup_location_none">Nenhum</string>
     <string name="settings_backup_location">Local de backup</string>
-    <string name="settings_backup">Fazer backup dos meus dados</string>
+    <string name="settings_backup">Faça backup dos meus apps</string>
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="backup">Backup</string>
     <string name="about_version">Versão: %s</string>
@@ -145,4 +145,33 @@
     <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
     <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
     <string name="settings_backup_recovery_code">Código de recuperação</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
+    <string name="restore_storage_got_it">Entendi</string>
+    <string name="settings_category_apps">Backup de app</string>
+    <string name="settings_category_storage">Backup de armazenamento (experimental)</string>
+    <string name="settings_backup_storage_title">Faça backup dos meus ficheiros</string>
+    <string name="settings_backup_files_title">Ficheiros e pastas incluídos</string>
+    <string name="settings_backup_files_summary">Nenhum</string>
+    <string name="settings_backup_storage_dialog_title">Recurso experimental</string>
+    <string name="settings_backup_storage_dialog_message">O backup de ficheiros ainda é experimental e pode não funcionar. Não confie nele para dados importantes.</string>
+    <string name="settings_backup_storage_dialog_ok">Ativar mesmo assim</string>
+    <string name="settings_backup_storage_code_dialog_title">Verificação do código de recuperação necessária</string>
+    <string name="settings_backup_storage_code_dialog_message">Para ativar o backup de armazenamento, precisa primeiro verificar o seu código de recuperação ou gerar um novo.</string>
+    <string name="settings_backup_storage_code_dialog_ok">Verificar código</string>
+    <string name="settings_expert_title">Configurações para especialistas</string>
+    <string name="settings_expert_quota_title">Cota ilimitada de apps</string>
+    <string name="settings_expert_quota_summary">Não imponha uma limitação ao tamanho dos backups de apps.
+\n
+\nAviso: isso pode encher o seu local de armazenamento rapidamente. Não é necessário para a maioria das apps.</string>
+    <string name="storage_fragment_warning_delete">Os backups existentes neste local serão excluídos.</string>
+    <string name="storage_check_fragment_patience">Isto pode levar algum tempo…</string>
+    <string name="recovery_code_auth_title">Digite novamente o bloqueio de ecrã</string>
+    <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
+    <string name="restore_skip">Pular restauração de apps</string>
+    <string name="restore_storage_skip">Pular restauração de ficheiros</string>
+    <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (experimental)</string>
+    <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados …</string>
+    <string name="restore_storage_in_progress_info">Os seus ficheiros estão a ser restaurados em segundo plano. Pode usar o seu telefone durante a execução.
+\n
+\nAlgumas apps (por exemplo, Signal ou WhatsApp) podem exigir que os ficheiros sejam totalmente restaurados para importar um backup. Tente evitar iniciar essas apps antes que a restauração do ficheiro não seja concluída.</string>
 </resources>
