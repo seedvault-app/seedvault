@@ -163,9 +163,6 @@
 \nUyarı: Bu, depolama konumunuzu hızla doldurabilir. Çoğu uygulama için gerekli değildir.</string>
     <string name="settings_expert_quota_title">Sınırsız uygulama kotası</string>
     <string name="settings_expert_title">Uzman ayarları</string>
-    <string name="settings_backup_storage_code_dialog_ok">Kodu doğrula</string>
-    <string name="settings_backup_storage_code_dialog_message">Depolama yedeklemesini etkinleştirmek için önce kurtarma kodunuzu doğrulamanız veya yeni bir tane oluşturmanız gerekmektedir.</string>
-    <string name="settings_backup_storage_code_dialog_title">Kurtarma kodu doğrulaması gerekli</string>
     <string name="settings_backup_storage_dialog_ok">Yine de etkinleştir</string>
     <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek hala deneyseldir ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
     <string name="settings_backup_storage_dialog_title">Deneysel özellik</string>

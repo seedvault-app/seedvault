@@ -149,8 +149,6 @@
     <string name="settings_backup_files_summary">Không có</string>
     <string name="settings_backup_storage_dialog_title">Tính năng thử nghiệm</string>
     <string name="settings_backup_storage_dialog_ok">Vẫn bật</string>
-    <string name="settings_backup_storage_code_dialog_title">Bắt buộc xác minh mã phục hồi</string>
-    <string name="settings_backup_storage_code_dialog_ok">Xác minh mã</string>
     <string name="settings_expert_quota_title">Không giới hạn ứng dụng</string>
     <string name="settings_expert_quota_summary">Không giới hạn kích cỡ của bản sao lưu ứng dụng.
 \n
@@ -166,7 +164,6 @@
     <string name="settings_category_storage">Sao lưu bộ nhớ (thử nghiệm)</string>
     <string name="settings_backup_files_title">Tệp và thư mục được bao gồm</string>
     <string name="settings_backup_storage_dialog_message">Tính năng sao lưu tệp vẫn đang được thử nghiệm và có thể không hoạt động. Đừng dựa vào nó để sao lưu các tệp quan trọng.</string>
-    <string name="settings_backup_storage_code_dialog_message">Để bật sao lưu bộ nhớ, trước hết bạn cần phải xác minh mã phục hồi hoặc tạo mã mới.</string>
     <string name="settings_expert_title">Cài đặt chuyên gia</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Không được cài đặt</string>
     <string name="restore_storage_skip">Bỏ qua khôi phục tệp</string>
