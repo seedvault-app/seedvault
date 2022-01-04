@@ -13,8 +13,7 @@ private const val RESTORE_SECRET_CODE = "7378673"
 class SecretCodeReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val host = intent.data.host
-        if (RESTORE_SECRET_CODE != host) return
+        if (intent.data?.host != RESTORE_SECRET_CODE) return
         Log.d(TAG, "Restore secret code received.")
         val i = Intent(context, RestoreActivity::class.java).apply {
             flags = FLAG_ACTIVITY_NEW_TASK

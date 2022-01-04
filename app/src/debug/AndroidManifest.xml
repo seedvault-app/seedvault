@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application>
+        <!-- Remove permission requirements only for debug versions to make development easier -->
+        <activity
+            android:name="com.stevesoltys.seedvault.settings.SettingsActivity"
+            android:exported="true"
+            android:permission=""
+            tools:replace="android:permission" />
+        <activity
+            android:name="com.stevesoltys.seedvault.restore.RestoreActivity"
+            android:exported="true"
+            android:permission=""
+            tools:replace="android:permission" />
+    </application>
+
+</manifest>
