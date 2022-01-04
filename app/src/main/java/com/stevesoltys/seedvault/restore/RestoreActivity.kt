@@ -41,8 +41,11 @@ class RestoreActivity : RequireProvisioningActivity() {
     }
 
     @CallSuper
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        // Activity results from the parent will get delivered before and might tell us to finish.
+        // Don't start any new activities when that happens.
+        // Note: onStart() can get called *before* results get delivered, so we use onResume() here
         if (isFinishing) return
 
         // check that backup is provisioned

@@ -55,16 +55,18 @@ abstract class RequireProvisioningActivity : BackupActivity() {
     }
 
     protected fun showStorageActivity() {
-        val intent = Intent(this, StorageActivity::class.java)
-        intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
-        intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
+        val intent = Intent(this, StorageActivity::class.java).apply {
+            putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
+            putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
+        }
         requestLocation.launch(intent)
     }
 
     protected fun showRecoveryCodeActivity() {
-        val intent = Intent(this, RecoveryCodeActivity::class.java)
-        intent.putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
-        intent.putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
+        val intent = Intent(this, RecoveryCodeActivity::class.java).apply {
+            putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
+            putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
+        }
         recoveryCodeRequest.launch(intent)
     }
 
