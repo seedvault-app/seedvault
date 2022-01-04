@@ -37,7 +37,7 @@
     <string name="settings_auto_restore_title">Ripristino automatico</string>
     <string name="settings_info">Tutti i backup sono crittografati sul telefono. Per ripristinare dal backup sarà necessario il codice di recupero di 12 parole.</string>
     <string name="settings_backup_last_backup_never">Mai</string>
-    <string name="settings_backup">Esegui il backup dei miei dati</string>
+    <string name="settings_backup">Esegui il backup delle mie applicazioni</string>
     <string name="restore_backup_button">Ripristina backup</string>
     <string name="backup">Backup</string>
     <string name="recovery_code_write_it_down">Scrivilo sulla carta ora!</string>
