@@ -68,7 +68,6 @@
     <string name="settings_backup_storage_title">Cadangkan file saya</string>
     <string name="settings_category_apps">Pencadangan aplikasi</string>
     <string name="settings_category_storage">Cadangan penyimpanan (eksperimental)</string>
-    <string name="settings_backup_storage_code_dialog_title">Verifikasi kode pemulihan diperlukan</string>
     <string name="about_license">Lisensi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">Ditulis oleh: <a href="https://github.com/stevesoltys">Steve Soltys</a> dan <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Desain oleh: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>

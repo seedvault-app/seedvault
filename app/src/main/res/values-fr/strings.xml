@@ -147,17 +147,14 @@
     <string name="recovery_code_verification_ok_title">Code de récupération vérifié</string>
     <string name="settings_backup_storage_title">Sauvegarder mes fichiers</string>
     <string name="settings_backup_files_title">Fichiers et dossier inclus</string>
-    <string name="settings_backup_storage_code_dialog_title">Code de vérification requis</string>
     <string name="settings_backup_files_summary">Aucun</string>
     <string name="settings_backup_storage_dialog_title">Fonctionnalité expérimentale</string>
-    <string name="settings_backup_storage_code_dialog_ok">Vérifier le code</string>
     <string name="settings_expert_title">Paramètres experts</string>
     <string name="storage_fragment_warning_delete">Les sauvegardes existantes à cet emplacement seront supprimées.</string>
     <string name="settings_category_apps">Sauvegarde des applications</string>
     <string name="settings_category_storage">Sauvegarde des fichies (expérimental)</string>
     <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
-    <string name="settings_backup_storage_code_dialog_message">Pour activer la sauvegarde des fichiers, vous devez d\'abord vérifier votre code de récupération ou en générer un nouveau.</string>
     <string name="settings_expert_quota_title">Quota illimité d\'applications</string>
     <string name="settings_expert_quota_summary">Ne pas limiter la taille de la sauvegarde des applications.
 \n

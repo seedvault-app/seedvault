@@ -126,9 +126,6 @@
     <string name="settings_backup_files_summary">Ništa</string>
     <string name="settings_backup_recovery_code">Kod za obnovu</string>
     <string name="settings_backup_recovery_code_summary">Potvrdi postojeći kod ili generiraj novi</string>
-    <string name="settings_backup_storage_code_dialog_title">Potrebna je provjera koda za oporavak</string>
-    <string name="settings_backup_storage_code_dialog_message">Za spremanje sigurnosnih kopija spremišta, najprije moraš potvrditi svoj kod za oporavak ili generirati novi.</string>
-    <string name="settings_backup_storage_code_dialog_ok">Potvrdi kod</string>
     <string name="settings_expert_title">Stručne postavke</string>
     <string name="settings_expert_quota_title">Neograničena količina aplikacija</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Nije instalirano</string>

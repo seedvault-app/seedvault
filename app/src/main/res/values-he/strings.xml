@@ -114,8 +114,6 @@
     <string name="settings_backup_storage_dialog_title">יכולת ניסיונית</string>
     <string name="settings_backup_storage_dialog_message">גיבוי קבצים היא עדיין יכולת ניסיונית ויכול להיות שלא תעבוד. אין לסמוך עליה כשמדובר בנתונים חשובים.</string>
     <string name="settings_backup_storage_dialog_ok">לאפשר בכל זאת</string>
-    <string name="settings_backup_storage_code_dialog_title">נדרש אימות קוד שחזור</string>
-    <string name="settings_backup_storage_code_dialog_ok">אימות קוד</string>
     <string name="settings_category_apps">גיבוי יישומונים</string>
     <string name="settings_category_storage">אחסון לגיבוי (ניסיוני)</string>
     <string name="settings_expert_title">הגדרות מומחים</string>
@@ -144,7 +142,6 @@
     <string name="backup_app_quota_exceeded">מיכסת הגיבוי הושגה</string>
     <string name="restore_restoring_error_message">אפשר להתקין את היישומונים האלה ידנית מחדש והשחזור האוטומטי ינסה לשחזר את הנתונים שלהם (אם הוא מופעל).</string>
     <string name="settings_backup_recovery_code_summary">אימות קוד קיים או יצירת אחד חדש</string>
-    <string name="settings_backup_storage_code_dialog_message">כדי להפעיל גיבוי לאחסון, עליך לאמת תחילה את קוד השחזור שלך או לייצר אחד חדש.</string>
     <string name="restore_storage_skip">דילוג על שחזור קבצים</string>
     <string name="settings_expert_quota_summary">לא לאכוף מגבלה על גודל גיבויי היישומונים.
 \n

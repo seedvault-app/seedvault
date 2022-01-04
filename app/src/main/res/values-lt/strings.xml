@@ -147,9 +147,6 @@
     <string name="backup">Atsarginė kopija</string>
     <string name="settings_backup_files_title">Įtraukiami failai ir aplankai</string>
     <string name="settings_backup_storage_dialog_ok">Vis tiek įjungti</string>
-    <string name="settings_backup_storage_code_dialog_title">Reikalingas atkūrimo kodo patikrinimas</string>
-    <string name="settings_backup_storage_code_dialog_message">Norėdami įjungti atsarginių kopijų saugyklą, pirmiausia turite patvirtinti atkūrimo kodą arba sukurti naują.</string>
-    <string name="settings_backup_storage_code_dialog_ok">Patvirtinti kodą</string>
     <string name="settings_expert_title">Eksperto nustatymai</string>
     <string name="settings_expert_quota_title">Neribota programėlių kvota</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Neįdiegta</string>

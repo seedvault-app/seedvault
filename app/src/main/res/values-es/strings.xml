@@ -148,9 +148,6 @@
     <string name="settings_backup_storage_title">Copia de seguridad de mis archivos</string>
     <string name="settings_backup_files_summary">Ninguno</string>
     <string name="settings_backup_storage_dialog_ok">Activar de todos modos</string>
-    <string name="settings_backup_storage_code_dialog_title">Se requiere la verificación del código de recuperación</string>
-    <string name="settings_backup_storage_code_dialog_message">Para activar la copia de seguridad del almacenamiento, primero tiene que verificar su código de recuperación o generar uno nuevo.</string>
-    <string name="settings_backup_storage_code_dialog_ok">Verificar código</string>
     <string name="settings_expert_title">Opciones avanzadas</string>
     <string name="settings_expert_quota_title">Cuota ilimitada de apps</string>
     <string name="settings_expert_quota_summary">No imponga una limitación en el tamaño de las copias de seguridad de las apps.

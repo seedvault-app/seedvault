@@ -153,12 +153,9 @@
     <string name="settings_backup_storage_dialog_title">Kokeellinen ominaisuus</string>
     <string name="storage_fragment_warning_delete">Tässä sijainnissa olevat varmuuskopiot poistetaan.</string>
     <string name="settings_backup_storage_dialog_message">Tiedostojen varmuuskopiointi on vielä kokeiluasteella, eikä se välttämättä toimi. Älä luota siihen tärkeiden tietojen osalta.</string>
-    <string name="settings_backup_storage_code_dialog_message">Jos haluat ottaa tallennustilan varmuuskopioinnin käyttöön, sinun on ensin vahvistettava palautuskoodi tai luotava uusi koodi.</string>
-    <string name="settings_backup_storage_code_dialog_ok">Varmistuskoodi</string>
     <string name="storage_check_fragment_patience">Tämä voi kestää jonkin aikaa…</string>
     <string name="restore_storage_in_progress_title">Tiedostoja palautetaan…</string>
     <string name="settings_backup_storage_dialog_ok">Ota käyttöön joka tapauksessa</string>
-    <string name="settings_backup_storage_code_dialog_title">Palautuskoodin vahvistus vaaditaan</string>
     <string name="settings_expert_quota_title">Rajoittamaton sovelluskiintiö</string>
     <string name="settings_expert_title">Asiantuntija-asetukset</string>
     <string name="restore_skip">Ohita sovellusten palauttaminen</string>

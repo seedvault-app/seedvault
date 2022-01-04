@@ -163,9 +163,6 @@
 \n警告：这会很快填满您的存储位置。 大多数应用程序不需要。</string>
     <string name="settings_expert_quota_title">无限应用配额</string>
     <string name="settings_expert_title">专家设置</string>
-    <string name="settings_backup_storage_code_dialog_ok">验证代码</string>
-    <string name="settings_backup_storage_code_dialog_message">要启用存储备份，您需要首先验证您的恢复代码或生成一个新的。</string>
-    <string name="settings_backup_storage_code_dialog_title">需要验证恢复代码</string>
     <string name="settings_backup_storage_dialog_ok">仍要启用</string>
     <string name="settings_backup_storage_dialog_message">备份文件仍处于试验阶段，可能无法正常工作。 不要依赖它来备份重要数据。</string>
     <string name="settings_backup_storage_dialog_title">实验性功能</string>
