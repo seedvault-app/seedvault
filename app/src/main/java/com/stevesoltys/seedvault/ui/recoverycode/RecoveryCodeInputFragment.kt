@@ -46,7 +46,6 @@ class RecoveryCodeInputFragment : Fragment() {
     private lateinit var introText: TextView
     private lateinit var doneButton: Button
     private lateinit var newCodeButton: Button
-    private lateinit var backView: TextView
     private lateinit var wordLayout1: TextInputLayout
     private lateinit var wordLayout2: TextInputLayout
     private lateinit var wordLayout3: TextInputLayout
@@ -76,7 +75,6 @@ class RecoveryCodeInputFragment : Fragment() {
         introText = v.findViewById(R.id.introText)
         doneButton = v.findViewById(R.id.doneButton)
         newCodeButton = v.findViewById(R.id.newCodeButton)
-        backView = v.findViewById(R.id.backView)
         wordLayout1 = v.findViewById(R.id.wordLayout1)
         wordLayout2 = v.findViewById(R.id.wordLayout2)
         wordLayout3 = v.findViewById(R.id.wordLayout3)
@@ -105,8 +103,6 @@ class RecoveryCodeInputFragment : Fragment() {
 
         if (viewModel.isRestore) {
             introText.setText(R.string.recovery_code_input_intro)
-            backView.visibility = VISIBLE
-            backView.setOnClickListener { requireActivity().finishAfterTransition() }
         }
 
         val adapterLayout = android.R.layout.simple_list_item_1

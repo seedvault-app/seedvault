@@ -102,7 +102,7 @@
 \n
 \nWähle einen anderen Speicherort aus, der einen %s Ordner enthält.</string>
     <string name="restore_invalid_location_title">Keine Sicherungen gefunden</string>
-    <string name="restore_back">Nicht wiederherstellen</string>
+    <string name="restore_skip">Nicht wiederherstellen</string>
     <string name="restore_restore_set_times">Letzte Sicherung %1$s · Erste %2$s.</string>
     <string name="restore_choose_restore_set">Wähle eine Sicherung aus, um sie wiederherzustellen</string>
     <string name="notification_restore_error_action">App deinstallieren</string>
@@ -152,7 +152,7 @@
     <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
     <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (experimentell)</string>
     <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
-    <string name="restore_skip">Wiederherstellen von Apps überspringen</string>
+    <string name="restore_skip_apps">Wiederherstellen von Apps überspringen</string>
     <string name="recovery_code_auth_description">Eingabe deiner Geräteanmeldedaten zum Fortfahren</string>
     <string name="recovery_code_auth_title">Deine Bildschirmsperre erneut eingeben</string>
     <string name="storage_check_fragment_patience">Das kann einige Zeit dauern…</string>

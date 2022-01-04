@@ -30,7 +30,7 @@
 \n
 \nElija otra ubicación que contenga una carpeta %s.</string>
     <string name="restore_invalid_location_title">No se encontraron respaldos</string>
-    <string name="restore_back">No restaurar</string>
+    <string name="restore_skip">No restaurar</string>
     <string name="restore_restore_set_times">Último Respaldo %1$s · Primero %2$s.</string>
     <string name="restore_choose_restore_set">Elije un respaldo para restaurar</string>
     <string name="restore_title">Restaurar desde el respaldo</string>

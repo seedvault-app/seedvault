@@ -125,7 +125,7 @@
 \n
 \nWybierz inne położenie, które zawiera katalog %s.</string>
     <string name="restore_invalid_location_title">Nie odnaleziono kopii zapasowych</string>
-    <string name="restore_back">Nie przywracaj</string>
+    <string name="restore_skip">Nie przywracaj</string>
     <string name="restore_restore_set_times">Ostatnia kopia zapasowa %1$s · Pierwsza %2$s.</string>
     <string name="restore_choose_restore_set">Wybierz kopię zapasową do przywrócenia</string>
     <string name="restore_title">Przywróć z kopii zapasowej</string>

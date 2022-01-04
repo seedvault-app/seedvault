@@ -32,7 +32,7 @@
 \n
 \nOdaberi jedno drugo mjesto koje sadrži %s mapu.</string>
     <string name="restore_invalid_location_title">Nema sigurnosnih kopija</string>
-    <string name="restore_back">Nemoj vratiti</string>
+    <string name="restore_skip">Nemoj vratiti</string>
     <string name="restore_restore_set_times">Zadnja sigurnosna kopija %1$s · Prva %2$s.</string>
     <string name="restore_choose_restore_set">Odaberi sigurnosnu kopiju za vraćanje</string>
     <string name="restore_title">Vrati iz sigurnosne kopije</string>
@@ -138,7 +138,7 @@
     <string name="recovery_code_auth_description">Nastavi upisom svojih podataka za prijavu</string>
     <string name="recovery_code_auth_title">Ponovo upiši podatke za zaključavanje ekrana</string>
     <string name="backup_section_not_allowed">Aplikacije koje ne dopuštaju spremanje sigurnosne kopije</string>
-    <string name="restore_skip">Preskoči obnavljanje aplikacija</string>
+    <string name="restore_skip_apps">Preskoči obnavljanje aplikacija</string>
     <string name="restore_storage_skip">Preskoči obnavljanje datoteka</string>
     <string name="restore_storage_choose_snapshot">Odaberi spremište sigurnosnih kopija za obnavljanje (eksperimentalno)</string>
     <string name="restore_storage_in_progress_title">Datoteke se obnavljaju …</string>

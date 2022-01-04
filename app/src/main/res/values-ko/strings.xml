@@ -53,7 +53,7 @@
     <string name="about_title">정보</string>
     <string name="storage_internal_warning_title">경고</string>
     <string name="restore_next">다음</string>
-    <string name="restore_back">복원 안 함</string>
+    <string name="restore_skip">복원 안 함</string>
     <string name="notification_error_title">백업 오류</string>
     <string name="notification_error_channel_title">오류 알림</string>
     <string name="notification_failed_title">백업 실패</string>

@@ -58,7 +58,7 @@
 \n
 \n请选择包含%s文件夹的其他位置。</string>
     <string name="restore_invalid_location_title">没有找到备份</string>
-    <string name="restore_back">不恢复</string>
+    <string name="restore_skip">不恢复</string>
     <string name="restore_restore_set_times">上次备份:%1$s · 首次备份:%2$s。</string>
     <string name="restore_choose_restore_set">选择一个备份来恢复</string>
     <string name="restore_title">从备份恢复</string>
@@ -152,7 +152,7 @@
     <string name="restore_storage_in_progress_title">正在恢复文件…</string>
     <string name="restore_storage_choose_snapshot">选择要恢复的存储备份（实验性）</string>
     <string name="restore_storage_skip">跳过恢复文件</string>
-    <string name="restore_skip">跳过恢复应用程序</string>
+    <string name="restore_skip_apps">跳过恢复应用程序</string>
     <string name="recovery_code_auth_description">输入您的设备凭据以继续</string>
     <string name="recovery_code_auth_title">重新输入您的屏幕锁定码</string>
     <string name="storage_check_fragment_patience">这可能要花点时间…</string>

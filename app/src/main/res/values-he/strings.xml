@@ -55,7 +55,7 @@
 \n
 \nנא לבחור במיקום אחר שמכיל תיקיית %s.</string>
     <string name="restore_invalid_location_title">לא נמצאו גיבויים</string>
-    <string name="restore_back">לא לשחזר</string>
+    <string name="restore_skip">לא לשחזר</string>
     <string name="restore_restore_set_times">גיבוי אחרון %1$s · ראשון %2$s.</string>
     <string name="restore_choose_restore_set">נא לבחור גיבוי לשחזור</string>
     <string name="restore_title">שחזור מגיבוי</string>
@@ -138,7 +138,7 @@
     <string name="recovery_code_verification_new_dialog_title">נא להמתין רגע קט…</string>
     <string name="recovery_code_auth_title">נא להיכנס מחדש למסך הנעילה שלך</string>
     <string name="recovery_code_auth_description">נא לספק את פרטי הגישה למכשיר כדי להמשיך</string>
-    <string name="restore_skip">דילוג על שחזור יישומונים</string>
+    <string name="restore_skip_apps">דילוג על שחזור יישומונים</string>
     <string name="backup_app_quota_exceeded">מיכסת הגיבוי הושגה</string>
     <string name="restore_restoring_error_message">אפשר להתקין את היישומונים האלה ידנית מחדש והשחזור האוטומטי ינסה לשחזר את הנתונים שלהם (אם הוא מופעל).</string>
     <string name="settings_backup_recovery_code_summary">אימות קוד קיים או יצירת אחד חדש</string>

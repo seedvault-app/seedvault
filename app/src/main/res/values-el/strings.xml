@@ -61,7 +61,7 @@
 \n
 \nΕπιλέξτε άλλη τοποθεσία που περιέχει ένα φάκελο %s.</string>
     <string name="restore_invalid_location_title">Δεν βρέθηκαν αντίγραφα ασφαλείας</string>
-    <string name="restore_back">Να μην γίνει επαναφορά</string>
+    <string name="restore_skip">Να μην γίνει επαναφορά</string>
     <string name="restore_restore_set_times">Τελευταίο αντίγραφο ασφαλείας %1$s · Πρώτο %2$s.</string>
     <string name="restore_choose_restore_set">Επιλέξτε ένα αντίγραφο ασφαλείας για επαναφορά</string>
     <string name="restore_title">Επαναφορά από αντίγραφο ασφαλείας</string>

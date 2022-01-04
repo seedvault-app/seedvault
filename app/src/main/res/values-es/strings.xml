@@ -7,7 +7,7 @@
     <string name="storage_internal_warning_title">Atención</string>
     <string name="restore_finished_button">Finalizar</string>
     <string name="restore_next">Siguiente</string>
-    <string name="restore_back">No restaurar</string>
+    <string name="restore_skip">No restaurar</string>
     <string name="notification_restore_error_action">Desinstalar aplicación</string>
     <string name="notification_error_channel_title">Notificación de error</string>
     <string name="recovery_code_error_empty_word">Olvidaste escribir esta palabra.</string>
@@ -166,7 +166,7 @@
     <string name="settings_backup_storage_dialog_title">Característica experimental</string>
     <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía experimental y podría no funcionar. No confíe en ella para los datos importantes.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">No instalada</string>
-    <string name="restore_skip">Omitir la restauración de apps</string>
+    <string name="restore_skip_apps">Omitir la restauración de apps</string>
     <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (experimental)</string>
     <string name="restore_storage_in_progress_info">Sus archivos se están restaurando en segundo plano. Puede empezar a usar su teléfono mientras se está ejecutando.
 \n

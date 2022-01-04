@@ -34,7 +34,7 @@
 \nஇது பெரும்பாலும் தவறான மீட்பு குறியீடு அல்லது சேமிப்பக பிழை காரணமாக இருக்கலாம்.</string>
     <string name="restore_set_error">காப்புப்பிரதிகளை ஏற்றும்போது பிழை ஏற்பட்டது.</string>
     <string name="restore_invalid_location_title">காப்பு இல்லை</string>
-    <string name="restore_back">மீட்டெடுக்க வேண்டாம்</string>
+    <string name="restore_skip">மீட்டெடுக்க வேண்டாம்</string>
     <string name="restore_restore_set_times">கடைசி காப்பு %1$s · முதல் %2$s.</string>
     <string name="restore_choose_restore_set">மீட்டமைக்க ஒரு காப்புப்பிரதியைத் தேர்வு செய்யவும்</string>
     <string name="restore_title">காப்புப்பிரதியிலிருந்து மீட்டெடுக்கவும்</string>

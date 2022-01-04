@@ -123,7 +123,7 @@
 \n
 \nదయచేసి %s ఫోల్డర్ లో ఉన్న మరొక స్థానాన్ని ఎంచుకోండి.</string>
     <string name="restore_invalid_location_title">బ్యాకప్‌లు గుర్తించబడలేదు</string>
-    <string name="restore_back">పునరుద్ధరించవద్దు</string>
+    <string name="restore_skip">పునరుద్ధరించవద్దు</string>
     <string name="restore_restore_set_times">చివరి బ్యాకప్ %1$s· మొదటి %2$s.</string>
     <string name="restore_choose_restore_set">పునరుద్ధరించడానికి బ్యాకప్‌ని ఎంచుకోండి</string>
     <string name="restore_title">బ్యాకప్ నుండి పునరుద్ధరించండి</string>
