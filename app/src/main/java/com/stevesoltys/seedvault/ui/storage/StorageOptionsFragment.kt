@@ -1,8 +1,8 @@
 package com.stevesoltys.seedvault.ui.storage
 
 import android.Manifest.permission.MANAGE_DOCUMENTS
-import android.app.Activity.RESULT_FIRST_USER
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_FIRST_USER
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
@@ -24,14 +24,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
-internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
+internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener {
 
     companion object {
         @RequiresPermission(MANAGE_DOCUMENTS)
-        fun newInstance(isRestore: Boolean): StorageRootsFragment {
-            val f = StorageRootsFragment()
+        fun newInstance(isRestore: Boolean): StorageOptionsFragment {
+            val f = StorageOptionsFragment()
             f.arguments = Bundle().apply {
                 putBoolean(INTENT_EXTRA_IS_RESTORE, isRestore)
             }
@@ -48,7 +49,7 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var skipView: TextView
 
-    private val adapter by lazy { StorageRootAdapter(viewModel.isRestoreOperation, this) }
+    private val adapter by lazy { StorageOptionAdapter(viewModel.isRestoreOperation, this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,7 +98,7 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
 
         listView.adapter = adapter
 
-        viewModel.storageRoots.observe(viewLifecycleOwner, { roots ->
+        viewModel.storageOptions.observe(viewLifecycleOwner, { roots ->
             onRootsLoaded(roots)
         })
     }
@@ -107,7 +108,7 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
         viewModel.loadStorageRoots()
     }
 
-    private fun onRootsLoaded(roots: List<StorageRoot>) {
+    private fun onRootsLoaded(roots: List<StorageOption>) {
         progressBar.visibility = INVISIBLE
         adapter.setItems(roots)
     }
@@ -116,15 +117,19 @@ internal class StorageRootsFragment : Fragment(), StorageRootClickedListener {
         viewModel.onUriPermissionResultReceived(uri)
     }
 
-    override fun onClick(root: StorageRoot) {
-        viewModel.onStorageRootChosen(root)
-        openDocumentTree.launch(root.uri)
+    override fun onClick(storageOption: StorageOption) {
+        if (storageOption is SafOption) {
+            viewModel.onSafOptionChosen(storageOption)
+            openDocumentTree.launch(storageOption.uri)
+        } else {
+            throw IllegalArgumentException("Non-SAF storage not yet supported")
+        }
     }
 
 }
 
-internal interface StorageRootClickedListener {
-    fun onClick(root: StorageRoot)
+internal interface StorageOptionClickedListener {
+    fun onClick(storageOption: StorageOption)
 }
 
 private class OpenSeedvaultTree : OpenDocumentTree() {

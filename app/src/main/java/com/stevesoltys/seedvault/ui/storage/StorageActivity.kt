@@ -37,7 +37,7 @@ class StorageActivity : BackupActivity() {
             if (storageRoot == null) {
                 viewModel.onUriPermissionResultReceived(null)
             } else {
-                viewModel.onStorageRootChosen(storageRoot)
+                viewModel.onSafOptionChosen(storageRoot)
                 viewModel.onUriPermissionResultReceived(uri)
             }
         }
@@ -72,7 +72,7 @@ class StorageActivity : BackupActivity() {
 
         if (savedInstanceState == null) {
             if (canUseStorageRootsFragment()) {
-                showFragment(StorageRootsFragment.newInstance(isRestore()))
+                showFragment(StorageOptionsFragment.newInstance(isRestore()))
             } else {
                 openDocumentTree.launch(null)
             }
