@@ -9,6 +9,8 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import com.stevesoltys.seedvault.ui.storage.StorageRootResolver.getIcon
 
+private const val DAVX5_PACKAGE = "at.bitfire.davdroid"
+private const val DAVX5_ACTIVITY = "at.bitfire.davdroid.ui.webdav.WebdavMountsActivity"
 private const val NEXTCLOUD_PACKAGE = "com.nextcloud.client"
 private const val NEXTCLOUD_ACTIVITY = "com.owncloud.android.authentication.AuthenticatorActivity"
 
@@ -26,6 +28,7 @@ internal class SafStorageOptions(
 
     internal fun checkOrAddExtraRoots(roots: ArrayList<SafOption>) {
         checkOrAddUsbRoot(roots)
+        checkOrAddDavX5Root(roots)
         checkOrAddNextCloudRoot(roots)
     }
 
@@ -43,6 +46,53 @@ internal class SafStorageOptions(
             isUsb = true,
             requiresNetwork = false,
             enabled = false
+        )
+        roots.add(root)
+    }
+
+    /**
+     * This adds a fake Dav X5 entry if no real one was found.
+     *
+     * If Dav X5 is *not* installed,
+     * the user will always have the option to install it by clicking the entry.
+     *
+     * If it *is* installed and this is restore, the user can set up a new account by clicking.
+     */
+    private fun checkOrAddDavX5Root(roots: ArrayList<SafOption>) {
+        if (doNotInclude(AUTHORITY_DAVX5, roots)) return
+
+        val intent = Intent().apply {
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
+            setClassName(DAVX5_PACKAGE, DAVX5_ACTIVITY)
+        }
+        val marketIntent =
+            Intent(ACTION_VIEW, Uri.parse("market://details?id=$DAVX5_PACKAGE")).apply {
+                addFlags(FLAG_ACTIVITY_NEW_TASK)
+            }
+        val isInstalled = packageManager.resolveActivity(intent, 0) != null
+        val canInstall = packageManager.resolveActivity(marketIntent, 0) != null
+        val summaryRes = if (isInstalled) {
+            if (isRestore) R.string.storage_fake_davx5_summary_installed
+            else R.string.storage_fake_davx5_summary_unavailable
+        } else {
+            if (canInstall) R.string.storage_fake_davx5_summary
+            else R.string.storage_fake_davx5_summary_unavailable_market
+        }
+        val root = SafOption(
+            authority = AUTHORITY_DAVX5,
+            rootId = "fake",
+            documentId = "fake",
+            icon = getIcon(context, AUTHORITY_DAVX5, "fake", 0),
+            title = context.getString(R.string.storage_fake_davx5_title),
+            summary = context.getString(summaryRes),
+            availableBytes = null,
+            isUsb = false,
+            requiresNetwork = true,
+            enabled = isInstalled || canInstall,
+            nonDefaultAction = {
+                if (isInstalled) context.startActivity(intent)
+                else if (canInstall) context.startActivity(marketIntent)
+            }
         )
         roots.add(root)
     }
