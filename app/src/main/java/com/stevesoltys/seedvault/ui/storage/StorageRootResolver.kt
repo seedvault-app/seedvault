@@ -96,6 +96,9 @@ internal object StorageRootResolver {
             authority == AUTHORITY_NEXTCLOUD -> {
                 context.getDrawable(R.drawable.nextcloud)
             }
+            authority == AUTHORITY_DAVX5 -> {
+                context.getDrawable(R.drawable.davx5)
+            }
             else -> null
         }
     }
