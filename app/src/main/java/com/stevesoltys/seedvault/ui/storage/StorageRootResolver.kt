@@ -17,13 +17,14 @@ import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_CREATE
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD
 import android.util.Log
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
-object StorageRootResolver {
+internal object StorageRootResolver {
 
     private val TAG = StorageRootResolver::class.java.simpleName
 
-    fun getStorageRoots(context: Context, authority: String): List<StorageRoot> {
-        val roots = ArrayList<StorageRoot>()
+    fun getStorageRoots(context: Context, authority: String): List<SafOption> {
+        val roots = ArrayList<SafOption>()
         val rootsUri = DocumentsContract.buildRootsUri(authority)
 
         try {
@@ -39,7 +40,7 @@ object StorageRootResolver {
         return roots
     }
 
-    private fun getStorageRoot(context: Context, authority: String, cursor: Cursor): StorageRoot? {
+    private fun getStorageRoot(context: Context, authority: String, cursor: Cursor): SafOption? {
         val flags = cursor.getInt(COLUMN_FLAGS)
         val supportsCreate = flags and FLAG_SUPPORTS_CREATE != 0
         val supportsIsChild = flags and FLAG_SUPPORTS_IS_CHILD != 0
@@ -47,7 +48,7 @@ object StorageRootResolver {
         val rootId = cursor.getString(COLUMN_ROOT_ID)!!
         if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_HOME) return null
         val documentId = cursor.getString(COLUMN_DOCUMENT_ID) ?: return null
-        return StorageRoot(
+        return SafOption(
             authority = authority,
             rootId = rootId,
             documentId = documentId,

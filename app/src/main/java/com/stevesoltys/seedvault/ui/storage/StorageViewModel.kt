@@ -20,6 +20,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
+import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
 private val TAG = StorageViewModel::class.java.simpleName
 
@@ -28,8 +29,8 @@ internal abstract class StorageViewModel(
     protected val settingsManager: SettingsManager,
 ) : AndroidViewModel(app), RemovableStorageListener {
 
-    private val mStorageRoots = MutableLiveData<List<StorageRoot>>()
-    internal val storageRoots: LiveData<List<StorageRoot>> get() = mStorageRoots
+    private val mStorageOptions = MutableLiveData<List<StorageOption>>()
+    internal val storageOptions: LiveData<List<StorageOption>> get() = mStorageOptions
 
     private val mLocationSet = MutableLiveEvent<Boolean>()
     internal val locationSet: LiveEvent<Boolean> get() = mLocationSet
@@ -38,7 +39,7 @@ internal abstract class StorageViewModel(
     internal val locationChecked: LiveEvent<LocationResult> get() = mLocationChecked
 
     private val storageRootFetcher by lazy { StorageRootFetcher(app, isRestoreOperation) }
-    private var storageRoot: StorageRoot? = null
+    private var safOption: SafOption? = null
 
     internal var isSetupWizard: Boolean = false
     internal val hasStorageSet: Boolean
@@ -63,14 +64,14 @@ internal abstract class StorageViewModel(
             storageRootFetcher.setRemovableStorageListener(this)
         }
         Thread {
-            mStorageRoots.postValue(storageRootFetcher.getStorageRoots())
+            mStorageOptions.postValue(storageRootFetcher.getStorageOptions())
         }.start()
     }
 
     override fun onStorageChanged() = loadStorageRoots()
 
-    fun onStorageRootChosen(root: StorageRoot) {
-        storageRoot = root
+    fun onSafOptionChosen(option: SafOption) {
+        safOption = option
     }
 
     internal fun onUriPermissionResultReceived(uri: Uri?) {
@@ -91,13 +92,13 @@ internal abstract class StorageViewModel(
     }
 
     /**
-     * Saves the storage behind the given [Uri] (and saved [storageRoot]).
+     * Saves the storage behind the given [Uri] (and saved [safOption]).
      *
      * @return true if the storage is a USB flash drive, false otherwise.
      */
     protected fun saveStorage(uri: Uri): Boolean {
         // store backup storage location in settings
-        val root = storageRoot ?: throw IllegalStateException("no storage root")
+        val root = safOption ?: throw IllegalStateException("no storage root")
         val name = if (root.isInternal()) {
             "${root.title} (${app.getString(R.string.settings_backup_location_internal)})"
         } else {
