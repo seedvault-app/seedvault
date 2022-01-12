@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.restore
 
-import android.app.Activity.RESULT_FIRST_USER
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.ViewStub
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
 import com.stevesoltys.seedvault.R
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.ui.restore.SnapshotFragment
@@ -35,9 +35,8 @@ internal class RestoreFilesFragment : SnapshotFragment() {
         val skipView: TextView = footer.findViewById(R.id.skipView)
         skipView.setOnClickListener {
             requireActivity().apply {
-                // Equivalent to com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
                 // SetupWizard handles this
-                setResult(RESULT_FIRST_USER)
+                setResult(RESULT_SKIP)
                 finishAfterTransition()
             }
         }

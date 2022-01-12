@@ -2,7 +2,6 @@ package com.stevesoltys.seedvault.ui.storage
 
 import android.Manifest.permission.MANAGE_DOCUMENTS
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_FIRST_USER
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
@@ -22,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTre
 import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
@@ -82,9 +82,8 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
             titleView.text = getString(R.string.storage_fragment_restore_title)
             skipView.visibility = VISIBLE
             skipView.setOnClickListener {
-                // Equivalent to com.google.android.setupcompat.util.ResultCodes.RESULT_SKIP
                 // SetupWizard handles this
-                requireActivity().setResult(RESULT_FIRST_USER)
+                requireActivity().setResult(RESULT_SKIP)
                 requireActivity().finishAfterTransition()
             }
         } else {
