@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_videos">Videa</string>
+    <string name="content_images">Fotky a obrázky</string>
+    <string name="notification_prune">Mazání starých záloh…</string>
+    <string name="snapshots_empty">Nebyly nalezeny žádné zálohy úložiště
+\n
+\nJe nám to líto, ale není nic, co by mohlo být obnoveno.</string>
+    <string name="content_audio">Zvukové soubory</string>
+    <string name="content_add">Přidat</string>
+    <string name="notification_backup_title">Záloha úložiště</string>
+    <string name="notification_backup_scanning">Skenování souborů…</string>
+    <string name="notification_backup_backup_files">Zálohování souborů…</string>
+    <string name="notification_restore_title">Obnova souborů…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d z %2$d souborů obnoveno</string>
+    <string name="snapshots_error">Chyba při načítání snapshotů</string>
+    <string name="content_downloads">Stažené soubory</string>
+    <string name="snapshots_title">Dostupné zálohy úložiště</string>
+</resources>
