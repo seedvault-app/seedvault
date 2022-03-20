@@ -166,9 +166,20 @@
     <string name="settings_backup_storage_dialog_title">Característica experimental</string>
     <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía experimental y podría no funcionar. No confíe en ella para los datos importantes.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">No instalada</string>
-    <string name="restore_skip_apps">Omitir la restauración de apps</string>
+    <string name="restore_skip_apps">No restaurar aplicaciones</string>
     <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (experimental)</string>
     <string name="restore_storage_in_progress_info">Sus archivos se están restaurando en segundo plano. Puede empezar a usar su teléfono mientras se está ejecutando.
 \n
-\nAlgunas aplicaciones (por ejemplo, Signal o WhatsApp) pueden requerir que los archivos estén completamente restaurados para importar una copia de seguridad. Intente evitar iniciar esas aplicaciones antes de que la restauración de los archivos no se haya completado.</string>
+\nAlgunas aplicaciones (por ejemplo, Signal o WhatsApp) pueden requerir que los archivos estén completamente restaurados para importar una copia de seguridad. Intente evitar iniciar esas aplicaciones antes de que la restauración de los archivos se haya completado.</string>
+    <string name="settings_backup_storage_battery_optimization">Advertencia: No hay copias de seguridad automáticas, porque la optimización de batería está activa.</string>
+    <string name="settings_backup_new_code_dialog_title">Se requiere un código de recuperación nuevo</string>
+    <string name="notification_error_no_main_key_text">Generar un código de recuperación nuevo para completar la actualización y seguir usando las copias de seguridad.</string>
+    <string name="settings_backup_new_code_dialog_message">Para seguir usando las copias de seguridad de la aplicación, es necesario generar un código de recuperación nuevo.
+\n
+\nSentimos las molestias ocasionadas.</string>
+    <string name="notification_error_no_main_key_title">Copias de seguridad desactivadas</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Código nuevo</string>
+    <string name="error_no_store">Error: No hay ninguna tienda de aplicaciones instalada</string>
+    <string name="storage_fake_davx5_summary_installed">Toque para configurar un montaje WebDAV</string>
+    <string name="storage_fake_davx5_summary_unavailable">El montaje de WebDAV no está disponible. Configure uno.</string>
 </resources>
