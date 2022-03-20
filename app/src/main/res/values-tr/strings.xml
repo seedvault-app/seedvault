@@ -171,4 +171,15 @@
     <string name="settings_backup_storage_title">Dosyalarımı yedekle</string>
     <string name="settings_category_storage">Depolama yedekle (deneysel)</string>
     <string name="settings_category_apps">Uygulama yedekle</string>
+    <string name="settings_backup_storage_battery_optimization">Uyarı: Pil iyileştirme etkin olduğundan otomatik yedekleme yok.</string>
+    <string name="settings_backup_new_code_dialog_title">Yeni kurtarma kodu gerekli</string>
+    <string name="notification_error_no_main_key_title">Yedeklemeler devre dışı</string>
+    <string name="notification_error_no_main_key_text">Yükseltmeyi tamamlamak ve yedeklemeleri kullanmaya devam etmek için yeni bir kurtarma kodu oluşturun.</string>
+    <string name="error_no_store">Hata: Kurulu uygulama mağazası yok</string>
+    <string name="settings_backup_new_code_dialog_message">Uygulama yedeklemelerini kullanmaya devam etmek için yeni bir kurtarma kodu oluşturmanız gerekir.
+\n
+\nRahatsızlıktan dolayı üzgünüz.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Yeni kod</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV bağlantısı yok. Bir tane kurun.</string>
+    <string name="storage_fake_davx5_summary_installed">Bir WebDAV bağlantısı kurmak için dokunun</string>
 </resources>
