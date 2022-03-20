@@ -1,2 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="about_sponsor">Patrocinat per: <a href="https://www.calyxinstitute.org">Calyx Institute</a> per l\'ús a <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_license">Llicència: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_design">Dissenyat per: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">Escrit per: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_summary">Una aplicació de còpies de seguretat que utilitza l\'API interna de còpies de seguretat d\'Android.</string>
+    <string name="settings_backup_location_none">Cap</string>
+    <string name="settings_backup_location_internal">Enmagatzematge intern</string>
+    <string name="settings_backup_last_backup_never">Mai</string>
+    <string name="settings_info">Totes les còpies de seguretat s\'encripten al telèfon. Per restaurar des de la còpia de seguretat necessitaràs el codi de recuperació de 12 paraules.</string>
+    <string name="settings_auto_restore_title">Restaurar automàticament</string>
+    <string name="settings_auto_restore_summary_usb">Nota: El teu %1$s ha d\'estar endollat perquè això funcioni.</string>
+    <string name="backup">Còpia de seguretat</string>
+    <string name="restore_backup_button">Restaurar còpia de seguretat</string>
+    <string name="data_management_label">Còpia de seguretat de Seedvault</string>
+    <string name="current_destination_string">Paràmetres i estat de la còpia de seguretat</string>
+    <string name="settings_backup">Crear còpia de seguretat de les meves aplicacions</string>
+    <string name="settings_backup_location">Ubicació de la còpia de seguretat</string>
+    <string name="settings_category_app_data_backup">Còpia de seguretat de dades de l\'aplicació</string>
+    <string name="settings_backup_apk_title">Copia de seguretat de l\'aplicació</string>
+    <string name="settings_category_apps">Còpia de seguretat de l\'aplicació</string>
+    <string name="settings_auto_restore_summary">Al reinstalar una aplicació, es restaura la configuració i les dades de la còpia de seguretat.</string>
+    <string name="settings_backup_apk_summary">Fer còpia de seguretat de les aplicacions. En cas contrari, només es farà còpia de seguretat de les dades de les aplicacions.</string>
+    <string name="settings_backup_apk_dialog_title">Segur que vols desactivar la còpia de seguretat d\'aplicacions\?</string>
+    <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
+    <string name="settings_backup_apk_dialog_disable">Deshabilitar la còpia de seguretat d\'aplicacions</string>
+    <string name="settings_backup_status_title">Estat de les còpies de seguretat</string>
+    <string name="settings_backup_status_summary">Última còpia de seguretat: %1$s</string>
+    <string name="settings_backup_exclude_apps">Aplicacions excloses</string>
+    <string name="settings_backup_now">Fer còpia de seguretat ara</string>
+    <string name="settings_backup_apk_dialog_message">La còpia de seguretat de les aplicacions desactivades farà còpia de seguretat de les dades de l\'aplicació. No obstant, no es restaurarà automàticament.
+\n
+\nHauràs d\'instal·lar totes les teves aplicacions manualment mentre la \"Recuperació Automàtica\" està activada.</string>
+    <string name="storage_fake_drive_title">Unitat flash USB</string>
+    <string name="storage_fragment_backup_title">Tria on emmagatzemar les còpies de seguretat</string>
+    <string name="recovery_code_write_it_down">Escriu-ho en un paper ara mateix!</string>
+    <string name="recovery_code_12_word_intro">Necessiteu el codi de recuperació de 12 paraules per restaurar les còpies de seguretat.</string>
+    <string name="recovery_code_title">Codi de recuperació</string>
+    <string name="storage_check_fragment_error_button">Enrere</string>
+    <string name="notification_error_channel_title">Notificació d\'error</string>
+    <string name="notification_error_title">Error de còpia de seguretat</string>
+    <string name="notification_error_text">No s\'ha pogut executar una còpia de seguretat del dispositiu.</string>
+    <string name="notification_error_action">Solucionar</string>
+    <string name="notification_restore_error_channel_title">S\'ha produït un error en restaurar automàticament la unitat flash</string>
+    <string name="recovery_code_input_hint_2">Paraula 2</string>
+    <string name="settings_backup_storage_dialog_ok">Activar de totes maneres</string>
+    <string name="recovery_code_input_hint_11">Paraula 11</string>
+    <string name="storage_fake_davx5_summary_installed">Toca per configurar un muntatge WebDAV</string>
+    <string name="storage_check_fragment_restore_title">Cercant còpies de seguretat…</string>
+    <string name="storage_check_fragment_permission_error">No s\'ha pogut obtenir el permís per escriure a la ubicació de la còpia de seguretat.</string>
+    <string name="recovery_code_input_hint_6">Paraula 6</string>
+    <string name="recovery_code_input_hint_7">Paraula 7</string>
+    <string name="recovery_code_input_hint_12">Paraula 12</string>
+    <string name="recovery_code_error_checksum_word">El codi no és vàlid. Comprova totes les paraules així com la seva posició i torna-ho a provar!</string>
+    <string name="recovery_code_verification_ok_title">Codi de recuperació verificat</string>
+    <string name="notification_success_text">%1$d de %2$d aplicacions amb còpia de seguretat. Fes un toc per saber-ne més.</string>
+    <string name="recovery_code_verification_new_dialog_message">Generar un codi nou farà que les teves còpies de seguretat existents siguin inaccessibles. Intentarem suprimir-los si és possible.
+\n
+\nSegur que vols fer-ho\?</string>
+    <string name="notification_error_no_main_key_text">Genera un codi de recuperació nou per completar l\'actualització i continuar utilitzant còpies de seguretat.</string>
+    <string name="settings_category_storage">Emmagatzematge de còpies de seguretat (experimental)</string>
+    <string name="settings_backup_storage_title">Fer còpia de seguretat dels meus fitxers</string>
+    <string name="settings_backup_files_title">Fitxers i directoris inclosos</string>
+    <string name="settings_backup_files_summary">Cap</string>
+    <string name="settings_backup_recovery_code">Codi de recuperació</string>
+    <string name="settings_backup_recovery_code_summary">Verifica el codi existent o genera\'n un de nou</string>
+    <string name="settings_backup_storage_dialog_title">Funció experimental</string>
+    <string name="settings_backup_storage_dialog_message">La còpia de seguretat de fitxers encara és experimental i podria no funcionar. No hi confieu per a dades importants.</string>
+    <string name="settings_expert_quota_title">Quota il·limitada d\'aplicacions</string>
+    <string name="settings_expert_title">Configuració avançada</string>
+    <string name="recovery_code_input_hint_5">Paraula 5</string>
+    <string name="settings_backup_storage_battery_optimization">Avís: No hi ha còpies de seguretat automàtiques, perquè l\'optimització de la bateria està activa.</string>
+    <string name="settings_backup_new_code_dialog_title">Cal un nou codi de recuperació</string>
+    <string name="settings_backup_new_code_dialog_message">Per continuar utilitzant còpies de seguretat d\'aplicacions, cal generar un nou codi de recuperació.
+\n
+\nLamentem les molèsties.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nou codi</string>
+    <string name="settings_expert_quota_summary">No imposis una limitació a la mida de les còpies de seguretat de les aplicacions.
+\n
+\nAvís: Això pot omplir la ubicació del teu emmagatzematge ràpidament. No cal per a la majoria d\'aplicacions.</string>
+    <string name="storage_fragment_restore_title">On trobar les teves còpies de seguretat\?</string>
+    <string name="storage_fragment_warning">Qui tingui accés a la ubicació d\'emmagatzematge pot saber quines aplicacions utilitzes, però no tenir accés a les dades de les aplicacions.</string>
+    <string name="storage_fragment_warning_delete">Les còpies de seguretat existents en aquesta ubicació seran eliminades.</string>
+    <string name="storage_fake_drive_summary">S\'ha d\'endollar</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> lliure</string>
+    <string name="storage_fake_nextcloud_summary">Fes un toc per instal·lar</string>
+    <string name="storage_fake_nextcloud_summary_installed">Fes un toc per configurar el compte</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">El compte no està disponible. Configura\'n un (o deshabilita el codi).</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">No instal·lat</string>
+    <string name="storage_check_fragment_backup_title">Inicialitzant ubicació de la còpia de seguretat…</string>
+    <string name="storage_check_fragment_patience">Això pot trigar una estona…</string>
+    <string name="recovery_code_verification_try_again">Torna-ho a provar</string>
+    <string name="recovery_code_verification_error_message">Hes introduït un codi de recuperació no vàlid. Torna-ho a provar!
+\n
+\nSi has perdut el codi, toca a \'Genera un codi nou\' a continuació.</string>
+    <string name="recovery_code_verification_generate_new">Genera un codi nou</string>
+    <string name="recovery_code_verification_new_dialog_title">Espera un segon…</string>
+    <string name="storage_fake_davx5_summary_unavailable">Muntatge WebDAV no disponible. Configura\'n un.</string>
+    <string name="storage_check_fragment_backup_error">S\'ha produït un error en accedir a la ubicació de la còpia de seguretat.</string>
+    <string name="recovery_code_confirm_button">Confirmar codi</string>
+    <string name="recovery_code_confirm_intro">Introdueix el teu codi de recuperació de 12 paraules per assegurar-te que funcionarà quan el necessitis.</string>
+    <string name="recovery_code_input_intro">Introdueix el codi de recuperació de 12 paraules que has escrit en configurar les còpies de seguretat.</string>
+    <string name="recovery_code_done_button">Verificar</string>
+    <string name="recovery_code_input_hint_1">Paraula 1</string>
+    <string name="recovery_code_input_hint_3">Paraula 3</string>
+    <string name="recovery_code_input_hint_4">Paraula 4</string>
+    <string name="recovery_code_input_hint_8">Paraula 8</string>
+    <string name="recovery_code_input_hint_9">Paraula 9</string>
+    <string name="recovery_code_input_hint_10">Paraula 10</string>
+    <string name="recovery_code_error_empty_word">T\'has oblidat d\'introduir aquesta paraula.</string>
+    <string name="recovery_code_error_invalid_word">Paraula incorrecta.</string>
+    <string name="recovery_code_verification_ok_message">El codi és correcte i funcionarà per restaurar la còpia de seguretat.</string>
+    <string name="recovery_code_verification_error_title">Codi de recuperació incorrecte</string>
+    <string name="recovery_code_recreated">El nou codi de recuperació s\'ha creat correctament</string>
+    <string name="recovery_code_auth_title">Torna a introduir el bloqueig de pantalla</string>
+    <string name="recovery_code_auth_description">Introdueix les credencials del dispositiu per continuar</string>
+    <string name="notification_channel_title">Notificació de còpia de seguretat</string>
+    <string name="notification_title">Còpia de seguretat en execució</string>
+    <string name="notification_success_title">Còpia de seguretat finalitzada</string>
+    <string name="notification_backup_already_running">Còpia de seguretat en curs</string>
+    <string name="notification_failed_title">La còpia de seguretat ha fallat</string>
+    <string name="notification_restore_error_title">No s\'han pogut recuperar les dades per %1$s</string>
+    <string name="notification_restore_error_text">Connecta el teu %1$s abans d\'instal·lar l\'aplicació per restaurar les seves dades des de la còpia de seguretat.</string>
+    <string name="notification_restore_error_action">Desinstal·lar aplicació</string>
+    <string name="notification_error_no_main_key_title">Còpia de seguretat deshabilitada</string>
+    <string name="backup_section_system">Aplicacions del sistema</string>
+    <string name="backup_section_not_allowed">Aplicacions que no permeten la còpia de seguretat de dades</string>
+    <string name="restore_title">Restaura des de la còpia de seguretat</string>
+    <string name="backup_sms">Missatges de text SMS</string>
+    <string name="backup_settings">Configuració del dispositiu</string>
+    <string name="backup_call_log">Historial de trucades</string>
+    <string name="backup_contacts">Contactes locals</string>
+    <string name="backup_section_user">Aplicacions instal·lades</string>
+    <string name="backup_app_not_yet_backed_up">Esperant a fer una còpia de seguretat…</string>
+    <string name="restore_app_not_yet_backed_up">Encara no s\'ha fet còpia de seguretat</string>
+    <string name="backup_app_was_stopped">No es fa còpia de seguretat ja que no s\'ha utilitzat recentment</string>
+    <string name="restore_app_was_stopped">No s\'ha fet còpia de seguretat ja que no s\'ha utilitzat recentment</string>
+    <string name="backup_app_no_data">L\'aplicació no ha informat de cap dada per a la còpia de seguretat</string>
+    <string name="restore_app_not_allowed">L\'aplicació no ha permès la còpia de seguretat</string>
+    <string name="backup_app_quota_exceeded">S\'ha excedit la quota de còpia de seguretat</string>
+    <string name="restore_app_quota_exceeded">S\'ha excedit la quota de còpia de seguretat</string>
+    <string name="restore_app_not_installed">Aplicació no instal·lada</string>
+    <string name="restore_choose_restore_set">Trieu una còpia de seguretat per restaurar</string>
+    <string name="restore_restore_set_times">Última còpia de seguretat %1$s · Primera%2$s.</string>
+    <string name="restore_invalid_location_title">No s\'han trobat còpies de seguretat</string>
+    <string name="restore_installing_packages">Reinstal·lant aplicacions</string>
+    <string name="restore_installing_error_title">Algunes aplicacions no s\'han instal·lat</string>
+    <string name="restore_skip">No restaurar</string>
+    <string name="restore_skip_apps">Omet la restauració d\'aplicacions</string>
+    <string name="restore_invalid_location_message">No hem pogut trobar cap còpia de seguretat en aquesta ubicació.
+\n
+\nTria una altra ubicació que contingui una carpeta %s.</string>
+    <string name="restore_set_error">S\'ha produït un error en carregar les còpies de seguretat.</string>
+    <string name="restore_set_empty_result">No s\'ha trobat cap còpia de seguretat adequada a la ubicació indicada.
+\n
+\nAixò segurament es deu a un codi de recuperació incorrecte o a un error d\'emmagatzematge.</string>
+    <string name="restore_installing_error_message">Les dades només es poden restaurar si s\'ha instal·lat una aplicació.
+\n
+\nFes un toc a les aplicacions que no s\'han pogut instal·lar per intentar instal·lar-les manualment abans de continuar.</string>
+    <string name="restore_installing_tap_to_install">Fes un toc per instal·lar</string>
+    <string name="about_source_code">Codi font: https://github.com/seedvault-app/seedvault</string>
+    <string name="restore_storage_choose_snapshot">Trieu una còpia de seguretat d\'emmagatzematge per restaurar (experimental)</string>
+    <string name="restore_storage_skip">Ometre restaurar els fitxers</string>
+    <string name="restore_storage_in_progress_info">Els teus fitxers s\'estan restaurant en segon pla. Pots començar a utilitzar el telèfon mentre això s\'està executant.
+\n
+\nAlgunes aplicacions (p. ex. Signal o WhatsApp) poden requerir que els fitxers es restaurin completament per importar una còpia de seguretat. Intenta evitar iniciar aquestes aplicacions abans que es completi la restauració de fitxers.</string>
+    <string name="restore_next">Següent</string>
+    <string name="restore_restoring_error_title">No s\'han pogut restaurar algunes aplicacions</string>
+    <string name="restore_restoring_error_message">Pots tornar a instal·lar aquestes aplicacions manualment i la restauració automàtica intentarà restaurar-ne les dades (quan estigui habilitat).</string>
+    <string name="restore_magic_package">Gestor de paquets del sistema</string>
+    <string name="error_no_store">Error: No hi ha cap botiga d\'aplicacions instal·lada</string>
+    <string name="restore_restoring">Restaurant còpia de seguretat</string>
+    <string name="restore_finished_success">Restauració completada</string>
+    <string name="restore_finished_error">S\'ha produït un error al restaurar la còpia de seguretat.</string>
+    <string name="restore_finished_button">Finalitzar</string>
+    <string name="restore_storage_in_progress_title">S\'estan restaurant els arxius…</string>
+    <string name="restore_storage_got_it">Entesos</string>
+    <string name="storage_internal_warning_title">Advertència</string>
+    <string name="storage_internal_warning_message">Has triat l\'emmagatzematge intern per a la teva còpia de seguretat. Això no estarà disponible quan el telèfon estigui perdut o trencat.</string>
+    <string name="storage_internal_warning_choose_other">Escull-ne un altre</string>
+    <string name="storage_internal_warning_use_anyway">Utilitzar de totes maneres</string>
+    <string name="about_title">Quant a</string>
+    <string name="about_version">Versió: %s</string>
+</resources>

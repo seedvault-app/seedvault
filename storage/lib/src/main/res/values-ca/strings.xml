@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_add">Afegir</string>
+    <string name="content_images">Fotos i imatges</string>
+    <string name="content_videos">Vídeos</string>
+    <string name="content_downloads">Descàrregues</string>
+    <string name="content_audio">Fitxers d\'àudio</string>
+    <string name="notification_backup_title">Còpia de seguretat d\'emmagatzematge</string>
+    <string name="notification_backup_scanning">Explorant els fitxers…</string>
+    <string name="notification_backup_backup_files">Còpia de seguretat dels fitxers…</string>
+    <string name="notification_prune">Eliminant còpies de seguretat antigues…</string>
+    <string name="notification_restore_channel_title">Restauració de l\'emmagatzematge</string>
+    <string name="notification_restore_title">Restauració de fitxers…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d de %2$d fitxers restaurats</string>
+    <string name="snapshots_title">Còpies de seguretat disponibles</string>
+    <string name="snapshots_empty">No s\'ha trobat cap còpia de seguretat d\'emmagatzematge
+\n
+\nHo sentim, però no hi ha res que es pugui restaurar.</string>
+    <string name="snapshots_error">Error en carregar les instantànies</string>
+</resources>
