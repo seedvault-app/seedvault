@@ -103,7 +103,7 @@
 \n
 \nVous devrez alors installer toutes vos applications manuellement avec le paramètre « Restaurer automatiquement » activé.</string>
     <string name="settings_backup_apk_dialog_title">Êtes-vous sûr(e) de vouloir désactiver la sauvegarde des applications \?</string>
-    <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications seraient sauvegardées.</string>
+    <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications sont sauvegardées.</string>
     <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
     <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées. Appuyez pour en savoir plus.</string>
@@ -152,7 +152,7 @@
     <string name="settings_expert_title">Paramètres experts</string>
     <string name="storage_fragment_warning_delete">Les sauvegardes existantes à cet emplacement seront supprimées.</string>
     <string name="settings_category_apps">Sauvegarde des applications</string>
-    <string name="settings_category_storage">Sauvegarde des fichies (expérimental)</string>
+    <string name="settings_category_storage">Sauvegarde des fichiers (expérimental)</string>
     <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
     <string name="settings_expert_quota_title">Quota illimité d\'applications</string>
@@ -171,4 +171,15 @@
     <string name="restore_storage_in_progress_title">Restauration des fichiers…</string>
     <string name="recovery_code_auth_description">Saisissez vos identifiants pour continer</string>
     <string name="recovery_code_auth_title">Saisissez à nouveau vos identifiants</string>
+    <string name="notification_error_no_main_key_text">Générez un nouveau code de récupération pour terminer la mise à jour et continuer à utiliser vos sauvegardes.</string>
+    <string name="storage_fake_davx5_summary_installed">Appuyez pour configurer un montage WebDAV</string>
+    <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegarde automatique car l\'optimisation de la batterie est activée.</string>
+    <string name="settings_backup_new_code_dialog_title">Nouveau code de récupération requis</string>
+    <string name="settings_backup_new_code_dialog_message">Pour continuer à utiliser les sauvegardes d\'applications, vous devez générer un nouveau code de récupération.
+\n
+\nNous sommes désolés pour ce désagrément.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nouveau code</string>
+    <string name="notification_error_no_main_key_title">Sauvegardes désactivées</string>
+    <string name="storage_fake_davx5_summary_unavailable">Le montage WebDAV n\'est pas disponible. Veuillez en configurer un.</string>
+    <string name="error_no_store">Erreur\t : Aucun app store installé</string>
 </resources>
