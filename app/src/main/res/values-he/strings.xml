@@ -71,8 +71,8 @@
     <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו. הקש למידע נוסף.</string>
     <string name="notification_success_title">הגיבוי הסתיים</string>
     <string name="notification_backup_already_running">הגיבוי כבר מתבצע</string>
-    <string name="about_sponsor">מומן על ידי: <a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">עיצוב של: <a href="https://www.glennsorrentino.com/">גלן סורנטינו</a></string>
+    <string name="about_sponsor">מומן על ידי: <a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש במסגרת <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">עוצב על ידי: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">נכתב על ידי: <a href="https://github.com/stevesoltys">סטיב סולטיס</a> ו<a href="https://blog.grobox.de">טורסטן גרוט</a></string>
     <string name="about_license">רישיון: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">יישומון גיבוי שמשתמש ב־API הפנימי לגיבוי של Android.</string>
@@ -159,4 +159,27 @@
     <string name="backup_call_log">היסטוריית שיחות</string>
     <string name="backup_contacts">אנשי קשר מקומיים</string>
     <string name="backup_section_user">יישומונים מותקנים</string>
+    <string name="settings_backup_new_code_dialog_message">כדי להמשיך להשתמש בגיבויי היישומון, עליך לייצר קוד שחזור חדש.
+\n
+\nאנו מתנצלים על חוסר הנעימות.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">קוד חדש</string>
+    <string name="settings_backup_storage_battery_optimization">אזהרה: אין גיבויים אוטומטיים כיוון שמיטוב סוללה פעיל.</string>
+    <string name="settings_backup_new_code_dialog_title">נדרש קוד שחזור חדש</string>
+    <string name="recovery_code_verification_error_message">מילאת קוד שחזור שגוי. נא לנסות שוב!
+\n
+\nאם איבדת את הקוד שלך, ניתן לגעת ב־‚יצירת קוד חדש’ להלן.</string>
+    <string name="restore_installing_error_message">ניתן לשחזר נתונים רק אם יישומון מותקן.
+\n
+\nנגיעה ביישומונים שנכשלו תתקין אותם ידנית בטרם המשך הפעילות.</string>
+    <string name="recovery_code_verification_new_dialog_message">יצירת קוד חדש תבטל את הגישה לגיבויים הנוכחיים שלך. אנו ננסה למחוק אותם אם ניתן.
+\n
+\nלהמשיך בפעולה הזאת\?</string>
+    <string name="notification_error_no_main_key_text">ניתן ליצור קוד חדש כדי להשלים את השדרוג ולהמשיך להשתמש בגיבויים.</string>
+    <string name="notification_error_no_main_key_title">הגיבויים מושבתים</string>
+    <string name="error_no_store">שגיאה: לא מותקנת חנות יישומונים</string>
+    <string name="restore_storage_in_progress_info">הקבצים שלך משוחזרים ברקע. ניתן להתחיל להשתמש בטלפון שלך בזמן שזה מתבצע.
+\n
+\nחלק מהיישומונים (כמו למשל סיגנל ו־WhatsApp) עשויים לדרוש שחזור מלא כדי לייבא גיבוי. מומלץ לנסות להימנע מהפעלת היישומונים האלו בטרם השלמת השחזור.</string>
+    <string name="storage_fake_davx5_summary_installed">להקמת עיגון WebDAV יש לגעת כאן</string>
+    <string name="storage_fake_davx5_summary_unavailable">עיגון WebDAV לא זמין. יש להקים אחד.</string>
 </resources>
