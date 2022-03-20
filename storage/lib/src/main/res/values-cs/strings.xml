@@ -17,4 +17,5 @@
     <string name="snapshots_error">Chyba při načítání snapshotů</string>
     <string name="content_downloads">Stažené soubory</string>
     <string name="snapshots_title">Dostupné zálohy úložiště</string>
+    <string name="notification_restore_channel_title">Obnova úložiště</string>
 </resources>

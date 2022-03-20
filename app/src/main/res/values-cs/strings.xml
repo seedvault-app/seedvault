@@ -81,7 +81,7 @@
     <string name="recovery_code_verification_error_title">Nesprávný obnovovací kód</string>
     <string name="recovery_code_verification_ok_message">Váš kód je správný a bude fungovat pro obnovení zálohy.</string>
     <string name="recovery_code_verification_ok_title">Obnovovací kód ověřen</string>
-    <string name="recovery_code_error_checksum_word">Váš kód je neplatný. Zkontrolujte prosím všechna slova a zkuste to znovu!</string>
+    <string name="recovery_code_error_checksum_word">Váš kód je neplatný. Zkontrolujte prosím všechna slova, jejich pozici a zkuste to znovu!</string>
     <string name="recovery_code_error_invalid_word">Chybné slovo.</string>
     <string name="recovery_code_error_empty_word">Zapomněli jste zadat toto slovo.</string>
     <string name="recovery_code_input_hint_12">12. slovo</string>
@@ -112,8 +112,8 @@
     <string name="storage_check_fragment_restore_title">Hledání zálohy…</string>
     <string name="storage_check_fragment_backup_title">Inicializace místa zálohy…</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Účet není dostupný. Nastavte ho (nebo vypněte kód).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Klikněte sem pro nastavení účtu</string>
-    <string name="storage_fake_nextcloud_summary">Klikněte sem pro instalaci</string>
+    <string name="storage_fake_nextcloud_summary_installed">Klepněte pro nastavení účtu</string>
+    <string name="storage_fake_nextcloud_summary">Klepněte pro instalaci</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> zdarma</string>
     <string name="storage_fake_drive_summary">Zařízení musí být připojeno</string>
     <string name="storage_fake_drive_title">USB flash disk</string>
@@ -170,4 +170,15 @@
     <string name="restore_storage_skip">Přeskočit obnovení souborů</string>
     <string name="restore_storage_got_it">Chápu</string>
     <string name="restore_storage_in_progress_title">Obnovují se soubory…</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nový kód</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nenainstalováno</string>
+    <string name="storage_check_fragment_patience">Může to chvíli trvat…</string>
+    <string name="notification_error_no_main_key_text">Vygenerujte nový kód obnovení k dokončení aktualizace a pokračování používání záloh.</string>
+    <string name="settings_backup_storage_battery_optimization">Varování: Žádné automatické zálohy, protože je zapnutá optimalizace baterie.</string>
+    <string name="settings_backup_new_code_dialog_title">Je potřeba nový kód obnovy</string>
+    <string name="settings_backup_new_code_dialog_message">Abyste nadále mohli používat zálohy aplikací, musíte vygenerovat nový kód obnovení.
+\n
+\nOmlouváme se za nepříjemnosti.</string>
+    <string name="notification_error_no_main_key_title">Zálohy vypnuty</string>
+    <string name="error_no_store">Chyba: Není nainstalovaný žádný obchod pro aplikace</string>
 </resources>
