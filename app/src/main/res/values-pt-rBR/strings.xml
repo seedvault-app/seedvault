@@ -81,7 +81,7 @@
     <string name="restore_title">Restaurar do backup</string>
     <string name="notification_restore_error_action">Desinstalar aplicativo</string>
     <string name="about_source_code">Código Fonte: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para seu uso em <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Instituto Calyx </a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licença: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
@@ -170,5 +170,14 @@
     <string name="settings_category_apps">Backup de aplicativo</string>
     <string name="restore_storage_in_progress_info">Seus arquivos estão sendo restaurados em segundo plano. Você pode usar seu telefone durante a execução.
 \n
-\nAlguns aplicativos (por exemplo, Signal ou WhatsApp) podem exigir que os arquivos sejam totalmente restaurados para importar um backup. Tente evitar iniciar esses aplicativos antes que a restauração do arquivo não seja concluída.</string>
+\nAlguns aplicativos (por exemplo, Signal ou WhatsApp) podem exigir que os arquivos sejam totalmente restaurados para importar um backup. Tente evitar iniciar esses aplicativos antes que a restauração do arquivo seja concluída.</string>
+    <string name="settings_backup_storage_battery_optimization">Aviso: sem backups automáticos, pois a otimização de bateria está ativa.</string>
+    <string name="settings_backup_new_code_dialog_title">Novo código de recuperação necessário</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Novo código</string>
+    <string name="settings_backup_new_code_dialog_message">Para continuar usando os backups de aplicativos, você precisa gerar um novo código de recuperação.
+\n
+\nLamentamos o inconveniente.</string>
+    <string name="notification_error_no_main_key_title">Backups desativados</string>
+    <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar a usar os backups.</string>
+    <string name="error_no_store">Erro: Nenhuma loja de aplicativos instalada</string>
 </resources>
