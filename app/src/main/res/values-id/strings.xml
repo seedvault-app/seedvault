@@ -83,4 +83,13 @@
     <string name="settings_backup_storage_dialog_ok">Tetap aktifkan</string>
     <string name="about_version">Versi: %s</string>
     <string name="restore_storage_got_it">Oke</string>
+    <string name="restore_app_not_installed">Aplikasi tidak terpasang</string>
+    <string name="backup_call_log">Riwayat panggilan</string>
+    <string name="restore_installing_error_title">Beberapa aplikasi tidak terpasang</string>
+    <string name="backup_sms">Pesan teks SMS</string>
+    <string name="backup_section_user">Aplikasi terpasang</string>
+    <string name="restore_storage_in_progress_title">File sedang dipulihkan…</string>
+    <string name="backup_settings">Pengaturan perangkat</string>
+    <string name="backup_contacts">Kontak lokal</string>
+    <string name="backup_section_system">Aplikasi sistem</string>
 </resources>
