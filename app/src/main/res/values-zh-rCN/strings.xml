@@ -29,11 +29,11 @@
     <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来恢复备份的数据。</string>
     <string name="settings_info">所有备份均已加密。 要从备份恢复，您需要12个单词的恢复代码。</string>
     <string name="about_source_code">源代码：https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">赞助者: <a href="https://www.calyxinstitute.org">Calyx Institute</a>, 用于<a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">设计师:<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">开发者: <a href="https://github.com/stevesoltys">Steve Soltys</a>和<a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_sponsor">赞助人：<a href="https://www.calyxinstitute.org">Calyx Institute</a>，用于<a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">设计师：<a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_author">程序员：<a href="https://github.com/stevesoltys">Steve Soltys</a> 和 <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">许可证:<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">一个使用Android自带备份API的备份应用程序。</string>
+    <string name="about_summary">一款使用 Android 自带备份 API 的备份程序。</string>
     <string name="about_title">关于</string>
     <string name="storage_internal_warning_use_anyway">无论如何都要用内部存储</string>
     <string name="storage_internal_warning_choose_other">另选一处</string>
@@ -125,7 +125,7 @@
     <string name="backup_sms">短信</string>
     <string name="backup_section_system">系统应用</string>
     <string name="about_version">版本: %s</string>
-    <string name="backup_section_user">已安装的应用</string>
+    <string name="backup_section_user">已安装应用</string>
     <string name="backup_contacts">本地联系人</string>
     <string name="backup_call_log">通话记录</string>
     <string name="backup_settings">设备设置</string>
@@ -148,7 +148,7 @@
     <string name="restore_storage_got_it">知道了</string>
     <string name="restore_storage_in_progress_info">正在后台恢复文件。 您可以在运行时开始使用手机。
 \n
-\n某些应用程序（例如 Signal 或 WhatsApp）可能需要完整恢复文件才能导入备份。 尽量避免在文件恢复未完成之前启动这些应用程序。</string>
+\n某些应用程序（例如 Signal 或 WhatsApp）可能需要完整恢复文件才能导入备份。 尽量避免在文件恢复完成之前启动这些应用程序。</string>
     <string name="restore_storage_in_progress_title">正在恢复文件…</string>
     <string name="restore_storage_choose_snapshot">选择要恢复的存储备份（实验性）</string>
     <string name="restore_storage_skip">跳过恢复文件</string>
@@ -171,4 +171,15 @@
     <string name="settings_backup_storage_title">备份我的文件</string>
     <string name="settings_category_storage">存储备份（实验性）</string>
     <string name="settings_category_apps">添加备份</string>
+    <string name="settings_backup_new_code_dialog_title">需要新的恢复代码</string>
+    <string name="settings_backup_new_code_code_dialog_ok">新代码</string>
+    <string name="notification_error_no_main_key_text">生成一个新的恢复代码来完成升级并继续使用备份。</string>
+    <string name="notification_error_no_main_key_title">已禁用备份</string>
+    <string name="error_no_store">错误：未安装应用商店</string>
+    <string name="settings_backup_storage_battery_optimization">警告：没有自动备份，因为电池优化处于活动状态。</string>
+    <string name="settings_backup_new_code_dialog_message">要继续使用程序备份，你需要生成一个新的恢复代码。
+\n
+\n我们对于不便表示歉意。</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV 挂载不可用。设置一个。</string>
+    <string name="storage_fake_davx5_summary_installed">轻按设置 WebDAV 挂载</string>
 </resources>
