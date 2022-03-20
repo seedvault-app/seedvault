@@ -26,7 +26,7 @@
     <string name="restore_finished_error">백업을 복원하는 중 오류가 발생했습니다.</string>
     <string name="storage_check_fragment_restore_title">백업을 찾는 중…</string>
     <string name="storage_check_fragment_backup_title">백업 위치 초기화 중…</string>
-    <string name="about_sponsor">스폰서: <a href="https://www.calyxinstitute.org">Calyx Institute</a> (<a href="https://calyxos.org">CalyxOS</a> 내부 사용을 위해)</string>
+    <string name="about_sponsor">스폰서: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">디자인: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">제작자: <a href="https://github.com/stevesoltys">Steve Soltys</a> 및 <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">라이선스: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
@@ -93,7 +93,7 @@
     <string name="settings_backup_location_internal">내부 저장소</string>
     <string name="settings_backup_location_none">없음</string>
     <string name="settings_backup_location">백업 위치</string>
-    <string name="settings_backup">내 데이터 백업</string>
+    <string name="settings_backup">내 앱 백업</string>
     <string name="restore_backup_button">백업 복원</string>
     <string name="current_destination_string">백업 상태 및 설정</string>
     <string name="data_management_label">Seedvault 백업</string>
@@ -145,4 +145,41 @@
 \n코드를 잊었다면 아래에 있는 \'새 코드 만들기\'를 누르세요.</string>
     <string name="recovery_code_verification_new_dialog_title">잠시만 기다려 주세요…</string>
     <string name="recovery_code_verification_error_title">잘못된 복구 코드</string>
+    <string name="settings_category_apps">앱 백업</string>
+    <string name="settings_category_storage">저장소 백업 (실험)</string>
+    <string name="settings_backup_storage_title">내 파일들을 백업</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV 마운트 사용이 불가능 합니다. 하나를 설정하세요.</string>
+    <string name="storage_fake_davx5_summary_installed">탭하여 WebDAV 마운트 설정하기</string>
+    <string name="settings_expert_quota_title">무제한 앱 할당량</string>
+    <string name="recovery_code_auth_description">계속하려면 기기 암호를 입력하세요</string>
+    <string name="settings_expert_quota_summary">앱 백업 크기에 제한을 두지 않습니다.
+\n
+\n경고: 이렇게 하면 저장 공간을 빠르게 채울 수 있습니다. 대부분의 앱에는 필요하지 않습니다.</string>
+    <string name="storage_check_fragment_patience">시간이 좀 걸릴 수 있습니다…</string>
+    <string name="restore_skip_apps">앱 복원 넘기기</string>
+    <string name="notification_error_no_main_key_title">백업 비활성화됨</string>
+    <string name="notification_error_no_main_key_text">업그레이드를 완료하고 백업을 계속 사용하려면 새 복구 코드를 생성하십시오.</string>
+    <string name="error_no_store">에러: 앱스토어가 설치되지 않았음</string>
+    <string name="restore_storage_choose_snapshot">복원할 저장소 백업 선택 (실험적)</string>
+    <string name="restore_storage_skip">파일 복원 넘기기</string>
+    <string name="restore_storage_in_progress_title">파일 복원중입니다…</string>
+    <string name="restore_storage_in_progress_info">파일이 백그라운드에서 복원되고 있습니다. 실행 중인 동안 기기를 사용할 수 있습니다.
+\n
+\n일부 앱(예: Signal 또는 WhatsApp)은 백업을 가져오려면 완전히 복원해야 합니다. 파일 복원이 완료되기 전에 이러한 앱을 시작하지 않도록 하십시오.</string>
+    <string name="restore_storage_got_it">알겠습니다</string>
+    <string name="settings_backup_files_title">포함된 파일과 폴더</string>
+    <string name="settings_backup_storage_dialog_message">파일 백업은 아직 실험중인 기능이고 작동하지 않을 수 있습니다. 중요한 데이터를 이것에 의존하지 마세요.</string>
+    <string name="settings_backup_files_summary">없음</string>
+    <string name="settings_backup_storage_dialog_title">실험적인 기능</string>
+    <string name="settings_backup_storage_dialog_ok">그래도 활성화</string>
+    <string name="settings_expert_title">전문가 설정</string>
+    <string name="recovery_code_auth_title">암호를 다시 입력하세요</string>
+    <string name="settings_backup_storage_battery_optimization">경고: 배터리 최적화가 활성화되어 있으므로 자동 백업이 없습니다.</string>
+    <string name="settings_backup_new_code_dialog_title">새 복구 코드가 필요합니다</string>
+    <string name="settings_backup_new_code_dialog_message">앱 백업을 계속 하려면, 새 복구 코드를 생성해야합니다.
+\n
+\n불편함을 드려 죄송합니다.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">새로운 코드</string>
+    <string name="storage_fragment_warning_delete">이 위치에 있던 기존의 백업은 삭제됩니다.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">설치되지 않음</string>
 </resources>
