@@ -7,8 +7,8 @@
     <string name="backup">Резервная копия</string>
     <string name="settings_backup_location">Расположение Резервной Копии</string>
     <string name="about_source_code">Исходный код: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Спонсировано: <a href="https://www.calyxinstitute.org">Calyx Institute</a> для использования в <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Дизайн: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_sponsor">Спонсор: <a href="https://www.calyxinstitute.org">Институт Calyx</a> для использования в <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Дизайн от: <a href="https://www.glennsorrentino.com/">Гленн Соррентино</a></string>
     <string name="about_author">Авторы: <a href="https://github.com/stevesoltys">Steve Soltys</a> и <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Лицензия: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Приложение для резервного копирования с использованием внутреннего API резервного копирования Android.</string>
@@ -170,4 +170,16 @@
     <string name="settings_expert_quota_summary">Не устанавливайте ограничение на размер резервных копий приложений.
 \n
 \nПредупреждение: Это может быстро заполнить ваше хранилище. Не требуется для большинства приложений.</string>
+    <string name="recovery_code_auth_description">Введите учетные данные вашего устройства, чтобы продолжить</string>
+    <string name="storage_fake_davx5_summary_installed">Нажмите, чтобы настроить подключение WebDAV</string>
+    <string name="storage_fake_davx5_summary_unavailable">Подключение WebDAV недоступно. Настройте один из них.</string>
+    <string name="notification_error_no_main_key_title">Резервные копии отключены</string>
+    <string name="notification_error_no_main_key_text">Сгенерируйте новый код восстановления для завершения обновления и продолжения использования резервных копий.</string>
+    <string name="settings_backup_storage_battery_optimization">Предупреждение: Автоматическое резервное копирование не производится, так как активна оптимизация батареи.</string>
+    <string name="settings_backup_new_code_dialog_title">Требуется новый код восстановления</string>
+    <string name="settings_backup_new_code_dialog_message">Чтобы продолжить использование резервных копий приложений, необходимо сгенерировать новый код восстановления.
+\n
+\nМы приносим извинения за доставленные неудобства.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Новый код</string>
+    <string name="error_no_store">Ошибка: Не установлен магазин приложений</string>
 </resources>
