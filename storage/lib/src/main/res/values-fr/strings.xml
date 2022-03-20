@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_restore_channel_title">Restauration du stockage</string>
+    <string name="content_images">Photos et images</string>
+    <string name="snapshots_empty">Aucune sauvegarde de stockage trouvée
+\n
+\nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
+    <string name="content_videos">Vidéos</string>
+    <string name="content_audio">Fichiers audio</string>
+    <string name="content_downloads">Téléchargements</string>
+    <string name="content_add">Ajouter</string>
+    <string name="notification_backup_title">Sauvegarde du stockage</string>
+    <string name="notification_backup_scanning">Analyse des fichiers…</string>
+    <string name="notification_backup_backup_files">Sauvegarde des fichiers…</string>
+    <string name="notification_prune">Suppression des anciennes sauvegardes…</string>
+    <string name="notification_restore_title">Restauration des fichiers…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d sur %2$d fichiers restaurés</string>
+    <string name="snapshots_title">Sauvegardes de stockage disponibles</string>
+    <string name="snapshots_error">Erreur de chargement des instantanés</string>
+</resources>
