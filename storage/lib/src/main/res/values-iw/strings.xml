@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">צילומים ותמונות</string>
+    <string name="content_videos">סרטונים</string>
+    <string name="content_audio">קובצי שמע</string>
+    <string name="content_downloads">הורדות</string>
+    <string name="content_add">הוספה</string>
+    <string name="notification_backup_title">גיבוי האחסון</string>
+    <string name="notification_backup_scanning">הקבצים נסרקים…</string>
+    <string name="notification_backup_backup_files">הקבצים מגובים…</string>
+    <string name="notification_prune">הגיבויים הישנים נמחקים…</string>
+    <string name="notification_restore_channel_title">שחזור אחסון</string>
+    <string name="notification_restore_title">הקבצים משוחזרים…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">שוחזרו %1$d מתוך %2$d קבצים</string>
+    <string name="snapshots_title">גיבויי האחסון הזמינים</string>
+    <string name="snapshots_empty">לא נמצאו גיבויים לאחסון
+\n
+\nאין מה לשחזר, עמך סליחה.</string>
+    <string name="snapshots_error">שגיאה בטעינת תמונות המצב</string>
+</resources>
