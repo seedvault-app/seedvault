@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_backup_scanning">Dosyalar taranıyor…</string>
+    <string name="content_images">Fotoğraflar ve resimler</string>
+    <string name="content_videos">Videolar</string>
+    <string name="content_audio">Ses dosyaları</string>
+    <string name="content_downloads">İndirilenler</string>
+    <string name="content_add">Ekle</string>
+    <string name="notification_backup_title">Depolama yedeklemesi</string>
+    <string name="notification_backup_backup_files">Dosyalar yedekleniyor…</string>
+    <string name="notification_prune">Eski yedeklemeler kaldırılıyor…</string>
+    <string name="notification_restore_channel_title">Depolama geri yüklemesi</string>
+    <string name="notification_restore_title">Dosyalar geri yükleniyor…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d / %2$d dosya geri yüklendi</string>
+    <string name="snapshots_title">Kullanılabilir depolama yedeklemeleri</string>
+    <string name="snapshots_empty">Depolama yedeklemesi bulunamadı
+\n
+\nÜzgünüz, ancak geri yüklenebilecek hiçbir şey yok.</string>
+    <string name="snapshots_error">Anlık görüntüler yüklenirken hata oluştu</string>
+</resources>
