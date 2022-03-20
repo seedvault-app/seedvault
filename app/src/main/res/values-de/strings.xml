@@ -148,7 +148,7 @@
     <string name="restore_storage_got_it">Verstanden</string>
     <string name="restore_storage_in_progress_info">Deine Dateien werden im Hintergrund wiederhergestellt. Du kannst dein Telefon benutzen, während dieser Vorgang läuft.
 \n
-\nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien nicht abgeschlossen ist.</string>
+\nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien abgeschlossen ist.</string>
     <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
     <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (experimentell)</string>
     <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
@@ -171,4 +171,15 @@
     <string name="settings_backup_storage_title">Meine Dateien sichern</string>
     <string name="settings_category_storage">Speichersicherung (experimentell)</string>
     <string name="settings_category_apps">App-Sicherung</string>
+    <string name="storage_fake_davx5_summary_installed">Tippe, um eine WebDAV-Verbindung einzurichten</string>
+    <string name="error_no_store">Fehler: Kein App-Store installiert</string>
+    <string name="settings_backup_storage_battery_optimization">Warnung: Keine automatischen Backups, da die Akkuoptimierung aktiv ist.</string>
+    <string name="settings_backup_new_code_dialog_title">Neuer Wiederherstellungscode erforderlich</string>
+    <string name="settings_backup_new_code_dialog_message">Um App-Sicherungen weiterhin verwenden zu können, musst du einen neuen Wiederherstellungscode generieren.
+\n
+\nWir entschuldigen uns für die Unannehmlichkeiten.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Neuer Code</string>
+    <string name="notification_error_no_main_key_title">Sicherungen deaktiviert</string>
+    <string name="notification_error_no_main_key_text">Generiere einen neuen Wiederherstellungscode, um das Upgrade abzuschließen und weiterhin Sicherungen zu verwenden.</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV-Verbindung nicht verfügbar. Richte eine ein.</string>
 </resources>

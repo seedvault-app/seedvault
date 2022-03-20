@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_videos">Videos</string>
+    <string name="content_add">Hinzufügen</string>
+    <string name="content_audio">Audiodateien</string>
+    <string name="notification_restore_complete_title">%1$d von %2$d Dateien wiederhergestellt</string>
+    <string name="content_images">Fotos und Bilder</string>
+    <string name="content_downloads">Downloads</string>
+    <string name="notification_backup_title">Datensicherung</string>
+    <string name="notification_backup_scanning">Dateien scannen…</string>
+    <string name="notification_backup_backup_files">Dateien sichern…</string>
+    <string name="notification_prune">Alte Sicherungen entfernen…</string>
+    <string name="notification_restore_title">Dateien wiederherstellen…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="snapshots_title">Verfügbare Datensicherungen</string>
+    <string name="snapshots_empty">Keine Datensicherungen gefunden
+\n
+\nEs gibt leider nichts, was wiederhergestellt werden kann.</string>
+    <string name="snapshots_error">Fehler beim Laden von Snapshots</string>
+    <string name="notification_restore_channel_title">Speicherwiederherstellung</string>
+</resources>
