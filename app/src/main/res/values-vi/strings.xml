@@ -171,4 +171,15 @@
     <string name="restore_storage_in_progress_info">Các tệp của bạn đang được khôi phục trong nền. Bạn có thể bắt đầu sử dụng điện thoại trong khi việc này đang chạy.
 \n
 \nMột số ứng dụng (vd: Signal hoặc WhatsApp) có thể yêu cầu các tệp phải được khôi phục đầy đủ để nhập bản sao lưu. Hãy cố tránh sử dụng các ứng dụng đó trước khi khôi phục tệp hoàn tất.</string>
+    <string name="storage_fake_davx5_summary_unavailable">Nơi gắn WebDAV không có sẵn. Hãy thiết lập một cái.</string>
+    <string name="settings_backup_storage_battery_optimization">Cảnh báo: Không sao lưu tự động vì tối ưu hóa pin đang hoạt động.</string>
+    <string name="settings_backup_new_code_dialog_title">Yêu cầu mã phục hồi mới</string>
+    <string name="settings_backup_new_code_dialog_message">Để tiếp tục sử dụng sao lưu ứng dụng, bạn cần phải tạo mã phục hồi mới.
+\n
+\nChúng tôi xin lỗi vì sự bất tiện này.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Mã mới</string>
+    <string name="notification_error_no_main_key_title">Sao lưu bị tắt</string>
+    <string name="notification_error_no_main_key_text">Hãy tạo mã phục hồi mới để hoàn thành nâng cấp và tiếp tục sử dụng bản sao lưu.</string>
+    <string name="error_no_store">Lỗi: Không có cửa hàng ứng dụng nào được cài đặt</string>
+    <string name="storage_fake_davx5_summary_installed">Nhấn để thiết lập nơi gắn WebDAV</string>
 </resources>
