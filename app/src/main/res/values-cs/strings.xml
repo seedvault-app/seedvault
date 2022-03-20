@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="about_source_code">Zdrojový kód: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Sponzorováno: <a href="https://www.calyxinstitute.org">Calyx Institute</a> pro použití v <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Design: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="about_sponsor">Sponzorováno: <a href="https://www.calyxinstitute.org">Calyx institutem</a> pro použití v <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_design">Design vytvořil: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Autoři: <a href="https://github.com/stevesoltys"> Steve Soltys </a> a <a href="https://blog.grobox.de"> Torsten Grote </a></string>
     <string name="about_license">Licence: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Verze: %s</string>
@@ -140,9 +140,34 @@
     <string name="settings_backup_location_internal">Vnitřní úložiště</string>
     <string name="settings_backup_location_none">Žádné</string>
     <string name="settings_backup_location">Umístění zálohy</string>
-    <string name="settings_backup">Zálohovat moje data</string>
+    <string name="settings_backup">Zálohovat moje aplikace</string>
     <string name="restore_backup_button">Obnovit zálohu</string>
     <string name="current_destination_string">Stav zálohy a nastavení</string>
     <string name="data_management_label">Záloha Seedvault</string>
     <string name="backup">Záloha</string>
+    <string name="settings_category_storage">Záloha úložiště (experimentální)</string>
+    <string name="settings_backup_files_title">Zahrnuté soubory a složky</string>
+    <string name="restore_storage_in_progress_info">Vaše soubory jsou obnovovány na pozadí. Během tohoto procesu můžete začít používat telefon.
+\n
+\nNěkteré aplikace (např. Signal nebo WhatsApp) mohou pro import zálohy vyžadovat úplné obnovení souborů. Snažte se vyhnout spuštění těchto aplikací před dokončením obnovy souborů.</string>
+    <string name="recovery_code_auth_description">Pro pokračování zadejte pověření k zařízení</string>
+    <string name="settings_category_apps">Záloha aplikací</string>
+    <string name="settings_backup_storage_title">Zálohovat mé soubory</string>
+    <string name="settings_backup_files_summary">Žádné</string>
+    <string name="settings_expert_title">Odborné nastavení</string>
+    <string name="settings_expert_quota_title">Neomezená kvóta aplikací</string>
+    <string name="settings_backup_storage_dialog_title">Experimentální funkce</string>
+    <string name="settings_backup_storage_dialog_ok">Přesto zapnout</string>
+    <string name="settings_backup_storage_dialog_message">Zálohování souborů je stále experimentální a nemusí fungovat. Nespoléhejte se na něj, pokud jde o důležitá data.</string>
+    <string name="settings_expert_quota_summary">Neomezuje velikost záloh aplikací.
+\n
+\nUpozornění: Toto může rychle zaplnit vaše úložiště. Pro většinu aplikací není potřeba.</string>
+    <string name="storage_fragment_warning_delete">Stávající zálohy v tomto umístění budou odstraněny.</string>
+    <string name="storage_fake_davx5_summary_unavailable">Připojení WebDAV není k dispozici. Nastavte ho.</string>
+    <string name="restore_skip_apps">Přeskočit obnovení aplikací</string>
+    <string name="recovery_code_auth_title">Zadejte znovu zámek obrazovky</string>
+    <string name="restore_storage_choose_snapshot">Vyberte zálohu úložiště pro obnovení (experimentální)</string>
+    <string name="restore_storage_skip">Přeskočit obnovení souborů</string>
+    <string name="restore_storage_got_it">Chápu</string>
+    <string name="restore_storage_in_progress_title">Obnovují se soubory…</string>
 </resources>
