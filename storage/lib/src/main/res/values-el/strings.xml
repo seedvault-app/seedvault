@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="content_videos">Βίντεο</string>
+    <string name="content_images">Φωτογραφίες και εικόνες</string>
+    <string name="content_downloads">Λήψεις</string>
+    <string name="notification_backup_scanning">Σάρωση αρχείων…</string>
+    <string name="notification_backup_backup_files">Δημιουργία αντιγράφου ασφαλείας αρχείων…</string>
+    <string name="notification_backup_title">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης</string>
+    <string name="notification_restore_channel_title">Επαναφορά χώρου αποθήκευσης</string>
+    <string name="content_audio">Αρχεία ήχου</string>
+    <string name="notification_prune">Κατάργηση παλαιών αντιγράφων ασφαλείας…</string>
+    <string name="notification_restore_title">Επαναφορά αρχείων…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">Έγινε επαναφορά %1$d αρχείων από τα %2$d</string>
+    <string name="snapshots_title">Διαθέσιμα αντίγραφα ασφαλείας χώρου αποθήκευσης</string>
+    <string name="snapshots_empty">Δεν βρέθηκαν αντίγραφα ασφαλείας χώρου αποθήκευσης
+\n
+\nΛυπούμαστε, αλλά δεν υπάρχει τίποτα που να μπορεί να αποκατασταθεί.</string>
+    <string name="snapshots_error">Σφάλμα φόρτωσης στιγμιότυπων</string>
+    <string name="content_add">Προσθήκη</string>
+</resources>
