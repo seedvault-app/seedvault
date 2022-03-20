@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">Fotos e imágenes</string>
+    <string name="content_videos">Videos</string>
+    <string name="content_audio">Archivos de audio</string>
+    <string name="content_downloads">Descargas</string>
+    <string name="content_add">Añadir</string>
+    <string name="notification_backup_title">Copia de seguridad de almacenamiento</string>
+    <string name="notification_backup_scanning">Escaneando archivos…</string>
+    <string name="notification_backup_backup_files">Respaldando archivos…</string>
+    <string name="notification_prune">Eliminando respaldos antiguos…</string>
+    <string name="notification_restore_channel_title">Restauración de almacenamiento</string>
+    <string name="notification_restore_title">Restaurando archivos…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d de %2$d archivos restaurados</string>
+    <string name="snapshots_title">Copias de seguridad disponibles</string>
+    <string name="snapshots_empty">No se ha encontrado ninguna copia de seguridad de almacenamiento
+\n
+\nLo sentimos, pero no hay nada que se pueda restaurar.</string>
+    <string name="snapshots_error">Error al cargar snapshots</string>
+</resources>
