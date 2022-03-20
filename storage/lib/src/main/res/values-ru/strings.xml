@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_downloads">Загрузки</string>
+    <string name="content_add">Добавить</string>
+    <string name="notification_restore_complete_title">%1$d из %2$d файлов восстановлены</string>
+    <string name="notification_restore_title">Восстановление файлов…</string>
+    <string name="snapshots_empty">Резервные копии хранилища не найдены
+\n
+\nИзвините, но нет ничего, что можно было бы восстановить.</string>
+    <string name="snapshots_title">Доступные резервные копии хранилища</string>
+    <string name="content_images">Фотографии и изображения</string>
+    <string name="content_videos">Видео</string>
+    <string name="content_audio">Аудиофайлы</string>
+    <string name="notification_backup_title">Резервное копирование хранилища</string>
+    <string name="notification_backup_scanning">Сканирование файлов…</string>
+    <string name="notification_backup_backup_files">Резервное копирование файлов…</string>
+    <string name="notification_prune">Удаление старых резервных копий…</string>
+    <string name="notification_restore_channel_title">Восстановление хранилища</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="snapshots_error">Ошибка загрузки снимков</string>
+</resources>
