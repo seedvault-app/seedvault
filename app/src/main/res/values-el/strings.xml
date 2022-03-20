@@ -27,10 +27,10 @@
     <string name="settings_backup_last_backup_never">Ποτέ</string>
     <string name="settings_backup_location_none">Καμία</string>
     <string name="settings_backup_location">Τοποθεσία αντιγράφων ασφαλείας</string>
-    <string name="settings_backup">Δημιουργία αντιγράφου ασφαλείας των δεδομένων μου</string>
+    <string name="settings_backup">Δημιουργία αντιγράφου ασφαλείας των εφαρμογών μου</string>
     <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
     <string name="backup">Αντίγραφο ασφαλείας</string>
-    <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό αποκατάστασης 12 λέξεων.</string>
+    <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό επαναφοράς 12 λέξεων.</string>
     <string name="about_source_code">Πηγαίος κώδικας: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Χορηγός: <a href="https://www.calyxinstitute.org">Calyx Institute</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Σχεδιασμός από: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
@@ -55,7 +55,7 @@
     <string name="restore_installing_packages">Επανεγκατάσταση εφαρμογών</string>
     <string name="restore_set_empty_result">Δεν βρέθηκαν κατάλληλα αντίγραφα ασφαλείας στη δεδομένη τοποθεσία.
 \n
-\nΑυτό πιθανότατα οφείλεται σε λάθος κωδικό ανάκτησης ή σε σφάλμα αποθηκευτικού χώρου.</string>
+\nΑυτό πιθανότατα οφείλεται σε λάθος κωδικό επαναφοράς ή σε σφάλμα αποθηκευτικού χώρου.</string>
     <string name="restore_set_error">Παρουσιάστηκε σφάλμα κατά τη φόρτωση των αντιγράφων ασφαλείας.</string>
     <string name="restore_invalid_location_message">Δεν ήταν δυνατή η εύρεση αντιγράφων ασφαλείας σε αυτήν την τοποθεσία.
 \n
@@ -79,7 +79,7 @@
     <string name="notification_backup_already_running">Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη</string>
     <string name="notification_title">Εκτελείται δημιουργία αντιγράφων ασφαλείας</string>
     <string name="notification_channel_title">Ειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
-    <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις και δοκιμάστε ξανά!</string>
+    <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις καθώς και τη θέση τους και δοκιμάστε ξανά!</string>
     <string name="recovery_code_error_invalid_word">Λάθος λέξη.</string>
     <string name="recovery_code_error_empty_word">Ξεχάσατε να εισαγάγετε αυτήν τη λέξη.</string>
     <string name="recovery_code_input_hint_12">Λέξη 12</string>
@@ -95,14 +95,14 @@
     <string name="recovery_code_input_hint_2">Λέξη 2</string>
     <string name="recovery_code_input_hint_1">Λέξη 1</string>
     <string name="recovery_code_done_button">Επαλήθευση</string>
-    <string name="recovery_code_input_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων που γράψατε κατά τη δημιουργία αντιγράφων ασφαλείας.</string>
-    <string name="recovery_code_confirm_intro">Εισαγάγετε τον κωδικό ανάκτησης 12 λέξεων για να βεβαιωθείτε ότι θα λειτουργήσει όταν το χρειάζεστε.</string>
+    <string name="recovery_code_input_intro">Εισάγετε τον κωδικό επαναφοράς 12 λέξεων που γράψατε κατά τη δημιουργία αντιγράφων ασφαλείας.</string>
+    <string name="recovery_code_confirm_intro">Εισαγάγετε τον κωδικό επαναφοράς 12 λέξεων για να βεβαιωθείτε ότι θα λειτουργήσει όταν το χρειάζεστε.</string>
     <string name="recovery_code_confirm_button">Επιβεβαίωση κωδικού</string>
     <string name="recovery_code_write_it_down">Γράψτε το σε χαρτί τώρα!</string>
-    <string name="recovery_code_12_word_intro">Χρειάζεστε τον κωδικό ανάκτησης 12 λέξεων για να επαναφέρετε τα αντίγραφα ασφαλείας των δεδομένων.</string>
-    <string name="recovery_code_title">Κωδικός ανάκτησης</string>
-    <string name="storage_fake_nextcloud_summary_installed">Κάντε κλικ για να δημιουργήσετε λογαριασμό</string>
-    <string name="storage_fake_nextcloud_summary">Κάντε κλικ για εγκατάσταση</string>
+    <string name="recovery_code_12_word_intro">Χρειάζεστε τον κωδικό επαναφοράς 12 λέξεων για να επαναφέρετε τα αντίγραφα ασφαλείας των δεδομένων.</string>
+    <string name="recovery_code_title">Κωδικός επαναφοράς</string>
+    <string name="storage_fake_nextcloud_summary_installed">Πατήστε για να δημιουργήσετε λογαριασμό</string>
+    <string name="storage_fake_nextcloud_summary">Πατήστε για εγκατάσταση</string>
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
@@ -117,7 +117,7 @@
     <string name="restore_installing_tap_to_install">Πατήστε για εγκατάσταση</string>
     <string name="restore_installing_error_message">Η επαναφορά δεδομένων είναι δυνατή μόνο αν μία εφαρμογή έχει εγκατασταθεί.
 \n
-\nΠατήστε τις εφαρμογές που απέτυχαν για να της εγκαταστήσετε χειροκίνητα πριν συνεχίσετε.</string>
+\nΠατήστε στις εφαρμογές που απέτυχαν για να τις εγκαταστήσετε χειροκίνητα πριν συνεχίσετε.</string>
     <string name="restore_installing_error_title">Κάποιες εφαρμογές δεν εγκαταστάθηκαν</string>
     <string name="backup_section_not_allowed">Εφαρμογές που δεν επιτρέπουν αντίγραφο ασφαλείας δεδομένων</string>
     <string name="backup_app_quota_exceeded">Υπέρβαση ορίου αντιγράφων ασφαλείας</string>
@@ -136,13 +136,50 @@
     <string name="recovery_code_verification_new_dialog_title">Περιμένετε μία στιγμή…</string>
     <string name="recovery_code_verification_generate_new">Δημιουργία νέου κωδικού</string>
     <string name="recovery_code_verification_try_again">Δοκιμάστε ξανά</string>
-    <string name="recovery_code_verification_error_message">Έχετε εισάγει μη έγκυρο κωδικό επαναφοράς. Δοκιμάστε πάλι!
+    <string name="recovery_code_verification_error_message">Έχετε εισάγει μη έγκυρο κωδικό επαναφοράς. Δοκιμάστε ξανά!
 \n
 \nΑν χάσατε τον κωδικό σας, πατήστε \"Δημιουργία νέου κωδικού\" παρακάτω.</string>
     <string name="recovery_code_verification_error_title">Λάθος κωδικός επαναφοράς</string>
     <string name="recovery_code_verification_ok_message">Ο κωδικός σας είναι σωστός και θα λειτουργήσει για επαναφορά αντιγράφων ασφαλείας.</string>
     <string name="recovery_code_verification_ok_title">Ο κωδικός επαναφοράς επαληθεύτηκε</string>
     <string name="settings_backup_recovery_code_summary">Επαλήθευση υπάρχοντος κωδικού ή δημιουργία καινούριου</string>
-    <string name="settings_backup_recovery_code">Κωδικός Επαναφοράς</string>
+    <string name="settings_backup_recovery_code">Κωδικός επαναφοράς</string>
     <string name="settings_backup_status_title">Κατάσταση αντιγράφου ασφαλείας</string>
+    <string name="settings_category_apps">Αντίγραφο ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_storage_title">Δημιουργία αντιγράφου ασφαλείας των αρχείων μου</string>
+    <string name="settings_backup_files_summary">Κανένα</string>
+    <string name="settings_backup_storage_dialog_title">Πειραματικό χαρακτηριστικό</string>
+    <string name="settings_backup_storage_dialog_message">Η δημιουργία αντιγράφου ασφαλείας αρχείων είναι ακόμη πειραματική και μπορεί να μην λειτουργήσει. Μην βασίζεστε σε αυτή για σημαντικά δεδομένα.</string>
+    <string name="storage_fragment_warning_delete">Τα υπάρχοντα αντίγραφα ασφαλείας σε αυτήν την τοποθεσία θα διαγραφούν.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Νέος κωδικός</string>
+    <string name="settings_expert_title">Προηγμένες ρυθμίσεις</string>
+    <string name="settings_expert_quota_title">Απεριόριστο όριο εφαρμογών</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Μη εγκατεστημένο</string>
+    <string name="storage_check_fragment_patience">Αυτό μπορεί να πάρει λίγη ώρα…</string>
+    <string name="recovery_code_auth_title">Εισάγετε εκ νέου το κλείδωμα οθόνης</string>
+    <string name="restore_skip_apps">Παράλειψη επαναφοράς εφαρμογών</string>
+    <string name="restore_storage_skip">Παράλειψη επαναφοράς αρχείων</string>
+    <string name="restore_storage_choose_snapshot">Επιλέξτε ένα αντίγραφο ασφαλείας χώρου αποθήκευσης για επαναφορά (πειραματικό)</string>
+    <string name="restore_storage_got_it">Το κατάλαβα</string>
+    <string name="settings_backup_files_title">Περιλαμβανόμενα αρχεία και φάκελοι</string>
+    <string name="settings_backup_storage_dialog_ok">Ενεργοποίηση ούτως ή άλλως</string>
+    <string name="settings_backup_storage_battery_optimization">Προειδοποίηση: Τα αυτόματα αντίγραφα ασφαλείας απενεργοποιήθηκαν επειδή η βελτιστοποίηση μπαταρίας είναι ενεργή.</string>
+    <string name="settings_category_storage">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης (πειραματικό)</string>
+    <string name="settings_backup_new_code_dialog_title">Απαιτείται νέος κωδικός επαναφοράς</string>
+    <string name="settings_backup_new_code_dialog_message">Για να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας εφαρμογών, πρέπει να δημιουργήσετε έναν νέο κωδικό επαναφοράς.
+\n
+\nΛυπούμαστε για την ταλαιπωρία.</string>
+    <string name="settings_expert_quota_summary">Μην επιβάλλετε περιορισμό στο μέγεθος των αντιγράφων ασφαλείας εφαρμογών.
+\n
+\nΠροειδοποίηση: Αυτό μπορεί να γεμίσει γρήγορα την τοποθεσία αποθήκευσης. Δεν χρειάζεται για τις περισσότερες εφαρμογές.</string>
+    <string name="notification_error_no_main_key_title">Τα αντίγραφα ασφαλείας απενεργοποιήθηκαν</string>
+    <string name="recovery_code_auth_description">Εισάγετε τα διαπιστευτήρια της συσκευής σας για να συνεχίσετε</string>
+    <string name="notification_error_no_main_key_text">Δημιουργήστε έναν νέο κωδικό επαναφοράς για να ολοκληρώσετε την αναβάθμιση και να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας.</string>
+    <string name="error_no_store">Σφάλμα: Δεν έχει εγκατασταθεί κατάστημα εφαρμογών</string>
+    <string name="restore_storage_in_progress_title">Γίνεται επαναφορά αρχείων…</string>
+    <string name="restore_storage_in_progress_info">Γίνεται επαναφορά των αρχείων σας στο παρασκήνιο. Μπορείτε να αρχίσετε να χρησιμοποιείτε το τηλέφωνό σας ενώ αυτό εκτελείται.
+\n
+\nΟρισμένες εφαρμογές (π.χ. Signal ή WhatsApp) ενδέχεται να απαιτούν την πλήρη επαναφορά των αρχείων για την εισαγωγή ενός αντιγράφου ασφαλείας. Προσπαθήστε να αποφύγετε την εκκίνηση αυτών των εφαρμογών πριν ολοκληρωθεί η επαναφορά αρχείων.</string>
+    <string name="storage_fake_davx5_summary_installed">Πατήστε για να ρυθμίσετε μια προσάρτηση WebDAV</string>
+    <string name="storage_fake_davx5_summary_unavailable">Η προσάρτηση WebDAV δεν είναι διαθέσιμη. Ρυθμίστε μια.</string>
 </resources>
