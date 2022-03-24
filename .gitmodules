@@ -1,0 +1,6 @@
+[submodule "setupcompat"]
+	path = setupcompat
+	url = https://github.com/seedvault-app/setupcompat
+[submodule "setupdesign"]
+	path = setupdesign
+	url = https://github.com/seedvault-app/setupdesign
