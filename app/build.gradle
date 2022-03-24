@@ -108,6 +108,9 @@ dependencies {
 
     implementation rootProject.ext.storage_libs.com_google_crypto_tink_android
 
+    implementation project(path: ':setupcompat')
+    implementation project(path: ':setupdesign')
+
     /**
      * Storage Dependencies
      */
