@@ -144,6 +144,7 @@ fun <T> permitDiskReads(func: () -> T): T {
 }
 
 fun Context.getSystemContext(isUsbStorage: () -> Boolean): Context {
-    return if (checkSelfPermission(INTERACT_ACROSS_USERS_FULL) == PERMISSION_GRANTED
-        && isUsbStorage()) createContextAsUser(UserHandle.SYSTEM, 0) else this
+    return if (checkSelfPermission(INTERACT_ACROSS_USERS_FULL) == PERMISSION_GRANTED &&
+        isUsbStorage()
+    ) createContextAsUser(UserHandle.SYSTEM, 0) else this
 }

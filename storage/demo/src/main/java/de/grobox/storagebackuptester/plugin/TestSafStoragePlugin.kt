@@ -11,7 +11,7 @@ import javax.crypto.SecretKey
 
 @Suppress("BlockingMethodInNonBlockingContext")
 class TestSafStoragePlugin(
-    private val appContext: Context,
+    appContext: Context,
     private val getLocationUri: () -> Uri?,
 ) : SafStoragePlugin(appContext) {
 

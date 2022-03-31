@@ -5,11 +5,11 @@ import android.hardware.usb.UsbDevice
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.UserHandle
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.getSystemContext
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
@@ -122,8 +122,8 @@ class SettingsManager(private val context: Context) {
     @WorkerThread
     fun canDoBackupNow(): Boolean {
         val storage = getStorage() ?: return false
-        return !storage.isUnavailableUsb(context.createContextAsUser(UserHandle.SYSTEM, 0))
-            && !storage.isUnavailableNetwork(context)
+        val systemContext = context.getSystemContext { storage.isUsb }
+        return !storage.isUnavailableUsb(systemContext) && !storage.isUnavailableNetwork(context)
     }
 
     fun backupApks(): Boolean {
