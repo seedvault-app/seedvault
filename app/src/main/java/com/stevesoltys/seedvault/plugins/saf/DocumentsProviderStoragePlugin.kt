@@ -2,12 +2,12 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getSystemContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.settings.Storage
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -77,10 +77,12 @@ internal class DocumentsProviderStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun hasBackup(uri: Uri): Boolean {
-        val parent = DocumentFile.fromTreeUri(context, uri) ?: throw AssertionError()
-        val rootDir = parent.findFileBlocking(context, DIRECTORY_ROOT) ?: return false
-        val backupSets = getBackups(context, rootDir)
+    override suspend fun hasBackup(storage: Storage): Boolean {
+        // potentially get system user context if needed here
+        val c = appContext.getSystemContext { storage.isUsb }
+        val parent = DocumentFile.fromTreeUri(c, storage.uri) ?: throw AssertionError()
+        val rootDir = parent.findFileBlocking(c, DIRECTORY_ROOT) ?: return false
+        val backupSets = getBackups(c, rootDir)
         return backupSets.isNotEmpty()
     }
 

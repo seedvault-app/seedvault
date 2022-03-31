@@ -24,14 +24,15 @@ internal class RestoreStorageViewModel(
 
     override fun onLocationSet(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
-            saveStorage(uri)
+            val storage = createStorage(uri)
             val hasBackup = try {
-                storagePlugin.hasBackup(uri)
+                storagePlugin.hasBackup(storage)
             } catch (e: IOException) {
                 Log.e(TAG, "Error reading URI: $uri", e)
                 false
             }
             if (hasBackup) {
+                saveStorage(storage)
                 mLocationChecked.postEvent(LocationResult())
             } else {
                 Log.w(TAG, "Location was rejected: $uri")

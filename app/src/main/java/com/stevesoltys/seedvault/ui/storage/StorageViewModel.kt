@@ -98,13 +98,21 @@ internal abstract class StorageViewModel(
      */
     protected fun saveStorage(uri: Uri): Boolean {
         // store backup storage location in settings
+        val storage = createStorage(uri)
+        return saveStorage(storage)
+    }
+
+    protected fun createStorage(uri: Uri): Storage {
         val root = safOption ?: throw IllegalStateException("no storage root")
         val name = if (root.isInternal()) {
             "${root.title} (${app.getString(R.string.settings_backup_location_internal)})"
         } else {
             root.title
         }
-        val storage = Storage(uri, name, root.isUsb, root.requiresNetwork)
+        return Storage(uri, name, root.isUsb, root.requiresNetwork)
+    }
+
+    protected fun saveStorage(storage: Storage): Boolean {
         settingsManager.setStorage(storage)
 
         if (storage.isUsb) {
@@ -117,7 +125,7 @@ internal abstract class StorageViewModel(
         }
         BackupManagerSettings.resetDefaults(app.contentResolver)
 
-        Log.d(TAG, "New storage location saved: $uri")
+        Log.d(TAG, "New storage location saved: ${storage.uri}")
 
         return storage.isUsb
     }
