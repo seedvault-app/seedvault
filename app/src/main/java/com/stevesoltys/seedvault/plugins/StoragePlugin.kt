@@ -1,8 +1,8 @@
 package com.stevesoltys.seedvault.plugins
 
 import android.app.backup.RestoreSet
-import android.net.Uri
 import androidx.annotation.WorkerThread
+import com.stevesoltys.seedvault.settings.Storage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -48,14 +48,12 @@ interface StoragePlugin {
     suspend fun removeData(token: Long, name: String)
 
     /**
-     * Searches if there's really a backup available in the given location.
+     * Searches if there's really a backup available in the given storage location.
      * Returns true if at least one was found and false otherwise.
-     *
-     * FIXME: Passing a Uri is too plugin-specific and should be handled differently
      */
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun hasBackup(uri: Uri): Boolean
+    suspend fun hasBackup(storage: Storage): Boolean
 
     /**
      * Get the set of all backups currently available for restore.

@@ -74,8 +74,8 @@ class PluginTest : KoinComponent {
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
         assertEquals(0, storagePlugin.getAvailableBackups()?.toList()?.size)
-        val uri = settingsManager.getStorage()?.getDocumentFile(context)?.uri ?: error("no storage")
-        assertFalse(storagePlugin.hasBackup(uri))
+        val s = settingsManager.getStorage() ?: error("no storage")
+        assertFalse(storagePlugin.hasBackup(s))
 
         // prepare returned tokens requested when initializing device
         every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
@@ -90,7 +90,7 @@ class PluginTest : KoinComponent {
 
         // one backup available now
         assertEquals(1, storagePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(storagePlugin.hasBackup(uri))
+        assertTrue(storagePlugin.hasBackup(s))
 
         // initializing again (with another restore set) does add a restore set
         storagePlugin.startNewRestoreSet(token + 1)
@@ -98,7 +98,7 @@ class PluginTest : KoinComponent {
         storagePlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
         assertEquals(2, storagePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(storagePlugin.hasBackup(uri))
+        assertTrue(storagePlugin.hasBackup(s))
 
         // initializing again (without new restore set) doesn't change number of restore sets
         storagePlugin.initializeDevice()
