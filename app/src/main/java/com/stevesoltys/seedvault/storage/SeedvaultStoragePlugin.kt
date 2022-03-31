@@ -13,6 +13,9 @@ internal class SeedvaultStoragePlugin(
     private val storage: DocumentsStorage,
     private val keyManager: KeyManager,
 ) : SafStoragePlugin(appContext) {
+    /**
+     * Attention: This context might be from a different user. Use with care.
+     */
     override val context: Context
         get() = appContext.getSystemContext {
             storage.storage?.isUsb == true

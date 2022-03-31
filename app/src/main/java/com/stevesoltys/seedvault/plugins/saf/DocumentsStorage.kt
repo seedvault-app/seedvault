@@ -45,18 +45,20 @@ internal class DocumentsStorage(
     private val appContext: Context,
     private val settingsManager: SettingsManager,
 ) {
-
-    private val context: Context get() = appContext.getSystemContext {
-        storage?.isUsb ?: false
-    }
-
-    private val contentResolver: ContentResolver get() = context.contentResolver
-
     internal var storage: Storage? = null
         get() {
             if (field == null) field = settingsManager.getStorage()
             return field
         }
+
+    /**
+     * Attention: This context might be from a different user. Use with care.
+     */
+    private val context: Context
+        get() = appContext.getSystemContext {
+            storage?.isUsb == true
+        }
+    private val contentResolver: ContentResolver get() = context.contentResolver
 
     internal var rootBackupDir: DocumentFile? = null
         get() = runBlocking {

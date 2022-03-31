@@ -21,9 +21,13 @@ internal class DocumentsProviderStoragePlugin(
     private val storage: DocumentsStorage,
 ) : StoragePlugin {
 
-    private val context: Context get() = appContext.getSystemContext {
-        storage.storage?.isUsb == true
-    }
+    /**
+     * Attention: This context might be from a different user. Use with care.
+     */
+    private val context: Context
+        get() = appContext.getSystemContext {
+            storage.storage?.isUsb == true
+        }
 
     private val packageManager: PackageManager = appContext.packageManager
 

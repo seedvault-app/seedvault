@@ -35,12 +35,15 @@ private const val TAG = "SafStoragePlugin"
 public abstract class SafStoragePlugin(
     private val appContext: Context,
 ) : StoragePlugin {
-
-    private val cache = SafCache()
-    // In the case of USB storage, if INTERACT_ACROSS_USERS_FULL is granted, this context will match
-    // the system user's application context. Otherwise, matches appContext.
+    /**
+     * Attention: This context could be unexpected. E.g. the system user's application context,
+     * in the case of USB storage, if INTERACT_ACROSS_USERS_FULL permission is granted.
+     * Use [appContext], if you need the context of the current app and user
+     * and [context] for all file access.
+     */
     protected abstract val context: Context
     protected abstract val root: DocumentFile?
+    private val cache = SafCache()
 
     private val folder: DocumentFile?
         get() {
@@ -48,8 +51,9 @@ public abstract class SafStoragePlugin(
             if (cache.currentFolder != null) return cache.currentFolder
 
             @SuppressLint("HardwareIds")
-            // this is unique to each combination of app-signing key, user, and device
-            // so we don't leak anything by not hashing this and can use it as is
+            // This is unique to each combination of app-signing key, user, and device
+            // so we don't leak anything by not hashing this and can use it as is.
+            // Note: Use [appContext] here to not get the wrong ID for a different user.
             val androidId = Settings.Secure.getString(appContext.contentResolver, ANDROID_ID)
             // the folder name is our user ID
             val folderName = "$androidId.sv"

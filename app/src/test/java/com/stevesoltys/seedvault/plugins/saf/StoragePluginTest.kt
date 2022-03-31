@@ -39,6 +39,7 @@ internal class StoragePluginTest : BackupTest() {
         // get current set dir and for that the current token
         every { storage getProperty "currentToken" } returns token
         every { settingsManager.getToken() } returns token
+        every { storage getProperty "storage" } returns null // just to check if isUsb
         coEvery { storage.getSetDir(token) } returns setDir
         // delete contents of current set dir
         coEvery { setDir.listFilesBlocking(context) } returns listOf(backupFile)
