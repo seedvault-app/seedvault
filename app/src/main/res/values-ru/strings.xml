@@ -11,7 +11,7 @@
     <string name="about_design">Дизайн от: <a href="https://www.glennsorrentino.com/">Гленн Соррентино</a></string>
     <string name="about_author">Авторы: <a href="https://github.com/stevesoltys">Steve Soltys</a> и <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Лицензия: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Приложение для резервного копирования с использованием внутреннего API резервного копирования Android.</string>
+    <string name="about_summary">Приложение для резервного копирования, использующее API резервного копирования Android.</string>
     <string name="about_title">О приложении</string>
     <string name="storage_internal_warning_use_anyway">Все равно использовать</string>
     <string name="storage_internal_warning_choose_other">Выбрать другое</string>
@@ -155,9 +155,9 @@
     <string name="restore_storage_got_it">Есть</string>
     <string name="settings_category_apps">Резервное копирование приложений</string>
     <string name="restore_storage_skip">Пропустить восстановление файлов</string>
-    <string name="restore_storage_in_progress_info">Файлы будут восстановлены в фоновом режиме. В процессе восстановления вы можете пользоваться устройством.
+    <string name="restore_storage_in_progress_info">Ваши файлы восстанавливаются в фоновом режиме. Вы можете начать пользоваться телефоном во время выполнения этой операции.
 \n
-\nНекоторые приложения (такие, как Signal или WhatsApp) могут требовать полного восстановления файлов для корректной работы. Избегайте их запуска до окончания полного восстановления.</string>
+\nНекоторые приложения (такие, как Signal или WhatsApp) могут требовать полного восстановления файлов для корректной работы. Избегайте их запуска до окончания восстановления.</string>
     <string name="settings_category_storage">Резервное копирование пользовательских данных (экспериментальная функция)</string>
     <string name="storage_fragment_warning_delete">Существующие бэкапы в этом месте будут удалены.</string>
     <string name="settings_backup_storage_title">Резервное копирование файлов</string>
@@ -167,9 +167,9 @@
     <string name="restore_storage_in_progress_title">Файлы будут восстановлены…</string>
     <string name="settings_backup_storage_dialog_message">Резервное копирование файлов - экспериментальная функция. Не используйте для важных файлов.</string>
     <string name="restore_storage_choose_snapshot">Выберите бэкап для восстановления (экспериментально)</string>
-    <string name="settings_expert_quota_summary">Не устанавливайте ограничение на размер резервных копий приложений.
+    <string name="settings_expert_quota_summary">Не устанавливать ограничение на размер резервных копий приложений.
 \n
-\nПредупреждение: Это может быстро заполнить ваше хранилище. Не требуется для большинства приложений.</string>
+\nВнимание: Это может быстро заполнить ваше хранилище. Не требуется для большинства приложений.</string>
     <string name="recovery_code_auth_description">Введите учетные данные вашего устройства, чтобы продолжить</string>
     <string name="storage_fake_davx5_summary_installed">Нажмите, чтобы настроить подключение WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">Подключение WebDAV недоступно. Настройте один из них.</string>
