@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">Zdjęcia</string>
+    <string name="content_videos">Filmy</string>
+    <string name="content_downloads">Pobrane pliki</string>
+    <string name="notification_backup_backup_files">Tworzenie kopii zapasowej plików…</string>
+    <string name="notification_prune">Usuwanie starych kopii zapasowych…</string>
+    <string name="notification_restore_title">Przywracanie plików…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="content_audio">Pliki dźwiękowe</string>
+    <string name="content_add">Dodaj</string>
+    <string name="notification_backup_title">Kopia zapasowa pamięci</string>
+    <string name="notification_backup_scanning">Skanowanie plików…</string>
+    <string name="notification_restore_complete_title">%1$d z %2$d plików przywróconych</string>
+</resources>
