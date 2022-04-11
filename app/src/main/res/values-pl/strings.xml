@@ -103,11 +103,11 @@
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
     <string name="about_source_code">Kod źródłowy: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Sponsorowano przez: <a href="https://www.calyxinstitute.org">Calyx Institute</a> dla wykorzystania w <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="about_sponsor">Sponsorowana przez: <a href="https://www.calyxinstitute.org">Calyx Institute</a> do wykorzystania w <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Zaprojektowano przez: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Napisano przez: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_author">Napisana przez: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licencja: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Aplikacja do kopii zapasowych wykorzystująca wewnętrzne API kopii zapasowych Androida.</string>
+    <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android do tworzenia kopii zapasowych.</string>
     <string name="about_title">Informacje</string>
     <string name="storage_internal_warning_use_anyway">Użyj mimo tego</string>
     <string name="storage_internal_warning_choose_other">Wybierz inną</string>
@@ -145,4 +145,18 @@
     <string name="notification_title">Trwa kopia zapasowa</string>
     <string name="notification_channel_title">Powiadomienie o kopii zapasowej</string>
     <string name="recovery_code_recreated">Pomyślnie utworzono nowy kod przywracania</string>
+    <string name="settings_category_apps">Kopia zapasowa aplikacji</string>
+    <string name="settings_backup_storage_dialog_message">Kopia zapasowa plików jest w fazie eksperymentalnej i może nie działać. Nie polegaj na niej dla ważnych danych.</string>
+    <string name="settings_backup_files_title">Dodane pliki i foldery</string>
+    <string name="settings_category_storage">Kopia zapasowa pamięci masowej (eksperymentalne)</string>
+    <string name="settings_backup_storage_title">Kopia zapasowa plików</string>
+    <string name="settings_backup_files_summary">Żadne</string>
+    <string name="settings_backup_storage_dialog_title">Funkcjonalność eksperymentalna</string>
+    <string name="settings_backup_storage_dialog_ok">Włącz mimo wszystko</string>
+    <string name="settings_backup_storage_battery_optimization">Uwaga: Brak automatycznych kopii zapasowych, ponieważ optymalizacja baterii jest włączona.</string>
+    <string name="settings_backup_new_code_dialog_title">Wymagany nowy kod odzyskiwania</string>
+    <string name="settings_backup_new_code_dialog_message">Aby dalej używać kopii zapasowych aplikacji należy wygenerować nowy kod odzyskiwania.
+\n
+\nPrzepraszamy za niedogodności.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nowy kod</string>
 </resources>

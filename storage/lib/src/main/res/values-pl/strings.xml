@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="content_images">Zdjęcia</string>
+    <string name="content_images">Zdjęcia i obrazy</string>
     <string name="content_videos">Filmy</string>
     <string name="content_downloads">Pobrane pliki</string>
     <string name="notification_backup_backup_files">Tworzenie kopii zapasowej plików…</string>
@@ -9,7 +9,13 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="content_audio">Pliki dźwiękowe</string>
     <string name="content_add">Dodaj</string>
-    <string name="notification_backup_title">Kopia zapasowa pamięci</string>
+    <string name="notification_backup_title">Kopia zapasowa pamięci masowej</string>
     <string name="notification_backup_scanning">Skanowanie plików…</string>
     <string name="notification_restore_complete_title">%1$d z %2$d plików przywróconych</string>
+    <string name="notification_restore_channel_title">Przywracanie pamięci masowej</string>
+    <string name="snapshots_title">Dostępne kopie zapasowe pamięci masowej</string>
+    <string name="snapshots_empty">Nie znaleziono kopii zapasowych pamięci masowej
+\n
+\nPrzepraszamy, ale nie ma nic, co można przywrócić.</string>
+    <string name="snapshots_error">Błąd ładowania kopii zapasowych</string>
 </resources>
