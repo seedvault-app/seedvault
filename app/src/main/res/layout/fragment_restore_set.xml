@@ -7,10 +7,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/SudHeaderIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_cloud_download"
@@ -19,22 +16,21 @@
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_width="wrap_content"
+        style="@style/SudHeaderTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:text="@string/restore_choose_restore_set"
-        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listView"
+        style="@style/SudContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/skipView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,9 +50,9 @@
 
     <TextView
         android:id="@+id/errorView"
+        style="@style/SudContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:textColor="?android:colorError"
         android:textSize="18sp"
         android:visibility="invisible"
@@ -69,15 +65,13 @@
 
     <TextView
         android:id="@+id/skipView"
+        style="@style/SudSecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
-        android:padding="16dp"
+        android:layout_marginStart="40dp"
         android:text="@string/restore_skip_apps"
-        android:textColor="?android:colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listView" />
 

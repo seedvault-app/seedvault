@@ -7,10 +7,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/SudHeaderIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_storage"
@@ -19,12 +16,10 @@
 
     <TextView
         android:id="@+id/titleView"
+        style="@style/SudHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center"
         android:text="@string/storage_fragment_backup_title"
-        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
@@ -34,7 +29,7 @@
         android:id="@+id/warningIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="40dp"
         android:src="@drawable/ic_warning"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/warningText"
@@ -49,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="40dp"
         android:text="@string/storage_fragment_warning"
         android:textSize="16sp"
         android:visibility="gone"
@@ -58,27 +53,16 @@
         app:layout_constraintTop_toBottomOf="@+id/titleView"
         tools:visibility="visible" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/divider"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/warningText"
-        tools:visibility="visible" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listView"
+        style="@style/SudContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/skipView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/warningText"
         app:layout_goneMarginTop="16dp"
         tools:listitem="@layout/list_item_storage_root" />
 
@@ -94,16 +78,15 @@
 
     <TextView
         android:id="@+id/skipView"
+        style="@style/SudSecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
         android:background="?android:selectableItemBackground"
-        android:padding="16dp"
         android:text="@string/restore_skip"
         android:textColor="?android:colorAccent"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listView"
         tools:visibility="visible" />

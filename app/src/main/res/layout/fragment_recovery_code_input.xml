@@ -60,29 +60,24 @@
 
         <Button
             android:id="@+id/doneButton"
-            style="@style/ActionPrimaryButton"
+            style="@style/SudPrimaryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="40dp"
             android:text="@string/recovery_code_done_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/newCodeButton"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/newCodeButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/SudSecondaryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="40dp"
             android:text="@string/recovery_code_verification_generate_new"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/doneButton"
+            app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
