@@ -7,8 +7,7 @@ val backupModule = module {
     single { InputFactory() }
     single {
         PackageService(
-            context = androidContext(),
-            backupManager = get()
+            context = androidContext()
         )
     }
     single {

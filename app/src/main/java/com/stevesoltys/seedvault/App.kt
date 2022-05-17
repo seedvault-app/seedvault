@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.backup.BackupManager.PACKAGE_MANAGER_SENTINEL
 import android.app.backup.IBackupManager
 import android.content.Context
-import android.content.Context.BACKUP_SERVICE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.ServiceManager.getService
@@ -118,6 +117,8 @@ open class App : Application() {
 
 }
 
+const val PLATFORM_PACKAGE_NAME = "android"
+const val SHARED_BACKUP_AGENT_PACKAGE = "com.android.sharedstoragebackup"
 const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
 const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val GLOBAL_METADATA_KEY = "@meta@"

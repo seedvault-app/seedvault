@@ -17,7 +17,7 @@ data class BackupMetadata(
     internal var time: Long = 0L,
     internal val androidVersion: Int = Build.VERSION.SDK_INT,
     internal val androidIncremental: String = Build.VERSION.INCREMENTAL,
-    internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
+    internal val deviceName: String = "D2D",
     internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap(),
 )
 

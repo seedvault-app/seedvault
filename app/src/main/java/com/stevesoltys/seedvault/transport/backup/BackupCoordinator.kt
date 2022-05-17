@@ -15,12 +15,16 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
+import android.os.UserHandle
+import android.os.UserManager
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.PLATFORM_PACKAGE_NAME
+import com.stevesoltys.seedvault.SHARED_BACKUP_AGENT_PACKAGE
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
@@ -143,12 +147,26 @@ internal class BackupCoordinator(
         @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean,
     ): Boolean {
         val packageName = targetPackage.packageName
+        val applicationInfo = targetPackage.applicationInfo
+        // This must be kept in sync with frameworks/base/services/backup/java/com/android/server/backup/utils/BackupEligibilityRules.java
+        if (!targetPackage.allowsBackup(context, UserHandle.myUserId())
+            || (UserHandle.isCore(applicationInfo.uid) &&
+                (applicationInfo.backupAgentName == null ||
+                    (!UserManager.get(context).isSystemUser &&
+                        (packageName == MAGIC_PACKAGE_MANAGER
+                            || packageName == PLATFORM_PACKAGE_NAME))))
+            || packageName == SHARED_BACKUP_AGENT_PACKAGE
+            || applicationInfo.isInstantApp
+            || targetPackage.isStopped()
+            || !applicationInfo.enabled) {
+            return false
+        }
         // Check that the app is not blacklisted by the user
         val enabled = settingsManager.isBackupEnabled(packageName)
         if (!enabled) Log.w(TAG, "Backup of $packageName disabled by user.")
         // We need to exclude the DocumentsProvider used to store backup data.
         // Otherwise, it gets killed when we back it up, terminating our backup.
-        return enabled && targetPackage.packageName != plugin.providerPackageName
+        return enabled && packageName != plugin.providerPackageName
     }
 
     /**

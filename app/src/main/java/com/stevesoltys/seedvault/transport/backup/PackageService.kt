@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.IBackupManager
+import android.Manifest
+import android.app.compat.CompatChanges
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
@@ -22,13 +23,15 @@ private val TAG = PackageService::class.java.simpleName
 
 private const val LOG_MAX_PACKAGES = 100
 
+// This must be kept in sync with frameworks/base/services/backup/java/com/android/server/backup/utils/BackupEligibilityRules.java
+private const val IGNORE_ALLOW_BACKUP_IN_D2D = 183147249L
+
 /**
  * @author Steve Soltys
  * @author Torsten Grote
  */
 internal class PackageService(
     private val context: Context,
-    private val backupManager: IBackupManager,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
@@ -50,17 +53,14 @@ internal class PackageService(
                 }
             }
 
-            val eligibleApps =
-                backupManager.filterAppsEligibleForBackupForUser(myUserId, packages.toTypedArray())
-
-            // log eligible packages
-            if (Log.isLoggable(TAG, INFO)) {
-                Log.i(TAG, "Filtering left ${eligibleApps.size} eligible packages:")
-                logPackages(eligibleApps.toList())
-            }
+//            val eligiblePackages = packages.filter { packageInfo ->
+//                isAppEligibleForBackup(packageInfo,
+//                    if (packageInfo.applicationInfo.backupAgentName != null)
+//                        pkg.applicationInfo.flags and FLAG_FULL_BACKUP_ONLY != 0 else true)
+//            }
 
             // add magic @pm@ package (PACKAGE_MANAGER_SENTINEL) which holds package manager data
-            val packageArray = eligibleApps.toMutableList()
+            val packageArray = packages.toMutableList()
             packageArray.add(MAGIC_PACKAGE_MANAGER)
 
             return packageArray.toTypedArray()
@@ -73,7 +73,7 @@ internal class PackageService(
             // because the package info is used by [ApkBackup] which needs signing info.
             return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
                 .filter { packageInfo ->
-                    packageInfo.doesNotGetBackedUp() && // only apps that do not allow backup
+                    packageInfo.doesNotGetBackedUp(context, myUserId) && // only apps that do not allow backup
                         !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
                         packageInfo.packageName != context.packageName // not this app
                 }.sortedBy { packageInfo ->
@@ -94,7 +94,7 @@ internal class PackageService(
     val userApps: List<PackageInfo>
         @WorkerThread
         get() = packageManager.getInstalledPackages(GET_INSTRUMENTATION).filter { packageInfo ->
-            packageInfo.isUserVisible(context) && packageInfo.allowsBackup()
+            packageInfo.isUserVisible(context) && packageInfo.allowsBackup(context, myUserId)
         }
 
     /**
@@ -103,7 +103,7 @@ internal class PackageService(
     val userNotAllowedApps: List<PackageInfo>
         @WorkerThread
         get() = packageManager.getInstalledPackages(0).filter { packageInfo ->
-            !packageInfo.allowsBackup() && !packageInfo.isSystemApp()
+            !packageInfo.allowsBackup(context, myUserId) && !packageInfo.isSystemApp()
         }
 
     val expectedAppTotals: ExpectedAppTotals
@@ -114,7 +114,7 @@ internal class PackageService(
             packageManager.getInstalledPackages(GET_INSTRUMENTATION).forEach { packageInfo ->
                 if (packageInfo.isUserVisible(context)) {
                     appsTotal++
-                    if (packageInfo.doesNotGetBackedUp()) {
+                    if (packageInfo.doesNotGetBackedUp(context, myUserId)) {
                         appsOptOut++
                     }
                 }
@@ -157,9 +157,20 @@ internal fun PackageInfo.isSystemApp(): Boolean {
     return applicationInfo.flags and FLAG_SYSTEM != 0
 }
 
-internal fun PackageInfo.allowsBackup(): Boolean {
+internal fun PackageInfo.allowsBackup(context: Context, userId: Int): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+
+    // This must be kept in sync with frameworks/base/services/backup/java/com/android/server/backup/utils/BackupEligibilityRules.java
+    val isSystemApp = applicationInfo.flags and FLAG_SYSTEM != 0
+    val ignoreAllowBackup = !isSystemApp
+        && (context.checkSelfPermission(Manifest.permission.LOG_COMPAT_CHANGE)
+        == PackageManager.PERMISSION_GRANTED)
+        && (context.checkSelfPermission(Manifest.permission.READ_COMPAT_CHANGE_CONFIG)
+        == PackageManager.PERMISSION_GRANTED)
+        && CompatChanges.isChangeEnabled(IGNORE_ALLOW_BACKUP_IN_D2D, packageName,
+        UserHandle.of(userId))
+    val allowBackup = applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+    return ignoreAllowBackup || allowBackup
 }
 
 /**
@@ -173,10 +184,21 @@ internal fun PackageInfo.isNotUpdatedSystemApp(): Boolean {
     return isSystemApp && !isUpdatedSystemApp
 }
 
-internal fun PackageInfo.doesNotGetBackedUp(): Boolean {
+internal fun PackageInfo.doesNotGetBackedUp(context: Context, userId: Int): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
-    return applicationInfo.flags and FLAG_ALLOW_BACKUP == 0 || // does not allow backup
-        applicationInfo.flags and FLAG_STOPPED != 0 // is stopped
+
+    // This must be kept in sync with frameworks/base/services/backup/java/com/android/server/backup/utils/BackupEligibilityRules.java
+    val isSystemApp = applicationInfo.flags and FLAG_SYSTEM != 0
+    val ignoreAllowBackup = !isSystemApp
+        && (context.checkSelfPermission(Manifest.permission.LOG_COMPAT_CHANGE)
+        == PackageManager.PERMISSION_GRANTED)
+        && (context.checkSelfPermission(Manifest.permission.READ_COMPAT_CHANGE_CONFIG)
+        == PackageManager.PERMISSION_GRANTED)
+        && CompatChanges.isChangeEnabled(IGNORE_ALLOW_BACKUP_IN_D2D, packageName,
+        UserHandle.of(userId))
+    val allowBackup = applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+    val stopped = applicationInfo.flags and FLAG_STOPPED != 0
+    return (!ignoreAllowBackup && !allowBackup) || stopped
 }
 
 internal fun PackageInfo.isStopped(): Boolean {
