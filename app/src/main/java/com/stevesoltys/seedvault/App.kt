@@ -50,7 +50,7 @@ open class App : Application() {
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
         factory { AppListRetriever(this@App, get(), get(), get()) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
