@@ -7,10 +7,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/SudHeaderIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_cloud_download"
@@ -19,12 +16,10 @@
 
     <TextView
         android:id="@+id/titleView"
+        style="@style/SudHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center"
         android:text="@string/restore_storage_choose_snapshot"
-        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

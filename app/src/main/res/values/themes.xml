@@ -11,7 +11,8 @@
         <item name="android:windowLightStatusBar">@bool/isLight</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="actionBarTheme">@style/Theme.ActionBar</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">@bool/isLight</item>
+        <item name="android:navigationBarColor">@color/primary</item>
     </style>
 
     <style name="Theme.ActionBar" parent="Theme.AppCompat.DayNight.DarkActionBar">
@@ -26,4 +27,84 @@
     <!-- Copied from Settings -->
     <style name="ActionPrimaryButton" parent="android:Widget.DeviceDefault.Button.Colored" />
 
+    <style name="SudHeaderTitle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:lineSpacingExtra">3.67sp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="SudIconContainer">
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginTop">56dp</item>
+        <item name="android:maxHeight">32dp</item>
+    </style>
+
+    <style name="SudHeaderIcon">
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+
+    <style name="SudDescription">
+        <item name="android:layout_gravity">top</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginStart">40dp</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginEnd">40dp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textDirection">locale</item>
+        <item name="android:gravity">start</item>
+        <item name="android:textAlignment">gravity</item>
+        <item name="android:lineSpacingExtra">3.67sp</item>
+    </style>
+
+    <style name="SudContent" parent="SudDescription">
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:layout_marginStart">40dp</item>
+        <item name="android:layout_marginEnd">40dp</item>
+        <item name="android:gravity">start</item>
+        <item name="android:textAlignment">gravity</item>
+    </style>
+
+    <style name="SudPrimaryButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:buttonStyle">@style/SudPrimaryButton</item>
+        <item name="android:theme">@style/SudPrimaryButton</item>
+        <item name="buttonStyle">@style/SudPrimaryButton</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:buttonCornerRadius">28dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="SudSecondaryButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:buttonStyle">@style/SudSecondaryButton</item>
+        <item name="android:theme">@style/SudSecondaryButton</item>
+        <item name="buttonStyle">@style/SudSecondaryButton</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>

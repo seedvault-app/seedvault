@@ -7,10 +7,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/SudHeaderIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_storage"
@@ -19,11 +16,9 @@
 
     <TextView
         android:id="@+id/titleView"
+        style="@style/SudHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center_horizontal"
-        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
@@ -31,10 +26,9 @@
 
     <TextView
         android:id="@+id/patienceView"
+        style="@style/SudContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center_horizontal"
         android:text="@string/storage_check_fragment_patience"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,9 +39,9 @@
         style="?android:progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintBottom_toTopOf="@+id/backButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,11 +50,9 @@
 
     <TextView
         android:id="@+id/errorView"
+        style="@style/SudContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
         android:textColor="?android:colorError"
         android:textSize="18sp"
         android:visibility="invisible"
@@ -74,10 +66,10 @@
 
     <Button
         android:id="@+id/backButton"
-        style="@style/ActionPrimaryButton"
+        style="@style/SudSecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="40dp"
         android:text="@string/storage_check_fragment_error_button"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
