@@ -136,6 +136,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
+            setOngoing(true)
             setShowWhen(false)
             setWhen(System.currentTimeMillis())
             setProgress(0, 0, true)
