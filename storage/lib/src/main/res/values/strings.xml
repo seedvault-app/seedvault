@@ -3,6 +3,7 @@
     <string name="content_videos">Videos</string>
     <string name="content_audio">Audio files</string>
     <string name="content_downloads">Downloads</string>
+    <string name="content_options">Options</string>
     <string name="content_add">Add</string>
 
     <string name="notification_backup_title">Storage backup</string>
