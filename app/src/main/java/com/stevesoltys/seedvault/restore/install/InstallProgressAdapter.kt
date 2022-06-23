@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore.install
 
+import android.os.Build.VERSION.SDK_INT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -44,7 +45,8 @@ internal class InstallProgressAdapter(
                 return if (finished) finishedComparator.compare(item1, item2)
                 else item1.compareTo(item2)
             }
-        })
+        }
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppInstallViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -79,15 +81,23 @@ internal class InstallProgressAdapter(
                 IN_PROGRESS -> {
                     appStatus.visibility = INVISIBLE
                     progressBar.visibility = VISIBLE
+                    if (SDK_INT >= 30) {
+                        progressBar.stateDescription =
+                            context.getString(R.string.restore_app_status_installing)
+                    }
                 }
                 SUCCEEDED -> {
                     appStatus.setImageResource(R.drawable.ic_check_green)
                     appStatus.visibility = VISIBLE
+                    appStatus.contentDescription =
+                        context.getString(R.string.restore_app_status_installed)
                     progressBar.visibility = INVISIBLE
                 }
                 FAILED -> {
                     appStatus.setImageResource(R.drawable.ic_error_red)
                     appStatus.visibility = VISIBLE
+                    appStatus.contentDescription =
+                        context.getString(R.string.restore_app_status_install_error)
                     progressBar.visibility = INVISIBLE
                     if (finished) {
                         v.background = clickableBackground
@@ -100,6 +110,8 @@ internal class InstallProgressAdapter(
                 }
                 FAILED_SYSTEM_APP -> {
                     appStatus.setImageResource(R.drawable.ic_error_red)
+                    appStatus.contentDescription =
+                        context.getString(R.string.restore_app_status_install_error)
                     appStatus.visibility = VISIBLE
                     progressBar.visibility = INVISIBLE
                 }
