@@ -60,17 +60,17 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         button.setText(R.string.restore_next)
         button.setOnClickListener { viewModel.onNextClickedAfterInstallingApps() }
 
-        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner) { restorableBackup ->
             backupNameView.text = restorableBackup.name
-        })
+        }
 
-        viewModel.installResult.observe(viewLifecycleOwner, { result ->
+        viewModel.installResult.observe(viewLifecycleOwner) { result ->
             onInstallResult(result)
-        })
+        }
 
-        viewModel.nextButtonEnabled.observe(viewLifecycleOwner, { enabled ->
+        viewModel.nextButtonEnabled.observe(viewLifecycleOwner) { enabled ->
             button.isEnabled = enabled
-        })
+        }
     }
 
     private fun onInstallResult(installResult: InstallResult) {

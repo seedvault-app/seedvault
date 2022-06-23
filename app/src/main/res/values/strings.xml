@@ -141,6 +141,9 @@
     <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
     <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
     <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
+    <string name="backup_app_in_progress">Backing up</string>
+    <string name="backup_app_success">Backed up</string>
+    <string name="backup_app_warning">Backup warning</string>
     <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
     <string name="restore_app_was_stopped">Was not backed up as it hadn\'t been used recently</string>
     <string name="backup_app_no_data">App reported no data for backup</string>
@@ -161,6 +164,12 @@
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
     <string name="restore_installing_packages">Re-installing apps</string>
+    <string name="restore_app_status_installing">Re-installing</string>
+    <string name="restore_app_status_installed">Re-installed</string>
+    <string name="restore_app_status_install_error">Could not install</string>
+    <string name="restore_app_status_restored">Data restored</string>
+    <string name="restore_app_status_failed">Restore failed</string>
+    <string name="restore_app_status_warning">Restore warning</string>
     <string name="restore_installing_error_title">Some apps not installed</string>
     <string name="restore_installing_error_message">Data can only be restored if an app is installed.\n\nTap failed apps to try to install them manually before proceeding.</string>
     <string name="restore_installing_tap_to_install">Tap to install</string>
