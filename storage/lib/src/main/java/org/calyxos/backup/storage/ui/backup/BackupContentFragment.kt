@@ -57,9 +57,9 @@ public abstract class BackupContentFragment : Fragment(), ContentClickListener {
 
         val adapter = BackupContentAdapter(this)
         list.adapter = adapter
-        viewModel.content.observe(viewLifecycleOwner, {
+        viewModel.content.observe(viewLifecycleOwner) {
             adapter.setItems(it)
-        })
+        }
         v.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             addRequest.launch(DocumentsContract.buildRootsUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY))
         }
