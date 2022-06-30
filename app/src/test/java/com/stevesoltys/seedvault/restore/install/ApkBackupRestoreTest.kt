@@ -118,6 +118,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { metadataManager.salt } returns salt
         every { crypto.getNameForApk(salt, packageName) } returns name
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkBackup.backupApkIfNecessary(packageInfo, PackageState.APK_AND_DATA, outputStreamGetter)
 

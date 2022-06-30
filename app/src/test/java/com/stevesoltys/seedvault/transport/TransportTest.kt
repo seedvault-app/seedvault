@@ -61,6 +61,7 @@ internal abstract class TransportTest {
     protected val salt = metadata.salt
     protected val name = getRandomString(12)
     protected val name2 = getRandomString(23)
+    protected val storageProviderPackageName = getRandomString(23)
 
     init {
         mockkStatic(Log::class)

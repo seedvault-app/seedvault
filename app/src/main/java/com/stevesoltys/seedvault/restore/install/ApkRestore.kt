@@ -41,7 +41,12 @@ internal class ApkRestore(
     @Suppress("BlockingMethodInNonBlockingContext")
     fun restore(backup: RestorableBackup) = flow {
         // filter out packages without APK and get total
-        val packages = backup.packageMetadataMap.filter { it.value.hasApk() }
+        val packages = backup.packageMetadataMap.filter {
+            // We also need to exclude the DocumentsProvider used to retrieve backup data.
+            // Otherwise, it gets killed when we install it, terminating our restoration.
+            val isStorageProvider = it.key == storagePlugin.providerPackageName
+            it.value.hasApk() && !isStorageProvider
+        }
         val total = packages.size
         var progress = 0
 

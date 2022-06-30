@@ -97,6 +97,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedFailFinished(i, value)
@@ -112,6 +113,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedFailFinished(i, value)
@@ -124,6 +126,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } throws SecurityException()
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
@@ -146,6 +149,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressSuccessFinished(i, value)
@@ -184,6 +188,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressSuccessFinished(i, value)
@@ -202,6 +207,7 @@ internal class ApkRestoreTest : TransportTest() {
 
             cacheBaseApkAndGetInfo(tmpDir)
             every { packageInfo.applicationInfo.loadIcon(pm) } returns icon
+            every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
             if (willFail) {
                 every {
@@ -281,6 +287,7 @@ internal class ApkRestoreTest : TransportTest() {
         every {
             splitCompatChecker.isCompatible(deviceName, listOf(split1Name, split2Name))
         } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
@@ -303,6 +310,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             storagePlugin.getInputStream(token, suffixName)
         } returns ByteArrayInputStream(getRandomByteArray())
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressFailFinished(i, value)
@@ -325,6 +333,7 @@ internal class ApkRestoreTest : TransportTest() {
             every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
             every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
             coEvery { storagePlugin.getInputStream(token, suffixName) } throws IOException()
+            every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
             apkRestore.restore(backup).collectIndexed { i, value ->
                 assertQueuedProgressFailFinished(i, value)
@@ -363,6 +372,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery { storagePlugin.getInputStream(token, suffixName1) } returns split1InputStream
         every { crypto.getNameForApk(salt, packageName, split2Name) } returns suffixName2
         coEvery { storagePlugin.getInputStream(token, suffixName2) } returns split2InputStream
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         coEvery {
             apkInstaller.install(match { it.size == 3 }, packageName, installerName, any())
@@ -378,6 +388,27 @@ internal class ApkRestoreTest : TransportTest() {
 
         apkRestore.restore(backup).collectIndexed { i, value ->
             assertQueuedProgressSuccessFinished(i, value)
+        }
+    }
+
+    @Test
+    fun `storage provider app does not get reinstalled`(@TempDir tmpDir: Path) = runBlocking {
+        // set the storage provider package name to match our current package name,
+        // and ensure that the current package is therefore skipped.
+        every { storagePlugin.providerPackageName } returns packageName
+
+        apkRestore.restore(backup).collectIndexed { i, value ->
+            when (i) {
+                0 -> {
+                    assertFalse(value.isFinished)
+                }
+                1 -> {
+                    // the only package provided should have been filtered, leaving 0 packages.
+                    assertEquals(0, value.total)
+                    assertTrue(value.isFinished)
+                }
+                else -> fail("more values emitted")
+            }
         }
     }
 
