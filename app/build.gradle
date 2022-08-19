@@ -43,7 +43,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        languageVersion = "1.4"
+        languageVersion = "1.6"
     }
     testOptions {
         unitTests.all {
