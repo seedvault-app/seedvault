@@ -116,6 +116,7 @@ internal class Backup(
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
+    @OptIn(ExperimentalTime::class)
     private suspend fun backupFiles(
         filesResult: FileScannerResult,
         availableChunkIds: HashSet<String>,

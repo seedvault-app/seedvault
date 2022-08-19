@@ -52,6 +52,7 @@ internal class Restore(
         MultiChunkRestore(context, storagePlugin, fileRestore, streamCrypto, streamKey)
     }
 
+    @OptIn(ExperimentalTime::class)
     fun getBackupSnapshots(): Flow<SnapshotResult> = flow {
         val numSnapshots: Int
         val time = measure {
