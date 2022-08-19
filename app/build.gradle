@@ -38,11 +38,11 @@ android {
         abortOnError true
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
         languageVersion = "1.6"
     }
     testOptions {
@@ -159,9 +159,6 @@ apply from: "${rootProject.rootDir}/gradle/ktlint.gradle"
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
-        if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-            options.compilerArgs.addAll(['--release', '8'])
-        }
         options.compilerArgs.add('-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar')
     }
 }
