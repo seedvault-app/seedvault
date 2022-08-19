@@ -139,7 +139,7 @@ internal class Restore(
         Log.e(TAG, "Restoring ${split.multiChunkFiles.size} multi chunks took $multiChunkDuration.")
 
         val totalDuration = smallFilesDuration + singleChunkDuration + multiChunkDuration
-        observer?.onRestoreComplete(totalDuration.toLongMilliseconds())
+        observer?.onRestoreComplete(totalDuration.inWholeMilliseconds)
         Log.e(TAG, "Restored $restoredFiles/$filesTotal files.")
     }
 

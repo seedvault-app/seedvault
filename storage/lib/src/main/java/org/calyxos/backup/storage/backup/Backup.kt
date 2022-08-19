@@ -111,7 +111,7 @@ internal class Backup(
             }
             Log.e(TAG, "Changed files backup took $duration")
         } finally {
-            backupObserver?.onBackupComplete(duration?.toLongMilliseconds())
+            backupObserver?.onBackupComplete(duration?.inWholeMilliseconds)
         }
     }
 
