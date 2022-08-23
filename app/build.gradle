@@ -18,7 +18,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 29 // leave at 29 for robolectric tests
+        minSdkVersion 32 // leave at 32 for robolectric tests
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionNameSuffix "-$gitDescribe"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

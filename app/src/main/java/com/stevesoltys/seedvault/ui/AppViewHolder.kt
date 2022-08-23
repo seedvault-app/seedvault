@@ -2,7 +2,6 @@ package com.stevesoltys.seedvault.ui
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build.VERSION.SDK_INT
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
@@ -40,12 +39,10 @@ internal abstract class AppViewHolder(protected val v: View) : RecyclerView.View
             appInfo.visibility = GONE
             appStatus.visibility = INVISIBLE
             progressBar.visibility = VISIBLE
-            if (SDK_INT >= 30) {
-                progressBar.stateDescription = context.getString(
-                    if (isRestore) R.string.restore_restoring
-                    else R.string.backup_app_in_progress
-                )
-            }
+            progressBar.stateDescription = context.getString(
+                if (isRestore) R.string.restore_restoring
+                else R.string.backup_app_in_progress
+            )
         } else {
             appStatus.visibility = VISIBLE
             progressBar.visibility = INVISIBLE

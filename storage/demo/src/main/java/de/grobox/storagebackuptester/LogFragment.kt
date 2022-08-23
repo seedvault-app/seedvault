@@ -1,11 +1,7 @@
 package de.grobox.storagebackuptester
 
-import android.Manifest.permission.ACCESS_MEDIA_LOCATION
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
@@ -21,7 +17,6 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -43,13 +38,6 @@ open class LogFragment : Fragment() {
     private lateinit var button: Button
     private val adapter = LogAdapter()
 
-    private val permissionRequest =
-        registerForActivityResult(RequestMultiplePermissions()) { grantedMap ->
-            if (grantedMap[WRITE_EXTERNAL_STORAGE] == true) {
-                Toast.makeText(requireContext(), "Please try again now!", LENGTH_SHORT).show()
-            }
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,19 +50,19 @@ open class LogFragment : Fragment() {
         progressBar = v.findViewById(R.id.progressBar)
         horizontalProgressBar = v.findViewById(R.id.horizontalProgressBar)
         button = v.findViewById(R.id.button)
-        viewModel.backupLog.observe(viewLifecycleOwner, { progress ->
+        viewModel.backupLog.observe(viewLifecycleOwner) { progress ->
             progress.text?.let { adapter.addItem(it) }
             horizontalProgressBar.max = progress.total
             horizontalProgressBar.setProgress(progress.current, true)
             list.postDelayed({
                 list.scrollToPosition(adapter.itemCount - 1)
             }, 50)
-        })
-        viewModel.backupButtonEnabled.observe(viewLifecycleOwner, { enabled ->
+        }
+        viewModel.backupButtonEnabled.observe(viewLifecycleOwner) { enabled ->
             button.isEnabled = enabled
             progressBar.visibility = if (enabled) INVISIBLE else VISIBLE
             if (!enabled) adapter.clear()
-        })
+        }
         button.setOnClickListener {
             if (!checkPermission()) return@setOnClickListener
             viewModel.simulateBackup()
@@ -120,23 +108,13 @@ open class LogFragment : Fragment() {
     }
 
     private fun checkPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= 30) {
-            if (Environment.isExternalStorageManager()) return true
-            Toast.makeText(requireContext(), "Permission needed", LENGTH_SHORT).show()
-            val i = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
-                data = Uri.parse("package:${requireContext().packageName}")
-            }
-            startActivity(i)
-            false
-        } else {
-            if (requireContext().checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-                true
-            } else {
-                Toast.makeText(requireContext(), "No storage permission", LENGTH_SHORT).show()
-                permissionRequest.launch(arrayOf(WRITE_EXTERNAL_STORAGE, ACCESS_MEDIA_LOCATION))
-                false
-            }
+        if (Environment.isExternalStorageManager()) return true
+        Toast.makeText(requireContext(), "Permission needed", LENGTH_SHORT).show()
+        val i = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+            data = Uri.parse("package:${requireContext().packageName}")
         }
+        startActivity(i)
+        return false
     }
 
 }

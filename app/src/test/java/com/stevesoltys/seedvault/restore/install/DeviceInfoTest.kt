@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [29], // robolectric does not support 30, yet
+    sdk = [32], // robolectric does not support 33, yet
     application = TestApp::class
 )
 internal class DeviceInfoTest {
@@ -62,12 +62,10 @@ internal class DeviceInfoTest {
         assertFalse(deviceInfo.isSupportedLanguage("de"))
 
         // test areUnknownSplitsAllowed
-        val deviceName = "unknown robolectric"
+        assertTrue(deviceInfo.areUnknownSplitsAllowed("robolectric robolectric"))
         if (onlyOnSameDevice) {
-            assertTrue(deviceInfo.areUnknownSplitsAllowed(deviceName))
             assertFalse(deviceInfo.areUnknownSplitsAllowed("foo bar"))
         } else {
-            assertTrue(deviceInfo.areUnknownSplitsAllowed(deviceName))
             assertTrue(deviceInfo.areUnknownSplitsAllowed("foo bar"))
         }
     }

@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.content.Context
-import android.os.Build.VERSION.SDK_INT
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
@@ -145,7 +144,7 @@ internal class Notifications(private val context: Context) {
         setShowWhen(false)
         setWhen(System.currentTimeMillis())
         setProgress(expected, transferred, expected == 0)
-        if (SDK_INT >= 31) setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+        setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
     }.build()
 
 }
