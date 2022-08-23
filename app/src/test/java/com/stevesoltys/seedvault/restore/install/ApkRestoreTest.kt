@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_INSTALLED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
@@ -177,13 +176,7 @@ internal class ApkRestoreTest : TransportTest() {
             legacyStoragePlugin.getApkInputStream(token, packageName, "")
         } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
-        every {
-            @Suppress("UNRESOLVED_REFERENCE")
-            pm.loadItemIcon(
-                packageInfo.applicationInfo,
-                packageInfo.applicationInfo
-            )
-        } returns icon
+        every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
@@ -200,13 +193,11 @@ internal class ApkRestoreTest : TransportTest() {
         runBlocking {
             val packageMetadata = this@ApkRestoreTest.packageMetadata.copy(system = true)
             packageMetadataMap[packageName] = packageMetadata
-            packageInfo.applicationInfo = mockk()
             val installedPackageInfo: PackageInfo = mockk()
             val willFail = Random.nextBoolean()
             val isSystemApp = Random.nextBoolean()
 
             cacheBaseApkAndGetInfo(tmpDir)
-            every { packageInfo.applicationInfo.loadIcon(pm) } returns icon
             every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
             if (willFail) {
@@ -214,7 +205,7 @@ internal class ApkRestoreTest : TransportTest() {
                     pm.getPackageInfo(packageName, 0)
                 } throws PackageManager.NameNotFoundException()
             } else {
-                installedPackageInfo.applicationInfo = ApplicationInfo().apply {
+                installedPackageInfo.applicationInfo = mockk {
                     flags =
                         if (!isSystemApp) FLAG_INSTALLED else FLAG_SYSTEM or FLAG_UPDATED_SYSTEM_APP
                 }
@@ -422,13 +413,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
-        every {
-            @Suppress("UNRESOLVED_REFERENCE")
-            pm.loadItemIcon(
-                packageInfo.applicationInfo,
-                packageInfo.applicationInfo
-            )
-        } returns icon
+        every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
     }
 

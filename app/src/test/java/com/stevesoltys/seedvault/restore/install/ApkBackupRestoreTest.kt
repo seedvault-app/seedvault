@@ -134,13 +134,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns inputStream
         every { pm.getPackageArchiveInfo(capture(apkPath), any()) } returns packageInfo
-        every {
-            @Suppress("UNRESOLVED_REFERENCE")
-            pm.loadItemIcon(
-                packageInfo.applicationInfo,
-                packageInfo.applicationInfo
-            )
-        } returns icon
+        every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
         every {
             splitCompatChecker.isCompatible(metadata.deviceName, listOf(splitName))
