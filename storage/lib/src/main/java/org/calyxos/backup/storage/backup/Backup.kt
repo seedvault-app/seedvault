@@ -111,11 +111,12 @@ internal class Backup(
             }
             Log.e(TAG, "Changed files backup took $duration")
         } finally {
-            backupObserver?.onBackupComplete(duration?.toLongMilliseconds())
+            backupObserver?.onBackupComplete(duration?.inWholeMilliseconds)
         }
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
+    @OptIn(ExperimentalTime::class)
     private suspend fun backupFiles(
         filesResult: FileScannerResult,
         availableChunkIds: HashSet<String>,

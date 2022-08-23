@@ -32,6 +32,8 @@ android_app {
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
         "com.google.android.material_material",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
         // storage backup lib
         "seedvault-lib-storage",
         // koin

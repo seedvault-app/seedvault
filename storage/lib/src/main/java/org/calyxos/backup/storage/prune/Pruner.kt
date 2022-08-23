@@ -47,7 +47,7 @@ internal class Pruner(
             }
         }
         Log.i(TAG, "Pruning took $duration")
-        backupObserver?.onPruneComplete(duration.toLongMilliseconds())
+        backupObserver?.onPruneComplete(duration.inWholeMilliseconds)
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)

@@ -5,7 +5,6 @@ import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
-import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.PackageInfo
 import android.net.Uri
@@ -399,7 +398,9 @@ internal class BackupCoordinatorTest : BackupTest() {
             PackageInfo().apply {
                 packageName = "org.example.2"
                 // the second package does not get backed up, because it is stopped
-                applicationInfo = ApplicationInfo().apply { flags = FLAG_STOPPED }
+                applicationInfo = mockk {
+                    flags = FLAG_STOPPED
+                }
             }
         )
         val packageMetadata: PackageMetadata = mockk()
