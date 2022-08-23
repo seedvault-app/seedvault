@@ -111,7 +111,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
-        every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.restore(backup).collectIndexed { i, value ->
@@ -175,7 +175,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             legacyStoragePlugin.getApkInputStream(token, packageName, "")
         } returns apkInputStream
-        every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
         coEvery {
@@ -412,7 +412,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
-        every { pm.getPackageArchiveInfo(any(), any()) } returns packageInfo
+        every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
     }
