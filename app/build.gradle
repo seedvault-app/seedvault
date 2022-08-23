@@ -122,13 +122,13 @@ dependencies {
      * You can copy these libraries from ~/.gradle/caches/modules-2/files-2.1
      */
     // later versions than 2.1.1 require newer kotlin version
-//    implementation "io.insert-koin:koin-core-jvm:3.1.2"
-//    implementation "io.insert-koin:koin-android:3.1.2"
+//    implementation "io.insert-koin:koin-core-jvm:3.2.0"
+//    implementation "io.insert-koin:koin-android:3.2.0"
     implementation fileTree(include: ['*.jar'], dir: "${rootProject.rootDir}/libs/koin-android")
     implementation fileTree(include: ['*.aar'], dir: "${rootProject.rootDir}/libs/koin-android")
 
-//    implementation "cash.z.ecc.android:kotlin-bip39:1.0.2"
-    implementation fileTree(include: ['kotlin-bip39-1.0.2.jar'], dir: "${rootProject.rootDir}/libs")
+//    implementation "cash.z.ecc.android:kotlin-bip39:1.0.4"
+    implementation fileTree(include: ['kotlin-bip39-jvm-1.0.4.jar'], dir: "${rootProject.rootDir}/libs")
 
     /**
      * Test Dependencies (do not concern the AOSP build)

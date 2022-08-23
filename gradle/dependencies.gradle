@@ -3,9 +3,11 @@ ext {
     ext.room_version = "2.4.0-alpha05"
     // https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-13.0.0_r3/java/pom.xml#7
     ext.protobuf_version = "3.9.1"
+
+    // test dependencies below - these do not care about AOSP and can be freely updated
     junit4_version = "4.13.2"
-    junit5_version = "5.5.2" // careful, upgrading this can change a Cipher's IV size in tests!?
-    mockk_version = "1.12.0"
+    junit5_version = "5.7.2" // careful, upgrading this can change a Cipher's IV size in tests!?
+    mockk_version = "1.12.3"
     espresso_version = "3.4.0"
 }
 
@@ -93,7 +95,7 @@ ext.std_libs = [
 ]
 
 ext.lint_libs = [
-    exceptions: 'com.github.thirdegg:lint-rules:0.0.6-beta'
+    exceptions: 'com.github.thirdegg:lint-rules:0.1.0'
 ]
 
 ext.storage_libs = [
@@ -103,7 +105,9 @@ ext.storage_libs = [
     com_google_protobuf_javalite: dependencies.create('com.google.protobuf:protobuf-javalite') {
         version { strictly "$protobuf_version" }
     },
+    // https://github.com/google/tink/releases
     com_google_crypto_tink_android: dependencies.create('com.google.crypto.tink:tink-android') {
-        version { strictly '1.6.1' }
+        // careful with upgrading tink, so old backups continue to be decryptable
+        version { strictly '1.7.0' }
     },
 ]
