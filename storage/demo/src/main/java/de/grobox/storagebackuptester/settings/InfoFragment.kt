@@ -1,6 +1,5 @@
 package de.grobox.storagebackuptester.settings
 
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.MediaStore
@@ -39,16 +38,14 @@ class InfoFragment : MediaScanFragment() {
             } catch (e: IllegalArgumentException) {
                 e.toString()
             }
-            val gen = if (SDK_INT >= 30) try {
+            val gen = try {
                 MediaStore.getGeneration(context, volumeName)
             } catch (e: IllegalArgumentException) {
                 e.toString()
-            } else null
+            }
             sb.appendLine("  $volumeName")
             sb.appendLine("    version: $version")
-            if (gen != null) {
-                sb.appendLine("    generation:  $gen")
-            }
+            sb.appendLine("    generation:  $gen")
         }
         sb.appendLine()
         sb.appendLine("Media files smaller than 100 KB: ${mediaFilesSmallerThan(100 * 1024)}")

@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build.VERSION.SDK_INT
 import android.os.Environment.getExternalStorageDirectory
 import android.provider.MediaStore.MediaColumns
 import android.util.Log
@@ -39,13 +38,7 @@ internal class FileRestore(
         val finalTag: String
         when {
             file.mediaFile != null -> {
-                bytes = if (SDK_INT < 30) {
-                    // MediaProvider on API 29 doesn't let us write files into any folders freely,
-                    // so don't attempt to restore via MediaStore API
-                    restoreFile(file, streamWriter)
-                } else {
-                    restoreFile(file.mediaFile, streamWriter)
-                }
+                bytes = restoreFile(file.mediaFile, streamWriter)
                 finalTag = "M$tag"
             }
             file.docFile != null -> {
@@ -112,10 +105,7 @@ internal class FileRestore(
             // changing owner requires backup permission
             put(MediaColumns.OWNER_PACKAGE_NAME, mediaFile.ownerPackageName)
             put(MediaColumns.IS_PENDING, 1)
-            if (SDK_INT >= 30) {
-                val isFavorite = if (mediaFile.isFavorite) 1 else 0
-                put(MediaColumns.IS_FAVORITE, isFavorite)
-            }
+            put(MediaColumns.IS_FAVORITE, if (mediaFile.isFavorite) 1 else 0)
         }
         val contentUri = MediaType.fromBackupMediaType(mediaFile.type).contentUri
         val uri = contentResolver.insert(contentUri, contentValues)!!

@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.restore.install
 
-import android.os.Build.VERSION.SDK_INT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -81,10 +80,8 @@ internal class InstallProgressAdapter(
                 IN_PROGRESS -> {
                     appStatus.visibility = INVISIBLE
                     progressBar.visibility = VISIBLE
-                    if (SDK_INT >= 30) {
-                        progressBar.stateDescription =
-                            context.getString(R.string.restore_app_status_installing)
-                    }
+                    progressBar.stateDescription =
+                        context.getString(R.string.restore_app_status_installing)
                 }
                 SUCCEEDED -> {
                     appStatus.setImageResource(R.drawable.ic_check_green)
