@@ -16,6 +16,8 @@
     <!-- This is needed to check for internet access when backup is stored on network storage -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!-- This is needed to retrieve the available storage roots -->
     <uses-permission
         android:name="android.permission.MANAGE_DOCUMENTS"

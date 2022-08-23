@@ -7,5 +7,6 @@
         <permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
         <permission name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+        <permission name="android.permission.POST_NOTIFICATIONS"/>
     </privapp-permissions>
 </permissions>
