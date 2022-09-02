@@ -26,6 +26,8 @@ android_app {
     static_libs: [
         "kotlin-stdlib-jdk8",
         "androidx.core_core-ktx",
+        "androidx.fragment_fragment-ktx",
+        "androidx.activity_activity-ktx",
         "androidx.preference_preference",
         "androidx.documentfile_documentfile",
         "androidx.lifecycle_lifecycle-viewmodel-ktx",

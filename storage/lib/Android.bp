@@ -17,6 +17,8 @@ android_library {
         "seedvault-lib-tink-android",
         "libprotobuf-java-lite",
         "androidx.core_core-ktx",
+        "androidx.fragment_fragment-ktx",
+        "androidx.activity_activity-ktx",
         "androidx.documentfile_documentfile",
         "androidx.lifecycle_lifecycle-viewmodel-ktx",
         "androidx.room_room-runtime",
