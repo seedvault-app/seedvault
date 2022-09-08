@@ -381,7 +381,13 @@ internal class BackupCoordinator(
                 }
                 // hook in here to back up APKs of apps that are otherwise not allowed for backup
                 if (isPmBackup && settingsManager.canDoBackupNow()) {
-                    backUpApksOfNotBackedUpPackages()
+                    try {
+                        backUpApksOfNotBackedUpPackages()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error backing up APKs of opt-out apps: ", e)
+                        // We are re-throwing this, because we want to know about problems here
+                        throw e
+                    }
                 }
             }
             result
