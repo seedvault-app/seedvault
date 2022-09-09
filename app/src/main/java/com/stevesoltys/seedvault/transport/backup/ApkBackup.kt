@@ -154,7 +154,8 @@ internal class ApkBackup(
         streamGetter: suspend (name: String) -> OutputStream,
     ): List<ApkSplit> {
         check(packageInfo.splitNames != null)
-        val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs
+        // attention: though not documented, splitSourceDirs can be null
+        val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs ?: emptyArray()
         check(packageInfo.splitNames.size == splitSourceDirs.size) {
             "Size Mismatch! ${packageInfo.splitNames.size} != ${splitSourceDirs.size} " +
                 "splitNames is ${packageInfo.splitNames.toList()}, " +
