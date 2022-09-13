@@ -52,8 +52,8 @@ android_app {
     privileged: true,
     required: [
         "LocalContactsBackup",
-        "privapp_whitelist_com.stevesoltys.backup",
-        "com.stevesoltys.backup_whitelist"
+        "com.stevesoltys.backup_allowlist",
+        "com.stevesoltys.backup_privapp_allowlist"
     ],
     optimize: {
         enabled: false,
@@ -61,17 +61,17 @@ android_app {
 }
 
 prebuilt_etc {
-    name: "privapp_whitelist_com.stevesoltys.backup",
+    name: "com.stevesoltys.backup_allowlist",
     system_ext_specific: true,
-    sub_dir: "permissions",
-    src: "permissions_com.stevesoltys.seedvault.xml",
+    sub_dir: "sysconfig",
+    src: "allowlist_com.stevesoltys.seedvault.xml",
     filename_from_src: true,
 }
 
 prebuilt_etc {
-    name: "com.stevesoltys.backup_whitelist",
+    name: "com.stevesoltys.backup_privapp_allowlist",
     system_ext_specific: true,
-    sub_dir: "sysconfig",
-    src: "whitelist_com.stevesoltys.seedvault.xml",
+    sub_dir: "permissions",
+    src: "permissions_com.stevesoltys.seedvault.xml",
     filename_from_src: true,
 }
