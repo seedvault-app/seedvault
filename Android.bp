@@ -53,6 +53,7 @@ android_app {
     required: [
         "LocalContactsBackup",
         "com.stevesoltys.backup_allowlist",
+        "com.stevesoltys.backup_default-permissions",
         "com.stevesoltys.backup_privapp_allowlist"
     ],
     optimize: {
@@ -65,6 +66,14 @@ prebuilt_etc {
     system_ext_specific: true,
     sub_dir: "sysconfig",
     src: "allowlist_com.stevesoltys.seedvault.xml",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
+    name: "com.stevesoltys.backup_default-permissions",
+    system_ext_specific: true,
+    sub_dir: "default-permissions",
+    src: "default-permissions_com.stevesoltys.seedvault.xml",
     filename_from_src: true,
 }
 
