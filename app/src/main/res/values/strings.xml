@@ -61,6 +61,7 @@
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Not recommended)</string>
     <string name="storage_fake_nextcloud_title" translatable="false">Nextcloud</string>
     <string name="storage_fake_nextcloud_summary">Tap to install</string>
     <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
