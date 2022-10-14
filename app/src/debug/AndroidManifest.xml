@@ -7,13 +7,11 @@
         <activity
             android:name="com.stevesoltys.seedvault.settings.SettingsActivity"
             android:exported="true"
-            android:permission=""
-            tools:replace="android:permission" />
+            tools:remove="android:permission" />
         <activity
             android:name="com.stevesoltys.seedvault.restore.RestoreActivity"
             android:exported="true"
-            android:permission=""
-            tools:replace="android:permission" />
+            tools:remove="android:permission" />
     </application>
 
 </manifest>
