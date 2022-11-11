@@ -105,7 +105,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     dialog.dismiss()
                 }
                 .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
-                    apkBackup.isChecked = enable
+                    apkBackup.isChecked = false
                     dialog.dismiss()
                 }
                 .show()
