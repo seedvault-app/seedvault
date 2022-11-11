@@ -197,9 +197,9 @@ internal class SettingsViewModel(
     @UiThread
     fun loadFilesSummary() = viewModelScope.launch {
         val uriSummary = storageBackup.getUriSummaryString()
-        _filesSummary.value = if (uriSummary.isEmpty()) {
+        _filesSummary.value = uriSummary.ifEmpty {
             app.getString(R.string.settings_backup_files_summary)
-        } else uriSummary
+        }
     }
 
     /**
