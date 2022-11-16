@@ -2,7 +2,7 @@
 <resources>
     <string name="settings_auto_restore_title">استعادة تلقائية</string>
     <string name="settings_backup_location">موقع النسخ الاحتياطي</string>
-    <string name="settings_backup">احتفظ باحتياطي من معلوماتي</string>
+    <string name="settings_backup">النسخ الاحتياطي لتطبيقاتي</string>
     <string name="restore_backup_button">استرجاع النسخة الاحتياطية</string>
     <string name="current_destination_string">حالة النسخ الاحتياطي والإعدادات</string>
     <string name="backup">نسخ احتياطية</string>
@@ -13,4 +13,9 @@
     <string name="settings_info">كل النسخ الاحتياطية مشفرة على هاتفك. للإستعادة من النسخ الاحتياطي سوف تحتاج رمز الاسترداد المكون من 12 كلمة.</string>
     <string name="settings_backup_location_internal">التخزين الداخلي</string>
     <string name="settings_backup_location_none">لا شئ</string>
+    <string name="data_management_label">Seedvault النسخ الاحتياطي</string>
+    <string name="settings_backup_last_backup_never">أبداً</string>
+    <string name="settings_backup_apk_dialog_title">هل تريد حقًا تعطيل النسخ الاحتياطي للتطبيق؟</string>
+    <string name="settings_auto_restore_summary_usb">ملاحظة: يجب توصيل %1$s الخاص بك حتى يعمل.</string>
+    <string name="settings_category_apps">النسخ الاحتياطي للتطبيق</string>
 </resources>
