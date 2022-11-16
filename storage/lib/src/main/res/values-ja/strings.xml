@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_downloads">ダウンロード</string>
+    <string name="notification_backup_title">ストレージバックアップ</string>
+    <string name="notification_backup_scanning">ファイルをスキャンしています…</string>
+    <string name="notification_backup_backup_files">ファイルのバックアップ中…</string>
+    <string name="notification_prune">古いバックアップの削除中…</string>
+    <string name="notification_restore_title">ファイルを復元中…</string>
+    <string name="notification_restore_info">%1$d のうち %2$d</string>
+    <string name="snapshots_error">スナップショットの読み込みに失敗しました</string>
+    <string name="content_videos">ビデオ</string>
+    <string name="content_images">写真と画像</string>
+    <string name="content_audio">オーディオファイル</string>
+    <string name="content_add">追加</string>
+    <string name="notification_restore_channel_title">ストレージの復元</string>
+    <string name="notification_restore_complete_title">%1$d のファイルのうち %2$d のファイルが復元されました</string>
+    <string name="snapshots_title">利用可能なストレージのバックアップ</string>
+    <string name="snapshots_empty">ストレージのバックアップが見つかりません
+\n
+\n申し訳ありませんが、復元できるものはありません。</string>
+</resources>
