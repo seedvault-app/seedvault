@@ -40,7 +40,7 @@
     <string name="about_design">Diseño por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys"> Steve Soltys </a> y <a href="https://blog.grobox.de"> Torsten Grote </a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Una aplicación de copia de seguridad que utiliza la API de copia de seguridad interna de Android.</string>
+    <string name="about_summary">Una aplicación de copia de seguridad que usa la API de copia de seguridad interna de Android.</string>
     <string name="storage_internal_warning_choose_other">Escoger otro</string>
     <string name="storage_internal_warning_message">Ha elegido almacenamiento interno para su copia de seguridad. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
     <string name="restore_finished_error">Ocurrió un error al restaurar la copia de seguridad.</string>
@@ -182,4 +182,14 @@
     <string name="error_no_store">Error: No hay ninguna tienda de aplicaciones instalada</string>
     <string name="storage_fake_davx5_summary_installed">Toque para configurar un montaje WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">El montaje de WebDAV no está disponible. Configure uno.</string>
+    <string name="notification_backup_disabled">Copia de seguridad no activada</string>
+    <string name="backup_app_in_progress">Copia de seguridad en progreso</string>
+    <string name="backup_app_success">Datos guardados</string>
+    <string name="restore_app_status_failed">La restauración ha fallado</string>
+    <string name="restore_app_status_warning">Advertencia sobre la restauración</string>
+    <string name="restore_app_status_installing">Reinstalando</string>
+    <string name="backup_app_warning">Advertencia sobre la copia de seguridad</string>
+    <string name="restore_app_status_installed">Reinstalado</string>
+    <string name="restore_app_status_restored">Datos restaurados</string>
+    <string name="restore_app_status_install_error">No se ha podido instalar</string>
 </resources>
