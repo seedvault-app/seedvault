@@ -143,12 +143,9 @@ internal class BackupCoordinator(
         @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean,
     ): Boolean {
         val packageName = targetPackage.packageName
-        // Check that the app is not blacklisted by the user
-        val enabled = settingsManager.isBackupEnabled(packageName)
-        if (!enabled) Log.w(TAG, "Backup of $packageName disabled by user.")
-        // We need to exclude the DocumentsProvider used to store backup data.
-        // Otherwise, it gets killed when we back it up, terminating our backup.
-        return enabled && targetPackage.packageName != plugin.providerPackageName
+        val shouldInclude = packageService.shouldIncludeAppInBackup(packageName)
+        if (!shouldInclude) Log.i(TAG, "Excluding $packageName from backup.")
+        return shouldInclude
     }
 
     /**

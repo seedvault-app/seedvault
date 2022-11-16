@@ -26,6 +26,14 @@ import com.stevesoltys.seedvault.transport.TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 
+/**
+ * Device name used in AOSP to indicate that a restore set is part of a device-to-device migration.
+ * See getBackupEligibilityRules in frameworks/base/services/backup/java/com/android/server/
+ * backup/restore/ActiveRestoreSession.java. AOSP currently relies on this constant, and it is not
+ * publicly exposed. Framework code indicates they intend to use a flag, instead, in the future.
+ */
+internal const val DEVICE_NAME_FOR_D2D_SET = "D2D"
+
 private data class RestoreCoordinatorState(
     val token: Long,
     val packages: Iterator<PackageInfo>,
@@ -92,7 +100,8 @@ internal class RestoreCoordinator(
      **/
     suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
         return getAvailableMetadata()?.map { (_, metadata) ->
-            RestoreSet(metadata.deviceName, metadata.deviceName, metadata.token, TRANSPORT_FLAGS)
+            RestoreSet(metadata.deviceName /* name */, DEVICE_NAME_FOR_D2D_SET /* device */,
+                metadata.token, TRANSPORT_FLAGS)
         }?.toTypedArray()
     }
 
