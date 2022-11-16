@@ -182,4 +182,14 @@
     <string name="storage_internal_warning_use_anyway">Utilitzar de totes maneres</string>
     <string name="about_title">Quant a</string>
     <string name="about_version">Versió: %s</string>
+    <string name="notification_backup_disabled">Còpia de Seguretat deshabilitada</string>
+    <string name="backup_app_in_progress">Fent còpia de seguretat</string>
+    <string name="backup_app_success">Còpia de seguretat completada</string>
+    <string name="backup_app_warning">Avís de còpia de seguretat</string>
+    <string name="restore_app_status_installing">Reinstal·lant</string>
+    <string name="restore_app_status_installed">Reinstal·lat</string>
+    <string name="restore_app_status_install_error">No s\'ha pogut instal·lar</string>
+    <string name="restore_app_status_restored">Dades restaurades</string>
+    <string name="restore_app_status_failed">Ha fallat la restauració</string>
+    <string name="restore_app_status_warning">Avís de restrauració</string>
 </resources>
