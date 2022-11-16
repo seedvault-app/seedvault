@@ -181,4 +181,10 @@
 \nOmlouváme se za nepříjemnosti.</string>
     <string name="notification_error_no_main_key_title">Zálohy vypnuty</string>
     <string name="error_no_store">Chyba: Není nainstalovaný žádný obchod pro aplikace</string>
+    <string name="notification_backup_disabled">Zálohování není povoleno</string>
+    <string name="backup_app_in_progress">Zálohování</string>
+    <string name="backup_app_success">Zálohováno</string>
+    <string name="restore_app_status_restored">Data obnovena</string>
+    <string name="restore_app_status_failed">Obnovení selhalo</string>
+    <string name="restore_app_status_warning">Varování o obnovení</string>
 </resources>
