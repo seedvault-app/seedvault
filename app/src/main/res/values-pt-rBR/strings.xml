@@ -180,4 +180,13 @@
     <string name="notification_error_no_main_key_title">Backups desativados</string>
     <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar a usar os backups.</string>
     <string name="error_no_store">Erro: Nenhuma loja de aplicativos instalada</string>
+    <string name="restore_app_status_restored">Dados restaurados</string>
+    <string name="restore_app_status_installed">Reinstalado</string>
+    <string name="restore_app_status_install_error">Não foi possível instalar</string>
+    <string name="restore_app_status_warning">Aviso de restauração</string>
+    <string name="backup_app_in_progress">Fazendo backup</string>
+    <string name="backup_app_warning">Aviso de backup</string>
+    <string name="restore_app_status_installing">Reinstalando</string>
+    <string name="restore_app_status_failed">Falha na restauração</string>
+    <string name="notification_backup_disabled">Backup desabilitado</string>
 </resources>
