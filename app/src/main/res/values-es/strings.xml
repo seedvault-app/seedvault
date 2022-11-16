@@ -182,4 +182,14 @@
     <string name="error_no_store">Error: No hay ninguna tienda de aplicaciones instalada</string>
     <string name="storage_fake_davx5_summary_installed">Toque para configurar un montaje WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">El montaje de WebDAV no está disponible. Configure uno.</string>
+    <string name="backup_app_in_progress">Copia de seguridad</string>
+    <string name="backup_app_success">Respaldado</string>
+    <string name="restore_app_status_failed">La restauración falló</string>
+    <string name="restore_app_status_warning">Advertencia de la restauración</string>
+    <string name="restore_app_status_installing">Volver a instalar</string>
+    <string name="backup_app_warning">Aviso de seguridad</string>
+    <string name="restore_app_status_installed">Vuelve a instalar</string>
+    <string name="restore_app_status_install_error">No se puede instalar</string>
+    <string name="notification_backup_disabled">Copia de seguridad no habilitada</string>
+    <string name="restore_app_status_restored">Datos restaurados</string>
 </resources>
