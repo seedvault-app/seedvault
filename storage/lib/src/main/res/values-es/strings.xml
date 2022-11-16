@@ -18,4 +18,5 @@
 \n
 \nLo sentimos, pero no hay nada que se pueda restaurar.</string>
     <string name="snapshots_error">Error al cargar snapshots</string>
+    <string name="content_options">Opciones</string>
 </resources>
