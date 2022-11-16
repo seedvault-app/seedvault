@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Opcións</string>
+    <string name="content_add">Engadir</string>
+    <string name="notification_backup_title">Copia de seguridade do almacenamento</string>
+    <string name="notification_backup_scanning">Escaneando ficheiros…</string>
+    <string name="notification_backup_backup_files">Facendo copia de seguridade dos ficheiros…</string>
+    <string name="notification_prune">Eliminando copias de seguridade antigas…</string>
+    <string name="notification_restore_channel_title">Restauración do almacenamento</string>
+    <string name="notification_restore_title">Restaurando ficheiros…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d de %2$d ficheiros restaurados</string>
+    <string name="snapshots_title">Copias de seguridade do almacenamento dispoñibles</string>
+    <string name="snapshots_empty">Non se atoparon copias de seguridade do almacenamento 
+\n 
+\nSentímolo, pero non atopamos nada que se poida restaurar.</string>
+    <string name="snapshots_error">Produciuse un erro ao cargar as instantáneas</string>
+    <string name="content_images">Fotos e imaxes</string>
+    <string name="content_videos">Vídeos</string>
+    <string name="content_audio">Arquivos de audio</string>
+    <string name="content_downloads">Descargas</string>
+</resources>

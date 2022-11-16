@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="content_images">Fotos e imágenes</string>
-    <string name="content_videos">Videos</string>
+    <string name="content_videos">Vídeos</string>
     <string name="content_audio">Archivos de audio</string>
     <string name="content_downloads">Descargas</string>
     <string name="content_add">Añadir</string>
