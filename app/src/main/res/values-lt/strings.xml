@@ -6,10 +6,10 @@
     <string name="about_source_code">Pirminis kodas: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Remia: <a href="https://www.calyxinstitute.org">Calyx institutas</a>, skirta naudoti <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Dizainas: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Parašė: <a href="https://github.com/stevesoltys">Steve Soltys</a> ir <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_author">Sukūrė: <a href="https://github.com/stevesoltys">Steve Soltys</a> ir <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licencija: <a href="https://www.apache.org/licenses/LICENSE-2.0"> „Apache2“ </a></string>
     <string name="about_version">Versija: %s</string>
-    <string name="about_summary">Atsarginės kopijos kūrimo programa, naudojanti „Android“ vidinę atsarginės kopijos kūrimo API.</string>
+    <string name="about_summary">Atsarginės kopijos kūrimo programa, naudojanti „Android“ vidinį atsarginės kopijos kūrimo API.</string>
     <string name="about_title">Apie</string>
     <string name="storage_internal_warning_use_anyway">Vis tiek naudoti</string>
     <string name="storage_internal_warning_choose_other">Pasirinkite kitą</string>
@@ -171,4 +171,25 @@
     <string name="restore_storage_in_progress_info">Jūsų failai atkuriami fone. Kol tai vyksta, galite pradėti naudotis telefonu.
 \n
 \nNorint importuoti atsarginę kopiją, kai kuriose programėlėse (pvz., Signal arba WhatsApp) gali reikėti, kad failai būtų visiškai atkurti. Stenkitės vengti paleisti šias programėles, kol failų atkūrimas nebaigtas.</string>
+    <string name="backup_app_in_progress">Kuriama atsarginė kopija</string>
+    <string name="backup_app_success">Atsarginė kopija sukurta</string>
+    <string name="backup_app_warning">Atsarginės kopijos įspėjimas</string>
+    <string name="restore_app_status_installing">Diegiama iš naujo</string>
+    <string name="restore_app_status_installed">Įdiegta iš naujo</string>
+    <string name="restore_app_status_restored">Duomenys atkurti</string>
+    <string name="restore_app_status_failed">Atkurti nepavyko</string>
+    <string name="restore_app_status_warning">Atkurti įspėjimą</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Naujas kodas</string>
+    <string name="settings_backup_storage_battery_optimization">Įspėjimas: nėra automatinių atsarginių kopijų, nes aktyvus akumuliatoriaus optimizavimas.</string>
+    <string name="settings_backup_new_code_dialog_message">Norėdami toliau naudoti programėlių atsargines kopijas, turite sugeneruoti naują atkūrimo kodą.
+\n
+\nAtsiprašome už nepatogumus.</string>
+    <string name="notification_backup_disabled">Atsarginės kopijos įjungtos</string>
+    <string name="settings_backup_new_code_dialog_title">Reikalingas naujas atkūrimo kodas</string>
+    <string name="storage_fake_davx5_summary_installed">Bakstelėkite, kad nustatytumėte WebDAV laikiklį</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV laikiklis nepasiekiamas. Nustatykite vieną.</string>
+    <string name="error_no_store">Klaida: neįdiegta programėlių parduotuvė</string>
+    <string name="notification_error_no_main_key_text">Sugeneruokite naują atkūrimo kodą, kad užbaigtumėte versijos naujinimą ir toliau naudotumėte atsargines kopijas.</string>
+    <string name="notification_error_no_main_key_title">Atsarginės kopijos išjungtos</string>
+    <string name="restore_app_status_install_error">Nepavyko įdiegti</string>
 </resources>

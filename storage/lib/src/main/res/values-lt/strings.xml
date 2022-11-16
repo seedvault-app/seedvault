@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Parinktys</string>
+    <string name="content_add">Pridėti</string>
+    <string name="notification_backup_title">Saugyklos atsarginė kopija</string>
+    <string name="notification_backup_scanning">Nuskaitomi failai…</string>
+    <string name="notification_backup_backup_files">Kuriamos atsarginės failų kopijos…</string>
+    <string name="notification_prune">Šalinamos senos atsarginės kopijos…</string>
+    <string name="notification_restore_channel_title">Saugyklos atkūrimas</string>
+    <string name="notification_restore_title">Atkuriami failai…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">Atkurta %1$d iš %2$d failų</string>
+    <string name="snapshots_title">Galimos saugyklos atsarginės kopijos</string>
+    <string name="snapshots_empty">Nerasta jokių atsarginių kopijų
+\n
+\nAtsiprašome, bet nėra nieko, ką būtų galima atkurti.</string>
+    <string name="snapshots_error">Klaida įkeliant momentines nuotraukas</string>
+    <string name="content_images">Nuotraukos ir vaizdai</string>
+    <string name="content_videos">Vaizdo įrašai</string>
+    <string name="content_audio">Garso failai</string>
+    <string name="content_downloads">Atsiuntimai</string>
+</resources>
