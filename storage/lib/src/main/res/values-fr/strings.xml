@@ -18,4 +18,5 @@
     <string name="notification_restore_complete_title">%1$d sur %2$d fichiers restaurés</string>
     <string name="snapshots_title">Sauvegardes de stockage disponibles</string>
     <string name="snapshots_error">Erreur de chargement des instantanés</string>
+    <string name="content_options">Options</string>
 </resources>
