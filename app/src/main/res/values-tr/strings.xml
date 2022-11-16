@@ -182,4 +182,14 @@
     <string name="settings_backup_new_code_code_dialog_ok">Yeni kod</string>
     <string name="storage_fake_davx5_summary_unavailable">WebDAV bağlantısı yok. Bir tane kurun.</string>
     <string name="storage_fake_davx5_summary_installed">Bir WebDAV bağlantısı kurmak için dokunun</string>
+    <string name="notification_backup_disabled">Yedekleme etkinleştirilmedi</string>
+    <string name="backup_app_success">Yedeklendi</string>
+    <string name="restore_app_status_installing">Yeniden kuruluyor</string>
+    <string name="backup_app_in_progress">Yedekleniyor</string>
+    <string name="backup_app_warning">Yedekleme uyarısı</string>
+    <string name="restore_app_status_installed">Yeniden kuruldu</string>
+    <string name="restore_app_status_restored">Veriler geri yüklendi</string>
+    <string name="restore_app_status_failed">Geri yükleme başarısız oldu</string>
+    <string name="restore_app_status_install_error">Kurulamadı</string>
+    <string name="restore_app_status_warning">Geri yükleme uyarısı</string>
 </resources>
