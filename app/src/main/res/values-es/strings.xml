@@ -38,9 +38,9 @@
     <string name="notification_error_action">Corregir</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Instituto Calyx</a> para usar en <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Diseño por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys"> Steve Soltys </a> y <a href="https://blog.grobox.de"> Torsten Grote </a></string>
+    <string name="about_author">Realizada por: <a href="https://github.com/stevesoltys">Steve Soltys</a> y <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Una aplicación de copia de seguridad que usa la API de copia de seguridad interna de Android.</string>
+    <string name="about_summary">Una aplicación para copias de seguridad que utiliza la API interna de Android para ello.</string>
     <string name="storage_internal_warning_choose_other">Escoger otro</string>
     <string name="storage_internal_warning_message">Ha elegido almacenamiento interno para su copia de seguridad. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
     <string name="restore_finished_error">Ocurrió un error al restaurar la copia de seguridad.</string>
@@ -113,7 +113,7 @@
     <string name="data_management_label">Copia de seguridad de Seedvault</string>
     <string name="restore_restoring_error_message">Puede reinstalar estas aplicaciones manualmente y la restauración automática intentará restaurar sus datos (cuando esté activada).</string>
     <string name="backup_app_not_yet_backed_up">Esperando para la copia de seguridad…</string>
-    <string name="about_version">Versión: %s</string>
+    <string name="about_version">Edición: %s</string>
     <string name="restore_restoring_error_title">No se pueden restaurar algunas aplicaciones</string>
     <string name="restore_installing_tap_to_install">Pulse para instalar</string>
     <string name="restore_installing_error_message">Los datos solo se pueden restaurar si se ha instalado una aplicación.
