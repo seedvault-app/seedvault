@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="restore_backup_button">Restaurar backup</string>
-    <string name="current_destination_string">Status do backup e configurações</string>
+    <string name="current_destination_string">Estado do backup e configurações</string>
     <string name="backup">Backup</string>
-    <string name="about_source_code">Código Fonte: https://github.com/seedvault-app/seedvault</string>
+    <string name="about_source_code">Código-fonte: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
@@ -94,8 +94,8 @@
     <string name="storage_check_fragment_restore_title">Procurando por backups…</string>
     <string name="storage_check_fragment_backup_title">Inicializando local de backup…</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Crie uma (ou desative a palavra-passe).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Clique para configurar uma conta</string>
-    <string name="storage_fake_nextcloud_summary">Clique para instalar</string>
+    <string name="storage_fake_nextcloud_summary_installed">Toque para configurar a conta</string>
+    <string name="storage_fake_nextcloud_summary">Toque para instalar</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
@@ -105,7 +105,7 @@
     <string name="settings_backup_now">Fazer backup agora</string>
     <string name="settings_backup_exclude_apps">Excluir apps</string>
     <string name="settings_backup_status_summary">Último backup: %1$s</string>
-    <string name="settings_backup_status_title">Status do backup</string>
+    <string name="settings_backup_status_title">Estado do backup</string>
     <string name="settings_backup_apk_dialog_disable">Desativar backup da app</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
     <string name="settings_backup_apk_dialog_message">O backup da app desativado ainda fará o backup dos dados da app. Porém, ele não será restaurado automaticamente.
@@ -123,6 +123,48 @@
     <string name="settings_backup_location_internal">Armazenamento interno</string>
     <string name="settings_backup_location_none">Nenhum</string>
     <string name="settings_backup_location">Local de backup</string>
-    <string name="settings_backup">Fazer backup dos meus dados</string>
+    <string name="settings_backup">Faça backup dos meus apps</string>
     <string name="data_management_label">Backup do Seedvault</string>
+    <string name="restore_storage_got_it">Entendi</string>
+    <string name="settings_backup_storage_dialog_title">Recurso experimental</string>
+    <string name="settings_backup_storage_dialog_message">O backup de ficheiros ainda é experimental e pode não funcionar. Não confie nele para dados importantes.</string>
+    <string name="backup_section_user">Apps instaladas</string>
+    <string name="restore_app_not_allowed">A app não permitiu um backup</string>
+    <string name="restore_storage_skip">Pular restauração de ficheiros</string>
+    <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (experimental)</string>
+    <string name="settings_category_apps">Backup de app</string>
+    <string name="settings_category_storage">Backup de armazenamento (experimental)</string>
+    <string name="settings_backup_storage_title">Faça backup dos meus ficheiros</string>
+    <string name="settings_backup_files_title">Ficheiros e pastas incluídos</string>
+    <string name="settings_backup_files_summary">Nenhum</string>
+    <string name="settings_backup_recovery_code">Código de recuperação</string>
+    <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
+    <string name="settings_backup_storage_dialog_ok">Ativar mesmo assim</string>
+    <string name="settings_expert_title">Configurações para especialistas</string>
+    <string name="settings_expert_quota_title">Cota ilimitada de apps</string>
+    <string name="settings_expert_quota_summary">Não imponha uma limitação ao tamanho dos backups de apps.
+\n
+\nAviso: isso pode encher o seu local de armazenamento rapidamente. Não é necessário para a maioria das apps.</string>
+    <string name="backup_section_system">Apps de sistema</string>
+    <string name="storage_fragment_warning_delete">Os backups existentes neste local serão excluídos.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
+    <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
+    <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados …</string>
+    <string name="storage_check_fragment_patience">Isto pode levar algum tempo…</string>
+    <string name="recovery_code_done_button">Verificar</string>
+    <string name="recovery_code_verification_ok_message">O seu código está correto e irá funcionar para restaurar o seu backup.</string>
+    <string name="recovery_code_verification_error_title">Código de recuperação incorreto</string>
+    <string name="recovery_code_verification_error_message">Inseriu um código de recuperação inválido. Por favor, tente novamente!
+\n
+\nSe perdeu o seu código, toque em \'Gerar novo código\' abaixo.</string>
+    <string name="recovery_code_verification_try_again">Tente novamente</string>
+    <string name="recovery_code_verification_generate_new">Gerar um novo código</string>
+    <string name="recovery_code_verification_new_dialog_title">Espere um segundo…</string>
+    <string name="recovery_code_verification_new_dialog_message">A geração de um novo código fará os backups existentes inacessíveis. Vamos tentar apagá-los, se possível.
+\n
+\nTem a certeza que quer fazer isto\?</string>
+    <string name="recovery_code_recreated">O novo código de recuperação foi criado com sucesso</string>
+    <string name="recovery_code_auth_title">Digite novamente o bloqueio de ecrã</string>
+    <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
+    <string name="notification_title">Backup em execução</string>
 </resources>
