@@ -109,4 +109,54 @@
     <string name="notification_success_text">%1$d av %2$d programmer sikkerhetskopiert. Trykk for mer info.</string>
     <string name="notification_backup_already_running">Sikkerhetskopi allerede underveis</string>
     <string name="settings_backup_status_title">Sikkerhetskopieringsstatus</string>
+    <string name="recovery_code_verification_error_title">Feil gjenopprettingskode</string>
+    <string name="settings_backup_storage_title">Sikkerhetskopier filene mine</string>
+    <string name="settings_category_apps">Programsikkerhetskopi</string>
+    <string name="settings_backup_files_title">Inkluderte filer og mapper</string>
+    <string name="settings_backup_files_summary">Ingen</string>
+    <string name="settings_backup_recovery_code">Gjenopprettingskode</string>
+    <string name="settings_backup_recovery_code_summary">Bekreft eksisterende gjenopprettingskode, eller generer en ny</string>
+    <string name="settings_backup_storage_dialog_title">Eksperimentell funksjon</string>
+    <string name="settings_backup_storage_dialog_message">Sikerhetskopiering av filer er fremdeles eksperimentelt, og trenger ikke å virke. Ikke stol på det for viktig data.</string>
+    <string name="settings_expert_title">Ekspertinnstillinger</string>
+    <string name="recovery_code_recreated">Ny gjenopprettingskode opprettet</string>
+    <string name="settings_backup_new_code_dialog_title">Ny gjenopprettingskode påkrevd</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Ikke installert</string>
+    <string name="restore_storage_got_it">Skjønner</string>
+    <string name="recovery_code_verification_ok_message">Koden din er riktig, og vil fungere for gjenoppretting av sikkerhetskopien din.</string>
+    <string name="recovery_code_verification_generate_new">Generer ny gjenopprettingskode</string>
+    <string name="restore_skip_apps">Hopp over gjenoppretting av programmer</string>
+    <string name="recovery_code_auth_title">Skriv inn skjermlåsen din igjen</string>
+    <string name="recovery_code_auth_description">Skriv inn enhetsidentitetsdetaljene dine for å fortsette</string>
+    <string name="recovery_code_verification_try_again">Prøv igjen</string>
+    <string name="recovery_code_verification_error_message">Du har skrevet inn en ugyldig sikkerhetskopieringskode. Prøv igjen.
+\n
+\nHvis du har mistet den, kan du trykke «Generer ny gjenopprettingskode» nedenfor.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Ny gjenopprettingskode</string>
+    <string name="settings_backup_storage_battery_optimization">Advarsel: Ingen automatisk sikkerhetskopiering, fordi batterioptimalisering er aktiv.</string>
+    <string name="storage_check_fragment_patience">Dette kan ta sin tid …</string>
+    <string name="settings_category_storage">Lagringssikkerhetskopi (eksperimentelt)</string>
+    <string name="settings_expert_quota_title">Ubegrenset programkvote</string>
+    <string name="settings_backup_storage_dialog_ok">Skru på uansett</string>
+    <string name="recovery_code_verification_new_dialog_message">Generering av ny gjenopprettingskode gjør dine eksisterende sikkerhetskopier utilgjengelige. De vil bli forsøkt slettet.
+\n
+\nFortsett\?</string>
+    <string name="storage_fake_davx5_summary_installed">Trykk for å sette opp en WebDAV-montering</string>
+    <string name="error_no_store">Feil: Ingen programbutikk installert</string>
+    <string name="storage_fake_davx5_summary_unavailable">Du må sette opp en WebDAV-montering først.</string>
+    <string name="recovery_code_verification_ok_title">Gjenopprettingskode bekreftet</string>
+    <string name="restore_storage_skip">Hopp over gjenoppretting av filer</string>
+    <string name="recovery_code_verification_new_dialog_title">Vent ett sekund …</string>
+    <string name="restore_storage_choose_snapshot">Velg lagringssikkerhetskopi å gjenopprette (eksperimentelt)</string>
+    <string name="restore_storage_in_progress_title">Gjenoppretter filer …</string>
+    <string name="settings_backup_new_code_dialog_message">For å fortsette å bruke programsikkerhetskopier må du generere en ny gjenopprettingskode.</string>
+    <string name="notification_error_no_main_key_title">Sikkerhetskopiering avskrudd</string>
+    <string name="notification_error_no_main_key_text">Generer en ny gjenopprettingskode for å fullføre oppgradering og fortsette å bruke sikkerhetskopier.</string>
+    <string name="storage_fragment_warning_delete">Eksisterende sikkerhetskopieringer i denne mappen vil bli slettet.</string>
+    <string name="settings_expert_quota_summary">Ikke sett en grense for programsikkerhetskopiering.
+\n
+\nAdvarsel: Dette kan fylle lagringen raskt. Det er ikke nødvendig for de fleste programmer.</string>
+    <string name="restore_storage_in_progress_info">Gjenoppretter filer i bakgrunnen. Du kan begynne å bruke enheten mens dette kjører.
+\n
+\nNoen programmer (som f.eks. Signal og WhatsApp) krever at filer er fullstendig gjenopprettet for å importere en sikkerhetskopi. Prøv å unngå å starte de programmene før filgjenoppretting er fullført.</string>
 </resources>
