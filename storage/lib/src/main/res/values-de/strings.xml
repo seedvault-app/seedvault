@@ -18,5 +18,4 @@
 \nEs gibt leider nichts, was wiederhergestellt werden kann.</string>
     <string name="snapshots_error">Fehler beim Laden von Snapshots</string>
     <string name="notification_restore_channel_title">Speicherwiederherstellung</string>
-    <string name="content_options">Optionen</string>
 </resources>
