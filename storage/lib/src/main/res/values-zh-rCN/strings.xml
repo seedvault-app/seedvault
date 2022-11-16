@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_audio">音频文件</string>
+    <string name="notification_restore_complete_title">已恢复 %1$d 个文件，共 %2$d 个文件</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="content_options">选项</string>
+    <string name="notification_restore_title">恢复文件中…</string>
+    <string name="content_images">照片和图片</string>
+    <string name="content_videos">视频</string>
+    <string name="content_downloads">下载</string>
+    <string name="content_add">添加</string>
+    <string name="notification_backup_title">存储备份</string>
+    <string name="notification_backup_scanning">扫描文件中…</string>
+    <string name="notification_backup_backup_files">备份文件中…</string>
+    <string name="notification_prune">删除旧备份中…</string>
+    <string name="notification_restore_channel_title">存储恢复</string>
+    <string name="snapshots_error">加载快照出错</string>
+    <string name="snapshots_title">可用的存储备份</string>
+    <string name="snapshots_empty">未找到存储备份
+\n
+\n抱歉，没有什么可以恢复的。</string>
+</resources>
