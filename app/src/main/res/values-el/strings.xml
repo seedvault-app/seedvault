@@ -182,4 +182,14 @@
 \nΟρισμένες εφαρμογές (π.χ. Signal ή WhatsApp) ενδέχεται να απαιτούν την πλήρη επαναφορά των αρχείων για την εισαγωγή ενός αντιγράφου ασφαλείας. Προσπαθήστε να αποφύγετε την εκκίνηση αυτών των εφαρμογών πριν ολοκληρωθεί η επαναφορά αρχείων.</string>
     <string name="storage_fake_davx5_summary_installed">Πατήστε για να ρυθμίσετε μια προσάρτηση WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">Η προσάρτηση WebDAV δεν είναι διαθέσιμη. Ρυθμίστε μια.</string>
+    <string name="notification_backup_disabled">Η δημιουργία αντιγράφων ασφαλείας δεν είναι ενεργοποιημένη</string>
+    <string name="backup_app_warning">Προειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
+    <string name="restore_app_status_restored">Τα δεδομένα αποκαταστάθηκαν</string>
+    <string name="restore_app_status_failed">Η επαναφορά απέτυχε</string>
+    <string name="backup_app_in_progress">Δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="restore_app_status_installing">Επανεγκατάσταση</string>
+    <string name="restore_app_status_install_error">Δεν ήταν δυνατή η εγκατάσταση</string>
+    <string name="backup_app_success">Δημιουργήθηκε αντίγραφο ασφαλείας</string>
+    <string name="restore_app_status_installed">Επανεγκαταστάθηκε</string>
+    <string name="restore_app_status_warning">Προειδοποίηση επαναφοράς</string>
 </resources>
