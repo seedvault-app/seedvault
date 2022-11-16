@@ -1,6 +1,5 @@
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
@@ -12,11 +11,12 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_INSTRUMENTATION
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.RemoteException
-import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.settings.SettingsManager
 
 private val TAG = PackageService::class.java.simpleName
 
@@ -28,11 +28,11 @@ private const val LOG_MAX_PACKAGES = 100
  */
 internal class PackageService(
     private val context: Context,
-    private val backupManager: IBackupManager,
+    private val settingsManager: SettingsManager,
+    private val plugin: StoragePlugin,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
-    private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
         @WorkerThread
@@ -45,13 +45,16 @@ internal class PackageService(
             // log packages
             if (Log.isLoggable(TAG, INFO)) {
                 Log.i(TAG, "Got ${packages.size} packages:")
-                packages.chunked(LOG_MAX_PACKAGES).forEach {
-                    Log.i(TAG, it.toString())
-                }
+                logPackages(packages)
             }
 
-            val eligibleApps =
-                backupManager.filterAppsEligibleForBackupForUser(myUserId, packages.toTypedArray())
+            // We do not use BackupManager.filterAppsEligibleForBackupForUser because it
+            // always makes its determinations based on OperationType.BACKUP, never based on
+            // OperationType.MIGRATION, and there are no alternative publicly-available APIs.
+            // We don't need to use it, here, either; during a backup or migration, the system
+            // will perform its own eligibility checks regardless. We merely need to filter out
+            // apps that we, or the user, want to exclude.
+            val eligibleApps = packages.filter(::shouldIncludeAppInBackup)
 
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
@@ -128,6 +131,14 @@ internal class PackageService(
         null
     }
 
+    fun shouldIncludeAppInBackup(packageName: String): Boolean {
+        // Check that the app is not excluded by user preference
+        val enabled = settingsManager.isBackupEnabled(packageName)
+        // We also need to exclude the DocumentsProvider used to store backup data.
+        // Otherwise, it gets killed when we back it up, terminating our backup.
+        return enabled && packageName != plugin.providerPackageName
+    }
+
     private fun logPackages(packages: List<String>) {
         packages.chunked(LOG_MAX_PACKAGES).forEach {
             Log.i(TAG, it.toString())
@@ -159,7 +170,16 @@ internal fun PackageInfo.isSystemApp(): Boolean {
 
 internal fun PackageInfo.allowsBackup(): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+
+    // TODO: Consider ways of replicating the system's logic so that the user can have advance
+    // knowledge of apps that the system will exclude, particularly apps targeting SDK 30 or below.
+
+    // At backup time, the system will filter out any apps that *it* does not want to be backed up.
+    // Now that we have switched to D2D, *we* generally want to back up as much as possible;
+    // part of the point of D2D is to ignore FLAG_ALLOW_BACKUP (allowsBackup). So, we return true.
+    // See frameworks/base/services/backup/java/com/android/server/backup/utils/
+    // BackupEligibilityRules.java lines 74-81 and 163-167 (tag: android-13.0.0_r8).
+    return true
 }
 
 /**
