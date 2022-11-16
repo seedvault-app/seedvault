@@ -126,7 +126,7 @@
     <string name="backup_section_not_allowed">יישומונים שלא מרשים גיבוי נתונים</string>
     <string name="restore_installing_tap_to_install">יש לגעת כדי להתקין</string>
     <string name="restore_restoring_error_title">לא ניתן לשחזר חלק מהיישומונים</string>
-    <string name="about_version">גירסה: %s</string>
+    <string name="about_version">גרסה: %s</string>
     <string name="storage_fragment_warning_delete">גיבויים קיימים במקום הזה יימחקו.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">לא מותקן</string>
     <string name="storage_check_fragment_patience">עשוי לארוך זמן מה…</string>
@@ -182,4 +182,14 @@
 \nחלק מהיישומונים (כמו למשל סיגנל ו־WhatsApp) עשויים לדרוש שחזור מלא כדי לייבא גיבוי. מומלץ לנסות להימנע מהפעלת היישומונים האלו בטרם השלמת השחזור.</string>
     <string name="storage_fake_davx5_summary_installed">להקמת עיגון WebDAV יש לגעת כאן</string>
     <string name="storage_fake_davx5_summary_unavailable">עיגון WebDAV לא זמין. יש להקים אחד.</string>
+    <string name="notification_backup_disabled">גיבוי לא מופעל</string>
+    <string name="backup_app_in_progress">מתבצע גיבוי</string>
+    <string name="backup_app_success">הגיבוי הושלם</string>
+    <string name="restore_app_status_installing">מתבצעת התקנה מחדש</string>
+    <string name="restore_app_status_installed">הותקן מחדש</string>
+    <string name="restore_app_status_install_error">לא ניתן להתקין</string>
+    <string name="restore_app_status_restored">הנתונים שוחזרו</string>
+    <string name="restore_app_status_failed">השחזור נכשל</string>
+    <string name="restore_app_status_warning">אזהרת שחזור</string>
+    <string name="backup_app_warning">אזהרת גיבוי</string>
 </resources>
