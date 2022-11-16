@@ -183,4 +183,13 @@
     <string name="error_no_store">Lỗi: Không có cửa hàng ứng dụng nào được cài đặt</string>
     <string name="storage_fake_davx5_summary_installed">Nhấn để thiết lập nơi gắn WebDAV</string>
     <string name="notification_backup_disabled">Sao lưu chưa được kích hoạt</string>
+    <string name="backup_app_in_progress">Đang sao lưu</string>
+    <string name="backup_app_success">Đã sao lưu</string>
+    <string name="backup_app_warning">Cảnh báo sao lưu</string>
+    <string name="restore_app_status_installing">Đang cài đặt lại</string>
+    <string name="restore_app_status_installed">Đã cài đặt lại</string>
+    <string name="restore_app_status_install_error">Không thể cài đặt</string>
+    <string name="restore_app_status_restored">Đã khôi phục dữ liệu</string>
+    <string name="restore_app_status_failed">Khôi phục thất bại</string>
+    <string name="restore_app_status_warning">Cảnh báo khôi phục</string>
 </resources>
