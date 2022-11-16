@@ -11,6 +11,8 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
@@ -65,7 +67,13 @@ fun requestBackup(context: Context) {
     val backupManager: IBackupManager = get().get()
     if (backupManager.isBackupEnabled) {
         val packageService: PackageService = get().get()
-        val packages = packageService.eligiblePackages
+        val settingsManager: SettingsManager = get().get()
+        val plugin: StoragePlugin = get().get()
+
+        // SettingsManager must know the StoragePlugin provider package name to exclude it when
+        // isAppAllowedForBackup is called.
+        settingsManager.pluginProviderPackageName = plugin.providerPackageName
+        val packages = packageService.requestedPackages
         val appTotals = packageService.expectedAppTotals
 
         val result = try {

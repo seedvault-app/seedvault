@@ -5,7 +5,10 @@ import android.hardware.usb.UsbDevice
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
@@ -34,6 +37,8 @@ private const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
 
 class SettingsManager(private val context: Context) {
 
+    private val TAG = SettingsManager::class.java.simpleName
+
     private val prefs = permitDiskReads {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -42,11 +47,18 @@ class SettingsManager(private val context: Context) {
     private var token: Long? = null
 
     /**
+     * The StoragePlugin provider package name is assigned by ConfigurableBackupTransportService
+     * to ensure it is excluded; if the provider is killed, the backup or restore will fail.
+     */
+    var pluginProviderPackageName: String? = null
+
+    /**
      * This gets accessed by non-UI threads when saving with [PreferenceManager]
      * and when [isBackupEnabled] is called during a backup run.
      * Therefore, it is implemented with a thread-safe [ConcurrentSkipListSet].
      */
-    private val blacklistedApps: MutableSet<String> by lazy {
+    @VisibleForTesting(otherwise = PRIVATE)
+    val blacklistedApps: MutableSet<String> by lazy {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
     }
 
@@ -131,6 +143,15 @@ class SettingsManager(private val context: Context) {
     }
 
     fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
+
+    fun isAppAllowedForBackup(packageName: String): Boolean {
+        // Check that the app is not blacklisted by the user
+        val enabled = isBackupEnabled(packageName)
+        if (!enabled) Log.w(TAG, "Backup of $packageName disabled by user.")
+        // We need to exclude the DocumentsProvider used to store backup data.
+        // Otherwise, it gets killed when we back it up, terminating our backup.
+        return enabled && packageName != pluginProviderPackageName
+    }
 
     fun isStorageBackupEnabled() = prefs.getBoolean(PREF_KEY_BACKUP_STORAGE, false)
 

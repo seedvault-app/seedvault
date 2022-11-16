@@ -12,6 +12,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsActivity
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import kotlinx.coroutines.runBlocking
@@ -22,7 +23,7 @@ import org.koin.core.component.inject
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
 // Since there seems to be consensus in the community to pose as device to device transport,
-// we are pretending to be one here. This will backup opt-out apps that target API 30.
+// we are pretending to be one here. This will backup opt-out apps that target at least API 30.
 const val TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED or FLAG_DEVICE_TO_DEVICE_TRANSFER
 
 private const val TRANSPORT_DIRECTORY_NAME =
@@ -38,6 +39,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     private val backupCoordinator by inject<BackupCoordinator>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
+    private val settingsManager by inject<SettingsManager>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME
@@ -120,9 +122,9 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     override fun isAppEligibleForBackup(
         targetPackage: PackageInfo,
-        isFullBackup: Boolean,
+        @Suppress("UNUSED_PARAMETER") isFullBackup: Boolean,
     ): Boolean {
-        return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
+        return settingsManager.isAppAllowedForBackup(targetPackage.packageName)
     }
 
     override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long = runBlocking {

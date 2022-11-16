@@ -87,7 +87,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         val sets = restore.getAvailableRestoreSets() ?: fail()
         assertEquals(2, sets.size)
-        assertEquals(metadata.deviceName, sets[0].device)
+        assertEquals(DEVICE_NAME_FOR_D2D_SET, sets[0].device)
         assertEquals(metadata.deviceName, sets[0].name)
         assertEquals(metadata.token, sets[0].token)
     }
