@@ -30,7 +30,7 @@
     <string name="about_design">디자인: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">제작자: <a href="https://github.com/stevesoltys">Steve Soltys</a> 및 <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">라이선스: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Android 내장 백업 API를 사용한 백업 애플리케이션입니다.</string>
+    <string name="about_summary">Android의 내부 백업 API를 사용하는 백업 응용 프로그램입니다.</string>
     <string name="storage_internal_warning_use_anyway">백업 진행</string>
     <string name="storage_internal_warning_choose_other">다른 위치 선택</string>
     <string name="storage_internal_warning_message">백업 위치로 내부 저장소를 선택했습니다. 기기를 고장내거나 잃어버렸을 경우 백업을 사용하지 못할 수 있습니다.</string>
@@ -160,7 +160,7 @@
     <string name="notification_error_no_main_key_title">백업 비활성화됨</string>
     <string name="notification_error_no_main_key_text">업그레이드를 완료하고 백업을 계속 사용하려면 새 복구 코드를 생성하십시오.</string>
     <string name="error_no_store">에러: 앱스토어가 설치되지 않았음</string>
-    <string name="restore_storage_choose_snapshot">복원할 저장소 백업 선택 (실험적)</string>
+    <string name="restore_storage_choose_snapshot">복원할 저장소 백업 선택 (실험용)</string>
     <string name="restore_storage_skip">파일 복원 넘기기</string>
     <string name="restore_storage_in_progress_title">파일 복원중입니다…</string>
     <string name="restore_storage_in_progress_info">파일이 백그라운드에서 복원되고 있습니다. 실행 중인 동안 기기를 사용할 수 있습니다.
@@ -170,7 +170,7 @@
     <string name="settings_backup_files_title">포함된 파일과 폴더</string>
     <string name="settings_backup_storage_dialog_message">파일 백업은 아직 실험중인 기능이고 작동하지 않을 수 있습니다. 중요한 데이터를 이것에 의존하지 마세요.</string>
     <string name="settings_backup_files_summary">없음</string>
-    <string name="settings_backup_storage_dialog_title">실험적인 기능</string>
+    <string name="settings_backup_storage_dialog_title">실험용 기능</string>
     <string name="settings_backup_storage_dialog_ok">그래도 활성화</string>
     <string name="settings_expert_title">전문가 설정</string>
     <string name="recovery_code_auth_title">암호를 다시 입력하세요</string>
@@ -182,4 +182,14 @@
     <string name="settings_backup_new_code_code_dialog_ok">새로운 코드</string>
     <string name="storage_fragment_warning_delete">이 위치에 있던 기존의 백업은 삭제됩니다.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">설치되지 않음</string>
+    <string name="backup_app_in_progress">백업 중</string>
+    <string name="backup_app_success">백업됨</string>
+    <string name="backup_app_warning">백업 경고</string>
+    <string name="restore_app_status_installing">다시 설치중</string>
+    <string name="restore_app_status_install_error">설치할 수 없음</string>
+    <string name="restore_app_status_restored">데이터 복원됨</string>
+    <string name="restore_app_status_failed">복원 실패함</string>
+    <string name="notification_backup_disabled">백업이 활성화되지 않음</string>
+    <string name="restore_app_status_installed">다시 설치됨</string>
+    <string name="restore_app_status_warning">복원 경고</string>
 </resources>
