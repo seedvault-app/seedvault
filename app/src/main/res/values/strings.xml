@@ -15,10 +15,10 @@
     <string name="settings_backup_location_internal">Internal storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
     <string name="settings_info">All backups are encrypted on your device. Restore backups using your 12-word recovery code.</string>
-    <string name="settings_auto_restore_title">Auto-restore</string>
+    <string name="settings_auto_restore_title">Restoration</string>
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
     <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
-    <string name="settings_category_app_data_backup">App-data backup</string>
+    <string name="settings_category_app_data_backup">Backup of app data</string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="settings_backup_apk_summary">Also back up the apps themselves. Otherwise, only app data is backed up.</string>
     <string name="settings_backup_apk_dialog_title">Really turn off app backup?</string>
@@ -99,11 +99,11 @@
     <string name="recovery_code_error_invalid_word">Wrong word.</string>
     <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all the words as well as their position and try again.</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
-    <string name="recovery_code_verification_ok_message">Your code is correct, so it can restore your backup.</string>
+    <string name="recovery_code_verification_ok_message">Your recovery code is correct (so it can restore your backup).</string>
     <string name="recovery_code_verification_error_title">Incorrect recovery code</string>
     <string name="recovery_code_verification_error_message">You have entered an invalid recovery code. Please try again!\n\nIf you have lost your code, tap on \'Generate new code\' below.</string>
     <string name="recovery_code_verification_try_again">Try again</string>
-    <string name="recovery_code_verification_generate_new">Generate new code</string>
+    <string name="recovery_code_verification_generate_new">Generate new recovery code</string>
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
     <string name="recovery_code_verification_new_dialog_message">Do you want to generating a new code, making your existing backups inaccessible? They will be deleted if possible.</string>
     <string name="recovery_code_recreated">New recovery code created</string>
@@ -144,7 +144,7 @@
     <!-- This text gets shown for apps that the OS did not try to back up for whatever reason e.g. no backup was run yet -->
     <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
     <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
-    <string name="backup_app_in_progress">Backing up</string>
+    <string name="backup_app_in_progress">Backing up…</string>
     <string name="backup_app_success">Backed up</string>
     <string name="backup_app_warning">Backup warning</string>
     <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
@@ -182,7 +182,7 @@
     <string name="restore_restoring_error_title">Unable to restore some apps</string>
     <string name="restore_restoring_error_message">You can re-install these apps manually and "Auto-restore" will attempt to restore their data (when on).</string>
     <string name="restore_magic_package">System package-manager</string>
-    <string name="restore_finished_success">Restoration complete</string>
+    <string name="restore_finished_success">Restored</string>
     <string name="restore_finished_error">Could not restore the backup.</string>
     <string name="restore_finished_button">Finish</string>
 
