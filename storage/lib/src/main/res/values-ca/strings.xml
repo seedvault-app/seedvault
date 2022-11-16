@@ -18,4 +18,5 @@
 \n
 \nHo sentim, però no hi ha res que es pugui restaurar.</string>
     <string name="snapshots_error">Error en carregar les instantànies</string>
+    <string name="content_options">Opcions</string>
 </resources>
