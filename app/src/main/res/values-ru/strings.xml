@@ -182,4 +182,14 @@
 \nМы приносим извинения за доставленные неудобства.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Новый код</string>
     <string name="error_no_store">Ошибка: Не установлен магазин приложений</string>
+    <string name="notification_backup_disabled">Резервное копирование не включено</string>
+    <string name="backup_app_success">Резервное копирование успешно</string>
+    <string name="backup_app_in_progress">Резервное копирование</string>
+    <string name="restore_app_status_installed">Переустановлено</string>
+    <string name="restore_app_status_restored">Данные восстановлены</string>
+    <string name="restore_app_status_failed">Восстановление не удалось</string>
+    <string name="restore_app_status_installing">Переустановка</string>
+    <string name="restore_app_status_install_error">Не удалось установить</string>
+    <string name="backup_app_warning">Предупреждение о резервном копировании</string>
+    <string name="restore_app_status_warning">Предупреждение о восстановлении</string>
 </resources>
