@@ -11,9 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
@@ -54,7 +52,6 @@ class RestoreProgressFragment : Fragment() {
         appList.apply {
             layoutManager = this@RestoreProgressFragment.layoutManager
             adapter = this@RestoreProgressFragment.adapter
-            addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
 
         button.setText(R.string.restore_finished_button)

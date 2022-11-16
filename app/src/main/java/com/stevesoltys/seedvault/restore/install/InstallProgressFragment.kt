@@ -15,9 +15,7 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreViewModel
@@ -58,22 +56,21 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         appList.apply {
             layoutManager = this@InstallProgressFragment.layoutManager
             adapter = this@InstallProgressFragment.adapter
-            addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
         button.setText(R.string.restore_next)
         button.setOnClickListener { viewModel.onNextClickedAfterInstallingApps() }
 
-        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner) { restorableBackup ->
             backupNameView.text = restorableBackup.name
-        })
+        }
 
-        viewModel.installResult.observe(viewLifecycleOwner, { result ->
+        viewModel.installResult.observe(viewLifecycleOwner) { result ->
             onInstallResult(result)
-        })
+        }
 
-        viewModel.nextButtonEnabled.observe(viewLifecycleOwner, { enabled ->
+        viewModel.nextButtonEnabled.observe(viewLifecycleOwner) { enabled ->
             button.isEnabled = enabled
-        })
+        }
     }
 
     private fun onInstallResult(installResult: InstallResult) {

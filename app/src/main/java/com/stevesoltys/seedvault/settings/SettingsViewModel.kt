@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.Application
+import android.app.backup.IBackupManager
 import android.app.job.JobInfo.NETWORK_TYPE_NONE
 import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
 import android.content.Intent
@@ -49,6 +50,7 @@ internal class SettingsViewModel(
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
+    private val backupManager: IBackupManager,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
@@ -157,6 +159,8 @@ internal class SettingsViewModel(
         // maybe replace the check below with one that checks if our transport service is running
         if (notificationManager.hasActiveBackupNotifications()) {
             Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
+        } else if (!backupManager.isBackupEnabled) {
+            Toast.makeText(app, R.string.notification_backup_disabled, LENGTH_LONG).show()
         } else viewModelScope.launch(Dispatchers.IO) {
             if (settingsManager.isStorageBackupEnabled()) {
                 val i = Intent(app, StorageBackupService::class.java)

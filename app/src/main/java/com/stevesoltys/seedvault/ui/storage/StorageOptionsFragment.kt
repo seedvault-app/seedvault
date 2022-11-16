@@ -44,7 +44,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
     private lateinit var titleView: TextView
     private lateinit var warningIcon: ImageView
     private lateinit var warningText: TextView
-    private lateinit var divider: View
     private lateinit var listView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var skipView: TextView
@@ -61,7 +60,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         titleView = v.findViewById(R.id.titleView)
         warningIcon = v.findViewById(R.id.warningIcon)
         warningText = v.findViewById(R.id.warningText)
-        divider = v.findViewById(R.id.divider)
         listView = v.findViewById(R.id.listView)
         progressBar = v.findViewById(R.id.progressBar)
         skipView = v.findViewById(R.id.skipView)
@@ -93,7 +91,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
                 warningText.setText(R.string.storage_fragment_warning_delete)
             }
             warningText.visibility = VISIBLE
-            divider.visibility = VISIBLE
         }
 
         listView.adapter = adapter
