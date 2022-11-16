@@ -182,4 +182,14 @@
     <string name="notification_error_no_main_key_title">Sauvegardes désactivées</string>
     <string name="storage_fake_davx5_summary_unavailable">Le montage WebDAV n\'est pas disponible. Veuillez en configurer un.</string>
     <string name="error_no_store">Erreur\t : Aucun app store installé</string>
+    <string name="notification_backup_disabled">Sauvegardes désactivées</string>
+    <string name="backup_app_in_progress">Sauvegarde en cours</string>
+    <string name="backup_app_success">Sauvegardé</string>
+    <string name="backup_app_warning">Alerte de sauvegarde</string>
+    <string name="restore_app_status_installing">Ré-installation</string>
+    <string name="restore_app_status_installed">Ré-installé</string>
+    <string name="restore_app_status_install_error">Échec de l\'installation</string>
+    <string name="restore_app_status_restored">Données restaurées</string>
+    <string name="restore_app_status_failed">Échec de la restauration</string>
+    <string name="restore_app_status_warning">Alerte de restauration</string>
 </resources>
