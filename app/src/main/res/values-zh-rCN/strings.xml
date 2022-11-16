@@ -182,4 +182,14 @@
 \n我们对于不便表示歉意。</string>
     <string name="storage_fake_davx5_summary_unavailable">WebDAV 挂载不可用。设置一个。</string>
     <string name="storage_fake_davx5_summary_installed">轻按设置 WebDAV 挂载</string>
+    <string name="notification_backup_disabled">未启用备份</string>
+    <string name="backup_app_warning">备份警告</string>
+    <string name="restore_app_status_installing">重新安装中</string>
+    <string name="restore_app_status_installed">已重新安装</string>
+    <string name="restore_app_status_restored">数据已恢复</string>
+    <string name="restore_app_status_failed">恢复失败</string>
+    <string name="restore_app_status_warning">恢复警告</string>
+    <string name="backup_app_in_progress">备份中</string>
+    <string name="restore_app_status_install_error">无法安装</string>
+    <string name="backup_app_success">已备份</string>
 </resources>
