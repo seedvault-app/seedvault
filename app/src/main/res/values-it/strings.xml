@@ -72,7 +72,7 @@
     <string name="about_author">Scritto da: <a href="https://github.com/stevesoltys">Steve Soltys</a> e<a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licenza: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Versione: %s</string>
-    <string name="about_summary">Una applicazione di backup sta utilizzando la API interna di backup di Android.</string>
+    <string name="about_summary">Una applicazione di backup facente uso della API interna di backup di Android.</string>
     <string name="about_title">Ulteriori info</string>
     <string name="storage_internal_warning_use_anyway">Utilizza comunque</string>
     <string name="storage_internal_warning_choose_other">Scegliere altro</string>
