@@ -18,4 +18,5 @@
 \n
 \n복원할 수 있는 것이 없습니다.</string>
     <string name="snapshots_error">스냅샷 로딩하는 중에 에러 발생</string>
+    <string name="content_options">옵션</string>
 </resources>
