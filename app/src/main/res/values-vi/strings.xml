@@ -182,4 +182,5 @@
     <string name="notification_error_no_main_key_text">Hãy tạo mã phục hồi mới để hoàn thành nâng cấp và tiếp tục sử dụng bản sao lưu.</string>
     <string name="error_no_store">Lỗi: Không có cửa hàng ứng dụng nào được cài đặt</string>
     <string name="storage_fake_davx5_summary_installed">Nhấn để thiết lập nơi gắn WebDAV</string>
+    <string name="notification_backup_disabled">Sao lưu chưa được kích hoạt</string>
 </resources>
