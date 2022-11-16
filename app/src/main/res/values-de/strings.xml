@@ -17,7 +17,7 @@
     <string name="notification_success_title">Sicherung fertiggestellt</string>
     <string name="notification_title">Sicherung läuft</string>
     <string name="notification_channel_title">Sicherungsbenachrichtigung</string>
-    <string name="recovery_code_error_checksum_word">Dein Code ist ungültig. Bitte prüfe alle Wörter sowie deren Position und versuche es erneut!</string>
+    <string name="recovery_code_error_checksum_word">Dein Wiederherstellungsschlüssel ist ungültig. Bitte prüfe alle Wörter sowie deren Position und versuche es erneut!</string>
     <string name="recovery_code_error_invalid_word">Falsches Wort.</string>
     <string name="recovery_code_error_empty_word">Du hast vergessen, dieses Wort einzugeben.</string>
     <string name="recovery_code_input_hint_12">Wort 12</string>
@@ -34,7 +34,7 @@
     <string name="recovery_code_input_hint_1">Wort 1</string>
     <string name="recovery_code_done_button">Überprüfen</string>
     <string name="recovery_code_input_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, den du beim Konfigurieren der Sicherungen aufgeschrieben hast.</string>
-    <string name="recovery_code_confirm_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, um sicher zu gehen, dass er funktionieren wird, wenn du ihn brauchst.</string>
+    <string name="recovery_code_confirm_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungsschlüssel ein, um sicher zu gehen, dass er funktionieren wird, wenn du ihn brauchst.</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> frei</string>
     <string name="settings_backup_apk_dialog_message">Bei deaktivierter App-Sicherung werden die App-Daten weiterhin gesichert. Sie werden jedoch nicht automatisch wiederhergestellt.
 \n
@@ -182,14 +182,4 @@
     <string name="notification_error_no_main_key_title">Sicherungen deaktiviert</string>
     <string name="notification_error_no_main_key_text">Generiere einen neuen Wiederherstellungscode, um das Upgrade abzuschließen und weiterhin Sicherungen zu verwenden.</string>
     <string name="storage_fake_davx5_summary_unavailable">WebDAV-Verbindung nicht verfügbar. Richte eine ein.</string>
-    <string name="notification_backup_disabled">Sicherung nicht aktiviert</string>
-    <string name="backup_app_success">Daten gesichert</string>
-    <string name="backup_app_warning">Warnhinweis zur Sicherung</string>
-    <string name="restore_app_status_failed">Wiederherstellung fehlgeschlagen</string>
-    <string name="restore_app_status_warning">Warnhinweis zur Wiederherstellung</string>
-    <string name="backup_app_in_progress">Sichern der Daten</string>
-    <string name="restore_app_status_installing">Neuinstallation</string>
-    <string name="restore_app_status_installed">Neu installiert</string>
-    <string name="restore_app_status_install_error">Kann nicht installiert werden</string>
-    <string name="restore_app_status_restored">Daten wiederhergestellt</string>
 </resources>
