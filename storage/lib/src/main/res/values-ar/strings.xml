@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_downloads">التنزيلات</string>
+    <string name="content_videos">المقاطع</string>
+    <string name="content_images">الصور</string>
+    <string name="content_audio">الملفات صوتية</string>
+    <string name="notification_backup_scanning">جارٍ فحص الملفات…</string>
+    <string name="content_add">إضافة</string>
+    <string name="notification_backup_backup_files">جارٍ النسخ احتياطي للملفات…</string>
+    <string name="notification_prune">جارٍ إزالة النسخ الاحتياطية القديم …</string>
+    <string name="notification_restore_channel_title">استعادة البيانات</string>
+    <string name="notification_backup_title">بيانات النسخ الاحتياطي</string>
+    <string name="notification_restore_title">استعادة الملفات…</string>
+    <string name="notification_restore_complete_title">%1$d من %2$d ملفات تم استعادتها</string>
+    <string name="notification_restore_info">%2$d%1$d</string>
+    <string name="snapshots_title">النسخ الاحتياطية المتاحة</string>
+    <string name="snapshots_empty">لم يتم العثور على نسخ احتياطية للتخزين
+\n
+\nآسف، ولكن لا يوجد شيء يمكن استعادته.</string>
+    <string name="snapshots_error">خطأ في تحميل اللقطات</string>
+</resources>
