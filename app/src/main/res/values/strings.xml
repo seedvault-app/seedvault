@@ -21,7 +21,7 @@
     <string name="settings_category_app_data_backup">Backup of app data</string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="settings_backup_apk_summary">Also back up the apps themselves. Otherwise, only app data is backed up.</string>
-    <string name="settings_backup_apk_dialog_title">Really turn off app backup?</string>
+    <string name="settings_backup_apk_dialog_title">Really turn off app backups?</string>
     <string name="settings_backup_apk_dialog_message">Even with app backup off, the app data is backed up. However, it will not get auto-restored.\n\nYou will need to install all your apps manually with \"Auto-restore\" on.</string>
     <string name="settings_backup_apk_dialog_cancel">Cancel</string>
     <string name="settings_backup_apk_dialog_disable">Turn off app backup</string>
@@ -53,7 +53,7 @@
     <string name="settings_expert_logcat_error">Could not save app log</string>
 
     <!-- Storage Location -->
-    <string name="storage_fragment_backup_title">Choose where to store backups</string>
+    <string name="storage_fragment_backup_title">Choose where to save backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
     <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
@@ -74,7 +74,7 @@
     <string name="storage_check_fragment_patience">This may take some time…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="storage_check_fragment_backup_error">Could not access the backup location.</string>
-    <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
+    <string name="storage_check_fragment_permission_error">Grant the app permission to write to the backup location first.</string>
     <string name="storage_check_fragment_error_button">Back</string>
 
     <!-- Recovery Code -->
@@ -106,8 +106,8 @@
     <string name="recovery_code_verification_error_message">You have entered an invalid recovery code. Please try again!\n\nIf you have lost your code, tap on \'Generate new code\' below.</string>
     <string name="recovery_code_verification_try_again">Try again</string>
     <string name="recovery_code_verification_generate_new">Generate new recovery code</string>
-    <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
-    <string name="recovery_code_verification_new_dialog_message">Do you want to generating a new code, making your existing backups inaccessible? They will be deleted if possible.</string>
+    <string name="recovery_code_verification_new_dialog_title">Invalidating current backups</string>
+    <string name="recovery_code_verification_new_dialog_message">Generate a new recovery code? (This makes your existing backups inaccessible, and deletes them if possible.)</string>
     <string name="recovery_code_recreated">New recovery code created</string>
     <string name="recovery_code_auth_title">Re-enter your screen lock</string>
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
@@ -124,7 +124,7 @@
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>
-    <string name="notification_error_text">A device backup failed to run.</string>
+    <string name="notification_error_text">Could not back up the device.</string>
     <string name="notification_error_action">Fix</string>
 
     <string name="notification_restore_error_channel_title">Could not auto-restore due to flash drive error.</string>
@@ -149,7 +149,7 @@
     <string name="backup_app_in_progress">Backing up…</string>
     <string name="backup_app_success">Backed up</string>
     <string name="backup_app_warning">Backup warning</string>
-    <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
+    <string name="backup_app_was_stopped">No backup possible</string>
     <string name="restore_app_was_stopped">Was not backed up as it hadn\'t been used recently</string>
     <string name="backup_app_no_data">The app reported no data for backup</string>
     <string name="restore_app_not_allowed">The app didn\'t allow backup</string>
@@ -166,7 +166,7 @@
     <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_invalid_location_message">Could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
-    <string name="restore_set_error">An error occurred while loading the backups.</string>
+    <string name="restore_set_error">Could not load the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at the given location.\n\nMost likely the recovery code is wrong, or there is a storage error.</string>
     <string name="restore_installing_packages">Re-installing apps</string>
     <string name="restore_app_status_installing">Re-installing</string>
@@ -192,7 +192,7 @@
     <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (experimental)</string>
     <string name="restore_storage_in_progress_title">Restoring files…</string>
     <string name="restore_storage_in_progress_info">You can use your device while this is running in the background.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restoration completes.</string>
-    <string name="restore_storage_got_it">Got it</string>
+    <string name="restore_storage_got_it">OK</string>
 
     <string name="storage_internal_warning_title">Warning</string>
     <string name="storage_internal_warning_message">Your choice of storing backups internally means they are not available if your device is lost or broken.</string>
@@ -202,9 +202,9 @@
     <!-- About -->
     <string name="about_title">About</string>
     <string name="about_summary">A backup app using Android\'s internal backup API.</string>
-    <string name="about_version">Version: %s</string>
-    <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_version">Version %s</string>
+    <string name="about_license">Licensed <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></string>
+    <string name="about_author">By <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_source_code">Source code: https://github.com/seedvault-app/seedvault</string>
