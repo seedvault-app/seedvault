@@ -19,9 +19,18 @@ If you are having an issue/question, please look at our [FAQ](../../wiki/FAQ).
 
 ## Requirements
 
-- Android 12
+SeedVault is developed alongwith AOSP releases
+
+We update it every time Google releases a new Android version, make any changes required for basic functionality, and any improvements possible through API changes in the OS.
+
+This means that for ROMs using SeedVault it's recommended to use the same branch as your android version
+
+- This current branch `android13` is meant for usage with Android 13
+- This is indicated by the version name starting with `13`, and the version code starting with `33` - the Android 13 API version
 
 For older versions of Android, check out [the branches](https://github.com/seedvault-app/seedvault/branches).
+
+Trying to use an older branch on a newer version may lead to issues and is not something we can support.
 
 ## Getting Started
 - Check out [the wiki](https://github.com/seedvault-app/seedvault/wiki) for information on building the application with 
@@ -44,6 +53,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots (optional) for better UX.
 * `android.permission.USE_BIOMETRIC` to authenticate saving a new recovery code
 * `android.permission.INTERACT_ACROSS_USERS_FULL` to use storage roots in other users (optional).
+* `android.permission.POST_NOTIFICATIONS` to inform users about backup status and errors.
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/seedvault-app/seedvault.

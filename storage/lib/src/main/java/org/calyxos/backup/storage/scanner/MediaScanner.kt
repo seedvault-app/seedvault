@@ -5,13 +5,11 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns.IS_DOWNLOAD
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
@@ -23,7 +21,7 @@ import java.io.File
 public class MediaScanner(context: Context) {
 
     private companion object {
-        private val PROJECTION_29 = arrayOf(
+        private val PROJECTION = arrayOf(
             MediaStore.MediaColumns._ID,
             MediaStore.MediaColumns.RELATIVE_PATH,
             MediaStore.MediaColumns.DISPLAY_NAME,
@@ -31,10 +29,6 @@ public class MediaScanner(context: Context) {
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.OWNER_PACKAGE_NAME,
             MediaStore.MediaColumns.VOLUME_NAME,
-        )
-
-        @RequiresApi(30)
-        private val PROJECTION_30 = arrayOf(
             MediaStore.MediaColumns.IS_FAVORITE,
             MediaStore.MediaColumns.GENERATION_MODIFIED,
         )
@@ -59,7 +53,7 @@ public class MediaScanner(context: Context) {
     internal fun scanMediaUri(uri: Uri, extraQuery: String? = null): List<MediaFile> {
         val extras = Bundle().apply {
             val query = StringBuilder()
-            if (SDK_INT >= 30 && uri != MediaType.Downloads.contentUri) {
+            if (uri != MediaType.Downloads.contentUri) {
                 query.append("$IS_DOWNLOAD=0")
             }
             extraQuery?.let {
@@ -68,8 +62,7 @@ public class MediaScanner(context: Context) {
             }
             if (query.isNotEmpty()) putString(QUERY_ARG_SQL_SELECTION, query.toString())
         }
-        val projection = if (SDK_INT >= 30) PROJECTION_29 + PROJECTION_30 else PROJECTION_29
-        val cursor = contentResolver.query(uri, projection, extras, null)
+        val cursor = contentResolver.query(uri, PROJECTION, extras, null)
         return ArrayList<MediaFile>(cursor?.count ?: 0).apply {
             cursor?.use { c ->
                 while (c.moveToNext()) add(createMediaFile(c, uri))
@@ -94,13 +87,9 @@ public class MediaScanner(context: Context) {
             dir = cursor.getString(PROJECTION_PATH),
             fileName = cursor.getString(PROJECTION_NAME),
             dateModified = cursor.getLongOrNull(PROJECTION_DATE_MODIFIED),
-            generationModified = if (SDK_INT >= 30) cursor.getLongOrNull(
-                PROJECTION_GENERATION_MODIFIED
-            ) else null,
+            generationModified = cursor.getLongOrNull(PROJECTION_GENERATION_MODIFIED),
             size = cursor.getLong(PROJECTION_SIZE),
-            isFavorite = if (SDK_INT >= 30) {
-                cursor.getIntOrNull(PROJECTION_IS_FAVORITE) == 1
-            } else false,
+            isFavorite = cursor.getIntOrNull(PROJECTION_IS_FAVORITE) == 1,
             ownerPackageName = cursor.getStringOrNull(PROJECTION_OWNER_PACKAGE_NAME),
             volume = cursor.getString(PROJECTION_VOLUME_NAME)
         )

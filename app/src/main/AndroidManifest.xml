@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="31000301"
-    android:versionName="12-3.0">
+    android:versionCode="33000301"
+    android:versionName="13-3.1">
     <!--
     The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
     The version name is the targeted Android version followed by - and our own version name.
@@ -16,7 +16,11 @@
     <!-- This is needed to check for internet access when backup is stored on network storage -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- This is needed to retrieve the available storage roots -->
+    <!-- This is needed to inform users about backup status and errors -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- (Optional) This is needed to retrieve the available storage roots.
+         The user needs to manually select a storage root, if not granted. -->
     <uses-permission
         android:name="android.permission.MANAGE_DOCUMENTS"
         tools:ignore="ProtectedPermissions" />
@@ -50,6 +54,16 @@
     <!-- Used to authenticate saving a new recovery code -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
+    <!-- This is needed to query content providers in other users -->
+    <uses-permission
+        android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Used to get logcat for system part of backup API, gets permission dialog -->
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
+
     <!-- Permission used to open settings -->
     <permission
         android:name="com.stevesoltys.seedvault.OPEN_SETTINGS"
@@ -59,11 +73,6 @@
     <permission
         android:name="com.stevesoltys.seedvault.RESTORE_BACKUP"
         android:protectionLevel="system|signature" />
-
-    <!-- This is needed to query content providers in other users -->
-    <uses-permission
-        android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
-        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".App"

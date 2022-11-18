@@ -6,7 +6,6 @@ import android.content.Intent
 import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import android.hardware.biometrics.BiometricPrompt
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.view.LayoutInflater
@@ -22,7 +21,6 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getMainExecutor
@@ -122,9 +120,9 @@ class RecoveryCodeInputFragment : Fragment() {
         newCodeButton.visibility = if (forStoringNewCode) GONE else VISIBLE
         newCodeButton.setOnClickListener { generateNewCode() }
 
-        viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner, { verified ->
+        viewModel.existingCodeChecked.observeEvent(viewLifecycleOwner) { verified ->
             onExistingCodeChecked(verified)
-        })
+        }
 
         if (forStoringNewCode && isDebugBuild() && !viewModel.isRestore) debugPreFill()
     }
@@ -147,7 +145,7 @@ class RecoveryCodeInputFragment : Fragment() {
         }
         if (forStoringNewCode) {
             val keyguardManager = requireContext().getSystemService(KeyguardManager::class.java)
-            if (SDK_INT >= 30 && keyguardManager.isDeviceSecure) {
+            if (keyguardManager.isDeviceSecure) {
                 // if we have a lock-screen secret, we can ask for it before storing the code
                 storeNewCodeAfterAuth(input)
             } else {
@@ -159,7 +157,6 @@ class RecoveryCodeInputFragment : Fragment() {
         }
     }
 
-    @RequiresApi(30)
     private fun storeNewCodeAfterAuth(input: List<CharSequence>) {
         val context = requireContext()
         val biometricPrompt = BiometricPrompt.Builder(context)

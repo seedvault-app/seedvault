@@ -106,7 +106,7 @@ internal class AppListRetriever(
                 time = time,
                 status = status
             )
-        }.sortedBy { it.name.toLowerCase(locale) }
+        }.sortedBy { it.name.lowercase(locale) }
     }
 
     private fun getNotAllowedApps(): List<AppStatus> {
@@ -120,7 +120,7 @@ internal class AppListRetriever(
                 time = 0,
                 status = FAILED_NOT_ALLOWED
             )
-        }.sortedBy { it.name.toLowerCase(locale) }
+        }.sortedBy { it.name.lowercase(locale) }
     }
 
     private fun getIcon(packageName: String): Drawable = when (packageName) {

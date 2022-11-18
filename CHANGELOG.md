@@ -1,3 +1,9 @@
+## [13-3.1] - 2022-09-01
+* Initial release for Android 13
+* Don't attempt to restore app that is used as a backup location (e.g. Nextcloud),
+  because can cause restore to abort early 
+* Upgrade several libraries
+
 ## [12-3.0] - 2021-10-13
 * Initial release for Android 12
 * Use the same (faster and more secure) crypto that storage backups use,

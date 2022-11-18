@@ -209,6 +209,7 @@ internal class KVBackup(
             else state.db.close()
             TRANSPORT_OK
         } catch (e: IOException) {
+            Log.e(TAG, "Error uploading DB", e)
             TRANSPORT_ERROR
         } finally {
             this.state = null

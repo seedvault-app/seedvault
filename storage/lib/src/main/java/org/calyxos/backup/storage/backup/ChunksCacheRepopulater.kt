@@ -8,7 +8,7 @@ import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.plugin.SnapshotRetriever
 import java.io.IOException
 import java.security.GeneralSecurityException
-import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.time.DurationUnit.MILLISECONDS
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 

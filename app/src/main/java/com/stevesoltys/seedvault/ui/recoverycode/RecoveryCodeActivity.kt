@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.isDebugBuild
 import com.stevesoltys.seedvault.ui.BackupActivity
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -15,7 +16,7 @@ class RecoveryCodeActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.addFlags(FLAG_SECURE)
+        if (!isDebugBuild()) window.addFlags(FLAG_SECURE)
 
         setContentView(R.layout.activity_recovery_code)
 

@@ -18,6 +18,7 @@ import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.listFilesBlocking
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import kotlin.time.ExperimentalTime
 
 private val folderRegex = Regex("^[a-f0-9]{16}\\.sv$")
 private val chunkFolderRegex = Regex("[a-f0-9]{2}")
@@ -89,6 +90,7 @@ public abstract class SafStoragePlugin(
      * Chunk folders will get cached in the given [chunkFolders] for faster access.
      */
     @Throws(IOException::class)
+    @OptIn(ExperimentalTime::class)
     private suspend fun populateChunkFolders(
         folder: DocumentFile,
         chunkFolders: HashMap<String, DocumentFile>,
@@ -126,6 +128,7 @@ public abstract class SafStoragePlugin(
     }
 
     @Throws(IOException::class)
+    @OptIn(ExperimentalTime::class)
     private fun createMissingChunkFolders(
         root: DocumentFile,
         chunkFolders: HashMap<String, DocumentFile>,

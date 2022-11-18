@@ -47,9 +47,11 @@
     <string name="settings_expert_quota_title">Unlimited app quota</string>
     <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
     <string name="settings_expert_logcat_title">Save app log</string>
+    <string name="settings_expert_logcat_summary"></string>
+    <string name="settings_expert_logcat_error">Could not save app log</string>
     <string name="settings_expert_logcat_summary">Sending this to the developers can help diagnose bugs.\n\nAlways review it to ensure it has no personally identifiable info, and delete it afterwards!</string>
     <string name="settings_expert_logcat_error">Could not save app log</string>
-    
+
     <!-- Storage Location -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>

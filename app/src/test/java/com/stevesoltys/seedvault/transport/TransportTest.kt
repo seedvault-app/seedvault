@@ -37,12 +37,13 @@ internal abstract class TransportTest {
 
     protected val sigInfo: SigningInfo = mockk()
     protected val token = Random.nextLong()
+    protected val applicationInfo = mockk<ApplicationInfo> {
+        flags = FLAG_ALLOW_BACKUP or FLAG_INSTALLED
+    }
     protected val packageInfo = PackageInfo().apply {
         packageName = "org.example"
         longVersionCode = Random.nextLong()
-        applicationInfo = ApplicationInfo().apply {
-            flags = FLAG_ALLOW_BACKUP or FLAG_INSTALLED
-        }
+        applicationInfo = this@TransportTest.applicationInfo
         signingInfo = sigInfo
     }
     protected val pmPackageInfo = PackageInfo().apply {

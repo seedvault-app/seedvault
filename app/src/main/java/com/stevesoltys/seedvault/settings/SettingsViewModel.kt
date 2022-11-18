@@ -11,6 +11,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
+import android.os.Process.myUid
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -35,8 +36,11 @@ import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
+import java.io.IOException
+import java.lang.Runtime.getRuntime
 import java.util.concurrent.TimeUnit.HOURS
 
 private const val TAG = "SettingsViewModel"
@@ -193,9 +197,9 @@ internal class SettingsViewModel(
     @UiThread
     fun loadFilesSummary() = viewModelScope.launch {
         val uriSummary = storageBackup.getUriSummaryString()
-        _filesSummary.value = if (uriSummary.isEmpty()) {
+        _filesSummary.value = uriSummary.ifEmpty {
             app.getString(R.string.settings_backup_files_summary)
-        } else uriSummary
+        }
     }
 
     /**
@@ -231,6 +235,30 @@ internal class SettingsViewModel(
 
     fun disableStorageBackup() {
         BackupJobService.cancelJob(app)
+    }
+
+    fun onLogcatUriReceived(uri: Uri?) = viewModelScope.launch(Dispatchers.IO) {
+        if (uri == null) {
+            onLogcatError()
+            return@launch
+        }
+        // 1000 is system uid, needed to get backup logs from the OS code.
+        val command = "logcat -d --uid=1000,${myUid()} *:V"
+        try {
+            app.contentResolver.openOutputStream(uri, "wt")?.use { outputStream ->
+                getRuntime().exec(command).inputStream.use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            } ?: throw IOException("OutputStream was null")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving logcat ", e)
+            onLogcatError()
+        }
+    }
+
+    private suspend fun onLogcatError() = withContext(Dispatchers.Main) {
+        val str = app.getString(R.string.settings_expert_logcat_error)
+        Toast.makeText(app, str, LENGTH_LONG).show()
     }
 
 }

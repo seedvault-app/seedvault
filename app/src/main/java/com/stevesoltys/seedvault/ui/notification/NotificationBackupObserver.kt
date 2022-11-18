@@ -43,7 +43,7 @@ internal class NotificationBackupObserver(
      * @param currentBackupPackage The name of the package that now being backed up.
      * @param backupProgress Current progress of backup for the package.
      */
-    override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
+    override fun onUpdate(currentBackupPackage: String?, backupProgress: BackupProgress) {
         showProgressNotification(currentBackupPackage)
     }
 
@@ -57,7 +57,7 @@ internal class NotificationBackupObserver(
      *                  that was initialized
      * @param status Zero on success; a nonzero error code if the backup operation failed.
      */
-    override fun onResult(target: String, status: Int) {
+    override fun onResult(target: String?, status: Int) {
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
@@ -81,8 +81,8 @@ internal class NotificationBackupObserver(
         nm.onBackupFinished(success, numBackedUp)
     }
 
-    private fun showProgressNotification(packageName: String) {
-        if (currentPackage == packageName) return
+    private fun showProgressNotification(packageName: String?) {
+        if (packageName == null || currentPackage == packageName) return
 
         if (isLoggable(TAG, INFO)) {
             "Showing progress notification for $currentPackage $numPackages/$expectedPackages".let {
