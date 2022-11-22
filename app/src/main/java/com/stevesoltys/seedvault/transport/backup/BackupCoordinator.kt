@@ -10,6 +10,7 @@ import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
+import android.app.backup.IBackupManager
 import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
@@ -72,6 +73,7 @@ internal class BackupCoordinator(
     private val metadataManager: MetadataManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
+    private val backupManager: IBackupManager,
 ) {
 
     private val state = CoordinatorState(
@@ -115,27 +117,33 @@ internal class BackupCoordinator(
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
      */
-    suspend fun initializeDevice(): Int = try {
-        val token = settingsManager.getToken()
-        if (token == null) {
-            Log.i(TAG, "No RestoreSet started, initialization is no-op.")
-        } else {
-            Log.i(TAG, "Initialize Device!")
-            plugin.initializeDevice()
-            Log.d(TAG, "Resetting backup metadata for token $token...")
-            plugin.getMetadataOutputStream().use {
-                metadataManager.onDeviceInitialization(token, it)
+    suspend fun initializeDevice(): Int {
+        if (shouldIgnoreBackupManager("initializeDevice")) return TRANSPORT_OK
+
+        return try {
+            val token = settingsManager.getToken()
+            if (token == null) {
+                Log.i(TAG, "No RestoreSet started, initialization is no-op.")
+            } else {
+                Log.i(TAG, "Initialize Device!")
+                plugin.initializeDevice()
+                Log.d(TAG, "Resetting backup metadata for token $token...")
+                plugin.getMetadataOutputStream().use {
+                    metadataManager.onDeviceInitialization(token, it)
+                }
             }
+            // [finishBackup] will only be called when we return [TRANSPORT_OK] here
+            // so we remember that we initialized successfully
+            state.calledInitialize = true
+            TRANSPORT_OK
+        } catch (e: IOException) {
+            Log.e(TAG, "Error initializing device", e)
+            // Show error notification if we needed init or were ready for backups
+            if (metadataManager.requiresInit || settingsManager.canDoBackupNow()) {
+                nm.onBackupError()
+            }
+            TRANSPORT_ERROR
         }
-        // [finishBackup] will only be called when we return [TRANSPORT_OK] here
-        // so we remember that we initialized successfully
-        state.calledInitialize = true
-        TRANSPORT_OK
-    } catch (e: IOException) {
-        Log.e(TAG, "Error initializing device", e)
-        // Show error notification if we needed init or were ready for backups
-        if (metadataManager.requiresInit || settingsManager.canDoBackupNow()) nm.onBackupError()
-        TRANSPORT_ERROR
     }
 
     fun isAppEligibleForBackup(
@@ -232,6 +240,8 @@ internal class BackupCoordinator(
         data: ParcelFileDescriptor,
         flags: Int,
     ): Int {
+        if (shouldIgnoreBackupManager("performIncrementalBackup")) return TRANSPORT_OK
+
         state.cancelReason = UNKNOWN_ERROR
         if (metadataManager.requiresInit) {
             // start a new restore set to upgrade from legacy format
@@ -282,6 +292,8 @@ internal class BackupCoordinator(
         fileDescriptor: ParcelFileDescriptor,
         flags: Int,
     ): Int {
+        if (shouldIgnoreBackupManager("performFullBackup")) return TRANSPORT_OK
+
         state.cancelReason = UNKNOWN_ERROR
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")
         val salt = metadataManager.salt
@@ -304,6 +316,8 @@ internal class BackupCoordinator(
      * It needs to tear down any ongoing backup state here.
      */
     suspend fun cancelFullBackup() {
+        if (shouldIgnoreBackupManager("cancelFullBackup")) return
+
         val packageInfo = full.getCurrentPackage()
             ?: throw AssertionError("Cancelling full backup, but no current package")
         Log.i(
@@ -359,6 +373,7 @@ internal class BackupCoordinator(
      * @return the same error codes as [performIncrementalBackup] or [performFullBackup].
      */
     suspend fun finishBackup(): Int = when {
+        shouldIgnoreBackupManager("finishBackup") -> TRANSPORT_OK
         kv.hasState() -> {
             check(!full.hasState()) {
                 "K/V backup has state, but full backup has dangling state as well"
@@ -509,5 +524,21 @@ internal class BackupCoordinator(
         val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
         return getOutputStream(t, FILE_BACKUP_METADATA)
     }
+
+    /**
+     * Check whether or not backup is enabled, logging a warning if it is not.
+     * When backup is disabled, the system treats this as an opt out and attempts to start
+     * a wipe of backup data. (See frameworks/base/services/backup/java/com/android/server/backup/
+     * UserBackupManagerService.java, lines 3195-3197, tag android-13.0.0_r8.)
+     * This check exists to ensure that backups are not altered when backup is turned off.
+     *
+     * @param methodName the calling method to be included in logging.
+     * @return true if the backup service is disabled, and false if it is not.
+     */
+    private fun shouldIgnoreBackupManager(methodName: String): Boolean =
+        if (!backupManager.isBackupEnabled) {
+            Log.w(TAG, "Ignoring call to $methodName while backup is not enabled")
+            true
+        } else false
 
 }

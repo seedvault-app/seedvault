@@ -5,6 +5,7 @@ import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
+import android.app.backup.IBackupManager
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.PackageInfo
 import android.net.Uri
@@ -48,6 +49,11 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val apkBackup = mockk<ApkBackup>()
     private val packageService: PackageService = mockk()
     private val notificationManager = mockk<BackupNotificationManager>()
+    private val backupManager = mockk<IBackupManager>()
+
+    init {
+        every { backupManager.isBackupEnabled } returns true
+    }
 
     private val backup = BackupCoordinator(
         context,
@@ -59,7 +65,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         packageService,
         metadataManager,
         settingsManager,
-        notificationManager
+        notificationManager,
+        backupManager,
     )
 
     private val metadataOutputStream = mockk<OutputStream>()

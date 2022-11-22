@@ -48,7 +48,8 @@ val backupModule = module {
             packageService = get(),
             metadataManager = get(),
             settingsManager = get(),
-            nm = get()
+            nm = get(),
+            backupManager = get(),
         )
     }
 }

@@ -4,6 +4,7 @@ import android.app.backup.BackupDataInput
 import android.app.backup.BackupDataOutput
 import android.app.backup.BackupTransport.NO_MORE_DATA
 import android.app.backup.BackupTransport.TRANSPORT_OK
+import android.app.backup.IBackupManager
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
@@ -68,6 +69,12 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val fullBackup = FullBackup(backupPlugin, settingsManager, inputFactory, cryptoImpl)
     private val apkBackup = mockk<ApkBackup>()
     private val packageService: PackageService = mockk()
+    private val backupManager: IBackupManager = mockk()
+
+    init {
+        every { backupManager.isBackupEnabled } returns true
+    }
+
     private val backup = BackupCoordinator(
         context,
         backupPlugin,
@@ -78,7 +85,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         packageService,
         metadataManager,
         settingsManager,
-        notificationManager
+        notificationManager,
+        backupManager,
     )
 
     private val kvRestore = KVRestore(
