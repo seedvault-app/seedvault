@@ -35,7 +35,9 @@ class StorageActivity : BackupActivity() {
             val authority = uri.authority ?: throw AssertionError("No authority in $uri")
             val storageRoot = StorageRootResolver.getStorageRoots(this, authority).getOrNull(0)
             if (storageRoot == null) {
-                viewModel.onUriPermissionResultReceived(null)
+                viewModel.onSafOptionChosen(
+                    StorageRootResolver.getFakeStorageRootForUri(this, uri))
+                viewModel.onUriPermissionResultReceived(uri)
             } else {
                 viewModel.onSafOptionChosen(storageRoot)
                 viewModel.onUriPermissionResultReceived(uri)
