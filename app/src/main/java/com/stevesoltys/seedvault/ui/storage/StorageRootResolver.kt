@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.content.Context
 import android.database.Cursor
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.UserHandle
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
@@ -55,6 +56,21 @@ internal object StorageRootResolver {
             Log.w(TAG, "Failed to load some roots from $authority", e)
         }
         return roots
+    }
+
+    fun getFakeStorageRootForUri(context: Context, uri: Uri): SafOption {
+        return SafOption(
+            authority = AUTHORITY_STORAGE,
+            rootId = "fake",
+            documentId = "fake",
+            // TODO: Use something other than the USB icon?
+            icon = getIcon(context, AUTHORITY_STORAGE, "usb", 0),
+            title = context.getString(R.string.storage_user_selected_location_title),
+            summary = context.getString(R.string.storage_user_selected_location_summary),
+            availableBytes = null,
+            isUsb = false, // TODO: Check this if possible instead of forcing false
+            requiresNetwork = false, // TODO: Check this if possible instead of forcing false
+        )
     }
 
     private fun getStorageRoot(context: Context, authority: String, cursor: Cursor): SafOption? {
