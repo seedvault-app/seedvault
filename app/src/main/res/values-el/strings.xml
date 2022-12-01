@@ -192,4 +192,9 @@
     <string name="backup_app_success">Δημιουργήθηκε αντίγραφο ασφαλείας</string>
     <string name="restore_app_status_installed">Επανεγκαταστάθηκε</string>
     <string name="restore_app_status_warning">Προειδοποίηση επαναφοράς</string>
+    <string name="settings_expert_logcat_summary">Οι προγραμματιστές μπορούν να διαγνώσουν σφάλματα με τα αρχεία καταγραφής.
+\n
+\nΠροειδοποίηση: Το αρχείο καταγραφής ενδέχεται να περιέχει προσωπικά αναγνωρίσιμες πληροφορίες. Ελέγξτε πριν την κοινή χρήση και στη συνέχεια διαγράψτε το!</string>
+    <string name="settings_expert_logcat_title">Αποθήκευση αρχείου καταγραφής</string>
+    <string name="settings_expert_logcat_error">Σφάλμα: Δεν ήταν δυνατή η αποθήκευση του αρχείου καταγραφής</string>
 </resources>
