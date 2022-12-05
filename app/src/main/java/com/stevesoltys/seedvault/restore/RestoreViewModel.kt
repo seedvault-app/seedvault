@@ -64,8 +64,11 @@ import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTA
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
+import kotlin.math.min
 
 private val TAG = RestoreViewModel::class.java.simpleName
+
+internal const val PACKAGES_PER_CHUNK = 100
 
 internal class RestoreViewModel(
     app: Application,
@@ -201,18 +204,11 @@ internal class RestoreViewModel(
         }
 
         // we need to retrieve the restore sets before starting the restore
-        // otherwise restoreAll() won't work as they need the restore sets cached internally
-        val observer = RestoreObserver { observer ->
-            // this lambda gets executed after we got the restore sets
-            // now we can start the restore of all available packages
-            val restoreAllResult = session.restoreAll(token, observer, monitor)
-            if (restoreAllResult != 0) {
-                Log.e(TAG, "restoreAll() returned non-zero value")
-                mRestoreBackupResult.postValue(
-                    RestoreBackupResult(app.getString(R.string.restore_finished_error))
-                )
-            }
-        }
+        // otherwise restorePackages() won't work as they need the restore sets cached internally
+        val packages = mChosenRestorableBackup.value?.packageMetadataMap?.keys?.toMutableList()
+            ?: mutableListOf()
+        // The chunked restoration is performed within the RestoreObserver.
+        val observer = RestoreObserver(session, token, packages, monitor)
         if (session.getAvailableRestoreSets(observer, monitor) != 0) {
             Log.e(TAG, "getAvailableRestoreSets() returned non-zero value")
             mRestoreBackupResult.postValue(
@@ -294,8 +290,12 @@ internal class RestoreViewModel(
     }
 
     @WorkerThread
-    private inner class RestoreObserver(private val startRestore: (RestoreObserver) -> Unit) :
-        IRestoreObserver.Stub() {
+    private inner class RestoreObserver(
+        private val session: IRestoreSession,
+        private val token: Long,
+        private val packages: MutableList<String>,
+        private val monitor: BackupMonitor
+    ) : IRestoreObserver.Stub() {
 
         /**
          * Supply a list of the restore datasets available from the current transport.
@@ -307,7 +307,22 @@ internal class RestoreViewModel(
          *   the current device. If no applicable datasets exist, restoreSets will be null.
          */
         override fun restoreSetsAvailable(restoreSets: Array<out RestoreSet>?) {
-            startRestore(this)
+            // this gets executed after we got the restore sets
+            // now we can start the restore of all available packages
+            restoreNextPackages()
+        }
+
+        private fun restoreNextPackages() {
+            // Packages are restored in chunks, or else transport.startRestore() in the framework's
+            // PerformUnifiedRestoreTask.java may fail due to an oversized Binder transaction,
+            // causing the entire restoration to fail.
+            val packagesChunk = packages.subList(0, min(packages.size, PACKAGES_PER_CHUNK))
+            val result =
+                session.restorePackages(token, this, packagesChunk.toTypedArray(), monitor)
+            packagesChunk.clear()
+            if (result != 0) {
+                Log.e(TAG, "restorePackages() returned non-zero value")
+            }
         }
 
         /**
@@ -341,6 +356,10 @@ internal class RestoreViewModel(
          *   as a whole failed.
          */
         override fun restoreFinished(result: Int) {
+            if (result == 0 && packages.size > 0) {
+                restoreNextPackages()
+                return
+            }
             val restoreResult = RestoreBackupResult(
                 if (result == 0) null
                 else app.getString(R.string.restore_finished_error)
