@@ -192,9 +192,9 @@
     <string name="restore_app_status_installed">Neu installiert</string>
     <string name="restore_app_status_install_error">Kann nicht installiert werden</string>
     <string name="restore_app_status_restored">Daten wiederhergestellt</string>
-    <string name="settings_expert_logcat_summary">Entwickler können mit Hilfe dieser Protokolle Fehler diagnostizieren.
+    <string name="settings_expert_logcat_summary">Entwickler können Fehler mit Hilfe dieser Protokolle diagnostizieren.
 \n
-\nAchtung: Die Protokolldatei kann möglicherweise personenbezogene identifizierbare Informationen enthalten. Vor der Weitergabe überprüfen und nach der Weitergabe löschen!</string>
+\nAchtung: Die Protokolldatei kann personenbezogene identifizierbare Informationen enthalten. Vor der Weitergabe überprüfen und nach der Weitergabe löschen!</string>
     <string name="settings_expert_logcat_title">Anwendungsprotokoll speichern</string>
     <string name="settings_expert_logcat_error">Fehler: Konnte das Anwendungsprotokoll nicht speichern</string>
 </resources>
