@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Опції</string>
+    <string name="notification_backup_scanning">Сканування файлів…</string>
+    <string name="content_videos">Відео</string>
+    <string name="content_audio">Аудіо файли</string>
+    <string name="notification_backup_title">Резервне копіювання пам\'яті</string>
+    <string name="content_downloads">Завантаження</string>
+    <string name="content_add">Додати</string>
+    <string name="notification_restore_channel_title">Відновлення пам \'яті</string>
+    <string name="notification_restore_title">Відновлення файлів…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d з %2$d файлів відновлено</string>
+    <string name="snapshots_error">Помилка завантаження знімків</string>
+    <string name="notification_backup_backup_files">Резервне копіювання файлів…</string>
+    <string name="content_images">Фото та зображення</string>
+    <string name="notification_prune">Вилучення старих резервних копій…</string>
+    <string name="snapshots_title">Доступні резервні копії пам\'яті</string>
+    <string name="snapshots_empty">Резервні копії пам \'яті не знайдено
+\n
+\nВибачте, але немає нічого, що можна було б відновити.</string>
+</resources>
