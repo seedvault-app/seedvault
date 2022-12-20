@@ -1,2 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="settings_backup_last_backup_never">Never</string>
+    <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
+    <string name="settings_category_app_data_backup">App data backup</string>
+    <string name="backup">Backup</string>
+    <string name="restore_backup_button">Restore backup</string>
+    <string name="settings_backup">Backup my apps</string>
+    <string name="current_destination_string">Backup status and settings</string>
+    <string name="settings_backup_location_internal">Internal storage</string>
+    <string name="settings_backup_location_none">None</string>
+    <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
+    <string name="settings_auto_restore_title">Automatic restore</string>
+    <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
+    <string name="data_management_label">Seedvault Backup</string>
+    <string name="settings_backup_location">Backup location</string>
+    <string name="settings_category_apps">App backup</string>
+    <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
+    <string name="settings_backup_apk_dialog_cancel">Cancel</string>
+    <string name="settings_backup_apk_dialog_title">Really disable app backup\?</string>
+    <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
+    <string name="settings_backup_status_summary">Last backup: %1$s</string>
+    <string name="settings_backup_exclude_apps">Exclude apps</string>
+    <string name="settings_backup_now">Backup now</string>
+    <string name="storage_fragment_backup_title">Choose where to store backups</string>
+    <string name="notification_error_title">Backup error</string>
+    <string name="notification_error_text">A device backup failed to run.</string>
+    <string name="backup_section_system">System apps</string>
+    <string name="backup_sms">SMS text messages</string>
+    <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
+    <string name="storage_fake_nextcloud_summary">Tap to install</string>
+    <string name="backup_app_success">Backed up</string>
+    <string name="backup_app_no_data">App reported no data for backup</string>
+    <string name="restore_app_quota_exceeded">Backup quota was exceeded</string>
+    <string name="restore_app_not_installed">App not installed</string>
+    <string name="restore_restoring">Restoring backup</string>
+    <string name="storage_internal_warning_choose_other">Choose other</string>
+    <string name="about_summary">A backup application using Android\'s internal backup API.</string>
+    <string name="storage_internal_warning_title">Warning</string>
+    <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="settings_backup_apk_title">App backup</string>
+    <string name="restore_app_not_allowed">App didn\'t allow backup</string>
+    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.
+\n
+\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
+    <string name="settings_backup_status_title">Backup status</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Not installed</string>
+    <string name="storage_check_fragment_restore_title">Looking for backups…</string>
+    <string name="recovery_code_input_hint_5">Word 5</string>
+    <string name="recovery_code_verification_ok_title">Recovery code verified</string>
+    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically.
+\n
+\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
+    <string name="storage_check_fragment_backup_title">Initialising backup location…</string>
+    <string name="recovery_code_input_hint_4">Word 4</string>
+    <string name="settings_expert_logcat_summary">Developers can diagnose bugs with these logs.
+\n
+\nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
+    <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
+    <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
+    <string name="storage_fake_drive_title">USB flash drive</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV mount not available. Set one up.</string>
+    <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
+    <string name="recovery_code_input_hint_12">Word 12</string>
+    <string name="recovery_code_input_hint_10">Word 10</string>
+    <string name="recovery_code_verification_error_message">You have entered an invalid recovery code. Please try again!
+\n
+\nIf you have lost your code, tap on \'Generate new code\' below.</string>
+    <string name="recovery_code_recreated">New recovery code has been created successfully</string>
+    <string name="restore_set_empty_result">No suitable backups found at given location.
+\n
+\nThis is most likely due to a wrong recovery code or a storage error.</string>
+    <string name="restore_app_was_stopped">Was not backed up as it hadn\'t been used recently</string>
+    <string name="restore_choose_restore_set">Choose a backup to restore</string>
+    <string name="backup_app_warning">Backup warning</string>
+    <string name="notification_failed_title">Backup failed</string>
+    <string name="restore_title">Restore from backup</string>
+    <string name="restore_invalid_location_title">No backups found</string>
+    <string name="restore_app_status_installing">Re-installing</string>
+    <string name="error_no_store">Error: No app store installed</string>
+    <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
+    <string name="backup_section_not_allowed">Apps that do not allow data backup</string>
+    <string name="restore_app_status_installed">Re-installed</string>
+    <string name="restore_app_status_install_error">Could not install</string>
+    <string name="restore_invalid_location_message">We could not find any backups at this location.
+\n
+\nPlease choose another location that contains a %s folder.</string>
+    <string name="restore_set_error">An error occurred while loading the backups.</string>
+    <string name="restore_installing_tap_to_install">Tap to install</string>
+    <string name="restore_next">Next</string>
+    <string name="restore_installing_packages">Re-installing apps</string>
+    <string name="restore_app_status_restored">Data restored</string>
+    <string name="restore_app_status_failed">Restore failed</string>
+    <string name="restore_storage_skip">Skip restoring files</string>
+    <string name="about_title">About</string>
+    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (experimental)</string>
+    <string name="restore_storage_in_progress_title">Files are being restored…</string>
+    <string name="restore_storage_got_it">Got it</string>
+    <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
+    <string name="about_version">Version: %s</string>
+    <string name="about_source_code">Source code: https://github.com/seedvault-app/seedvault</string>
+    <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
+    <string name="settings_category_storage">Storage backup (experimental)</string>
+    <string name="settings_backup_storage_title">Backup my files</string>
+    <string name="settings_backup_files_title">Included files and folders</string>
+    <string name="settings_backup_files_summary">None</string>
+    <string name="settings_backup_recovery_code">Recovery code</string>
+    <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
+    <string name="settings_backup_storage_dialog_title">Experimental feature</string>
+    <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
+    <string name="settings_expert_title">Expert settings</string>
+    <string name="settings_expert_quota_title">Unlimited app quota</string>
+    <string name="settings_backup_storage_battery_optimization">Warning: No automatic backups, because battery optimization is active.</string>
+    <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
+    <string name="settings_backup_new_code_dialog_message">To continue using app backups, you need to generate a new recovery code.
+\n
+\nWe are sorry for the inconvenience.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">New code</string>
+    <string name="recovery_code_input_hint_3">Word 3</string>
+    <string name="backup_settings">Device settings</string>
+    <string name="storage_internal_warning_use_anyway">Use anyway</string>
+    <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
+    <string name="storage_fake_davx5_summary_installed">Tap to set up a WebDAV mount</string>
+    <string name="recovery_code_error_invalid_word">Wrong word.</string>
+    <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
+    <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words as well as their position and try again!</string>
+    <string name="recovery_code_verification_error_title">Incorrect recovery code</string>
+    <string name="settings_expert_logcat_title">Save app log</string>
+    <string name="settings_expert_logcat_error">Error: Could not save app log</string>
+    <string name="storage_fragment_restore_title">Where to find your backups\?</string>
+    <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
+    <string name="storage_fake_drive_summary">Needs to be plugged in</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
+    <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
+    <string name="storage_check_fragment_patience">This may take some time…</string>
+    <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
+    <string name="storage_check_fragment_error_button">Back</string>
+    <string name="recovery_code_title">Recovery code</string>
+    <string name="recovery_code_12_word_intro">You need your 12-word recovery code to restore backed up data.</string>
+    <string name="recovery_code_write_it_down">Write it down on paper now!</string>
+    <string name="recovery_code_confirm_button">Confirm code</string>
+    <string name="recovery_code_input_intro">Enter your 12-word recovery code that you wrote down when setting up backups.</string>
+    <string name="recovery_code_done_button">Verify</string>
+    <string name="recovery_code_input_hint_1">Word 1</string>
+    <string name="recovery_code_input_hint_2">Word 2</string>
+    <string name="recovery_code_input_hint_7">Word 7</string>
+    <string name="recovery_code_input_hint_6">Word 6</string>
+    <string name="recovery_code_input_hint_8">Word 8</string>
+    <string name="recovery_code_input_hint_9">Word 9</string>
+    <string name="recovery_code_input_hint_11">Word 11</string>
+    <string name="recovery_code_error_empty_word">You forgot to enter this word.</string>
+    <string name="recovery_code_verification_try_again">Try again</string>
+    <string name="recovery_code_verification_generate_new">Generate new code</string>
+    <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
+    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.
+\n
+\nAre you sure you want to do this\?</string>
+    <string name="recovery_code_auth_title">Re-enter your screen lock</string>
+    <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
+    <string name="notification_channel_title">Backup notification</string>
+    <string name="notification_title">Backup running</string>
+    <string name="notification_backup_already_running">Backup already in progress</string>
+    <string name="notification_backup_disabled">Backup not enabled</string>
+    <string name="notification_success_title">Backup finished</string>
+    <string name="notification_success_text">%1$d of %2$d apps backed up. Tap to learn more.</string>
+    <string name="notification_error_channel_title">Error notification</string>
+    <string name="notification_error_action">Fix</string>
+    <string name="notification_restore_error_channel_title">Auto restore flash drive error</string>
+    <string name="notification_restore_error_title">Could not restore data for %1$s</string>
+    <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
+    <string name="notification_restore_error_action">Uninstall app</string>
+    <string name="notification_error_no_main_key_title">Backups disabled</string>
+    <string name="notification_error_no_main_key_text">Generate a new recovery code to complete upgrade and continue to use backups.</string>
+    <string name="backup_call_log">Call history</string>
+    <string name="backup_contacts">Local contacts</string>
+    <string name="backup_section_user">Installed apps</string>
+    <string name="backup_app_in_progress">Backing up</string>
+    <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
+    <string name="backup_app_quota_exceeded">Backup quota exceeded</string>
+    <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
+    <string name="restore_skip">Don\'t restore</string>
+    <string name="restore_skip_apps">Skip restoring apps</string>
+    <string name="restore_app_status_warning">Restore warning</string>
+    <string name="restore_installing_error_title">Some apps not installed</string>
+    <string name="restore_installing_error_message">Data can only be restored if an app is installed.
+\n
+\nTap failed apps to try to install them manually before proceeding.</string>
+    <string name="restore_restoring_error_title">Unable to restore some apps</string>
+    <string name="restore_restoring_error_message">You can re-install these apps manually and Automatic restore will attempt to restore their data (when enabled).</string>
+    <string name="restore_magic_package">System package manager</string>
+    <string name="restore_finished_success">Restore complete</string>
+    <string name="restore_finished_error">An error occurred while restoring the backup.</string>
+    <string name="restore_finished_button">Finish</string>
+    <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.
+\n
+\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
+    <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
+    <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+</resources>

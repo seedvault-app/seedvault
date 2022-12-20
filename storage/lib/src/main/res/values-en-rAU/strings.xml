@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Options</string>
+    <string name="notification_restore_complete_title">%1$d of %2$d files restored</string>
+    <string name="content_videos">Videos</string>
+    <string name="content_images">Photos and images</string>
+    <string name="content_audio">Audio files</string>
+    <string name="content_downloads">Downloads</string>
+    <string name="notification_restore_title">Restoring files…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_backup_backup_files">Backing up files…</string>
+    <string name="notification_prune">Removing old backups…</string>
+    <string name="content_add">Add</string>
+    <string name="notification_backup_title">Storage backup</string>
+    <string name="notification_backup_scanning">Scanning files…</string>
+    <string name="notification_restore_channel_title">Storage restore</string>
+    <string name="snapshots_title">Available storage backups</string>
+    <string name="snapshots_empty">No storage backups found
+\n
+\nSorry, but there is nothing that can be restored.</string>
+    <string name="snapshots_error">Error loading snapshots</string>
+</resources>
