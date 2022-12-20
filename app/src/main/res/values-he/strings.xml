@@ -192,4 +192,9 @@
     <string name="restore_app_status_failed">השחזור נכשל</string>
     <string name="restore_app_status_warning">אזהרת שחזור</string>
     <string name="backup_app_warning">אזהרת גיבוי</string>
+    <string name="settings_expert_logcat_title">שמירת יומן היישומון</string>
+    <string name="settings_expert_logcat_error">שגיאה: לא ניתן לשמור את יומן היישומון</string>
+    <string name="settings_expert_logcat_summary">המפתחים יכולים לנתח תקלות בעזרת היומנים האלה.
+\n
+\nאזהרה: קובץ היומן יכול להכיל מידע שיכול לחשוף את זהותך. מוטב לעבור עליו לפני ולמחוק אותו לאחר השיתוף!</string>
 </resources>
