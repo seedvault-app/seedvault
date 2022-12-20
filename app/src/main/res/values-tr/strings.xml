@@ -192,4 +192,9 @@
     <string name="restore_app_status_failed">Geri yükleme başarısız oldu</string>
     <string name="restore_app_status_install_error">Kurulamadı</string>
     <string name="restore_app_status_warning">Geri yükleme uyarısı</string>
+    <string name="settings_expert_logcat_title">Uygulama günlüğünü kaydet</string>
+    <string name="settings_expert_logcat_error">Hata: Uygulama günlüğü kaydedilemedi</string>
+    <string name="settings_expert_logcat_summary">Geliştiriciler bu günlüklerle hataları teşhis edebilir.
+\n
+\nUyarı: Günlük dosyası kişisel olarak tanımlanabilir bilgiler içerebilir. Paylaşmadan önce inceleyin ve paylaştıktan sonra silin!</string>
 </resources>
