@@ -192,4 +192,9 @@
     <string name="notification_error_no_main_key_text">Sugeneruokite naują atkūrimo kodą, kad užbaigtumėte versijos naujinimą ir toliau naudotumėte atsargines kopijas.</string>
     <string name="notification_error_no_main_key_title">Atsarginės kopijos išjungtos</string>
     <string name="restore_app_status_install_error">Nepavyko įdiegti</string>
+    <string name="settings_expert_logcat_title">Išsaugoti programėlės žurnalą</string>
+    <string name="settings_expert_logcat_summary">Kūrėjai gali diagnozuoti klaidas naudodamiesi šiais žurnalais.
+\n
+\nĮspėjimas: Žurnalo faile gali būti asmenį identifikuojančios informacijos. Peržiūrėkite prieš dalydamiesi ir ištrinkite!</string>
+    <string name="settings_expert_logcat_error">Klaida: Nepavyko išsaugoti programėlės žurnalo</string>
 </resources>
