@@ -192,4 +192,9 @@
     <string name="backup_app_in_progress">备份中</string>
     <string name="restore_app_status_install_error">无法安装</string>
     <string name="backup_app_success">已备份</string>
+    <string name="settings_expert_logcat_error">错误：无法保存应用日志</string>
+    <string name="settings_expert_logcat_title">保存应用日志</string>
+    <string name="settings_expert_logcat_summary">开发者可通过这些日志诊断故障。
+\n
+\n警告：日志文件可能包含个人身份信息。请务必在分享前查看确定是否分享并在分享后删除！</string>
 </resources>
