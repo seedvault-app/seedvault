@@ -192,4 +192,9 @@
     <string name="restore_app_status_install_error">Не удалось установить</string>
     <string name="backup_app_warning">Предупреждение о резервном копировании</string>
     <string name="restore_app_status_warning">Предупреждение о восстановлении</string>
+    <string name="settings_expert_logcat_title">Сохранить журнал приложения</string>
+    <string name="settings_expert_logcat_summary">Разработчики могут диагностировать ошибки с помощью этих журналов.
+\n
+\nВнимание: Журнал может содержать личную информацию. Проверьте до и удалите после отправки!</string>
+    <string name="settings_expert_logcat_error">Ошибка: Не удалось сохранить журнал приложения</string>
 </resources>
