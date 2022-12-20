@@ -30,19 +30,27 @@
     <string name="settings_backup_location_internal">Внутрішня пам\'ять</string>
     <string name="settings_backup_location_none">Жодного</string>
     <string name="settings_backup_location">Розташування резервної копії</string>
-    <string name="settings_backup">Резервне копіювання моїх даних</string>
+    <string name="settings_backup">Резервне копіювання моїх застосунків</string>
     <string name="restore_backup_button">Відновлення резервної копії</string>
     <string name="current_destination_string">Стан і налаштування резервного копіювання</string>
     <string name="data_management_label">Резервне копіювання Seedvault</string>
     <string name="backup">Резервна копія</string>
     <string name="about_source_code">Сирцевий код: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Спонсується: <a href="https://www.calyxinstitute.org">Calyx Institute</a> для користування в <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Дизайн: <a href="https://www.glennsorrentino.com/">Ґленн Соррентіно (Glenn Sorrentino)</a></string>
+    <string name="about_sponsor">Спонсор:
+\n<a href="https://www.calyxinstitute.org">
+\nCalyx Institute</a> для використання в
+\n<a href="https://calyxos.org">
+\nCalyxOS</a></string>
+    <string name="about_design">Дизайн:
+\n<a href="https://www.glennsorrentino.com/">
+\nGlenn Sorrentino</a></string>
     <string name="about_author">Творці: <a href="https://github.com/stevesoltys">Стів Солтіс (Steve Soltys)</a> і <a href="https://blog.grobox.de">Торстен Ґрот (Torsten Grote)</a></string>
-    <string name="about_license">Ліцензія: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
+    <string name="about_license">Ліцензія:
+\n<a href="https://www.apache.org/licenses/LICENSE-2.0">
+\nApache2</a></string>
     <string name="about_version">Версія: %s</string>
     <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android.</string>
-    <string name="about_title">Про застосунок</string>
+    <string name="about_title">Про</string>
     <string name="storage_internal_warning_use_anyway">Однаково використовувати</string>
     <string name="storage_internal_warning_choose_other">Обрати інше</string>
     <string name="storage_internal_warning_message">Ви вибрали карту пам\'яті для резервної копії. Це буде недоступно, якщо ваш телефон загублений або зламаний.</string>
@@ -51,7 +59,7 @@
     <string name="restore_finished_error">Під час відновлення резервної копії сталася помилка.</string>
     <string name="restore_finished_success">Відновлення завершено</string>
     <string name="restore_magic_package">Менеджер системних пакетів</string>
-    <string name="restore_restoring_error_message">Ви можете повторно встановити ці застосунки вручну, і автоматичне відновлення спробує відновити їх дані (якщо це ввімкнено).</string>
+    <string name="restore_restoring_error_message">Ви можете повторно встановити ці застосунки вручну, і автоматичне відновлення спробує відновити їх дані (якщо це увімкнено).</string>
     <string name="restore_restoring_error_title">Не вдалося відновити деякі застосунки</string>
     <string name="restore_restoring">Відновлення резервної копії</string>
     <string name="restore_next">Далі</string>
@@ -145,4 +153,56 @@
     <string name="storage_check_fragment_backup_title">Ініціалізація розташування резервної копії…</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Обліковий запис недоступний. Налаштуйте його (або вимкніть код доступу).</string>
     <string name="storage_fake_nextcloud_summary_installed">Торкніться, щоб налаштувати обліковий запис</string>
+    <string name="backup_app_success">Резервне копіювання успішне</string>
+    <string name="backup_app_warning">Попередження про резервне копіювання</string>
+    <string name="restore_skip_apps">Пропустити відновлення застосунків</string>
+    <string name="restore_app_status_installing">Повторне встановлення</string>
+    <string name="restore_app_status_installed">Перевстановлено</string>
+    <string name="restore_app_status_install_error">Не вдалося встановити</string>
+    <string name="restore_app_status_restored">Дані відновлено</string>
+    <string name="restore_app_status_failed">Не вдалося відновити</string>
+    <string name="restore_app_status_warning">Попередження про відновлення</string>
+    <string name="error_no_store">Помилка: Магазин застосунків не встановлено</string>
+    <string name="restore_storage_skip">Пропустити відновлення файлів</string>
+    <string name="restore_storage_in_progress_title">Файли відновлюються…</string>
+    <string name="restore_storage_got_it">Зрозумів</string>
+    <string name="settings_backup_storage_title">Резервне копіювання моїх файлів</string>
+    <string name="settings_backup_files_title">Включно з файлами та папками</string>
+    <string name="settings_backup_files_summary">Жодного</string>
+    <string name="settings_category_apps">Резервне копіювання застосунків</string>
+    <string name="settings_backup_storage_dialog_title">Експериментальна функція</string>
+    <string name="settings_expert_quota_title">Необмежена квота застосунків</string>
+    <string name="settings_backup_storage_dialog_ok">Все одно увімкнути</string>
+    <string name="settings_expert_title">Налаштування експерта</string>
+    <string name="settings_backup_storage_battery_optimization">Попередження: Немає автоматичного резервного копіювання, оскільки активна оптимізація акумулятора.</string>
+    <string name="settings_backup_new_code_dialog_title">Потрібен новий код відновлення</string>
+    <string name="settings_backup_new_code_dialog_message">Щоб продовжувати використовувати резервне копіювання застосунків, вам потрібно створити новий код відновлення.
+\n
+\nПросимо вибачення за незручності.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Новий код</string>
+    <string name="settings_expert_logcat_title">Зберегти журнал застосунка</string>
+    <string name="settings_expert_logcat_summary">Розробники можуть діагностувати помилки за допомогою цих журналів.
+\n
+\nПопередження: Файл журналу може містити особисту інформацію. Перегляньте до та видаліть після надання доступу!</string>
+    <string name="settings_expert_logcat_error">Помилка: не вдалося зберегти журнал застосунка</string>
+    <string name="storage_fragment_warning_delete">Наявні резервні копії в цьому місці будуть видалені.</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Не встановлено</string>
+    <string name="storage_check_fragment_patience">Це може зайняти деякий час…</string>
+    <string name="recovery_code_auth_title">Введіть знову пароль для розблокування</string>
+    <string name="recovery_code_auth_description">Щоб продовжити, введіть облікові дані пристрою</string>
+    <string name="notification_backup_disabled">Резервне копіювання не ввімкнено</string>
+    <string name="notification_error_no_main_key_title">Резервне копіювання вимкнено</string>
+    <string name="notification_error_no_main_key_text">Згенеруйте новий код відновлення, щоб завершити оновлення та продовжити використання резервних копій.</string>
+    <string name="restore_storage_choose_snapshot">Виберіть резервну копію для відновлення (експериментальне)</string>
+    <string name="settings_category_storage">Резервне копіювання сховища (експериментальне)</string>
+    <string name="settings_backup_storage_dialog_message">Резервне копіювання файлів все ще є експериментальним і може не працювати. Не покладайтеся на нього для отримання важливих даних.</string>
+    <string name="settings_expert_quota_summary">Не встановлювати обмеження на розмір резервних копій застосунків.
+\n
+\nПопередження: Це може швидко заповнити місце зберігання. Не потрібні для більшості застосунків.</string>
+    <string name="storage_fake_davx5_summary_installed">Торкніться, щоб налаштувати підключення WebDAV</string>
+    <string name="storage_fake_davx5_summary_unavailable">Підключення WebDAV недоступне. Налаштуйте одне з них.</string>
+    <string name="backup_app_in_progress">Резервне копіювання</string>
+    <string name="restore_storage_in_progress_info">Ваші файли відновлюються у фоновому режимі. Ви можете почати користуватися своїм телефоном, поки це працює.
+\n
+\nДеякі застосунки (напр. Signal або WhatsApp) можуть вимагати повного відновлення файлів, щоб імпортувати резервну копію. Намагайтеся не запускати ці застосунки до завершення відновлення файлів.</string>
 </resources>
