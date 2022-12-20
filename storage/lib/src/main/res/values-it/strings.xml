@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_restore_title">Ripristinando i file…</string>
+    <string name="content_options">Opzioni</string>
+    <string name="notification_backup_backup_files">Eseguendo il backup dei file…</string>
+    <string name="notification_prune">Rimuovendo i vecchi backup…</string>
+    <string name="notification_restore_channel_title">Ripristino archiviazione</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d di %2$d file ripristinati</string>
+    <string name="snapshots_title">Backup di archiviazione disponibili</string>
+    <string name="snapshots_empty">Nessun backup di archiviazione trovato
+\n
+\nCi dispiace, ma non c\'è nulla che può essere ripristinato.</string>
+    <string name="content_images">Foto e immagini</string>
+    <string name="content_videos">Video</string>
+    <string name="content_audio">File audio</string>
+    <string name="content_downloads">Download</string>
+    <string name="content_add">Aggiungi</string>
+    <string name="notification_backup_title">Backup archiviazione</string>
+    <string name="notification_backup_scanning">Scansionando i file…</string>
+    <string name="snapshots_error">Errore nel caricamento degli snapshot</string>
+</resources>
