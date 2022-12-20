@@ -192,4 +192,9 @@
     <string name="restore_app_status_installed">Reinstalado</string>
     <string name="restore_app_status_restored">Datos restaurados</string>
     <string name="restore_app_status_install_error">No se ha podido instalar</string>
+    <string name="settings_expert_logcat_summary">Los desarrolladores pueden diagnosticar errores con estos registros.
+\n
+\nAdvertencia: el archivo de registro puede contener información personal. ¡Revíselo antes y elimínelo después de compartirlo!</string>
+    <string name="settings_expert_logcat_error">Error: no se pudo guardar el registro</string>
+    <string name="settings_expert_logcat_title">Guardar el registro de la aplicación</string>
 </resources>
