@@ -1,3 +1,11 @@
+## [13-3.2] - 2022-12-29
+* Add expert option to save logs
+* Add more details about branching to README
+* Improvements for debug builds
+* Documentation improvements
+* Better error handling in some cases
+* Some Android 13 upgrades
+
 ## [13-3.1] - 2022-09-01
 * Initial release for Android 13
 * Don't attempt to restore app that is used as a backup location (e.g. Nextcloud),
