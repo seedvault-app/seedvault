@@ -33,3 +33,12 @@ jobs:
 
       - name: Build
         run: ./gradlew compileDebugAndroidTestSources check assemble ktlintCheck
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v3
+        with:
+          name: seedvault-${{ github.sha }}-apks
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            contactsbackup/build/outputs/apk/debug/contactsbackup-debug.apk
+            storage/demo/build/outputs/apk/debug/demo-debug.apk
