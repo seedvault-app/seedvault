@@ -10,6 +10,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.os.StrictMode
+import android.os.SystemProperties
 import android.os.UserHandle
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
@@ -60,6 +61,7 @@ open class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        SystemProperties.set(BACKUP_D2D_PROPERTY, "true")
         startKoin()
         if (isDebugBuild()) {
             StrictMode.setThreadPolicy(
@@ -121,6 +123,8 @@ open class App : Application() {
 const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
 const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val GLOBAL_METADATA_KEY = "@meta@"
+
+const val BACKUP_D2D_PROPERTY = "persist.backup.fake-d2d"
 
 // TODO this doesn't work for LineageOS as they do public debug builds
 fun isDebugBuild() = Build.TYPE == "userdebug"

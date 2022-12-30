@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.stevesoltys.seedvault"
-    android:versionCode="33030020"
+    android:versionCode="33030021"
     android:versionName="13-3.2">
     <!--
     The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
