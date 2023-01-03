@@ -3,5 +3,7 @@
     <exception package="com.stevesoltys.seedvault">
         <!-- Notifications -->
         <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
+        <!-- Needed to back up original files with all metadata -->
+        <permission name="android.permission.ACCESS_MEDIA_LOCATION" fixed="true"/>
     </exception>
 </exceptions>
