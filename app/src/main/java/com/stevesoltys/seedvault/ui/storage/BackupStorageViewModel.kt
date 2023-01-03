@@ -38,9 +38,6 @@ internal class BackupStorageViewModel(
             storageBackup.deleteAllSnapshots()
             storageBackup.clearCache()
             try {
-                // will also generate a new backup token for the new restore set
-                backupCoordinator.startNewRestoreSet()
-
                 // initialize the new location (if backups are enabled)
                 if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
                     UserHandle.myUserId(),

@@ -107,9 +107,6 @@ internal class RecoveryCodeViewModel(
             storageBackup.deleteAllSnapshots()
             storageBackup.clearCache()
             try {
-                // will also generate a new backup token for the new restore set
-                backupCoordinator.startNewRestoreSet()
-
                 // initialize the new location
                 if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
                     UserHandle.myUserId(),

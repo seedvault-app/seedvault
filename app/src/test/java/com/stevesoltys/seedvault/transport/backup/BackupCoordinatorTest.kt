@@ -73,17 +73,8 @@ internal class BackupCoordinatorTest : BackupTest() {
     )
 
     @Test
-    fun `starting a new restore set works as expected`() = runBlocking {
-        every { clock.time() } returns token
-        every { settingsManager.setNewToken(token) } just Runs
-        coEvery { plugin.startNewRestoreSet(token) } just Runs
-
-        backup.startNewRestoreSet()
-    }
-
-    @Test
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
-        every { settingsManager.getToken() } returns token
+        expectStartNewRestoreSet()
         coEvery { plugin.initializeDevice() } just Runs
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
         every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
@@ -97,21 +88,17 @@ internal class BackupCoordinatorTest : BackupTest() {
         verify { metadataOutputStream.close() }
     }
 
-    @Test
-    fun `device initialization does no-op when no token available`() = runBlocking {
-        every { settingsManager.getToken() } returns null
-        every { kv.hasState() } returns false
-        every { full.hasState() } returns false
-
-        assertEquals(TRANSPORT_OK, backup.initializeDevice())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
+    private suspend fun expectStartNewRestoreSet() {
+        every { clock.time() } returns token
+        every { settingsManager.setNewToken(token) } just Runs
+        coEvery { plugin.startNewRestoreSet(token) } just Runs
     }
 
     @Test
     fun `error notification when device initialization fails`() = runBlocking {
         val maybeTrue = Random.nextBoolean()
 
-        every { settingsManager.getToken() } returns token
+        expectStartNewRestoreSet()
         coEvery { plugin.initializeDevice() } throws IOException()
         every { metadataManager.requiresInit } returns maybeTrue
         every { settingsManager.canDoBackupNow() } returns !maybeTrue
@@ -130,7 +117,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     @Test
     fun `no error notification when device initialization fails when no backup possible`() =
         runBlocking {
-            every { settingsManager.getToken() } returns token
+            expectStartNewRestoreSet()
             coEvery { plugin.initializeDevice() } throws IOException()
             every { metadataManager.requiresInit } returns false
             every { settingsManager.canDoBackupNow() } returns false
