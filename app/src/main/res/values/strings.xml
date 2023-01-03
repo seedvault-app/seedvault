@@ -14,6 +14,9 @@
     <string name="settings_backup_location_none">None</string>
     <string name="settings_backup_location_internal">Internal storage</string>
     <string name="settings_backup_last_backup_never">Never</string>
+    <string name="settings_backup_dialog_title">Really turn off app backups?</string>
+    <string name="settings_backup_dialog_message">When you turn backups on again, the backup process may take longer than usual, and it will use additional storage space.</string>
+    <string name="settings_backup_dialog_disable">Turn off anyway</string>
     <string name="settings_info">All backups are encrypted on your phone. To restore from backup you will need your 12-word recovery code.</string>
     <string name="settings_auto_restore_title">Automatic restore</string>
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
