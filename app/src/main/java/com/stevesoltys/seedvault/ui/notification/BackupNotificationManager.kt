@@ -15,6 +15,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import androidx.core.app.NotificationCompat.PRIORITY_LOW
@@ -127,6 +128,7 @@ internal class BackupNotificationManager(private val context: Context) {
             setWhen(System.currentTimeMillis())
             setProgress(expected, transferred, false)
             priority = PRIORITY_DEFAULT
+            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
         }.build()
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
