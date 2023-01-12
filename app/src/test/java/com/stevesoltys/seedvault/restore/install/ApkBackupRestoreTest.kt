@@ -52,6 +52,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
     private val storagePlugin: StoragePlugin<*> = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
+    private val installRestriction: InstallRestriction = mockk()
 
     private val apkBackup = ApkBackup(pm, crypto, settingsManager, metadataManager)
     private val apkRestore: ApkRestore = ApkRestore(
@@ -60,7 +61,8 @@ internal class ApkBackupRestoreTest : TransportTest() {
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
-        apkInstaller = apkInstaller
+        apkInstaller = apkInstaller,
+        installRestriction = installRestriction,
     )
 
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
@@ -132,6 +134,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         val apkPath = slot<String>()
         val cacheFiles = slot<List<File>>()
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         every { strictContext.cacheDir } returns tmpFile
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns inputStream
