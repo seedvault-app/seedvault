@@ -53,6 +53,7 @@ internal class ApkRestoreTest : TransportTest() {
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
+    private val installRestriction: InstallRestriction = mockk()
 
     private val apkRestore: ApkRestore = ApkRestore(
         strictContext,
@@ -60,7 +61,8 @@ internal class ApkRestoreTest : TransportTest() {
         legacyStoragePlugin,
         crypto,
         splitCompatChecker,
-        apkInstaller
+        apkInstaller,
+        installRestriction,
     )
 
     private val icon: Drawable = mockk()
@@ -93,6 +95,7 @@ internal class ApkRestoreTest : TransportTest() {
         val packageMetadata = packageMetadata.copy(sha256 = getRandomString())
         val backup = swapPackages(hashMapOf(packageName to packageMetadata))
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
@@ -108,6 +111,7 @@ internal class ApkRestoreTest : TransportTest() {
         // change package name to random string
         packageInfo.packageName = getRandomString()
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
@@ -121,6 +125,7 @@ internal class ApkRestoreTest : TransportTest() {
 
     @Test
     fun `test apkInstaller throws exceptions`(@TempDir tmpDir: Path) = runBlocking {
+        every { installRestriction.isAllowedToInstallApks() } returns true
         cacheBaseApkAndGetInfo(tmpDir)
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
@@ -144,6 +149,7 @@ internal class ApkRestoreTest : TransportTest() {
             )
         }
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         cacheBaseApkAndGetInfo(tmpDir)
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
@@ -170,6 +176,7 @@ internal class ApkRestoreTest : TransportTest() {
             )
         }
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         @Suppress("Deprecation")
         coEvery {
@@ -197,6 +204,7 @@ internal class ApkRestoreTest : TransportTest() {
             val willFail = Random.nextBoolean()
             val isSystemApp = Random.nextBoolean()
 
+            every { installRestriction.isAllowedToInstallApks() } returns true
             cacheBaseApkAndGetInfo(tmpDir)
             every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
@@ -271,6 +279,7 @@ internal class ApkRestoreTest : TransportTest() {
             )
         )
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -293,6 +302,7 @@ internal class ApkRestoreTest : TransportTest() {
             splits = listOf(ApkSplit(splitName, getRandomBase64(23)))
         )
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -318,6 +328,7 @@ internal class ApkRestoreTest : TransportTest() {
                 splits = listOf(ApkSplit(splitName, sha256))
             )
 
+            every { installRestriction.isAllowedToInstallApks() } returns true
             // cache APK and get icon as well as app name
             cacheBaseApkAndGetInfo(tmpDir)
 
@@ -345,6 +356,7 @@ internal class ApkRestoreTest : TransportTest() {
             )
         )
 
+        every { installRestriction.isAllowedToInstallApks() } returns true
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -384,6 +396,7 @@ internal class ApkRestoreTest : TransportTest() {
 
     @Test
     fun `storage provider app does not get reinstalled`(@TempDir tmpDir: Path) = runBlocking {
+        every { installRestriction.isAllowedToInstallApks() } returns true
         // set the storage provider package name to match our current package name,
         // and ensure that the current package is therefore skipped.
         every { storagePlugin.providerPackageName } returns packageName
@@ -396,6 +409,24 @@ internal class ApkRestoreTest : TransportTest() {
                 1 -> {
                     // the only package provided should have been filtered, leaving 0 packages.
                     assertEquals(0, value.total)
+                    assertTrue(value.isFinished)
+                }
+                else -> fail("more values emitted")
+            }
+        }
+    }
+
+    @Test
+    fun `no apks get installed when blocked by policy`(@TempDir tmpDir: Path) = runBlocking {
+        every { installRestriction.isAllowedToInstallApks() } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+
+        apkRestore.restore(backup).collectIndexed { i, value ->
+            when (i) {
+                0 -> {
+                    // single package fails without attempting to install it
+                    assertEquals(1, value.total)
+                    assertEquals(FAILED, value[packageName].state)
                     assertTrue(value.isFinished)
                 }
                 else -> fail("more values emitted")
