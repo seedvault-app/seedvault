@@ -1,3 +1,9 @@
+## [13-3.3] - 2023-01-11
+* Mark Nextcloud as "Not recommended"
+* Warn before turning off backups
+* Avoid corrupting old backups when turning off backups
+* Pre-grant `ACCESS_MEDIA_LOCATION` permission for Storage backups
+
 ## [13-3.2] - 2022-12-29
 * Add expert option to save logs
 * Add more details about branching to README
