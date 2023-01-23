@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.isDebugBuild
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RecoveryCodeOutputFragment : Fragment() {
@@ -25,6 +27,8 @@ class RecoveryCodeOutputFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
+
+        if (!isDebugBuild()) getActivity()?.window?.addFlags(FLAG_SECURE)
 
         wordList = v.findViewById(R.id.wordList)
         confirmCodeButton = v.findViewById(R.id.confirmCodeButton)

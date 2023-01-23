@@ -14,6 +14,7 @@ import android.view.View.GONE
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -69,6 +70,8 @@ class RecoveryCodeInputFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
+
+        if (!isDebugBuild()) getActivity()?.window?.addFlags(FLAG_SECURE)
 
         introText = v.findViewById(R.id.introText)
         doneButton = v.findViewById(R.id.doneButton)
