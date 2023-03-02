@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2020 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.stevesoltys.seedvault.ui.storage
 
 import android.content.Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
