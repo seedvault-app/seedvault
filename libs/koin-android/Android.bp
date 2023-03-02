@@ -1,3 +1,8 @@
+//
+// SPDX-FileCopyrightText: 2020 The Calyx Institute
+// SPDX-License-Identifier: Apache-2.0
+//
+
 android_library_import {
     name: "seedvault-lib-koin-android",
     aars: ["koin-android-3.2.0.aar"],

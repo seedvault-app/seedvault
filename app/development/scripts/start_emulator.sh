@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2023 The Calyx Institute
+# SPDX-License-Identifier: Apache-2.0
+#
 
 # assert ANDROID_HOME is set
 if [ -z "$ANDROID_HOME" ]; then

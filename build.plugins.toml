@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: 2023 The Calyx Institute
+# SPDX-License-Identifier: Apache-2.0
+#
+
 [versions]
 # We need to enforce that the versions we use are the same as AOSP to ensure compatibility.
 # 1.3.61 Android 11
