@@ -1,0 +1,13 @@
+<component name="CopyrightManager">
+  <settings default="Apache-2.0">
+    <module2copyright>
+      <element module="Kotlin Files" copyright="Apache-2.0" />
+      <element module="XML Files" copyright="Apache-2.0" />
+    </module2copyright>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="3" />
+      <option name="addBlankAfter" value="false" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>

@@ -11,7 +11,10 @@ out/
 !.idea/runConfigurations*
 !.idea/inspectionProfiles*
 !.idea/codeStyles*
+!.idea/copyright*
 !.idea/dictionaries*
+!.idea/scopes*
+!.idea/.name
 *.ipr
 *.iws
 *.iml
