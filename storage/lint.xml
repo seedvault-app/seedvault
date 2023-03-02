@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SPDX-FileCopyrightText: 2022 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
 <lint>
     <issue id="MissingTranslation" severity="ignore" />
 </lint>

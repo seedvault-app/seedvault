@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2021 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package org.calyxos.backup.storage.api
 
 import android.content.Context

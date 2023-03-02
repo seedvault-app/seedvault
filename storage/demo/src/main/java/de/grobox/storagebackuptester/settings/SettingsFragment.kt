@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2021 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package de.grobox.storagebackuptester.settings
 
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
