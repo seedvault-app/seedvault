@@ -1,3 +1,7 @@
+<!--
+  SPDX-FileCopyrightText: 2021 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.StorageBackupTester" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
