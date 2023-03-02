@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: 2017 Steve Soltys
+  SPDX-FileCopyrightText: 2020 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
 <permissions>
     <privapp-permissions package="com.stevesoltys.seedvault">
         <permission name="android.permission.BACKUP"/>

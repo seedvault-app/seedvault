@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# SPDX-FileCopyrightText: 2020 The Calyx Institute
+# SPDX-License-Identifier: Apache-2.0
+#
 
 set -ex
 

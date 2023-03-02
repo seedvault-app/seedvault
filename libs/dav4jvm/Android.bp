@@ -1,3 +1,8 @@
+//
+// SPDX-FileCopyrightText: 2024 The Calyx Institute
+// SPDX-License-Identifier: Apache-2.0
+//
+
 java_import {
     name: "seedvault-lib-dav4jvm",
     jars: ["dav4jvm-2.2.1.jar"],

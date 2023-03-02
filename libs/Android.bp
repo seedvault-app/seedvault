@@ -1,3 +1,8 @@
+//
+// SPDX-FileCopyrightText: 2021 The Calyx Institute
+// SPDX-License-Identifier: Apache-2.0
+//
+
 java_import {
     name: "seedvault-lib-kotlin-bip39",
     jars: ["kotlin-bip39-jvm-1.0.6.jar"],
