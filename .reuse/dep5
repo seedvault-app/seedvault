@@ -3,6 +3,39 @@ Upstream-Name: Seedvault
 Upstream-Contact: The Calyx Institute
 Source: https://github.com/seedvault-app/seedvault
 
+Files: .github/workflows/build.yml
+       .github/workflows/client.yml
+       .github/workflows/test.yml
+       .gitignore
+       CHANGELOG.md README.md app/development/DEVELOPMENT.md
+Copyright: 2017-2020 Steve Soltys
+           2020 The Calyx Institute
+License: Apache-2.0
+
+Files: .cirrus.yml .editorconfig .idea/*
+       app/platform.jks app/development/platform.jks
+       app/src/main/res/values-*/strings.xml
+Copyright: 2020 The Calyx Institute
+License: Apache-2.0
+
+Files: libs/dav4jvm/dav4jvm-2.2.1.jar
+Copyright: 2024 bitfire web engineering
+License: MPL-2.0
+
+Files: libs/dav4jvm/okhttp-4.11.0.jar
+       libs/dav4jvm/okio-jvm-3.7.0.jar
+Copyright: 2024 Square, Inc.
+License: Apache-2.0
+
+Files: libs/koin-android/koin-android-3.2.0.aar
+       libs/koin-android/koin-core-jvm-3.2.0.jar
+Copyright: 2022 insert-koin.io
+License: Apache-2.0
+
+Files: libs/kotlin-bip39-jvm-1.0.6.jar
+Copyright: 2020 Zcash
+License: MIT
+
 Files: contactsbackup/*.gitignore contactsbackup/*.md
        contactsbackup/src/main/res/values-*/strings.xml
 Copyright: 2020 The Calyx Institute
@@ -18,7 +51,7 @@ Files: storage/*.gitignore storage/*.md
 Copyright: 2021 The Calyx Institute
 License: Apache-2.0
 
-Files: storage/lib/libs/tink-android-1.7.0.jar
+Files: storage/lib/libs/tink-android-1.10.0.jar
 Copyright: 2022 Google LLC
 License: Apache-2.0
 
@@ -28,4 +61,12 @@ License: CC-BY-SA-3.0
 
 Files: storage/demo/src/main/ic_launcher-playstore.png
 Copyright: Material Design Authors / Google LLC
+License: Apache-2.0
+
+Files: gradle/wrapper/*
+Copyright: 2007-2023 Gradle, Inc.
+License: Apache-2.0
+
+Files: gradlew*
+Copyright: 2007-2023 Gradle, Inc.
 License: Apache-2.0
