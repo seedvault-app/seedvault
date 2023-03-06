@@ -71,3 +71,18 @@ It can also re-encrypt them.
 
 ## License
 This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).
+
+## Funding
+
+### Calyx Institute
+
+This project is primarily developed and maintained by the [Calyx Institute](https://calyxinstitute.org/)
+for usage in [CalyxOS](https://calyxos.org/).
+
+### NGI0 PET Fund
+
+This project was funded through the [NGI0 PET Fund](https://nlnet.nl/project/Seedvault/),
+a fund established by [NLnet](https://nlnet.nl)
+with financial support from the European Commission's Next Generation Internet programme,
+under the aegis of DG Communications Networks, Content and Technology
+under grant agreement No 825310.
