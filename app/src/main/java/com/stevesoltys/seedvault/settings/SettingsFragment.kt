@@ -192,7 +192,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         R.id.action_about -> {
-            AboutDialogFragment().show(parentFragmentManager, AboutDialogFragment.TAG)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment, AboutDialogFragment())
+                .addToBackStack(AboutDialogFragment.TAG)
+                .commit()
             true
         }
         else -> super.onOptionsItemSelected(item)
