@@ -3,6 +3,15 @@ Upstream-Name: Seedvault
 Upstream-Contact: The Calyx Institute
 Source: https://github.com/seedvault-app/seedvault
 
+Files: contactsbackup/*.gitignore contactsbackup/*.md
+       contactsbackup/src/main/res/values-*/strings.xml
+Copyright: 2020 The Calyx Institute
+License: Apache-2.0
+
+Files: contactsbackup/libs/com.android.vcard.jar
+Copyright: 2010 The Android Open Source Project
+License: Apache-2.0
+
 Files: storage/*.gitignore storage/*.md
        storage/lib/src/main/proto/*.proto
        storage/lib/src/main/res/values-*/strings.xml
