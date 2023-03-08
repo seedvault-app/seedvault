@@ -1,0 +1,22 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Seedvault
+Upstream-Contact: The Calyx Institute
+Source: https://github.com/seedvault-app/seedvault
+
+Files: storage/*.gitignore storage/*.md
+       storage/lib/src/main/proto/*.proto
+       storage/lib/src/main/res/values-*/strings.xml
+Copyright: 2021 The Calyx Institute
+License: Apache-2.0
+
+Files: storage/lib/libs/tink-android-1.7.0.jar
+Copyright: 2022 Google LLC
+License: Apache-2.0
+
+Files: storage/demo/src/main/assets/test.jpg
+Copyright: Toytoy at English Wikipedia
+License: CC-BY-SA-3.0
+
+Files: storage/demo/src/main/ic_launcher-playstore.png
+Copyright: Material Design Authors / Google LLC
+License: Apache-2.0
