@@ -8,6 +8,7 @@
     <color name="statusBarColor">@*android:color/primary_device_default_settings_light
     </color>
     <color name="red">@*android:color/error_color_device_default_dark</color>
+    <color name="ic_launcher_background">@*android:color/accent_device_default_light</color>
     <color name="divider">#20ffffff</color>
     <color name="green">#558B2F</color>
     <color name="yellow">#F9A825</color>
