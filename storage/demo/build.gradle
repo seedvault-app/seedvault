@@ -6,8 +6,8 @@
 plugins {
     id 'com.android.application'
     id 'com.google.protobuf'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
