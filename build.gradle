@@ -16,7 +16,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
     id 'org.jetbrains.kotlin.kapt' version "$kotlin_version" apply false
     id 'org.jetbrains.dokka' version "$kotlin_version" apply false
-    id 'org.jlleitschuh.gradle.ktlint' version '10.2.0' apply false
+    id 'org.jlleitschuh.gradle.ktlint' version '11.5.0' apply false
 }
 
 ext {
