@@ -92,7 +92,6 @@
     <string name="settings_backup_location">బ్యాకుప్ చేయు స్థానం</string>
     <string name="settings_backup">డేటా ను బ్యాకుప్ చెయ్యి</string>
     <string name="backup">బ్యాకప్‌</string>
-    <string name="about_license">లైసెన్స్: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Version: %s</string>
     <string name="storage_internal_warning_use_anyway">అయినా ఉపయోగించండి</string>
     <string name="storage_internal_warning_choose_other">వేరేది ఎంచుకోండి</string>
