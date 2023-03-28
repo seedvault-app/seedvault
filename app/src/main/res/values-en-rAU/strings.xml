@@ -192,5 +192,4 @@
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.
 \n
 \nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
-    <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
 </resources>

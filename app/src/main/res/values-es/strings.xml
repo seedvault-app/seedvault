@@ -35,7 +35,6 @@
     <string name="settings_backup_location_internal">Almacenamiento interno</string>
     <string name="notification_restore_error_text">Conecte sus %1$s antes de instalar la aplicación para restaurar sus datos desde la copia de seguridad.</string>
     <string name="notification_error_action">Corregir</string>
-    <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Una aplicación de copia de seguridad que utiliza la API de copia de seguridad interna de Android. Es Software Libre, liberado bajo licencia Apache 2.
 \n
 \nComo todo software, Seedvault puede contener errores o vulnerabilidades.</string>

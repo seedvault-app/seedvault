@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">Una aplicación de respaldo que usa la API interna de respaldo de Android.</string>
     <string name="about_title">Acerca de</string>

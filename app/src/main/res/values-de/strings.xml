@@ -68,7 +68,6 @@
     <string name="settings_auto_restore_summary_usb">Achtung: Dein %1$s muss für diese Aktion verbunden sein.</string>
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer App die gesicherten Daten und Einstellungen wiederherstellen.</string>
     <string name="settings_auto_restore_title">Automatische Wiederherstellung</string>
-    <string name="about_author">Geschrieben von: <a href="https://github.com/stevesoltys">Steve Soltys</a> und <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">Eine Sicherungsanwendung, welche die interne Sicherungs-API von Android verwendet. Es ist Freie Software, veröffentlicht unter der Apache 2 Lizenz.
 \n
 \nWie jede Software kann auch Seedvault Fehler oder Schwachstellen enthalten.</string>

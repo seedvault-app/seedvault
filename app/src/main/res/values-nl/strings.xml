@@ -98,7 +98,6 @@
     <string name="restore_finished_button">Voltooid</string>
     <string name="restore_magic_package">Systeempakkettenbeheer</string>
     <string name="storage_internal_warning_choose_other">Kies andere</string>
-    <string name="about_source_code">Broncode: https://github.com/seedvault-app/seedvault</string>
     <string name="restore_finished_success">Herstel is compleet</string>
     <string name="recovery_code_auth_description">Voeg de credentials van je apparaat in om door te gaan</string>
     <string name="restore_restoring_error_message">Je kan deze apps handmatig herinstalleren en Automatisch herstel zal proberen hun gegevens te herstellen (indien ingeschakeld).</string>
@@ -139,7 +138,6 @@
     <string name="storage_internal_warning_use_anyway">Gebruik toch</string>
     <string name="about_title">Over</string>
     <string name="about_version">Versie: %s</string>
-    <string name="about_design">Ontworpen door: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="settings_expert_quota_summary">Let geen limiet op voor de grootte van de appback-ups.
 \n
 \nWaarschuwing: Dit kan je opslag snel volledig vullen. Is niet nodig voor de meeste apps.</string>

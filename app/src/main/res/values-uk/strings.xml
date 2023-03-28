@@ -35,7 +35,6 @@
     <string name="current_destination_string">Стан і налаштування резервного копіювання</string>
     <string name="data_management_label">Резервне копіювання Seedvault</string>
     <string name="backup">Резервна копія</string>
-    <string name="about_author">Творці: <a href="https://github.com/stevesoltys">Стів Солтіс (Steve Soltys)</a> і <a href="https://blog.grobox.de">Торстен Ґрот (Torsten Grote)</a></string>
     <string name="about_version">Версія: %s</string>
     <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android. Це вільне програмне забезпечення, випущене під ліцензією Apache 2.
 \n

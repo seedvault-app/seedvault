@@ -2,7 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_text">Feito o backup da app %1$d de %2$d . Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup em andamento</string>
-    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
     <string name="about_title">Sobre</string>

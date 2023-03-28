@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_license">Llicència: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">Escrit per: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">Una aplicació de còpies de seguretat que utilitza l\'API interna de còpies de seguretat d\'Android.</string>
     <string name="settings_backup_location_none">Cap</string>

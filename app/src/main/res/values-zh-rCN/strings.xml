@@ -28,7 +28,6 @@
     <string name="recovery_code_confirm_intro">输入您的12个单词的恢复代码，以确保它在您需要时可以使用。</string>
     <string name="recovery_code_12_word_intro">您需要12个单词的恢复代码来恢复备份的数据。</string>
     <string name="settings_info">所有备份均已加密。要从备份恢复，您需要12个单词的恢复代码。</string>
-    <string name="about_author">程序员：<a href="https://github.com/stevesoltys">Steve Soltys</a> 和 <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">一款使用 Android 自带备份 API 的备份程序。它是自由软件，在 Apache 2 许可证下发布。
 \n
 \n和所有软件一样，Seedvault 可能包含故障或漏洞。</string>
