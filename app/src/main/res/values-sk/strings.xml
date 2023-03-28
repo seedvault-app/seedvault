@@ -15,7 +15,6 @@
     <string name="current_destination_string">Stav a nastavenia zálohy</string>
     <string name="backup">Záloha</string>
     <string name="recovery_code_verification_try_again">Skúsiť znova</string>
-    <string name="about_design">Návrh: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Verzia: %s</string>
     <string name="about_summary">Zálohovacia aplikácia využívajúca interné rozhranie API systému Android pre zálohovanie.</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_author">Yazanlar: <a href="https://github.com/stevesoltys">Steve Soltys</a> ve <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_summary">Android\'in dahili yedekleme API\'sini kullanan bir yedekleme uygulaması. Apache 2 lisansı altında yayınlanan Özgür Yazılımdır.
 \n
 \nTüm yazılımlar gibi Seedvault da hatalar veya güvenlik açıkları içerebilir.</string>
