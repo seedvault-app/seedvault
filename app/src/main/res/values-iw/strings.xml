@@ -71,11 +71,10 @@
     <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו. הקש למידע נוסף.</string>
     <string name="notification_success_title">הגיבוי הסתיים</string>
     <string name="notification_backup_already_running">הגיבוי כבר מתבצע</string>
-    <string name="about_sponsor">מומן על ידי: <a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש במסגרת <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">עוצב על ידי: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">נכתב על ידי: <a href="https://github.com/stevesoltys">סטיב סולטיס</a> ו<a href="https://blog.grobox.de">טורסטן גרוט</a></string>
     <string name="about_license">רישיון: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">יישומון גיבוי שמשתמש ב־API הפנימי לגיבוי של Android.</string>
+    <string name="about_summary">יישומון גיבוי שמשתמש ב־API הפנימי לגיבוי של Android. תוכנה חופשית שכפופה לרישיון Apache 2.
+\n
+\nכמו בכל תוכנה אחרת, גם ב־Seedvault יכולות להיות תקלות או חולשות אבטחה.</string>
     <string name="about_title">על אודות</string>
     <string name="storage_internal_warning_use_anyway">להשתמש בכל זאת</string>
     <string name="storage_internal_warning_choose_other">בחירה במיקום אחר</string>
@@ -95,7 +94,6 @@
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
     <string name="restore_app_not_yet_backed_up">עדיין לא גובה</string>
     <string name="storage_fake_nextcloud_summary_unavailable">החשבון אינו זמין. ניתן להקים אחד (או להשבית את קוד הגישה).</string>
-    <string name="about_source_code">קוד המקור: https://github.com/seedvault-app/seedvault</string>
     <string name="settings_backup_apk_title">גיבוי יישומונים</string>
     <string name="settings_category_app_data_backup">גיבוי נתוני יישומונים</string>
     <string name="settings_auto_restore_summary_usb">לתשומת לבך: עליך לחבר את %1$s שלך לחשמל כדי שזה יפעל.</string>
@@ -197,4 +195,13 @@
     <string name="settings_expert_logcat_summary">המפתחים יכולים לנתח תקלות בעזרת היומנים האלה.
 \n
 \nאזהרה: קובץ היומן יכול להכיל מידע שיכול לחשוף את זהותך. מוטב לעבור עליו לפני ולמחוק אותו לאחר השיתוף!</string>
+    <string name="settings_backup_dialog_title">לכבות את גיבויי היישומון\?</string>
+    <string name="settings_backup_dialog_message">עם הפעלת הגיבויים מחדש, תהליך הגיבוי יתמשך מעבר לרגיל ויותר שטח אחסון ינוצל.</string>
+    <string name="settings_backup_dialog_disable">לכבות בכל זאת</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (לא מומלץ)</string>
+    <string name="about_contributing_organizations_title">ארגונים תורמים</string>
+    <string name="about_contributor_headline">תורמים</string>
+    <string name="about_contributor_content">את רשימת התורמים אפשר <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">לראות ב־GitHub</a>.</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">קרן NGI0 PET מבית NLnet</a></string>
 </resources>

@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="about_design">Deseñado por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+</resources>

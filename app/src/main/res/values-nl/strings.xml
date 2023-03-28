@@ -1,2 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="backup">Back-up</string>
+    <string name="restore_backup_button">Herstel back-up</string>
+    <string name="settings_backup">Back-up mijn apps</string>
+    <string name="settings_backup_location">Back-up locatie</string>
+    <string name="settings_backup_location_internal">Interne opslag</string>
+    <string name="settings_backup_last_backup_never">Nooit</string>
+    <string name="settings_auto_restore_title">Automatisch terugzetten</string>
+    <string name="settings_backup_apk_dialog_cancel">Annuleer</string>
+    <string name="settings_backup_apk_dialog_disable">Schakel appback-up uit</string>
+    <string name="data_management_label">Seedvault Backup</string>
+    <string name="current_destination_string">Back-up status en instellingen</string>
+    <string name="settings_category_app_data_backup">Appgegevensback-up</string>
+    <string name="settings_backup_apk_title">Appback-up</string>
+    <string name="settings_backup_apk_dialog_title">Weet je zeker dat je appback-up uit wil zetten\?</string>
+    <string name="settings_backup_exclude_apps">Sluit apps uit</string>
+    <string name="recovery_code_done_button">Verifieer</string>
+    <string name="backup_section_system">Systeemapps</string>
+    <string name="backup_sms">Sms-berichten</string>
+    <string name="settings_backup_storage_title">Back-up mijn bestanden</string>
+    <string name="recovery_code_input_hint_11">Woord 11</string>
+    <string name="notification_backup_already_running">Back-up loopt al</string>
+    <string name="settings_backup_storage_dialog_title">Experimentele feature</string>
+    <string name="settings_backup_storage_dialog_ok">Schakel toch in</string>
+    <string name="settings_expert_title">Expertinstellingen</string>
+    <string name="settings_expert_quota_title">Onbeperkt appquotum</string>
+    <string name="storage_fragment_restore_title">Waar moeten back-ups worden gezocht\?</string>
+    <string name="storage_fake_drive_title">USB-memorystick</string>
+    <string name="storage_fake_drive_summary">Moet ingeplugd zijn</string>
+    <string name="settings_backup_location_none">Geen</string>
+    <string name="settings_category_apps">Appback-up</string>
+    <string name="settings_backup_dialog_title">Wil je de back-ups echt uitzetten\?</string>
+    <string name="settings_backup_dialog_message">Als je back-ups weer aan wil zetten kan het back-upproces langer duren dan normaal en zal extra opslag gebruiken.</string>
+    <string name="settings_info">Alle back-ups zijn versleuteld op je apparaat. Om een back-up terug te zetten moet je je herstelcode van twaalf woorden nodig.</string>
+    <string name="settings_backup_recovery_code_summary">Verifieer bestaande code of maak een nieuwe aan</string>
+    <string name="settings_backup_recovery_code">Herstelcode</string>
+    <string name="settings_backup_files_title">Inbegrepen bestanden en mappen</string>
+    <string name="settings_backup_apk_summary">Back-up de apps zelf. Anders wordt alleen de appgegevens geback-upt.</string>
+    <string name="settings_backup_storage_dialog_message">Back-up van bestanden is nog experimenteel en het kan zijn dat het niet werkt. Vertrouw er niet op voor belangrijke gegevens.</string>
+    <string name="settings_backup_storage_battery_optimization">Waarschuwing: Geen automatische back-ups omdat batterijoptimalisatie actief is.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nieuwe code</string>
+    <string name="settings_backup_new_code_dialog_title">Nieuwe herstelcode is vereist</string>
+    <string name="storage_fragment_backup_title">Kies waar de back-ups worden opgeslagen</string>
+    <string name="storage_fragment_warning_delete">Bestaande back-ups op de locatie zullen verwijderd worden.</string>
+    <string name="recovery_code_confirm_button">Bevestig code</string>
+    <string name="recovery_code_input_hint_9">Woord 9</string>
+    <string name="storage_check_fragment_patience">Dit kan even duren…</string>
+    <string name="notification_title">Back-up loopt</string>
+    <string name="notification_channel_title">Back-upnotificatie</string>
+    <string name="notification_error_title">Back-upfout</string>
+    <string name="notification_backup_disabled">Back-up is niet ingeschakeld</string>
+    <string name="notification_error_action">Los op</string>
+    <string name="notification_error_channel_title">Foutnotificatie</string>
+    <string name="notification_error_no_main_key_title">Back-ups zijn uitgeschakeld</string>
+    <string name="settings_expert_logcat_title">Sla applog op</string>
+    <string name="settings_expert_logcat_error">Fout: Kon de applog niet opslaan</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Een account is niet beschikbaar. Maak er een aan (of schakel passcode uit).</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Is niet geïnstalleerd</string>
+    <string name="storage_fake_davx5_summary_unavailable">WebDAV-mount is niet beschikbaar. Stel er een in.</string>
+    <string name="storage_check_fragment_backup_title">Back-uplocatie wordt geïnitialiseerd…</string>
+    <string name="storage_check_fragment_restore_title">Back-ups aan het zoeken…</string>
+    <string name="storage_check_fragment_backup_error">Er is een fout opgetreden tijden benaderen van de back-uplocatie.</string>
+    <string name="storage_check_fragment_error_button">Terug</string>
+    <string name="recovery_code_title">Herstelcode</string>
+    <string name="recovery_code_input_hint_1">Woord 1</string>
+    <string name="recovery_code_input_hint_2">Woord 2</string>
+    <string name="recovery_code_input_hint_3">Woord 3</string>
+    <string name="recovery_code_input_hint_4">Woord 4</string>
+    <string name="recovery_code_input_hint_5">Woord 5</string>
+    <string name="recovery_code_input_hint_6">Woord 6</string>
+    <string name="recovery_code_input_hint_7">Woord 7</string>
+    <string name="recovery_code_input_hint_8">Woord 8</string>
+    <string name="recovery_code_input_hint_10">Woord 10</string>
+    <string name="recovery_code_verification_try_again">Probeer opnieuw</string>
+    <string name="recovery_code_input_hint_12">Woord 12</string>
+    <string name="recovery_code_error_empty_word">Je bent vergeten dit woord in te voeren.</string>
+    <string name="recovery_code_error_invalid_word">Verkeerd woord.</string>
+    <string name="recovery_code_verification_ok_title">Herstelcode is geverifieerd</string>
+    <string name="recovery_code_verification_error_title">Onjuiste herstelcode</string>
+    <string name="recovery_code_verification_new_dialog_title">Wacht een momentje…</string>
+    <string name="recovery_code_verification_generate_new">Maak nieuwe code aan</string>
+    <string name="notification_success_title">Back-up is klaar</string>
+    <string name="notification_failed_title">Back-up is mislukt</string>
+    <string name="settings_backup_dialog_disable">Zet toch uit</string>
+    <string name="settings_auto_restore_summary">Wanneer je een app installeert, zet de back-up van instellingen en gegevens terug.</string>
+    <string name="settings_backup_status_title">Back-upstatus</string>
+    <string name="settings_backup_status_summary">Laatste back-up: %1$s</string>
+    <string name="settings_backup_now">Back-up nu</string>
+    <string name="settings_backup_files_summary">Geen</string>
+    <string name="settings_auto_restore_summary_usb">Let op: Je %1$s moet ingeplugd zijn om dit te laten werken.</string>
+    <string name="settings_category_storage">Opslagback-up (experimenteel)</string>
+    <string name="restore_app_quota_exceeded">Back-upquota was overschreden</string>
+    <string name="restore_restore_set_times">Laatste back-up op %1$s · Eerste op %2$s.</string>
+    <string name="restore_app_status_installing">Herinstalleren</string>
+    <string name="restore_next">Volgende</string>
+    <string name="restore_restoring_error_title">Sommige apps konden niet worden hersteld</string>
+    <string name="restore_finished_button">Voltooid</string>
+    <string name="restore_magic_package">Systeempakkettenbeheer</string>
+    <string name="storage_internal_warning_choose_other">Kies andere</string>
+    <string name="about_source_code">Broncode: https://github.com/seedvault-app/seedvault</string>
+    <string name="restore_finished_success">Herstel is compleet</string>
+    <string name="recovery_code_auth_description">Voeg de credentials van je apparaat in om door te gaan</string>
+    <string name="restore_restoring_error_message">Je kan deze apps handmatig herinstalleren en Automatisch herstel zal proberen hun gegevens te herstellen (indien ingeschakeld).</string>
+    <string name="recovery_code_error_checksum_word">Je code is onjuist. Controleer alle woorden en probeer het opnieuw!</string>
+    <string name="settings_expert_logcat_summary">Ontwikkelaars kunnen met de logs bugs analyseren.
+\n
+\nWaarschuwing: Het logbestand kan persoonlijk herleidbare informatie bevatten. Controleer deze voorafgaand die te delen en verwijder die nadien!</string>
+    <string name="backup_app_no_data">App heeft geen gegevens gerapporteerd voor back-up</string>
+    <string name="restore_app_status_restored">Gegevens zijn hersteld</string>
+    <string name="restore_invalid_location_title">Geen back-ups gevonden</string>
+    <string name="storage_fragment_warning">Mensen met toegang tot je opslaglocatie kunnen te zien welke apps je gebruikt, maar zij krijgen geen toegang tot de gegevens van de apps.</string>
+    <string name="restore_storage_skip">Sla herstellen van bestanden over</string>
+    <string name="restore_storage_in_progress_title">Bestanden worden hersteld…</string>
+    <string name="restore_choose_restore_set">Kies een back-up om te herstellen</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Niet aanbevolen)</string>
+    <string name="recovery_code_verification_error_message">Je hebt een ongeldige herstelcode ingevoerd. Probeer het opnieuw.
+\n
+\nAls je je code bent verloren, tik dan op \'Maak nieuwe code aan\' hieronder.</string>
+    <string name="recovery_code_recreated">Nieuwe herstelcode is succesvol aangemaakt</string>
+    <string name="backup_settings">Apparaatinstellingen</string>
+    <string name="backup_call_log">Belgeschiedenis</string>
+    <string name="restore_title">Herstel van back-up</string>
+    <string name="restore_set_error">Er is een fout opgetreden tijdens het laden van de back-ups.</string>
+    <string name="restore_app_status_installed">Geherinstalleerd</string>
+    <string name="backup_app_in_progress">Aan het back-uppen</string>
+    <string name="notification_restore_error_channel_title">Automatisch herstel memorystickfout</string>
+    <string name="restore_installing_tap_to_install">Tik om te installeren</string>
+    <string name="restore_app_status_install_error">Kon niet installeren</string>
+    <string name="restore_app_status_failed">Herstel is gefaald</string>
+    <string name="restore_app_status_warning">Herstelwaarschuwing</string>
+    <string name="error_no_store">Fout: Er is geen appstore geïnstalleerd</string>
+    <string name="restore_restoring">Back-up aan het herstellen</string>
+    <string name="restore_installing_error_message">Gegevens kunnen alleen worden hersteld als een app is geïnstalleerd.
+\n
+\nTik op de mislukte apps en probeer ze handmatig te installeren voordat je verder gaat.</string>
+    <string name="restore_storage_choose_snapshot">Kies een back-upopslag om te herstellen (experimenteel)</string>
+    <string name="restore_storage_got_it">Ik snap het</string>
+    <string name="storage_internal_warning_use_anyway">Gebruik toch</string>
+    <string name="about_title">Over</string>
+    <string name="about_version">Versie: %s</string>
+    <string name="about_design">Ontworpen door: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
+    <string name="settings_expert_quota_summary">Let geen limiet op voor de grootte van de appback-ups.
+\n
+\nWaarschuwing: Dit kan je opslag snel volledig vullen. Is niet nodig voor de meeste apps.</string>
+    <string name="settings_backup_new_code_dialog_message">Om appback-ups te blijven gebruiken moet je een nieuwe herstelcode aanmaken.
+\n
+\nExcuses voor het ongemak.</string>
+    <string name="storage_internal_warning_message">Je hebt interne opslag gekozen voor je back-up. Dit zal niet beschikbaar zijn als je telefoon verloren of kapot is.</string>
+    <string name="storage_internal_warning_title">Waarschuwing</string>
+    <string name="about_summary">Een back-upapp die de interne back-up-API van Android gebruikt.</string>
+    <string name="recovery_code_auth_title">Voer je schermbeveiliging nog eens in</string>
+    <string name="backup_contacts">Lokale contacten</string>
+    <string name="notification_restore_error_text">Plug je %1$s in voordat je de app installeert om de gegevens daarvan te herstellen uit je back-up.</string>
+    <string name="notification_restore_error_title">Gegevens voor %1$s konden niet worden hersteld</string>
+    <string name="notification_success_text">%1$d van de %2$d apps zijn geback-upt. Tik om meer te weten te komen.</string>
+    <string name="notification_error_text">Een apparaatback-up kon niet worden gestart.</string>
+    <string name="notification_error_no_main_key_text">Maak een nieuwe herstelcode aan om de upgrade af te ronden en door te gaan met het maken van back-ups.</string>
+    <string name="restore_app_not_yet_backed_up">Was nog niet geback-upt</string>
+    <string name="notification_restore_error_action">Deïnstalleer app</string>
+    <string name="backup_section_user">Geïnstalleerde apps</string>
+    <string name="backup_app_not_yet_backed_up">Wachtende om te back-uppen…</string>
+    <string name="storage_fake_nextcloud_summary_installed">Tik om account aan te maken</string>
+    <string name="storage_fake_nextcloud_summary">Tik om te installeren</string>
+    <string name="storage_fake_davx5_summary_installed">Tik om een WebDAV-mount in te stellen</string>
+    <string name="storage_check_fragment_permission_error">Het is niet gelukt om schrijfrechten te krijgen om naar de back-uplocatie.</string>
+    <string name="recovery_code_confirm_intro">Voer je herstelcode van 12 woorden in om te garanderen dat deze werkt wanneer je je gegevens wil herstellen.</string>
+    <string name="recovery_code_input_intro">Voeg je herstelcode van 12 woorden in die je hebt opgeschreven tijdens het instellen van de back-ups.</string>
+    <string name="recovery_code_12_word_intro">Je hebt je herstelcode van 12 woorden nodig om de geback-upte gegevens te herstellen.</string>
+    <string name="recovery_code_write_it_down">Schrijf de code nu op papier!</string>
+    <string name="recovery_code_verification_ok_message">Je code is correct en zal werken voor het herstellen van je back-up.</string>
+    <string name="recovery_code_verification_new_dialog_message">Het aanmaken van een nieuwe code zal uw bestaande back-ups ontoegankelijk maken. We zullen proberen ze te verwijderen indien mogelijk.
+\n
+\nWeet je zeker dat je dit wilt doen\?</string>
+    <string name="restore_app_not_allowed">App staat geen back-ups toe</string>
+    <string name="backup_app_was_stopped">Niet geback-upt omdat de app niet recent is gebruikt</string>
+    <string name="backup_app_success">Is geback-upt</string>
+    <string name="backup_app_warning">Back-upwaarschuwing</string>
+    <string name="restore_app_was_stopped">Was niet geback-upt omdat de app niet recent was gebruikt</string>
+    <string name="restore_invalid_location_message">We konden geen back-ups vinden op deze locatie.
+\n
+\nKies een andere locatie die een map %s bevat.</string>
+    <string name="backup_app_quota_exceeded">Back-upquota is overschreden</string>
+    <string name="restore_app_not_installed">App is niet geïnstalleerd</string>
+    <string name="restore_skip">Niet herstellen</string>
+    <string name="backup_section_not_allowed">Apps die geen gegevensback-ups toestaan</string>
+    <string name="restore_skip_apps">Sla herstellen van apps over</string>
+    <string name="restore_installing_packages">Herinstalleren van apps</string>
+    <string name="restore_finished_error">Er was een fout opgetreden tijdens het herstel van de back-up.</string>
+    <string name="restore_installing_error_title">Sommige apps zijn niet geïnstalleerd</string>
+    <string name="settings_backup_apk_dialog_message">Uitgeschakelde appback-up zal nog steeds appgegevens back-uppen. Ze worden echter niet automatisch hersteld.
+\n
+\nJe zal al je apps handmatig moeten installeren terwijl \"Automatisch herstellen\" is ingeschakeld.</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> vrij</string>
+    <string name="restore_set_empty_result">Geen geschikte back-ups gevonden op de opgegeven locatie.
+\n
+\nDit komt waarschijnlijk door een verkeerde herstelcode of een opslagfout.</string>
+    <string name="restore_storage_in_progress_info">Je bestanden worden in de achtergrond hersteld. Je kan je apparaat gebruiken terwijl dit loopt.
+\n
+\nSommige apps (bijvoorbeeld Signal of WhatsApp) kunnen vereisen dat bestanden volledig zijn hersteld voordat een back-up kan worden geïmporteerd. Probeer te voorkomen deze apps te openen voordat het herstel van bestanden compleet is.</string>
+</resources>

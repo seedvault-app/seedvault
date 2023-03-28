@@ -35,21 +35,11 @@
     <string name="current_destination_string">Стан і налаштування резервного копіювання</string>
     <string name="data_management_label">Резервне копіювання Seedvault</string>
     <string name="backup">Резервна копія</string>
-    <string name="about_source_code">Сирцевий код: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Спонсор:
-\n<a href="https://www.calyxinstitute.org">
-\nCalyx Institute</a> для використання в
-\n<a href="https://calyxos.org">
-\nCalyxOS</a></string>
-    <string name="about_design">Дизайн:
-\n<a href="https://www.glennsorrentino.com/">
-\nGlenn Sorrentino</a></string>
     <string name="about_author">Творці: <a href="https://github.com/stevesoltys">Стів Солтіс (Steve Soltys)</a> і <a href="https://blog.grobox.de">Торстен Ґрот (Torsten Grote)</a></string>
-    <string name="about_license">Ліцензія:
-\n<a href="https://www.apache.org/licenses/LICENSE-2.0">
-\nApache2</a></string>
     <string name="about_version">Версія: %s</string>
-    <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android.</string>
+    <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android. Це вільне програмне забезпечення, випущене під ліцензією Apache 2.
+\n
+\nЯк і все програмне забезпечення, Seedvault може містити помилки або вразливості.</string>
     <string name="about_title">Про</string>
     <string name="storage_internal_warning_use_anyway">Однаково використовувати</string>
     <string name="storage_internal_warning_choose_other">Обрати інше</string>
@@ -205,4 +195,13 @@
     <string name="restore_storage_in_progress_info">Ваші файли відновлюються у фоновому режимі. Ви можете почати користуватися своїм телефоном, поки це працює.
 \n
 \nДеякі застосунки (напр. Signal або WhatsApp) можуть вимагати повного відновлення файлів, щоб імпортувати резервну копію. Намагайтеся не запускати ці застосунки до завершення відновлення файлів.</string>
+    <string name="settings_backup_dialog_title">Дійсно вимкніть резервне копіювання застосунків\?</string>
+    <string name="settings_backup_dialog_message">Коли ви знову вмикаєте резервне копіювання, процес резервного копіювання може зайняти більше часу, ніж зазвичай, і він використовуватиме додатковий простір для зберігання.</string>
+    <string name="settings_backup_dialog_disable">Вимкнути у будь-якому випадку</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Не рекомендовано)</string>
+    <string name="about_contributor_headline">Учасники</string>
+    <string name="about_contributor_content">Будь ласка, відвідайте GitHub для отримання <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">списку учасників</a>.</string>
+    <string name="about_contributing_organizations_title">Організації-учасники</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> для використання в <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
 </resources>

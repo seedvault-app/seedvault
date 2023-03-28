@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Opções</string>
+    <string name="notification_backup_title">Backup de armazenamento</string>
+    <string name="notification_backup_scanning">A escanear ficheiros…</string>
+    <string name="snapshots_title">Backups de armazenamento disponíveis</string>
+    <string name="snapshots_empty">Nenhum backup de armazenamento encontrado
+\n
+\nDesculpe, mas não há nada que possa ser restaurado.</string>
+    <string name="snapshots_error">Erro ao carregar instantâneos</string>
+    <string name="content_videos">Vídeos</string>
+    <string name="content_images">Fotos e imagens</string>
+    <string name="content_audio">Ficheiros de áudio</string>
+    <string name="content_downloads">Descargas</string>
+    <string name="content_add">Adicionar</string>
+    <string name="notification_backup_backup_files">A fazer backup de ficheiros…</string>
+    <string name="notification_prune">A remover backups antigos…</string>
+    <string name="notification_restore_channel_title">Restauração de armazenamento</string>
+    <string name="notification_restore_title">A restaurar ficheiros…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d de %2$d ficheiros restaurados</string>
+</resources>
