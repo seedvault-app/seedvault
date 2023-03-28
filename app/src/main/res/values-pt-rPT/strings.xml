@@ -3,7 +3,6 @@
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="current_destination_string">Estado do backup e configurações</string>
     <string name="backup">Backup</string>
-    <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_version">Versão: %s</string>
     <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
     <string name="about_title">Sobre</string>

@@ -2,7 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_internal_warning_choose_other">Choisissez autre chose</string>
     <string name="about_summary">Une application de sauvegarde utilisant l’interface de programmation des sauvegardes internes d’Android.</string>
-    <string name="about_source_code">Code source : https://github.com/seedvault-app/seedvault</string>
     <string name="storage_internal_warning_use_anyway">Utiliser quand même</string>
     <string name="about_title">À propos</string>
     <string name="storage_internal_warning_title">Avertissement</string>

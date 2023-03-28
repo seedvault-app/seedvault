@@ -3,7 +3,6 @@
     <string name="backup_app_not_yet_backed_up">Laukiama sukurti atsarginę kopiją…</string>
     <string name="notification_restore_error_channel_title">Automatinio atkūrimo atmintuko klaida</string>
     <string name="notification_error_text">Nepavyko paleisti atsarginės įrenginio kopijos.</string>
-    <string name="about_author">Sukūrė: <a href="https://github.com/stevesoltys">Steve Soltys</a> ir <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_version">Versija: %s</string>
     <string name="about_summary">Atsarginės kopijos kūrimo programa, naudojanti „Android“ vidinį atsarginės kopijos kūrimo API.</string>
     <string name="about_title">Apie</string>

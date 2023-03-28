@@ -26,7 +26,6 @@
     <string name="restore_finished_error">백업을 복원하는 중 오류가 발생했습니다.</string>
     <string name="storage_check_fragment_restore_title">백업을 찾는 중…</string>
     <string name="storage_check_fragment_backup_title">백업 위치 초기화 중…</string>
-    <string name="about_license">라이선스: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Android의 내부 백업 API를 사용하는 백업 응용 프로그램입니다.</string>
     <string name="storage_internal_warning_use_anyway">백업 진행</string>
     <string name="storage_internal_warning_choose_other">다른 위치 선택</string>
