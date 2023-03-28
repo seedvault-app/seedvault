@@ -21,7 +21,7 @@
     <string name="settings_backup_location_internal">Pamięć wewnętrzna</string>
     <string name="settings_backup_location_none">Brak</string>
     <string name="settings_backup_location">Lokalizacja kopii zapasowych</string>
-    <string name="settings_backup">Tworzenie kopii zapasowej</string>
+    <string name="settings_backup">Tworzenie kopii zapasowej aplikacji</string>
     <string name="restore_backup_button">Przywróć kopię zapasową</string>
     <string name="storage_fake_drive_summary">Musi być podłączona</string>
     <string name="storage_fake_drive_title">Pamięć USB</string>
@@ -47,7 +47,7 @@
     <string name="recovery_code_verification_error_title">Nieprawidłowy kod przywracania</string>
     <string name="recovery_code_verification_ok_message">Twój kod jest prawidłowy i będzie działał przy przywracaniu kopii zapasowej.</string>
     <string name="recovery_code_verification_ok_title">Zweryfikowano kod przywracania</string>
-    <string name="recovery_code_error_checksum_word">Twój kod jest nieprawidłowy. Sprawdź wszystkie słowa i spróbuj ponownie!</string>
+    <string name="recovery_code_error_checksum_word">Twój kod jest nieprawidłowy. Sprawdź wszystkie słowa, ich pozycje i spróbuj ponownie!</string>
     <string name="recovery_code_error_invalid_word">Nieprawidłowe słowo.</string>
     <string name="recovery_code_error_empty_word">Nie wpisano tego słowa.</string>
     <string name="recovery_code_input_hint_12">Słowo 12</string>
@@ -102,11 +102,7 @@
     <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji. Naciśnij, aby dowiedzieć się więcej.</string>
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
-    <string name="about_source_code">Kod źródłowy: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Sponsorowana przez: <a href="https://www.calyxinstitute.org">Calyx Institute</a> do wykorzystania w <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Zaprojektowano przez: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Napisana przez: <a href="https://github.com/stevesoltys">Steve Soltys</a> i <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licencja: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android do tworzenia kopii zapasowych.</string>
     <string name="about_title">Informacje</string>
     <string name="storage_internal_warning_use_anyway">Użyj mimo tego</string>
@@ -159,4 +155,31 @@
 \n
 \nPrzepraszamy za niedogodności.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Nowy kod</string>
+    <string name="restore_app_status_install_error">Nie można zainstalować</string>
+    <string name="restore_app_status_restored">Przywrócone dane</string>
+    <string name="restore_app_status_failed">Przywracanie nie powiodło się</string>
+    <string name="error_no_store">Błąd: Nie zainstalowano sklepu z aplikacjami</string>
+    <string name="restore_storage_in_progress_title">Pliki są przywracane…</string>
+    <string name="settings_expert_title">Ustawienia eksportu</string>
+    <string name="restore_skip_apps">Pomiń odzyskiwanie aplikacji</string>
+    <string name="notification_backup_disabled">Kopia zapasowa nie jest włączona</string>
+    <string name="restore_app_status_installing">Instalowanie ponownie</string>
+    <string name="restore_app_status_installed">Zainstaluj ponownie</string>
+    <string name="storage_fragment_warning_delete">Istniejące kopie zapasowe w tym położeniu zostaną usunięte.</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nie zalecane)</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nie zainstalowano</string>
+    <string name="storage_check_fragment_patience">Może to zająć trochę czasu…</string>
+    <string name="recovery_code_auth_title">Wprowadź ponownie swój kod odblokowywania</string>
+    <string name="notification_error_no_main_key_title">Kopie zapasowe wyłączone</string>
+    <string name="notification_error_no_main_key_text">Wygeneruj nowy kod odzyskiwania, aby zakończyć aktualizację i kontynuować używanie kopii zapasowych.</string>
+    <string name="backup_app_in_progress">Tworzenie kopii zapasowej</string>
+    <string name="backup_app_success">Utworzono kopię zapasową</string>
+    <string name="backup_app_warning">Ostrzeżenie o kopii zapasowej</string>
+    <string name="restore_app_status_warning">Ostrzeżenie o przywracaniu</string>
+    <string name="restore_storage_skip">Pomiń odzyskiwanie plików</string>
+    <string name="settings_backup_dialog_title">Na pewno wyłączyć kopie zapasowe aplikacji\?</string>
+    <string name="settings_backup_dialog_disable">Wyłącz mimo to</string>
+    <string name="settings_expert_quota_title">Nieograniczona liczba aplikacji</string>
+    <string name="settings_expert_logcat_title">Zapisz dziennik aplikacji</string>
+    <string name="settings_expert_logcat_error">Błąd: Nie można zapisać dziennika aplikacji</string>
 </resources>

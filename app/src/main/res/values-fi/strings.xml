@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size"> %1$s </xliff:g> vapaana</string>
-    <string name="about_source_code">Lähdekoodi: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Sponsoroi: <a href="https://www.calyxinstitute.org"> Calyx Institute </a> käytettäväksi <a href="https://calyxos.org"> CalyxOS </a></string>
-    <string name="about_design">Suunnittelija: <a href="https://www.glennsorrentino.com/"> Glenn Sorrentino </a></string>
     <string name="about_author">Kehittänyt: <a href="https://github.com/stevesoltys"> Steve Soltys </a> ja <a href="https://blog.grobox.de"> Torsten Grote </a></string>
-    <string name="about_license">Lisenssi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Versio: %s</string>
     <string name="about_summary">Varmuuskopiosovellus, joka käyttää Androidin sisäistä varmuuskopiosovellusrajapintaa.</string>
     <string name="about_title">Tietoa</string>

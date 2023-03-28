@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_source_code">Mã nguồn: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Tài trợ bởi: <a href="https://www.calyxinstitute.org">Học viện Calyx</a> để sử dụng trong <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Thiết kế bởi: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Được viết bởi: <a href="https://github.com/stevesoltys">Steve Soltys</a> và <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Giấy phép: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Phiên bản: %s</string>
     <string name="about_summary">Một ứng dụng sao lưu sử dụng API sao lưu của Android.</string>
     <string name="about_title">Giới thiệu</string>

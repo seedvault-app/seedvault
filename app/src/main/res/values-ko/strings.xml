@@ -26,9 +26,7 @@
     <string name="restore_finished_error">백업을 복원하는 중 오류가 발생했습니다.</string>
     <string name="storage_check_fragment_restore_title">백업을 찾는 중…</string>
     <string name="storage_check_fragment_backup_title">백업 위치 초기화 중…</string>
-    <string name="about_sponsor">스폰서: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="about_design">디자인: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">제작자: <a href="https://github.com/stevesoltys">Steve Soltys</a> 및 <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">라이선스: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Android의 내부 백업 API를 사용하는 백업 응용 프로그램입니다.</string>
     <string name="storage_internal_warning_use_anyway">백업 진행</string>
@@ -49,7 +47,6 @@
     <string name="recovery_code_title">복구 코드</string>
     <string name="storage_check_fragment_error_button">뒤로</string>
     <string name="storage_fake_drive_title">USB 플래시 드라이브</string>
-    <string name="about_source_code">소스 코드: https://github.com/seedvault-app/seedvault</string>
     <string name="about_title">정보</string>
     <string name="storage_internal_warning_title">경고</string>
     <string name="restore_next">다음</string>

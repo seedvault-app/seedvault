@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="settings_category_apps">Applikationsbackup</string>
+    <string name="backup">Säkerhetskopia</string>
+    <string name="restore_backup_button">Återställ säkerhetskopia</string>
+    <string name="settings_backup">Säkerhetskopiera mina appar</string>
+    <string name="settings_backup_location">Plats för säkerhetskopia</string>
+    <string name="settings_backup_location_none">Ingen</string>
+    <string name="settings_backup_location_internal">Intern lagring</string>
+    <string name="settings_backup_last_backup_never">Aldrig</string>
+    <string name="settings_backup_dialog_title">Ska backup för appar verkligen stängas av\?</string>
+    <string name="settings_backup_dialog_message">När du återaktiverar säkerhetskopior kommer processen att ta längre tid än normalt samt nyttja ytterligare lagringsutrymme.</string>
+    <string name="settings_backup_dialog_disable">Stäng av ändå</string>
+</resources>

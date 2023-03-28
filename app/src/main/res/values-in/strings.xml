@@ -68,14 +68,11 @@
     <string name="settings_backup_storage_title">Cadangkan file saya</string>
     <string name="settings_category_apps">Pencadangan aplikasi</string>
     <string name="settings_category_storage">Cadangan penyimpanan (eksperimental)</string>
-    <string name="about_license">Lisensi: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">Ditulis oleh: <a href="https://github.com/stevesoltys">Steve Soltys</a> dan <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_design">Desain oleh: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="restore_title">Pulihkan dari cadangan</string>
     <string name="restore_restore_set_times">Cadangan terakhir %1$s · Pertama %2$s.</string>
     <string name="restore_installing_tap_to_install">Ketuk untuk menginstal</string>
     <string name="restore_choose_restore_set">Pilih cadangan untuk dipulihkan</string>
-    <string name="about_source_code">Kode sumber: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Disponsori oleh: <a href="https://www.calyxinstitute.org">Calyx Institute</a> untuk digunakan di <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="settings_backup_files_title">Termasuk file dan folder</string>
     <string name="settings_backup_files_summary">Tidak ada</string>

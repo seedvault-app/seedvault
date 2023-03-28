@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_fragment_warning">Quienes tengan acceso a su ubicación de almacenamiento pueden ver qué aplicaciones utiliza, pero no podrán acceder a los datos de estas.</string>
-    <string name="about_source_code">Código fuente: https://github.com/seedvault-app/seedvault</string>
     <string name="about_title">Acerca de</string>
     <string name="storage_internal_warning_use_anyway">Usar de todos modos</string>
     <string name="storage_internal_warning_title">Atención</string>
@@ -36,11 +35,10 @@
     <string name="settings_backup_location_internal">Almacenamiento interno</string>
     <string name="notification_restore_error_text">Conecte sus %1$s antes de instalar la aplicación para restaurar sus datos desde la copia de seguridad.</string>
     <string name="notification_error_action">Corregir</string>
-    <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Instituto Calyx</a> para usar en <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Diseño por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Realizada por: <a href="https://github.com/stevesoltys">Steve Soltys</a> y <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_license">Licencia: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Una aplicación para copias de seguridad que utiliza la API interna de Android para ello.</string>
+    <string name="about_summary">Una aplicación de copia de seguridad que utiliza la API de copia de seguridad interna de Android. Es Software Libre, liberado bajo licencia Apache 2.
+\n
+\nComo todo software, Seedvault puede contener errores o vulnerabilidades.</string>
     <string name="storage_internal_warning_choose_other">Escoger otro</string>
     <string name="storage_internal_warning_message">Ha elegido almacenamiento interno para su copia de seguridad. Esto no estará disponible cuando su teléfono se pierda o se rompa.</string>
     <string name="restore_finished_error">Ocurrió un error al restaurar la copia de seguridad.</string>
@@ -197,4 +195,13 @@
 \nAdvertencia: el archivo de registro puede contener información personal. ¡Revíselo antes y elimínelo después de compartirlo!</string>
     <string name="settings_expert_logcat_error">Error: no se pudo guardar el registro</string>
     <string name="settings_expert_logcat_title">Guardar el registro de la aplicación</string>
+    <string name="settings_backup_dialog_title">¿Desactivar realmente las copias de seguridad de las aplicaciones\?</string>
+    <string name="settings_backup_dialog_message">Cuando vuelva a activar las copias de seguridad, el proceso de copia de seguridad puede tardar más de lo habitual y usará espacio de almacenamiento adicional.</string>
+    <string name="settings_backup_dialog_disable">Apagar de todos modos</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (No recomendado)</string>
+    <string name="about_contributing_organizations_title">Organizaciones colaboradoras</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Instituto Calyx</a> para su uso en <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">Fondo NGI0 PET de NLnet</a></string>
+    <string name="about_contributor_headline">Colaboradores</string>
+    <string name="about_contributor_content">En GitHub encontrará una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a>.</string>
 </resources>

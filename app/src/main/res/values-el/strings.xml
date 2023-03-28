@@ -31,12 +31,9 @@
     <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
     <string name="backup">Αντίγραφο ασφαλείας</string>
     <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό επαναφοράς 12 λέξεων.</string>
-    <string name="about_source_code">Πηγαίος κώδικας: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Χορηγός: <a href="https://www.calyxinstitute.org">Calyx Institute</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Σχεδιασμός από: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
-    <string name="about_author">Αναπτύχθηκε από: <a href="https://github.com/stevesoltys">Steve Soltys</a> και <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Άδεια: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Μια εφαρμογή δημιουργίας αντιγράφων ασφαλείας που χρησιμοποιεί το εσωτερικό API αντιγράφων ασφαλείας του Android.</string>
+    <string name="about_summary">Μια εφαρμογή δημιουργίας αντιγράφων ασφαλείας που χρησιμοποιεί το εσωτερικό API αντιγράφων ασφαλείας του Android. Είναι ελεύθερο λογισμικό, που κυκλοφορεί με άδεια Apache 2.
+\n
+\nΌπως κάθε λογισμικό, το Seedvault μπορεί να περιέχει σφάλματα ή ευπάθειες.</string>
     <string name="about_title">Σχετικά με</string>
     <string name="storage_internal_warning_use_anyway">Χρησιμοποιήστε ούτως ή άλλως</string>
     <string name="storage_internal_warning_choose_other">Επιλέξτε άλλο</string>
@@ -197,4 +194,13 @@
 \nΠροειδοποίηση: Το αρχείο καταγραφής ενδέχεται να περιέχει προσωπικά αναγνωρίσιμες πληροφορίες. Ελέγξτε πριν την κοινή χρήση και στη συνέχεια διαγράψτε το!</string>
     <string name="settings_expert_logcat_title">Αποθήκευση αρχείου καταγραφής</string>
     <string name="settings_expert_logcat_error">Σφάλμα: Δεν ήταν δυνατή η αποθήκευση του αρχείου καταγραφής</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Δεν συνιστάται)</string>
+    <string name="settings_backup_dialog_disable">Απενεργοποίηση ούτως ή άλλως</string>
+    <string name="settings_backup_dialog_title">Θέλετε πραγματικά απενεργοποιήστε τα αντίγραφα ασφαλείας εφαρμογών;</string>
+    <string name="settings_backup_dialog_message">Όταν ενεργοποιήσετε ξανά τα αντίγραφα ασφαλείας, η διαδικασία δημιουργίας αντιγράφων ασφαλείας μπορεί να διαρκέσει περισσότερο από το συνηθισμένο και θα χρησιμοποιήσει επιπλέον χώρο αποθήκευσης.</string>
+    <string name="about_contributor_headline">Συνεισφέροντες</string>
+    <string name="about_contributor_content">Ανατρέξτε στο GitHub για μια <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">λίστα συνεισφερόντων</a>.</string>
+    <string name="about_contributing_organizations_title">Συνεισφέροντες Οργανισμοί</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET χρηματοδότηση από την NLnet</a></string>
 </resources>

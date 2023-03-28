@@ -6,11 +6,8 @@
     <string name="settings_backup_last_backup_never">Никогда</string>
     <string name="backup">Резервная копия</string>
     <string name="settings_backup_location">Расположение Резервной Копии</string>
-    <string name="about_source_code">Исходный код: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Спонсор: <a href="https://www.calyxinstitute.org">Институт Calyx</a> для использования в <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Дизайн от: <a href="https://www.glennsorrentino.com/">Гленн Соррентино</a></string>
     <string name="about_author">Авторы: <a href="https://github.com/stevesoltys">Steve Soltys</a> и <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Лицензия: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_summary">Приложение для резервного копирования, использующее API резервного копирования Android.</string>
     <string name="about_title">О приложении</string>
     <string name="storage_internal_warning_use_anyway">Все равно использовать</string>

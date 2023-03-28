@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_author">எழுதியவர்: <a href="https://github.com/stevesoltys">ஸ்டீவ் சோல்டிஸ்</a> மற்றும் <a href="https://blog.grobox.de">டோர்ஸ்டன் க்ரோட்</a></string>
     <string name="restore_invalid_location_message">இந்த இடத்தில் எந்த காப்புப்பிரதிகளையும் எங்களால் கண்டுபிடிக்க முடியவில்லை.
 \n
 \n%s கோப்புறையைக் கொண்ட மற்றொரு இடத்தைத் தேர்வு செய்யவும்.</string>
-    <string name="about_source_code">மூல குறியீடு: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">நிதியுதவி: <a href="https://www.calyxinstitute.org">Calyx நிறுவனத்தில்</a> பயன்படுத்த <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">வடிவமைப்பு: <a href="https://www.glennsorrentino.com/"> க்ளென் சோரெண்டினோ </a></string>
     <string name="about_license">உரிமம்: <a href="https://www.apache.org/licenses/LICENSE-2.0"> அப்பாச்சி 2 </a></string>
     <string name="about_version">பதிப்பு: %s</string>
     <string name="about_summary">Android இல் உள்ள காப்பு API ஐப் பயன்படுத்தி ஒரு காப்புப்பெடுப்பு பயன்பாடு.</string>

@@ -2,11 +2,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="storage_internal_warning_choose_other">Choisissez autre chose</string>
     <string name="about_summary">Une application de sauvegarde utilisant l’interface de programmation des sauvegardes internes d’Android.</string>
-    <string name="about_design">Concu par : <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Écrit par : <a href="https://github.com/stevesoltys">Steve Soltys</a> et <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_source_code">Code source : https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Sponsorisé par : <a href="https://www.calyxinstitute.org">Calyx Institute</a> pour l\'utilisation dans <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="storage_internal_warning_use_anyway">Utiliser quand même</string>
     <string name="about_title">À propos</string>
     <string name="storage_internal_warning_title">Avertissement</string>
@@ -192,4 +189,5 @@
     <string name="restore_app_status_restored">Données restaurées</string>
     <string name="restore_app_status_failed">Échec de la restauration</string>
     <string name="restore_app_status_warning">Alerte de restauration</string>
+    <string name="settings_backup_dialog_disable">Eteindre quand même</string>
 </resources>

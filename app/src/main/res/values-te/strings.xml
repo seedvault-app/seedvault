@@ -92,9 +92,7 @@
     <string name="settings_backup_location">బ్యాకుప్ చేయు స్థానం</string>
     <string name="settings_backup">డేటా ను బ్యాకుప్ చెయ్యి</string>
     <string name="backup">బ్యాకప్‌</string>
-    <string name="about_source_code">సోర్స్ కోడ్: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">సమర్పించినవారు: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">రూపకల్పన చేసిన వారు: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_license">లైసెన్స్: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Version: %s</string>
     <string name="storage_internal_warning_use_anyway">అయినా ఉపయోగించండి</string>

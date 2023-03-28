@@ -18,4 +18,5 @@
     <string name="notification_backup_backup_files">Fazendo backup de arquivos…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="snapshots_error">Erro ao carregar instantâneos</string>
+    <string name="content_options">Opções</string>
 </resources>

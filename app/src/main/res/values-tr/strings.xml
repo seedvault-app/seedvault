@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_source_code">Kaynak kodları: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">Sponsor: <a href="https://calyxos.org">CalyxOS</a>\'de kullanmak için <a href="https://www.calyxinstitute.org">Calyx Institute</a></string>
-    <string name="about_design">Tasarım: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Yazanlar: <a href="https://github.com/stevesoltys">Steve Soltys</a> ve <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Lisans: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
-    <string name="about_summary">Android\'in dahili yedekleme API\'sini kullanan bir yedekleme uygulaması.</string>
+    <string name="about_summary">Android\'in dahili yedekleme API\'sini kullanan bir yedekleme uygulaması. Apache 2 lisansı altında yayınlanan Özgür Yazılımdır.
+\n
+\nTüm yazılımlar gibi Seedvault da hatalar veya güvenlik açıkları içerebilir.</string>
     <string name="about_title">Hakkında</string>
     <string name="storage_internal_warning_use_anyway">Yine de kullan</string>
     <string name="storage_internal_warning_choose_other">Başkasını seç</string>
@@ -197,4 +195,13 @@
     <string name="settings_expert_logcat_summary">Geliştiriciler bu günlüklerle hataları teşhis edebilir.
 \n
 \nUyarı: Günlük dosyası kişisel olarak tanımlanabilir bilgiler içerebilir. Paylaşmadan önce inceleyin ve paylaştıktan sonra silin!</string>
+    <string name="settings_backup_dialog_title">Uygulama yedeklemeleri gerçekten kapatılsın mı\?</string>
+    <string name="settings_backup_dialog_message">Yedeklemeleri tekrar açtığınızda, yedekleme işlemi normalden daha uzun sürebilir ve ek depolama alanı kullanacaktır.</string>
+    <string name="settings_backup_dialog_disable">Yine de kapat</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Tavsiye edilmez)</string>
+    <string name="about_contributor_headline">Katkıda Bulunanlar</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a></string>
+    <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>
+    <string name="about_contributing_organizations_title">Katkıda Bulunan Kuruluşlar</string>
 </resources>

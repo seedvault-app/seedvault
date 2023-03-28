@@ -3,11 +3,8 @@
     <string name="backup_app_not_yet_backed_up">Laukiama sukurti atsarginę kopiją…</string>
     <string name="notification_restore_error_channel_title">Automatinio atkūrimo atmintuko klaida</string>
     <string name="notification_error_text">Nepavyko paleisti atsarginės įrenginio kopijos.</string>
-    <string name="about_source_code">Pirminis kodas: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Remia: <a href="https://www.calyxinstitute.org">Calyx institutas</a>, skirta naudoti <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Dizainas: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Sukūrė: <a href="https://github.com/stevesoltys">Steve Soltys</a> ir <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licencija: <a href="https://www.apache.org/licenses/LICENSE-2.0"> „Apache2“ </a></string>
     <string name="about_version">Versija: %s</string>
     <string name="about_summary">Atsarginės kopijos kūrimo programa, naudojanti „Android“ vidinį atsarginės kopijos kūrimo API.</string>
     <string name="about_title">Apie</string>

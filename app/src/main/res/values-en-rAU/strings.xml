@@ -37,7 +37,6 @@
     <string name="storage_internal_warning_choose_other">Choose other</string>
     <string name="about_summary">A backup application using Android\'s internal backup API.</string>
     <string name="storage_internal_warning_title">Warning</string>
-    <string name="about_license">License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="restore_app_not_allowed">App didn\'t allow backup</string>
     <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.
@@ -98,7 +97,6 @@
     <string name="restore_storage_got_it">Got it</string>
     <string name="storage_internal_warning_message">You have chosen internal storage for your backup. This will not be available when your phone is lost or broken.</string>
     <string name="about_version">Version: %s</string>
-    <string name="about_source_code">Source code: https://github.com/seedvault-app/seedvault</string>
     <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
     <string name="settings_category_storage">Storage backup (experimental)</string>
     <string name="settings_backup_storage_title">Backup my files</string>
@@ -119,7 +117,6 @@
     <string name="recovery_code_input_hint_3">Word 3</string>
     <string name="backup_settings">Device settings</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
-    <string name="about_sponsor">Sponsored by: <a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a></string>
     <string name="storage_fake_davx5_summary_installed">Tap to set up a WebDAV mount</string>
     <string name="recovery_code_error_invalid_word">Wrong word.</string>
     <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
@@ -195,6 +192,5 @@
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.
 \n
 \nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
-    <string name="about_author">Written by: <a href="https://github.com/stevesoltys">Steve Soltys</a> and <a href="https://blog.grobox.de">Torsten Grote</a></string>
     <string name="about_design">Design by: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
 </resources>

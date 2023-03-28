@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Opties</string>
+    <string name="content_add">Voeg toe</string>
+    <string name="notification_backup_title">Opslagback-up</string>
+    <string name="notification_backup_scanning">Bestanden aan het scannen…</string>
+    <string name="notification_backup_backup_files">Bestanden aan het back-uppen…</string>
+    <string name="notification_prune">Oude back-ups aan het verwijderen…</string>
+    <string name="notification_restore_title">Bestanden aan het herstellen…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="snapshots_title">Beschikbare opslagback-ups</string>
+    <string name="snapshots_error">Fout tijdens laden snapshots</string>
+    <string name="content_videos">Video\'s</string>
+    <string name="content_audio">Audiobestanden</string>
+    <string name="content_downloads">Downloads</string>
+    <string name="content_images">Foto\'s en afbeeldingen</string>
+    <string name="notification_restore_channel_title">Opslagherstel</string>
+    <string name="notification_restore_complete_title">%1$d van de %2$d bestanden zijn hersteld</string>
+    <string name="snapshots_empty">Geen opslagback-ups zijn gevonden
+\n
+\nEr is helaas niets om te herstellen.</string>
+</resources>

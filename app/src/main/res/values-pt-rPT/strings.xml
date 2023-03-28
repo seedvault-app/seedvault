@@ -3,11 +3,8 @@
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="current_destination_string">Estado do backup e configurações</string>
     <string name="backup">Backup</string>
-    <string name="about_source_code">Código-fonte: https://github.com/seedvault-app/seedvault</string>
     <string name="about_sponsor">Patrocinado por: <a href="https://www.calyxinstitute.org">Calyx Institute</a> para uso no <a href="https://calyxos.org">CalyxOS</a></string>
-    <string name="about_design">Design por: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_author">Escrito por: <a href="https://github.com/stevesoltys">Steve Soltys</a> e <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_license">Licença: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_version">Versão: %s</string>
     <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
     <string name="about_title">Sobre</string>
@@ -167,4 +164,26 @@
     <string name="recovery_code_auth_title">Digite novamente o bloqueio de ecrã</string>
     <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
     <string name="notification_title">Backup em execução</string>
+    <string name="restore_skip_apps">Pular restauração de apps</string>
+    <string name="restore_app_status_installing">A reinstalar</string>
+    <string name="restore_app_status_installed">Reinstalado</string>
+    <string name="restore_app_status_install_error">Não foi possível instalar</string>
+    <string name="backup_app_in_progress">A fazer backup</string>
+    <string name="backup_app_warning">Aviso de backup</string>
+    <string name="restore_app_status_restored">Dados restaurados</string>
+    <string name="restore_app_status_failed">Falha na restauração</string>
+    <string name="restore_app_status_warning">Aviso de restauração</string>
+    <string name="error_no_store">Erro: Nenhuma loja de apps instalada</string>
+    <string name="restore_storage_in_progress_info">Os seus ficheiros estão sendo restaurados em segundo plano. Pode usar o seu telefone durante a execução.
+\n
+\nAlgumas apps (por exemplo, Signal ou WhatsApp) podem exigir que os ficheiros sejam totalmente restaurados para importar um backup. Tente evitar iniciar essas apps antes que a restauração do ficheiro seja concluída.</string>
+    <string name="settings_backup_storage_battery_optimization">Aviso: sem backups automáticos, pois a otimização de bateria está ativa.</string>
+    <string name="settings_backup_new_code_dialog_title">Novo código de recuperação necessário</string>
+    <string name="settings_backup_new_code_dialog_message">Para continuar usando os backups de apps, precisa gerar um novo código de recuperação.
+\n
+\nLamentamos o inconveniente.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Novo código</string>
+    <string name="notification_backup_disabled">Backup desativado</string>
+    <string name="notification_error_no_main_key_title">Backups desativados</string>
+    <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar a usar os backups.</string>
 </resources>

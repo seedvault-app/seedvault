@@ -59,11 +59,8 @@
     <string name="about_title">このアプリについて</string>
     <string name="recovery_code_confirm_intro">12 単語のリカバリコードを入力して、必要なときに機能することを確認してください。</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> の空き</string>
-    <string name="about_license">ライセンス: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache2</a></string>
     <string name="about_author">コーディング: <a href="https://github.com/stevesoltys">Steve Soltys</a> と <a href="https://blog.grobox.de">Torsten Grote</a></string>
-    <string name="about_design">デザイン: <a href="https://www.glennsorrentino.com/">Glenn Sorrentino</a></string>
     <string name="about_source_code">ソースコード: https://github.com/seedvault-app/seedvault</string>
-    <string name="about_sponsor">スポンサー: <a href="https://www.calyxinstitute.org">Calyx Institute</a> <a href="https://calyxos.org">CalyxOS</a>に使われています</string>
     <string name="about_version">バージョン: %s</string>
     <string name="about_summary">Android の内部バックアップ API を使用したバックアップアプリケーションです。</string>
     <string name="storage_internal_warning_use_anyway">とにかく使う</string>
