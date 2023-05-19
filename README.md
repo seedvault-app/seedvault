@@ -66,8 +66,12 @@ This project aims to adhere to the [official Kotlin coding style](https://develo
 > Please be aware that disclosing your secret recovery key to other software has security risks.
 
 The [Seedvault backup parser](https://github.com/tlambertz/seedvault_backup_parser)
-allows you to decrypt and inspect your backups.
+allows you to decrypt and inspect your backups (version 0 backup).
 It can also re-encrypt them.
+
+The [Seedvault extractor](https://github.com/jackwilsdon/seedvault-extractor)
+allows you to decrypt and inspect your backups from newer versions of Seedvault (version 1 backup).
+It is currently work-in-progress.
 
 ## License
 This application is available as open source under the terms of the [Apache-2.0 License](https://opensource.org/licenses/Apache-2.0).
