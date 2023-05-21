@@ -60,7 +60,9 @@
     <string name="recovery_code_confirm_intro">12 単語のリカバリコードを入力して、必要なときに機能することを確認してください。</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> の空き</string>
     <string name="about_version">バージョン: %s</string>
-    <string name="about_summary">Android の内部バックアップ API を使用したバックアップアプリケーションです。</string>
+    <string name="about_summary">Android の内部バックアップ API を使用したバックアップアプリケーションです。Apache 2 のライセンスを使用しているオープンソースソフトウェアです。
+\n
+\n多くのソフトウェアのように、Speedvalutのアプリもバグや脆弱性を含んでいる可能性があります。</string>
     <string name="storage_internal_warning_use_anyway">とにかく使う</string>
     <string name="storage_internal_warning_choose_other">他の場所を選択</string>
     <string name="storage_internal_warning_message">バックアップに内部ストレージを選択しました。お使いの携帯電話が紛失または破損した場合、これは利用できません。</string>
@@ -177,4 +179,26 @@
     <string name="storage_fake_davx5_summary_installed">タップして WebDAV マウントをセットアップします</string>
     <string name="notification_error_no_main_key_text">新しいリカバリコードを生成してアップグレードを完了し、バックアップを引き続き使用します。</string>
     <string name="error_no_store">エラー: アプリストアがインストールされていません</string>
+    <string name="restore_app_status_warning">復元警告</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (おすすめしません)</string>
+    <string name="backup_app_in_progress">バックアップ中です</string>
+    <string name="backup_app_success">バックアップ完了</string>
+    <string name="backup_app_warning">バックアップ警告</string>
+    <string name="restore_app_status_installing">再インストール中</string>
+    <string name="restore_app_status_restored">データ復旧完了</string>
+    <string name="restore_app_status_failed">復元に失敗しました</string>
+    <string name="about_contributor_headline">コントリビューター</string>
+    <string name="about_contributor_content">以下のGithubのリンクへ移動してください。 <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">コントリビューターのリスト</a>.</string>
+    <string name="about_contributing_organizations_title">コントリビュートしている組織</string>
+    <string name="notification_backup_disabled">バックアップの保存が有効ありません</string>
+    <string name="settings_expert_logcat_title">アプリのログを保存します</string>
+    <string name="settings_expert_logcat_summary">開発者はログファイルをもとにバグを発見することが可能です。
+\n
+\n警告: ログファイルには個人を特定できる情報が含まれている可能性があります。共有する前に確認し、共有後に削除してください！</string>
+    <string name="settings_backup_dialog_message">バックアップをオンにした時、バックアップを作成する時間がいつもより長くかかり、また追加の容量を使用するかもしれません。</string>
+    <string name="restore_app_status_installed">再インストール完了</string>
+    <string name="restore_app_status_install_error">インストールできませんでした</string>
+    <string name="settings_backup_dialog_title">アプリのバックアップを本当にオフにしてもよろしいですか？</string>
+    <string name="settings_backup_dialog_disable">とにかくオフにします</string>
+    <string name="settings_expert_logcat_error">エラー: アプリのログを保存できませんでした</string>
 </resources>

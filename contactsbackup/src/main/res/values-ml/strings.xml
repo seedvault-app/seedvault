@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_label">പ്രാദേശിക കോൺടാക്‌റ്റുകളുടെ ബാക്കപ്പ്</string>
+</resources>

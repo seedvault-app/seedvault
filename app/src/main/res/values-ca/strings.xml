@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about_summary">Una aplicació de còpies de seguretat que utilitza l\'API interna de còpies de seguretat d\'Android.</string>
+    <string name="about_summary">Una aplicació de còpies de seguretat que utilitza l\'API interna de còpies de seguretat d\'Android. És programari lliure sota la llicència Apache 2.
+\n
+\nCom tot programari, Seedvault pot contenir errors o vulnerabilitats.</string>
     <string name="settings_backup_location_none">Cap</string>
     <string name="settings_backup_location_internal">Enmagatzematge intern</string>
     <string name="settings_backup_last_backup_never">Mai</string>
@@ -187,4 +189,18 @@
     <string name="restore_app_status_restored">Dades restaurades</string>
     <string name="restore_app_status_failed">Ha fallat la restauració</string>
     <string name="restore_app_status_warning">Avís de restrauració</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (No recomanat)</string>
+    <string name="settings_backup_dialog_title">Segur que voleu desactivar les còpies de seguretat de les aplicacions\?</string>
+    <string name="settings_backup_dialog_message">Quan torneu a activar les còpies de seguretat, el procés de còpia de seguretat pot trigar més del que és habitual, i utilitzarà espai d\'emmagatzematge addicional.</string>
+    <string name="settings_backup_dialog_disable">Apagar igualemnt</string>
+    <string name="about_contributor_headline">Col·laboradors</string>
+    <string name="about_contributor_content">Si us plau, vegeu GitHub per a una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">llista de col·laboradors</a>.</string>
+    <string name="about_contributing_organizations_title">Organitzacions col·laboradores</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> per ús a <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Finançat per NLnet</a></string>
+    <string name="settings_expert_logcat_title">Desa el registre de l\'aplicació</string>
+    <string name="settings_expert_logcat_summary">Els desenvolupadors poden diagnosticar errors amb aquests registres.
+\n
+\nAvís: El fitxer de registre pot contenir informació personal identificable. Reviseu-lo abans i suprimiu-lo després de compartir!</string>
+    <string name="settings_expert_logcat_error">Error: No s\'ha pogut desar el registre de l\'aplicació</string>
 </resources>
