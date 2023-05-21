@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_add">ചേർക്കുക</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_title">ഫയലുകൾ പുനഃസ്ഥാപിക്കുന്നു…</string>
+    <string name="notification_restore_channel_title">സംഭരണം പുനഃസ്ഥാപിക്കുക</string>
+    <string name="snapshots_empty">സംഭരണ ബാക്കപ്പുകളൊന്നും കണ്ടെത്തിയില്ല
+\n
+\nക്ഷമിക്കണം, പുനഃസ്ഥാപിക്കാൻ കഴിയുന്ന ഒന്നുമില്ല.</string>
+    <string name="content_videos">വീഡിയോകൾ</string>
+    <string name="content_downloads">ഡൗൺലോഡുകൾ</string>
+</resources>

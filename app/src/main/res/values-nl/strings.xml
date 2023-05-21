@@ -146,7 +146,9 @@
 \nExcuses voor het ongemak.</string>
     <string name="storage_internal_warning_message">Je hebt interne opslag gekozen voor je back-up. Dit zal niet beschikbaar zijn als je telefoon verloren of kapot is.</string>
     <string name="storage_internal_warning_title">Waarschuwing</string>
-    <string name="about_summary">Een back-upapp die de interne back-up-API van Android gebruikt.</string>
+    <string name="about_summary">Een back-upapp die de interne back-up-API van Android gebruikt. Het is vrije software, uitgebracht onder de Apache 2 licentie.
+\n
+\nZoals alle software, Seedvault kan bugs of kwetsbaarheden bevatten.</string>
     <string name="recovery_code_auth_title">Voer je schermbeveiliging nog eens in</string>
     <string name="backup_contacts">Lokale contacten</string>
     <string name="notification_restore_error_text">Plug je %1$s in voordat je de app installeert om de gegevens daarvan te herstellen uit je back-up.</string>
@@ -196,4 +198,9 @@
     <string name="restore_storage_in_progress_info">Je bestanden worden in de achtergrond hersteld. Je kan je apparaat gebruiken terwijl dit loopt.
 \n
 \nSommige apps (bijvoorbeeld Signal of WhatsApp) kunnen vereisen dat bestanden volledig zijn hersteld voordat een back-up kan worden geïmporteerd. Probeer te voorkomen deze apps te openen voordat het herstel van bestanden compleet is.</string>
+    <string name="about_contributor_headline">Bijdragers</string>
+    <string name="about_contributor_content">Zie GitHub voor een <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lijst van bijdragers</a>.</string>
+    <string name="about_contributing_organizations_title">Bijdragende organisaties</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> voor gebruik in <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund van NLnet</a></string>
 </resources>
