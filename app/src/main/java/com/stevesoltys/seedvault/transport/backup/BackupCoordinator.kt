@@ -17,7 +17,6 @@ import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
@@ -417,7 +416,7 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    @VisibleForTesting(otherwise = PRIVATE)
+    @VisibleForTesting
     internal suspend fun backUpApksOfNotBackedUpPackages() {
         Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
         val notBackedUpPackages = packageService.notBackedUpPackages
