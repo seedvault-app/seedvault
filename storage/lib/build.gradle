@@ -43,7 +43,13 @@ android {
     }
     protobuf {
         protoc {
-            artifact = "com.google.protobuf:protoc:$protobuf_version"
+            if ("aarch64" == System.getProperty("os.arch")) {
+                // mac m1
+                artifact = "com.google.protobuf:protoc:$protobuf_version:osx-x86_64"
+            } else {
+                // other
+                artifact = "com.google.protobuf:protoc:$protobuf_version"
+            }
         }
         generateProtoTasks {
             all().each { task ->
