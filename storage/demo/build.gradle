@@ -11,6 +11,7 @@ plugins {
 }
 
 android {
+    namespace 'de.grobox.storagebackuptester'
     compileSdk rootProject.ext.compileSdk
 
     defaultConfig {

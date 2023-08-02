@@ -14,6 +14,7 @@ def gitDescribe = { ->
 }
 
 android {
+    namespace 'com.stevesoltys.seedvault'
     compileSdk rootProject.ext.compileSdk
 
     defaultConfig {

@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+    namespace 'org.calyxos.backup.contacts'
     compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
