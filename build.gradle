@@ -20,7 +20,6 @@ plugins {
 }
 
 ext {
-    buildToolsVersion = '33.0.0'
     compileSdkVersion = 33
     minSdkVersion = 32
     targetSdkVersion = 33

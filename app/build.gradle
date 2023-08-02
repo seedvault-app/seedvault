@@ -15,7 +15,6 @@ def gitDescribe = { ->
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 32 // leave at 32 for robolectric tests
