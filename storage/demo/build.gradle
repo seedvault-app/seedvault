@@ -39,15 +39,22 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
-    lintOptions {
+    lint {
         disable "DialogFragmentCallbacksDetector",
                 "InvalidFragmentVersionForActivityResult"
     }
     packagingOptions {
-        exclude 'META-INF/*.kotlin_module'
-        exclude 'META-INF/androidx.*.version'
-        exclude 'META-INF/services/kotlin*'
-        exclude 'kotlin/internal/internal.kotlin_builtins'
+        jniLibs {
+            excludes += ['META-INF/services/kotlin*']
+        }
+        resources {
+            excludes += [
+                    'META-INF/*.kotlin_module',
+                    'META-INF/androidx.*.version',
+                    'META-INF/services/kotlin*',
+                    'kotlin/internal/internal.kotlin_builtins'
+            ]
+        }
     }
 }
 
