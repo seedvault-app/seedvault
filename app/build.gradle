@@ -14,11 +14,11 @@ def gitDescribe = { ->
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
-        minSdkVersion 32 // leave at 32 for robolectric tests
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk 32 // leave at 32 for robolectric tests
+        targetSdk rootProject.ext.targetSdk
         versionNameSuffix "-$gitDescribe"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
