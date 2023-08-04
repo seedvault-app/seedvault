@@ -24,3 +24,6 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class org.calyxos.backup.storage.** {*;}
+
+# Ignore StringConcatFactory
+-dontwarn java.lang.invoke.StringConcatFactory

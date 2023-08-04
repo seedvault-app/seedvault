@@ -6,19 +6,19 @@
 plugins {
     id 'com.android.library'
     id 'com.google.protobuf'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id "org.jlleitschuh.gradle.ktlint" version "10.2.0"
-    id 'org.jetbrains.dokka' version "$kotlin_version"
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+    id 'org.jetbrains.dokka'
+    id 'org.jlleitschuh.gradle.ktlint'
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'org.calyxos.backup.storage'
+    compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk rootProject.ext.minSdk
+        targetSdk rootProject.ext.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
@@ -38,13 +38,19 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
-        languageVersion = "1.6"
-        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
+        languageVersion = "1.7"
+        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
         freeCompilerArgs += '-Xexplicit-api=strict'
     }
     protobuf {
         protoc {
-            artifact = "com.google.protobuf:protoc:$protobuf_version"
+            if ("aarch64" == System.getProperty("os.arch")) {
+                // mac m1
+                artifact = "com.google.protobuf:protoc:$protobuf_version:osx-x86_64"
+            } else {
+                // other
+                artifact = "com.google.protobuf:protoc:$protobuf_version"
+            }
         }
         generateProtoTasks {
             all().each { task ->
@@ -56,7 +62,7 @@ android {
             }
         }
     }
-    lintOptions {
+    lint {
         disable "DialogFragmentCallbacksDetector",
                 "InvalidFragmentVersionForActivityResult",
                 "CheckedExceptions"

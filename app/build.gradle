@@ -1,7 +1,7 @@
 plugins {
-    id "com.android.application"
-    id "kotlin-android"
-    id "org.jlleitschuh.gradle.ktlint" version "10.2.0"
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jlleitschuh.gradle.ktlint'
 }
 
 def gitDescribe = { ->
@@ -14,12 +14,12 @@ def gitDescribe = { ->
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'com.stevesoltys.seedvault'
+    compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
-        minSdkVersion 32 // leave at 32 for robolectric tests
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk 32 // leave at 32 for robolectric tests
+        targetSdk rootProject.ext.targetSdk
         versionNameSuffix "-$gitDescribe"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
@@ -31,7 +31,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         disable "DialogFragmentCallbacksDetector",
                 "InvalidFragmentVersionForActivityResult",
                 "CheckedExceptions"
@@ -43,7 +43,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
-        languageVersion = "1.6"
+        languageVersion = "1.7"
     }
     testOptions {
         unitTests.all {

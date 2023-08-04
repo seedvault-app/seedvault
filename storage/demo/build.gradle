@@ -6,18 +6,18 @@
 plugins {
     id 'com.android.application'
     id 'com.google.protobuf'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    namespace 'de.grobox.storagebackuptester'
+    compileSdk rootProject.ext.compileSdk
 
     defaultConfig {
         applicationId "de.grobox.storagebackuptester"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdk rootProject.ext.minSdk
+        targetSdk rootProject.ext.targetSdk
         versionCode 20
         versionName "0.9.7"
 
@@ -37,17 +37,24 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
-    lintOptions {
+    lint {
         disable "DialogFragmentCallbacksDetector",
                 "InvalidFragmentVersionForActivityResult"
     }
     packagingOptions {
-        exclude 'META-INF/*.kotlin_module'
-        exclude 'META-INF/androidx.*.version'
-        exclude 'META-INF/services/kotlin*'
-        exclude 'kotlin/internal/internal.kotlin_builtins'
+        jniLibs {
+            excludes += ['META-INF/services/kotlin*']
+        }
+        resources {
+            excludes += [
+                    'META-INF/*.kotlin_module',
+                    'META-INF/androidx.*.version',
+                    'META-INF/services/kotlin*',
+                    'kotlin/internal/internal.kotlin_builtins'
+            ]
+        }
     }
 }
 
