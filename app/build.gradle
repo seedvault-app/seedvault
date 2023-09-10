@@ -72,7 +72,7 @@ android {
             // https://android.googlesource.com/platform/build/+/refs/tags/android-11.0.0_r29/target/product/security/platform.pk8
             keyAlias "platform"
             keyPassword "platform"
-            storeFile file("platform.jks")
+            storeFile file("development/platform.jks")
             storePassword "platform"
         }
     }
@@ -169,5 +169,44 @@ configurations {
         resolutionStrategy {
             failOnNonReproducibleResolution()
         }
+    }
+}
+
+tasks.register('provisionEmulator', Exec) {
+    group("emulator")
+
+    dependsOn(tasks.assembleRelease)
+
+    doFirst {
+        commandLine "${project.projectDir}/development/scripts/provision_emulator.sh",
+                "seedvault",
+                "system-images;android-33;google_apis;x86_64"
+
+        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "JAVA_HOME", System.properties['java.home']
+    }
+}
+
+tasks.register('startEmulator', Exec) {
+    group("emulator")
+
+    doFirst {
+        commandLine "${project.projectDir}/development/scripts/start_emulator.sh", "seedvault"
+
+        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "JAVA_HOME", System.properties['java.home']
+    }
+}
+
+tasks.register('installEmulatorRelease', Exec) {
+    group("emulator")
+
+    dependsOn(tasks.assembleRelease)
+
+    doFirst {
+        commandLine "${project.projectDir}/development/scripts/install_app.sh"
+
+        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "JAVA_HOME", System.properties['java.home']
     }
 }
