@@ -31,7 +31,6 @@ else
   sleep 1
 fi
 
-echo "Starting emulator..."
 $SCRIPT_DIR/start_emulator.sh "$EMULATOR_NAME"
 sleep 3
 

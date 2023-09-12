@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract.EXTRA_LOADING
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.coAssertThrows
@@ -39,6 +40,7 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("BlockingMethodInNonBlockingContext")
+@MediumTest
 class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
