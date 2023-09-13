@@ -95,9 +95,9 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
 
         listView.adapter = adapter
 
-        viewModel.storageOptions.observe(viewLifecycleOwner, { roots ->
+        viewModel.storageOptions.observe(viewLifecycleOwner) { roots ->
             onRootsLoaded(roots)
-        })
+        }
     }
 
     override fun onStart() {
