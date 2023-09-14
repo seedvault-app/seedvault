@@ -58,6 +58,8 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/seedvault-app/seedvault.
 
+See [DEVELOPMENT.md](app/development/DEVELOPMENT.md) for information on developing Seedvault locally.
+
 This project aims to adhere to the [official Kotlin coding style](https://developer.android.com/kotlin/style-guide).
 
 ## Third-party tools
