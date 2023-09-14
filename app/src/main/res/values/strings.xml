@@ -58,6 +58,7 @@
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
     <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
     <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
+    <string name="storage_user_selected_location_title">User-chosen location</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>

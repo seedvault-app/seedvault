@@ -1,8 +1,10 @@
 package com.stevesoltys.seedvault.ui.storage
 
+import android.Manifest.permission.MANAGE_DOCUMENTS
 import android.content.Context
 import android.database.Cursor
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.UserHandle
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
@@ -57,6 +59,25 @@ internal object StorageRootResolver {
         return roots
     }
 
+    /**
+     * Used for getting a SafOption when we lack [MANAGE_DOCUMENTS],
+     * since we are not allowed to use [getStorageRoots] in this case.
+     */
+    fun getFakeStorageRootForUri(context: Context, uri: Uri): SafOption {
+        val authority = uri.authority ?: throw AssertionError("No authority in $uri")
+        return SafOption(
+            authority = authority,
+            rootId = ROOT_ID_DEVICE,
+            documentId = DocumentsContract.getTreeDocumentId(uri),
+            icon = getIcon(context, authority, ROOT_ID_DEVICE, 0),
+            title = context.getString(R.string.storage_user_selected_location_title),
+            summary = "Please open a bug if you see this",
+            availableBytes = null,
+            isUsb = false, // FIXME not supported without MANAGE_DOCUMENTS permission
+            requiresNetwork = authority != AUTHORITY_STORAGE && authority != AUTHORITY_DOWNLOADS,
+        )
+    }
+
     private fun getStorageRoot(context: Context, authority: String, cursor: Cursor): SafOption? {
         val flags = cursor.getInt(COLUMN_FLAGS)
         val supportsCreate = flags and FLAG_SUPPORTS_CREATE != 0
@@ -107,15 +128,19 @@ internal object StorageRootResolver {
             authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> {
                 context.getDrawable(R.drawable.ic_phone_android)
             }
+
             authority == AUTHORITY_STORAGE && rootId != ROOT_ID_HOME -> {
                 context.getDrawable(R.drawable.ic_usb)
             }
+
             authority == AUTHORITY_NEXTCLOUD -> {
                 context.getDrawable(R.drawable.nextcloud)
             }
+
             authority == AUTHORITY_DAVX5 -> {
                 context.getDrawable(R.drawable.davx5)
             }
+
             else -> null
         }
     }

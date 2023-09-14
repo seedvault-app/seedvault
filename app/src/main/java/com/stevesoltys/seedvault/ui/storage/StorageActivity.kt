@@ -31,11 +31,14 @@ class StorageActivity : BackupActivity() {
      */
     private val openDocumentTree = registerForActivityResult(OpenPersistableDocumentTree()) { uri ->
         if (uri != null) {
-            Log.e(TAG, "OpenDocumentTree: $uri")
             val authority = uri.authority ?: throw AssertionError("No authority in $uri")
+            // we are most likely not allowed to resolve storage roots,
+            // but being the optimists we are, we are still trying...
             val storageRoot = StorageRootResolver.getStorageRoots(this, authority).getOrNull(0)
             if (storageRoot == null) {
-                viewModel.onUriPermissionResultReceived(null)
+                val fakeRoot = StorageRootResolver.getFakeStorageRootForUri(this, uri)
+                viewModel.onSafOptionChosen(fakeRoot)
+                viewModel.onUriPermissionResultReceived(uri)
             } else {
                 viewModel.onSafOptionChosen(storageRoot)
                 viewModel.onUriPermissionResultReceived(uri)
@@ -56,11 +59,11 @@ class StorageActivity : BackupActivity() {
         }
         viewModel.isSetupWizard = isSetupWizard()
 
-        viewModel.locationSet.observeEvent(this, {
+        viewModel.locationSet.observeEvent(this) {
             showFragment(StorageCheckFragment.newInstance(getCheckFragmentTitle()), true)
-        })
+        }
 
-        viewModel.locationChecked.observeEvent(this, { result ->
+        viewModel.locationChecked.observeEvent(this) { result ->
             val errorMsg = result.errorMsg
             if (errorMsg == null) {
                 setResult(RESULT_OK)
@@ -68,7 +71,7 @@ class StorageActivity : BackupActivity() {
             } else {
                 onInvalidLocation(errorMsg)
             }
-        })
+        }
 
         if (savedInstanceState == null) {
             if (canUseStorageRootsFragment()) {
