@@ -67,4 +67,13 @@ echo "Rebooting emulator..."
 $ADB reboot
 $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
 
+echo "Downloading and extracting test backup to '/sdcard/seedvault'..."
+wget https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz
+$ADB push backup.tar.gz /sdcard/
+rm backup.tar.gz
+
+$ADB shell mkdir -p /sdcard/seedvault_baseline
+$ADB shell tar xzf /sdcard/backup.tar.gz --directory=/sdcard/seedvault_baseline
+$ADB shell rm /sdcard/backup.tar.gz
+
 echo "Emulator '$EMULATOR_NAME' has been provisioned with Seedvault!"

@@ -1,9 +1,12 @@
 package com.stevesoltys.seedvault.e2e.screen
 
+import android.widget.ScrollView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
+import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
+import java.lang.Thread.sleep
 
 abstract class UiDeviceScreen<T> {
 
@@ -11,10 +14,20 @@ abstract class UiDeviceScreen<T> {
         function.invoke(this as T)
     }
 
-    protected fun findObject(
+    fun UiObject.scrollTo(
+        scrollSelector: UiSelector = UiSelector().className(ScrollView::class.java),
+    ): UiObject {
+        UiScrollable(scrollSelector).scrollIntoView(this)
+        waitForExists(15000)
+        sleep(2000)
+        return this
+    }
+
+    fun findObject(
         block: UiSelector.() -> UiSelector,
-    ): UiObject = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        .findObject(
-            UiSelector().let { it.block() }
-        )
+    ): UiObject = device().findObject(
+        UiSelector().let { it.block() }
+    )
+
+    private fun device() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 }

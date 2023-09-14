@@ -1,15 +1,12 @@
 package com.stevesoltys.seedvault.e2e.screen.impl
 
-import com.kaspersky.kaspresso.screens.KScreen
-import com.stevesoltys.seedvault.R
-import io.github.kakaocup.kakao.text.KButton
+import com.stevesoltys.seedvault.e2e.screen.UiDeviceScreen
 
-object RecoveryCodeScreen : KScreen<RecoveryCodeScreen>() {
+object RecoveryCodeScreen : UiDeviceScreen<RecoveryCodeScreen>() {
 
-    override val layoutId: Int? = null
-    override val viewClass: Class<*>? = null
+    val confirmCodeButton = findObject { text("Confirm code") }
 
-    val confirmCodeButton = KButton { withId(R.id.confirmCodeButton) }
+    val verifyCodeButton = findObject { text("Verify") }
 
-    val verifyCodeButton = KButton { withId(R.id.doneButton) }
+    fun wordTextField(index: Int) = findObject { text("Word ${index + 1}") }
 }

@@ -14,4 +14,6 @@ object DocumentPickerScreen : UiDeviceScreen<DocumentPickerScreen>() {
     val okButton = findObject { text("OK") }
 
     val allowButton = findObject { text("ALLOW") }
+
+    fun existingFolder(folderName: String) = findObject { text(folderName) }
 }
