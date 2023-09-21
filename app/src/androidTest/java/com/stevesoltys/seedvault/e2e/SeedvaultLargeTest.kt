@@ -1,8 +1,6 @@
 package com.stevesoltys.seedvault.e2e
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.stevesoltys.seedvault.restore.RestoreViewModel
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -10,7 +8,6 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import org.junit.runner.RunWith
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -27,11 +24,9 @@ internal abstract class SeedvaultLargeTest :
         private const val RECOVERY_CODE_FILE = "recovery-code.txt"
     }
 
-    override val spyBackupNotificationManager: BackupNotificationManager by inject()
+    private val baselineBackupFolderPath get() = "$externalStorageDir/$BASELINE_BACKUP_FOLDER"
 
-    override val spyRestoreViewModel: RestoreViewModel by inject()
-
-    private val baselineBackupFolderPath = "${this.externalStorageDir()}/$BASELINE_BACKUP_FOLDER"
+    private val baselineBackupPath get() = "$baselineBackupFolderPath/.SeedVaultAndroidBackup"
 
     private val baselineRecoveryCodePath = "$baselineBackupFolderPath/$RECOVERY_CODE_FILE"
 
@@ -39,7 +34,7 @@ internal abstract class SeedvaultLargeTest :
 
     @Before
     open fun setUp() = runBlocking {
-        clearDocumentPickerAppData()
+        resetApplicationState()
         clearTestBackups()
 
         startScreenRecord(keepRecordingScreen, name.methodName)
@@ -58,14 +53,15 @@ internal abstract class SeedvaultLargeTest :
      * provisioning tests: https://github.com/seedvault-app/seedvault-test-data
      */
     private fun restoreBaselineBackup() {
-        if (File(baselineBackupFolderPath).exists()) {
+        val backupFile = File(baselineBackupPath)
+
+        if (backupFile.exists()) {
             launchRestoreActivity()
             chooseStorageLocation(folderName = BASELINE_BACKUP_FOLDER, exists = true)
             typeInRestoreCode(baselineBackupRecoveryCode())
             performRestore()
 
-            // remove baseline backup after restore
-            runCommand("rm -Rf $baselineBackupFolderPath/*")
+            resetApplicationState()
         }
     }
 

@@ -3,7 +3,7 @@ package com.stevesoltys.seedvault.crypto
 import org.koin.dsl.module
 import java.security.KeyStore
 
-private const val ANDROID_KEY_STORE = "AndroidKeyStore"
+const val ANDROID_KEY_STORE = "AndroidKeyStore"
 
 val cryptoModule = module {
     factory<CipherFactory> { CipherFactoryImpl(get()) }

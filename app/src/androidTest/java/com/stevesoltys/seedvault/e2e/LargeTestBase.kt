@@ -2,33 +2,52 @@ package com.stevesoltys.seedvault.e2e
 
 import android.app.UiAutomation
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.os.Environment
 import androidx.annotation.WorkerThread
+import androidx.preference.PreferenceManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import com.stevesoltys.seedvault.crypto.ANDROID_KEY_STORE
+import com.stevesoltys.seedvault.crypto.KEY_ALIAS_BACKUP
+import com.stevesoltys.seedvault.crypto.KEY_ALIAS_MAIN
+import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.currentRestoreViewModel
+import com.stevesoltys.seedvault.e2e.screen.impl.BackupScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.DocumentPickerScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.RecoveryCodeScreen
+import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
+import com.stevesoltys.seedvault.restore.RestoreViewModel
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import java.io.File
 import java.lang.Thread.sleep
+import java.security.KeyStore
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicBoolean
 
-interface LargeTestBase {
+internal interface LargeTestBase : KoinComponent {
 
     companion object {
         private const val TEST_STORAGE_FOLDER = "seedvault_test"
         private const val TEST_VIDEO_FOLDER = "seedvault_test_videos"
     }
 
-    fun externalStorageDir(): String = Environment.getExternalStorageDirectory().absolutePath
+    val externalStorageDir: String get() = Environment.getExternalStorageDirectory().absolutePath
 
-    fun testStoragePath(): String = "${externalStorageDir()}/$TEST_STORAGE_FOLDER"
+    val testStoragePath get() = "$externalStorageDir/$TEST_STORAGE_FOLDER"
 
-    fun testVideoPath(): String = "${externalStorageDir()}/$TEST_VIDEO_FOLDER"
+    val testVideoPath get() = "$externalStorageDir/$TEST_VIDEO_FOLDER"
 
     val targetContext: Context
         get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -38,6 +57,38 @@ interface LargeTestBase {
 
     val device: UiDevice
         get() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+    val packageService: PackageService get() = get()
+
+    val settingsManager: SettingsManager get() = get()
+
+    val keyManager: KeyManager get() = get()
+
+    val documentsStorage: DocumentsStorage get() = get()
+
+    val spyMetadataManager: MetadataManager get() = get()
+
+    val spyRestoreViewModel: RestoreViewModel
+        get() = currentRestoreViewModel ?: error("currentRestoreViewModel is null")
+
+    fun resetApplicationState() {
+        settingsManager.setNewToken(null)
+        documentsStorage.reset(null)
+
+        val sharedPreferences = permitDiskReads {
+            PreferenceManager.getDefaultSharedPreferences(targetContext)
+        }
+        sharedPreferences.edit().clear().apply()
+
+        KeyStore.getInstance(ANDROID_KEY_STORE).apply {
+            load(null)
+        }.apply {
+            deleteEntry(KEY_ALIAS_MAIN)
+            deleteEntry(KEY_ALIAS_BACKUP)
+        }
+
+        clearDocumentPickerAppData()
+    }
 
     fun waitUntilIdle() {
         device.waitForIdle()
@@ -58,8 +109,7 @@ interface LargeTestBase {
         val timeStamp = simpleDateFormat.format(Calendar.getInstance().time)
         val fileName = "${timeStamp}_${testName.replace(" ", "_")}"
 
-        val folder = testVideoPath()
-
+        val folder = testVideoPath
         runCommand("mkdir -p $folder")
 
         // screen record automatically stops after 3 minutes
@@ -80,8 +130,8 @@ interface LargeTestBase {
         runCommand("pkill -2 screenrecord")
     }
 
-    fun uninstallPackages(packages: Set<String>) {
-        packages.forEach { runCommand("pm uninstall $it") }
+    fun uninstallPackages(packages: Collection<PackageInfo>) {
+        packages.forEach { runCommand("pm uninstall ${it.packageName}") }
     }
 
     fun clearDocumentPickerAppData() {
@@ -89,7 +139,19 @@ interface LargeTestBase {
     }
 
     fun clearTestBackups() {
-        runCommand("rm -Rf ${testStoragePath()}")
+        File(testStoragePath).deleteRecursively()
+    }
+
+    fun changeBackupLocation(
+        folderName: String = TEST_STORAGE_FOLDER,
+        exists: Boolean = false,
+    ) {
+        BackupScreen {
+            clearDocumentPickerAppData()
+            backupLocationButton.clickAndWaitForNewWindow()
+
+            chooseStorageLocation(folderName, exists)
+        }
     }
 
     fun chooseStorageLocation(
@@ -117,5 +179,11 @@ interface LargeTestBase {
 
             verifyCodeButton.scrollTo().click()
         }
+    }
+
+    fun ByteArray.sha256(): String {
+        val data = MessageDigest.getInstance("SHA-256").digest(this)
+
+        return data.joinToString("") { "%02x".format(it) }
     }
 }

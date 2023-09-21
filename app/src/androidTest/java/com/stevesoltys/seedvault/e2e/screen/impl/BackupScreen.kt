@@ -9,4 +9,6 @@ object BackupScreen : UiDeviceScreen<BackupScreen>() {
     val backupNowButton = findObject { text("Backup now") }
 
     val backupStatusButton = findObject { text("Backup status") }
+
+    val backupLocationButton = findObject { text("Backup location") }
 }
