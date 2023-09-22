@@ -191,7 +191,7 @@ tasks.register('provisionEmulator', Exec) {
                 "seedvault",
                 "system-images;android-33;google_apis;x86_64"
 
-        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "ANDROID_HOME", android.sdkDirectory.absolutePath
         environment "JAVA_HOME", System.properties['java.home']
     }
 }
@@ -202,7 +202,7 @@ tasks.register('startEmulator', Exec) {
     doFirst {
         commandLine "${project.projectDir}/development/scripts/start_emulator.sh", "seedvault"
 
-        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "ANDROID_HOME", android.sdkDirectory.absolutePath
         environment "JAVA_HOME", System.properties['java.home']
     }
 }
@@ -215,7 +215,7 @@ tasks.register('installEmulatorRelease', Exec) {
     doFirst {
         commandLine "${project.projectDir}/development/scripts/install_app.sh"
 
-        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "ANDROID_HOME", android.sdkDirectory.absolutePath
         environment "JAVA_HOME", System.properties['java.home']
     }
 }
@@ -226,7 +226,7 @@ tasks.register('clearEmulatorAppData', Exec) {
     doFirst {
         commandLine "${project.projectDir}/development/scripts/clear_app_data.sh"
 
-        environment "ANDROID_SDK_HOME", android.sdkDirectory.absolutePath
+        environment "ANDROID_HOME", android.sdkDirectory.absolutePath
         environment "JAVA_HOME", System.properties['java.home']
     }
 }

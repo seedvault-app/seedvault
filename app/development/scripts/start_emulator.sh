@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # assert ANDROID_HOME is set
-if [ -z "$ANDROID_SDK_HOME" ]; then
-  echo "ANDROID_SDK_HOME is not set"
+if [ -z "$ANDROID_HOME" ]; then
+  echo "ANDROID_HOME is not set"
   exit 1
 fi
 
@@ -19,4 +19,4 @@ DEVELOPMENT_DIR=$SCRIPT_DIR/..
 ROOT_PROJECT_DIR=$SCRIPT_DIR/../../..
 
 echo "Starting emulator..."
-nohup $ANDROID_SDK_HOME/emulator/emulator -avd "$EMULATOR_NAME" -gpu swiftshader_indirect -writable-system -no-snapshot-load >/dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd "$EMULATOR_NAME" -gpu swiftshader_indirect -writable-system -no-snapshot-load >/dev/null 2>&1 &
