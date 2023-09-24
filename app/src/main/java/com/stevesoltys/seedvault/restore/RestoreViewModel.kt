@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.restore
 
 import android.app.Application
+import android.app.backup.BackupTransport
 import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
@@ -64,11 +65,10 @@ import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTA
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
-import kotlin.math.min
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-internal const val PACKAGES_PER_CHUNK = 100
+internal const val PACKAGES_PER_CHUNK = 10
 
 internal class RestoreViewModel(
     app: Application,
@@ -140,6 +140,7 @@ internal class RestoreViewModel(
                     Log.d(TAG, "Ignoring RestoreSet with no last backup time: $token.")
                     null
                 }
+
                 else -> RestorableBackup(metadata)
             }
         }
@@ -203,12 +204,13 @@ internal class RestoreViewModel(
             return
         }
 
-        // we need to retrieve the restore sets before starting the restore
-        // otherwise restorePackages() won't work as they need the restore sets cached internally
-        val packages = mChosenRestorableBackup.value?.packageMetadataMap?.keys?.toMutableList()
-            ?: mutableListOf()
-        // The chunked restoration is performed within the RestoreObserver.
+        // We need to retrieve the restore sets before starting the restore.
+        // Otherwise, restorePackages() won't work as they need the restore sets cached internally.
+        val packages = mChosenRestorableBackup.value?.packageMetadataMap?.keys?.toList()
+            ?: emptyList()
+
         val observer = RestoreObserver(session, token, packages, monitor)
+
         if (session.getAvailableRestoreSets(observer, monitor) != 0) {
             Log.e(TAG, "getAvailableRestoreSets() returned non-zero value")
             mRestoreBackupResult.postValue(
@@ -225,6 +227,7 @@ internal class RestoreViewModel(
 
         // check previous package first and change status
         updateLatestPackage(list)
+
         // add current package
         list.addFirst(AppRestoreResult(packageName, getAppName(app, packageName), IN_PROGRESS))
         mRestoreProgress.postValue(list)
@@ -293,9 +296,16 @@ internal class RestoreViewModel(
     private inner class RestoreObserver(
         private val session: IRestoreSession,
         private val token: Long,
-        private val packages: MutableList<String>,
-        private val monitor: BackupMonitor
+        private val packages: List<String>,
+        private val monitor: BackupMonitor,
     ) : IRestoreObserver.Stub() {
+
+        /**
+         * The current package index.
+         *
+         * Used for splitting the packages into chunks.
+         */
+        private var packageIndex: Int = 0
 
         /**
          * Supply a list of the restore datasets available from the current transport.
@@ -312,14 +322,20 @@ internal class RestoreViewModel(
             restoreNextPackages()
         }
 
+        /**
+         * Restore the next chunk of packages.
+         *
+         * We need to restore in chunks, otherwise [BackupTransport.startRestore] in the
+         * framework's [PerformUnifiedRestoreTask] may fail due to an oversize Binder
+         * transaction, causing the entire restoration to fail.
+         */
         private fun restoreNextPackages() {
-            // Packages are restored in chunks, or else transport.startRestore() in the framework's
-            // PerformUnifiedRestoreTask.java may fail due to an oversized Binder transaction,
-            // causing the entire restoration to fail.
-            val packagesChunk = packages.subList(0, min(packages.size, PACKAGES_PER_CHUNK))
-            val result =
-                session.restorePackages(token, this, packagesChunk.toTypedArray(), monitor)
-            packagesChunk.clear()
+            val chunkSize = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
+            val packageChunk = packages.subList(packageIndex, chunkSize).toTypedArray()
+            packageIndex += packageChunk.size
+
+            val result = session.restorePackages(token, this, packageChunk, monitor)
+
             if (result != 0) {
                 Log.e(TAG, "restorePackages() returned non-zero value")
             }
@@ -356,10 +372,13 @@ internal class RestoreViewModel(
          *   as a whole failed.
          */
         override fun restoreFinished(result: Int) {
-            if (result == 0 && packages.size > 0) {
+
+            // Restore next chunk if successful and there are more packages to restore.
+            if (result == 0 && packageIndex < packages.size) {
                 restoreNextPackages()
                 return
             }
+
             val restoreResult = RestoreBackupResult(
                 if (result == 0) null
                 else app.getString(R.string.restore_finished_error)
