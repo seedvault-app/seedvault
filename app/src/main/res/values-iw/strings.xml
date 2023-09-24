@@ -203,4 +203,5 @@
     <string name="about_contributor_content">את רשימת התורמים אפשר <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">לראות ב־GitHub</a>.</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">קרן NGI0 PET מבית NLnet</a></string>
+    <string name="storage_user_selected_location_title">מקום לבחירת המשתמש</string>
 </resources>

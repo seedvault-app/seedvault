@@ -139,4 +139,5 @@
     <string name="settings_backup_apk_dialog_title">Ste si istý, že chcete vypnúť zálohu aplikácií\?</string>
     <string name="settings_backup_apk_summary">Zálohovať samotné aplikácie. V opačnom prípade by sa zálohovali len údaje aplikácií.</string>
     <string name="data_management_label">Záloha Seedvault</string>
+    <string name="about_title">O programe</string>
 </resources>

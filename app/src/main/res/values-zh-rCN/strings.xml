@@ -105,7 +105,7 @@
     <string name="restore_app_not_yet_backed_up">未备份</string>
     <string name="notification_success_text">%2$d个应用中的%1$d个已备份。点击了解更多。</string>
     <string name="notification_backup_already_running">备份已在进行</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">帐户不可用。设置一个（或禁用密码）。</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">账户不可用。设置一个（或禁用密码）。</string>
     <string name="current_destination_string">备份状态与备份设置</string>
     <string name="data_management_label">Seedvault 备份</string>
     <string name="restore_restoring_error_message">您可以手动重装这些应用。自动恢复会尝试恢复它们的数据（在自动恢复启用时）。</string>
@@ -203,4 +203,5 @@
     <string name="about_contributing_organizations_title">贡献机构</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> 用于 <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="storage_user_selected_location_title">用户选择的位置</string>
 </resources>

@@ -203,4 +203,5 @@
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a></string>
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>
     <string name="about_contributing_organizations_title">Katkıda Bulunan Kuruluşlar</string>
+    <string name="storage_user_selected_location_title">Kullanıcının seçtiği konum</string>
 </resources>
