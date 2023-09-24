@@ -203,4 +203,5 @@
 \n<a href="https://nlnet.nl/project/Seedvault/">Fondo NGI0 PET de NLnet</a></string>
     <string name="about_contributor_headline">Colaboradores</string>
     <string name="about_contributor_content">En GitHub encontrará una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a>.</string>
+    <string name="storage_user_selected_location_title">Ubicación elegida por el usuario</string>
 </resources>

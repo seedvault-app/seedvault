@@ -203,4 +203,5 @@
     <string name="about_contributing_organizations_title">Організації-учасники</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> для використання в <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="storage_user_selected_location_title">Вибране користувачем розташування</string>
 </resources>
