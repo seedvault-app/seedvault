@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread
 import androidx.preference.PreferenceManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
 import com.stevesoltys.seedvault.crypto.ANDROID_KEY_STORE
 import com.stevesoltys.seedvault.crypto.KEY_ALIAS_BACKUP
 import com.stevesoltys.seedvault.crypto.KEY_ALIAS_MAIN
@@ -170,6 +171,11 @@ internal interface LargeTestBase : KoinComponent {
 
             useThisFolderButton.clickAndWaitForNewWindow()
             allowButton.clickAndWaitForNewWindow()
+        }
+
+        BackupScreen {
+            device.wait(Until.hasObject(initializingText), 10000)
+            device.wait(Until.gone(initializingText), 120000)
         }
     }
 
