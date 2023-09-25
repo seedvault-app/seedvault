@@ -1,0 +1,58 @@
+container:
+  image: ghcr.io/cirruslabs/android-sdk:33
+  kvm: true
+  cpu: 8
+  memory: 16G
+
+instrumentation_tests_task:
+  name: "Cirrus CI Instrumentation Tests"
+  skip: "!changesInclude('.cirrus.yml', '*.gradle', '*.gradle.kts', '**/*.gradle', '**/*.gradle.kts', '*.properties', '**/*.properties', '**/*.kt', '**/*.xml')"
+  start_avd_background_script:
+    sdkmanager --install "system-images;android-33;google_apis;x86_64";
+    echo no | avdmanager create avd -n seedvault -k "system-images;android-33;google_apis;x86_64";
+    $ANDROID_HOME/emulator/emulator
+    -avd seedvault
+    -no-audio
+    -no-boot-anim
+    -gpu swiftshader_indirect
+    -no-snapshot
+    -no-window
+    -writable-system;
+  provision_avd_background_script:
+    wget https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz;
+
+    adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
+    adb root;
+    sleep 5;
+    adb remount;
+    adb reboot;
+    adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
+    adb root;
+    sleep 5;
+    adb remount;
+    sleep 5;
+  assemble_script:
+    ./gradlew :app:assembleRelease :app:assembleAndroidTest
+  install_app_script:
+    timeout 180s bash -c 'while [[ -z $(adb shell mount | grep "/system " | grep "(rw,") ]]; do sleep 1; done;';
+    adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
+
+    adb shell mkdir -p /sdcard/seedvault_baseline;
+    adb push backup.tar.gz /sdcard/seedvault_baseline/backup.tar.gz;
+    adb shell tar xzf /sdcard/seedvault_baseline/backup.tar.gz --directory=/sdcard/seedvault_baseline;
+
+    adb shell mkdir -p /system/priv-app/Seedvault;
+    adb push app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk;
+    adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml;
+    adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml;
+    adb shell bmgr enable true;
+    adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport;
+    adb reboot;
+    adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
+  run_large_tests_script: ./gradlew -Pinstrumented_test_size=large :app:connectedAndroidTest
+  run_medium_tests_script: ./gradlew -Pinstrumented_test_size=medium :app:connectedAndroidTest
+  always:
+    pull_screenshots_script:
+      adb pull /sdcard/seedvault_test_videos
+    screenshots_artifacts:
+      path: "seedvault_test_videos/**/*.mp4"

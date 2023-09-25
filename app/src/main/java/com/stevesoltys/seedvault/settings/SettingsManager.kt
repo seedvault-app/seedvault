@@ -60,8 +60,17 @@ class SettingsManager(private val context: Context) {
      * Should only be called by the [BackupCoordinator]
      * to ensure that related work is performed after moving to a new token.
      */
-    fun setNewToken(newToken: Long) {
-        prefs.edit().putLong(PREF_KEY_TOKEN, newToken).apply()
+    fun setNewToken(newToken: Long?) {
+        if (newToken == null) {
+            prefs.edit()
+                .remove(PREF_KEY_TOKEN)
+                .apply()
+        } else {
+            prefs.edit()
+                .putLong(PREF_KEY_TOKEN, newToken)
+                .apply()
+        }
+
         token = newToken
     }
 

@@ -84,20 +84,20 @@ open class App : Application() {
     protected open fun startKoin() = startKoin {
         androidLogger(Level.ERROR)
         androidContext(this@App)
-        modules(
-            listOf(
-                cryptoModule,
-                headerModule,
-                metadataModule,
-                documentsProviderModule, // storage plugin
-                backupModule,
-                restoreModule,
-                installModule,
-                storageModule,
-                appModule
-            )
-        )
+        modules(appModules())
     }
+
+    open fun appModules() = listOf(
+        cryptoModule,
+        headerModule,
+        metadataModule,
+        documentsProviderModule, // storage plugin
+        backupModule,
+        restoreModule,
+        installModule,
+        storageModule,
+        appModule
+    )
 
     private val settingsManager: SettingsManager by inject()
     private val metadataManager: MetadataManager by inject()

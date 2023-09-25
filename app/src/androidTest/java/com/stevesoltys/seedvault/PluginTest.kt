@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault
 
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
@@ -28,6 +29,7 @@ import org.koin.core.component.inject
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("BlockingMethodInNonBlockingContext")
+@MediumTest
 class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext

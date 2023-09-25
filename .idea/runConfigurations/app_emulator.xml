@@ -17,7 +17,7 @@
     <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
     <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
     <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-    <option name="DEBUGGER_TYPE" value="Auto" />
+    <option name="DEBUGGER_TYPE" value="Java" />
     <Auto>
       <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
       <option name="SHOW_STATIC_VARS" value="true" />
@@ -37,7 +37,7 @@
       <option name="DEBUG_SANDBOX_SDK" value="false" />
     </Hybrid>
     <Java>
-      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="true" />
       <option name="DEBUG_SANDBOX_SDK" value="false" />
     </Java>
     <Native>
@@ -62,7 +62,7 @@
     <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
     <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
     <method v="2">
-      <option name="RunConfigurationTask" enabled="false" run_configuration_name="seedvault [installEmulatorRelease]" run_configuration_type="GradleRunConfiguration" />
+      <option name="Gradle.BeforeRunTask" enabled="false" tasks="installEmulatorRelease" externalProjectPath="$PROJECT_DIR$/app" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>
