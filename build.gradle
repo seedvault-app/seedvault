@@ -3,10 +3,11 @@ buildscript {
     // 1.4.30 Android 12
     // 1.6.10 Android 13
     // 1.7.20 Android 13 (QPR2)
+    // 1.8.10 Android 14
     // Check:
-    // https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-13.0.0_r32/build.txt
-    ext.aosp_kotlin_version = '1.7.20'  // 1.7.20-release-201 in AOSP
-    ext.kotlin_version = '1.7.20'
+    // https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r1/build.txt
+    ext.aosp_kotlin_version = '1.8.10'  // 1.8.10-release-430 in AOSP
+    ext.kotlin_version = '1.8.10'
 }
 
 plugins {
@@ -20,9 +21,9 @@ plugins {
 }
 
 ext {
-    compileSdk = 33
+    compileSdk = 34
     minSdk = 32
-    targetSdk = 33
+    targetSdk = 34
 }
 
 apply from: 'gradle/dependencies.gradle'
