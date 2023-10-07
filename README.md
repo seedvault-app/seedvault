@@ -50,6 +50,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 * `android.permission.MANAGE_EXTERNAL_STORAGE` to backup and restore files from device storage.
 * `android.permission.ACCESS_MEDIA_LOCATION` to backup original media files e.g. without stripped EXIF metadata.
 * `android.permission.FOREGROUND_SERVICE` to do periodic storage backups without interruption.
+* `android.permission.FOREGROUND_SERVICE_DATA_SYNC` to do periodic storage backups without interruption.
 * `android.permission.MANAGE_DOCUMENTS` to retrieve the available storage roots (optional) for better UX.
 * `android.permission.USE_BIOMETRIC` to authenticate saving a new recovery code
 * `android.permission.INTERACT_ACROSS_USERS_FULL` to use storage roots in other users (optional).
