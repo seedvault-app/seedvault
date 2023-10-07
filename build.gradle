@@ -20,9 +20,9 @@ plugins {
 }
 
 ext {
-    compileSdk = 33
+    compileSdk = 34
     minSdk = 32
-    targetSdk = 33
+    targetSdk = 34
 }
 
 apply from: 'gradle/dependencies.gradle'
