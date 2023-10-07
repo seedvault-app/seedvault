@@ -25,8 +25,8 @@ We update it every time Google releases a new Android version, make any changes 
 
 This means that for ROMs using SeedVault it's recommended to use the same branch as your android version
 
-- This current branch `android13` is meant for usage with Android 13
-- This is indicated by the version name starting with `13`, and the version code starting with `33` - the Android 13 API version
+- This current branch `android14` is meant for usage with Android 14
+- This is indicated by the version name starting with `14`, and the version code starting with `34` - the Android 14 API version
 
 For older versions of Android, check out [the branches](https://github.com/seedvault-app/seedvault/branches).
 
