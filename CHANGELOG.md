@@ -1,3 +1,6 @@
+## [14-3.3] - 2023-10-06
+* Android 14
+
 ## [13-3.3] - 2023-01-11
 * Mark Nextcloud as "Not recommended"
 * Warn before turning off backups
