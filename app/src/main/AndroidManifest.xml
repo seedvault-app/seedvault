@@ -64,6 +64,9 @@
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Used for periodic storage backups -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
     <!-- Permission used to open settings -->
     <permission
         android:name="com.stevesoltys.seedvault.OPEN_SETTINGS"
