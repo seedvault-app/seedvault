@@ -39,7 +39,7 @@ This task depends on `app:assembleRelease` and runs the script in `scripts/insta
 ./app/development/scripts/install_app.sh
 ```
 
-There's also an Andriod Studio [runtime configuration](https://developer.android.com/studio/run/rundebugconfig) `app-emulator` which will build, install, and automatically launch the `com.stevesoltys.seedvault.settings.SettingsActivity` as if you clicked `Backup` in settings.
+There's also an Android Studio [runtime configuration](https://developer.android.com/studio/run/rundebugconfig) `app-emulator` which will build, install, and automatically launch the `com.stevesoltys.seedvault.settings.SettingsActivity` as if you clicked `Backup` in settings.
 
 ### Notes
 
