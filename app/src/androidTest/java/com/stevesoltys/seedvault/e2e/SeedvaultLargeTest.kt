@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.e2e
 
+import android.content.pm.PackageManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -54,6 +55,19 @@ internal abstract class SeedvaultLargeTest :
      */
     private fun restoreBaselineBackup() {
         val backupFile = File(baselineBackupPath)
+
+        val manageDocumentsPermission =
+            targetContext.checkSelfPermission("android.permission.MANAGE_DOCUMENTS")
+
+        if (manageDocumentsPermission == PackageManager.PERMISSION_GRANTED) {
+            val extDir = externalStorageDir
+
+            device.executeShellCommand("rm -R $extDir/.SeedVaultAndroidBackup")
+            device.executeShellCommand("cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
+                ".SeedVaultAndroidBackup $extDir")
+            device.executeShellCommand("cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
+                "recovery-code.txt $extDir")
+        }
 
         if (backupFile.exists()) {
             launchRestoreActivity()
