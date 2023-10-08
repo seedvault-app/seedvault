@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.e2e
 import android.app.UiAutomation
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Environment
 import androidx.annotation.WorkerThread
 import androidx.preference.PreferenceManager
@@ -13,6 +14,7 @@ import com.stevesoltys.seedvault.crypto.ANDROID_KEY_STORE
 import com.stevesoltys.seedvault.crypto.KEY_ALIAS_BACKUP
 import com.stevesoltys.seedvault.crypto.KEY_ALIAS_MAIN
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.currentRestoreStorageViewModel
 import com.stevesoltys.seedvault.currentRestoreViewModel
 import com.stevesoltys.seedvault.e2e.screen.impl.BackupScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.DocumentPickerScreen
@@ -23,6 +25,7 @@ import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -71,6 +74,9 @@ internal interface LargeTestBase : KoinComponent {
 
     val spyRestoreViewModel: RestoreViewModel
         get() = currentRestoreViewModel ?: error("currentRestoreViewModel is null")
+
+    val spyRestoreStorageViewModel: RestoreStorageViewModel
+        get() = currentRestoreStorageViewModel ?: error("currentRestoreStorageViewModel is null")
 
     fun resetApplicationState() {
         settingsManager.setNewToken(null)
@@ -159,18 +165,40 @@ internal interface LargeTestBase : KoinComponent {
         folderName: String = TEST_STORAGE_FOLDER,
         exists: Boolean = false,
     ) {
-        DocumentPickerScreen {
-            if (exists) {
-                existingFolder(folderName).scrollTo().clickAndWaitForNewWindow()
+        val manageDocumentsPermission =
+            targetContext.checkSelfPermission("android.permission.MANAGE_DOCUMENTS")
 
-            } else {
-                createNewFolderButton.clickAndWaitForNewWindow()
-                textBox.text = folderName
-                okButton.clickAndWaitForNewWindow()
+        if (manageDocumentsPermission != PERMISSION_GRANTED) {
+            DocumentPickerScreen {
+                if (exists) {
+                    existingFolder(folderName).scrollTo().clickAndWaitForNewWindow()
+
+                } else {
+                    createNewFolderButton.clickAndWaitForNewWindow()
+                    textBox.text = folderName
+                    okButton.clickAndWaitForNewWindow()
+                }
+
+                useThisFolderButton.clickAndWaitForNewWindow()
+                allowButton.clickAndWaitForNewWindow()
             }
+        } else {
+            val extDir = externalStorageDir
 
-            useThisFolderButton.clickAndWaitForNewWindow()
-            allowButton.clickAndWaitForNewWindow()
+            device.executeShellCommand("rm -R $extDir/.SeedVaultAndroidBackup")
+            device.executeShellCommand(
+                "cp -R $extDir/$folderName/" +
+                    ".SeedVaultAndroidBackup $extDir"
+            )
+            device.executeShellCommand("cp -R $extDir/$folderName/recovery-code.txt $extDir")
+
+            BackupScreen {
+                internalStorageButton.clickAndWaitForNewWindow()
+
+                if (useAnywayButton.waitForExists(3000)) {
+                    useAnywayButton.clickAndWaitForNewWindow()
+                }
+            }
         }
 
         BackupScreen {

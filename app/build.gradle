@@ -173,6 +173,16 @@ gradle.projectsEvaluated {
     }
 }
 
+tasks.withType(Test).configureEach {
+    testLogging {
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        exceptionFormat = 'full'
+    }
+}
+
 configurations {
     all {
         resolutionStrategy {
