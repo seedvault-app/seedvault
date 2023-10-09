@@ -108,6 +108,6 @@ ext.storage_libs = [
     // https://github.com/google/tink/releases
     com_google_crypto_tink_android: dependencies.create('com.google.crypto.tink:tink-android') {
         // careful with upgrading tink, so old backups continue to be decryptable
-        version { strictly '1.7.0' }
+        version { strictly '1.10.0' }
     },
 ]

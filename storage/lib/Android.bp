@@ -46,6 +46,6 @@ android_library {
 
 java_import {
     name: "seedvault-lib-tink-android",
-    jars: ["libs/tink-android-1.7.0.jar"],
+    jars: ["libs/tink-android-1.10.0.jar"],
     sdk_version: "current",
 }
