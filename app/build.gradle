@@ -134,8 +134,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: "${rootProject.rootDir}/libs/koin-android")
     implementation fileTree(include: ['*.aar'], dir: "${rootProject.rootDir}/libs/koin-android")
 
-//    implementation "cash.z.ecc.android:kotlin-bip39:1.0.4"
-    implementation fileTree(include: ['kotlin-bip39-jvm-1.0.4.jar'], dir: "${rootProject.rootDir}/libs")
+//    implementation "cash.z.ecc.android:kotlin-bip39:1.0.6"
+    implementation fileTree(include: ['kotlin-bip39-jvm-1.0.6.jar'], dir: "${rootProject.rootDir}/libs")
 
     /**
      * Test Dependencies (do not concern the AOSP build)
@@ -153,7 +153,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"
     testImplementation "io.mockk:mockk:$mockk_version"
-    testImplementation 'org.bitcoinj:bitcoinj-core:0.15.10'
+    testImplementation 'org.bitcoinj:bitcoinj-core:0.16.2'
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
 
