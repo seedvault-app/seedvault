@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="accent">@*android:color/accent_device_default_dark</color>
-    <color name="primary">@*android:color/primary_device_default_settings</color>
+    <!-- AOSP colors -->
+    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#36 -->
+    <color name="accent">@android:color/system_accent1_100</color>
+    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#22 -->
+    <color name="primary">@android:color/system_neutral1_900</color>
+
+    <!-- Custom colors -->
     <color name="primaryDark">@android:color/black</color>
     <color name="background">@color/primaryDark</color>
     <color name="actionBarPrimary">@color/background</color>
     <color name="statusBarColor">@android:color/transparent</color>
-    <color name="red">@*android:color/error_color_device_default_dark</color>
 </resources>
