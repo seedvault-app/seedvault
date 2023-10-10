@@ -6,6 +6,7 @@ import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.Intent.FLAG_RECEIVER_FOREGROUND
 import android.content.IntentFilter
@@ -52,7 +53,11 @@ internal class ApkInstaller(private val context: Context) {
                 cont.resume(onBroadcastReceived(i, packageName, cachedApks, installResult))
             }
         }
-        context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_ACTION))
+        context.registerReceiver(
+            broadcastReceiver,
+            IntentFilter(BROADCAST_ACTION),
+            RECEIVER_NOT_EXPORTED,
+        )
         cont.invokeOnCancellation { context.unregisterReceiver(broadcastReceiver) }
 
         install(cachedApks, installerPackageName)
