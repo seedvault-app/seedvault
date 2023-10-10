@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore.install
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -57,6 +58,7 @@ internal class ApkInstaller(private val context: Context) {
         install(cachedApks, installerPackageName)
     }
 
+    @SuppressLint("NewApi")
     private fun install(cachedApks: List<File>, installerPackageName: String?) {
         val sessionParams = SessionParams(MODE_FULL_INSTALL).apply {
             setInstallerPackageName(installerPackageName)

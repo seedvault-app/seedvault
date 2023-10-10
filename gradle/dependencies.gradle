@@ -1,8 +1,8 @@
 ext {
     // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r3/current/androidx/Android.bp#3901
     ext.room_version = "2.4.0-alpha05" // 2.5.0-alpha01 in AOSP but needs testing
-    // https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-13.0.0_r32/java/pom.xml#7
-    ext.protobuf_version = "3.9.1"
+    // https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-14.0.0_r1/java/pom.xml#7
+    ext.protobuf_version = "3.21.7"
 
     // test dependencies below - these do not care about AOSP and can be freely updated
     junit4_version = "4.13.2"
@@ -39,11 +39,11 @@ ext.kotlin_libs = [
     ],
     coroutines: [
         dependencies.create('org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm') {
-            // https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-13.0.0_r32/CHANGES.md
+            // https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r1/CHANGES.md
             version { strictly '1.6.4' }
         },
         dependencies.create('org.jetbrains.kotlinx:kotlinx-coroutines-android') {
-            // https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-13.0.0_r32/CHANGES.md
+            // https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r1/CHANGES.md
             version { strictly '1.6.4' }
         },
     ],
@@ -51,44 +51,44 @@ ext.kotlin_libs = [
 
 ext.std_libs = [
     androidx_core: [
-        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#2275
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#2420
         dependencies.create('androidx.core:core') {
             version { strictly '1.9.0-alpha05' } // 1.9.0-alpha03 in AOSP but has SDK version issues
         },
-        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#2241
+        // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#2386
         dependencies.create('androidx.core:core-ktx') {
             version { strictly '1.9.0-alpha05' } // 1.9.0-alpha03 in AOSP but has SDK version issues
         },
     ],
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#2705
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#2849
     androidx_fragment: dependencies.create('androidx.fragment:fragment-ktx') {
         version { strictly '1.5.0-alpha03' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#61
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#61
     androidx_activity: dependencies.create('androidx.activity:activity-ktx') {
         version { strictly '1.5.0-alpha03' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#4275
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#4420
     androidx_preference: dependencies.create('androidx.preference:preference') {
         version { strictly '1.2.0-alpha01' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r3/current/androidx/Android.bp#3376
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r3/current/androidx/Android.bp#3521
     androidx_lifecycle_viewmodel_ktx: dependencies.create('androidx.lifecycle:lifecycle-viewmodel-ktx') {
         version { strictly '2.5.0-alpha03' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#3134
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#3279
     androidx_lifecycle_livedata_ktx: dependencies.create('androidx.lifecycle:lifecycle-livedata-ktx') {
         version { strictly '2.5.0-alpha03' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r3/current/extras/constraint-layout-x/Android.bp#64
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#2244
     androidx_constraintlayout: dependencies.create('androidx.constraintlayout:constraintlayout') {
         version { strictly '2.2.0-alpha05' }
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/androidx/Android.bp#2411
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp#2556
     androidx_documentfile: dependencies.create('androidx.documentfile:documentfile') {
         version { strictly '1.1.0-alpha01' } // 1.1.0-alpha02 in AOSP but not released yet
     },
-    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-13.0.0_r32/current/extras/material-design-x/Android.bp#6
+    // https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/extras/material-design-x/Android.bp#15
     com_google_android_material: dependencies.create('com.google.android.material:material') {
         version { strictly '1.7.0-alpha03' }
     },
