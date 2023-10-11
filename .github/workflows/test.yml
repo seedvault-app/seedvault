@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        android_target: [33]
-        emulator_type: [default, google_apis]
+        android_target: [ 33 ]
+        emulator_type: [ default, google_apis ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: aosp-${{ matrix.emulator_type }}-${{ matrix.android_target }}-${{ runner.os }}
+          key: avd-${{ matrix.emulator_type }}-${{ matrix.android_target }}
 
       - name: Build Release APK
         run: ./gradlew :app:assembleRelease
@@ -99,14 +99,14 @@ jobs:
             medium_test_exit_code=0
             ./gradlew --stacktrace -Pinstrumented_test_size=medium :app:connectedAndroidTest || medium_test_exit_code=$?
 
-            adb pull /sdcard/seedvault_test_videos
+            adb pull /sdcard/seedvault_test_results
 
             if [ $large_test_exit_code -ne 0 ]; then echo 'Gradle test failed.'; exit 0; fi
             if [ $medium_test_exit_code -ne 0 ]; then echo 'Gradle test failed.'; exit 0; fi
 
-      - name: Upload screenshots and videos
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: seedvault_test_videos
-          path: seedvault_test_videos/**/*.mp4
+          name: ${{ matrix.emulator_type }}-${{ matrix.android_target }}-results
+          path: seedvault_test_results/**/*
