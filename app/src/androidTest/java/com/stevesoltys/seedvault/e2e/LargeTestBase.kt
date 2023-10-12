@@ -44,7 +44,7 @@ internal interface LargeTestBase : KoinComponent {
 
     companion object {
         private const val TEST_STORAGE_FOLDER = "seedvault_test"
-        private const val TEST_VIDEO_FOLDER = "seedvault_test_videos"
+        private const val TEST_VIDEO_FOLDER = "seedvault_test_results"
     }
 
     val externalStorageDir: String get() = Environment.getExternalStorageDirectory().absolutePath
@@ -106,18 +106,22 @@ internal interface LargeTestBase : KoinComponent {
         uiAutomation.executeShellCommand(command).close()
     }
 
+    fun testResultFilename(testName: String): String {
+        val simpleDateFormat = SimpleDateFormat("yyyyMMdd_hhmmss")
+        val timeStamp = simpleDateFormat.format(Calendar.getInstance().time)
+        return "${timeStamp}_${testName.replace(" ", "_")}"
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     @WorkerThread
-    suspend fun startScreenRecord(
+    suspend fun startRecordingTest(
         keepRecordingScreen: AtomicBoolean,
         testName: String,
     ) {
-        val simpleDateFormat = SimpleDateFormat("yyyyMMdd_hhmmss")
-        val timeStamp = simpleDateFormat.format(Calendar.getInstance().time)
-        val fileName = "${timeStamp}_${testName.replace(" ", "_")}"
-
         val folder = testVideoPath
         runCommand("mkdir -p $folder")
+
+        val fileName = testResultFilename(testName)
 
         // screen record automatically stops after 3 minutes
         // we need to block on a loop and split it into multiple files
@@ -131,10 +135,16 @@ internal interface LargeTestBase : KoinComponent {
     }
 
     @WorkerThread
-    fun stopScreenRecord(keepRecordingScreen: AtomicBoolean) {
+    fun stopRecordingTest(
+        keepRecordingScreen: AtomicBoolean,
+        testName: String,
+    ) {
         keepRecordingScreen.set(false)
-
         runCommand("pkill -2 screenrecord")
+
+        // write logcat to file
+        val fileName = testResultFilename(testName)
+        runCommand("logcat -d -f $testVideoPath/$fileName.log")
     }
 
     fun uninstallPackages(packages: Collection<PackageInfo>) {

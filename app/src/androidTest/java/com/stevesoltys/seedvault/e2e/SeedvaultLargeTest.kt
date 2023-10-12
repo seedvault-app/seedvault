@@ -38,13 +38,13 @@ internal abstract class SeedvaultLargeTest :
         resetApplicationState()
         clearTestBackups()
 
-        startScreenRecord(keepRecordingScreen, name.methodName)
+        startRecordingTest(keepRecordingScreen, name.methodName)
         restoreBaselineBackup()
     }
 
     @After
     open fun tearDown() {
-        stopScreenRecord(keepRecordingScreen)
+        stopRecordingTest(keepRecordingScreen, name.methodName)
     }
 
     /**

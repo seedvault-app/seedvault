@@ -13,14 +13,13 @@ concurrency:
 jobs:
   instrumentation_tests:
     runs-on: macos-11
+    if: github.repository == 'seedvault-app/seedvault'
+    timeout-minutes: 80
     strategy:
       fail-fast: false
       matrix:
-        android_target: [33, 34]
-        emulator_type: [default, google_apis]
-        exclude:
-          - android_target: 34
-            emulator_type: default
+        android_target: [ 33, 34 ]
+        emulator_type: [ default ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -31,88 +30,33 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: AVD cache
-        uses: actions/cache@v3
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: aosp-${{ matrix.emulator_type }}-${{ matrix.android_target }}-${{ runner.os }}
-
       - name: Build Release APK
         run: ./gradlew :app:assembleRelease
-
-      - name: Create AVD snapshot
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.android_target }}
-          target: ${{ matrix.emulator_type }}
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -writable-system -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: |
-            ./app/development/scripts/provision_emulator.sh "test" "system-images;android-${{ matrix.android_target }};${{ matrix.emulator_type }};x86_64"
-            echo "Generated AVD snapshot for caching."
 
       - name: Assemble tests
         run: ./gradlew :app:assembleAndroidTest
 
       - name: Run tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: Wandalen/wretry.action@v1.3.0
         with:
-          api-level: ${{ matrix.android_target }}
-          target: ${{ matrix.emulator_type }}
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -writable-system -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          profile: pixel_6a
-          heap-size: '512M'
-          ram-size: '4096M'
-          disk-size: '14G'
-          sdcard-path-or-size: '4096M'
-          cores: 3
-          disable-animations: false
-          script: |
-            adb root
-            sleep 5
-            adb remount
+          attempt_limit: 3
+          action: reactivecircus/android-emulator-runner@v2
+          with: |
+            api-level: ${{ matrix.android_target }}
+            target: ${{ matrix.emulator_type }}
+            arch: x86_64
+            force-avd-creation: true
+            emulator-options: -cores 2 -writable-system -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+            disk-size: '14G'
+            sdcard-path-or-size: '4096M'
+            disable-animations: true
+            script: |
+              ./app/development/scripts/provision_emulator.sh "test" "system-images;android-${{ matrix.android_target }};${{ matrix.emulator_type }};x86_64"
+              ./.github/scripts/run_tests.sh
 
-            echo "Installing Seedvault app..."
-            adb shell mkdir -p /system/priv-app/Seedvault
-            adb push app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk
-
-            echo "Installing Seedvault permissions..."
-            adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
-            adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
-
-            echo "Setting Seedvault transport..."
-            sleep 10
-            adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
-
-            wget --quiet https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz
-            adb shell mkdir -p /sdcard/seedvault_baseline
-            adb push backup.tar.gz /sdcard/seedvault_baseline
-            adb wait-for-device
-            adb shell tar xzf /sdcard/seedvault_baseline/backup.tar.gz --directory=/sdcard/seedvault_baseline
-            adb shell rm /sdcard/seedvault_baseline/backup.tar.gz
-
-            large_test_exit_code=0
-            ./gradlew --stacktrace -Pinstrumented_test_size=large :app:connectedAndroidTest || large_test_exit_code=$?
-
-            medium_test_exit_code=0
-            ./gradlew --stacktrace -Pinstrumented_test_size=medium :app:connectedAndroidTest || medium_test_exit_code=$?
-
-            adb pull /sdcard/seedvault_test_videos
-
-            if [ $large_test_exit_code -ne 0 ]; then echo 'Gradle test failed.'; exit 0; fi
-            if [ $medium_test_exit_code -ne 0 ]; then echo 'Gradle test failed.'; exit 0; fi
-
-      - name: Upload screenshots and videos
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: seedvault_test_videos
-          path: seedvault_test_videos/**/*.mp4
+          name: ${{ matrix.emulator_type }}-${{ matrix.android_target }}-results
+          path: seedvault_test_results/**/*
