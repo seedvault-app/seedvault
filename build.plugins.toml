@@ -1,0 +1,5 @@
+[versions]
+kotlin = "1.8.10"
+androidGradle = "8.1.2"
+protobuf = "0.9.4"
+ktlint = "11.5.0"
