@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.crypto
 
 import cash.z.ecc.android.bip39.Mnemonics
-import cash.z.ecc.android.bip39.WordList
 import cash.z.ecc.android.bip39.toSeed
 import com.stevesoltys.seedvault.toHexString
 import com.stevesoltys.seedvault.ui.recoverycode.toMnemonicChars
@@ -2066,7 +2065,7 @@ class WordListTest {
 
     @Test
     fun `word list of library did not change`() {
-        val libWords = WordList().words
+        val libWords = Mnemonics.getCachedWords("en")
         for (i in words.indices) {
             assertEquals(words[i], libWords[i])
         }

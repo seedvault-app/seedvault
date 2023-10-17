@@ -22,7 +22,7 @@ plugins {
 
 ext {
     compileSdk = 34
-    minSdk = 32
+    minSdk = 33
     targetSdk = 34
 }
 

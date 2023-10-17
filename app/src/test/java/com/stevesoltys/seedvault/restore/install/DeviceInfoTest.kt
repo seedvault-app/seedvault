@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [32], // robolectric does not support 33, yet
+    sdk = [33], // robolectric does not support 34, yet
     application = TestApp::class
 )
 internal class DeviceInfoTest {
