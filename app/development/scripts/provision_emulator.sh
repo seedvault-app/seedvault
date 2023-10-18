@@ -20,7 +20,7 @@ DEVELOPMENT_DIR=$SCRIPT_DIR/..
 ROOT_PROJECT_DIR=$SCRIPT_DIR/../../..
 
 echo "Downloading system image..."
-$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "$SYSTEM_IMAGE"
+yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "$SYSTEM_IMAGE"
 
 # create AVD if it doesn't exist
 if $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd | grep -q "$EMULATOR_NAME"; then

@@ -14,9 +14,5 @@ fi
 
 EMULATOR_NAME=$1
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-DEVELOPMENT_DIR=$SCRIPT_DIR/..
-ROOT_PROJECT_DIR=$SCRIPT_DIR/../../..
-
 echo "Starting emulator..."
 nohup $ANDROID_HOME/emulator/emulator -avd "$EMULATOR_NAME" -gpu swiftshader_indirect -writable-system >/dev/null 2>&1 &

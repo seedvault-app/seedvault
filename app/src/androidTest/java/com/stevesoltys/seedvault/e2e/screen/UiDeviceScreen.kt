@@ -11,6 +11,10 @@ import java.lang.Thread.sleep
 
 abstract class UiDeviceScreen<T> {
 
+    companion object {
+        private const val SELECTOR_TIMEOUT = 180000L
+    }
+
     operator fun invoke(function: T.() -> Unit) {
         function.invoke(this as T)
     }
@@ -18,8 +22,11 @@ abstract class UiDeviceScreen<T> {
     fun UiObject.scrollTo(
         scrollSelector: UiSelector = UiSelector().className(ScrollView::class.java),
     ): UiObject {
-        UiScrollable(scrollSelector).scrollIntoView(this)
-        waitForExists(15000)
+        val uiScrollable = UiScrollable(scrollSelector)
+        uiScrollable.waitForExists(SELECTOR_TIMEOUT)
+        uiScrollable.scrollIntoView(this)
+        waitForExists(SELECTOR_TIMEOUT)
+
         sleep(2000)
         return this
     }
@@ -32,6 +39,6 @@ abstract class UiDeviceScreen<T> {
 
     private fun device() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         .also {
-            Configurator.getInstance().waitForSelectorTimeout = 60000
+            Configurator.getInstance().waitForSelectorTimeout = SELECTOR_TIMEOUT
         }
 }
