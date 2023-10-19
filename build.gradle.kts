@@ -3,15 +3,6 @@ import org.jlleitschuh.gradle.ktlint.KtlintExtension
 buildscript {
     repositories {
         google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath("com.android.tools.build:gradle:${plugins.versions.androidGradle}")
-        classpath("com.google.protobuf:protobuf-gradle-plugin:${plugins.versions.protobuf}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${plugins.versions.kotlin}")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${plugins.versions.kotlin}")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:${plugins.versions.ktlint}")
     }
 }
 
@@ -30,7 +21,7 @@ tasks.register("clean", Delete::class) {
 }
 
 subprojects {
-    if (path == ":app" || path == ":storage:lib") {
+    if (path != ":storage:demo") {
         apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
         configure<KtlintExtension> {

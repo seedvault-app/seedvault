@@ -18,9 +18,8 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments(mapOf("disableAnalytics" to "true"))
+        testInstrumentationRunnerArguments["disableAnalytics"] = "true"
     }
 
     buildTypes {

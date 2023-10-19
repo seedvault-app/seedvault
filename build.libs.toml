@@ -17,6 +17,7 @@ espresso = "3.4.0"
 # We need to enforce that the versions we use are the same as AOSP to ensure compatibility.
 
 # Kotlin versions
+# https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r1/build.txt
 aosp-kotlin = { strictly = "1.8.10" }
 
 # Lint versions

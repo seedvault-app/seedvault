@@ -46,11 +46,14 @@ android {
         freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn")
     }
 
-    lintOptions {
-        disable("DialogFragmentCallbacksDetector", "InvalidFragmentVersionForActivityResult")
+    lint {
+        disable += setOf(
+            "DialogFragmentCallbacksDetector",
+            "InvalidFragmentVersionForActivityResult"
+        )
     }
 
-    packagingOptions {
+    packaging {
         jniLibs {
             excludes += listOf("META-INF/services/kotlin*")
         }

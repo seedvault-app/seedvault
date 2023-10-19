@@ -72,6 +72,7 @@ dependencies {
 
     androidTestImplementation(libs.kotlin.stdlib.jdk8)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:${libs.versions.espresso.get()}")
+    androidTestImplementation(
+        "androidx.test.espresso:espresso-core:${libs.versions.espresso.get()}")
     androidTestImplementation("io.mockk:mockk-android:${libs.versions.mockk.get()}")
 }
