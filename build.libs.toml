@@ -1,0 +1,83 @@
+[metadata]
+
+[versions]
+# Android SDK versions
+compileSdk = "34"
+minSdk = "33"
+targetSdk = "34"
+
+# Test versions
+junit4 = "4.13.2"
+junit5 = "5.10.0" # careful, upgrading this can change a Cipher's IV size in tests!?
+mockk = "1.13.4" # newer versions require kotlin > 1.8.10
+espresso = "3.4.0"
+
+# Dependency versions below this are AOSP versions.
+# We use "strictly" to enforce the version cannot be overriden by transitive dependencies.
+# We need to enforce that the versions we use are the same as AOSP to ensure compatibility.
+
+# Kotlin versions
+# https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r1/build.txt
+aosp-kotlin = { strictly = "1.8.10" }
+
+# Lint versions
+lint-rules = { strictly = "0.1.0" }
+
+# Google versions
+# https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-14.0.0_r1/java/pom.xml#7
+protobuf = { strictly = "3.21.7" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/extras/material-design-x/Android.bp#15
+material = { strictly = "1.7.0-alpha03" }
+# careful with upgrading tink, so old backups continue to be decryptable
+# https://github.com/google/tink/releases
+tink = { strictly = "1.10.0" }
+
+# Coroutines versions
+# https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r1/CHANGES.md
+coroutines = { strictly = "1.6.4" }
+
+# AndroidX versions
+# https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r1/current/androidx/Android.bp
+room = { strictly = "2.4.0-alpha05" }
+androidx-core = { strictly = "1.9.0-alpha05" }
+androidx-fragment = { strictly = "1.5.0-alpha03" }
+androidx-activity = { strictly = "1.5.0-alpha03" }
+androidx-preference = { strictly = "1.2.0-alpha01" }
+androidx-lifecycle-viewmodel-ktx = { strictly = "2.5.0-alpha03" }
+androidx-lifecycle-livedata-ktx = { strictly = "2.5.0-alpha03" }
+androidx-constraintlayout = { strictly = "2.2.0-alpha05" }
+androidx-documentfile = { strictly = "1.1.0-alpha01" }
+
+[libraries]
+# Kotlin standard dependencies
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "aosp-kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "aosp-kotlin" }
+kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "aosp-kotlin" }
+
+# Lint dependencies
+thirdegg-lint-rules = { module = "com.github.thirdegg:lint-rules", version.ref = "lint-rules" }
+
+# Google dependencies
+google-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
+google-protobuf-javalite = { module = 'com.google.protobuf:protobuf-javalite', version.ref = 'protobuf' }
+google-material = { module = 'com.google.android.material:material', version.ref = 'material' }
+
+# Coroutines dependencies
+kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# AndroidX dependencies
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
+androidx-preference = { module = "androidx.preference:preference", version.ref = "androidx-preference" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-viewmodel-ktx" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle-livedata-ktx" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "androidx-documentfile" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+
+[bundles]
+kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlin-stdlib-common"]
+coroutines = ["kotlinx-coroutines-core-jvm", "kotlinx-coroutines-android"]
