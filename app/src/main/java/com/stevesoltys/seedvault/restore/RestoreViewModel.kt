@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.restore
 
 import android.app.Application
+import android.app.backup.BackupManager
 import android.app.backup.BackupTransport
 import android.app.backup.IBackupManager
 import android.app.backup.IRestoreObserver
@@ -68,7 +69,7 @@ import java.util.LinkedList
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-internal const val PACKAGES_PER_CHUNK = 10
+internal const val PACKAGES_PER_CHUNK = 5
 
 internal class RestoreViewModel(
     app: Application,
@@ -207,7 +208,13 @@ internal class RestoreViewModel(
         // We need to retrieve the restore sets before starting the restore.
         // Otherwise, restorePackages() won't work as they need the restore sets cached internally.
         val packages = mChosenRestorableBackup.value?.packageMetadataMap?.keys?.toList()
-            ?: emptyList()
+            ?: run {
+                Log.e(TAG, "Chosen backup has empty package metadata map")
+                mRestoreBackupResult.postValue(
+                    RestoreBackupResult(app.getString(R.string.restore_set_error))
+                )
+                return
+            }
 
         val observer = RestoreObserver(session, token, packages, monitor)
 
@@ -308,6 +315,13 @@ internal class RestoreViewModel(
         private var packageIndex: Int = 0
 
         /**
+         * Map of results for each chunk.
+         *
+         * The key is the chunk index, the value is the result.
+         */
+        private val chunkResults = mutableMapOf<Int, Int>()
+
+        /**
          * Supply a list of the restore datasets available from the current transport.
          * This method is invoked as a callback following the application's use of the
          * [IRestoreSession.getAvailableRestoreSets] method.
@@ -330,14 +344,14 @@ internal class RestoreViewModel(
          * transaction, causing the entire restoration to fail.
          */
         private fun restoreNextPackages() {
-            val chunkSize = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
-            val packageChunk = packages.subList(packageIndex, chunkSize).toTypedArray()
+            val nextChunkIndex = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
+            val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
             packageIndex += packageChunk.size
 
             val result = session.restorePackages(token, this, packageChunk, monitor)
 
-            if (result != 0) {
-                Log.e(TAG, "restorePackages() returned non-zero value")
+            if (result != BackupManager.SUCCESS) {
+                Log.e(TAG, "restorePackages() returned non-zero value: $result")
             }
         }
 
@@ -372,21 +386,35 @@ internal class RestoreViewModel(
          *   as a whole failed.
          */
         override fun restoreFinished(result: Int) {
+            val chunkIndex = packageIndex / PACKAGES_PER_CHUNK
+            chunkResults[chunkIndex] = result
 
             // Restore next chunk if successful and there are more packages to restore.
-            if (result == 0 && packageIndex < packages.size) {
+            if (packageIndex < packages.size) {
                 restoreNextPackages()
                 return
             }
 
-            val restoreResult = RestoreBackupResult(
-                if (result == 0) null
-                else app.getString(R.string.restore_finished_error)
-            )
-            onRestoreComplete(restoreResult)
+            // Restore finished, time to get the result.
+            onRestoreComplete(getRestoreResult())
             closeSession()
         }
 
+        private fun getRestoreResult(): RestoreBackupResult {
+            val failedChunks = chunkResults
+                .filter { it.value != BackupManager.SUCCESS }
+                .map { "chunk ${it.key} failed with error ${it.value}" }
+
+            return if (failedChunks.isNotEmpty()) {
+                Log.e(TAG, "Restore failed: $failedChunks")
+
+                return RestoreBackupResult(
+                    errorMsg = app.getString(R.string.restore_finished_error)
+                )
+            } else {
+                RestoreBackupResult(errorMsg = null)
+            }
+        }
     }
 
     @UiThread
