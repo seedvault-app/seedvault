@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.getSystemContext
+import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.settings.Storage
@@ -25,7 +25,7 @@ internal class DocumentsProviderStoragePlugin(
      * Attention: This context might be from a different user. Use with care.
      */
     private val context: Context
-        get() = appContext.getSystemContext {
+        get() = appContext.getStorageContext {
             storage.storage?.isUsb == true
         }
 
@@ -83,7 +83,7 @@ internal class DocumentsProviderStoragePlugin(
     @Throws(IOException::class)
     override suspend fun hasBackup(storage: Storage): Boolean {
         // potentially get system user context if needed here
-        val c = appContext.getSystemContext { storage.isUsb }
+        val c = appContext.getStorageContext { storage.isUsb }
         val parent = DocumentFile.fromTreeUri(c, storage.uri) ?: throw AssertionError()
         val rootDir = parent.findFileBlocking(c, DIRECTORY_ROOT) ?: return false
         val backupSets = getBackups(c, rootDir)
