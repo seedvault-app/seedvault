@@ -20,7 +20,7 @@ import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_CREATE
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD
 import android.util.Log
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.getSystemContext
+import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
 internal object StorageRootResolver {
@@ -39,7 +39,7 @@ internal object StorageRootResolver {
                 }
             }
             // add special system user roots for USB devices
-            val c = context.getSystemContext {
+            val c = context.getStorageContext {
                 authority == AUTHORITY_STORAGE && UserHandle.myUserId() != UserHandle.USER_SYSTEM
             }
             // only proceed if we really got a different [Context], e.g. had permission for it

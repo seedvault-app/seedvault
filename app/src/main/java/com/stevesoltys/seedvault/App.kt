@@ -5,12 +5,11 @@ import android.app.Application
 import android.app.backup.BackupManager.PACKAGE_MANAGER_SENTINEL
 import android.app.backup.IBackupManager
 import android.content.Context
-import android.content.Context.BACKUP_SERVICE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.os.StrictMode
-import android.os.UserHandle
+import android.os.UserManager
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -143,8 +142,11 @@ fun <T> permitDiskReads(func: () -> T): T {
     }
 }
 
-fun Context.getSystemContext(isUsbStorage: () -> Boolean): Context {
-    return if (checkSelfPermission(INTERACT_ACROSS_USERS_FULL) == PERMISSION_GRANTED &&
-        isUsbStorage()
-    ) createContextAsUser(UserHandle.SYSTEM, 0) else this
+@Suppress("MissingPermission")
+fun Context.getStorageContext(isUsbStorage: () -> Boolean): Context {
+    if (checkSelfPermission(INTERACT_ACROSS_USERS_FULL) == PERMISSION_GRANTED && isUsbStorage()) {
+        UserManager.get(this).getProfileParent(user)
+            ?.let { parent -> return createContextAsUser(parent, 0) }
+    }
+    return this
 }

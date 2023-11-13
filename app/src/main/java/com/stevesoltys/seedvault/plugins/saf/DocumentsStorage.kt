@@ -16,7 +16,7 @@ import android.provider.DocumentsContract.getDocumentId
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.getSystemContext
+import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.Storage
 import kotlinx.coroutines.TimeoutCancellationException
@@ -55,7 +55,7 @@ internal class DocumentsStorage(
      * Attention: This context might be from a different user. Use with care.
      */
     private val context: Context
-        get() = appContext.getSystemContext {
+        get() = appContext.getStorageContext {
             storage?.isUsb == true
         }
     private val contentResolver: ContentResolver get() = context.contentResolver
