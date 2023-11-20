@@ -14,6 +14,7 @@ internal class InstallIntentCreator(
     private val installerToPackage = mapOf(
         "org.fdroid.fdroid" to "org.fdroid.fdroid",
         "org.fdroid.fdroid.privileged" to "org.fdroid.fdroid",
+        "org.fdroid.basic" to "org.fdroid.basic",
         "com.aurora.store" to "com.aurora.store",
         "com.aurora.services" to "com.aurora.store",
         "com.android.vending" to "com.android.vending"
