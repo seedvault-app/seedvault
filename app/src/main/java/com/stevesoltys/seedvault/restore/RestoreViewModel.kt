@@ -65,11 +65,12 @@ import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTAMP_START
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
+import java.lang.IllegalStateException
 import java.util.LinkedList
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-internal const val PACKAGES_PER_CHUNK = 5
+internal const val PACKAGES_PER_CHUNK = 100
 
 internal class RestoreViewModel(
     app: Application,
@@ -154,7 +155,6 @@ internal class RestoreViewModel(
     }
 
     override fun onRestorableBackupClicked(restorableBackup: RestorableBackup) {
-        restoreCoordinator.beforeStartRestore(restorableBackup.backupMetadata)
         mChosenRestorableBackup.value = restorableBackup
         mDisplayFragment.setEvent(RESTORE_APPS)
     }
@@ -178,14 +178,17 @@ internal class RestoreViewModel(
 
     internal fun onNextClickedAfterInstallingApps() {
         mDisplayFragment.postEvent(RESTORE_BACKUP)
-        val token = mChosenRestorableBackup.value?.token ?: throw AssertionError()
+
         viewModelScope.launch(ioDispatcher) {
-            startRestore(token)
+            startRestore()
         }
     }
 
     @WorkerThread
-    private fun startRestore(token: Long) {
+    private fun startRestore() {
+        val token = mChosenRestorableBackup.value?.token
+            ?: throw IllegalStateException("No chosen backup")
+
         Log.d(TAG, "Starting new restore session to restore backup $token")
 
         // if we had no token before (i.e. restore from setup wizard),
@@ -205,9 +208,8 @@ internal class RestoreViewModel(
             return
         }
 
-        // We need to retrieve the restore sets before starting the restore.
-        // Otherwise, restorePackages() won't work as they need the restore sets cached internally.
-        val packages = mChosenRestorableBackup.value?.packageMetadataMap?.keys?.toList()
+        val restorableBackup = mChosenRestorableBackup.value
+        val packages = restorableBackup?.packageMetadataMap?.keys?.toList()
             ?: run {
                 Log.e(TAG, "Chosen backup has empty package metadata map")
                 mRestoreBackupResult.postValue(
@@ -216,10 +218,19 @@ internal class RestoreViewModel(
                 return
             }
 
-        val observer = RestoreObserver(session, token, packages, monitor)
+        val observer = RestoreObserver(
+            restoreCoordinator = restoreCoordinator,
+            restorableBackup = restorableBackup,
+            session = session,
+            packages = packages,
+            monitor = monitor
+        )
 
+        // We need to retrieve the restore sets before starting the restore.
+        // Otherwise, restorePackages() won't work as they need the restore sets cached internally.
         if (session.getAvailableRestoreSets(observer, monitor) != 0) {
             Log.e(TAG, "getAvailableRestoreSets() returned non-zero value")
+
             mRestoreBackupResult.postValue(
                 RestoreBackupResult(app.getString(R.string.restore_set_error))
             )
@@ -301,8 +312,9 @@ internal class RestoreViewModel(
 
     @WorkerThread
     private inner class RestoreObserver(
+        private val restoreCoordinator: RestoreCoordinator,
+        private val restorableBackup: RestorableBackup,
         private val session: IRestoreSession,
-        private val token: Long,
         private val packages: List<String>,
         private val monitor: BackupMonitor,
     ) : IRestoreObserver.Stub() {
@@ -344,10 +356,15 @@ internal class RestoreViewModel(
          * transaction, causing the entire restoration to fail.
          */
         private fun restoreNextPackages() {
+            // Make sure metadata for selected backup is cached before starting each chunk.
+            val backupMetadata = restorableBackup.backupMetadata
+            restoreCoordinator.beforeStartRestore(backupMetadata)
+
             val nextChunkIndex = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
             val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
             packageIndex += packageChunk.size
 
+            val token = backupMetadata.token
             val result = session.restorePackages(token, this, packageChunk, monitor)
 
             if (result != BackupManager.SUCCESS) {
