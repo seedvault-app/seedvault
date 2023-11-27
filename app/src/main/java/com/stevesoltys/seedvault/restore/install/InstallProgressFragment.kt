@@ -75,7 +75,9 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
 
     private fun onInstallResult(installResult: InstallResult) {
         // skip this screen, if there are no apps to install
-        if (installResult.isEmpty) viewModel.onNextClickedAfterInstallingApps()
+        if (installResult.isFinished && installResult.isEmpty) {
+            viewModel.onNextClickedAfterInstallingApps()
+        }
 
         // if finished, treat all still queued apps as failed and resort/redisplay adapter items
         if (installResult.isFinished) {
