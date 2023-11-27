@@ -26,7 +26,6 @@ import kotlin.time.ExperimentalTime
 
 private const val TAG = "Restore"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class Restore(
     context: Context,
     private val storagePlugin: StoragePlugin,
@@ -57,14 +56,15 @@ internal class Restore(
         MultiChunkRestore(context, storagePlugin, fileRestore, streamCrypto, streamKey)
     }
 
-    @OptIn(ExperimentalTime::class)
     fun getBackupSnapshots(): Flow<SnapshotResult> = flow {
         val numSnapshots: Int
         val time = measure {
             val list = try {
+                // get all available backups, they may not be usable
                 storagePlugin.getBackupSnapshotsForRestore().sortedByDescending { storedSnapshot ->
                     storedSnapshot.timestamp
                 }.map { storedSnapshot ->
+                    // as long as snapshot is null, it can't be used for restore
                     SnapshotItem(storedSnapshot, null)
                 }.toMutableList()
             } catch (e: Exception) {
@@ -74,6 +74,7 @@ internal class Restore(
             }
             // return list copies, so this works with ListAdapter and DiffUtils
             emit(SnapshotResult.Success(ArrayList(list)))
+            // try to decrypt snapshots and replace list items, if we can decrypt, otherwise remove
             numSnapshots = list.size
             val iterator = list.listIterator()
             while (iterator.hasNext()) {
