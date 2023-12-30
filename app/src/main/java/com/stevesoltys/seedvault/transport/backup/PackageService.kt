@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_INSTRUMENTATION
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.RemoteException
+import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
@@ -28,11 +30,13 @@ private const val LOG_MAX_PACKAGES = 100
  */
 internal class PackageService(
     private val context: Context,
+    private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
     private val plugin: StoragePlugin,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
+    private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
         @WorkerThread
@@ -48,13 +52,7 @@ internal class PackageService(
                 logPackages(packages)
             }
 
-            // We do not use BackupManager.filterAppsEligibleForBackupForUser because it
-            // always makes its determinations based on OperationType.BACKUP, never based on
-            // OperationType.MIGRATION, and there are no alternative publicly-available APIs.
-            // We don't need to use it, here, either; during a backup or migration, the system
-            // will perform its own eligibility checks regardless. We merely need to filter out
-            // apps that we, or the user, want to exclude.
-            val eligibleApps = packages.filter(::shouldIncludeAppInBackup)
+            val eligibleApps = packages.filter(::shouldIncludeAppInBackup).toTypedArray()
 
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
@@ -97,7 +95,8 @@ internal class PackageService(
     val userApps: List<PackageInfo>
         @WorkerThread
         get() = packageManager.getInstalledPackages(GET_INSTRUMENTATION).filter { packageInfo ->
-            packageInfo.isUserVisible(context) && packageInfo.allowsBackup()
+            packageInfo.isUserVisible(context) &&
+                packageInfo.allowsBackup(settingsManager.d2dBackupsEnabled())
         }
 
     /**
@@ -106,7 +105,8 @@ internal class PackageService(
     val userNotAllowedApps: List<PackageInfo>
         @WorkerThread
         get() = packageManager.getInstalledPackages(0).filter { packageInfo ->
-            !packageInfo.allowsBackup() && !packageInfo.isSystemApp()
+            !packageInfo.allowsBackup(settingsManager.d2dBackupsEnabled()) &&
+                !packageInfo.isSystemApp()
         }
 
     val expectedAppTotals: ExpectedAppTotals
@@ -132,11 +132,24 @@ internal class PackageService(
     }
 
     fun shouldIncludeAppInBackup(packageName: String): Boolean {
+        // We do not use BackupManager.filterAppsEligibleForBackupForUser for D2D because it
+        // always makes its determinations based on OperationType.BACKUP, never based on
+        // OperationType.MIGRATION, and there are no alternative publicly-available APIs.
+        // We don't need to use it, here, either; during a backup or migration, the system
+        // will perform its own eligibility checks regardless. We merely need to filter out
+        // apps that we, or the user, want to exclude.
+
         // Check that the app is not excluded by user preference
         val enabled = settingsManager.isBackupEnabled(packageName)
-        // We also need to exclude the DocumentsProvider used to store backup data.
-        // Otherwise, it gets killed when we back it up, terminating our backup.
-        return enabled && packageName != plugin.providerPackageName
+
+        // We need to explicitly exclude DocumentsProvider and Seedvault.
+        // Otherwise, they get killed while backing them up, terminating our backup.
+        val excludedPackages = setOf(
+            plugin.providerPackageName,
+            context.packageName
+        )
+
+        return enabled && !excludedPackages.contains(packageName)
     }
 
     private fun logPackages(packages: List<String>) {
@@ -168,18 +181,24 @@ internal fun PackageInfo.isSystemApp(): Boolean {
     return applicationInfo.flags and FLAG_SYSTEM != 0
 }
 
-internal fun PackageInfo.allowsBackup(): Boolean {
+internal fun PackageInfo.allowsBackup(d2dBackup: Boolean): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
 
-    // TODO: Consider ways of replicating the system's logic so that the user can have advance
-    // knowledge of apps that the system will exclude, particularly apps targeting SDK 30 or below.
+    return if (d2dBackup) {
+        // TODO: Consider ways of replicating the system's logic so that the user can have advance
+        // knowledge of apps that the system will exclude, particularly apps targeting SDK 30 or
+        // below.
 
-    // At backup time, the system will filter out any apps that *it* does not want to be backed up.
-    // Now that we have switched to D2D, *we* generally want to back up as much as possible;
-    // part of the point of D2D is to ignore FLAG_ALLOW_BACKUP (allowsBackup). So, we return true.
-    // See frameworks/base/services/backup/java/com/android/server/backup/utils/
-    // BackupEligibilityRules.java lines 74-81 and 163-167 (tag: android-13.0.0_r8).
-    return true
+        // At backup time, the system will filter out any apps that *it* does not want to be
+        // backed up. If the user has enabled D2D, *we* generally want to back up as much as
+        // possible; part of the point of D2D is to ignore FLAG_ALLOW_BACKUP (allowsBackup).
+        // So, we return true.
+        // See frameworks/base/services/backup/java/com/android/server/backup/utils/
+        // BackupEligibilityRules.java lines 74-81 and 163-167 (tag: android-13.0.0_r8).
+        true
+    } else {
+        applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+    }
 }
 
 /**

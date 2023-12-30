@@ -23,6 +23,9 @@ data class RestorableBackup(val backupMetadata: BackupMetadata) {
     val deviceName: String
         get() = backupMetadata.deviceName
 
+    val d2dBackup: Boolean
+        get() = backupMetadata.d2dBackup
+
     val packageMetadataMap: PackageMetadataMap
         get() = backupMetadata.packageMetadataMap
 

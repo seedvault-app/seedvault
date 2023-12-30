@@ -24,14 +24,17 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionNameSuffix = "-${gitDescribe()}"
         testInstrumentationRunner = "com.stevesoltys.seedvault.KoinInstrumentationTestRunner"
-        testInstrumentationRunnerArguments(mapOf("disableAnalytics" to "true"))
+        testInstrumentationRunnerArguments["disableAnalytics"] = "true"
 
         if (project.hasProperty("instrumented_test_size")) {
             val testSize = project.property("instrumented_test_size").toString()
             println("Instrumented test size: $testSize")
 
-            testInstrumentationRunnerArguments(mapOf("size" to testSize))
+            testInstrumentationRunnerArguments["size"] = testSize
         }
+
+        val d2dBackupTest = project.findProperty("d2d_backup_test")?.toString() ?: "true"
+        testInstrumentationRunnerArguments["d2d_backup_test"] = d2dBackupTest
     }
 
     signingConfigs {
