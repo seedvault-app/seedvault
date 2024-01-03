@@ -1,6 +1,9 @@
 package com.stevesoltys.seedvault.plugins.saf
 
 import androidx.documentfile.provider.DocumentFile
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsProviderStoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsStorage
+import com.stevesoltys.seedvault.service.storage.saf.listFilesBlocking
 import com.stevesoltys.seedvault.transport.backup.BackupTest
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -38,7 +41,7 @@ internal class StoragePluginTest : BackupTest() {
     fun `test initializeDevice`() = runBlocking {
         // get current set dir and for that the current token
         every { storage getProperty "currentToken" } returns token
-        every { settingsManager.getToken() } returns token
+        every { settingsService.getToken() } returns token
         every { storage getProperty "storage" } returns null // just to check if isUsb
         coEvery { storage.getSetDir(token) } returns setDir
         // delete contents of current set dir

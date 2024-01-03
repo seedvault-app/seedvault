@@ -1,13 +1,19 @@
 package com.stevesoltys.seedvault.metadata
 
-import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.service.crypto.CryptoService
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
-import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.service.metadata.ApkSplit
+import com.stevesoltys.seedvault.service.metadata.BackupMetadata
+import com.stevesoltys.seedvault.service.metadata.BackupType
+import com.stevesoltys.seedvault.service.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.service.metadata.MetadataWriterImpl
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.service.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.service.metadata.PackageState.NO_DATA
+import com.stevesoltys.seedvault.service.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.service.metadata.PackageState.WAS_STOPPED
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -18,10 +24,10 @@ import kotlin.random.Random
 @TestInstance(PER_CLASS)
 internal class MetadataWriterDecoderTest {
 
-    private val crypto = mockk<Crypto>()
+    private val cryptoService = mockk<CryptoService>()
 
-    private val encoder = MetadataWriterImpl(crypto)
-    private val decoder = MetadataReaderImpl(crypto)
+    private val encoder = MetadataWriterImpl(cryptoService)
+    private val decoder = MetadataReaderImpl(cryptoService)
 
     @Test
     fun `encoded metadata matches decoded metadata (no packages)`() {

@@ -47,7 +47,7 @@ internal abstract class SeedvaultLargeTest :
         if (arguments.getString("d2d_backup_test") == "true") {
             println("Enabling D2D backups for test")
 
-            settingsManager.setD2dBackupsEnabled(true)
+            settingsService.setD2dBackupsEnabled(true)
         }
     }
 

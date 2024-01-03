@@ -10,12 +10,12 @@ import cash.z.ecc.android.bip39.Mnemonics.InvalidWordException
 import cash.z.ecc.android.bip39.Mnemonics.WordCountException
 import cash.z.ecc.android.bip39.toSeed
 import com.stevesoltys.seedvault.App
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.service.crypto.CryptoService
+import com.stevesoltys.seedvault.service.crypto.KeyManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.ui.LiveEvent
-import com.stevesoltys.seedvault.ui.MutableLiveEvent
+import com.stevesoltys.seedvault.service.app.backup.coordinator.BackupCoordinatorService
+import com.stevesoltys.seedvault.ui.liveevent.LiveEvent
+import com.stevesoltys.seedvault.ui.liveevent.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,17 +29,17 @@ private val TAG = RecoveryCodeViewModel::class.java.simpleName
 
 internal class RecoveryCodeViewModel(
     app: App,
-    private val crypto: Crypto,
+    private val cryptoService: CryptoService,
     private val keyManager: KeyManager,
     private val backupManager: IBackupManager,
-    private val backupCoordinator: BackupCoordinator,
+    private val backupCoordinatorService: BackupCoordinatorService,
     private val notificationManager: BackupNotificationManager,
     private val storageBackup: StorageBackup,
 ) : AndroidViewModel(app) {
 
     internal val wordList: List<CharArray> by lazy {
         // we use our own entropy to not having to trust the library to use SecureRandom
-        val entropy = crypto.getRandomBytes(Mnemonics.WordCount.COUNT_12.bitLength / 8)
+        val entropy = cryptoService.getRandomBytes(Mnemonics.WordCount.COUNT_12.bitLength / 8)
         // create the words from the entropy
         Mnemonics.MnemonicCode(entropy).words
     }
@@ -73,7 +73,7 @@ internal class RecoveryCodeViewModel(
     fun verifyExistingCode(input: List<CharSequence>) {
         // we validate the code again, just in case
         val seed = validateCode(input).toSeed()
-        val verified = crypto.verifyBackupKey(seed)
+        val verified = cryptoService.verifyBackupKey(seed)
         // store main key at this opportunity if it is still missing
         if (verified && !keyManager.hasMainKey()) keyManager.storeMainKey(seed)
         mExistingCodeChecked.setEvent(verified)

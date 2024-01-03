@@ -4,14 +4,14 @@ import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderLegacyPlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.plugins.saf.deleteContents
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.legacy.DocumentsProviderLegacyPlugin
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsProviderStoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsStorage
+import com.stevesoltys.seedvault.service.storage.saf.FILE_BACKUP_METADATA
+import com.stevesoltys.seedvault.service.storage.saf.deleteContents
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -33,9 +33,9 @@ import org.koin.core.component.inject
 class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val settingsManager: SettingsManager by inject()
-    private val mockedSettingsManager: SettingsManager = mockk()
-    private val storage = DocumentsStorage(context, mockedSettingsManager)
+    private val settingsService: SettingsService by inject()
+    private val mockedSettingsService: SettingsService = mockk()
+    private val storage = DocumentsStorage(context, mockedSettingsService)
 
     private val storagePlugin: StoragePlugin = DocumentsProviderStoragePlugin(context, storage)
 
@@ -49,7 +49,7 @@ class PluginTest : KoinComponent {
 
     @Before
     fun setup() = runBlocking {
-        every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
+        every { mockedSettingsService.getStorage() } returns settingsService.getStorage()
         storage.rootBackupDir?.deleteContents(context)
             ?: error("Select a storage location in the app first!")
     }
@@ -76,11 +76,11 @@ class PluginTest : KoinComponent {
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
         assertEquals(0, storagePlugin.getAvailableBackups()?.toList()?.size)
-        val s = settingsManager.getStorage() ?: error("no storage")
+        val s = settingsService.getStorage() ?: error("no storage")
         assertFalse(storagePlugin.hasBackup(s))
 
         // prepare returned tokens requested when initializing device
-        every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
+        every { mockedSettingsService.getToken() } returnsMany listOf(token, token + 1, token + 1)
 
         // start new restore set and initialize device afterwards
         storagePlugin.startNewRestoreSet(token)
@@ -114,7 +114,7 @@ class PluginTest : KoinComponent {
 
     @Test
     fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
-        every { mockedSettingsManager.getToken() } returns token
+        every { mockedSettingsService.getToken() } returns token
 
         storagePlugin.startNewRestoreSet(token)
         storagePlugin.initializeDevice()
@@ -216,7 +216,7 @@ class PluginTest : KoinComponent {
     }
 
     private fun initStorage(token: Long) = runBlocking {
-        every { mockedSettingsManager.getToken() } returns token
+        every { mockedSettingsService.getToken() } returns token
         storagePlugin.initializeDevice()
     }
 

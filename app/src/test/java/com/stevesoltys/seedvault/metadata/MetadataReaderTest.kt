@@ -1,11 +1,29 @@
 package com.stevesoltys.seedvault.metadata
 
-import com.stevesoltys.seedvault.Utf8
-import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.util.Utf8
+import com.stevesoltys.seedvault.service.crypto.CryptoService
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.service.metadata.BackupMetadata
+import com.stevesoltys.seedvault.service.metadata.BackupType
+import com.stevesoltys.seedvault.service.metadata.JSON_METADATA
+import com.stevesoltys.seedvault.service.metadata.JSON_METADATA_SDK_INT
+import com.stevesoltys.seedvault.service.metadata.JSON_METADATA_TOKEN
+import com.stevesoltys.seedvault.service.metadata.JSON_METADATA_VERSION
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_BACKUP_TYPE
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_INSTALLER
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_SHA256
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_SIGNATURES
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_STATE
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_TIME
+import com.stevesoltys.seedvault.service.metadata.JSON_PACKAGE_VERSION
+import com.stevesoltys.seedvault.service.metadata.PackageState.QUOTA_EXCEEDED
+import com.stevesoltys.seedvault.service.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.service.metadata.METADATA_SALT_SIZE
+import com.stevesoltys.seedvault.service.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.service.metadata.MetadataWriterImpl
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageMetadataMap
 import io.mockk.mockk
 import org.json.JSONArray
 import org.json.JSONObject
@@ -22,10 +40,10 @@ import kotlin.random.Random
 @TestInstance(PER_CLASS)
 class MetadataReaderTest {
 
-    private val crypto = mockk<Crypto>()
+    private val cryptoService = mockk<CryptoService>()
 
-    private val encoder = MetadataWriterImpl(crypto)
-    private val decoder = MetadataReaderImpl(crypto)
+    private val encoder = MetadataWriterImpl(cryptoService)
+    private val decoder = MetadataReaderImpl(cryptoService)
 
     private val metadata = getMetadata()
     private val metadataByteArray = encoder.encode(metadata)

@@ -6,9 +6,9 @@ import com.stevesoltys.seedvault.e2e.io.BackupDataOutputIntercept
 import com.stevesoltys.seedvault.e2e.io.OutputStreamIntercept
 import com.stevesoltys.seedvault.e2e.screen.impl.RecoveryCodeScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.RestoreScreen
-import com.stevesoltys.seedvault.transport.restore.FullRestore
-import com.stevesoltys.seedvault.transport.restore.KVRestore
-import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
+import com.stevesoltys.seedvault.service.app.restore.OutputFactory
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.every

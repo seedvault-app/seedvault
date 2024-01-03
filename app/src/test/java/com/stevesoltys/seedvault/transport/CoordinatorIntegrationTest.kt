@@ -7,29 +7,29 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
-import com.stevesoltys.seedvault.crypto.CryptoImpl
+import com.stevesoltys.seedvault.service.crypto.CipherFactoryImpl
+import com.stevesoltys.seedvault.service.crypto.CryptoServiceImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
-import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
-import com.stevesoltys.seedvault.metadata.BackupType
-import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.transport.backup.ApkBackup
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.backup.FullBackup
-import com.stevesoltys.seedvault.transport.backup.InputFactory
-import com.stevesoltys.seedvault.transport.backup.KVBackup
-import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.service.header.HeaderDecodeServiceImpl
+import com.stevesoltys.seedvault.service.header.MAX_SEGMENT_CLEARTEXT_LENGTH
+import com.stevesoltys.seedvault.service.metadata.BackupType
+import com.stevesoltys.seedvault.service.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.FILE_BACKUP_METADATA
+import com.stevesoltys.seedvault.service.app.backup.apk.ApkBackupService
+import com.stevesoltys.seedvault.service.app.backup.coordinator.BackupCoordinatorService
+import com.stevesoltys.seedvault.service.app.backup.full.FullBackupService
+import com.stevesoltys.seedvault.service.app.backup.InputFactory
+import com.stevesoltys.seedvault.service.app.backup.kv.KVBackupService
+import com.stevesoltys.seedvault.service.app.PackageService
 import com.stevesoltys.seedvault.transport.backup.TestKvDbManager
-import com.stevesoltys.seedvault.transport.restore.FullRestore
-import com.stevesoltys.seedvault.transport.restore.KVRestore
-import com.stevesoltys.seedvault.transport.restore.OutputFactory
-import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
+import com.stevesoltys.seedvault.service.app.restore.OutputFactory
+import com.stevesoltys.seedvault.service.app.restore.coordinator.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -54,30 +54,31 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val outputFactory = mockk<OutputFactory>()
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
-    private val metadataReader = MetadataReaderImpl(cryptoImpl)
+    private val headerReader = HeaderDecodeServiceImpl()
+    private val cryptoServiceImpl = CryptoServiceImpl(keyManager, cipherFactory, headerReader)
+    private val metadataReader = MetadataReaderImpl(cryptoServiceImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dbManager = TestKvDbManager()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val backupPlugin = mockk<StoragePlugin>()
-    private val kvBackup =
-        KVBackup(backupPlugin, settingsManager, inputFactory, cryptoImpl, dbManager)
-    private val fullBackup = FullBackup(backupPlugin, settingsManager, inputFactory, cryptoImpl)
-    private val apkBackup = mockk<ApkBackup>()
+    private val kvBackupService =
+        KVBackupService(backupPlugin, settingsService, inputFactory, cryptoServiceImpl, dbManager)
+    private val fullBackupService =
+        FullBackupService(backupPlugin, settingsService, inputFactory, cryptoServiceImpl)
+    private val apkBackupService = mockk<ApkBackupService>()
     private val packageService: PackageService = mockk()
-    private val backup = BackupCoordinator(
+    private val backup = BackupCoordinatorService(
         context,
         backupPlugin,
-        kvBackup,
-        fullBackup,
-        apkBackup,
-        clock,
+        kvBackupService,
+        fullBackupService,
+        apkBackupService,
+        timeSource,
         packageService,
-        metadataManager,
-        settingsManager,
+        metadataService,
+        settingsService,
         notificationManager
     )
 
@@ -86,16 +87,16 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         legacyPlugin,
         outputFactory,
         headerReader,
-        cryptoImpl,
+        cryptoServiceImpl,
         dbManager
     )
     private val fullRestore =
-        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoServiceImpl)
     private val restore = RestoreCoordinator(
         context,
-        crypto,
-        settingsManager,
-        metadataManager,
+        cryptoService,
+        settingsService,
+        metadataService,
         notificationManager,
         backupPlugin,
         kvRestore,
@@ -113,7 +114,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val key2 = "RestoreKey2"
 
     // as we use real crypto, we need a real name for packageInfo
-    private val realName = cryptoImpl.getNameForPackage(salt, packageInfo.packageName)
+    private val realName = cryptoServiceImpl.getNameForPackage(salt, packageInfo.packageName)
 
     @Test
     fun `test key-value backup and restore with 2 records`() = runBlocking {
@@ -121,9 +122,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val value2 = CapturingSlot<ByteArray>()
         val bOutputStream = ByteArrayOutputStream()
 
-        every { metadataManager.requiresInit } returns false
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
+        every { metadataService.requiresInit } returns false
+        every { settingsService.getToken() } returns token
+        every { metadataService.salt } returns salt
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen true andThen false
@@ -138,16 +139,16 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.size
         }
         coEvery {
-            apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any())
+            apkBackupService.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any())
         } returns packageMetadata
         coEvery {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
         every {
-            metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream)
+            metadataService.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream)
         } just Runs
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+            metadataService.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
         } just Runs
 
         // start K/V backup
@@ -164,7 +165,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
-        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        every {
+            cryptoService.getNameForPackage(metadata.salt, packageInfo.packageName)
+        } returns name
         coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
@@ -198,9 +201,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val appData = ByteArray(size).apply { Random.nextBytes(this) }
         val bOutputStream = ByteArrayOutputStream()
 
-        every { metadataManager.requiresInit } returns false
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
+        every { metadataService.requiresInit } returns false
+        every { settingsService.getToken() } returns token
+        every { metadataService.salt } returns salt
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen false
@@ -210,13 +213,19 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.copyInto(value.captured) // write the app data into the passed ByteArray
             appData.size
         }
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, any()) } returns null
-        every { settingsManager.getToken() } returns token
+        coEvery {
+            apkBackupService.backupApkIfNecessary(
+                packageInfo,
+                UNKNOWN_ERROR,
+                any()
+            )
+        } returns null
+        every { settingsService.getToken() } returns token
         coEvery {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+            metadataService.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
         } just Runs
 
         // start K/V backup
@@ -233,7 +242,12 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
-        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
+        every {
+            cryptoService.getNameForPackage(
+                metadata.salt,
+                packageInfo.packageName
+            )
+        } returns name
         coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
@@ -268,28 +282,28 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val bInputStream = ByteArrayInputStream(appData)
         coEvery { backupPlugin.getOutputStream(token, realName) } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsService.isQuotaUnlimited() } returns false
         coEvery {
-            apkBackup.backupApkIfNecessary(
+            apkBackupService.backupApkIfNecessary(
                 packageInfo,
                 UNKNOWN_ERROR,
                 any()
             )
         } returns packageMetadata
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
+        every { settingsService.getToken() } returns token
+        every { metadataService.salt } returns salt
         coEvery {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
         every {
-            metadataManager.onApkBackedUp(
+            metadataService.onApkBackedUp(
                 packageInfo,
                 packageMetadata,
                 metadataOutputStream
             )
         } just Runs
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
+            metadataService.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
         } just Runs
 
         // perform backup to output stream
@@ -303,7 +317,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // finds data for full backup
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
+        every { cryptoService.getNameForPackage(salt, packageInfo.packageName) } returns name
         coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()

@@ -3,6 +3,8 @@ package com.stevesoltys.seedvault.transport.backup
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.toHexString
+import com.stevesoltys.seedvault.service.app.backup.kv.KVDb
+import com.stevesoltys.seedvault.service.app.backup.kv.KvDbManager
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals

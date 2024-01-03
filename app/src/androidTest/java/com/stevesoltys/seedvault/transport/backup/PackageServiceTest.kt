@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.transport.backup
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.stevesoltys.seedvault.service.app.PackageService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.component.KoinComponent

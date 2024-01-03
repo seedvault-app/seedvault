@@ -11,21 +11,21 @@ import androidx.preference.PreferenceManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import com.stevesoltys.seedvault.crypto.ANDROID_KEY_STORE
-import com.stevesoltys.seedvault.crypto.KEY_ALIAS_BACKUP
-import com.stevesoltys.seedvault.crypto.KEY_ALIAS_MAIN
-import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.service.crypto.ANDROID_KEY_STORE
+import com.stevesoltys.seedvault.service.crypto.KEY_ALIAS_BACKUP
+import com.stevesoltys.seedvault.service.crypto.KEY_ALIAS_MAIN
+import com.stevesoltys.seedvault.service.crypto.KeyManager
 import com.stevesoltys.seedvault.currentRestoreStorageViewModel
 import com.stevesoltys.seedvault.currentRestoreViewModel
 import com.stevesoltys.seedvault.e2e.screen.impl.BackupScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.DocumentPickerScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.RecoveryCodeScreen
-import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.service.metadata.MetadataService
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
-import com.stevesoltys.seedvault.restore.RestoreViewModel
-import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsStorage
+import com.stevesoltys.seedvault.ui.restore.RestoreViewModel
+import com.stevesoltys.seedvault.service.settings.SettingsService
+import com.stevesoltys.seedvault.service.app.PackageService
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -65,13 +65,13 @@ internal interface LargeTestBase : KoinComponent {
 
     val packageService: PackageService get() = get()
 
-    val settingsManager: SettingsManager get() = get()
+    val settingsService: SettingsService get() = get()
 
     val keyManager: KeyManager get() = get()
 
     val documentsStorage: DocumentsStorage get() = get()
 
-    val spyMetadataManager: MetadataManager get() = get()
+    val spyMetadataService: MetadataService get() = get()
 
     val backupManager: IBackupManager get() = get()
 
@@ -83,7 +83,7 @@ internal interface LargeTestBase : KoinComponent {
 
     fun resetApplicationState() {
         backupManager.setAutoRestore(false)
-        settingsManager.setNewToken(null)
+        settingsService.setNewToken(null)
         documentsStorage.reset(null)
 
         val sharedPreferences = permitDiskReads {

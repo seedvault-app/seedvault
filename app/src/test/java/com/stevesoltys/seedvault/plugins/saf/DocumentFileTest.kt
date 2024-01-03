@@ -7,6 +7,7 @@ import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.TestApp
+import com.stevesoltys.seedvault.service.storage.saf.getTreeDocumentFile
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.After

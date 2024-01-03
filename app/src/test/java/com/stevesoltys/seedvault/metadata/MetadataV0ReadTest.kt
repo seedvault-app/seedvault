@@ -1,12 +1,15 @@
 package com.stevesoltys.seedvault.metadata
 
-import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
-import com.stevesoltys.seedvault.crypto.CryptoImpl
-import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
+import com.stevesoltys.seedvault.service.crypto.CipherFactoryImpl
+import com.stevesoltys.seedvault.service.crypto.CryptoServiceImpl
+import com.stevesoltys.seedvault.service.crypto.KEY_SIZE_BYTES
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
-import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.service.header.HeaderDecodeServiceImpl
+import com.stevesoltys.seedvault.service.metadata.BackupMetadata
+import com.stevesoltys.seedvault.service.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageState.APK_AND_DATA
+import com.stevesoltys.seedvault.service.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -26,10 +29,10 @@ internal class MetadataV0ReadTest {
     )
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val headerReader = HeaderDecodeServiceImpl()
+    private val cryptoServiceImpl = CryptoServiceImpl(keyManager, cipherFactory, headerReader)
 
-    private val reader = MetadataReaderImpl(cryptoImpl)
+    private val reader = MetadataReaderImpl(cryptoServiceImpl)
 
     private val packages = HashMap<String, PackageMetadata>().apply {
         put("org.example", PackageMetadata(23L, APK_AND_DATA))

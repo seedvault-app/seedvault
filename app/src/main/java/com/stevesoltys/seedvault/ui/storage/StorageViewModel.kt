@@ -14,19 +14,19 @@ import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.settings.BackupManagerSettings
-import com.stevesoltys.seedvault.settings.FlashDrive
-import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.settings.Storage
-import com.stevesoltys.seedvault.ui.LiveEvent
-import com.stevesoltys.seedvault.ui.MutableLiveEvent
+import com.stevesoltys.seedvault.service.settings.FlashDrive
+import com.stevesoltys.seedvault.service.settings.SettingsService
+import com.stevesoltys.seedvault.service.settings.Storage
+import com.stevesoltys.seedvault.ui.settings.BackupManagerSettings
+import com.stevesoltys.seedvault.ui.liveevent.LiveEvent
+import com.stevesoltys.seedvault.ui.liveevent.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
 private val TAG = StorageViewModel::class.java.simpleName
 
 internal abstract class StorageViewModel(
     private val app: Application,
-    protected val settingsManager: SettingsManager,
+    protected val settingsService: SettingsService,
 ) : AndroidViewModel(app), RemovableStorageListener {
 
     private val mStorageOptions = MutableLiveData<List<StorageOption>>()
@@ -43,15 +43,15 @@ internal abstract class StorageViewModel(
 
     internal var isSetupWizard: Boolean = false
     internal val hasStorageSet: Boolean
-        get() = settingsManager.getStorage() != null
+        get() = settingsService.getStorage() != null
     abstract val isRestoreOperation: Boolean
 
     companion object {
         internal fun validLocationIsSet(
             context: Context,
-            settingsManager: SettingsManager,
+            settingsService: SettingsService,
         ): Boolean {
-            val storage = settingsManager.getStorage() ?: return false
+            val storage = settingsService.getStorage() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
                 storage.getDocumentFile(context).isDirectory
@@ -113,15 +113,15 @@ internal abstract class StorageViewModel(
     }
 
     protected fun saveStorage(storage: Storage): Boolean {
-        settingsManager.setStorage(storage)
+        settingsService.setStorage(storage)
 
         if (storage.isUsb) {
             Log.d(TAG, "Selected storage is a removable USB device.")
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
-            if (!wasSaved) settingsManager.setFlashDrive(null)
+            if (!wasSaved) settingsService.setFlashDrive(null)
         } else {
-            settingsManager.setFlashDrive(null)
+            settingsService.setFlashDrive(null)
         }
         BackupManagerSettings.resetDefaults(app.contentResolver)
 
@@ -135,7 +135,7 @@ internal abstract class StorageViewModel(
         manager.deviceList.values.forEach { device ->
             if (device.isMassStorage()) {
                 val flashDrive = FlashDrive.from(device)
-                settingsManager.setFlashDrive(flashDrive)
+                settingsService.setFlashDrive(flashDrive)
                 Log.d(TAG, "Saved flash drive: $flashDrive")
                 return true
             }

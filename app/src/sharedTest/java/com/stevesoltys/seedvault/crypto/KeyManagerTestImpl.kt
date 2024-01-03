@@ -1,5 +1,7 @@
 package com.stevesoltys.seedvault.crypto
 
+import com.stevesoltys.seedvault.service.crypto.KEY_SIZE
+import com.stevesoltys.seedvault.service.crypto.KeyManager
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 

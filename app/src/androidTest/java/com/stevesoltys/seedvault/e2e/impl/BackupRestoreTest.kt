@@ -3,7 +3,7 @@ package com.stevesoltys.seedvault.e2e.impl
 import androidx.test.filters.LargeTest
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTest
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTestResult
-import com.stevesoltys.seedvault.metadata.PackageState
+import com.stevesoltys.seedvault.service.metadata.PackageState
 import org.junit.Test
 
 @LargeTest
@@ -17,7 +17,7 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
             confirmCode()
         }
 
-        if (settingsManager.getStorage() == null) {
+        if (settingsService.getStorage() == null) {
             chooseStorageLocation()
         } else {
             changeBackupLocation()

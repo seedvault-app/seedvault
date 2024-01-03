@@ -13,7 +13,11 @@ import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.service.storage.saf.DocumentsStorage
+import com.stevesoltys.seedvault.service.storage.saf.createOrGetFile
+import com.stevesoltys.seedvault.service.storage.saf.findFileBlocking
+import com.stevesoltys.seedvault.service.storage.saf.getLoadedCursor
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import com.stevesoltys.seedvault.writeAndClose
 import io.mockk.Runs
 import io.mockk.every
@@ -44,8 +48,8 @@ import kotlin.random.Random
 class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val settingsManager by inject<SettingsManager>()
-    private val storage = DocumentsStorage(context, settingsManager)
+    private val settingsService by inject<SettingsService>()
+    private val storage = DocumentsStorage(context, settingsService)
 
     private val filename = getRandomBase64()
     private lateinit var file: DocumentFile

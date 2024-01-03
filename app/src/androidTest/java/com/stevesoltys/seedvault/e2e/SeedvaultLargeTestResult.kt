@@ -1,8 +1,8 @@
 package com.stevesoltys.seedvault.e2e
 
 import android.content.pm.PackageInfo
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.restore.AppRestoreResult
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.ui.restore.AppRestoreResult
 
 /**
  * Contains maps of (package name -> SHA-256 hashes) of application data.

@@ -5,9 +5,9 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.e2e.io.BackupDataInputIntercept
 import com.stevesoltys.seedvault.e2e.io.InputStreamIntercept
 import com.stevesoltys.seedvault.e2e.screen.impl.BackupScreen
-import com.stevesoltys.seedvault.transport.backup.FullBackup
-import com.stevesoltys.seedvault.transport.backup.InputFactory
-import com.stevesoltys.seedvault.transport.backup.KVBackup
+import com.stevesoltys.seedvault.service.app.backup.InputFactory
+import com.stevesoltys.seedvault.service.app.backup.full.FullBackupService
+import com.stevesoltys.seedvault.service.app.backup.kv.KVBackupService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -27,9 +27,9 @@ internal interface LargeBackupTestBase : LargeTestBase {
 
     val spyBackupNotificationManager: BackupNotificationManager get() = get()
 
-    val spyFullBackup: FullBackup get() = get()
+    val spyFullBackupService: FullBackupService get() = get()
 
-    val spyKVBackup: KVBackup get() = get()
+    val spyKVBackupService: KVBackupService get() = get()
 
     val spyInputFactory: InputFactory get() = get()
 
@@ -72,7 +72,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
 
         return backupResult.copy(
             backupResults = backupResult.allUserApps().associate {
-                it.packageName to spyMetadataManager.getPackageMetadata(it.packageName)
+                it.packageName to spyMetadataService.getPackageMetadata(it.packageName)
             }.toMutableMap()
         )
     }
@@ -88,7 +88,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
     }
 
     private fun spyOnBackup(backupResult: SeedvaultLargeTestResult): AtomicBoolean {
-        clearMocks(spyInputFactory, spyKVBackup, spyFullBackup)
+        clearMocks(spyInputFactory, spyKVBackupService, spyFullBackupService)
         spyOnFullBackupData(backupResult)
         spyOnKVBackupData(backupResult)
 
@@ -100,7 +100,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var data = mutableMapOf<String, ByteArray>()
 
         coEvery {
-            spyKVBackup.performBackup(any(), any(), any(), any(), any())
+            spyKVBackupService.performBackup(any(), any(), any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()
@@ -117,7 +117,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         }
 
         coEvery {
-            spyKVBackup.finishBackup()
+            spyKVBackupService.finishBackup()
         } answers {
             backupResult.kv[packageName!!] = data
                 .mapValues { entry -> entry.value.sha256() }
@@ -134,7 +134,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var dataIntercept = ByteArrayOutputStream()
 
         coEvery {
-            spyFullBackup.performFullBackup(any(), any(), any(), any(), any())
+            spyFullBackupService.performFullBackup(any(), any(), any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()
@@ -150,7 +150,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         }
 
         every {
-            spyFullBackup.finishBackup()
+            spyFullBackupService.finishBackup()
         } answers {
             val result = callOriginal()
             backupResult.full[packageName!!] = dataIntercept.toByteArray().sha256()

@@ -14,14 +14,14 @@ import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTre
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AlertDialog
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.ui.BackupActivity
-import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
-import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
+import com.stevesoltys.seedvault.ui.BackupActivityBase
+import com.stevesoltys.seedvault.ui.provision.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.seedvault.ui.provision.INTENT_EXTRA_IS_SETUP_WIZARD
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 private val TAG = StorageActivity::class.java.name
 
-class StorageActivity : BackupActivity() {
+class StorageActivity : BackupActivityBase() {
 
     private lateinit var viewModel: StorageViewModel
 

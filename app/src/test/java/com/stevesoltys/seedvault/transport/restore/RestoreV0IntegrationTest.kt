@@ -6,18 +6,22 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
-import com.stevesoltys.seedvault.crypto.CryptoImpl
-import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
+import com.stevesoltys.seedvault.service.crypto.CipherFactoryImpl
+import com.stevesoltys.seedvault.service.crypto.CryptoServiceImpl
+import com.stevesoltys.seedvault.service.crypto.KEY_SIZE_BYTES
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
-import com.stevesoltys.seedvault.encodeBase64
-import com.stevesoltys.seedvault.header.HeaderReaderImpl
-import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.util.encodeBase64
+import com.stevesoltys.seedvault.service.header.HeaderDecodeServiceImpl
+import com.stevesoltys.seedvault.service.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.transport.backup.KvDbManager
+import com.stevesoltys.seedvault.service.app.backup.kv.KvDbManager
+import com.stevesoltys.seedvault.service.app.restore.OutputFactory
+import com.stevesoltys.seedvault.service.app.restore.coordinator.RestoreCoordinator
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.coEvery
 import io.mockk.every
@@ -44,10 +48,10 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     )
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
-    private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val headerReader = HeaderDecodeServiceImpl()
+    private val cryptoServiceImpl = CryptoServiceImpl(keyManager, cipherFactory, headerReader)
     private val dbManager = mockk<KvDbManager>()
-    private val metadataReader = MetadataReaderImpl(cryptoImpl)
+    private val metadataReader = MetadataReaderImpl(cryptoServiceImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
 
     @Suppress("Deprecation")
@@ -58,16 +62,16 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         legacyPlugin,
         outputFactory,
         headerReader,
-        cryptoImpl,
+        cryptoServiceImpl,
         dbManager
     )
     private val fullRestore =
-        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoServiceImpl)
     private val restore = RestoreCoordinator(
         context,
-        crypto,
-        settingsManager,
-        metadataManager,
+        cryptoService,
+        settingsService,
+        metadataService,
         notificationManager,
         backupPlugin,
         kvRestore,

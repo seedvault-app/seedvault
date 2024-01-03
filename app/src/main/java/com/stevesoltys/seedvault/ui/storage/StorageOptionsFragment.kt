@@ -23,7 +23,7 @@ import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
+import com.stevesoltys.seedvault.ui.provision.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 

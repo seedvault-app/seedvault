@@ -87,7 +87,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="true"
             android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS" />
 
@@ -106,7 +106,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".restore.RestoreActivity"
+            android:name=".ui.restore.RestoreActivity"
             android:exported="true"
             android:label="@string/restore_title"
             android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
@@ -137,7 +137,7 @@
         </receiver>
 
         <receiver
-            android:name=".restore.RestoreErrorBroadcastReceiver"
+            android:name=".ui.restore.RestoreErrorBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.stevesoltys.seedvault.action.UNINSTALL" />
@@ -145,7 +145,7 @@
         </receiver>
 
         <receiver
-            android:name=".SecretCodeReceiver"
+            android:name=".ui.restore.SecretCodeReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.telephony.action.SECRET_CODE" />
@@ -158,19 +158,19 @@
 
         <!-- Used to start actual BackupService depending on scheduling criteria -->
         <service
-            android:name=".storage.StorageBackupJobService"
+            android:name=".service.file.backup.FileBackupJobService"
             android:exported="false"
             android:label="BackupJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <!-- Does the actual backup work as a foreground service -->
         <service
-            android:name=".storage.StorageBackupService"
+            android:name=".service.file.backup.FileBackupService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:label="BackupService" />
         <!-- Does restore as a foreground service -->
         <service
-            android:name=".storage.StorageRestoreService"
+            android:name=".service.file.restore.FileRestoreService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:label="RestoreService" />

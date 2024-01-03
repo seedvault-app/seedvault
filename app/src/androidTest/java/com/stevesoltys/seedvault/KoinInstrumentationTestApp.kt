@@ -1,12 +1,12 @@
 package com.stevesoltys.seedvault
 
-import com.stevesoltys.seedvault.restore.RestoreViewModel
-import com.stevesoltys.seedvault.transport.backup.FullBackup
-import com.stevesoltys.seedvault.transport.backup.InputFactory
-import com.stevesoltys.seedvault.transport.backup.KVBackup
-import com.stevesoltys.seedvault.transport.restore.FullRestore
-import com.stevesoltys.seedvault.transport.restore.KVRestore
-import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import com.stevesoltys.seedvault.ui.restore.RestoreViewModel
+import com.stevesoltys.seedvault.service.app.backup.full.FullBackupService
+import com.stevesoltys.seedvault.service.app.backup.InputFactory
+import com.stevesoltys.seedvault.service.app.backup.kv.KVBackupService
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
+import com.stevesoltys.seedvault.service.app.restore.OutputFactory
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
@@ -26,8 +26,8 @@ class KoinInstrumentationTestApp : App() {
             val context = this@KoinInstrumentationTestApp
 
             single { spyk(BackupNotificationManager(context)) }
-            single { spyk(FullBackup(get(), get(), get(), get())) }
-            single { spyk(KVBackup(get(), get(), get(), get(), get())) }
+            single { spyk(FullBackupService(get(), get(), get(), get())) }
+            single { spyk(KVBackupService(get(), get(), get(), get(), get())) }
             single { spyk(InputFactory()) }
 
             single { spyk(FullRestore(get(), get(), get(), get(), get())) }

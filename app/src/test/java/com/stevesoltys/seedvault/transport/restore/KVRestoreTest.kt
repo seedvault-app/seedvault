@@ -4,16 +4,17 @@ import android.app.backup.BackupDataOutput
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import com.stevesoltys.seedvault.coAssertThrows
-import com.stevesoltys.seedvault.encodeBase64
+import com.stevesoltys.seedvault.util.encodeBase64
 import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.header.UnsupportedVersionException
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.VersionHeader
-import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.transport.backup.KVDb
-import com.stevesoltys.seedvault.transport.backup.KvDbManager
+import com.stevesoltys.seedvault.service.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.service.header.VERSION
+import com.stevesoltys.seedvault.service.header.VersionHeader
+import com.stevesoltys.seedvault.service.header.getADForKV
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.app.backup.kv.KVDb
+import com.stevesoltys.seedvault.service.app.backup.kv.KvDbManager
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -40,8 +41,14 @@ internal class KVRestoreTest : RestoreTest() {
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
-    private val restore =
-        KVRestore(plugin, legacyPlugin, outputFactory, headerReader, crypto, dbManager)
+    private val restore = KVRestore(
+        plugin,
+        legacyPlugin,
+        outputFactory,
+        headerDecodeService,
+        cryptoService,
+        dbManager
+    )
 
     private val db = mockk<KVDb>()
     private val ad = getADForKV(VERSION, packageInfo.packageName)
@@ -75,7 +82,7 @@ internal class KVRestoreTest : RestoreTest() {
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
         every {
-            headerReader.readVersion(inputStream, VERSION)
+            headerDecodeService.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(Byte.MAX_VALUE)
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
         streamsGetClosed()
@@ -89,8 +96,13 @@ internal class KVRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every {
+            cryptoService.newDecryptingStream(
+                inputStream,
+                ad
+            )
+        } throws GeneralSecurityException()
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
         streamsGetClosed()
 
@@ -107,8 +119,8 @@ internal class KVRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every { cryptoService.newDecryptingStream(inputStream, ad) } returns decryptInputStream
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()
@@ -132,8 +144,8 @@ internal class KVRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every { cryptoService.newDecryptingStream(inputStream, ad) } returns decryptInputStream
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()
@@ -198,7 +210,7 @@ internal class KVRestoreTest : RestoreTest() {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
         every {
-            headerReader.readVersion(inputStream, 0x00)
+            headerDecodeService.readVersion(inputStream, 0x00)
         } throws UnsupportedVersionException(unsupportedVersion)
         streamsGetClosed()
 
@@ -214,7 +226,7 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } throws IOException()
+        every { headerDecodeService.readVersion(inputStream, 0x00) } throws IOException()
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -230,9 +242,9 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } returns 0x00
+        every { headerDecodeService.readVersion(inputStream, 0x00) } returns 0x00
         every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
         } throws IOException()
         streamsGetClosed()
 
@@ -249,11 +261,11 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } returns 0x00
+        every { headerDecodeService.readVersion(inputStream, 0x00) } returns 0x00
         every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
         } returns VersionHeader(0x00, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } throws IOException()
+        every { cryptoService.decryptMultipleSegments(inputStream) } throws IOException()
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
@@ -269,11 +281,11 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
         } returns VersionHeader(0x00, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
+        every { cryptoService.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } throws IOException()
         streamsGetClosed()
 
@@ -290,11 +302,11 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0, packageInfo.packageName, key)
         } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
+        every { cryptoService.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } throws IOException()
         streamsGetClosed()
@@ -312,11 +324,11 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0, packageInfo.packageName, key)
         } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
+        every { cryptoService.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
         streamsGetClosed()
@@ -334,11 +346,11 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0, packageInfo.packageName, key)
         } returns VersionHeader(VERSION, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
+        every { cryptoService.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
         streamsGetClosed()
@@ -359,22 +371,22 @@ internal class KVRestoreTest : RestoreTest() {
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
         } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
+            cryptoService.decryptHeader(inputStream, 0, packageInfo.packageName, key)
         } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
+        every { cryptoService.decryptMultipleSegments(inputStream) } returns data
         every { output.writeEntityHeader(key, data.size) } returns 42
         every { output.writeEntityData(data, data.size) } returns data.size
         // second key/value
         coEvery {
             legacyPlugin.getInputStreamForRecord(token, packageInfo, key264)
         } returns inputStream2
-        every { headerReader.readVersion(inputStream2, 0) } returns 0
+        every { headerDecodeService.readVersion(inputStream2, 0) } returns 0
         every {
-            crypto.decryptHeader(inputStream2, 0, packageInfo.packageName, key2)
+            cryptoService.decryptHeader(inputStream2, 0, packageInfo.packageName, key2)
         } returns VersionHeader(0, packageInfo.packageName, key2)
-        every { crypto.decryptMultipleSegments(inputStream2) } returns data2
+        every { cryptoService.decryptMultipleSegments(inputStream2) } returns data2
         every { output.writeEntityHeader(key2, data2.size) } returns 42
         every { output.writeEntityData(data2, data2.size) } returns data2.size
         every { inputStream2.close() } just Runs

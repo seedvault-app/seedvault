@@ -15,12 +15,12 @@ import android.os.Looper
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.core.content.ContextCompat.startForegroundService
-import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.settings.FlashDrive
-import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.storage.StorageBackupService
-import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.service.app.backup.requestBackup
+import com.stevesoltys.seedvault.service.file.backup.FileBackupService
+import com.stevesoltys.seedvault.service.file.backup.FileBackupService.Companion.EXTRA_START_APP_BACKUP
+import com.stevesoltys.seedvault.service.metadata.MetadataService
+import com.stevesoltys.seedvault.service.settings.FlashDrive
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
 import org.koin.core.context.GlobalContext.get
 import java.util.concurrent.TimeUnit.HOURS
@@ -32,17 +32,17 @@ private const val HOURS_AUTO_BACKUP: Long = 24
 class UsbIntentReceiver : UsbMonitor() {
 
     // using KoinComponent would crash robolectric tests :(
-    private val settingsManager: SettingsManager by lazy { get().get() }
-    private val metadataManager: MetadataManager by lazy { get().get() }
+    private val settingsService: SettingsService by lazy { get().get() }
+    private val metadataService: MetadataService by lazy { get().get() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false
         Log.d(TAG, "Checking if this is the current backup drive.")
-        val savedFlashDrive = settingsManager.getFlashDrive() ?: return false
+        val savedFlashDrive = settingsService.getFlashDrive() ?: return false
         val attachedFlashDrive = FlashDrive.from(device)
         return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
-            val backupMillis = System.currentTimeMillis() - metadataManager.getLastBackupTime()
+            val backupMillis = System.currentTimeMillis() - metadataService.getLastBackupTime()
             if (backupMillis >= HOURS.toMillis(HOURS_AUTO_BACKUP)) {
                 Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
                 true
@@ -57,8 +57,8 @@ class UsbIntentReceiver : UsbMonitor() {
     }
 
     override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
-        if (settingsManager.isStorageBackupEnabled()) {
-            val i = Intent(context, StorageBackupService::class.java)
+        if (settingsService.isStorageBackupEnabled()) {
+            val i = Intent(context, FileBackupService::class.java)
             // this starts an app backup afterwards
             i.putExtra(EXTRA_START_APP_BACKUP, true)
             startForegroundService(context, i)

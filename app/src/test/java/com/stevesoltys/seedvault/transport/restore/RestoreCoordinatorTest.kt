@@ -10,13 +10,17 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.metadata.BackupType
-import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.plugins.EncryptedMetadata
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.service.app.restore.coordinator.D2D_DEVICE_NAME
+import com.stevesoltys.seedvault.service.app.restore.coordinator.RestoreCoordinator
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.app.restore.kv.KVRestore
+import com.stevesoltys.seedvault.service.header.VERSION
+import com.stevesoltys.seedvault.service.metadata.BackupType
+import com.stevesoltys.seedvault.service.metadata.MetadataReader
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.settings.Storage
+import com.stevesoltys.seedvault.service.storage.EncryptedBackupMetadata
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -46,9 +50,9 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     private val restore = RestoreCoordinator(
         context,
-        crypto,
-        settingsManager,
-        metadataManager,
+        cryptoService,
+        settingsService,
+        metadataService,
         notificationManager,
         plugin,
         kv,
@@ -75,11 +79,11 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
-        val encryptedMetadata = EncryptedMetadata(token) { inputStream }
+        val encryptedBackupMetadata = EncryptedBackupMetadata(token) { inputStream }
 
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
-            encryptedMetadata,
-            EncryptedMetadata(token + 1) { inputStream }
+            encryptedBackupMetadata,
+            EncryptedBackupMetadata(token + 1) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
@@ -103,7 +107,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getCurrentRestoreSet() delegates to plugin`() {
-        every { settingsManager.getToken() } returns token
+        every { settingsService.getToken() } returns token
         assertEquals(token, restore.getCurrentRestoreSet())
     }
 
@@ -116,8 +120,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() fetches metadata if missing`() = runBlocking {
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
-            EncryptedMetadata(token) { inputStream },
-            EncryptedMetadata(token + 1) { inputStream }
+            EncryptedBackupMetadata(token) { inputStream },
+            EncryptedBackupMetadata(token + 1) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
@@ -129,7 +133,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() errors if metadata is not matching token`() = runBlocking {
         coEvery { plugin.getAvailableBackups() } returns sequenceOf(
-            EncryptedMetadata(token + 42) { inputStream }
+            EncryptedBackupMetadata(token + 42) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token + 42) } returns metadata
         every { inputStream.close() } just Runs
@@ -164,9 +168,9 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() =
         runBlocking {
-            every { settingsManager.getStorage() } returns storage
+            every { settingsService.getStorage() } returns storage
             every { storage.isUnavailableUsb(context) } returns true
-            every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
+            every { metadataService.getPackageMetadata(packageName) } returns PackageMetadata(42L)
             every { storage.name } returns storageName
             every {
                 notificationManager.onRemovableStorageNotAvailableForRestore(
@@ -188,7 +192,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() =
         runBlocking {
-            every { settingsManager.getStorage() } returns storage
+            every { settingsService.getStorage() } returns storage
             every { storage.isUnavailableUsb(context) } returns false
 
             restore.beforeStartRestore(metadata)
@@ -204,9 +208,9 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
-        every { settingsManager.getStorage() } returns storage
+        every { settingsService.getStorage() } returns storage
         every { storage.isUnavailableUsb(context) } returns true
-        every { metadataManager.getPackageMetadata(packageName) } returns null
+        every { metadataService.getPackageMetadata(packageName) } returns null
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
 
@@ -230,7 +234,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray)
 
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        every { cryptoService.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
@@ -270,9 +274,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        every { cryptoService.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns false
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every {
+            cryptoService.getNameForPackage(
+                metadata.salt,
+                packageInfo2.packageName
+            )
+        } returns name2
         coEvery { plugin.hasData(token, name2) } returns false
 
         assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
@@ -285,7 +294,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every {
+            cryptoService.getNameForPackage(
+                metadata.salt,
+                packageInfo2.packageName
+            )
+        } returns name2
         coEvery { plugin.hasData(token, name2) } returns true
         every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
 
@@ -300,14 +314,19 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        every { cryptoService.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every {
+            cryptoService.getNameForPackage(
+                metadata.salt,
+                packageInfo2.packageName
+            )
+        } returns name2
         coEvery { plugin.hasData(token, name2) } returns true
         every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
 
@@ -356,9 +375,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(metadata)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        every { cryptoService.getNameForPackage(metadata.salt, packageName) } returns name
         coEvery { plugin.hasData(token, name) } returns false
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every {
+            cryptoService.getNameForPackage(
+                metadata.salt,
+                packageInfo2.packageName
+            )
+        } returns name2
         coEvery { plugin.hasData(token, name2) } throws IOException()
 
         assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())

@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.crypto
 
 import com.stevesoltys.seedvault.getRandomByteArray
+import com.stevesoltys.seedvault.service.crypto.KeyManagerImpl
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

@@ -10,18 +10,24 @@ import android.graphics.drawable.Drawable
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.ApkSplit
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.restore.RestorableBackup
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
-import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.metadata.ApkSplit
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.ui.restore.RestorableBackup
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallResult
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallState.FAILED
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallState.FAILED_SYSTEM_APP
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallState.IN_PROGRESS
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstallState.SUCCEEDED
+import com.stevesoltys.seedvault.ui.restore.apk.ApkInstaller
+import com.stevesoltys.seedvault.ui.restore.apk.ApkRestore
+import com.stevesoltys.seedvault.ui.restore.apk.ApkSplitCompatibilityChecker
+import com.stevesoltys.seedvault.ui.restore.apk.InstallResult
+import com.stevesoltys.seedvault.ui.restore.apk.MutableInstallResult
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -58,7 +64,7 @@ internal class ApkRestoreTest : TransportTest() {
         strictContext,
         storagePlugin,
         legacyStoragePlugin,
-        crypto,
+        cryptoService,
         splitCompatChecker,
         apkInstaller
     )
@@ -94,7 +100,7 @@ internal class ApkRestoreTest : TransportTest() {
         val backup = swapPackages(hashMapOf(packageName to packageMetadata))
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        every { cryptoService.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
@@ -109,7 +115,7 @@ internal class ApkRestoreTest : TransportTest() {
         packageInfo.packageName = getRandomString()
 
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        every { cryptoService.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
@@ -297,7 +303,7 @@ internal class ApkRestoreTest : TransportTest() {
         cacheBaseApkAndGetInfo(tmpDir)
 
         every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
-        every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
+        every { cryptoService.getNameForApk(salt, packageName, splitName) } returns suffixName
         coEvery {
             storagePlugin.getInputStream(token, suffixName)
         } returns ByteArrayInputStream(getRandomByteArray())
@@ -322,7 +328,7 @@ internal class ApkRestoreTest : TransportTest() {
             cacheBaseApkAndGetInfo(tmpDir)
 
             every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
-            every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
+            every { cryptoService.getNameForApk(salt, packageName, splitName) } returns suffixName
             coEvery { storagePlugin.getInputStream(token, suffixName) } throws IOException()
             every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
@@ -359,9 +365,9 @@ internal class ApkRestoreTest : TransportTest() {
         val split2InputStream = ByteArrayInputStream(split2Bytes)
         val suffixName1 = getRandomString()
         val suffixName2 = getRandomString()
-        every { crypto.getNameForApk(salt, packageName, split1Name) } returns suffixName1
+        every { cryptoService.getNameForApk(salt, packageName, split1Name) } returns suffixName1
         coEvery { storagePlugin.getInputStream(token, suffixName1) } returns split1InputStream
-        every { crypto.getNameForApk(salt, packageName, split2Name) } returns suffixName2
+        every { cryptoService.getNameForApk(salt, packageName, split2Name) } returns suffixName2
         coEvery { storagePlugin.getInputStream(token, suffixName2) } returns split2InputStream
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
@@ -410,7 +416,7 @@ internal class ApkRestoreTest : TransportTest() {
 
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        every { crypto.getNameForApk(salt, packageName, "") } returns name
+        every { cryptoService.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon

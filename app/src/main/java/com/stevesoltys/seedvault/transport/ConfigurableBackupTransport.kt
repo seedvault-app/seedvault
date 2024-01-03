@@ -11,10 +11,10 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.settings.SettingsActivity
-import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
+import com.stevesoltys.seedvault.service.app.backup.coordinator.BackupCoordinatorService
+import com.stevesoltys.seedvault.service.app.restore.coordinator.RestoreCoordinator
+import com.stevesoltys.seedvault.service.settings.SettingsService
+import com.stevesoltys.seedvault.ui.settings.SettingsActivity
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -36,9 +36,9 @@ private val TAG = ConfigurableBackupTransport::class.java.simpleName
 class ConfigurableBackupTransport internal constructor(private val context: Context) :
     BackupTransport(), KoinComponent {
 
-    private val backupCoordinator by inject<BackupCoordinator>()
+    private val backupCoordinatorService by inject<BackupCoordinatorService>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
-    private val settingsManager by inject<SettingsManager>()
+    private val settingsService by inject<SettingsService>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME
@@ -58,7 +58,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
      * This allows the agent to decide what to do based on properties of the transport.
      */
     override fun getTransportFlags(): Int {
-        return if (settingsManager.d2dBackupsEnabled()) {
+        return if (settingsService.d2dBackupsEnabled()) {
             D2D_TRANSPORT_FLAGS
         } else {
             DEFAULT_TRANSPORT_FLAGS
@@ -120,26 +120,26 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     //
 
     override fun initializeDevice(): Int = runBlocking {
-        backupCoordinator.initializeDevice()
+        backupCoordinatorService.initializeDevice()
     }
 
     override fun isAppEligibleForBackup(
         targetPackage: PackageInfo,
         isFullBackup: Boolean,
     ): Boolean {
-        return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
+        return backupCoordinatorService.isAppEligibleForBackup(targetPackage, isFullBackup)
     }
 
     override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long = runBlocking {
-        backupCoordinator.getBackupQuota(packageName, isFullBackup)
+        backupCoordinatorService.getBackupQuota(packageName, isFullBackup)
     }
 
     override fun clearBackupData(packageInfo: PackageInfo): Int = runBlocking {
-        backupCoordinator.clearBackupData(packageInfo)
+        backupCoordinatorService.clearBackupData(packageInfo)
     }
 
     override fun finishBackup(): Int = runBlocking {
-        backupCoordinator.finishBackup()
+        backupCoordinatorService.finishBackup()
     }
 
     // ------------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     //
 
     override fun requestBackupTime(): Long {
-        return backupCoordinator.requestBackupTime()
+        return backupCoordinatorService.requestBackupTime()
     }
 
     override fun performBackup(
@@ -155,7 +155,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         inFd: ParcelFileDescriptor,
         flags: Int,
     ): Int = runBlocking {
-        backupCoordinator.performIncrementalBackup(packageInfo, inFd, flags)
+        backupCoordinatorService.performIncrementalBackup(packageInfo, inFd, flags)
     }
 
     override fun performBackup(
@@ -171,11 +171,11 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     //
 
     override fun requestFullBackupTime(): Long {
-        return backupCoordinator.requestFullBackupTime()
+        return backupCoordinatorService.requestFullBackupTime()
     }
 
     override fun checkFullBackupSize(size: Long): Int {
-        return backupCoordinator.checkFullBackupSize(size)
+        return backupCoordinatorService.checkFullBackupSize(size)
     }
 
     override fun performFullBackup(
@@ -183,7 +183,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         socket: ParcelFileDescriptor,
         flags: Int,
     ): Int = runBlocking {
-        backupCoordinator.performFullBackup(targetPackage, socket, flags)
+        backupCoordinatorService.performFullBackup(targetPackage, socket, flags)
     }
 
     override fun performFullBackup(
@@ -191,15 +191,15 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         fileDescriptor: ParcelFileDescriptor,
     ): Int = runBlocking {
         Log.w(TAG, "Warning: Legacy performFullBackup() method called.")
-        backupCoordinator.performFullBackup(targetPackage, fileDescriptor, 0)
+        backupCoordinatorService.performFullBackup(targetPackage, fileDescriptor, 0)
     }
 
     override fun sendBackupData(numBytes: Int): Int = runBlocking {
-        backupCoordinator.sendBackupData(numBytes)
+        backupCoordinatorService.sendBackupData(numBytes)
     }
 
     override fun cancelFullBackup() = runBlocking {
-        backupCoordinator.cancelFullBackup()
+        backupCoordinatorService.cancelFullBackup()
     }
 
     // ------------------------------------------------------------------------------------

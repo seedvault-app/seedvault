@@ -6,13 +6,14 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
-import com.stevesoltys.seedvault.header.UnsupportedVersionException
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.VersionHeader
-import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.service.app.restore.full.FullRestore
+import com.stevesoltys.seedvault.service.header.MAX_SEGMENT_LENGTH
+import com.stevesoltys.seedvault.service.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.service.header.VERSION
+import com.stevesoltys.seedvault.service.header.VersionHeader
+import com.stevesoltys.seedvault.service.header.getADForFull
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.legacy.LegacyStoragePlugin
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -36,7 +37,8 @@ internal class FullRestoreTest : RestoreTest() {
 
     private val plugin = mockk<StoragePlugin>()
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
-    private val restore = FullRestore(plugin, legacyPlugin, outputFactory, headerReader, crypto)
+    private val restore =
+        FullRestore(plugin, legacyPlugin, outputFactory, headerDecodeService, cryptoService)
 
     private val encrypted = getRandomByteArray()
     private val outputStream = ByteArrayOutputStream()
@@ -88,7 +90,7 @@ internal class FullRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } throws IOException()
+        every { headerDecodeService.readVersion(inputStream, VERSION) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
@@ -103,7 +105,7 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
         every {
-            headerReader.readVersion(inputStream, VERSION)
+            headerDecodeService.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(unsupportedVersion)
         every { fileDescriptor.close() } just Runs
 
@@ -118,8 +120,8 @@ internal class FullRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } throws IOException()
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every { cryptoService.newDecryptingStream(inputStream, ad) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
@@ -134,8 +136,13 @@ internal class FullRestoreTest : RestoreTest() {
             restore.initializeState(VERSION, token, name, packageInfo)
 
             coEvery { plugin.getInputStream(token, name) } returns inputStream
-            every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-            every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
+            every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+            every {
+                cryptoService.newDecryptingStream(
+                    inputStream,
+                    ad
+                )
+            } throws GeneralSecurityException()
             every { fileDescriptor.close() } just Runs
 
             assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
@@ -161,11 +168,11 @@ internal class FullRestoreTest : RestoreTest() {
         restore.initializeState(0.toByte(), token, name, packageInfo)
 
         coEvery { legacyPlugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
-        every { headerReader.readVersion(inputStream, 0.toByte()) } returns 0.toByte()
+        every { headerDecodeService.readVersion(inputStream, 0.toByte()) } returns 0.toByte()
         every {
-            crypto.decryptHeader(inputStream, 0.toByte(), packageInfo.packageName)
+            cryptoService.decryptHeader(inputStream, 0.toByte(), packageInfo.packageName)
         } returns VersionHeader(0.toByte(), packageInfo.packageName)
-        every { crypto.decryptSegment(inputStream) } returns encrypted
+        every { cryptoService.decryptSegment(inputStream) } returns encrypted
 
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         every { fileDescriptor.close() } just Runs
@@ -183,7 +190,7 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
         every {
-            headerReader.readVersion(inputStream, Byte.MAX_VALUE)
+            headerDecodeService.readVersion(inputStream, Byte.MAX_VALUE)
         } throws GeneralSecurityException()
         every { inputStream.close() } just Runs
         every { fileDescriptor.close() } just Runs
@@ -200,8 +207,8 @@ internal class FullRestoreTest : RestoreTest() {
         restore.initializeState(VERSION, token, name, packageInfo)
 
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every { cryptoService.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         every { fileDescriptor.close() } just Runs
         every { inputStream.close() } just Runs
@@ -233,8 +240,8 @@ internal class FullRestoreTest : RestoreTest() {
 
     private fun initInputStream() {
         coEvery { plugin.getInputStream(token, name) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
+        every { headerDecodeService.readVersion(inputStream, VERSION) } returns VERSION
+        every { cryptoService.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
     }
 
     private fun readAndEncryptInputStream(encryptedBytes: ByteArray) {

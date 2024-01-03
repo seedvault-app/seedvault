@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.settings.SettingsViewModel
+import com.stevesoltys.seedvault.ui.settings.SettingsViewModel
 import org.calyxos.backup.storage.ui.backup.BackupContentFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -5,9 +5,9 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DIRECTORY_ROOT
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.service.storage.StoragePlugin
+import com.stevesoltys.seedvault.service.storage.saf.DIRECTORY_ROOT
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -17,8 +17,8 @@ private val TAG = RestoreStorageViewModel::class.java.simpleName
 internal class RestoreStorageViewModel(
     private val app: Application,
     private val storagePlugin: StoragePlugin,
-    settingsManager: SettingsManager,
-) : StorageViewModel(app, settingsManager) {
+    settingsService: SettingsService,
+) : StorageViewModel(app, settingsService) {
 
     override val isRestoreOperation = true
 

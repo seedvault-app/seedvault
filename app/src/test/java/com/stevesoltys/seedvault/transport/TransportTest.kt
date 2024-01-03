@@ -7,18 +7,18 @@ import android.content.pm.ApplicationInfo.FLAG_INSTALLED
 import android.content.pm.PackageInfo
 import android.content.pm.SigningInfo
 import android.util.Log
-import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.util.TimeSource
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.service.crypto.CryptoService
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.BackupMetadata
-import com.stevesoltys.seedvault.metadata.BackupType
-import com.stevesoltys.seedvault.metadata.METADATA_SALT_SIZE
-import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.service.metadata.BackupMetadata
+import com.stevesoltys.seedvault.service.metadata.BackupType
+import com.stevesoltys.seedvault.service.metadata.METADATA_SALT_SIZE
+import com.stevesoltys.seedvault.service.metadata.MetadataService
+import com.stevesoltys.seedvault.service.metadata.PackageMetadata
+import com.stevesoltys.seedvault.service.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -29,10 +29,10 @@ import kotlin.random.Random
 @TestInstance(PER_METHOD)
 internal abstract class TransportTest {
 
-    protected val clock: Clock = mockk()
-    protected val crypto = mockk<Crypto>()
-    protected val settingsManager = mockk<SettingsManager>()
-    protected val metadataManager = mockk<MetadataManager>()
+    protected val timeSource: TimeSource = mockk()
+    protected val cryptoService = mockk<CryptoService>()
+    protected val settingsService = mockk<SettingsService>()
+    protected val metadataService = mockk<MetadataService>()
     protected val context = mockk<Context>(relaxed = true)
 
     protected val sigInfo: SigningInfo = mockk()

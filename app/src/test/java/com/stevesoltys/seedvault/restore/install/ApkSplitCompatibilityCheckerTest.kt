@@ -2,6 +2,8 @@ package com.stevesoltys.seedvault.restore.install
 
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.ui.restore.apk.ApkSplitCompatibilityChecker
+import com.stevesoltys.seedvault.ui.restore.apk.DeviceInfo
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

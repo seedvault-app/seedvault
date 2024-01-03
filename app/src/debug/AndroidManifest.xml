@@ -5,11 +5,11 @@
     <application>
         <!-- Remove permission requirements only for debug versions to make development easier -->
         <activity
-            android:name="com.stevesoltys.seedvault.settings.SettingsActivity"
+            android:name="com.stevesoltys.seedvault.ui.settings.SettingsActivity"
             android:exported="true"
             tools:remove="android:permission" />
         <activity
-            android:name="com.stevesoltys.seedvault.restore.RestoreActivity"
+            android:name="com.stevesoltys.seedvault.ui.restore.RestoreActivity"
             android:exported="true"
             tools:remove="android:permission" />
     </application>

@@ -10,10 +10,10 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.service.settings.SettingsService
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.service.app.backup.coordinator.BackupCoordinatorService
+import com.stevesoltys.seedvault.service.app.backup.requestBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
@@ -24,10 +24,10 @@ private val TAG = BackupStorageViewModel::class.java.simpleName
 internal class BackupStorageViewModel(
     private val app: Application,
     private val backupManager: IBackupManager,
-    private val backupCoordinator: BackupCoordinator,
+    private val backupCoordinatorService: BackupCoordinatorService,
     private val storageBackup: StorageBackup,
-    settingsManager: SettingsManager,
-) : StorageViewModel(app, settingsManager) {
+    settingsService: SettingsService,
+) : StorageViewModel(app, settingsService) {
 
     override val isRestoreOperation = false
 
