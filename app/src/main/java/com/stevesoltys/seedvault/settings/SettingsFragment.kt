@@ -89,7 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        autoRestore = findPreference("auto_restore")!!
+        autoRestore = findPreference(PREF_KEY_AUTO_RESTORE)!!
         autoRestore.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             try {

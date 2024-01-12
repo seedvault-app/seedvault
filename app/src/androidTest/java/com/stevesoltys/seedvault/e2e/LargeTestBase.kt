@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.e2e
 
 import android.app.UiAutomation
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -72,6 +73,8 @@ internal interface LargeTestBase : KoinComponent {
 
     val spyMetadataManager: MetadataManager get() = get()
 
+    val backupManager: IBackupManager get() = get()
+
     val spyRestoreViewModel: RestoreViewModel
         get() = currentRestoreViewModel ?: error("currentRestoreViewModel is null")
 
@@ -79,6 +82,7 @@ internal interface LargeTestBase : KoinComponent {
         get() = currentRestoreStorageViewModel ?: error("currentRestoreStorageViewModel is null")
 
     fun resetApplicationState() {
+        backupManager.setAutoRestore(false)
         settingsManager.setNewToken(null)
         documentsStorage.reset(null)
 
@@ -95,6 +99,7 @@ internal interface LargeTestBase : KoinComponent {
         }
 
         clearDocumentPickerAppData()
+        device.executeShellCommand("rm -R $externalStorageDir/.SeedVaultAndroidBackup")
     }
 
     fun waitUntilIdle() {
@@ -157,6 +162,7 @@ internal interface LargeTestBase : KoinComponent {
 
     fun clearTestBackups() {
         File(testStoragePath).deleteRecursively()
+        File(testVideoPath).deleteRecursively()
     }
 
     fun changeBackupLocation(

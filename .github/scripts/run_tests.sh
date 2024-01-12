@@ -14,8 +14,10 @@ echo "Setting Seedvault transport..."
 sleep 10
 adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
 
+D2D_BACKUP_TEST=$1
+
 large_test_exit_code=0
-./gradlew --stacktrace -Pinstrumented_test_size=large :app:connectedAndroidTest || large_test_exit_code=$?
+./gradlew --stacktrace -Pinstrumented_test_size=large -Pd2d_backup_test="$D2D_BACKUP_TEST" :app:connectedAndroidTest || large_test_exit_code=$?
 
 adb pull /sdcard/seedvault_test_results
 

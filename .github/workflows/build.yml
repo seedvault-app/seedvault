@@ -1,9 +1,14 @@
 name: Build
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
 
 jobs:
   build:
@@ -40,3 +45,10 @@ jobs:
             app/build/outputs/apk/debug/app-debug.apk
             contactsbackup/build/outputs/apk/debug/contactsbackup-debug.apk
             storage/demo/build/outputs/apk/debug/demo-debug.apk
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          report_paths: '**/build/test-results/**/TEST-*.xml'
+

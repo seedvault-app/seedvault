@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.e2e
 
 import android.content.pm.PackageManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -40,6 +41,17 @@ internal abstract class SeedvaultLargeTest :
 
         startRecordingTest(keepRecordingScreen, name.methodName)
         restoreBaselineBackup()
+
+        val arguments = InstrumentationRegistry.getArguments()
+
+        if (arguments.getString("d2d_backup_test") == "true") {
+            println("Enabling D2D backups for test")
+            settingsManager.setD2dBackupsEnabled(true)
+
+        } else {
+            println("Disabling D2D backups for test")
+            settingsManager.setD2dBackupsEnabled(false)
+        }
     }
 
     @After
@@ -63,10 +75,14 @@ internal abstract class SeedvaultLargeTest :
             val extDir = externalStorageDir
 
             device.executeShellCommand("rm -R $extDir/.SeedVaultAndroidBackup")
-            device.executeShellCommand("cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
-                ".SeedVaultAndroidBackup $extDir")
-            device.executeShellCommand("cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
-                "recovery-code.txt $extDir")
+            device.executeShellCommand(
+                "cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
+                    ".SeedVaultAndroidBackup $extDir"
+            )
+            device.executeShellCommand(
+                "cp -R $extDir/$BASELINE_BACKUP_FOLDER/" +
+                    "recovery-code.txt $extDir"
+            )
         }
 
         if (backupFile.exists()) {

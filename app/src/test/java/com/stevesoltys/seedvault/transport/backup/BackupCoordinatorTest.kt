@@ -44,8 +44,8 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
     private val apkBackup = mockk<ApkBackup>()
-    private val packageService: PackageService = mockk()
     private val notificationManager = mockk<BackupNotificationManager>()
+    private val packageService = mockk<PackageService>()
 
     private val backup = BackupCoordinator(
         context,

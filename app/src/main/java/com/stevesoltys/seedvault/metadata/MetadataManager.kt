@@ -17,6 +17,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -35,6 +36,7 @@ internal class MetadataManager(
     private val crypto: Crypto,
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader,
+    private val settingsManager: SettingsManager
 ) {
 
     private val uninitializedMetadata = BackupMetadata(token = 0L, salt = "")
@@ -135,6 +137,8 @@ internal class MetadataManager(
         modifyMetadata(metadataOutputStream) {
             val now = clock.time()
             metadata.time = now
+            metadata.d2dBackup = settingsManager.d2dBackupsEnabled()
+
             if (metadata.packageMetadataMap.containsKey(packageName)) {
                 metadata.packageMetadataMap[packageName]!!.time = now
                 metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA

@@ -152,7 +152,8 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                 androidVersion = meta.getInt(JSON_METADATA_SDK_INT),
                 androidIncremental = meta.getString(JSON_METADATA_INCREMENTAL),
                 deviceName = meta.getString(JSON_METADATA_NAME),
-                packageMetadataMap = packageMetadataMap
+                d2dBackup = meta.optBoolean(JSON_METADATA_D2D_BACKUP, false),
+                packageMetadataMap = packageMetadataMap,
             )
         } catch (e: JSONException) {
             throw SecurityException(e)

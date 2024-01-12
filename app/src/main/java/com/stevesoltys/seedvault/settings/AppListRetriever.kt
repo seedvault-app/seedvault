@@ -55,9 +55,16 @@ internal class AppListRetriever(
 
     @WorkerThread
     fun getAppList(): List<AppListItem> {
-        return listOf(AppSectionTitle(R.string.backup_section_system)) + getSpecialApps() +
-            listOf(AppSectionTitle(R.string.backup_section_user)) + getUserApps() +
-            listOf(AppSectionTitle(R.string.backup_section_not_allowed)) + getNotAllowedApps()
+
+        val appListSections = linkedMapOf(
+            AppSectionTitle(R.string.backup_section_system) to getSpecialApps(),
+            AppSectionTitle(R.string.backup_section_user) to getUserApps(),
+            AppSectionTitle(R.string.backup_section_not_allowed) to getNotAllowedApps()
+        ).filter { it.value.isNotEmpty() }
+
+        return appListSections.flatMap { (sectionTitle, appList) ->
+            listOf(sectionTitle) + appList
+        }
     }
 
     private fun getSpecialApps(): List<AppListItem> {

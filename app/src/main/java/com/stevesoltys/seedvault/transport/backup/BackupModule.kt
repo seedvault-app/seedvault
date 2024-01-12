@@ -8,6 +8,7 @@ val backupModule = module {
     single {
         PackageService(
             context = androidContext(),
+            backupManager = get(),
             settingsManager = get(),
             plugin = get()
         )

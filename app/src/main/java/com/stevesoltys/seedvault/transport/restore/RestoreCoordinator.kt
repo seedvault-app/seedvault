@@ -22,7 +22,8 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.TRANSPORT_FLAGS
+import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
+import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 
@@ -32,7 +33,7 @@ import java.io.IOException
  * backup/restore/ActiveRestoreSession.java. AOSP currently relies on this constant, and it is not
  * publicly exposed. Framework code indicates they intend to use a flag, instead, in the future.
  */
-internal const val DEVICE_NAME_FOR_D2D_SET = "D2D"
+internal const val D2D_DEVICE_NAME = "D2D"
 
 private data class RestoreCoordinatorState(
     val token: Long,
@@ -100,8 +101,20 @@ internal class RestoreCoordinator(
      **/
     suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
         return getAvailableMetadata()?.map { (_, metadata) ->
-            RestoreSet(metadata.deviceName /* name */, DEVICE_NAME_FOR_D2D_SET /* device */,
-                metadata.token, TRANSPORT_FLAGS)
+
+            val transportFlags = if (metadata.d2dBackup) {
+                D2D_TRANSPORT_FLAGS
+            } else {
+                DEFAULT_TRANSPORT_FLAGS
+            }
+
+            val deviceName = if (metadata.d2dBackup) {
+                D2D_DEVICE_NAME
+            } else {
+                metadata.deviceName
+            }
+
+            RestoreSet(metadata.deviceName, deviceName, metadata.token, transportFlags)
         }?.toTypedArray()
     }
 
@@ -123,6 +136,10 @@ internal class RestoreCoordinator(
      */
     fun beforeStartRestore(backupMetadata: BackupMetadata) {
         this.backupMetadata = backupMetadata
+
+        if (backupMetadata.d2dBackup) {
+            settingsManager.setD2dBackupsEnabled(true)
+        }
     }
 
     /**
@@ -228,6 +245,7 @@ internal class RestoreCoordinator(
                         TYPE_KEY_VALUE
                     } else throw IOException("No data found for $packageName. Skipping.")
                 }
+
                 BackupType.FULL -> {
                     val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
                     if (plugin.hasData(state.token, name)) {
@@ -237,6 +255,7 @@ internal class RestoreCoordinator(
                         TYPE_FULL_STREAM
                     } else throw IOException("No data found for $packageName. Skipping...")
                 }
+
                 null -> {
                     Log.i(TAG, "No backup type found for $packageName. Skipping...")
                     state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
@@ -270,12 +289,14 @@ internal class RestoreCoordinator(
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
+
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
                     full.initializeState(0x00, state.token, "", packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }
+
                 else -> {
                     Log.i(TAG, "No data found for $packageName. Skipping.")
                     return nextRestorePackage()
