@@ -49,6 +49,9 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 if (packageMetadata.backupType != null) {
                     put(JSON_PACKAGE_BACKUP_TYPE, packageMetadata.backupType!!.name)
                 }
+                if (packageMetadata.size != null) {
+                    put(JSON_PACKAGE_SIZE, packageMetadata.size)
+                }
                 if (packageMetadata.system) {
                     put(JSON_PACKAGE_SYSTEM, packageMetadata.system)
                 }

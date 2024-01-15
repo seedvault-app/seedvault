@@ -120,6 +120,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     // because when only backing up the APK for example, there's no type
                     else -> null
                 }
+                val pSize = p.optLong(JSON_PACKAGE_SIZE, -1L)
                 val pSystem = p.optBoolean(JSON_PACKAGE_SYSTEM, false)
                 val pVersion = p.optLong(JSON_PACKAGE_VERSION, 0L)
                 val pInstaller = p.optString(JSON_PACKAGE_INSTALLER)
@@ -136,6 +137,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
                     time = p.getLong(JSON_PACKAGE_TIME),
                     state = pState,
                     backupType = pBackupType,
+                    size = if (pSize < 0L) null else pSize,
                     system = pSystem,
                     version = if (pVersion == 0L) null else pVersion,
                     installer = if (pInstaller == "") null else pInstaller,

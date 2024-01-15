@@ -42,6 +42,10 @@ class TestKvDbManager : KvDbManager {
         return db != null
     }
 
+    override fun getDbSize(packageName: String): Long? {
+        return db?.serialize()?.toByteArray()?.size?.toLong()
+    }
+
     override fun deleteDb(packageName: String, isRestore: Boolean): Boolean {
         clearDb()
         return true

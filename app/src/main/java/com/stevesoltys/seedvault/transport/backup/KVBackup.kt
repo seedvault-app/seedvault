@@ -46,6 +46,10 @@ internal class KVBackup(
 
     fun getCurrentPackage() = state?.packageInfo
 
+    fun getCurrentSize() = getCurrentPackage()?.let {
+        dbManager.getDbSize(it.packageName)
+    }
+
     fun getQuota(): Long = if (settingsManager.isQuotaUnlimited()) {
         Long.MAX_VALUE
     } else {
@@ -252,7 +256,7 @@ internal class KVBackup(
                 }
             }
         }
-        Log.d(TAG, "Uploaded db file for $packageName")
+        Log.d(TAG, "Uploaded db file for $packageName.")
     }
 
     private class KVOperation(
