@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.transport
 
 import android.app.backup.BackupAgent.FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+import android.app.backup.BackupAgent.FLAG_DEVICE_TO_DEVICE_TRANSFER
 import android.app.backup.BackupTransport
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreSet
@@ -11,6 +12,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsActivity
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import kotlinx.coroutines.runBlocking
@@ -20,7 +22,8 @@ import org.koin.core.component.inject
 // If we ever change this, we should use a ComponentName like the other backup transports.
 val TRANSPORT_ID: String = ConfigurableBackupTransport::class.java.name
 
-const val TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+const val DEFAULT_TRANSPORT_FLAGS = FLAG_CLIENT_SIDE_ENCRYPTION_ENABLED
+const val D2D_TRANSPORT_FLAGS = DEFAULT_TRANSPORT_FLAGS or FLAG_DEVICE_TO_DEVICE_TRANSFER
 
 private const val TRANSPORT_DIRECTORY_NAME =
     "com.stevesoltys.seedvault.transport.ConfigurableBackupTransport"
@@ -35,6 +38,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     private val backupCoordinator by inject<BackupCoordinator>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
+    private val settingsManager by inject<SettingsManager>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME
@@ -54,7 +58,11 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
      * This allows the agent to decide what to do based on properties of the transport.
      */
     override fun getTransportFlags(): Int {
-        return TRANSPORT_FLAGS
+        return if (settingsManager.d2dBackupsEnabled()) {
+            D2D_TRANSPORT_FLAGS
+        } else {
+            DEFAULT_TRANSPORT_FLAGS
+        }
     }
 
     /**

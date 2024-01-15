@@ -32,8 +32,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.io.OutputStream
@@ -46,8 +44,8 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
     private val apkBackup = mockk<ApkBackup>()
-    private val packageService: PackageService = mockk()
     private val notificationManager = mockk<BackupNotificationManager>()
+    private val packageService = mockk<PackageService>()
 
     private val backup = BackupCoordinator(
         context,
@@ -168,20 +166,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, isFullBackup))
 
         verify { metadataOutputStream.close() }
-    }
-
-    @Test
-    fun `isAppEligibleForBackup() exempts plugin provider and blacklisted apps`() {
-        every {
-            settingsManager.isBackupEnabled(packageInfo.packageName)
-        } returns true andThen false andThen true
-        every {
-            plugin.providerPackageName
-        } returns packageInfo.packageName andThen "new.package" andThen "new.package"
-
-        assertFalse(backup.isAppEligibleForBackup(packageInfo, true))
-        assertFalse(backup.isAppEligibleForBackup(packageInfo, true))
-        assertTrue(backup.isAppEligibleForBackup(packageInfo, true))
     }
 
     @Test

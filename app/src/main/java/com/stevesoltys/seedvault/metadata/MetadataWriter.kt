@@ -35,6 +35,7 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 put(JSON_METADATA_SDK_INT, metadata.androidVersion)
                 put(JSON_METADATA_INCREMENTAL, metadata.androidIncremental)
                 put(JSON_METADATA_NAME, metadata.deviceName)
+                put(JSON_METADATA_D2D_BACKUP, metadata.d2dBackup)
             })
         }
         for ((packageName, packageMetadata) in metadata.packageMetadataMap) {

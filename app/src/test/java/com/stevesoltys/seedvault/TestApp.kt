@@ -10,6 +10,7 @@ import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
 import com.stevesoltys.seedvault.restore.install.installModule
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
 import org.koin.android.ext.koin.androidContext
@@ -25,6 +26,7 @@ class TestApp : App() {
     }
     private val appModule = module {
         single { Clock() }
+        single { SettingsManager(this@TestApp) }
     }
 
     override fun startKoin() = startKoin {

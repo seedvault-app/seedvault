@@ -1,9 +1,11 @@
 package com.stevesoltys.seedvault
 
 import com.stevesoltys.seedvault.restore.RestoreViewModel
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.FullBackup
 import com.stevesoltys.seedvault.transport.backup.InputFactory
 import com.stevesoltys.seedvault.transport.backup.KVBackup
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.restore.FullRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestore
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
@@ -24,6 +26,9 @@ class KoinInstrumentationTestApp : App() {
     override fun appModules(): List<Module> {
         val testModule = module {
             val context = this@KoinInstrumentationTestApp
+
+            single { spyk(PackageService(context, get(), get(), get())) }
+            single { spyk(SettingsManager(context)) }
 
             single { spyk(BackupNotificationManager(context)) }
             single { spyk(FullBackup(get(), get(), get(), get())) }

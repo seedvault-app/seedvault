@@ -19,6 +19,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -26,7 +27,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
@@ -51,8 +55,16 @@ class MetadataManagerTest {
     private val crypto: Crypto = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
+    private val settingsManager: SettingsManager = mockk()
 
-    private val manager = MetadataManager(context, clock, crypto, metadataWriter, metadataReader)
+    private val manager = MetadataManager(
+        context = context,
+        clock = clock,
+        crypto = crypto,
+        metadataWriter = metadataWriter,
+        metadataReader = metadataReader,
+        settingsManager = settingsManager
+    )
 
     private val time = 42L
     private val token = Random.nextLong()
@@ -68,6 +80,11 @@ class MetadataManagerTest {
     private val cacheOutputStream: FileOutputStream = mockk()
     private val cacheInputStream: FileInputStream = mockk()
     private val encodedMetadata = getRandomByteArray()
+
+    @Before
+    fun beforeEachTest() {
+        every { settingsManager.d2dBackupsEnabled() } returns false
+    }
 
     @After
     fun afterEachTest() {
@@ -246,6 +263,23 @@ class MetadataManagerTest {
             manager.getPackageMetadata(packageName)
         )
         assertEquals(time, manager.getLastBackupTime())
+        assertFalse(updatedMetadata.d2dBackup)
+
+        verify {
+            cacheInputStream.close()
+            cacheOutputStream.close()
+        }
+    }
+    @Test
+    fun `test onPackageBackedUp() with D2D enabled`() {
+        expectReadFromCache()
+        every { clock.time() } returns time
+        expectModifyMetadata(initialMetadata)
+
+        every { settingsManager.d2dBackupsEnabled() } returns true
+
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
+        assertTrue(initialMetadata.d2dBackup)
 
         verify {
             cacheInputStream.close()

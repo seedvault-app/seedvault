@@ -84,7 +84,7 @@ echo "Downloading and extracting test backup to '/sdcard/seedvault_baseline'..."
 
 if [ ! -f backup.tar.gz ]; then
   echo "Downloading test backup..."
-  wget --quiet https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz
+  wget --quiet https://github.com/seedvault-app/seedvault-test-data/releases/download/3/backup.tar.gz
 fi
 
 $ADB root

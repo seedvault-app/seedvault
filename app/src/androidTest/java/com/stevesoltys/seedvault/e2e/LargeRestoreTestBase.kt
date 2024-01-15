@@ -173,6 +173,10 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         coEvery {
             spyFullRestore.initializeState(any(), any(), any(), any())
         } answers {
+            packageName?.let {
+                restoreResult.full[it] = dataIntercept.toByteArray().sha256()
+            }
+
             packageName = arg<PackageInfo>(3).packageName
             dataIntercept = ByteArrayOutputStream()
 
