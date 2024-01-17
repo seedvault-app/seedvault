@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.settings
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.text.format.Formatter.formatShortFileSize
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -116,7 +117,12 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                     setState(item.status, false)
                 }
                 if (item.status == SUCCEEDED) {
-                    appInfo.text = item.time.toRelativeTime(context)
+                    appInfo.text = if (item.size == null) {
+                        item.time.toRelativeTime(context)
+                    } else {
+                        item.time.toRelativeTime(context).toString() +
+                            " (${formatShortFileSize(v.context, item.size)})"
+                    }
                     appInfo.visibility = VISIBLE
                 }
                 switchView.visibility = INVISIBLE
