@@ -29,6 +29,11 @@ interface KvDbManager {
      * Use only for backup.
      */
     fun existsDb(packageName: String): Boolean
+
+    /**
+     * Returns the current size of the DB in bytes or null, if no DB exists.
+     */
+    fun getDbSize(packageName: String): Long?
     fun deleteDb(packageName: String, isRestore: Boolean = false): Boolean
 }
 
@@ -57,6 +62,11 @@ class KvDbManagerImpl(private val context: Context) : KvDbManager {
 
     override fun existsDb(packageName: String): Boolean {
         return getDbFile(packageName).isFile
+    }
+
+    override fun getDbSize(packageName: String): Long? {
+        val file = getDbFile(packageName)
+        return if (file.isFile) file.length() else null
     }
 
     override fun deleteDb(packageName: String, isRestore: Boolean): Boolean {

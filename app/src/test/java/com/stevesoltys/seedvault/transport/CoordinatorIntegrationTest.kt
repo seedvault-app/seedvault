@@ -147,7 +147,12 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             metadataManager.onApkBackedUp(packageInfo, packageMetadata, metadataOutputStream)
         } just Runs
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+            metadataManager.onPackageBackedUp(
+                packageInfo = packageInfo,
+                type = BackupType.KV,
+                size = more((appData.size + appData2.size).toLong()), // more because DB overhead
+                metadataOutputStream = metadataOutputStream,
+            )
         } just Runs
 
         // start K/V backup
@@ -216,7 +221,12 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             backupPlugin.getOutputStream(token, FILE_BACKUP_METADATA)
         } returns metadataOutputStream
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, metadataOutputStream)
+            metadataManager.onPackageBackedUp(
+                packageInfo = packageInfo,
+                type = BackupType.KV,
+                size = more(size.toLong()), // more than $size, because DB overhead
+                metadataOutputStream = metadataOutputStream,
+            )
         } just Runs
 
         // start K/V backup
@@ -289,7 +299,12 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             )
         } just Runs
         every {
-            metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, metadataOutputStream)
+            metadataManager.onPackageBackedUp(
+                packageInfo = packageInfo,
+                type = BackupType.FULL,
+                size = appData.size.toLong(),
+                metadataOutputStream = metadataOutputStream,
+            )
         } just Runs
 
         // perform backup to output stream

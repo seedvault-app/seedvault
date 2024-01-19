@@ -131,6 +131,7 @@ internal class MetadataManager(
     fun onPackageBackedUp(
         packageInfo: PackageInfo,
         type: BackupType,
+        size: Long?,
         metadataOutputStream: OutputStream,
     ) {
         val packageName = packageInfo.packageName
@@ -143,12 +144,15 @@ internal class MetadataManager(
                 metadata.packageMetadataMap[packageName]!!.time = now
                 metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA
                 metadata.packageMetadataMap[packageName]!!.backupType = type
+                // don't override a previous K/V size, if there were no K/V changes
+                if (size != null) metadata.packageMetadataMap[packageName]!!.size = size
             } else {
                 metadata.packageMetadataMap[packageName] = PackageMetadata(
                     time = now,
                     state = APK_AND_DATA,
                     backupType = type,
-                    system = packageInfo.isSystemApp()
+                    size = size,
+                    system = packageInfo.isSystemApp(),
                 )
             }
         }

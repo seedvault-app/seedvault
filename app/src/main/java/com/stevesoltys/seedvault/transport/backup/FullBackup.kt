@@ -51,6 +51,8 @@ internal class FullBackup(
 
     fun getCurrentPackage() = state?.packageInfo
 
+    fun getCurrentSize() = state?.size
+
     fun getQuota(): Long {
         return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else DEFAULT_QUOTA_FULL_BACKUP
     }
@@ -190,7 +192,7 @@ internal class FullBackup(
     }
 
     fun finishBackup(): Int {
-        Log.i(TAG, "Finish full backup of ${state!!.packageName}.")
+        Log.i(TAG, "Finish full backup of ${state!!.packageName}. Wrote ${state!!.size} bytes")
         return clearState()
     }
 

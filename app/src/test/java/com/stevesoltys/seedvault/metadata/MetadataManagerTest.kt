@@ -249,6 +249,7 @@ class MetadataManagerTest {
             time = time,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
         )
+        val size = Random.nextLong()
         val packageMetadata = PackageMetadata(time)
         updatedMetadata.packageMetadataMap[packageName] = packageMetadata
 
@@ -256,10 +257,15 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(initialMetadata)
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, size, storageOutputStream)
 
         assertEquals(
-            packageMetadata.copy(state = APK_AND_DATA, backupType = BackupType.FULL, system = true),
+            packageMetadata.copy(
+                state = APK_AND_DATA,
+                backupType = BackupType.FULL,
+                size = size,
+                system = true,
+            ),
             manager.getPackageMetadata(packageName)
         )
         assertEquals(time, manager.getLastBackupTime())
@@ -270,6 +276,7 @@ class MetadataManagerTest {
             cacheOutputStream.close()
         }
     }
+
     @Test
     fun `test onPackageBackedUp() with D2D enabled`() {
         expectReadFromCache()
@@ -278,7 +285,7 @@ class MetadataManagerTest {
 
         every { settingsManager.d2dBackupsEnabled() } returns true
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L, storageOutputStream)
         assertTrue(initialMetadata.d2dBackup)
 
         verify {
@@ -290,19 +297,20 @@ class MetadataManagerTest {
     @Test
     fun `test onPackageBackedUp() fails to write to storage`() {
         val updateTime = time + 1
+        val size = Random.nextLong()
         val updatedMetadata = initialMetadata.copy(
             time = updateTime,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
         )
         updatedMetadata.packageMetadataMap[packageName] =
-            PackageMetadata(updateTime, APK_AND_DATA, BackupType.KV)
+            PackageMetadata(updateTime, APK_AND_DATA, BackupType.KV, size)
 
         expectReadFromCache()
         every { clock.time() } returns updateTime
         every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
 
         try {
-            manager.onPackageBackedUp(packageInfo, BackupType.KV, storageOutputStream)
+            manager.onPackageBackedUp(packageInfo, BackupType.KV, size, storageOutputStream)
             fail()
         } catch (e: IOException) {
             // expected
@@ -335,7 +343,7 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L, storageOutputStream)
 
         assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))

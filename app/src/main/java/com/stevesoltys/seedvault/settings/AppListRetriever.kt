@@ -38,6 +38,7 @@ data class AppStatus(
     val icon: Drawable,
     val name: String,
     val time: Long,
+    val size: Long?,
     val status: AppBackupState,
     val isSpecial: Boolean = false,
 ) : AppListItem()
@@ -87,6 +88,7 @@ internal class AppListRetriever(
                 icon = getIcon(packageName),
                 name = context.getString(stringId),
                 time = metadata?.time ?: 0,
+                size = metadata?.size,
                 status = status,
                 isSpecial = true
             )
@@ -111,6 +113,7 @@ internal class AppListRetriever(
                 icon = getIcon(it.packageName),
                 name = getAppName(context, it.packageName).toString(),
                 time = time,
+                size = metadata?.size,
                 status = status
             )
         }.sortedBy { it.name.lowercase(locale) }
@@ -125,6 +128,7 @@ internal class AppListRetriever(
                 icon = getIcon(it.packageName),
                 name = getAppName(context, it.packageName).toString(),
                 time = 0,
+                size = null,
                 status = FAILED_NOT_ALLOWED
             )
         }.sortedBy { it.name.lowercase(locale) }
