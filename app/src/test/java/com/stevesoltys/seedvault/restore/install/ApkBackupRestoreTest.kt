@@ -107,6 +107,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
             writeBytes(splitBytes)
         }.absolutePath)
 
+        every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns sigs

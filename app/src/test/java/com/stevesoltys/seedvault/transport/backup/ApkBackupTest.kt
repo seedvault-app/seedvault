@@ -62,6 +62,15 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does not back up when setting disabled`() = runBlocking {
         every { settingsManager.backupApks() } returns false
+        every { settingsManager.isBackupEnabled(any()) } returns true
+
+        assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
+    }
+
+    @Test
+    fun `does not back up when app blacklisted`() = runBlocking {
+        every { settingsManager.backupApks() } returns true
+        every { settingsManager.isBackupEnabled(any()) } returns false
 
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
@@ -70,8 +79,8 @@ internal class ApkBackupTest : BackupTest() {
     fun `does not back up test-only apps`() = runBlocking {
         packageInfo.applicationInfo.flags = FLAG_TEST_ONLY
 
+        every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
-
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
@@ -79,8 +88,8 @@ internal class ApkBackupTest : BackupTest() {
     fun `does not back up system apps`() = runBlocking {
         packageInfo.applicationInfo.flags = FLAG_SYSTEM
 
+        every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
-
         assertNull(apkBackup.backupApkIfNecessary(packageInfo, UNKNOWN_ERROR, streamGetter))
     }
 
@@ -112,6 +121,7 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `do not accept empty signature`() = runBlocking {
         every { settingsManager.backupApks() } returns true
+        every { settingsManager.isBackupEnabled(any()) } returns true
         every {
             metadataManager.getPackageMetadata(packageInfo.packageName)
         } returns packageMetadata
@@ -229,6 +239,7 @@ internal class ApkBackupTest : BackupTest() {
     }
 
     private fun expectChecks(packageMetadata: PackageMetadata = this.packageMetadata) {
+        every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
         every {
             metadataManager.getPackageMetadata(packageInfo.packageName)
