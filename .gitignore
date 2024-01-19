@@ -6,6 +6,9 @@ hs_err_pid*
 
 ## Intellij
 out/
+build/
+storage/build/
+contactsbackup/build/
 /lib/
 .idea/*
 !.idea/runConfigurations*
