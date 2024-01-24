@@ -1,3 +1,11 @@
+## [14-4.0] - 2024-01-24
+* Add experimental support for forcing "D2D" transfer backups
+* Pretend to be a device-to-device transfer to allow backing up many apps which prevent backup
+* Stop backing up excluded app APKs
+* Show size of app backups in Backup Status screen
+* Slight improvements to color scheme
+* Development: Improve CI testing setup
+
 ## [14-3.3] - 2023-10-06
 * Android 14
 

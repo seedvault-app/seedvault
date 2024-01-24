@@ -6,8 +6,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.calyxos.backup.contacts"
-    android:versionCode="34030030"
-    android:versionName="14-3.3">
+    android:versionCode="34040000"
+    android:versionName="14-4.0">
     <!--
     The version code is the targeted SDK_VERSION plus 6 digits for our own version code.
     The version name is the targeted Android version followed by - and our own version name.
