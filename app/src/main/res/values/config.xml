@@ -18,6 +18,7 @@
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
         <item>at.bitfire.davdroid.webdav</item>
+        <item>de.felixnuesse.extract.vcp</item>
     </string-array>
 
     <!--

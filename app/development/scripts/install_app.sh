@@ -30,6 +30,8 @@ $ADB push $ROOT_PROJECT_DIR/app/build/outputs/apk/release/app-release.apk /syste
 echo "Installing Seedvault permissions..."
 $ADB push $ROOT_PROJECT_DIR/permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
 $ADB push $ROOT_PROJECT_DIR/allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
+$ADB shell am force-stop com.stevesoltys.seedvault
+$ADB shell am broadcast -a android.intent.action.BOOT_COMPLETED
 
 echo "Setting Seedvault transport..."
 $ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
