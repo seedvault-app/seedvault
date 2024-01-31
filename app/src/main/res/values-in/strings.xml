@@ -17,7 +17,7 @@
     <string name="settings_auto_restore_summary_usb">Catatan: %1$s Anda harus dicolokkan agar ini berfungsi.</string>
     <string name="settings_auto_restore_summary">Saat menginstal ulang aplikasi, pulihkan pengaturan dan data yang dicadangkan.</string>
     <string name="settings_auto_restore_title">Pemulihan otomatis</string>
-    <string name="settings_info">Semua cadangan terenkripsi di ponsel Anda. Untuk memulihkannya, anda memerlukan kode dari 12-word recovery.</string>
+    <string name="settings_info">Semua cadangan dienkripsi di ponsel Anda. Untuk memulihkan cadangan, Anda memerlukan kode pemulihan 12 kata.</string>
     <string name="settings_backup_last_backup_never">Tidak pernah</string>
     <string name="settings_backup_location_internal">Penyimpanan internal</string>
     <string name="settings_backup_location_none">Tidak ada</string>
@@ -87,4 +87,7 @@
     <string name="backup_settings">Pengaturan perangkat</string>
     <string name="backup_contacts">Kontak lokal</string>
     <string name="backup_section_system">Aplikasi sistem</string>
+    <string name="settings_backup_dialog_disable">Tetap nonaktifkan</string>
+    <string name="settings_backup_dialog_message">Ketika Anda mengaktifkan pencadangan aplikasi lagi, proses pencadangan mungkin memakan waktu yang lebih lama dari biasanya, dan akan menggunakan penyimpanan ekstra.</string>
+    <string name="settings_backup_dialog_title">Nonaktifkan pencadangan aplikasi\?</string>
 </resources>
