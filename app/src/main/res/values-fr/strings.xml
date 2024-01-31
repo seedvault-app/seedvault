@@ -188,4 +188,8 @@
     <string name="restore_app_status_failed">Échec de la restauration</string>
     <string name="restore_app_status_warning">Alerte de restauration</string>
     <string name="settings_backup_dialog_disable">Eteindre quand même</string>
+    <string name="settings_expert_logcat_title">Sauvegarde des logs</string>
+    <string name="settings_backup_dialog_message">A la prochaine activation ,
+\nLe processus de sauvegarde peux durer plus longtemps et utilisera du stockage additionnel.</string>
+    <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App\?</string>
 </resources>

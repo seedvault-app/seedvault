@@ -203,4 +203,5 @@
     <string name="about_contributor_headline">Mitwirkende</string>
     <string name="about_contributor_content">Eine <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Liste der Mitwirkenden</a> findest du auf GitHub.</string>
     <string name="about_contributing_organizations_title">Mitwirkende Organisationen</string>
+    <string name="storage_user_selected_location_title">Benutzerdefinierter Speicherort</string>
 </resources>
