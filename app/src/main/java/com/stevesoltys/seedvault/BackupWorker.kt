@@ -6,7 +6,6 @@
 package com.stevesoltys.seedvault
 
 import android.content.Context
-import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
@@ -16,7 +15,6 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.stevesoltys.seedvault.transport.requestBackup
-import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class BackupWorker(
@@ -47,16 +45,6 @@ class BackupWorker(
         fun unschedule(appContext: Context) {
             val workManager = WorkManager.getInstance(appContext)
             workManager.cancelUniqueWork(UNIQUE_WORK_NAME)
-        }
-
-        fun logWorkInfo(appContext: Context) {
-            val workManager = WorkManager.getInstance(appContext)
-            workManager.getWorkInfosForUniqueWork(UNIQUE_WORK_NAME).get().forEach {
-                Log.e(
-                    "BackupWorker", " ${it.state.name} - ${Date(it.nextScheduleTimeMillis)} - " +
-                        "runAttempts: ${it.runAttemptCount}"
-                )
-            }
         }
     }
 
