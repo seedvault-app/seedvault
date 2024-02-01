@@ -103,7 +103,7 @@
     <string name="settings_auto_restore_summary_usb">注意：要让该功能正常工作，需插入你的%1$s。</string>
     <string name="restore_app_was_stopped">最近没有使用，未备份</string>
     <string name="restore_app_not_yet_backed_up">未备份</string>
-    <string name="notification_success_text">%2$d个应用中的%1$d个已备份。点击了解更多。</string>
+    <string name="notification_success_text">%2$d个应用中的%1$d个已备份 (%3$s)。点击了解更多。</string>
     <string name="notification_backup_already_running">备份已在进行</string>
     <string name="storage_fake_nextcloud_summary_unavailable">账户不可用。设置一个（或禁用密码）。</string>
     <string name="current_destination_string">备份状态与备份设置</string>

@@ -37,7 +37,7 @@
     <string name="notification_error_text">డివైస్ బ్యాకప్ అమలు చేయడంలో విఫలమైంది.</string>
     <string name="notification_error_title">బ్యాకప్ లోపం అయ్యింది</string>
     <string name="notification_failed_title">బ్యాకప్ విఫలమైంది</string>
-    <string name="notification_success_text">%2$d యాప్‌లలో %1$d బ్యాకప్ చేయబడినవి . మరింత తెలుసుకోవడానికి ఇక్కడ నొక్కండి.</string>
+    <string name="notification_success_text">%2$d యాప్‌లలో %1$d బ్యాకప్ చేయబడినవి (%3$s) . మరింత తెలుసుకోవడానికి ఇక్కడ నొక్కండి.</string>
     <string name="notification_success_title">బ్యాకప్ పూర్తయింది</string>
     <string name="notification_backup_already_running">బ్యాకప్ ఇప్పటికే ప్రారంభించబడింది</string>
     <string name="notification_title">బ్యాకప్ జరుగుతుంది</string>

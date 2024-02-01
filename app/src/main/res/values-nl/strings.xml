@@ -153,7 +153,7 @@
     <string name="backup_contacts">Lokale contacten</string>
     <string name="notification_restore_error_text">Plug je %1$s in voordat je de app installeert om de gegevens daarvan te herstellen uit je back-up.</string>
     <string name="notification_restore_error_title">Gegevens voor %1$s konden niet worden hersteld</string>
-    <string name="notification_success_text">%1$d van de %2$d apps zijn geback-upt. Tik om meer te weten te komen.</string>
+    <string name="notification_success_text">%1$d van de %2$d apps zijn geback-upt (%3$s). Tik om meer te weten te komen.</string>
     <string name="notification_error_text">Een apparaatback-up kon niet worden gestart.</string>
     <string name="notification_error_no_main_key_text">Maak een nieuwe herstelcode aan om de upgrade af te ronden en door te gaan met het maken van back-ups.</string>
     <string name="restore_app_not_yet_backed_up">Was nog niet geback-upt</string>

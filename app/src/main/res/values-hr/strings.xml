@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija. Dodirni i saznaj više.</string>
+    <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija (%3$s). Dodirni i saznaj više.</string>
     <string name="notification_backup_already_running">Spremanje sigurnosne kopije je u tijeku</string>
     <string name="about_summary">Aplikacija za izradu sigurnosnih kopija koja koristi Androidovo interno sučelje.</string>
     <string name="about_title">Informacije</string>
     <string name="storage_internal_warning_use_anyway">Svejedno koristi</string>
     <string name="storage_internal_warning_choose_other">Odaberi drugo</string>
-    <string name="storage_internal_warning_message">Za sigurnosnu kopiju odabrano je interno spremište. Neće biti dostupno ako se telefon izgubi ili pokvari.</string>
+    <string name="storage_internal_warning_message">Za sigurnosnu kopiju odabrano je interno spremište (%3$s). Neće biti dostupno ako se telefon izgubi ili pokvari.</string>
     <string name="storage_internal_warning_title">Upozorenje</string>
     <string name="restore_finished_button">Završi</string>
     <string name="restore_finished_error">Došlo je do greške prilikom vraćanja sigurnosne kopije.</string>

@@ -78,7 +78,8 @@ internal class NotificationBackupObserver(
         }
         val success = status == 0
         val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
-        nm.onBackupFinished(success, numBackedUp)
+        val size = if (success) metadataManager.getPackagesBackupSize() else 0L
+        nm.onBackupFinished(success, numBackedUp, size)
     }
 
     private fun showProgressNotification(packageName: String?) {

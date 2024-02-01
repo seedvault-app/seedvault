@@ -95,7 +95,7 @@
     <string name="notification_error_title">Помилка резервного копіювання</string>
     <string name="notification_error_channel_title">Сповіщення про помилку</string>
     <string name="notification_failed_title">Не вдалося виконати резервне копіювання</string>
-    <string name="notification_success_text">Резервне копіювання %1$d з %2$d застосунків виконано. Натисніть, щоб дізнатися більше.</string>
+    <string name="notification_success_text">Резервне копіювання %1$d з %2$d застосунків виконано (%3$s). Натисніть, щоб дізнатися більше.</string>
     <string name="notification_success_title">Резервне копіювання завершено</string>
     <string name="notification_backup_already_running">Резервне копіювання вже виконується</string>
     <string name="notification_title">Резервне копіювання запущено</string>

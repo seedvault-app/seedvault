@@ -52,7 +52,7 @@
     <string name="notification_error_title">백업 오류</string>
     <string name="notification_error_channel_title">오류 알림</string>
     <string name="notification_failed_title">백업 실패</string>
-    <string name="notification_success_text">%2$d개 중 %1$d개 앱을 백업했습니다. 여기를 눌러서 더 알아보세요.</string>
+    <string name="notification_success_text">%2$d개 중 %1$d개 앱을 백업했습니다 (%3$s). 여기를 눌러서 더 알아보세요.</string>
     <string name="notification_success_title">백업 완료</string>
     <string name="notification_title">백업 실행 중</string>
     <string name="notification_channel_title">백업 알림</string>

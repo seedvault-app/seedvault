@@ -119,7 +119,7 @@
     <string name="notification_error_text">Il backup del dispositivo non e\' partito.</string>
     <string name="notification_error_title">Errore di backup</string>
     <string name="notification_error_channel_title">Notifica d\'errore</string>
-    <string name="notification_success_text">%1$d di %2$d app gia\' in backup. Tocca per ulteriori informazioni.</string>
+    <string name="notification_success_text">%1$d di %2$d app gia\' in backup (%3$s). Tocca per ulteriori informazioni.</string>
     <string name="notification_backup_already_running">Backup gia\' in corso</string>
     <string name="recovery_code_confirm_intro">Inserisci il tuo codice di recupero composto da 12 parole per controllare ora che il tutto funzionera\' correttamente quando sara\' necessario.</string>
     <string name="recovery_code_input_intro">Inserisi il tuo codice di recupero composto da 12 parole che ti sei annotato quando hai inizializzato i backup.</string>

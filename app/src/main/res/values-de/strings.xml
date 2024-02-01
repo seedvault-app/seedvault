@@ -103,7 +103,7 @@
     <string name="restore_restore_set_times">Letzte Sicherung %1$s · Erste %2$s.</string>
     <string name="restore_choose_restore_set">Wähle eine Sicherung aus, um sie wiederherzustellen</string>
     <string name="notification_restore_error_action">App deinstallieren</string>
-    <string name="notification_success_text">%1$d von %2$d Apps gesichert. Tippe, um mehr zu erfahren.</string>
+    <string name="notification_success_text">%1$d von %2$d Apps gesichert (%3$s). Tippe, um mehr zu erfahren.</string>
     <string name="notification_backup_already_running">Sicherung wird bereits durchgeführt</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nicht verfügbar. Richte ein Konto ein (oder deaktivieren Passcode).</string>
     <string name="current_destination_string">Sicherungsstatus und Einstellungen</string>

@@ -99,7 +99,7 @@
     <string name="restore_set_empty_result">Nenhum backup adequado encontrado no local dado.
 \n
 \nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
-    <string name="notification_success_text">%1$d de %2$d aplicativos com backup. Toque para saber mais.</string>
+    <string name="notification_success_text">%1$d de %2$d aplicativos com backup (%3$s). Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup já em andamento</string>
     <string name="restore_app_was_stopped">Não feito nenhum backup desde que não foi utilizado recentemente</string>
     <string name="restore_app_not_yet_backed_up">Nenhum backup foi feito ainda</string>

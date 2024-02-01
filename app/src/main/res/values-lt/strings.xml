@@ -58,7 +58,7 @@
     <string name="notification_error_title">Atsarginės kopijos kūrimo klaida</string>
     <string name="notification_error_channel_title">Klaidos pranešimas</string>
     <string name="notification_failed_title">Atsarginė kopija nepavyko</string>
-    <string name="notification_success_text">%1$d iš %2$d programėlių atsarginės kopijos sukurtos. Palieskite, kad sužinotumėte daugiau.</string>
+    <string name="notification_success_text">%1$d iš %2$d programėlių atsarginės kopijos sukurtos (%3$s). Palieskite, kad sužinotumėte daugiau.</string>
     <string name="notification_success_title">Atsarginė kopija baigta</string>
     <string name="notification_backup_already_running">Jau yra kuriama atsarginė kopija</string>
     <string name="notification_title">Atsarginis kopijavimas veikia</string>
