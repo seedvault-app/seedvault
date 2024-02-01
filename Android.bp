@@ -30,6 +30,7 @@ android_app {
         "androidx.activity_activity-ktx",
         "androidx.preference_preference",
         "androidx.documentfile_documentfile",
+        "androidx.work_work-runtime-ktx",
         "androidx.lifecycle_lifecycle-viewmodel-ktx",
         "androidx.lifecycle_lifecycle-livedata-ktx",
         "androidx-constraintlayout_constraintlayout",
