@@ -58,7 +58,7 @@
     <string name="notification_error_title">காப்புப் பிழை</string>
     <string name="notification_error_channel_title">பிழை அறிவிப்பு</string>
     <string name="notification_failed_title">காப்புப் பிரதி எடுக்க முடியவில்லை</string>
-    <string name="notification_success_text">%1$d / %2$d பயன்பாடுகள் காப்புப் பிரதி எடுக்கப்பட்டது. மேலும் அறிய தட்டவும்.</string>
+    <string name="notification_success_text">%1$d / %2$d பயன்பாடுகள் காப்புப் பிரதி எடுக்கப்பட்டது (%3$s). மேலும் அறிய தட்டவும்.</string>
     <string name="notification_success_title">காப்புப்பிரதி முடிந்தது</string>
     <string name="notification_channel_title">காப்புப்பிரதி அறிவிப்பு</string>
     <string name="notification_title">காப்புப்பிரதி இயங்குகிறது</string>

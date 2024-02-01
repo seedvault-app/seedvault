@@ -52,7 +52,7 @@
     <string name="recovery_code_input_hint_12">Paraula 12</string>
     <string name="recovery_code_error_checksum_word">El codi no és vàlid. Comprova totes les paraules així com la seva posició i torna-ho a provar!</string>
     <string name="recovery_code_verification_ok_title">Codi de recuperació verificat</string>
-    <string name="notification_success_text">%1$d de %2$d aplicacions amb còpia de seguretat. Fes un toc per saber-ne més.</string>
+    <string name="notification_success_text">%1$d de %2$d aplicacions amb còpia de seguretat (%3$s). Fes un toc per saber-ne més.</string>
     <string name="recovery_code_verification_new_dialog_message">Generar un codi nou farà que les teves còpies de seguretat existents siguin inaccessibles. Intentarem suprimir-los si és possible.
 \n
 \nSegur que vols fer-ho\?</string>

@@ -58,7 +58,7 @@
     <string name="notification_error_title">Lỗi sao lưu</string>
     <string name="notification_error_channel_title">Thông báo lỗi</string>
     <string name="notification_failed_title">Sao lưu thất bại</string>
-    <string name="notification_success_text">Đã sao lưu %1$d trong số %2$d ứng dụng. Nhấn để tìm hiểu thêm.</string>
+    <string name="notification_success_text">Đã sao lưu %1$d trong số %2$d ứng dụng (%3$s). Nhấn để tìm hiểu thêm.</string>
     <string name="notification_success_title">Sao lưu hoàn tất</string>
     <string name="notification_backup_already_running">Bản sao lưu đã đang được thực hiện rồi</string>
     <string name="notification_title">Bản sao lưu đang chạy</string>

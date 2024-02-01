@@ -60,7 +60,7 @@
     <string name="notification_error_title">Chyba zálohování</string>
     <string name="notification_error_channel_title">Oznámení o chybě</string>
     <string name="notification_failed_title">Zálohování selhalo</string>
-    <string name="notification_success_text">%1$d z %2$d aplikací zálohováno. Klepnutím zobrazíte další informace.</string>
+    <string name="notification_success_text">%1$d z %2$d aplikací zálohováno (%3$s). Klepnutím zobrazíte další informace.</string>
     <string name="notification_success_title">Zálohování dokončeno</string>
     <string name="notification_backup_already_running">Zálohování již probíhá</string>
     <string name="notification_title">Probíhá zálohování</string>

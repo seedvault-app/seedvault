@@ -101,7 +101,7 @@
     <string name="settings_backup">Copia de seguridad de mis apps</string>
     <string name="restore_backup_button">Restaurar la copia de seguridad</string>
     <string name="backup">Copia de seguridad</string>
-    <string name="notification_success_text">%1$d de %2$d aplicaciones con copia de seguridad. Pulse para obtener más información.</string>
+    <string name="notification_success_text">%1$d de %2$d aplicaciones con copia de seguridad (%3$s). Pulse para obtener más información.</string>
     <string name="notification_backup_already_running">Copia de seguridad en curso</string>
     <string name="restore_app_not_yet_backed_up">Todavía no se ha hecho una copia de seguridad</string>
     <string name="restore_app_was_stopped">No se hizo una copia de seguridad porque no se había utilizado recientemente</string>

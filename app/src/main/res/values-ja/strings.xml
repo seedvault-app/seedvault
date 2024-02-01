@@ -116,7 +116,7 @@
     <string name="notification_error_action">修正する</string>
     <string name="notification_error_text">デバイスのバックアップを実行できませんでした。</string>
     <string name="notification_error_channel_title">エラーの通知</string>
-    <string name="notification_success_text">%2$d 個の内 %1$d 個のアプリがバックアップされました。タップすると詳細が表示されます。</string>
+    <string name="notification_success_text">%2$d 個の内 %1$d 個のアプリがバックアップされました (%3$s)。タップすると詳細が表示されます。</string>
     <string name="notification_channel_title">バックアップの通知</string>
     <string name="recovery_code_verification_ok_message">コードは正しく、バックアップを復元するために機能します。</string>
     <string name="recovery_code_error_invalid_word">単語が間違っています。</string>

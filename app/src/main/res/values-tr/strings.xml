@@ -103,7 +103,7 @@
     <string name="restore_backup_button">Yedeklemeyi geri yükle</string>
     <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmemişti</string>
     <string name="restore_app_not_yet_backed_up">Henüz yedeklenmemişti</string>
-    <string name="notification_success_text">%1$d / %2$d uygulama yedeklendi. Daha fazlasını öğrenmek için dokunun.</string>
+    <string name="notification_success_text">%1$d / %2$d uygulama yedeklendi (%3$s). Daha fazlasını öğrenmek için dokunun.</string>
     <string name="notification_backup_already_running">Yedekleme zaten devam ediyor</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Kullanılabilir hesap yok. Bir tane ayarlayın (veya parolayı devre dışı bırakın).</string>
     <string name="current_destination_string">Yedekleme durumu ve ayarları</string>

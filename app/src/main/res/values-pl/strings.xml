@@ -99,7 +99,7 @@
     <string name="backup_settings">Ustawienia urządzenia</string>
     <string name="backup_sms">Wiadomości tekstowe SMS</string>
     <string name="backup_section_system">Aplikacje systemowe</string>
-    <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji. Naciśnij, aby dowiedzieć się więcej.</string>
+    <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji (%3$s). Naciśnij, aby dowiedzieć się więcej.</string>
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
     <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android do tworzenia kopii zapasowych.</string>

@@ -58,7 +58,7 @@
     <string name="notification_error_title">Erro de backup</string>
     <string name="notification_error_channel_title">Notificação de erro</string>
     <string name="notification_failed_title">Backup falhou</string>
-    <string name="notification_success_text">Feito o backup da app %1$d de %2$d . Toque para saber mais.</string>
+    <string name="notification_success_text">Feito o backup da app %1$d de %2$d (%3$s). Toque para saber mais.</string>
     <string name="notification_success_title">Backup concluído</string>
     <string name="notification_backup_already_running">Backup em andamento</string>
     <string name="notification_channel_title">Notificação de backup</string>

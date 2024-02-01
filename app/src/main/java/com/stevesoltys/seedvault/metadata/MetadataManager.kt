@@ -251,6 +251,11 @@ internal class MetadataManager(
     }
 
     @Synchronized
+    fun getPackagesBackupSize(): Long {
+        return metadata.packageMetadataMap.values.sumOf { it.size ?: 0L }
+    }
+
+    @Synchronized
     @VisibleForTesting
     private fun getMetadataFromCache(): BackupMetadata? {
         try {
