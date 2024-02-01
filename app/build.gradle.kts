@@ -135,6 +135,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.google.material)
 
     implementation(libs.google.tink.android)

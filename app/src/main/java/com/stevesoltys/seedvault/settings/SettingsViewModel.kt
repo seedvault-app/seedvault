@@ -12,6 +12,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Process.myUid
+import android.os.UserHandle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -24,6 +25,7 @@ import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
+import com.stevesoltys.seedvault.BackupWorker
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -259,6 +261,15 @@ internal class SettingsViewModel(
     private suspend fun onLogcatError() = withContext(Dispatchers.Main) {
         val str = app.getString(R.string.settings_expert_logcat_error)
         Toast.makeText(app, str, LENGTH_LONG).show()
+    }
+
+    fun onD2dChanged(enabled: Boolean) {
+        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), !enabled)
+        if (enabled) {
+            BackupWorker.schedule(app)
+        } else {
+            BackupWorker.unschedule(app)
+        }
     }
 
 }

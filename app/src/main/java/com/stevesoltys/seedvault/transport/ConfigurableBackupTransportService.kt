@@ -60,10 +60,15 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
 
 }
 
+/**
+ * Requests the system to initiate a backup.
+ *
+ * @return true iff backups was requested successfully (backup itself can still fail).
+ */
 @WorkerThread
-fun requestBackup(context: Context) {
+fun requestBackup(context: Context): Boolean {
     val backupManager: IBackupManager = get().get()
-    if (backupManager.isBackupEnabled) {
+    return if (backupManager.isBackupEnabled) {
         val packageService: PackageService = get().get()
         val packages = packageService.eligiblePackages
         val appTotals = packageService.expectedAppTotals
@@ -78,11 +83,14 @@ fun requestBackup(context: Context) {
             nm.onBackupError()
         }
         if (result == BackupManager.SUCCESS) {
-            Log.i(TAG, "Backup succeeded ")
+            Log.i(TAG, "Backup request succeeded ")
+            true
         } else {
-            Log.e(TAG, "Backup failed: $result")
+            Log.e(TAG, "Backup request failed: $result")
+            false
         }
     } else {
         Log.i(TAG, "Backup is not enabled")
+        true // this counts as success
     }
 }
