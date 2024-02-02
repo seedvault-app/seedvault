@@ -26,7 +26,10 @@ internal class MetadataWriterDecoderTest {
 
     @Test
     fun `encoded metadata matches decoded metadata (no packages)`() {
-        val metadata = getMetadata()
+        val metadata = getMetadata().let {
+            if (it.version == 0.toByte()) it.copy(salt = "") // no salt in version 0
+            else it
+        }
         assertEquals(
             metadata,
             decoder.decode(encoder.encode(metadata), metadata.version, metadata.token)
