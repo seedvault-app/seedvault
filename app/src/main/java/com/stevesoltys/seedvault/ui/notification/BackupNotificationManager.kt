@@ -33,10 +33,11 @@ private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
 private const val NOTIFICATION_ID_OBSERVER = 1
-private const val NOTIFICATION_ID_ERROR = 2
-private const val NOTIFICATION_ID_RESTORE_ERROR = 3
-private const val NOTIFICATION_ID_BACKGROUND = 4
-private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 5
+private const val NOTIFICATION_ID_SUCCESS = 2
+private const val NOTIFICATION_ID_ERROR = 3
+private const val NOTIFICATION_ID_RESTORE_ERROR = 4
+private const val NOTIFICATION_ID_BACKGROUND = 5
+private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 6
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -200,7 +201,8 @@ internal class BackupNotificationManager(private val context: Context) {
             setProgress(0, 0, false)
             priority = PRIORITY_LOW
         }.build()
-        nm.notify(NOTIFICATION_ID_OBSERVER, notification)
+        nm.cancel(NOTIFICATION_ID_OBSERVER)
+        nm.notify(NOTIFICATION_ID_SUCCESS, notification)
         // reset number of expected apps
         expectedOptOutApps = null
         expectedApps = null
