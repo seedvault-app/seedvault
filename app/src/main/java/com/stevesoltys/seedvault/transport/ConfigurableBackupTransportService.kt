@@ -1,19 +1,16 @@
 package com.stevesoltys.seedvault.transport
 
 import android.app.Service
-import android.app.backup.BackupManager
 import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.os.RemoteException
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.transport.backup.BackupRequester
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.get
@@ -70,25 +67,10 @@ fun requestBackup(context: Context): Boolean {
     val backupManager: IBackupManager = get().get()
     return if (backupManager.isBackupEnabled) {
         val packageService: PackageService = get().get()
-        val packages = packageService.eligiblePackages
-        val appTotals = packageService.expectedAppTotals
 
-        val result = try {
-            Log.d(TAG, "Backup is enabled, request backup...")
-            val observer = NotificationBackupObserver(context, packages.size, appTotals)
-            backupManager.requestBackup(packages, observer, BackupMonitor(), 0)
-        } catch (e: RemoteException) {
-            Log.e(TAG, "Error during backup: ", e)
-            val nm: BackupNotificationManager = get().get()
-            nm.onBackupError()
-        }
-        if (result == BackupManager.SUCCESS) {
-            Log.i(TAG, "Backup request succeeded ")
-            true
-        } else {
-            Log.e(TAG, "Backup request failed: $result")
-            false
-        }
+        Log.d(TAG, "Backup is enabled, request backup...")
+        val backupRequester = BackupRequester(context, backupManager, packageService)
+        return backupRequester.requestBackup()
     } else {
         Log.i(TAG, "Backup is not enabled")
         true // this counts as success

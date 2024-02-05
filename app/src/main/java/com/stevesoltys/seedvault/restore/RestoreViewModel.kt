@@ -39,6 +39,7 @@ import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageRestoreService
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.backup.NUM_PACKAGES_PER_TRANSACTION
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
@@ -70,7 +71,7 @@ import java.util.LinkedList
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
-internal const val PACKAGES_PER_CHUNK = 100
+internal const val PACKAGES_PER_CHUNK = NUM_PACKAGES_PER_TRANSACTION
 
 internal class RestoreViewModel(
     app: Application,

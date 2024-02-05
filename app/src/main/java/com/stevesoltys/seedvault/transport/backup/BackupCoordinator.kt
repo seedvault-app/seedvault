@@ -158,7 +158,8 @@ internal class BackupCoordinator(
      */
     suspend fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         if (packageName != MAGIC_PACKAGE_MANAGER) {
-            // try to back up APK here as later methods are sometimes not called called
+            // try to back up APK here as later methods are sometimes not called
+            // TODO move this into BackupWorker
             backUpApk(context.packageManager.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
         }
 
@@ -379,6 +380,7 @@ internal class BackupCoordinator(
                     }
                 }
                 // hook in here to back up APKs of apps that are otherwise not allowed for backup
+                // TODO move this into BackupWorker
                 if (isPmBackup && settingsManager.canDoBackupNow()) {
                     try {
                         backUpApksOfNotBackedUpPackages()

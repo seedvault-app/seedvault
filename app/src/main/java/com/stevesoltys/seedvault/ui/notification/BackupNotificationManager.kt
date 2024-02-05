@@ -53,6 +53,11 @@ internal class BackupNotificationManager(private val context: Context) {
     private var expectedOptOutApps: Int? = null
     private var expectedAppTotals: ExpectedAppTotals? = null
 
+    /**
+     * Used as a (temporary) hack to fix progress reporting when fake d2d is enabled.
+     */
+    private var optOutAppsDone = false
+
     private fun getObserverChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_channel_title)
         return NotificationChannel(CHANNEL_ID_OBSERVER, title, IMPORTANCE_LOW).apply {
@@ -98,6 +103,8 @@ internal class BackupNotificationManager(private val context: Context) {
      * This should get called before [onBackupUpdate].
      */
     fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
+        if (optOutAppsDone) return
+
         val text = "Opt-out APK for $packageName"
         if (expectedApps == null) {
             updateBackgroundBackupNotification(text)
@@ -112,6 +119,7 @@ internal class BackupNotificationManager(private val context: Context) {
      * this type is is expected to get called after [onOptOutAppBackup].
      */
     fun onBackupUpdate(app: CharSequence, transferred: Int) {
+        optOutAppsDone = true
         val expected = expectedApps ?: error("expectedApps is null")
         val addend = expectedOptOutApps ?: 0
         updateBackupNotification(

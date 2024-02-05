@@ -10,6 +10,7 @@ import android.util.Log.isLoggable
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.transport.backup.BackupRequester
 import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -18,6 +19,7 @@ private val TAG = NotificationBackupObserver::class.java.simpleName
 
 internal class NotificationBackupObserver(
     private val context: Context,
+    private val backupRequester: BackupRequester,
     private val expectedPackages: Int,
     appTotals: ExpectedAppTotals,
 ) : IBackupObserver.Stub(), KoinComponent {
@@ -73,13 +75,15 @@ internal class NotificationBackupObserver(
      *   as a whole failed.
      */
     override fun backupFinished(status: Int) {
-        if (isLoggable(TAG, INFO)) {
-            Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
+        if (backupRequester.requestNext()) {
+            if (isLoggable(TAG, INFO)) {
+                Log.i(TAG, "Backup finished $numPackages/$expectedPackages. Status: $status")
+            }
+            val success = status == 0
+            val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
+            val size = if (success) metadataManager.getPackagesBackupSize() else 0L
+            nm.onBackupFinished(success, numBackedUp, size)
         }
-        val success = status == 0
-        val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
-        val size = if (success) metadataManager.getPackagesBackupSize() else 0L
-        nm.onBackupFinished(success, numBackedUp, size)
     }
 
     private fun showProgressNotification(packageName: String?) {

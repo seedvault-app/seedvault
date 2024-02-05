@@ -38,7 +38,7 @@ internal class PackageService(
     private val packageManager: PackageManager = context.packageManager
     private val myUserId = UserHandle.myUserId()
 
-    val eligiblePackages: Array<String>
+    val eligiblePackages: List<String>
         @WorkerThread
         @Throws(RemoteException::class)
         get() {
@@ -70,11 +70,12 @@ internal class PackageService(
             val packageArray = eligibleApps.toMutableList()
             packageArray.add(MAGIC_PACKAGE_MANAGER)
 
-            return packageArray.toTypedArray()
+            return packageArray
         }
 
     /**
-     * A list of packages that will not be backed up.
+     * A list of packages that will not be backed up,
+     * because they are currently force-stopped for example.
      */
     val notBackedUpPackages: List<PackageInfo>
         @WorkerThread
