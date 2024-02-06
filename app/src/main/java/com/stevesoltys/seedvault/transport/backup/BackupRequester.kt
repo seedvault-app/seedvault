@@ -38,7 +38,7 @@ internal class BackupRequester(
     private val observer = NotificationBackupObserver(
         context = context,
         backupRequester = this,
-        expectedPackages = packages.size,
+        requestedPackages = packages.size,
         appTotals = packageService.expectedAppTotals,
     )
     private val monitor = BackupMonitor()
@@ -50,6 +50,9 @@ internal class BackupRequester(
      */
     private var packageIndex: Int = 0
 
+    /**
+     * Request the backup to happen. Should be called short after constructing this object.
+     */
     fun requestBackup(): Boolean {
         if (packageIndex != 0) error("requestBackup() called more than once!")
 

@@ -27,6 +27,7 @@ import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
 import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
 import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
+import kotlin.math.min
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
 private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
@@ -92,25 +93,34 @@ internal class BackupNotificationManager(private val context: Context) {
         updateBackupNotification(
             infoText = "", // This passes quickly, no need to show something here
             transferred = 0,
-            expected = expectedPackages
+            expected = appTotals.appsTotal
         )
         expectedApps = expectedPackages
-        expectedOptOutApps = appTotals.appsOptOut
+        expectedOptOutApps = appTotals.appsNotGettingBackedUp
         expectedAppTotals = appTotals
+        optOutAppsDone = false
+        Log.i(TAG, "onBackupStarted $expectedApps + $expectedOptOutApps = ${appTotals.appsTotal}")
     }
 
     /**
      * This should get called before [onBackupUpdate].
+     * In case of d2d backups, this actually gets called some time after
+     * some apps were already backed up, so [onBackupUpdate] was called several times.
      */
     fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
         if (optOutAppsDone) return
 
-        val text = "Opt-out APK for $packageName"
+        val text = "APK for $packageName"
         if (expectedApps == null) {
             updateBackgroundBackupNotification(text)
         } else {
             updateBackupNotification(text, transferred, expected + (expectedApps ?: 0))
+            if (expectedOptOutApps != null && expectedOptOutApps != expected) {
+                Log.w(TAG, "Number of packages not getting backed up mismatch: " +
+                    "$expectedOptOutApps != $expected")
+            }
             expectedOptOutApps = expected
+            if (transferred == expected) optOutAppsDone = true
         }
     }
 
@@ -119,12 +129,11 @@ internal class BackupNotificationManager(private val context: Context) {
      * this type is is expected to get called after [onOptOutAppBackup].
      */
     fun onBackupUpdate(app: CharSequence, transferred: Int) {
-        optOutAppsDone = true
         val expected = expectedApps ?: error("expectedApps is null")
         val addend = expectedOptOutApps ?: 0
         updateBackupNotification(
             infoText = app,
-            transferred = transferred + addend,
+            transferred = min(transferred + addend, expected + addend),
             expected = expected + addend
         )
     }
