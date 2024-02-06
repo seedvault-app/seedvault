@@ -231,6 +231,7 @@ internal class BackupCoordinator(
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
         if (metadataManager.requiresInit) {
+            Log.w(TAG, "Metadata requires re-init!")
             // start a new restore set to upgrade from legacy format
             // by starting a clean backup with all files using the new version
             try {
