@@ -184,13 +184,17 @@ internal class BackupNotificationManager(private val context: Context) {
         //
         // This won't bring back the expected finish notification in this case,
         // but at least we don't leave stuck notifications laying around.
-        nm.activeNotifications.forEach { notification ->
-            // only consider ongoing notifications in our ID space (storage backup uses > 1000)
-            if (notification.isOngoing && notification.id < 1000) {
-                Log.w(TAG, "Needed to clean up notification with ID ${notification.id}")
-                nm.cancel(notification.id)
-            }
-        }
+        // FIXME the service gets destroyed for each chunk when requesting backup in chunks
+        //  This leads to the cancellation of an ongoing backup notification.
+        //  So for now, we'll remove automatic notification clean-up
+        //  and find out if it is still necessary. If not, this comment can be removed.
+        // nm.activeNotifications.forEach { notification ->
+        //     // only consider ongoing notifications in our ID space (storage backup uses > 1000)
+        //     if (notification.isOngoing && notification.id < 1000) {
+        //         Log.w(TAG, "Needed to clean up notification with ID ${notification.id}")
+        //         nm.cancel(notification.id)
+        //     }
+        // }
     }
 
     fun onBackupFinished(success: Boolean, numBackedUp: Int?, size: Long) {
