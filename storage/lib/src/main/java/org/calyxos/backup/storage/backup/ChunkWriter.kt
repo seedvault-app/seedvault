@@ -17,7 +17,6 @@ import java.io.OutputStream
 import java.nio.file.attribute.FileTime
 import java.security.GeneralSecurityException
 import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 import kotlin.math.min
 
 internal data class ChunkWriterResult(
@@ -121,9 +120,17 @@ internal class ChunkWriter(
     }
 
     @Throws(IOException::class)
-    fun writeNewZipEntry(zipOutputStream: ZipOutputStream, counter: Int, inputStream: InputStream) {
-        val entry = createNewZipEntry(counter)
-        zipOutputStream.putNextEntry(entry)
+    fun writeNewZipEntry(
+        zipOutputStream: NameZipOutputStream,
+        counter: Int,
+        inputStream: InputStream,
+    ) {
+        // If copying below throws an exception, we'd be adding a new entry with the same counter,
+        // so we check if we have added an entry for that counter already to prevent duplicates.
+        if ((zipOutputStream.lastName?.toIntOrNull() ?: 0) != counter) {
+            val entry = createNewZipEntry(counter)
+            zipOutputStream.putNextEntry(entry)
+        }
         inputStream.copyTo(zipOutputStream)
         zipOutputStream.closeEntry()
     }
