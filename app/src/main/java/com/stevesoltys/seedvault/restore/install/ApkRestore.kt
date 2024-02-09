@@ -76,6 +76,9 @@ internal class ApkRestore(
             } catch (e: TimeoutCancellationException) {
                 Log.e(TAG, "Timeout while re-installing APK for $packageName.", e)
                 emit(installResult.fail(packageName))
+            } catch (e: Exception) {
+                Log.e(TAG, "Unexpected exception while re-installing APK for $packageName.", e)
+                emit(installResult.fail(packageName))
             }
         }
         installResult.isFinished = true
