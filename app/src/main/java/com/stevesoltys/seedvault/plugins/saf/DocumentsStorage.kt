@@ -134,12 +134,22 @@ internal class DocumentsStorage(
 
     @Throws(IOException::class)
     fun getInputStream(file: DocumentFile): InputStream {
-        return contentResolver.openInputStream(file.uri) ?: throw IOException()
+        return try {
+            contentResolver.openInputStream(file.uri) ?: throw IOException()
+        } catch (e: Exception) {
+            // SAF can throw all sorts of exceptions, so wrap it in IOException
+            throw IOException(e)
+        }
     }
 
     @Throws(IOException::class)
     fun getOutputStream(file: DocumentFile): OutputStream {
-        return contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
+        return try {
+            contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
+        } catch (e: Exception) {
+            // SAF can throw all sorts of exceptions, so wrap it in IOException
+            throw IOException(e)
+        }
     }
 
 }
@@ -161,8 +171,10 @@ internal suspend fun DocumentFile.createOrGetFile(
                 throw IOException("File named ${this.name}, but should be $name")
             }
         } ?: throw IOException()
-    } catch (e: IllegalArgumentException) {
-        // Can be thrown by FileSystemProvider#isChildDocument() when flash drive is not plugged-in
+    } catch (e: Exception) {
+        // SAF can throw all sorts of exceptions, so wrap it in IOException.
+        // E.g. IllegalArgumentException can be thrown by FileSystemProvider#isChildDocument()
+        // when flash drive is not plugged-in:
         // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/core/java/com/android/internal/content/FileSystemProvider.java#135
         throw IOException(e)
     }
@@ -248,7 +260,7 @@ internal fun getTreeDocumentFile(parent: DocumentFile, context: Context, uri: Ur
 suspend fun DocumentFile.findFileBlocking(context: Context, displayName: String): DocumentFile? {
     val files = try {
         listFilesBlocking(context)
-    } catch (e: IOException) {
+    } catch (e: Exception) {
         Log.e(TAG, "Error finding file blocking", e)
         return null
     }

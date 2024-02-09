@@ -17,7 +17,6 @@ import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -145,10 +144,8 @@ internal class ApkBackup(
         val apk = File(apkPath)
         return try {
             apk.inputStream()
-        } catch (e: FileNotFoundException) {
-            Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
-            throw IOException(e)
-        } catch (e: SecurityException) {
+        } catch (e: Exception) {
+            // SAF may throw all sorts of exceptions, so wrap them in IOException
             Log.e(TAG, "Error opening ${apk.absolutePath} for backup.", e)
             throw IOException(e)
         }
