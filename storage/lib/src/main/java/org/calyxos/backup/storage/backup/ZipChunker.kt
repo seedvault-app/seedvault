@@ -11,7 +11,9 @@ import org.calyxos.backup.storage.toHexString
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import java.security.GeneralSecurityException
+import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.crypto.Mac
 
@@ -36,7 +38,7 @@ internal class ZipChunker(
     private val files = ArrayList<ContentFile>()
 
     private val outputStream = ByteArrayOutputStream(chunkSizeMax)
-    private var zipOutputStream = ZipOutputStream(outputStream)
+    private var zipOutputStream = NameZipOutputStream(outputStream)
 
     // we start with 1, because 0 is the default value in protobuf 3
     private var counter = 1
@@ -77,8 +79,21 @@ internal class ZipChunker(
     private fun reset() {
         files.clear()
         outputStream.reset()
-        zipOutputStream = ZipOutputStream(outputStream)
+        zipOutputStream = NameZipOutputStream(outputStream)
         counter = 1
     }
 
+}
+
+/**
+ * A wrapper for [ZipOutputStream] that remembers the name of the last [ZipEntry] that was added.
+ */
+internal class NameZipOutputStream(outputStream: OutputStream) : ZipOutputStream(outputStream) {
+    internal var lastName: String? = null
+        private set
+
+    override fun putNextEntry(e: ZipEntry) {
+        super.putNextEntry(e)
+        lastName = e.name
+    }
 }
