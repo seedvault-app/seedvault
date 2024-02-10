@@ -6,7 +6,9 @@
     <string name="settings_backup_last_backup_never">Никогда</string>
     <string name="backup">Резервная копия</string>
     <string name="settings_backup_location">Расположение Резервной Копии</string>
-    <string name="about_summary">Приложение для резервного копирования, использующее API резервного копирования Android.</string>
+    <string name="about_summary">Приложение для резервного копирования, использующее API резервного копирования Android. Это свободное ПО, выпущенное под лицензией Apache 2.
+\n
+\nКак и любое другое ПО, Seedvault может иметь баги или уязвимости.</string>
     <string name="about_title">О приложении</string>
     <string name="storage_internal_warning_use_anyway">Все равно использовать</string>
     <string name="storage_internal_warning_choose_other">Выбрать другое</string>
@@ -192,4 +194,12 @@
 \n
 \nВнимание: Журнал может содержать личную информацию. Проверьте до и удалите после отправки!</string>
     <string name="settings_expert_logcat_error">Ошибка: Не удалось сохранить журнал приложения</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Не рекомендуется)</string>
+    <string name="storage_user_selected_location_title">Расположение, выбранное пользователем</string>
+    <string name="settings_backup_dialog_disable">Всё равно выключить</string>
+    <string name="settings_backup_dialog_message">Когда резервные копии будут включены заново, создание резервной копии займёт дольше, чем обычно, и она займёт больше места.</string>
+    <string name="settings_backup_dialog_title">Точно выключить резервные копии приложений\?</string>
+    <string name="about_contributing_organizations_title">Участвующие организации</string>
+    <string name="about_contributor_headline">Участники</string>
+    <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Спискок участников</a> доступен на GitHub.</string>
 </resources>

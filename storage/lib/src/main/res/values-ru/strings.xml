@@ -8,7 +8,7 @@
 \n
 \nИзвините, но нет ничего, что можно было бы восстановить.</string>
     <string name="snapshots_title">Доступные резервные копии хранилища</string>
-    <string name="content_images">Фотографии и изображения</string>
+    <string name="content_images">Фото и изображения</string>
     <string name="content_videos">Видео</string>
     <string name="content_audio">Аудиофайлы</string>
     <string name="notification_backup_title">Резервное копирование хранилища</string>
@@ -17,6 +17,6 @@
     <string name="notification_prune">Удаление старых резервных копий…</string>
     <string name="notification_restore_channel_title">Восстановление хранилища</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
-    <string name="snapshots_error">Ошибка загрузки снимков</string>
+    <string name="snapshots_error">Ошибка при загрузке снимков хранилища</string>
     <string name="content_options">Опции</string>
 </resources>

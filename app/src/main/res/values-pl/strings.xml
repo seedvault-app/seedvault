@@ -102,7 +102,9 @@
     <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji. Naciśnij, aby dowiedzieć się więcej.</string>
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
-    <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android do tworzenia kopii zapasowych.</string>
+    <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android. To Wolne Oprogramowanie, wydane na licencji Apache 2.
+\n
+\nJak każde oprogramowanie, Seedvault może zawierać błędy i luki w zabezpieczeniach.</string>
     <string name="about_title">Informacje</string>
     <string name="storage_internal_warning_use_anyway">Użyj mimo tego</string>
     <string name="storage_internal_warning_choose_other">Wybierz inną</string>
@@ -181,4 +183,21 @@
     <string name="settings_expert_quota_title">Nieograniczona liczba aplikacji</string>
     <string name="settings_expert_logcat_title">Zapisz dziennik aplikacji</string>
     <string name="settings_expert_logcat_error">Błąd: Nie można zapisać dziennika aplikacji</string>
+    <string name="storage_user_selected_location_title">Lokalizacja wybrana przez użytkownika</string>
+    <string name="restore_storage_got_it">Zrozumiano</string>
+    <string name="restore_storage_choose_snapshot">Wybierz kopię zapasową do przywrócenia (eksperymentalne)</string>
+    <string name="restore_storage_in_progress_info">Twoje pliki są przywracanę w tle. Możesz używać telefonu w trakcie przywracania.
+\n
+\nNiektóre aplikacje (np. Signal czy WhatsApp) mogę wymagać by pliki były w pełni przywrócona aby zaimportować kopię zapasową. Postaraj się nie włączć tych aplikacji przed zakończeniem przywracania.</string>
+    <string name="about_contributor_headline">Współautorzy</string>
+    <string name="settings_backup_dialog_message">Kiedy ponownie włączysz kopię zapasową, proces kopiowanie może zająć więcej czasu niż zwykle, oraz wykożystać dodatkową przestrzeń na dysku.</string>
+    <string name="settings_expert_quota_summary">Nie limituj wielkości kopi zapasowej aplikacji.
+\n
+\nUwaga: Ta opcja może w krótkim czasie zapełnić miejsce na dysku. Niepotrzebne większości aplikacji.</string>
+    <string name="storage_fake_davx5_summary_installed">Stuknij by ustawić punkt montażu WebDAV</string>
+    <string name="storage_fake_davx5_summary_unavailable">Punkt montażu WebDAV niedostępny. Ustaw go.</string>
+    <string name="settings_expert_logcat_summary">Deweloperzy mogą zdiagnozować błędy za pomocą informacji zawartych w raportach błędów.
+\n
+\nUwaga: Plik z raportem błędów może zawierać informacje na podstawie których można cię zidentyfikować. Zapoznaj się z nim i usuń go gdy nie będzie ci już potrzebny!</string>
+    <string name="recovery_code_auth_description">Wprowadź informacje swojego urządzenia aby kontynuować</string>
 </resources>

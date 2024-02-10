@@ -203,4 +203,5 @@
     <string name="about_contributing_organizations_title">Συνεισφέροντες Οργανισμοί</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET χρηματοδότηση από την NLnet</a></string>
+    <string name="storage_user_selected_location_title">Τοποθεσία επιλεγμένη από το χρήστη</string>
 </resources>
