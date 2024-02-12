@@ -12,6 +12,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.DocumentsContract.Document.MIME_TYPE_DIR
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns.IS_DOWNLOAD
 import android.util.Log
@@ -57,15 +58,18 @@ public class MediaScanner(context: Context) {
 
     internal fun scanMediaUri(uri: Uri, extraQuery: String? = null): List<MediaFile> {
         val extras = Bundle().apply {
-            val query = StringBuilder()
+            val query = StringBuilder().apply {
+                // don't include directories (if they are non-empty they will be in implicitly)
+                append("${MediaStore.MediaColumns.MIME_TYPE}!='$MIME_TYPE_DIR'")
+            }
             if (uri != MediaType.Downloads.contentUri) {
-                query.append("$IS_DOWNLOAD=0")
+                query.append(" AND $IS_DOWNLOAD=0")
             }
             extraQuery?.let {
-                if (query.isNotEmpty()) query.append(" AND ")
+                query.append(" AND ")
                 query.append(it)
             }
-            if (query.isNotEmpty()) putString(QUERY_ARG_SQL_SELECTION, query.toString())
+            putString(QUERY_ARG_SQL_SELECTION, query.toString())
         }
         val cursor = contentResolver.query(uri, PROJECTION, extras, null)
         return ArrayList<MediaFile>(cursor?.count ?: 0).apply {
@@ -106,7 +110,6 @@ public class MediaScanner(context: Context) {
     }
 
     private fun getRealSize(mediaFile: MediaFile): Long {
-        @Suppress("DEPRECATION")
         val extDir = Environment.getExternalStorageDirectory()
         val path = "$extDir/${mediaFile.dirPath}/${mediaFile.fileName}"
         return try {
