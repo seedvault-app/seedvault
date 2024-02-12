@@ -11,4 +11,8 @@ object RestoreScreen : UiDeviceScreen<RestoreScreen>() {
     val finishButton = findObject { text("Finish") }
 
     val skipButton = findObject { text("Skip restoring files") }
+
+    val someAppsNotInstalledText = findObject { textContains("Some apps") }
+
+    val someAppsNotRestoredText = findObject { textContains("some apps") }
 }

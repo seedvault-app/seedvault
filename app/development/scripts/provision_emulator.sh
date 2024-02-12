@@ -31,11 +31,23 @@ else
   sleep 1
 fi
 
-$SCRIPT_DIR/start_emulator.sh "$EMULATOR_NAME"
-sleep 3
-
-# get emulator device name from ADB
 EMULATOR_DEVICE_NAME=$($ANDROID_HOME/platform-tools/adb devices | grep emulator | cut -f1)
+
+if [ -z "$EMULATOR_DEVICE_NAME" ]; then
+    $SCRIPT_DIR/start_emulator.sh "$EMULATOR_NAME"
+fi
+
+# wait for emulator device to appear with 180 second timeout
+echo "Waiting for emulator device..."
+
+for i in {1..180}; do
+  if [ -z "$EMULATOR_DEVICE_NAME" ]; then
+    sleep 1
+    EMULATOR_DEVICE_NAME=$($ANDROID_HOME/platform-tools/adb devices | grep emulator | cut -f1)
+  else
+    break
+  fi
+done
 
 if [ -z "$EMULATOR_DEVICE_NAME" ]; then
   echo "Emulator device name not found"
@@ -59,19 +71,28 @@ $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sle
 echo "Provisioning emulator for Seedvault..."
 $SCRIPT_DIR/install_app.sh
 
-echo "Setting backup transport to Seedvault..."
-$ADB shell bmgr enable true
-$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
-
 echo "Rebooting emulator..."
 $ADB reboot
 $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
 
-echo "Downloading and extracting test backup to '/sdcard/seedvault'..."
-wget https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz
-$ADB push backup.tar.gz /sdcard/
+echo "Setting backup transport to Seedvault..."
+$ADB shell bmgr enable true
+sleep 5
+$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
+
+echo "Downloading and extracting test backup to '/sdcard/seedvault_baseline'..."
+
+if [ ! -f backup.tar.gz ]; then
+  echo "Downloading test backup..."
+  wget --quiet https://github.com/seedvault-app/seedvault-test-data/releases/download/1/backup.tar.gz
+fi
+
+$ADB root
+sleep 3      # wait for adb to restart
+$ADB push backup.tar.gz /sdcard
 rm backup.tar.gz
 
+$ADB wait-for-device
 $ADB shell mkdir -p /sdcard/seedvault_baseline
 $ADB shell tar xzf /sdcard/backup.tar.gz --directory=/sdcard/seedvault_baseline
 $ADB shell rm /sdcard/backup.tar.gz

@@ -8,12 +8,16 @@ import com.stevesoltys.seedvault.transport.restore.FullRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestore
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
+import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
 import io.mockk.spyk
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal var currentRestoreViewModel: RestoreViewModel? = null
+internal var currentBackupStorageViewModel: BackupStorageViewModel? = null
+internal var currentRestoreStorageViewModel: RestoreStorageViewModel? = null
 
 class KoinInstrumentationTestApp : App() {
 
@@ -34,6 +38,18 @@ class KoinInstrumentationTestApp : App() {
                 currentRestoreViewModel =
                     spyk(RestoreViewModel(context, get(), get(), get(), get(), get(), get()))
                 currentRestoreViewModel!!
+            }
+
+            viewModel {
+                currentBackupStorageViewModel =
+                    spyk(BackupStorageViewModel(context, get(), get(), get(), get()))
+                currentBackupStorageViewModel!!
+            }
+
+            viewModel {
+                currentRestoreStorageViewModel =
+                    spyk(RestoreStorageViewModel(context, get(), get()))
+                currentRestoreStorageViewModel!!
             }
         }
 

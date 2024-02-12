@@ -173,6 +173,16 @@ gradle.projectsEvaluated {
     }
 }
 
+tasks.withType(Test).configureEach {
+    testLogging {
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        exceptionFormat = 'full'
+    }
+}
+
 configurations {
     all {
         resolutionStrategy {
@@ -189,7 +199,7 @@ tasks.register('provisionEmulator', Exec) {
     doFirst {
         commandLine "${project.projectDir}/development/scripts/provision_emulator.sh",
                 "seedvault",
-                "system-images;android-33;google_apis;x86_64"
+                "system-images;android-33;default;x86_64"
 
         environment "ANDROID_HOME", android.sdkDirectory.absolutePath
         environment "JAVA_HOME", System.properties['java.home']

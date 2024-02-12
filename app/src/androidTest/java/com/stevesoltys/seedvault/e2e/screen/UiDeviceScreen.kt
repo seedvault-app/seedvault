@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.e2e.screen
 
 import android.widget.ScrollView
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.Configurator
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiScrollable
@@ -30,4 +31,7 @@ abstract class UiDeviceScreen<T> {
     )
 
     private fun device() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        .also {
+            Configurator.getInstance().waitForSelectorTimeout = 60000
+        }
 }

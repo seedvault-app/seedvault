@@ -14,5 +14,11 @@ object BackupScreen : UiDeviceScreen<BackupScreen>() {
 
     val backupLocationButton = findObject { text("Backup location") }
 
+    val backupSwitch = findObject { text("Backup my apps") }
+
+    val internalStorageButton = findObject { textContains("Android SDK built for") }
+
+    val useAnywayButton = findObject { text("USE ANYWAY") }
+
     val initializingText: BySelector = By.textContains("Initializing backup location")
 }

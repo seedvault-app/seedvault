@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.e2e
 
+import android.app.backup.IBackupManager
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.e2e.io.BackupDataInputIntercept
@@ -25,6 +26,8 @@ internal interface LargeBackupTestBase : LargeTestBase {
         private const val BACKUP_TIMEOUT = 360 * 1000L
     }
 
+    val backupManager: IBackupManager get() = get()
+
     val spyBackupNotificationManager: BackupNotificationManager get() = get()
 
     val spyFullBackup: FullBackup get() = get()
@@ -40,6 +43,12 @@ internal interface LargeBackupTestBase : LargeTestBase {
 
     fun startBackup() {
         BackupScreen {
+
+            if (!backupManager.isBackupEnabled) {
+                backupSwitch.click()
+                waitUntilIdle()
+            }
+
             backupMenu.clickAndWaitForNewWindow()
             waitUntilIdle()
 
