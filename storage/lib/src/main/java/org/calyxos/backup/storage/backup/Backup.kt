@@ -22,7 +22,6 @@ import org.calyxos.backup.storage.scanner.FileScannerResult
 import java.io.IOException
 import java.security.GeneralSecurityException
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 internal class BackupResult(
     val chunkIds: Set<String>,
@@ -86,7 +85,6 @@ internal class Backup(
     )
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    @OptIn(ExperimentalTime::class)
     suspend fun runBackup(backupObserver: BackupObserver?) {
         backupObserver?.onStartScanning()
         var duration: Duration? = null
@@ -121,7 +119,6 @@ internal class Backup(
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    @OptIn(ExperimentalTime::class)
     private suspend fun backupFiles(
         filesResult: FileScannerResult,
         availableChunkIds: HashSet<String>,
