@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.transport.backup
 
+import android.app.admin.DevicePolicyManager
 import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
@@ -36,6 +37,7 @@ internal class PackageService(
 ) {
 
     private val packageManager: PackageManager = context.packageManager
+    private val devicePolicyManager = context.getSystemService(DevicePolicyManager::class.java)
     private val myUserId = UserHandle.myUserId()
 
     val eligiblePackages: Array<String>
@@ -156,6 +158,10 @@ internal class PackageService(
         // Check that the app is not excluded by user preference
         val enabled = settingsManager.isBackupEnabled(packageName)
 
+        // restoring device or profiler owners will cause things to crash
+        if (devicePolicyManager.isDeviceOwnerApp(packageName) ||
+                devicePolicyManager.isProfileOwnerApp(packageName)) return false
+
         // We need to explicitly exclude DocumentsProvider and Seedvault.
         // Otherwise, they get killed while backing them up, terminating our backup.
         val excludedPackages = setOf(
@@ -201,6 +207,8 @@ internal class PackageService(
      */
     private fun PackageInfo.doesNotGetBackedUp(): Boolean {
         if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
+        if (isSystemApp() && (devicePolicyManager.isDeviceOwnerApp(packageName) ||
+                devicePolicyManager.isProfileOwnerApp(packageName))) return true
         return !allowsBackup() || isStopped()
     }
 }
