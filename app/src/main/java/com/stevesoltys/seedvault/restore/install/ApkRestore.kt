@@ -11,6 +11,7 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.restore.RestorableBackup
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
@@ -34,6 +35,7 @@ internal class ApkRestore(
     private val crypto: Crypto,
     private val splitCompatChecker: ApkSplitCompatibilityChecker,
     private val apkInstaller: ApkInstaller,
+    private val installRestriction: InstallRestriction,
 ) {
 
     private val pm = context.packageManager
@@ -47,6 +49,7 @@ internal class ApkRestore(
             val isStorageProvider = it.key == storagePlugin.providerPackageName
             it.value.hasApk() && !isStorageProvider
         }
+        val isAllowedToInstallApks = installRestriction.isAllowedToInstallApks()
         val total = packages.size
         var progress = 0
 
@@ -57,11 +60,17 @@ internal class ApkRestore(
             installResult[packageName] = ApkInstallResult(
                 packageName = packageName,
                 progress = progress,
-                state = QUEUED,
+                state = if (isAllowedToInstallApks) QUEUED else FAILED,
                 installerPackageName = metadata.installer
             )
         }
-        emit(installResult)
+        if (isAllowedToInstallApks) {
+            emit(installResult)
+        } else {
+            installResult.isFinished = true
+            emit(installResult)
+            return@flow
+        }
 
         // re-install individual packages and emit updates
         for ((packageName, metadata) in packages) {
