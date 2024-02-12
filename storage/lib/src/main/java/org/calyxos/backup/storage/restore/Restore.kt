@@ -154,13 +154,13 @@ internal class Restore(
 @Throws(IOException::class, GeneralSecurityException::class)
 internal fun InputStream.readVersion(expectedVersion: Int? = null): Int {
     val version = read()
-    if (version == -1) throw IOException()
+    if (version == -1) throw IOException("File empty!")
     if (expectedVersion != null && version != expectedVersion) {
         throw GeneralSecurityException("Expected version $expectedVersion, not $version")
     }
     if (version > Backup.VERSION) {
         // TODO maybe throw a different exception here and tell the user?
-        throw IOException()
+        throw IOException("Got version $version which is higher than what is supported.")
     }
     return version
 }
