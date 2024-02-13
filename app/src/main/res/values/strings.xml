@@ -32,14 +32,14 @@
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
-    <string name="settings_category_storage">Storage backup (experimental)</string>
+    <string name="settings_category_storage">Storage backup (beta)</string>
     <string name="settings_backup_storage_title">Backup my files</string>
     <string name="settings_backup_files_title">Included files and folders</string>
     <string name="settings_backup_files_summary">None</string>
     <string name="settings_backup_recovery_code">Recovery code</string>
     <string name="settings_backup_recovery_code_summary">Verify existing code or generate a new one</string>
-    <string name="settings_backup_storage_dialog_title">Experimental feature</string>
-    <string name="settings_backup_storage_dialog_message">Backing up files is still experimental and might not work. Do not rely on it for important data.</string>
+    <string name="settings_backup_storage_dialog_title">Beta feature</string>
+    <string name="settings_backup_storage_dialog_message">Backing up files is beta and might not work. Do not rely on it for important data.</string>
     <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
     <string name="settings_backup_storage_battery_optimization">Warning: No automatic backups, because battery optimization is active.</string>
     <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
@@ -195,7 +195,7 @@
     <string name="restore_finished_button">Finish</string>
 
     <string name="restore_storage_skip">Skip restoring files</string>
-    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (experimental)</string>
+    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (beta)</string>
     <string name="restore_storage_in_progress_title">Files are being restored…</string>
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
     <string name="restore_storage_got_it">Got it</string>
