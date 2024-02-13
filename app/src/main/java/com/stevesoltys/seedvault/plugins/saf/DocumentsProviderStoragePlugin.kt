@@ -7,6 +7,8 @@ import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.chunkFolderRegex
+import com.stevesoltys.seedvault.plugins.tokenRegex
 import com.stevesoltys.seedvault.settings.Storage
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -136,9 +138,6 @@ internal suspend fun getBackups(context: Context, rootDir: DocumentFile): List<B
     }
     return backupSets
 }
-
-private val tokenRegex = Regex("([0-9]{13})") // good until the year 2286
-private val chunkFolderRegex = Regex("[a-f0-9]{2}")
 
 private fun DocumentFile.getTokenOrNull(name: String?): Long? {
     val looksLikeToken = name != null && tokenRegex.matches(name)

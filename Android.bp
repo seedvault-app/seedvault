@@ -44,6 +44,10 @@ android_app {
         "seedvault-lib-koin-android",
         // bip39
         "seedvault-lib-kotlin-bip39",
+        // WebDAV
+        "seedvault-lib-dav4jvm",
+        "seedvault-lib-okhttp",
+        "seedvault-lib-okio",
     ],
     manifest: "app/src/main/AndroidManifest.xml",
 

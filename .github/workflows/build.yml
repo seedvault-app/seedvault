@@ -35,6 +35,10 @@ jobs:
           cache: 'gradle'
 
       - name: Build
+        env:
+          NEXTCLOUD_URL: ${{ vars.NEXTCLOUD_URL }}
+          NEXTCLOUD_USER: ${{ secrets.NEXTCLOUD_USER }}
+          NEXTCLOUD_PASS: ${{ secrets.NEXTCLOUD_PASS }}
         run: ./gradlew compileDebugAndroidTestSources check assemble ktlintCheck
 
       - name: Upload APKs

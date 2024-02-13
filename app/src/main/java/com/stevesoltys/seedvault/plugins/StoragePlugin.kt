@@ -75,4 +75,7 @@ interface StoragePlugin {
 
 }
 
-class EncryptedMetadata(val token: Long, val inputStreamRetriever: () -> InputStream)
+class EncryptedMetadata(val token: Long, val inputStreamRetriever: suspend () -> InputStream)
+
+internal val tokenRegex = Regex("([0-9]{13})") // good until the year 2286
+internal val chunkFolderRegex = Regex("[a-f0-9]{2}")
