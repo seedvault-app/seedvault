@@ -119,9 +119,21 @@ internal interface LargeBackupTestBase : LargeTestBase {
         coEvery {
             spyKVBackup.finishBackup()
         } answers {
+            val oldMap = HashMap<String, String>()
+            // @pm@ and android can get backed up multiple times (if we need more than one request)
+            // so we need to keep the data it backed up before
+            if (backupResult.kv.containsKey(packageName)) {
+                backupResult.kv[packageName]?.forEach { (key, value) ->
+                    // if a key existing in new data, we use its value from new data, don't override
+                    if (!data.containsKey(key)) oldMap[key] = value
+                }
+            }
             backupResult.kv[packageName!!] = data
                 .mapValues { entry -> entry.value.sha256() }
                 .toMutableMap()
+                .apply {
+                    putAll(oldMap)
+                }
 
             packageName = null
             data = mutableMapOf()
