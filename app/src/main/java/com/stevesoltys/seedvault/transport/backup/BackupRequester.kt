@@ -39,7 +39,6 @@ internal class BackupRequester(
         context = context,
         backupRequester = this,
         requestedPackages = packages.size,
-        appTotals = packageService.expectedAppTotals,
     )
     private val monitor = BackupMonitor()
 

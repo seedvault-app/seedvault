@@ -179,7 +179,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         clearMocks(spyBackupNotificationManager)
 
         every {
-            spyBackupNotificationManager.onBackupFinished(any(), any(), any())
+            spyBackupNotificationManager.onBackupFinished(any(), any(), any(), any())
         } answers {
             val success = firstArg<Boolean>()
             assert(success) { "Backup failed." }

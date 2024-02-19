@@ -11,7 +11,6 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.transport.backup.BackupRequester
-import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -21,7 +20,6 @@ internal class NotificationBackupObserver(
     private val context: Context,
     private val backupRequester: BackupRequester,
     private val requestedPackages: Int,
-    appTotals: ExpectedAppTotals,
 ) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
@@ -31,8 +29,8 @@ internal class NotificationBackupObserver(
 
     init {
         // Inform the notification manager that a backup has started
-        // and inform about the expected numbers, so it can compute a total.
-        nm.onBackupStarted(requestedPackages, appTotals)
+        // and inform about the expected numbers of apps.
+        nm.onBackupStarted(requestedPackages)
     }
 
     /**
@@ -82,7 +80,7 @@ internal class NotificationBackupObserver(
             val success = status == 0
             val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
             val size = if (success) metadataManager.getPackagesBackupSize() else 0L
-            nm.onBackupFinished(success, numBackedUp, size)
+            nm.onBackupFinished(success, numBackedUp, requestedPackages, size)
         }
     }
 
@@ -101,7 +99,7 @@ internal class NotificationBackupObserver(
             packageName
         }
         numPackages += 1
-        nm.onBackupUpdate(app, numPackages)
+        nm.onBackupUpdate(app, numPackages, requestedPackages)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)

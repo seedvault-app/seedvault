@@ -13,14 +13,6 @@ val backupModule = module {
             plugin = get()
         )
     }
-    single {
-        ApkBackup(
-            pm = androidContext().packageManager,
-            crypto = get(),
-            settingsManager = get(),
-            metadataManager = get()
-        )
-    }
     single<KvDbManager> { KvDbManagerImpl(androidContext()) }
     single {
         KVBackup(
@@ -45,7 +37,6 @@ val backupModule = module {
             plugin = get(),
             kv = get(),
             full = get(),
-            apkBackup = get(),
             clock = get(),
             packageService = get(),
             metadataManager = get(),

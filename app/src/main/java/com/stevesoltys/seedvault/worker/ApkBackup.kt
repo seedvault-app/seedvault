@@ -1,4 +1,9 @@
-package com.stevesoltys.seedvault.transport.backup
+/*
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package com.stevesoltys.seedvault.worker
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageInfo
@@ -13,8 +18,9 @@ import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.isNotUpdatedSystemApp
+import com.stevesoltys.seedvault.transport.backup.isTestOnly
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -44,7 +50,6 @@ internal class ApkBackup(
     @SuppressLint("NewApi") // can be removed when minSdk is set to 30
     suspend fun backupApkIfNecessary(
         packageInfo: PackageInfo,
-        packageState: PackageState,
         streamGetter: suspend (name: String) -> OutputStream,
     ): PackageMetadata? {
         // do not back up @pm@
@@ -118,11 +123,10 @@ internal class ApkBackup(
         val splits =
             if (packageInfo.splitNames == null) null else backupSplitApks(packageInfo, streamGetter)
 
-        Log.d(TAG, "Backed up new APK of $packageName with version $version.")
+        Log.d(TAG, "Backed up new APK of $packageName with version ${packageInfo.versionName}.")
 
         // return updated metadata
-        return PackageMetadata(
-            state = packageState,
+        return packageMetadata.copy(
             version = version,
             installer = pm.getInstallSourceInfo(packageName).installingPackageName,
             splits = splits,
