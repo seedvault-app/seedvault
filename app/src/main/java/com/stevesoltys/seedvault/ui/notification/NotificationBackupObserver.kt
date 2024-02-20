@@ -10,7 +10,7 @@ import android.util.Log.isLoggable
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.transport.backup.BackupRequester
+import com.stevesoltys.seedvault.worker.BackupRequester
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

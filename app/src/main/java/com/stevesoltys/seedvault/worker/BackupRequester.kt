@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.worker
 
 import android.app.backup.BackupManager
 import android.app.backup.IBackupManager
@@ -12,6 +12,7 @@ import android.os.RemoteException
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupMonitor
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
 import org.koin.core.component.KoinComponent
@@ -33,6 +34,8 @@ internal class BackupRequester(
     private val backupManager: IBackupManager,
     val packageService: PackageService,
 ) : KoinComponent {
+
+    val isBackupEnabled: Boolean get() = backupManager.isBackupEnabled
 
     private val packages = packageService.eligiblePackages
     private val observer = NotificationBackupObserver(

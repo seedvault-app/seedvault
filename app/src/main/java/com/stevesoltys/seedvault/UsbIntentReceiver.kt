@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
-import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.koin.core.context.GlobalContext.get
 import java.util.concurrent.TimeUnit.HOURS
 
@@ -63,9 +63,7 @@ class UsbIntentReceiver : UsbMonitor() {
             i.putExtra(EXTRA_START_APP_BACKUP, true)
             startForegroundService(context, i)
         } else {
-            Thread {
-                requestBackup(context)
-            }.start()
+            AppBackupWorker.scheduleNow(context)
         }
     }
 

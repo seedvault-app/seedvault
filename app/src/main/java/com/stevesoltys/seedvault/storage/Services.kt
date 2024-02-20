@@ -1,7 +1,7 @@
 package com.stevesoltys.seedvault.storage
 
 import android.content.Intent
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.calyxos.backup.storage.api.BackupObserver
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StorageBackup
@@ -40,7 +40,7 @@ internal class StorageBackupService : BackupService() {
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {
         if (intent.getBooleanExtra(EXTRA_START_APP_BACKUP, false)) {
-            requestBackup(applicationContext)
+            AppBackupWorker.scheduleNow(applicationContext)
         }
     }
 }

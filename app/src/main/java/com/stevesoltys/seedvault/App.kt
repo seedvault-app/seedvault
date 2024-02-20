@@ -28,6 +28,7 @@ import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
+import com.stevesoltys.seedvault.worker.workerModule
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -51,7 +52,7 @@ open class App : Application() {
 
         viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }
-        viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get()) }
+        viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
         viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { FileSelectionViewModel(this@App, get()) }
@@ -95,6 +96,7 @@ open class App : Application() {
         restoreModule,
         installModule,
         storageModule,
+        workerModule,
         appModule
     )
 

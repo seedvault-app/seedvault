@@ -9,6 +9,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val workerModule = module {
+    factory {
+        BackupRequester(
+            context = androidContext(),
+            backupManager = get(),
+            packageService = get(),
+        )
+    }
     single {
         ApkBackup(
             pm = androidContext().packageManager,

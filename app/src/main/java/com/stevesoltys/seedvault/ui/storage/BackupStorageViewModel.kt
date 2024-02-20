@@ -12,8 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
@@ -24,7 +23,6 @@ private val TAG = BackupStorageViewModel::class.java.simpleName
 internal class BackupStorageViewModel(
     private val app: Application,
     private val backupManager: IBackupManager,
-    private val backupCoordinator: BackupCoordinator,
     private val storageBackup: StorageBackup,
     settingsManager: SettingsManager,
 ) : StorageViewModel(app, settingsManager) {
@@ -73,7 +71,7 @@ internal class BackupStorageViewModel(
                 // notify the UI that the location has been set
                 mLocationChecked.postEvent(LocationResult())
                 if (requestBackup) {
-                    requestBackup(app)
+                    AppBackupWorker.scheduleNow(app)
                 }
             } else {
                 // notify the UI that the location was invalid

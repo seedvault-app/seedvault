@@ -25,7 +25,6 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
-import com.stevesoltys.seedvault.BackupWorker
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -33,9 +32,9 @@ import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
-import com.stevesoltys.seedvault.transport.requestBackup
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -175,7 +174,7 @@ internal class SettingsViewModel(
                 i.putExtra(EXTRA_START_APP_BACKUP, true)
                 startForegroundService(app, i)
             } else {
-                requestBackup(app)
+                AppBackupWorker.scheduleNow(app)
             }
         }
     }
@@ -267,9 +266,9 @@ internal class SettingsViewModel(
     fun onD2dChanged(enabled: Boolean) {
         backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), !enabled)
         if (enabled) {
-            BackupWorker.schedule(app)
+            AppBackupWorker.schedule(app)
         } else {
-            BackupWorker.unschedule(app)
+            AppBackupWorker.unschedule(app)
         }
     }
 

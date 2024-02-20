@@ -30,17 +30,15 @@ import com.stevesoltys.seedvault.settings.SettingsActivity
 import kotlin.math.min
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
-private const val CHANNEL_ID_APK = "NotificationApkBackup"
 private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
-private const val NOTIFICATION_ID_OBSERVER = 1
-internal const val NOTIFICATION_ID_APK = 2
-private const val NOTIFICATION_ID_SUCCESS = 3
-private const val NOTIFICATION_ID_ERROR = 4
-private const val NOTIFICATION_ID_RESTORE_ERROR = 5
-private const val NOTIFICATION_ID_BACKGROUND = 6
-private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 7
+internal const val NOTIFICATION_ID_OBSERVER = 1
+private const val NOTIFICATION_ID_SUCCESS = 2
+private const val NOTIFICATION_ID_ERROR = 3
+private const val NOTIFICATION_ID_RESTORE_ERROR = 4
+private const val NOTIFICATION_ID_BACKGROUND = 5
+private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 6
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -48,7 +46,6 @@ internal class BackupNotificationManager(private val context: Context) {
 
     private val nm = context.getSystemService(NotificationManager::class.java)!!.apply {
         createNotificationChannel(getObserverChannel())
-        createNotificationChannel(getApkChannel())
         createNotificationChannel(getSuccessChannel())
         createNotificationChannel(getErrorChannel())
         createNotificationChannel(getRestoreErrorChannel())
@@ -57,13 +54,6 @@ internal class BackupNotificationManager(private val context: Context) {
     private fun getObserverChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_channel_title)
         return NotificationChannel(CHANNEL_ID_OBSERVER, title, IMPORTANCE_LOW).apply {
-            enableVibration(false)
-        }
-    }
-
-    private fun getApkChannel(): NotificationChannel {
-        val title = context.getString(R.string.notification_apk_channel_title)
-        return NotificationChannel(CHANNEL_ID_APK, title, IMPORTANCE_LOW).apply {
             enableVibration(false)
         }
     }
@@ -91,8 +81,7 @@ internal class BackupNotificationManager(private val context: Context) {
     fun onApkBackup(packageName: String, name: CharSequence, transferred: Int, expected: Int) {
         Log.i(TAG, "$transferred/$expected - $name ($packageName)")
         val text = context.getString(R.string.notification_apk_text, name)
-        val notification = getApkBackupNotification(text, transferred, expected)
-        nm.notify(NOTIFICATION_ID_APK, notification)
+        updateBackupNotification(text, transferred, expected)
     }
 
     /**
@@ -100,32 +89,15 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onAppsNotBackedUp() {
         Log.i(TAG, "onAppsNotBackedUp")
-        val notification =
-            getApkBackupNotification(context.getString(R.string.notification_apk_not_backed_up))
-        nm.notify(NOTIFICATION_ID_APK, notification)
+        val text = context.getString(R.string.notification_apk_not_backed_up)
+        updateBackupNotification(text)
     }
-
-    fun getApkBackupNotification(
-        text: String?,
-        expected: Int = 0,
-        transferred: Int = 0,
-    ): Notification = Builder(context, CHANNEL_ID_APK).apply {
-        setSmallIcon(R.drawable.ic_cloud_upload)
-        setContentTitle(context.getString(R.string.notification_title))
-        setContentText(text)
-        setOngoing(true)
-        setShowWhen(false)
-        setWhen(System.currentTimeMillis())
-        setProgress(expected, transferred, false)
-        priority = PRIORITY_DEFAULT
-        foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
-    }.build()
 
     /**
      * Call after [onApkBackup] or [onAppsNotBackedUp] were called.
      */
     fun onApkBackupDone() {
-        nm.cancel(NOTIFICATION_ID_APK)
+        nm.cancel(NOTIFICATION_ID_OBSERVER)
     }
 
     /**
@@ -133,7 +105,7 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onBackupStarted(expectedPackages: Int) {
         updateBackupNotification(
-            appName = "", // This passes quickly, no need to show something here
+            text = "", // This passes quickly, no need to show something here
             transferred = 0,
             expected = expectedPackages
         )
@@ -145,44 +117,29 @@ internal class BackupNotificationManager(private val context: Context) {
      * this type is is expected to get called after [onApkBackup].
      */
     fun onBackupUpdate(app: CharSequence, transferred: Int, total: Int) {
-        updateBackupNotification(
-            appName = app,
-            transferred = min(transferred, total),
-            expected = total
-        )
+        updateBackupNotification(app, min(transferred, total), total)
     }
 
     private fun updateBackupNotification(
-        appName: CharSequence,
-        transferred: Int,
-        expected: Int,
+        text: CharSequence,
+        transferred: Int = 0,
+        expected: Int = 0,
     ) {
-        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
-            setSmallIcon(R.drawable.ic_cloud_upload)
-            setContentTitle(context.getString(R.string.notification_title))
-            setContentText(appName)
-            setOngoing(true)
-            setShowWhen(false)
-            setWhen(System.currentTimeMillis())
-            setProgress(expected, transferred, false)
-            priority = PRIORITY_DEFAULT
-            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
-        }.build()
+        val notification = getBackupNotification(text, transferred, expected)
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
-    private fun updateBackgroundBackupNotification(infoText: CharSequence) {
-        Log.i(TAG, "$infoText")
-        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
+    fun getBackupNotification(text: CharSequence, progress: Int = 0, total: Int = 0): Notification {
+        return Builder(context, CHANNEL_ID_OBSERVER).apply {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
+            setContentText(text)
             setOngoing(true)
             setShowWhen(false)
-            setWhen(System.currentTimeMillis())
-            setProgress(0, 0, true)
-            priority = PRIORITY_LOW
+            setProgress(total, progress, progress == 0 && total == 0)
+            priority = PRIORITY_DEFAULT
+            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
         }.build()
-        nm.notify(NOTIFICATION_ID_BACKGROUND, notification)
     }
 
     fun onServiceDestroyed() {
