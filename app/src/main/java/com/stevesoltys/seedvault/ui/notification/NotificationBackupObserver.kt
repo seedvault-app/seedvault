@@ -26,6 +26,7 @@ internal class NotificationBackupObserver(
     private val metadataManager: MetadataManager by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
+    private var pmCounted: Boolean = false
 
     init {
         // Inform the notification manager that a backup has started
@@ -93,13 +94,22 @@ internal class NotificationBackupObserver(
         )
         currentPackage = packageName
         val appName = getAppName(packageName)
-        val app = if (appName != packageName) {
-            "${getAppName(packageName)} ($packageName)"
+        val name = if (appName != packageName) {
+            appName
         } else {
-            packageName
+            context.getString(R.string.backup_section_system)
         }
-        numPackages += 1
-        nm.onBackupUpdate(app, numPackages, requestedPackages)
+        // prevent double counting of @pm@ which gets backed up with each requested chunk
+        if (packageName == MAGIC_PACKAGE_MANAGER) {
+            if (!pmCounted) {
+                numPackages += 1
+                pmCounted = true
+            }
+        } else {
+            numPackages += 1
+        }
+        Log.i(TAG, "$numPackages/$requestedPackages - $appName ($packageName)")
+        nm.onBackupUpdate(name, numPackages, requestedPackages)
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)

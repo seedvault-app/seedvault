@@ -133,7 +133,7 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onBackupStarted(expectedPackages: Int) {
         updateBackupNotification(
-            infoText = "", // This passes quickly, no need to show something here
+            appName = "", // This passes quickly, no need to show something here
             transferred = 0,
             expected = expectedPackages
         )
@@ -146,25 +146,21 @@ internal class BackupNotificationManager(private val context: Context) {
      */
     fun onBackupUpdate(app: CharSequence, transferred: Int, total: Int) {
         updateBackupNotification(
-            infoText = app,
+            appName = app,
             transferred = min(transferred, total),
             expected = total
         )
     }
 
     private fun updateBackupNotification(
-        infoText: CharSequence,
+        appName: CharSequence,
         transferred: Int,
         expected: Int,
     ) {
-        @Suppress("MagicNumber")
-        val percentage = (transferred.toFloat() / expected) * 100
-        val percentageStr = "%.0f%%".format(percentage)
-        Log.i(TAG, "$transferred/$expected - $percentageStr - $infoText")
         val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
-            setContentText(percentageStr)
+            setContentText(appName)
             setOngoing(true)
             setShowWhen(false)
             setWhen(System.currentTimeMillis())
