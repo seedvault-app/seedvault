@@ -83,6 +83,19 @@ class AppBackupWorker(
         } catch (e: Exception) {
             Log.e(TAG, "Error while running setForeground: ", e)
         }
+        return try {
+            doBackup()
+        } finally {
+            // schedule next backup, because the old one gets lost
+            // when scheduling a OneTimeWorkRequest with the same unique name via scheduleNow()
+            if (tags.contains(TAG_NOW) && backupRequester.isBackupEnabled) {
+                // needs to use CANCEL_AND_REENQUEUE otherwise it doesn't get scheduled
+                schedule(applicationContext, CANCEL_AND_REENQUEUE)
+            }
+        }
+    }
+
+    private suspend fun doBackup(): Result {
         var result: Result = Result.success()
         try {
             Log.i(TAG, "Starting APK backup...")
@@ -92,19 +105,10 @@ class AppBackupWorker(
             result = Result.retry()
         } finally {
             Log.i(TAG, "Requesting app data backup...")
-            val requestSuccess = try {
-                if (backupRequester.isBackupEnabled) {
-                    Log.d(TAG, "Backup is enabled, request backup...")
-                    backupRequester.requestBackup()
-                } else true
-            } finally {
-                // schedule next backup, because the old one gets lost
-                // when scheduling a OneTimeWorkRequest with the same unique name via scheduleNow()
-                if (tags.contains(TAG_NOW)) {
-                    // needs to use CANCEL_AND_REENQUEUE otherwise it doesn't get scheduled
-                    schedule(applicationContext, CANCEL_AND_REENQUEUE)
-                }
-            }
+            val requestSuccess = if (backupRequester.isBackupEnabled) {
+                Log.d(TAG, "Backup is enabled, request backup...")
+                backupRequester.requestBackup()
+            } else true
             if (!requestSuccess) result = Result.retry()
         }
         return result

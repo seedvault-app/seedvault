@@ -23,6 +23,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -125,8 +126,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         backupStorage = findPreference("backup_storage")!!
         backupStorage.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val disable = !(newValue as Boolean)
+            // TODO this should really get moved out off the UI layer
             if (disable) {
-                viewModel.disableStorageBackup()
+                viewModel.cancelBackupWorkers()
                 return@OnPreferenceChangeListener true
             }
             onEnablingStorageBackup()
@@ -208,10 +210,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else -> super.onOptionsItemSelected(item)
     }
 
+    // TODO this should really get moved out off the UI layer
     private fun trySetBackupEnabled(enabled: Boolean): Boolean {
         return try {
             backupManager.isBackupEnabled = enabled
-            if (enabled) viewModel.enableCallLogBackup()
+            if (enabled) {
+                AppBackupWorker.schedule(requireContext())
+                viewModel.enableCallLogBackup()
+            } else {
+                AppBackupWorker.unschedule(requireContext())
+            }
             backup.isChecked = enabled
             true
         } catch (e: RemoteException) {
@@ -307,7 +315,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         LENGTH_LONG
                     ).show()
                 }
-                viewModel.enableStorageBackup()
+                viewModel.scheduleBackupWorkers()
                 backupStorage.isChecked = true
                 dialog.dismiss()
             }
