@@ -22,9 +22,11 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
+import androidx.work.WorkManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -35,6 +37,7 @@ import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_ST
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.AppBackupWorker
+import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,6 +64,7 @@ internal class SettingsViewModel(
     private val contentResolver = app.contentResolver
     private val connectivityManager: ConnectivityManager? =
         app.getSystemService(ConnectivityManager::class.java)
+    private val workManager = WorkManager.getInstance(app)
 
     override val isRestoreOperation = false
 
@@ -68,6 +72,11 @@ internal class SettingsViewModel(
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
     internal val lastBackupTime = metadataManager.lastBackupTime
+    val nextScheduleTimeMillis =
+        workManager.getWorkInfosForUniqueWorkLiveData(UNIQUE_WORK_NAME).map {
+            if (it.size > 0) it[0].nextScheduleTimeMillis
+            else -1L
+        }
 
     private val mAppStatusList = lastBackupTime.switchMap {
         // updates app list when lastBackupTime changes

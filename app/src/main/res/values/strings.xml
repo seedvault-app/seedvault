@@ -30,6 +30,8 @@
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_status_title">Backup status</string>
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
+    <string name="settings_backup_status_next_backup">Next backup: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Next backup (estimate): %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
     <string name="settings_category_storage">Storage backup (beta)</string>

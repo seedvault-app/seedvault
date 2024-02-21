@@ -35,7 +35,7 @@ class AppBackupWorker(
 
     companion object {
         private val TAG = AppBackupWorker::class.simpleName
-        private const val UNIQUE_WORK_NAME = "com.stevesoltys.seedvault.APP_BACKUP"
+        internal const val UNIQUE_WORK_NAME = "com.stevesoltys.seedvault.APP_BACKUP"
         private const val TAG_NOW = "com.stevesoltys.seedvault.TAG_NOW"
 
         fun schedule(context: Context, existingWorkPolicy: ExistingPeriodicWorkPolicy = UPDATE) {

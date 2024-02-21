@@ -140,7 +140,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.lastBackupTime.observe(viewLifecycleOwner) { time ->
-            setAppBackupStatusSummary(time)
+            setAppBackupStatusSummary(time, viewModel.nextScheduleTimeMillis.value)
+        }
+        viewModel.nextScheduleTimeMillis.observe(viewLifecycleOwner) { time ->
+            setAppBackupStatusSummary(viewModel.lastBackupTime.value, time)
         }
 
         val backupFiles: Preference = findPreference("backup_files")!!
@@ -159,6 +162,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setBackupEnabledState()
         setBackupLocationSummary()
         setAutoRestoreState()
+        setAppBackupStatusSummary(
+            lastBackupInMillis = viewModel.lastBackupTime.value,
+            nextScheduleTimeMillis = viewModel.nextScheduleTimeMillis.value,
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -244,10 +251,42 @@ class SettingsFragment : PreferenceFragmentCompat() {
         backupLocation.summary = storage?.name ?: getString(R.string.settings_backup_location_none)
     }
 
-    private fun setAppBackupStatusSummary(lastBackupInMillis: Long) {
-        // set time of last backup
-        val lastBackup = lastBackupInMillis.toRelativeTime(requireContext())
-        backupStatus.summary = getString(R.string.settings_backup_status_summary, lastBackup)
+    private fun setAppBackupStatusSummary(
+        lastBackupInMillis: Long?,
+        nextScheduleTimeMillis: Long?,
+    ) {
+        val sb = StringBuilder()
+        if (lastBackupInMillis != null) {
+            // set time of last backup
+            val lastBackup = lastBackupInMillis.toRelativeTime(requireContext())
+            sb.append(getString(R.string.settings_backup_status_summary, lastBackup))
+        }
+        if (nextScheduleTimeMillis != null) {
+            // insert linebreak, if we have text before
+            if (sb.isNotEmpty()) sb.append("\n")
+            // set time of next backup
+            when (nextScheduleTimeMillis) {
+                -1L -> {
+                    val text = getString(R.string.settings_backup_last_backup_never)
+                    sb.append(getString(R.string.settings_backup_status_next_backup, text))
+                }
+
+                Long.MAX_VALUE -> {
+                    val text = if (backupManager.isBackupEnabled) {
+                        getString(R.string.notification_title)
+                    } else {
+                        getString(R.string.settings_backup_last_backup_never)
+                    }
+                    sb.append(getString(R.string.settings_backup_status_next_backup, text))
+                }
+
+                else -> {
+                    val text = nextScheduleTimeMillis.toRelativeTime(requireContext())
+                    sb.append(getString(R.string.settings_backup_status_next_backup_estimate, text))
+                }
+            }
+        }
+        backupStatus.summary = sb.toString()
     }
 
     private fun onEnablingStorageBackup() {
