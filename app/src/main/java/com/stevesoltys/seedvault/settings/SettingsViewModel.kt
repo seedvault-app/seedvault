@@ -11,6 +11,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
+import android.os.BadParcelableException
 import android.os.Process.myUid
 import android.provider.Settings
 import android.util.Log
@@ -196,7 +197,13 @@ internal class SettingsViewModel(
     }
 
     private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData(Dispatchers.Default) {
-        val list = appListRetriever.getAppList()
+        val list = try {
+            Log.i(TAG, "Loading app list...")
+            appListRetriever.getAppList()
+        } catch (e: BadParcelableException) {
+            Log.e(TAG, "Error getting app list: ", e)
+            emptyList()
+        }
         val oldList = mAppStatusList.value?.appStatusList ?: emptyList()
         val diff = calculateDiff(AppStatusDiff(oldList, list))
         emit(AppStatusResult(list, diff))
