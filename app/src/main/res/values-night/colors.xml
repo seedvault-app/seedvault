@@ -5,10 +5,6 @@
     <color name="accent">@android:color/system_accent1_100</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#22 -->
     <color name="primary">@android:color/system_neutral1_900</color>
-
-    <!-- Custom colors -->
-    <color name="primaryDark">@android:color/black</color>
-    <color name="background">@color/primaryDark</color>
-    <color name="actionBarPrimary">@color/background</color>
-    <color name="statusBarColor">@android:color/transparent</color>
+    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#51 -->
+    <color name="background">@android:color/system_neutral1_900</color>
 </resources>
