@@ -23,11 +23,9 @@ import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_ST
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.koin.core.context.GlobalContext.get
-import java.util.concurrent.TimeUnit.HOURS
+import java.util.Date
 
 private val TAG = UsbIntentReceiver::class.java.simpleName
-
-private const val HOURS_AUTO_BACKUP: Long = 24
 
 class UsbIntentReceiver : UsbMonitor() {
 
@@ -43,11 +41,13 @@ class UsbIntentReceiver : UsbMonitor() {
         return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
             val backupMillis = System.currentTimeMillis() - metadataManager.getLastBackupTime()
-            if (backupMillis >= HOURS.toMillis(HOURS_AUTO_BACKUP)) {
-                Log.d(TAG, "Last backup older than 24 hours, requesting a backup...")
+            if (backupMillis >= settingsManager.backupFrequencyInMillis) {
+                Log.d(TAG, "Last backup older than it should be, requesting a backup...")
+                Log.d(TAG, "  ${Date(metadataManager.getLastBackupTime())}")
                 true
             } else {
                 Log.d(TAG, "We have a recent backup, not requesting a new one.")
+                Log.d(TAG, "  ${Date(metadataManager.getLastBackupTime())}")
                 false
             }
         } else {

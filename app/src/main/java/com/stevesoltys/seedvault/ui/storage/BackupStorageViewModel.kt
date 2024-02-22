@@ -10,6 +10,7 @@ import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
@@ -69,7 +70,9 @@ internal class BackupStorageViewModel(
     private fun scheduleBackupWorkers() {
         val storage = settingsManager.getStorage() ?: error("no storage available")
         if (!storage.isUsb) {
-            if (backupManager.isBackupEnabled) AppBackupWorker.schedule(app)
+            if (backupManager.isBackupEnabled) {
+                AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)
+            }
             if (settingsManager.isStorageBackupEnabled()) BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,

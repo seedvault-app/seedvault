@@ -13,6 +13,7 @@ import android.os.UserHandle
 import android.os.UserManager
 import android.provider.Settings
 import androidx.work.WorkManager
+import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -56,7 +57,7 @@ open class App : Application() {
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
         factory { AppListRetriever(this@App, get(), get(), get()) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
+        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }
         viewModel { BackupStorageViewModel(this@App, get(), get(), get()) }
         viewModel { RestoreStorageViewModel(this@App, get(), get()) }
@@ -133,7 +134,9 @@ open class App : Application() {
         if (!isFrameworkSchedulingEnabled()) return // already on own scheduling
 
         backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
-        if (backupManager.isBackupEnabled) AppBackupWorker.schedule(applicationContext)
+        if (backupManager.isBackupEnabled) {
+            AppBackupWorker.schedule(applicationContext, settingsManager, UPDATE)
+        }
         // cancel old D2D worker
         WorkManager.getInstance(this).cancelUniqueWork("APP_BACKUP")
     }

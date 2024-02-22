@@ -26,6 +26,8 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.stevesoltys.seedvault.R
@@ -36,7 +38,6 @@ import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +56,6 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
-    private val notificationManager: BackupNotificationManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
@@ -126,7 +126,7 @@ internal class SettingsViewModel(
     override fun onStorageLocationChanged() {
         val storage = settingsManager.getStorage() ?: return
 
-        Log.i(TAG, "onStorageLocationChanged")
+        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb}")
         if (storage.isUsb) {
             // disable storage backup if new storage is on USB
             cancelAppBackup()
@@ -134,7 +134,7 @@ internal class SettingsViewModel(
         } else {
             // enable it, just in case the previous storage was on USB,
             // also to update the network requirement of the new storage
-            scheduleAppBackup()
+            scheduleAppBackup(CANCEL_AND_REENQUEUE)
             scheduleFilesBackup()
         }
         onStoragePropertiesChanged()
@@ -248,9 +248,11 @@ internal class SettingsViewModel(
         return keyManager.hasMainKey()
     }
 
-    fun scheduleAppBackup() {
+    fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
         val storage = settingsManager.getStorage() ?: error("no storage available")
-        if (!storage.isUsb && backupManager.isBackupEnabled) AppBackupWorker.schedule(app)
+        if (!storage.isUsb && backupManager.isBackupEnabled) {
+            AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
+        }
     }
 
     fun scheduleFilesBackup() {

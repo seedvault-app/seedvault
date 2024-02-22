@@ -19,12 +19,15 @@ import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
+import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
+import androidx.work.WorkInfo
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.concurrent.TimeUnit
 
 private val TAG = SettingsFragment::class.java.name
 
@@ -39,6 +42,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var apkBackup: TwoStatePreference
     private lateinit var backupLocation: Preference
     private lateinit var backupStatus: Preference
+    private lateinit var backupScheduling: Preference
     private lateinit var backupStorage: TwoStatePreference
     private lateinit var backupRecoveryCode: Preference
 
@@ -121,6 +125,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@OnPreferenceChangeListener false
         }
         backupStatus = findPreference("backup_status")!!
+        backupScheduling = findPreference("backup_scheduling")!!
 
         backupStorage = findPreference("backup_storage")!!
         backupStorage.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -141,17 +146,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.lastBackupTime.observe(viewLifecycleOwner) { time ->
-            setAppBackupStatusSummary(
-                lastBackupInMillis = time,
-                nextScheduleTimeMillis = viewModel.appBackupWorkInfo.value?.nextScheduleTimeMillis,
-            )
+            setAppBackupStatusSummary(time)
         }
         viewModel.appBackupWorkInfo.observe(viewLifecycleOwner) { workInfo ->
             viewModel.onWorkerStateChanged()
-            setAppBackupStatusSummary(
-                lastBackupInMillis = viewModel.lastBackupTime.value,
-                nextScheduleTimeMillis = workInfo?.nextScheduleTimeMillis,
-            )
+            setAppBackupSchedulingSummary(workInfo)
         }
 
         val backupFiles: Preference = findPreference("backup_files")!!
@@ -170,10 +169,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setBackupEnabledState()
         setBackupLocationSummary()
         setAutoRestoreState()
-        setAppBackupStatusSummary(
-            lastBackupInMillis = viewModel.lastBackupTime.value,
-            nextScheduleTimeMillis = viewModel.appBackupWorkInfo.value?.nextScheduleTimeMillis,
-        )
+        setAppBackupStatusSummary(viewModel.lastBackupTime.value)
+        setAppBackupSchedulingSummary(viewModel.appBackupWorkInfo.value)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -221,7 +218,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         return try {
             backupManager.isBackupEnabled = enabled
             if (enabled) {
-                viewModel.scheduleAppBackup()
+                viewModel.scheduleAppBackup(CANCEL_AND_REENQUEUE)
                 viewModel.enableCallLogBackup()
             } else {
                 viewModel.cancelAppBackup()
@@ -265,37 +262,41 @@ class SettingsFragment : PreferenceFragmentCompat() {
         backupLocation.summary = storage?.name ?: getString(R.string.settings_backup_location_none)
     }
 
-    private fun setAppBackupStatusSummary(
-        lastBackupInMillis: Long?,
-        nextScheduleTimeMillis: Long?,
-    ) {
-        val sb = StringBuilder()
+    private fun setAppBackupStatusSummary(lastBackupInMillis: Long?) {
         if (lastBackupInMillis != null) {
             // set time of last backup
             val lastBackup = lastBackupInMillis.toRelativeTime(requireContext())
-            sb.append(getString(R.string.settings_backup_status_summary, lastBackup))
+            backupStatus.summary = getString(R.string.settings_backup_status_summary, lastBackup)
         }
-        if (nextScheduleTimeMillis != null) {
-            // insert linebreak, if we have text before
-            if (sb.isNotEmpty()) sb.append("\n")
-            // set time of next backup
-            when (nextScheduleTimeMillis) {
-                Long.MAX_VALUE -> {
-                    val text = if (backupManager.isBackupEnabled && storage?.isUsb != true) {
-                        getString(R.string.notification_title)
-                    } else {
-                        getString(R.string.settings_backup_last_backup_never)
-                    }
-                    sb.append(getString(R.string.settings_backup_status_next_backup, text))
-                }
+    }
 
-                else -> {
-                    val text = nextScheduleTimeMillis.toRelativeTime(requireContext())
-                    sb.append(getString(R.string.settings_backup_status_next_backup_estimate, text))
-                }
+    private fun setAppBackupSchedulingSummary(workInfo: WorkInfo?) {
+        if (storage?.isUsb == true) {
+            backupScheduling.summary = getString(R.string.settings_backup_status_next_backup_usb)
+            return
+        }
+        if (workInfo == null) return
+
+        val nextScheduleTimeMillis = workInfo.nextScheduleTimeMillis
+        if (workInfo.state == WorkInfo.State.RUNNING) {
+            val text = getString(R.string.notification_title)
+            backupScheduling.summary = getString(R.string.settings_backup_status_next_backup, text)
+        } else if (nextScheduleTimeMillis == Long.MAX_VALUE) {
+            val text = getString(R.string.settings_backup_last_backup_never)
+            backupScheduling.summary = getString(R.string.settings_backup_status_next_backup, text)
+        } else {
+            val diff = System.currentTimeMillis() - nextScheduleTimeMillis
+            val isPast = diff > TimeUnit.MINUTES.toMillis(1)
+            if (isPast) {
+                val text = getString(R.string.settings_backup_status_next_backup_past)
+                backupScheduling.summary =
+                    getString(R.string.settings_backup_status_next_backup, text)
+            } else {
+                val text = nextScheduleTimeMillis.toRelativeTime(requireContext())
+                backupScheduling.summary =
+                    getString(R.string.settings_backup_status_next_backup_estimate, text)
             }
         }
-        backupStatus.summary = sb.toString()
     }
 
     private fun onEnablingStorageBackup() {

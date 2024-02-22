@@ -16,10 +16,10 @@ class ExpertSettingsFragment : PreferenceFragmentCompat() {
     private val viewModel: SettingsViewModel by sharedViewModel()
     private val packageService: PackageService by inject()
 
-    // TODO set mimeType when upgrading androidx lib
-    private val createFileLauncher = registerForActivityResult(CreateDocument()) { uri ->
-        viewModel.onLogcatUriReceived(uri)
-    }
+    private val createFileLauncher =
+        registerForActivityResult(CreateDocument("text/plain")) { uri ->
+            viewModel.onLogcatUriReceived(uri)
+        }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         permitDiskReads {
