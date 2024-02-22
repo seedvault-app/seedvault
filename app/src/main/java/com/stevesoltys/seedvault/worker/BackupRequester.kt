@@ -102,7 +102,7 @@ internal class BackupRequester(
             (packageIndex + NUM_PACKAGES_PER_TRANSACTION).coerceAtMost(packages.size)
         val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
         val numBackingUp = packageIndex + packageChunk.size
-        Log.i(TAG, "Requesting backup for $numBackingUp/${packages.size} packages...")
+        Log.i(TAG, "Requesting backup for $numBackingUp of ${packages.size} packages...")
         packageIndex += packageChunk.size
         return packageChunk
     }
