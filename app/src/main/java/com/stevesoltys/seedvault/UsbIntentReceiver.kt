@@ -63,7 +63,7 @@ class UsbIntentReceiver : UsbMonitor() {
             i.putExtra(EXTRA_START_APP_BACKUP, true)
             startForegroundService(context, i)
         } else {
-            AppBackupWorker.scheduleNow(context)
+            AppBackupWorker.scheduleNow(context, reschedule = false)
         }
     }
 

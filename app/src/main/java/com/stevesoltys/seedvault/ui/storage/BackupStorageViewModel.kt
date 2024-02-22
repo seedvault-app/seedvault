@@ -106,7 +106,8 @@ internal class BackupStorageViewModel(
                 // notify the UI that the location has been set
                 mLocationChecked.postEvent(LocationResult())
                 if (requestBackup) {
-                    AppBackupWorker.scheduleNow(app)
+                    val isUsb = settingsManager.getStorage()?.isUsb ?: false
+                    AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
                 }
             } else {
                 // notify the UI that the location was invalid

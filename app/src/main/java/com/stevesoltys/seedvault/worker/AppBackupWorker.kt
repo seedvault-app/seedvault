@@ -36,7 +36,7 @@ class AppBackupWorker(
     companion object {
         private val TAG = AppBackupWorker::class.simpleName
         internal const val UNIQUE_WORK_NAME = "com.stevesoltys.seedvault.APP_BACKUP"
-        private const val TAG_NOW = "com.stevesoltys.seedvault.TAG_NOW"
+        private const val TAG_RESCHEDULE = "com.stevesoltys.seedvault.TAG_RESCHEDULE"
 
         fun schedule(context: Context, existingWorkPolicy: ExistingPeriodicWorkPolicy = UPDATE) {
             val constraints = Constraints.Builder()
@@ -56,10 +56,10 @@ class AppBackupWorker(
             workManager.enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, existingWorkPolicy, workRequest)
         }
 
-        fun scheduleNow(context: Context) {
+        fun scheduleNow(context: Context, reschedule: Boolean) {
             val workRequest = OneTimeWorkRequestBuilder<AppBackupWorker>()
                 .setExpedited(RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .addTag(TAG_NOW)
+                .apply { if (reschedule) addTag(TAG_RESCHEDULE) }
                 .build()
             val workManager = WorkManager.getInstance(context)
             Log.i(TAG, "Asking to do app backup now...")
@@ -93,7 +93,7 @@ class AppBackupWorker(
         } finally {
             // schedule next backup, because the old one gets lost
             // when scheduling a OneTimeWorkRequest with the same unique name via scheduleNow()
-            if (tags.contains(TAG_NOW) && backupRequester.isBackupEnabled) {
+            if (tags.contains(TAG_RESCHEDULE) && backupRequester.isBackupEnabled) {
                 // needs to use CANCEL_AND_REENQUEUE otherwise it doesn't get scheduled
                 schedule(applicationContext, CANCEL_AND_REENQUEUE)
             }

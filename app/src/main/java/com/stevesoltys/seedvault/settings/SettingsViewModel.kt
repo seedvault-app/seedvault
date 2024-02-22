@@ -193,7 +193,8 @@ internal class SettingsViewModel(
                 i.putExtra(EXTRA_START_APP_BACKUP, true)
                 startForegroundService(app, i)
             } else {
-                AppBackupWorker.scheduleNow(app)
+                val isUsb = settingsManager.getStorage()?.isUsb ?: false
+                AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
             }
         }
     }
