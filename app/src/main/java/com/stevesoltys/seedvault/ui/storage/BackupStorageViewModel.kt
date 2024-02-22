@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupManager
 import android.app.backup.IBackupObserver
+import android.app.job.JobInfo
 import android.net.Uri
 import android.os.UserHandle
 import android.util.Log
@@ -11,12 +12,15 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.backup.BackupJobService
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
 
@@ -31,8 +35,18 @@ internal class BackupStorageViewModel(
 
     override fun onLocationSet(uri: Uri) {
         val isUsb = saveStorage(uri)
+        if (isUsb) {
+            // disable storage backup if new storage is on USB
+            cancelBackupWorkers()
+        } else {
+            // enable it, just in case the previous storage was on USB,
+            // also to update the network requirement of the new storage
+            scheduleBackupWorkers()
+        }
         viewModelScope.launch(Dispatchers.IO) {
             // remove old storage snapshots and clear cache
+            // TODO is this needed? It also does create all 255 chunk folders which takes time
+            //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
             storageBackup.deleteAllSnapshots()
             storageBackup.clearCache()
             try {
@@ -50,6 +64,27 @@ internal class BackupStorageViewModel(
                 onInitializationError()
             }
         }
+    }
+
+    private fun scheduleBackupWorkers() {
+        val storage = settingsManager.getStorage() ?: error("no storage available")
+        if (!storage.isUsb) {
+            if (backupManager.isBackupEnabled) AppBackupWorker.schedule(app)
+            if (settingsManager.isStorageBackupEnabled()) BackupJobService.scheduleJob(
+                context = app,
+                jobServiceClass = StorageBackupJobService::class.java,
+                periodMillis = TimeUnit.HOURS.toMillis(24),
+                networkType = if (storage.requiresNetwork) JobInfo.NETWORK_TYPE_UNMETERED
+                else JobInfo.NETWORK_TYPE_NONE,
+                deviceIdle = false,
+                charging = true
+            )
+        }
+    }
+
+    private fun cancelBackupWorkers() {
+        AppBackupWorker.unschedule(app)
+        BackupJobService.cancelJob(app)
     }
 
     @WorkerThread

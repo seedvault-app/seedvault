@@ -129,11 +129,13 @@ internal class SettingsViewModel(
         Log.i(TAG, "onStorageLocationChanged")
         if (storage.isUsb) {
             // disable storage backup if new storage is on USB
-            cancelBackupWorkers()
+            cancelAppBackup()
+            cancelFilesBackup()
         } else {
             // enable it, just in case the previous storage was on USB,
             // also to update the network requirement of the new storage
-            scheduleBackupWorkers()
+            scheduleAppBackup()
+            scheduleFilesBackup()
         }
         onStoragePropertiesChanged()
     }
@@ -245,11 +247,15 @@ internal class SettingsViewModel(
         return keyManager.hasMainKey()
     }
 
-    fun scheduleBackupWorkers() {
+    fun scheduleAppBackup() {
         val storage = settingsManager.getStorage() ?: error("no storage available")
-        if (!storage.isUsb) {
-            if (backupManager.isBackupEnabled) AppBackupWorker.schedule(app)
-            if (settingsManager.isStorageBackupEnabled()) BackupJobService.scheduleJob(
+        if (!storage.isUsb && backupManager.isBackupEnabled) AppBackupWorker.schedule(app)
+    }
+
+    fun scheduleFilesBackup() {
+        val storage = settingsManager.getStorage() ?: error("no storage available")
+        if (!storage.isUsb && settingsManager.isStorageBackupEnabled()) {
+            BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,
                 periodMillis = HOURS.toMillis(24),
@@ -261,8 +267,11 @@ internal class SettingsViewModel(
         }
     }
 
-    fun cancelBackupWorkers() {
+    fun cancelAppBackup() {
         AppBackupWorker.unschedule(app)
+    }
+
+    fun cancelFilesBackup() {
         BackupJobService.cancelJob(app)
     }
 

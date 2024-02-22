@@ -23,7 +23,6 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
-import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -128,7 +127,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val disable = !(newValue as Boolean)
             // TODO this should really get moved out off the UI layer
             if (disable) {
-                viewModel.cancelBackupWorkers()
+                viewModel.cancelFilesBackup()
                 return@OnPreferenceChangeListener true
             }
             onEnablingStorageBackup()
@@ -215,10 +214,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         return try {
             backupManager.isBackupEnabled = enabled
             if (enabled) {
-                AppBackupWorker.schedule(requireContext())
+                viewModel.scheduleAppBackup()
                 viewModel.enableCallLogBackup()
             } else {
-                AppBackupWorker.unschedule(requireContext())
+                viewModel.cancelAppBackup()
             }
             backup.isChecked = enabled
             true
@@ -280,7 +279,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
 
                 Long.MAX_VALUE -> {
-                    val text = if (backupManager.isBackupEnabled) {
+                    val text = if (backupManager.isBackupEnabled && storage?.isUsb != true) {
                         getString(R.string.notification_title)
                     } else {
                         getString(R.string.settings_backup_last_backup_never)
@@ -315,7 +314,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         LENGTH_LONG
                     ).show()
                 }
-                viewModel.scheduleBackupWorkers()
+                viewModel.scheduleFilesBackup()
                 backupStorage.isChecked = true
                 dialog.dismiss()
             }

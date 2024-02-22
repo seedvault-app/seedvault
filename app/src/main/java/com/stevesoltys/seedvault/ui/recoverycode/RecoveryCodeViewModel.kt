@@ -102,6 +102,7 @@ internal class RecoveryCodeViewModel(
      */
     fun reinitializeBackupLocation() {
         Log.d(TAG, "Re-initializing backup location...")
+        // TODO this code is almost identical to BackupStorageViewModel#onLocationSet(), unify?
         GlobalScope.launch(Dispatchers.IO) {
             // remove old storage snapshots and clear cache
             storageBackup.deleteAllSnapshots()
