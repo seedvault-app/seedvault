@@ -78,13 +78,18 @@ class AppBackupWorker(
     private val nm: BackupNotificationManager by inject()
 
     override suspend fun doWork(): Result {
+        Log.i(TAG, "Start worker  $this ($id)")
         try {
             setForeground(createForegroundInfo())
         } catch (e: Exception) {
             Log.e(TAG, "Error while running setForeground: ", e)
         }
         return try {
-            doBackup()
+            if (isStopped) {
+                Result.retry()
+            } else {
+                doBackup()
+            }
         } finally {
             // schedule next backup, because the old one gets lost
             // when scheduling a OneTimeWorkRequest with the same unique name via scheduleNow()
@@ -98,17 +103,18 @@ class AppBackupWorker(
     private suspend fun doBackup(): Result {
         var result: Result = Result.success()
         try {
-            Log.i(TAG, "Starting APK backup...")
-            apkBackupManager.backup()
+            Log.i(TAG, "Starting APK backup... (stopped: $isStopped)")
+            if (!isStopped) apkBackupManager.backup()
         } catch (e: Exception) {
             Log.e(TAG, "Error backing up APKs: ", e)
             result = Result.retry()
         } finally {
-            Log.i(TAG, "Requesting app data backup...")
-            val requestSuccess = if (backupRequester.isBackupEnabled) {
+            Log.i(TAG, "Requesting app data backup... (stopped: $isStopped)")
+            val requestSuccess = if (!isStopped && backupRequester.isBackupEnabled) {
                 Log.d(TAG, "Backup is enabled, request backup...")
                 backupRequester.requestBackup()
             } else true
+            Log.d(TAG, "Have requested backup.")
             if (!requestSuccess) result = Result.retry()
         }
         return result
