@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
+import io.mockk.andThenJust
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -24,6 +25,7 @@ import io.mockk.verify
 import io.mockk.verifyAll
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import java.io.IOException
 import java.io.OutputStream
 
 internal class ApkBackupManagerTest : TransportTest() {
@@ -185,6 +187,37 @@ internal class ApkBackupManagerTest : TransportTest() {
         coVerify {
             apkBackup.backupApkIfNecessary(notAllowedPackages[0], any())
             apkBackup.backupApkIfNecessary(notAllowedPackages[1], any())
+            metadataOutputStream.close()
+        }
+    }
+
+    @Test
+    fun `we keep trying to upload metadata at the end`() = runBlocking {
+        every { nm.onAppsNotBackedUp() } just Runs
+        every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+
+        every {
+            metadataManager.getPackageMetadata(packageInfo.packageName)
+        } returns packageMetadata
+        every { packageMetadata.state } returns UNKNOWN_ERROR
+        every { metadataManager.onPackageDoesNotGetBackedUp(packageInfo, NOT_ALLOWED) } just Runs
+
+        every { settingsManager.backupApks() } returns false
+
+        // final upload
+        every { settingsManager.getToken() } returns token
+        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        every {
+            metadataManager.uploadMetadata(metadataOutputStream)
+        } throws IOException() andThenThrows SecurityException() andThenJust Runs
+        every { metadataOutputStream.close() } just Runs
+
+        every { nm.onApkBackupDone() } just Runs
+
+        apkBackupManager.backup()
+
+        verify {
+            metadataManager.onPackageDoesNotGetBackedUp(packageInfo, NOT_ALLOWED)
             metadataOutputStream.close()
         }
     }

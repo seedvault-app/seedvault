@@ -18,6 +18,7 @@ import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isStopped
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import kotlinx.coroutines.delay
 import java.io.IOException
 import java.io.OutputStream
 
@@ -46,9 +47,12 @@ internal class ApkBackupManager(
                 backUpApks()
             }
         } finally {
-            // upload all local changes only at the end, so we don't have to re-upload the metadata
-            plugin.getMetadataOutputStream().use { outputStream ->
-                metadataManager.uploadMetadata(outputStream)
+            keepTrying {
+                // upload all local changes only at the end,
+                // so we don't have to re-upload the metadata
+                plugin.getMetadataOutputStream().use { outputStream ->
+                    metadataManager.uploadMetadata(outputStream)
+                }
             }
             nm.onApkBackupDone()
         }
@@ -106,6 +110,18 @@ internal class ApkBackupManager(
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK for $packageName", e)
             false
+        }
+    }
+
+    private suspend fun keepTrying(n: Int = 3, block: suspend () -> Unit) {
+        for (i in 1..n) {
+            try {
+                block()
+            } catch (e: Exception) {
+                if (i == n) throw e
+                Log.e(TAG, "Error (#$i), we'll keep trying", e)
+                delay(1000)
+            }
         }
     }
 
