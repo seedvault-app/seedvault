@@ -27,6 +27,7 @@ import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
 import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
 import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
+import kotlin.math.min
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
 private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
@@ -52,6 +53,11 @@ internal class BackupNotificationManager(private val context: Context) {
     private var expectedApps: Int? = null
     private var expectedOptOutApps: Int? = null
     private var expectedAppTotals: ExpectedAppTotals? = null
+
+    /**
+     * Used as a (temporary) hack to fix progress reporting when fake d2d is enabled.
+     */
+    private var optOutAppsDone = false
 
     private fun getObserverChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_channel_title)
@@ -87,23 +93,34 @@ internal class BackupNotificationManager(private val context: Context) {
         updateBackupNotification(
             infoText = "", // This passes quickly, no need to show something here
             transferred = 0,
-            expected = expectedPackages
+            expected = appTotals.appsTotal
         )
         expectedApps = expectedPackages
-        expectedOptOutApps = appTotals.appsOptOut
+        expectedOptOutApps = appTotals.appsNotGettingBackedUp
         expectedAppTotals = appTotals
+        optOutAppsDone = false
+        Log.i(TAG, "onBackupStarted $expectedApps + $expectedOptOutApps = ${appTotals.appsTotal}")
     }
 
     /**
      * This should get called before [onBackupUpdate].
+     * In case of d2d backups, this actually gets called some time after
+     * some apps were already backed up, so [onBackupUpdate] was called several times.
      */
     fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
-        val text = "Opt-out APK for $packageName"
+        if (optOutAppsDone) return
+
+        val text = "APK for $packageName"
         if (expectedApps == null) {
             updateBackgroundBackupNotification(text)
         } else {
             updateBackupNotification(text, transferred, expected + (expectedApps ?: 0))
+            if (expectedOptOutApps != null && expectedOptOutApps != expected) {
+                Log.w(TAG, "Number of packages not getting backed up mismatch: " +
+                    "$expectedOptOutApps != $expected")
+            }
             expectedOptOutApps = expected
+            if (transferred == expected) optOutAppsDone = true
         }
     }
 
@@ -116,7 +133,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val addend = expectedOptOutApps ?: 0
         updateBackupNotification(
             infoText = app,
-            transferred = transferred + addend,
+            transferred = min(transferred + addend, expected + addend),
             expected = expected + addend
         )
     }
@@ -167,13 +184,17 @@ internal class BackupNotificationManager(private val context: Context) {
         //
         // This won't bring back the expected finish notification in this case,
         // but at least we don't leave stuck notifications laying around.
-        nm.activeNotifications.forEach { notification ->
-            // only consider ongoing notifications in our ID space (storage backup uses > 1000)
-            if (notification.isOngoing && notification.id < 1000) {
-                Log.w(TAG, "Needed to clean up notification with ID ${notification.id}")
-                nm.cancel(notification.id)
-            }
-        }
+        // FIXME the service gets destroyed for each chunk when requesting backup in chunks
+        //  This leads to the cancellation of an ongoing backup notification.
+        //  So for now, we'll remove automatic notification clean-up
+        //  and find out if it is still necessary. If not, this comment can be removed.
+        // nm.activeNotifications.forEach { notification ->
+        //     // only consider ongoing notifications in our ID space (storage backup uses > 1000)
+        //     if (notification.isOngoing && notification.id < 1000) {
+        //         Log.w(TAG, "Needed to clean up notification with ID ${notification.id}")
+        //         nm.cancel(notification.id)
+        //     }
+        // }
     }
 
     fun onBackupFinished(success: Boolean, numBackedUp: Int?, size: Long) {

@@ -38,7 +38,7 @@ internal class PackageService(
     private val packageManager: PackageManager = context.packageManager
     private val myUserId = UserHandle.myUserId()
 
-    val eligiblePackages: Array<String>
+    val eligiblePackages: List<String>
         @WorkerThread
         @Throws(RemoteException::class)
         get() {
@@ -70,11 +70,12 @@ internal class PackageService(
             val packageArray = eligibleApps.toMutableList()
             packageArray.add(MAGIC_PACKAGE_MANAGER)
 
-            return packageArray.toTypedArray()
+            return packageArray
         }
 
     /**
-     * A list of packages that will not be backed up.
+     * A list of packages that will not be backed up,
+     * because they are currently force-stopped for example.
      */
     val notBackedUpPackages: List<PackageInfo>
         @WorkerThread
@@ -127,16 +128,16 @@ internal class PackageService(
         @WorkerThread
         get() {
             var appsTotal = 0
-            var appsOptOut = 0
+            var appsNotIncluded = 0
             packageManager.getInstalledPackages(GET_INSTRUMENTATION).forEach { packageInfo ->
                 if (packageInfo.isUserVisible(context)) {
                     appsTotal++
                     if (packageInfo.doesNotGetBackedUp()) {
-                        appsOptOut++
+                        appsNotIncluded++
                     }
                 }
             }
-            return ExpectedAppTotals(appsTotal, appsOptOut)
+            return ExpectedAppTotals(appsTotal, appsNotIncluded)
         }
 
     fun getVersionName(packageName: String): String? = try {
@@ -201,6 +202,7 @@ internal class PackageService(
      */
     private fun PackageInfo.doesNotGetBackedUp(): Boolean {
         if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
+        if (packageName == plugin.providerPackageName) return true
         return !allowsBackup() || isStopped()
     }
 }
@@ -211,9 +213,11 @@ internal data class ExpectedAppTotals(
      */
     val appsTotal: Int,
     /**
-     * The number of non-system apps that has opted-out of backup.
+     * The number of non-system apps that do not get backed up.
+     * These are included here, because we'll at least back up their APKs,
+     * so at least the app itself does get restored.
      */
-    val appsOptOut: Int,
+    val appsNotGettingBackedUp: Int,
 )
 
 internal fun PackageInfo.isUserVisible(context: Context): Boolean {
