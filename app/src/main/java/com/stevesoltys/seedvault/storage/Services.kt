@@ -23,6 +23,7 @@ force running with:
   adb shell cmd jobscheduler run -f com.stevesoltys.seedvault 0
 
  */
+
 internal class StorageBackupJobService : BackupJobService(StorageBackupService::class.java)
 
 internal class StorageBackupService : BackupService() {

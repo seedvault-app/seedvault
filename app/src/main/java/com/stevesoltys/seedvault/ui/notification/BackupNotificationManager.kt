@@ -192,16 +192,6 @@ internal class BackupNotificationManager(private val context: Context) {
         nm.notify(NOTIFICATION_ID_SUCCESS, notification)
     }
 
-    fun hasActiveBackupNotifications(): Boolean {
-        nm.activeNotifications.forEach {
-            if (it.packageName == context.packageName) {
-                if (it.id == NOTIFICATION_ID_BACKGROUND) return true
-                if (it.id == NOTIFICATION_ID_OBSERVER) return it.isOngoing
-            }
-        }
-        return false
-    }
-
     @SuppressLint("RestrictedApi")
     fun onBackupError() {
         val intent = Intent(context, SettingsActivity::class.java)

@@ -26,6 +26,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
@@ -72,10 +73,9 @@ internal class SettingsViewModel(
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
     internal val lastBackupTime = metadataManager.lastBackupTime
-    val nextScheduleTimeMillis =
+    internal val appBackupWorkInfo =
         workManager.getWorkInfosForUniqueWorkLiveData(UNIQUE_WORK_NAME).map {
-            if (it.size > 0) it[0].nextScheduleTimeMillis
-            else -1L
+            it.getOrNull(0)
         }
 
     private val mAppStatusList = lastBackupTime.switchMap {
@@ -140,6 +140,14 @@ internal class SettingsViewModel(
         onStoragePropertiesChanged()
     }
 
+    fun onWorkerStateChanged() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val canDo = settingsManager.canDoBackupNow() &&
+                appBackupWorkInfo.value?.state != WorkInfo.State.RUNNING
+            mBackupPossible.postValue(canDo)
+        }
+    }
+
     private fun onStoragePropertiesChanged() {
         val storage = settingsManager.getStorage() ?: return
 
@@ -165,11 +173,8 @@ internal class SettingsViewModel(
             connectivityManager?.registerNetworkCallback(request, networkCallback)
             networkCallback.registered = true
         }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val canDo = settingsManager.canDoBackupNow()
-            mBackupPossible.postValue(canDo)
-        }
+        // update whether we can do backups right now or not
+        onWorkerStateChanged()
     }
 
     override fun onCleared() {
@@ -181,12 +186,7 @@ internal class SettingsViewModel(
     }
 
     internal fun backupNow() {
-        // maybe replace the check below with one that checks if our transport service is running
-        if (notificationManager.hasActiveBackupNotifications()) {
-            Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
-        } else if (!backupManager.isBackupEnabled) {
-            Toast.makeText(app, R.string.notification_backup_disabled, LENGTH_LONG).show()
-        } else viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             if (settingsManager.isStorageBackupEnabled()) {
                 val i = Intent(app, StorageBackupService::class.java)
                 // this starts an app backup afterwards

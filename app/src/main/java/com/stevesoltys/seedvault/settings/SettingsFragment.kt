@@ -141,10 +141,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.lastBackupTime.observe(viewLifecycleOwner) { time ->
-            setAppBackupStatusSummary(time, viewModel.nextScheduleTimeMillis.value)
+            setAppBackupStatusSummary(
+                lastBackupInMillis = time,
+                nextScheduleTimeMillis = viewModel.appBackupWorkInfo.value?.nextScheduleTimeMillis,
+            )
         }
-        viewModel.nextScheduleTimeMillis.observe(viewLifecycleOwner) { time ->
-            setAppBackupStatusSummary(viewModel.lastBackupTime.value, time)
+        viewModel.appBackupWorkInfo.observe(viewLifecycleOwner) { workInfo ->
+            viewModel.onWorkerStateChanged()
+            setAppBackupStatusSummary(
+                lastBackupInMillis = viewModel.lastBackupTime.value,
+                nextScheduleTimeMillis = workInfo?.nextScheduleTimeMillis,
+            )
         }
 
         val backupFiles: Preference = findPreference("backup_files")!!
@@ -165,7 +172,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setAutoRestoreState()
         setAppBackupStatusSummary(
             lastBackupInMillis = viewModel.lastBackupTime.value,
-            nextScheduleTimeMillis = viewModel.nextScheduleTimeMillis.value,
+            nextScheduleTimeMillis = viewModel.appBackupWorkInfo.value?.nextScheduleTimeMillis,
         )
     }
 
@@ -273,11 +280,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (sb.isNotEmpty()) sb.append("\n")
             // set time of next backup
             when (nextScheduleTimeMillis) {
-                -1L -> {
-                    val text = getString(R.string.settings_backup_last_backup_never)
-                    sb.append(getString(R.string.settings_backup_status_next_backup, text))
-                }
-
                 Long.MAX_VALUE -> {
                     val text = if (backupManager.isBackupEnabled && storage?.isUsb != true) {
                         getString(R.string.notification_title)
