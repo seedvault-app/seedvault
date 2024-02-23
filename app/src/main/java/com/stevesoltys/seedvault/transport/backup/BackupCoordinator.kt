@@ -422,7 +422,10 @@ internal class BackupCoordinator(
             // back off if storage is removable and not available right now
             storage.isUnavailableUsb(context) -> longBackoff
             // back off if storage is on network, but we have no access
-            storage.isUnavailableNetwork(context) -> HOURS.toMillis(1)
+            storage.isUnavailableNetwork(
+                context = context,
+                allowMetered = settingsManager.useMeteredNetwork,
+            ) -> HOURS.toMillis(1)
             // otherwise no back off
             else -> 0L
         }

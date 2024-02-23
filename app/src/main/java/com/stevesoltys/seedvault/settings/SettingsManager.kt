@@ -146,7 +146,8 @@ class SettingsManager(private val context: Context) {
     fun canDoBackupNow(): Boolean {
         val storage = getStorage() ?: return false
         val systemContext = context.getStorageContext { storage.isUsb }
-        return !storage.isUnavailableUsb(systemContext) && !storage.isUnavailableNetwork(context)
+        return !storage.isUnavailableUsb(systemContext) &&
+            !storage.isUnavailableNetwork(context, useMeteredNetwork)
     }
 
     fun backupApks(): Boolean {
@@ -208,15 +209,16 @@ data class Storage(
      * Returns true if this is storage that requires network access,
      * but it isn't available right now.
      */
-    fun isUnavailableNetwork(context: Context): Boolean {
-        return requiresNetwork && !hasUnmeteredInternet(context)
+    fun isUnavailableNetwork(context: Context, allowMetered: Boolean): Boolean {
+        return requiresNetwork && !hasUnmeteredInternet(context, allowMetered)
     }
 
-    private fun hasUnmeteredInternet(context: Context): Boolean {
+    private fun hasUnmeteredInternet(context: Context, allowMetered: Boolean): Boolean {
         val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
         val isMetered = cm.isActiveNetworkMetered
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            (allowMetered || !isMetered)
     }
 }
 

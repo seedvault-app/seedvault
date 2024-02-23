@@ -294,6 +294,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
         every { settingsManager.getStorage() } returns storage
+        every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs
 
         assertEquals(
@@ -343,6 +344,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         } just Runs
         coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
         every { settingsManager.getStorage() } returns storage
+        every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs
 
         assertEquals(
