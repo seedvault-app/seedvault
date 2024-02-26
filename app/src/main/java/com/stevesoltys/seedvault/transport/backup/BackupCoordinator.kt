@@ -86,12 +86,13 @@ internal class BackupCoordinator(
      * @return the token of the new [RestoreSet].
      */
     @Throws(IOException::class)
-    private suspend fun startNewRestoreSet(): Long {
+    private suspend fun startNewRestoreSet() {
         val token = clock.time()
         Log.i(TAG, "Starting new RestoreSet with token $token...")
         settingsManager.setNewToken(token)
         plugin.startNewRestoreSet(token)
-        return token
+        Log.d(TAG, "Resetting backup metadata...")
+        metadataManager.onDeviceInitialization(token)
     }
 
     /**
@@ -115,18 +116,14 @@ internal class BackupCoordinator(
     suspend fun initializeDevice(): Int = try {
         // we don't respect the intended system behavior here by always starting a new [RestoreSet]
         // instead of simply deleting the current one
-        val token = startNewRestoreSet()
+        startNewRestoreSet()
         Log.i(TAG, "Initialize Device!")
         plugin.initializeDevice()
-        Log.d(TAG, "Resetting backup metadata for token $token...")
-        plugin.getMetadataOutputStream(token).use {
-            metadataManager.onDeviceInitialization(token, it)
-        }
         // [finishBackup] will only be called when we return [TRANSPORT_OK] here
         // so we remember that we initialized successfully
         state.calledInitialize = true
         TRANSPORT_OK
-    } catch (e: IOException) {
+    } catch (e: Exception) {
         Log.e(TAG, "Error initializing device", e)
         // Show error notification if we needed init or were ready for backups
         if (metadataManager.requiresInit || settingsManager.canDoBackupNow()) nm.onBackupError()
@@ -222,14 +219,11 @@ internal class BackupCoordinator(
         state.cancelReason = UNKNOWN_ERROR
         if (metadataManager.requiresInit) {
             Log.w(TAG, "Metadata requires re-init!")
-            // start a new restore set to upgrade from legacy format
-            // by starting a clean backup with all files using the new version
-            try {
-                startNewRestoreSet()
-            } catch (e: IOException) {
-                Log.e(TAG, "Error starting new restore set", e)
-            }
-            // this causes a backup error, but things should go back to normal afterwards
+            // Tell the system that we are not initialized, it will initialize us afterwards.
+            // This will start a new restore set to upgrade from legacy format
+            // by starting a clean backup with all files using the new version.
+            //
+            // This causes a backup error, but things should go back to normal afterwards.
             return TRANSPORT_NOT_INITIALIZED
         }
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")

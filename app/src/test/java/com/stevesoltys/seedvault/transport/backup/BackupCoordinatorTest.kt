@@ -69,22 +69,18 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
         expectStartNewRestoreSet()
         coEvery { plugin.initializeDevice() } just Runs
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
-        every { metadataManager.onDeviceInitialization(token, metadataOutputStream) } just Runs
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
-        every { metadataOutputStream.close() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.initializeDevice())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
-
-        verify { metadataOutputStream.close() }
     }
 
     private suspend fun expectStartNewRestoreSet() {
         every { clock.time() } returns token
         every { settingsManager.setNewToken(token) } just Runs
         coEvery { plugin.startNewRestoreSet(token) } just Runs
+        every { metadataManager.onDeviceInitialization(token) } just Runs
     }
 
     @Test
@@ -136,6 +132,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { clock.time() } returns token + 1
         every { settingsManager.setNewToken(token + 1) } just Runs
         coEvery { plugin.startNewRestoreSet(token + 1) } just Runs
+        every { metadataManager.onDeviceInitialization(token + 1) } just Runs
 
         every { data.close() } just Runs
 

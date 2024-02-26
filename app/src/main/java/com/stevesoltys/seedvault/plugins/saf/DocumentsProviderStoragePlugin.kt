@@ -35,22 +35,13 @@ internal class DocumentsProviderStoragePlugin(
     override suspend fun startNewRestoreSet(token: Long) {
         // reset current storage
         storage.reset(token)
-
-        // get or create root backup dir
-        storage.rootBackupDir ?: throw IOException()
     }
 
     @Throws(IOException::class)
     override suspend fun initializeDevice() {
-        // wipe existing data
-        storage.getSetDir()?.deleteContents(context)
-
         // reset storage without new token, so folders get recreated
         // otherwise stale DocumentFiles will hang around
         storage.reset(null)
-
-        // create backup folders
-        storage.currentSetDir ?: throw IOException()
     }
 
     @Throws(IOException::class)

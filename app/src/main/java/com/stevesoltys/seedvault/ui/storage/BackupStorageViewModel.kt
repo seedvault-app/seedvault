@@ -1,20 +1,16 @@
 package com.stevesoltys.seedvault.ui.storage
 
 import android.app.Application
-import android.app.backup.BackupProgress
 import android.app.backup.IBackupManager
-import android.app.backup.IBackupObserver
 import android.app.job.JobInfo
 import android.net.Uri
-import android.os.UserHandle
 import android.util.Log
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
-import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +24,7 @@ private val TAG = BackupStorageViewModel::class.java.simpleName
 internal class BackupStorageViewModel(
     private val app: Application,
     private val backupManager: IBackupManager,
+    private val backupInitializer: BackupInitializer,
     private val storageBackup: StorageBackup,
     settingsManager: SettingsManager,
 ) : StorageViewModel(app, settingsManager) {
@@ -52,13 +49,23 @@ internal class BackupStorageViewModel(
             storageBackup.clearCache()
             try {
                 // initialize the new location (if backups are enabled)
-                if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
-                    UserHandle.myUserId(),
-                    arrayOf(TRANSPORT_ID),
-                    // if storage is on USB and this is not SetupWizard, do a backup right away
-                    InitializationObserver(isUsb && !isSetupWizard)
-                ) else {
-                    InitializationObserver(false).backupFinished(0)
+                if (backupManager.isBackupEnabled) {
+                    val onError = {
+                        Log.e(TAG, "Error starting new RestoreSet")
+                        onInitializationError()
+                    }
+                    backupInitializer.initialize(onError) {
+                        val requestBackup = isUsb && !isSetupWizard
+                        if (requestBackup) {
+                            Log.i(TAG, "Requesting a backup now, because we use USB storage")
+                            AppBackupWorker.scheduleNow(app, reschedule = false)
+                        }
+                        // notify the UI that the location has been set
+                        mLocationChecked.postEvent(LocationResult())
+                    }
+                } else {
+                    // notify the UI that the location has been set
+                    mLocationChecked.postEvent(LocationResult())
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Error starting new RestoreSet", e)
@@ -88,35 +95,6 @@ internal class BackupStorageViewModel(
     private fun cancelBackupWorkers() {
         AppBackupWorker.unschedule(app)
         BackupJobService.cancelJob(app)
-    }
-
-    @WorkerThread
-    private inner class InitializationObserver(val requestBackup: Boolean) :
-        IBackupObserver.Stub() {
-        override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
-            // noop
-        }
-
-        override fun onResult(target: String, status: Int) {
-            // noop
-        }
-
-        override fun backupFinished(status: Int) {
-            if (Log.isLoggable(TAG, Log.INFO)) {
-                Log.i(TAG, "Initialization finished. Status: $status")
-            }
-            if (status == 0) {
-                // notify the UI that the location has been set
-                mLocationChecked.postEvent(LocationResult())
-                if (requestBackup) {
-                    val isUsb = settingsManager.getStorage()?.isUsb ?: false
-                    AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
-                }
-            } else {
-                // notify the UI that the location was invalid
-                onInitializationError()
-            }
-        }
     }
 
     private fun onInitializationError() {

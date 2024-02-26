@@ -59,14 +59,15 @@ internal class MetadataManager(
     /**
      * Call this when initializing a new device.
      *
-     * Existing [BackupMetadata] will be cleared, use the given new token,
-     * and written encrypted to the given [OutputStream] as well as the internal cache.
+     * Existing [BackupMetadata] will be cleared
+     * and new metadata with the given [token] will be written to the internal cache
+     * with a fresh salt.
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
+    fun onDeviceInitialization(token: Long) {
         val salt = crypto.getRandomBytes(METADATA_SALT_SIZE).encodeBase64()
-        modifyMetadata(metadataOutputStream) {
+        modifyCachedMetadata {
             metadata = BackupMetadata(token = token, salt = salt)
         }
     }

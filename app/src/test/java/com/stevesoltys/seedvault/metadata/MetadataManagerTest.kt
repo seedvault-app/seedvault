@@ -100,7 +100,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onDeviceInitialization(token, storageOutputStream)
+        manager.onDeviceInitialization(token)
 
         assertEquals(token, manager.getBackupToken())
         assertEquals(0L, manager.getLastBackupTime())
