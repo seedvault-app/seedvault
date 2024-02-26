@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        android_target: [ 33, 34 ]
+        android_target: [ 34 ]
         emulator_type: [ aosp_atd ]
         d2d_backup_test: [ true, false ]
     steps:
