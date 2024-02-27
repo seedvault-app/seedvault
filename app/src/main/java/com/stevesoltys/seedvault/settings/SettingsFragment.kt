@@ -19,7 +19,6 @@ import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
-import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import androidx.work.WorkInfo
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
@@ -213,16 +212,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    // TODO this should really get moved out off the UI layer
     private fun trySetBackupEnabled(enabled: Boolean): Boolean {
         return try {
             backupManager.isBackupEnabled = enabled
-            if (enabled) {
-                viewModel.scheduleAppBackup(CANCEL_AND_REENQUEUE)
-                viewModel.enableCallLogBackup()
-            } else {
-                viewModel.cancelAppBackup()
-            }
+            viewModel.onBackupEnabled(enabled)
             backup.isChecked = enabled
             true
         } catch (e: RemoteException) {

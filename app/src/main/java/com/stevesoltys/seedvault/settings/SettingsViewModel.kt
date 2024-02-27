@@ -37,6 +37,9 @@ import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
+import com.stevesoltys.seedvault.ui.LiveEvent
+import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
@@ -60,6 +63,7 @@ internal class SettingsViewModel(
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
+    private val backupInitializer: BackupInitializer,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
@@ -89,6 +93,9 @@ internal class SettingsViewModel(
 
     private val _filesSummary = MutableLiveData<String>()
     internal val filesSummary: LiveData<String> = _filesSummary
+
+    private val _initEvent = MutableLiveEvent<Boolean>()
+    val initEvent: LiveEvent<Boolean> = _initEvent
 
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
@@ -227,6 +234,30 @@ internal class SettingsViewModel(
         val uriSummary = storageBackup.getUriSummaryString()
         _filesSummary.value = uriSummary.ifEmpty {
             app.getString(R.string.settings_backup_files_summary)
+        }
+    }
+
+    fun onBackupEnabled(enabled: Boolean) {
+        if (enabled) {
+            if (metadataManager.requiresInit) {
+                val onError: () -> Unit = {
+                    viewModelScope.launch(Dispatchers.Main) {
+                        val res = R.string.storage_check_fragment_backup_error
+                        Toast.makeText(app, res, LENGTH_LONG).show()
+                    }
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    backupInitializer.initialize(onError) {
+                        _initEvent.postEvent(false)
+                        scheduleAppBackup(CANCEL_AND_REENQUEUE)
+                    }
+                    _initEvent.postEvent(true)
+                }
+            }
+            // enable call log backups for existing installs (added end of 2020)
+            enableCallLogBackup()
+        } else {
+            cancelAppBackup()
         }
     }
 
