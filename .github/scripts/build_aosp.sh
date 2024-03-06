@@ -52,8 +52,9 @@ retry() {
 }
 
 DEVICE=$1
-TARGET=$2
-BRANCH=$3
+RELEASE=$2
+TARGET=$3
+BRANCH=$4
 
 git config --global user.email "seedvault@example.com"
 git config --global user.name "Seedvault CI"
@@ -85,7 +86,8 @@ retry repo sync -c -j8 --fail-fast --force-sync
 while true; do echo "Still building..."; sleep 30; done &
 
 source build/envsetup.sh
-lunch $DEVICE-$TARGET
-m -j6 Seedvault
+lunch $DEVICE-$RELEASE-$TARGET
+m -j1 nothing
+m -j2 Seedvault
 
 mv /aosp/out/target/product/generic_arm64/system/system_ext/priv-app/Seedvault/Seedvault.apk "$CIRRUS_WORKING_DIR"
