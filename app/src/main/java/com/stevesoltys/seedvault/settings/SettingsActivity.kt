@@ -46,8 +46,8 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
                 val title = getString(R.string.storage_check_fragment_backup_title)
                 showFragment(StorageCheckFragment.newInstance(title), true, tag)
             } else {
-                val f = supportFragmentManager.findFragmentByTag(tag)
-                if (f != null && f.isVisible) supportFragmentManager.popBackStack()
+                val fragment = supportFragmentManager.findFragmentByTag(tag)
+                if (fragment?.isVisible == true) supportFragmentManager.popBackStack()
             }
         }
     }

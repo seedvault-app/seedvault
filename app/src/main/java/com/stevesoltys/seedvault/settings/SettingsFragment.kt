@@ -263,6 +263,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    /**
+     * Sets the summary for scheduling which is information about when the next backup is scheduled.
+     *
+     * It could be that it shows the backup as running,
+     * gives an estimate about when the next run will be or
+     * says that nothing is scheduled which can happen when backup destination is on flash drive.
+     */
     private fun setAppBackupSchedulingSummary(workInfo: WorkInfo?) {
         if (storage?.isUsb == true) {
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup_usb)

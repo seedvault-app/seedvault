@@ -125,21 +125,20 @@ internal class MetadataManager(
             val now = clock.time()
             metadata.time = now
             metadata.d2dBackup = settingsManager.d2dBackupsEnabled()
-
-            if (metadata.packageMetadataMap.containsKey(packageName)) {
-                metadata.packageMetadataMap[packageName]!!.time = now
-                metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA
-                metadata.packageMetadataMap[packageName]!!.backupType = type
-                // don't override a previous K/V size, if there were no K/V changes
-                if (size != null) metadata.packageMetadataMap[packageName]!!.size = size
-            } else {
-                metadata.packageMetadataMap[packageName] = PackageMetadata(
+            metadata.packageMetadataMap.getOrPut(packageName) {
+                PackageMetadata(
                     time = now,
                     state = APK_AND_DATA,
                     backupType = type,
                     size = size,
                     system = packageInfo.isSystemApp(),
                 )
+            }.apply {
+                time = now
+                state = APK_AND_DATA
+                backupType = type
+                // don't override a previous K/V size, if there were no K/V changes
+                if (size != null) this.size = size
             }
         }
     }
@@ -159,18 +158,15 @@ internal class MetadataManager(
         backupType: BackupType? = null,
     ) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
-        val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
-            if (metadata.packageMetadataMap.containsKey(packageName)) {
-                metadata.packageMetadataMap[packageName]!!.state = packageState
-            } else {
-                metadata.packageMetadataMap[packageName] = PackageMetadata(
+            metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
+                PackageMetadata(
                     time = 0L,
                     state = packageState,
                     backupType = backupType,
                     system = packageInfo.isSystemApp()
                 )
-            }
+            }.state = packageState
         }
     }
 
@@ -186,16 +182,13 @@ internal class MetadataManager(
         packageInfo: PackageInfo,
         packageState: PackageState,
     ) = modifyCachedMetadata {
-        val packageName = packageInfo.packageName
-        if (metadata.packageMetadataMap.containsKey(packageName)) {
-            metadata.packageMetadataMap[packageName]!!.state = packageState
-        } else {
-            metadata.packageMetadataMap[packageName] = PackageMetadata(
+        metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
+            PackageMetadata(
                 time = 0L,
                 state = packageState,
                 system = packageInfo.isSystemApp(),
             )
-        }
+        }.state = packageState
     }
 
     /**
