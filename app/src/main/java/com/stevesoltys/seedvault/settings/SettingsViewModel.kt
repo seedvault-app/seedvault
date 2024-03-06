@@ -60,7 +60,8 @@ internal class SettingsViewModel(
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
-    private val connectivityManager = app.getSystemService(ConnectivityManager::class.java)
+    private val connectivityManager: ConnectivityManager? =
+        app.getSystemService(ConnectivityManager::class.java)
 
     override val isRestoreOperation = false
 
@@ -129,13 +130,13 @@ internal class SettingsViewModel(
 
         // register network observer if needed
         if (networkCallback.registered && !storage.requiresNetwork) {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
+            connectivityManager?.unregisterNetworkCallback(networkCallback)
             networkCallback.registered = false
         } else if (!networkCallback.registered && storage.requiresNetwork) {
             val request = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
-            connectivityManager.registerNetworkCallback(request, networkCallback)
+            connectivityManager?.registerNetworkCallback(request, networkCallback)
             networkCallback.registered = true
         }
 
@@ -156,7 +157,7 @@ internal class SettingsViewModel(
     override fun onCleared() {
         contentResolver.unregisterContentObserver(storageObserver)
         if (networkCallback.registered) {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
+            connectivityManager?.unregisterNetworkCallback(networkCallback)
             networkCallback.registered = false
         }
     }

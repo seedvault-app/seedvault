@@ -74,13 +74,14 @@ internal class ApkBackup(
         }
 
         // TODO remove when adding support for packages with multiple signers
-        if (packageInfo.signingInfo.hasMultipleSigners()) {
+        val signingInfo = packageInfo.signingInfo ?: return null
+        if (signingInfo.hasMultipleSigners()) {
             Log.e(TAG, "Package $packageName has multiple signers. Not backing it up.")
             return null
         }
 
         // get signatures
-        val signatures = packageInfo.signingInfo.getSignatures()
+        val signatures = signingInfo.getSignatures()
         if (signatures.isEmpty()) {
             Log.e(TAG, "Package $packageName has no signatures. Not backing it up.")
             return null
@@ -107,7 +108,8 @@ internal class ApkBackup(
         }
 
         // get an InputStream for the APK
-        val inputStream = getApkInputStream(packageInfo.applicationInfo.sourceDir)
+        val sourceDir = packageInfo.applicationInfo?.sourceDir ?: return null
+        val inputStream = getApkInputStream(sourceDir)
         // copy the APK to the storage's output and calculate SHA-256 hash while at it
         val name = crypto.getNameForApk(metadataManager.salt, packageName)
         val sha256 = copyStreamsAndGetHash(inputStream, streamGetter(name))
@@ -158,7 +160,7 @@ internal class ApkBackup(
     ): List<ApkSplit> {
         check(packageInfo.splitNames != null)
         // attention: though not documented, splitSourceDirs can be null
-        val splitSourceDirs = packageInfo.applicationInfo.splitSourceDirs ?: emptyArray()
+        val splitSourceDirs = packageInfo.applicationInfo?.splitSourceDirs ?: emptyArray()
         check(packageInfo.splitNames.size == splitSourceDirs.size) {
             "Size Mismatch! ${packageInfo.splitNames.size} != ${splitSourceDirs.size} " +
                 "splitNames is ${packageInfo.splitNames.toList()}, " +
@@ -238,8 +240,10 @@ fun copyStreamsAndGetHash(inputStream: InputStream, outputStream: OutputStream):
 /**
  * Returns a list of Base64 encoded SHA-256 signature hashes.
  */
-fun SigningInfo.getSignatures(): List<String> {
-    return if (hasMultipleSigners()) {
+fun SigningInfo?.getSignatures(): List<String> {
+    return if (this == null) {
+        emptyList()
+    } else if (hasMultipleSigners()) {
         apkContentsSigners.map { signature ->
             hashSignature(signature).encodeBase64()
         }

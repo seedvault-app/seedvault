@@ -57,12 +57,12 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
 
-        titleView = v.findViewById(R.id.titleView)
-        warningIcon = v.findViewById(R.id.warningIcon)
-        warningText = v.findViewById(R.id.warningText)
-        listView = v.findViewById(R.id.listView)
-        progressBar = v.findViewById(R.id.progressBar)
-        skipView = v.findViewById(R.id.skipView)
+        titleView = v.requireViewById(R.id.titleView)
+        warningIcon = v.requireViewById(R.id.warningIcon)
+        warningText = v.requireViewById(R.id.warningText)
+        listView = v.requireViewById(R.id.listView)
+        progressBar = v.requireViewById(R.id.progressBar)
+        skipView = v.requireViewById(R.id.skipView)
 
         return v
     }

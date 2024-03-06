@@ -41,10 +41,10 @@ class StorageCheckFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_storage_check, container, false)
 
-        titleView = v.findViewById(R.id.titleView)
-        progressBar = v.findViewById(R.id.progressBar)
-        errorView = v.findViewById(R.id.errorView)
-        backButton = v.findViewById(R.id.backButton)
+        titleView = v.requireViewById(R.id.titleView)
+        progressBar = v.requireViewById(R.id.progressBar)
+        errorView = v.requireViewById(R.id.errorView)
+        backButton = v.requireViewById(R.id.backButton)
 
         return v
     }
@@ -56,7 +56,7 @@ class StorageCheckFragment : Fragment() {
 
         val errorMsg = requireArguments().getString(ERROR_MSG)
         if (errorMsg != null) {
-            view.findViewById<View>(R.id.patienceView).visibility = GONE
+            view.requireViewById<View>(R.id.patienceView).visibility = GONE
             progressBar.visibility = INVISIBLE
             errorView.text = errorMsg
             errorView.visibility = VISIBLE

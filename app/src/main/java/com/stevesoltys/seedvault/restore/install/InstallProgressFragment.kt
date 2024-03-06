@@ -41,11 +41,11 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_progress, container, false)
 
-        progressBar = v.findViewById(R.id.progressBar)
-        titleView = v.findViewById(R.id.titleView)
-        backupNameView = v.findViewById(R.id.backupNameView)
-        appList = v.findViewById(R.id.appList)
-        button = v.findViewById(R.id.button)
+        progressBar = v.requireViewById(R.id.progressBar)
+        titleView = v.requireViewById(R.id.titleView)
+        backupNameView = v.requireViewById(R.id.backupNameView)
+        appList = v.requireViewById(R.id.appList)
+        button = v.requireViewById(R.id.button)
 
         return v
     }

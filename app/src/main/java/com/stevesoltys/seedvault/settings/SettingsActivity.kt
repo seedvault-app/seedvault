@@ -61,7 +61,7 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
         pref: Preference,
     ): Boolean {
         val fragment =
-            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment!!)
         if (pref.key == PREF_BACKUP_RECOVERY_CODE) fragment.arguments = Bundle().apply {
             putBoolean(ARG_FOR_NEW_CODE, false)
         }

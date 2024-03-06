@@ -31,8 +31,8 @@ internal class RestoreSetAdapter(
 
     inner class RestoreSetViewHolder(private val v: View) : ViewHolder(v) {
 
-        private val titleView = v.findViewById<TextView>(R.id.titleView)
-        private val subtitleView = v.findViewById<TextView>(R.id.subtitleView)
+        private val titleView = v.requireViewById<TextView>(R.id.titleView)
+        private val subtitleView = v.requireViewById<TextView>(R.id.subtitleView)
 
         internal fun bind(item: RestorableBackup) {
             v.setOnClickListener { listener.onRestorableBackupClicked(item) }

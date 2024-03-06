@@ -30,10 +30,10 @@ class RestoreSetFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_set, container, false)
 
-        listView = v.findViewById(R.id.listView)
-        progressBar = v.findViewById(R.id.progressBar)
-        errorView = v.findViewById(R.id.errorView)
-        skipView = v.findViewById(R.id.skipView)
+        listView = v.requireViewById(R.id.listView)
+        progressBar = v.requireViewById(R.id.progressBar)
+        errorView = v.requireViewById(R.id.errorView)
+        skipView = v.requireViewById(R.id.skipView)
 
         return v
     }

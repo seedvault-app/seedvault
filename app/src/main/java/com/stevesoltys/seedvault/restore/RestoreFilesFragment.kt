@@ -24,14 +24,14 @@ internal class RestoreFilesFragment : SnapshotFragment() {
     ): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
-        val topStub: ViewStub = v.findViewById(R.id.topStub)
+        val topStub: ViewStub = v.requireViewById(R.id.topStub)
         topStub.layoutResource = R.layout.header_snapshots
         topStub.inflate()
 
-        val bottomStub: ViewStub = v.findViewById(R.id.bottomStub)
+        val bottomStub: ViewStub = v.requireViewById(R.id.bottomStub)
         bottomStub.layoutResource = R.layout.footer_snapshots
         val footer = bottomStub.inflate()
-        val skipView: TextView = footer.findViewById(R.id.skipView)
+        val skipView: TextView = footer.requireViewById(R.id.skipView)
         skipView.setOnClickListener {
             requireActivity().apply {
                 setResult(RESULT_OK)
@@ -54,7 +54,7 @@ internal class RestoreFilesStartedFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_restore_files_started, container, false)
 
-        val button: Button = v.findViewById(R.id.button)
+        val button: Button = v.requireViewById(R.id.button)
         button.setOnClickListener {
             requireActivity().apply {
                 setResult(RESULT_OK)

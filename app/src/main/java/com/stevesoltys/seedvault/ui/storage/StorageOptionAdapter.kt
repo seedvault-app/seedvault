@@ -45,9 +45,9 @@ internal class StorageOptionAdapter(
 
     internal inner class StorageOptionViewHolder(private val v: View) : ViewHolder(v) {
 
-        private val iconView = v.findViewById<ImageView>(R.id.iconView)
-        private val titleView = v.findViewById<TextView>(R.id.titleView)
-        private val summaryView = v.findViewById<TextView>(R.id.summaryView)
+        private val iconView = v.requireViewById<ImageView>(R.id.iconView)
+        private val titleView = v.requireViewById<TextView>(R.id.titleView)
+        private val summaryView = v.requireViewById<TextView>(R.id.summaryView)
 
         internal fun bind(item: StorageOption) {
             if (item.enabled) {
