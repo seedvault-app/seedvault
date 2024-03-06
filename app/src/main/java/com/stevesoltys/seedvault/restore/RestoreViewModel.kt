@@ -15,8 +15,8 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
@@ -100,7 +100,7 @@ internal class RestoreViewModel(
     internal val chosenRestorableBackup: LiveData<RestorableBackup> get() = mChosenRestorableBackup
 
     internal val installResult: LiveData<InstallResult> =
-        switchMap(mChosenRestorableBackup) { backup ->
+        mChosenRestorableBackup.switchMap { backup ->
             getInstallResult(backup)
         }
     internal val installIntentCreator by lazy { InstallIntentCreator(app.packageManager) }
