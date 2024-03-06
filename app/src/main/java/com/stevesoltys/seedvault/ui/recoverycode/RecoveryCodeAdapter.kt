@@ -27,8 +27,8 @@ class RecoveryCodeAdapter(private val items: List<CharArray>) :
 
 class RecoveryCodeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
-    private val num = v.findViewById<TextView>(R.id.num)
-    private val word = v.findViewById<TextView>(R.id.word)
+    private val num = v.requireViewById<TextView>(R.id.num)
+    private val word = v.requireViewById<TextView>(R.id.word)
 
     internal fun bind(number: Int, item: CharArray) {
         num.text = number.toString()

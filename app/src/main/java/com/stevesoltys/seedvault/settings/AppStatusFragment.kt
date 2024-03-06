@@ -39,8 +39,8 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         setHasOptionsMenu(true)
         val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
 
-        progressBar = v.findViewById(R.id.progressBar)
-        list = v.findViewById(R.id.list)
+        progressBar = v.requireViewById(R.id.progressBar)
+        list = v.requireViewById(R.id.list)
 
         return v
     }

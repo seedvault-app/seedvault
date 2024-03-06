@@ -191,7 +191,7 @@ data class Storage(
     }
 
     private fun hasUnmeteredInternet(context: Context): Boolean {
-        val cm = context.getSystemService(ConnectivityManager::class.java)
+        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
         val isMetered = cm.isActiveNetworkMetered
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered

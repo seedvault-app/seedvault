@@ -27,12 +27,12 @@ class AboutDialogFragment : Fragment() {
         val v: View = inflater.inflate(R.layout.fragment_about, container, false)
 
         val versionName = packageService.getVersionName(requireContext().packageName) ?: "???"
-        val versionView: TextView = v.findViewById(R.id.versionView)
+        val versionView: TextView = v.requireViewById(R.id.versionView)
         versionView.text = getString(R.string.about_version, versionName)
 
         val linkMovementMethod = LinkMovementMethod.getInstance()
-        val contributorsView = v.findViewById<TextView>(R.id.contributorView)
-        val orgsView = v.findViewById<TextView>(R.id.about_contributing_organizations_content)
+        val contributorsView = v.requireViewById<TextView>(R.id.contributorView)
+        val orgsView = v.requireViewById<TextView>(R.id.about_contributing_organizations_content)
         contributorsView.movementMethod = linkMovementMethod
         orgsView.movementMethod = linkMovementMethod
 

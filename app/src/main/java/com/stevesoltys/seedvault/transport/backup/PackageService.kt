@@ -174,7 +174,8 @@ internal class PackageService(
     }
 
     private fun PackageInfo.allowsBackup(): Boolean {
-        if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
+        val appInfo = applicationInfo
+        if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return false
 
         return if (settingsManager.d2dBackupsEnabled()) {
             /**
@@ -191,7 +192,7 @@ internal class PackageService(
              */
             true
         } else {
-            applicationInfo.flags and FLAG_ALLOW_BACKUP != 0
+            appInfo.flags and FLAG_ALLOW_BACKUP != 0
         }
     }
 
@@ -226,8 +227,9 @@ internal fun PackageInfo.isUserVisible(context: Context): Boolean {
 }
 
 internal fun PackageInfo.isSystemApp(): Boolean {
-    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
-    return applicationInfo.flags and FLAG_SYSTEM != 0
+    val appInfo = applicationInfo
+    if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return true
+    return appInfo.flags and FLAG_SYSTEM != 0
 }
 
 /**
@@ -235,18 +237,21 @@ internal fun PackageInfo.isSystemApp(): Boolean {
  * We don't back up those APKs.
  */
 internal fun PackageInfo.isNotUpdatedSystemApp(): Boolean {
-    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
-    val isSystemApp = applicationInfo.flags and FLAG_SYSTEM != 0
-    val isUpdatedSystemApp = applicationInfo.flags and FLAG_UPDATED_SYSTEM_APP != 0
+    val appInfo = applicationInfo
+    if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return true
+    val isSystemApp = appInfo.flags and FLAG_SYSTEM != 0
+    val isUpdatedSystemApp = appInfo.flags and FLAG_UPDATED_SYSTEM_APP != 0
     return isSystemApp && !isUpdatedSystemApp
 }
 
 internal fun PackageInfo.isStopped(): Boolean {
-    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return applicationInfo.flags and FLAG_STOPPED != 0
+    val appInfo = applicationInfo
+    if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return false
+    return appInfo.flags and FLAG_STOPPED != 0
 }
 
 internal fun PackageInfo.isTestOnly(): Boolean {
-    if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return applicationInfo.flags and FLAG_TEST_ONLY != 0
+    val appInfo = applicationInfo
+    if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return false
+    return appInfo.flags and FLAG_TEST_ONLY != 0
 }

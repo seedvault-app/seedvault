@@ -28,10 +28,10 @@ class RecoveryCodeOutputFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_output, container, false)
 
-        if (!isDebugBuild()) getActivity()?.window?.addFlags(FLAG_SECURE)
+        if (!isDebugBuild()) activity?.window?.addFlags(FLAG_SECURE)
 
-        wordList = v.findViewById(R.id.wordList)
-        confirmCodeButton = v.findViewById(R.id.confirmCodeButton)
+        wordList = v.requireViewById(R.id.wordList)
+        confirmCodeButton = v.requireViewById(R.id.confirmCodeButton)
 
         return v
     }

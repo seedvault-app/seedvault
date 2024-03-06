@@ -129,13 +129,13 @@ internal class ApkRestore(
         }
 
         // get app icon and label (name)
-        val appInfo = packageInfo.applicationInfo.apply {
+        val appInfo = packageInfo.applicationInfo?.apply {
             // set APK paths before, so package manager can find it for icon extraction
             sourceDir = cachedApk.absolutePath
             publicSourceDir = cachedApk.absolutePath
         }
-        val icon = appInfo.loadIcon(pm)
-        val name = pm.getApplicationLabel(appInfo)
+        val icon = appInfo?.loadIcon(pm)
+        val name = appInfo?.let { pm.getApplicationLabel(it) }
 
         installResult.update(packageName) { result ->
             result.copy(state = IN_PROGRESS, name = name, icon = icon)

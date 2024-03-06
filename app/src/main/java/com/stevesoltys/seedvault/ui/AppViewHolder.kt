@@ -8,9 +8,9 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
 import com.stevesoltys.seedvault.ui.AppBackupState.IN_PROGRESS
@@ -22,12 +22,12 @@ internal abstract class AppViewHolder(protected val v: View) : RecyclerView.View
     protected val pm: PackageManager = context.packageManager
 
     protected val clickableBackground = v.background!!
-    protected val appIcon: ImageView = v.findViewById(R.id.appIcon)
-    protected val appName: TextView = v.findViewById(R.id.appName)
-    protected val appInfo: TextView = v.findViewById(R.id.appInfo)
-    protected val appStatus: ImageView = v.findViewById(R.id.appStatus)
-    protected val progressBar: ProgressBar = v.findViewById(R.id.progressBar)
-    protected val switchView: Switch = v.findViewById(R.id.switchView)
+    protected val appIcon: ImageView = v.requireViewById(R.id.appIcon)
+    protected val appName: TextView = v.requireViewById(R.id.appName)
+    protected val appInfo: TextView = v.requireViewById(R.id.appInfo)
+    protected val appStatus: ImageView = v.requireViewById(R.id.appStatus)
+    protected val progressBar: ProgressBar = v.requireViewById(R.id.progressBar)
+    protected val switchView: SwitchMaterial = v.requireViewById(R.id.switchView)
 
     init {
         // don't use clickable background by default

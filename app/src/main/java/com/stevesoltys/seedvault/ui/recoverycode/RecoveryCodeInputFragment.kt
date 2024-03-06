@@ -71,24 +71,24 @@ class RecoveryCodeInputFragment : Fragment() {
     ): View {
         val v: View = inflater.inflate(R.layout.fragment_recovery_code_input, container, false)
 
-        if (!isDebugBuild()) getActivity()?.window?.addFlags(FLAG_SECURE)
+        if (!isDebugBuild()) activity?.window?.addFlags(FLAG_SECURE)
 
-        introText = v.findViewById(R.id.introText)
-        doneButton = v.findViewById(R.id.doneButton)
-        newCodeButton = v.findViewById(R.id.newCodeButton)
-        wordLayout1 = v.findViewById(R.id.wordLayout1)
-        wordLayout2 = v.findViewById(R.id.wordLayout2)
-        wordLayout3 = v.findViewById(R.id.wordLayout3)
-        wordLayout4 = v.findViewById(R.id.wordLayout4)
-        wordLayout5 = v.findViewById(R.id.wordLayout5)
-        wordLayout6 = v.findViewById(R.id.wordLayout6)
-        wordLayout7 = v.findViewById(R.id.wordLayout7)
-        wordLayout8 = v.findViewById(R.id.wordLayout8)
-        wordLayout9 = v.findViewById(R.id.wordLayout9)
-        wordLayout10 = v.findViewById(R.id.wordLayout10)
-        wordLayout11 = v.findViewById(R.id.wordLayout11)
-        wordLayout12 = v.findViewById(R.id.wordLayout12)
-        wordList = v.findViewById(R.id.wordList)
+        introText = v.requireViewById(R.id.introText)
+        doneButton = v.requireViewById(R.id.doneButton)
+        newCodeButton = v.requireViewById(R.id.newCodeButton)
+        wordLayout1 = v.requireViewById(R.id.wordLayout1)
+        wordLayout2 = v.requireViewById(R.id.wordLayout2)
+        wordLayout3 = v.requireViewById(R.id.wordLayout3)
+        wordLayout4 = v.requireViewById(R.id.wordLayout4)
+        wordLayout5 = v.requireViewById(R.id.wordLayout5)
+        wordLayout6 = v.requireViewById(R.id.wordLayout6)
+        wordLayout7 = v.requireViewById(R.id.wordLayout7)
+        wordLayout8 = v.requireViewById(R.id.wordLayout8)
+        wordLayout9 = v.requireViewById(R.id.wordLayout9)
+        wordLayout10 = v.requireViewById(R.id.wordLayout10)
+        wordLayout11 = v.requireViewById(R.id.wordLayout11)
+        wordLayout12 = v.requireViewById(R.id.wordLayout12)
+        wordList = v.requireViewById(R.id.wordList)
 
         arguments?.getBoolean(ARG_FOR_NEW_CODE, true)?.let {
             forStoringNewCode = it
@@ -148,7 +148,7 @@ class RecoveryCodeInputFragment : Fragment() {
         }
         if (forStoringNewCode) {
             val keyguardManager = requireContext().getSystemService(KeyguardManager::class.java)
-            if (keyguardManager.isDeviceSecure) {
+            if (keyguardManager?.isDeviceSecure == true) {
                 // if we have a lock-screen secret, we can ask for it before storing the code
                 storeNewCodeAfterAuth(input)
             } else {
