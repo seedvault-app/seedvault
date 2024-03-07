@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.e2e.screen.impl
 
+import android.os.Build
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.BySelector
 import com.stevesoltys.seedvault.e2e.screen.UiDeviceScreen
@@ -16,7 +17,7 @@ object BackupScreen : UiDeviceScreen<BackupScreen>() {
 
     val backupSwitch = findObject { text("Backup my apps") }
 
-    val internalStorageButton = findObject { textContains("Android SDK built for") }
+    val internalStorageButton = findObject { textContains(Build.MODEL) }
 
     val useAnywayButton = findObject { text("USE ANYWAY") }
 
