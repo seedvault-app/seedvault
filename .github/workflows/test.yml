@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         android_target: [ 33, 34 ]
-        emulator_type: [ default ]
+        emulator_type: [ aosp_atd ]
         d2d_backup_test: [ true, false ]
     steps:
       - name: Checkout Code
