@@ -10,6 +10,7 @@ import android.util.Log.isLoggable
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.worker.BackupRequester
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,6 +25,7 @@ internal class NotificationBackupObserver(
 
     private val nm: BackupNotificationManager by inject()
     private val metadataManager: MetadataManager by inject()
+    private val packageService: PackageService by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
     private var pmCounted: Boolean = false
@@ -81,7 +83,13 @@ internal class NotificationBackupObserver(
             val success = status == 0
             val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
             val size = if (success) metadataManager.getPackagesBackupSize() else 0L
-            nm.onBackupFinished(success, numBackedUp, requestedPackages, size)
+            val total = try {
+                packageService.allUserPackages.size
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting number of all user packages: ", e)
+                requestedPackages
+            }
+            nm.onBackupFinished(success, numBackedUp, total, size)
         }
     }
 
