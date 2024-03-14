@@ -166,6 +166,15 @@ class SettingsManager(private val context: Context) {
 
     fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
 
+    /**
+     * Disables backup for an app. Similar to [onAppBackupStatusChanged].
+     */
+    fun disableBackup(packageName: String) {
+        if (blacklistedApps.add(packageName)) {
+            prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
+        }
+    }
+
     fun isStorageBackupEnabled() = prefs.getBoolean(PREF_KEY_BACKUP_STORAGE, false)
 
     @UiThread

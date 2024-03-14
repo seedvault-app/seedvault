@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault
 
 import android.Manifest.permission.INTERACT_ACROSS_USERS_FULL
 import android.app.Application
+import android.app.backup.BackupManager
 import android.app.backup.BackupManager.PACKAGE_MANAGER_SENTINEL
 import android.app.backup.IBackupManager
 import android.content.Context
@@ -147,9 +148,10 @@ open class App : Application() {
 
 }
 
-const val MAGIC_PACKAGE_MANAGER = PACKAGE_MANAGER_SENTINEL
+const val MAGIC_PACKAGE_MANAGER: String = PACKAGE_MANAGER_SENTINEL
 const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val GLOBAL_METADATA_KEY = "@meta@"
+const val ERROR_BACKUP_CANCELLED: Int = BackupManager.ERROR_BACKUP_CANCELLED
 
 // TODO this doesn't work for LineageOS as they do public debug builds
 fun isDebugBuild() = Build.TYPE == "userdebug"
