@@ -141,6 +141,10 @@ internal object StorageRootResolver {
                 context.getDrawable(R.drawable.davx5)
             }
 
+            authority == AUTHORITY_ROUND_SYNC -> {
+                context.getDrawable(R.drawable.round_sync)
+            }
+
             else -> null
         }
     }

@@ -7,5 +7,6 @@
         <item>org.nextcloud.documents</item>
         <item>org.nextcloud.beta.documents</item>
         <item>at.bitfire.davdroid.webdav</item>
+        <item>de.felixnuesse.extract.vcp</item>
     </string-array>
 </resources>

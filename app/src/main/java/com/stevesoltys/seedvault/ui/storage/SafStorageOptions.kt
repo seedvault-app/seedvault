@@ -5,6 +5,9 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import android.provider.DocumentsContract
+import android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME
+import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import com.stevesoltys.seedvault.ui.storage.StorageRootResolver.getIcon
@@ -30,6 +33,7 @@ internal class SafStorageOptions(
         checkOrAddUsbRoot(roots)
         checkOrAddDavX5Root(roots)
         checkOrAddNextCloudRoot(roots)
+        checkOrAddRoundSyncRoots(roots)
     }
 
     private fun checkOrAddUsbRoot(roots: ArrayList<SafOption>) {
@@ -48,6 +52,49 @@ internal class SafStorageOptions(
             enabled = false
         )
         roots.add(root)
+    }
+
+    /**
+     * Add a storage root for each child directory at the RoundSync root, if it exists.
+     */
+    private fun checkOrAddRoundSyncRoots(roots: ArrayList<SafOption>) {
+
+        val roundSyncRoot = roots.firstOrNull {
+            it.authority == AUTHORITY_ROUND_SYNC
+        } ?: return
+
+        roots.remove(roundSyncRoot)
+
+        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
+            roundSyncRoot.uri, roundSyncRoot.documentId
+        )
+        val projection = arrayOf(COLUMN_DISPLAY_NAME, COLUMN_DOCUMENT_ID)
+        val cursor = context.contentResolver.query(childrenUri, projection, null, null, null)
+
+        cursor?.use {
+            val nameIndex = cursor.getColumnIndex(COLUMN_DISPLAY_NAME)
+            val documentIdIndex = cursor.getColumnIndex(COLUMN_DOCUMENT_ID)
+
+            while (cursor.moveToNext()) {
+                val name = cursor.getString(nameIndex)
+                val documentId = cursor.getString(documentIdIndex)
+
+                val childRoot = SafOption(
+                    authority = AUTHORITY_ROUND_SYNC,
+                    rootId = name,
+                    documentId = documentId,
+                    icon = getIcon(context, AUTHORITY_ROUND_SYNC, name, 0),
+                    title = name,
+                    summary = context.getString(R.string.storage_round_sync_summary_prefix) + name,
+                    availableBytes = null,
+                    isUsb = false,
+                    requiresNetwork = true,
+                    enabled = true
+                )
+
+                roots.add(childRoot)
+            }
+        }
     }
 
     /**
@@ -136,8 +183,10 @@ internal class SafStorageOptions(
             rootId = "fake",
             documentId = "fake",
             icon = getIcon(context, AUTHORITY_NEXTCLOUD, "fake", 0),
-            title = context.getString(R.string.storage_not_recommended,
-                context.getString(R.string.storage_fake_nextcloud_title)),
+            title = context.getString(
+                R.string.storage_not_recommended,
+                context.getString(R.string.storage_fake_nextcloud_title)
+            ),
             summary = context.getString(summaryRes),
             availableBytes = null,
             isUsb = false,

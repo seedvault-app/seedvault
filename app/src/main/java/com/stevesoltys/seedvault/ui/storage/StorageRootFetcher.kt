@@ -24,6 +24,7 @@ const val ROOT_ID_HOME = "home"
 const val AUTHORITY_DOWNLOADS = "com.android.providers.downloads.documents"
 const val AUTHORITY_NEXTCLOUD = "org.nextcloud.documents"
 const val AUTHORITY_DAVX5 = "at.bitfire.davdroid.webdav"
+const val AUTHORITY_ROUND_SYNC = "de.felixnuesse.extract.vcp"
 
 internal interface RemovableStorageListener {
     fun onStorageChanged()
