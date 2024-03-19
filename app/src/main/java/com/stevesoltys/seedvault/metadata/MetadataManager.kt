@@ -3,6 +3,9 @@ package com.stevesoltys.seedvault.metadata
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
+import android.os.UserManager
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
@@ -69,7 +72,16 @@ internal class MetadataManager(
     fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
         val salt = crypto.getRandomBytes(METADATA_SALT_SIZE).encodeBase64()
         modifyMetadata(metadataOutputStream) {
-            metadata = BackupMetadata(token = token, salt = salt)
+            val userName = getUserName()
+            metadata = BackupMetadata(
+                token = token,
+                salt = salt,
+                deviceName = if (userName == null) {
+                    "${Build.MANUFACTURER} ${Build.MODEL}"
+                } else {
+                    "${Build.MANUFACTURER} ${Build.MODEL} - $userName"
+                },
+            )
         }
     }
 
@@ -282,6 +294,14 @@ internal class MetadataManager(
         context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE).use { stream ->
             stream.write(metadataWriter.encode(metadata))
         }
+    }
+
+    private fun getUserName(): String? {
+        val perm = "android.permission.QUERY_USERS"
+        return if (context.checkSelfPermission(perm) == PERMISSION_GRANTED) {
+            val userManager = context.getSystemService(UserManager::class.java)
+            userManager.userName
+        } else null
     }
 
 }
