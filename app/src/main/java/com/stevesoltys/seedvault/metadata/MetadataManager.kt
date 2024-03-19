@@ -14,7 +14,6 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
@@ -266,18 +265,6 @@ internal class MetadataManager(
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {
         return metadata.packageMetadataMap[packageName]?.copy()
-    }
-
-    @Synchronized
-    fun getPackagesNumBackedUp(): Int {
-        // FIXME we are under-reporting packages here,
-        //  because we have no way to also include upgraded system apps
-        return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
-            !packageMetadata.system && ( // ignore system apps
-                packageMetadata.state == APK_AND_DATA || // either full success
-                    packageMetadata.state == NO_DATA // or apps that simply had no data
-                )
-        }.count()
     }
 
     @Synchronized

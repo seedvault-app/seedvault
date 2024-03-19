@@ -3,6 +3,7 @@ package com.stevesoltys.seedvault.ui.notification
 import android.app.backup.BackupProgress
 import android.app.backup.IBackupObserver
 import android.content.Context
+import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageManager.NameNotFoundException
 import android.util.Log
 import android.util.Log.INFO
@@ -28,6 +29,7 @@ internal class NotificationBackupObserver(
     private val packageService: PackageService by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
+    private var numPackagesToReport: Int = 0
     private var pmCounted: Boolean = false
 
     init {
@@ -64,6 +66,26 @@ internal class NotificationBackupObserver(
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
+        // prevent double counting of @pm@ which gets backed up with each requested chunk
+        if (target == MAGIC_PACKAGE_MANAGER) {
+            if (!pmCounted) {
+                numPackages += 1
+                pmCounted = true
+            }
+        } else {
+            numPackages += 1
+        }
+        // count package if success and not a system app
+        if (status == 0 && target != null && target != MAGIC_PACKAGE_MANAGER) try {
+            val appInfo = context.packageManager.getApplicationInfo(target, 0)
+            // exclude system apps from final count for now
+            if (appInfo.flags and FLAG_SYSTEM == 0) {
+                numPackagesToReport += 1
+            }
+        } catch (e: Exception) {
+            // should only happen for MAGIC_PACKAGE_MANAGER, but better save than sorry
+            Log.e(TAG, "Error getting ApplicationInfo: ", e)
+        }
         // often [onResult] gets called right away without any [onUpdate] call
         showProgressNotification(target)
     }
@@ -81,7 +103,6 @@ internal class NotificationBackupObserver(
                 Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
             }
             val success = status == 0
-            val numBackedUp = if (success) metadataManager.getPackagesNumBackedUp() else null
             val size = if (success) metadataManager.getPackagesBackupSize() else 0L
             val total = try {
                 packageService.allUserPackages.size
@@ -89,7 +110,7 @@ internal class NotificationBackupObserver(
                 Log.e(TAG, "Error getting number of all user packages: ", e)
                 requestedPackages
             }
-            nm.onBackupFinished(success, numBackedUp, total, size)
+            nm.onBackupFinished(success, numPackagesToReport, total, size)
         }
     }
 
@@ -106,15 +127,6 @@ internal class NotificationBackupObserver(
             appName
         } else {
             context.getString(R.string.backup_section_system)
-        }
-        // prevent double counting of @pm@ which gets backed up with each requested chunk
-        if (packageName == MAGIC_PACKAGE_MANAGER) {
-            if (!pmCounted) {
-                numPackages += 1
-                pmCounted = true
-            }
-        } else {
-            numPackages += 1
         }
         Log.i(TAG, "$numPackages/$requestedPackages - $appName ($packageName)")
         nm.onBackupUpdate(name, numPackages, requestedPackages)
