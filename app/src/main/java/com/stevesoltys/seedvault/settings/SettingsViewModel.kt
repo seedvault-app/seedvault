@@ -11,8 +11,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
+import android.os.BadParcelableException
 import android.os.Process.myUid
-import android.os.UserHandle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -22,10 +22,14 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
-import com.stevesoltys.seedvault.BackupWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -33,9 +37,12 @@ import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
+import com.stevesoltys.seedvault.ui.LiveEvent
+import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.worker.AppBackupWorker
+import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,16 +59,17 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
-    private val notificationManager: BackupNotificationManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
+    private val backupInitializer: BackupInitializer,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
 
     private val contentResolver = app.contentResolver
     private val connectivityManager: ConnectivityManager? =
         app.getSystemService(ConnectivityManager::class.java)
+    private val workManager = WorkManager.getInstance(app)
 
     override val isRestoreOperation = false
 
@@ -69,6 +77,10 @@ internal class SettingsViewModel(
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
     internal val lastBackupTime = metadataManager.lastBackupTime
+    internal val appBackupWorkInfo =
+        workManager.getWorkInfosForUniqueWorkLiveData(UNIQUE_WORK_NAME).map {
+            it.getOrNull(0)
+        }
 
     private val mAppStatusList = lastBackupTime.switchMap {
         // updates app list when lastBackupTime changes
@@ -82,21 +94,24 @@ internal class SettingsViewModel(
     private val _filesSummary = MutableLiveData<String>()
     internal val filesSummary: LiveData<String> = _filesSummary
 
+    private val _initEvent = MutableLiveEvent<Boolean>()
+    val initEvent: LiveEvent<Boolean> = _initEvent
+
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
-            onStorageLocationChanged()
+            onStoragePropertiesChanged()
         }
     }
 
     private inner class NetworkObserver : ConnectivityManager.NetworkCallback() {
         var registered = false
         override fun onAvailable(network: Network) {
-            onStorageLocationChanged()
+            onStoragePropertiesChanged()
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            onStorageLocationChanged()
+            onStoragePropertiesChanged()
         }
     }
 
@@ -111,13 +126,39 @@ internal class SettingsViewModel(
             // ensures the lastBackupTime LiveData gets set
             metadataManager.getLastBackupTime()
         }
-        onStorageLocationChanged()
+        onStoragePropertiesChanged()
         loadFilesSummary()
     }
 
     override fun onStorageLocationChanged() {
         val storage = settingsManager.getStorage() ?: return
 
+        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb}")
+        if (storage.isUsb) {
+            // disable storage backup if new storage is on USB
+            cancelAppBackup()
+            cancelFilesBackup()
+        } else {
+            // enable it, just in case the previous storage was on USB,
+            // also to update the network requirement of the new storage
+            scheduleAppBackup(CANCEL_AND_REENQUEUE)
+            scheduleFilesBackup()
+        }
+        onStoragePropertiesChanged()
+    }
+
+    fun onWorkerStateChanged() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val canDo = settingsManager.canDoBackupNow() &&
+                appBackupWorkInfo.value?.state != WorkInfo.State.RUNNING
+            mBackupPossible.postValue(canDo)
+        }
+    }
+
+    private fun onStoragePropertiesChanged() {
+        val storage = settingsManager.getStorage() ?: return
+
+        Log.d(TAG, "onStoragePropertiesChanged")
         // register storage observer
         try {
             contentResolver.unregisterContentObserver(storageObserver)
@@ -139,19 +180,8 @@ internal class SettingsViewModel(
             connectivityManager?.registerNetworkCallback(request, networkCallback)
             networkCallback.registered = true
         }
-
-        if (settingsManager.isStorageBackupEnabled()) {
-            // disable storage backup if new storage is on USB
-            if (storage.isUsb) disableStorageBackup()
-            // enable it, just in case the previous storage was on USB,
-            // also to update the network requirement of the new storage
-            else enableStorageBackup()
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val canDo = settingsManager.canDoBackupNow()
-            mBackupPossible.postValue(canDo)
-        }
+        // update whether we can do backups right now or not
+        onWorkerStateChanged()
     }
 
     override fun onCleared() {
@@ -163,25 +193,27 @@ internal class SettingsViewModel(
     }
 
     internal fun backupNow() {
-        // maybe replace the check below with one that checks if our transport service is running
-        if (notificationManager.hasActiveBackupNotifications()) {
-            Toast.makeText(app, R.string.notification_backup_already_running, LENGTH_LONG).show()
-        } else if (!backupManager.isBackupEnabled) {
-            Toast.makeText(app, R.string.notification_backup_disabled, LENGTH_LONG).show()
-        } else viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             if (settingsManager.isStorageBackupEnabled()) {
                 val i = Intent(app, StorageBackupService::class.java)
                 // this starts an app backup afterwards
                 i.putExtra(EXTRA_START_APP_BACKUP, true)
                 startForegroundService(app, i)
             } else {
-                requestBackup(app)
+                val isUsb = settingsManager.getStorage()?.isUsb ?: false
+                AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
             }
         }
     }
 
     private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData(Dispatchers.Default) {
-        val list = appListRetriever.getAppList()
+        val list = try {
+            Log.i(TAG, "Loading app list...")
+            appListRetriever.getAppList()
+        } catch (e: BadParcelableException) {
+            Log.e(TAG, "Error getting app list: ", e)
+            emptyList()
+        }
         val oldList = mAppStatusList.value?.appStatusList ?: emptyList()
         val diff = calculateDiff(AppStatusDiff(oldList, list))
         emit(AppStatusResult(list, diff))
@@ -205,6 +237,30 @@ internal class SettingsViewModel(
         }
     }
 
+    fun onBackupEnabled(enabled: Boolean) {
+        if (enabled) {
+            if (metadataManager.requiresInit) {
+                val onError: () -> Unit = {
+                    viewModelScope.launch(Dispatchers.Main) {
+                        val res = R.string.storage_check_fragment_backup_error
+                        Toast.makeText(app, res, LENGTH_LONG).show()
+                    }
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    backupInitializer.initialize(onError) {
+                        _initEvent.postEvent(false)
+                        scheduleAppBackup(CANCEL_AND_REENQUEUE)
+                    }
+                    _initEvent.postEvent(true)
+                }
+            }
+            // enable call log backups for existing installs (added end of 2020)
+            enableCallLogBackup()
+        } else {
+            cancelAppBackup()
+        }
+    }
+
     /**
      * Ensures that the call log will be included in backups.
      *
@@ -223,20 +279,33 @@ internal class SettingsViewModel(
         return keyManager.hasMainKey()
     }
 
-    fun enableStorageBackup() {
+    fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
         val storage = settingsManager.getStorage() ?: error("no storage available")
-        if (!storage.isUsb) BackupJobService.scheduleJob(
-            context = app,
-            jobServiceClass = StorageBackupJobService::class.java,
-            periodMillis = HOURS.toMillis(24),
-            networkType = if (storage.requiresNetwork) NETWORK_TYPE_UNMETERED
-            else NETWORK_TYPE_NONE,
-            deviceIdle = false,
-            charging = true
-        )
+        if (!storage.isUsb && backupManager.isBackupEnabled) {
+            AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
+        }
     }
 
-    fun disableStorageBackup() {
+    fun scheduleFilesBackup() {
+        val storage = settingsManager.getStorage() ?: error("no storage available")
+        if (!storage.isUsb && settingsManager.isStorageBackupEnabled()) {
+            BackupJobService.scheduleJob(
+                context = app,
+                jobServiceClass = StorageBackupJobService::class.java,
+                periodMillis = HOURS.toMillis(24),
+                networkType = if (storage.requiresNetwork) NETWORK_TYPE_UNMETERED
+                else NETWORK_TYPE_NONE,
+                deviceIdle = false,
+                charging = true
+            )
+        }
+    }
+
+    fun cancelAppBackup() {
+        AppBackupWorker.unschedule(app)
+    }
+
+    fun cancelFilesBackup() {
         BackupJobService.cancelJob(app)
     }
 
@@ -262,15 +331,6 @@ internal class SettingsViewModel(
     private suspend fun onLogcatError() = withContext(Dispatchers.Main) {
         val str = app.getString(R.string.settings_expert_logcat_error)
         Toast.makeText(app, str, LENGTH_LONG).show()
-    }
-
-    fun onD2dChanged(enabled: Boolean) {
-        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), !enabled)
-        if (enabled) {
-            BackupWorker.schedule(app)
-        } else {
-            BackupWorker.unschedule(app)
-        }
     }
 
 }

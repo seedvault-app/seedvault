@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.ui.notification
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
@@ -26,14 +27,13 @@ import com.stevesoltys.seedvault.restore.EXTRA_PACKAGE_NAME
 import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
 import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
-import com.stevesoltys.seedvault.transport.backup.ExpectedAppTotals
 import kotlin.math.min
 
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
 private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
-private const val NOTIFICATION_ID_OBSERVER = 1
+internal const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_SUCCESS = 2
 private const val NOTIFICATION_ID_ERROR = 3
 private const val NOTIFICATION_ID_RESTORE_ERROR = 4
@@ -50,14 +50,6 @@ internal class BackupNotificationManager(private val context: Context) {
         createNotificationChannel(getErrorChannel())
         createNotificationChannel(getRestoreErrorChannel())
     }
-    private var expectedApps: Int? = null
-    private var expectedOptOutApps: Int? = null
-    private var expectedAppTotals: ExpectedAppTotals? = null
-
-    /**
-     * Used as a (temporary) hack to fix progress reporting when fake d2d is enabled.
-     */
-    private var optOutAppsDone = false
 
     private fun getObserverChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_channel_title)
@@ -84,95 +76,70 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     /**
-     * Call this right after starting a backup.
+     * This should get called for each APK we are backing up.
      */
-    fun onBackupStarted(
-        expectedPackages: Int,
-        appTotals: ExpectedAppTotals,
-    ) {
-        updateBackupNotification(
-            infoText = "", // This passes quickly, no need to show something here
-            transferred = 0,
-            expected = appTotals.appsTotal
-        )
-        expectedApps = expectedPackages
-        expectedOptOutApps = appTotals.appsNotGettingBackedUp
-        expectedAppTotals = appTotals
-        optOutAppsDone = false
-        Log.i(TAG, "onBackupStarted $expectedApps + $expectedOptOutApps = ${appTotals.appsTotal}")
+    fun onApkBackup(packageName: String, name: CharSequence, transferred: Int, expected: Int) {
+        Log.i(TAG, "$transferred/$expected - $name ($packageName)")
+        val text = context.getString(R.string.notification_apk_text, name)
+        updateBackupNotification(text, transferred, expected)
     }
 
     /**
-     * This should get called before [onBackupUpdate].
-     * In case of d2d backups, this actually gets called some time after
-     * some apps were already backed up, so [onBackupUpdate] was called several times.
+     * This should get called for recording apps we don't back up.
      */
-    fun onOptOutAppBackup(packageName: String, transferred: Int, expected: Int) {
-        if (optOutAppsDone) return
+    fun onAppsNotBackedUp() {
+        Log.i(TAG, "onAppsNotBackedUp")
+        val text = context.getString(R.string.notification_apk_not_backed_up)
+        updateBackupNotification(text)
+    }
 
-        val text = "APK for $packageName"
-        if (expectedApps == null) {
-            updateBackgroundBackupNotification(text)
-        } else {
-            updateBackupNotification(text, transferred, expected + (expectedApps ?: 0))
-            if (expectedOptOutApps != null && expectedOptOutApps != expected) {
-                Log.w(TAG, "Number of packages not getting backed up mismatch: " +
-                    "$expectedOptOutApps != $expected")
-            }
-            expectedOptOutApps = expected
-            if (transferred == expected) optOutAppsDone = true
-        }
+    /**
+     * Call after [onApkBackup] or [onAppsNotBackedUp] were called.
+     */
+    fun onApkBackupDone() {
+        nm.cancel(NOTIFICATION_ID_OBSERVER)
+    }
+
+    /**
+     * Call this right after starting a backup.
+     */
+    fun onBackupStarted(expectedPackages: Int) {
+        updateBackupNotification(
+            text = "", // This passes quickly, no need to show something here
+            transferred = 0,
+            expected = expectedPackages
+        )
+        Log.i(TAG, "onBackupStarted - Expecting $expectedPackages apps")
     }
 
     /**
      * In the series of notification updates,
-     * this type is is expected to get called after [onOptOutAppBackup].
+     * this type is is expected to get called after [onApkBackup].
      */
-    fun onBackupUpdate(app: CharSequence, transferred: Int) {
-        val expected = expectedApps ?: error("expectedApps is null")
-        val addend = expectedOptOutApps ?: 0
-        updateBackupNotification(
-            infoText = app,
-            transferred = min(transferred + addend, expected + addend),
-            expected = expected + addend
-        )
+    fun onBackupUpdate(app: CharSequence, transferred: Int, total: Int) {
+        updateBackupNotification(app, min(transferred, total), total)
     }
 
     private fun updateBackupNotification(
-        infoText: CharSequence,
-        transferred: Int,
-        expected: Int,
+        text: CharSequence,
+        transferred: Int = 0,
+        expected: Int = 0,
     ) {
-        @Suppress("MagicNumber")
-        val percentage = (transferred.toFloat() / expected) * 100
-        val percentageStr = "%.0f%%".format(percentage)
-        Log.i(TAG, "$transferred/$expected - $percentageStr - $infoText")
-        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
-            setSmallIcon(R.drawable.ic_cloud_upload)
-            setContentTitle(context.getString(R.string.notification_title))
-            setContentText(percentageStr)
-            setOngoing(true)
-            setShowWhen(false)
-            setWhen(System.currentTimeMillis())
-            setProgress(expected, transferred, false)
-            priority = PRIORITY_DEFAULT
-            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
-        }.build()
+        val notification = getBackupNotification(text, transferred, expected)
         nm.notify(NOTIFICATION_ID_OBSERVER, notification)
     }
 
-    private fun updateBackgroundBackupNotification(infoText: CharSequence) {
-        Log.i(TAG, "$infoText")
-        val notification = Builder(context, CHANNEL_ID_OBSERVER).apply {
+    fun getBackupNotification(text: CharSequence, progress: Int = 0, total: Int = 0): Notification {
+        return Builder(context, CHANNEL_ID_OBSERVER).apply {
             setSmallIcon(R.drawable.ic_cloud_upload)
             setContentTitle(context.getString(R.string.notification_title))
+            setContentText(text)
             setOngoing(true)
             setShowWhen(false)
-            setWhen(System.currentTimeMillis())
-            setProgress(0, 0, true)
-            priority = PRIORITY_LOW
+            setProgress(total, progress, progress == 0 && total == 0)
+            priority = PRIORITY_DEFAULT
+            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
         }.build()
-        nm.notify(NOTIFICATION_ID_BACKGROUND, notification)
     }
 
     fun onServiceDestroyed() {
@@ -197,11 +164,10 @@ internal class BackupNotificationManager(private val context: Context) {
         // }
     }
 
-    fun onBackupFinished(success: Boolean, numBackedUp: Int?, size: Long) {
+    fun onBackupFinished(success: Boolean, numBackedUp: Int?, total: Int, size: Long) {
         val titleRes =
             if (success) R.string.notification_success_title else R.string.notification_failed_title
-        val total = expectedAppTotals?.appsTotal
-        val contentText = if (numBackedUp == null || total == null) null else {
+        val contentText = if (numBackedUp == null) null else {
             val sizeStr = Formatter.formatShortFileSize(context, size)
             context.getString(R.string.notification_success_text, numBackedUp, total, sizeStr)
         }
@@ -224,20 +190,6 @@ internal class BackupNotificationManager(private val context: Context) {
         }.build()
         nm.cancel(NOTIFICATION_ID_OBSERVER)
         nm.notify(NOTIFICATION_ID_SUCCESS, notification)
-        // reset number of expected apps
-        expectedOptOutApps = null
-        expectedApps = null
-        expectedAppTotals = null
-    }
-
-    fun hasActiveBackupNotifications(): Boolean {
-        nm.activeNotifications.forEach {
-            if (it.packageName == context.packageName) {
-                if (it.id == NOTIFICATION_ID_BACKGROUND) return true
-                if (it.id == NOTIFICATION_ID_OBSERVER) return it.isOngoing
-            }
-        }
-        return false
     }
 
     @SuppressLint("RestrictedApi")

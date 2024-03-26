@@ -10,6 +10,7 @@ import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.ARG_FOR_NEW_CODE
+import com.stevesoltys.seedvault.ui.storage.StorageCheckFragment
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,6 +36,19 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
         // add app status fragment on the stack, if started via intent
         if (intent?.action == ACTION_APP_STATUS_LIST) {
             showFragment(AppStatusFragment(), true)
+        }
+
+        // observe initialization and show/remove init fragment
+        // this can happen when enabling backup and storage wasn't initialized
+        viewModel.initEvent.observeEvent(this) { show ->
+            val tag = "INIT"
+            if (show) {
+                val title = getString(R.string.storage_check_fragment_backup_title)
+                showFragment(StorageCheckFragment.newInstance(title), true, tag)
+            } else {
+                val fragment = supportFragmentManager.findFragmentByTag(tag)
+                if (fragment?.isVisible == true) supportFragmentManager.popBackStack()
+            }
         }
     }
 

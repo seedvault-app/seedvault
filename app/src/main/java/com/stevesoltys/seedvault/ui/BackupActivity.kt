@@ -17,11 +17,13 @@ abstract class BackupActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    protected fun showFragment(f: Fragment, addToBackStack: Boolean = false) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, f)
-        if (addToBackStack) fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+    protected fun showFragment(f: Fragment, addToBackStack: Boolean = false, tag: String? = null) {
+        supportFragmentManager.beginTransaction().apply {
+            if (tag == null) replace(R.id.fragment, f)
+            else replace(R.id.fragment, f, tag)
+            if (addToBackStack) addToBackStack(null)
+            commit()
+        }
     }
 
 }

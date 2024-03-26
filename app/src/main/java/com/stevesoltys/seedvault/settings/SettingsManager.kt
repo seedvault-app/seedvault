@@ -1,6 +1,7 @@
 package com.stevesoltys.seedvault.settings
 
 import android.content.Context
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -17,6 +18,9 @@ import java.util.concurrent.ConcurrentSkipListSet
 internal const val PREF_KEY_TOKEN = "token"
 internal const val PREF_KEY_BACKUP_APK = "backup_apk"
 internal const val PREF_KEY_AUTO_RESTORE = "auto_restore"
+internal const val PREF_KEY_SCHED_FREQ = "scheduling_frequency"
+internal const val PREF_KEY_SCHED_METERED = "scheduling_metered"
+internal const val PREF_KEY_SCHED_CHARGING = "scheduling_charging"
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -42,6 +46,14 @@ class SettingsManager(private val context: Context) {
 
     @Volatile
     private var token: Long? = null
+
+    fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
+    }
 
     /**
      * This gets accessed by non-UI threads when saving with [PreferenceManager]
@@ -134,12 +146,23 @@ class SettingsManager(private val context: Context) {
     fun canDoBackupNow(): Boolean {
         val storage = getStorage() ?: return false
         val systemContext = context.getStorageContext { storage.isUsb }
-        return !storage.isUnavailableUsb(systemContext) && !storage.isUnavailableNetwork(context)
+        return !storage.isUnavailableUsb(systemContext) &&
+            !storage.isUnavailableNetwork(context, useMeteredNetwork)
     }
 
     fun backupApks(): Boolean {
         return prefs.getBoolean(PREF_KEY_BACKUP_APK, true)
     }
+
+    val backupFrequencyInMillis: Long
+        get() {
+            return prefs.getString(PREF_KEY_SCHED_FREQ, "86400000")?.toLongOrNull()
+                ?: 86400000 // 24h
+        }
+    val useMeteredNetwork: Boolean
+        get() = prefs.getBoolean(PREF_KEY_SCHED_METERED, false)
+    val backupOnlyWhenCharging: Boolean
+        get() = prefs.getBoolean(PREF_KEY_SCHED_CHARGING, true)
 
     fun isBackupEnabled(packageName: String) = !blacklistedApps.contains(packageName)
 
@@ -186,15 +209,16 @@ data class Storage(
      * Returns true if this is storage that requires network access,
      * but it isn't available right now.
      */
-    fun isUnavailableNetwork(context: Context): Boolean {
-        return requiresNetwork && !hasUnmeteredInternet(context)
+    fun isUnavailableNetwork(context: Context, allowMetered: Boolean): Boolean {
+        return requiresNetwork && !hasUnmeteredInternet(context, allowMetered)
     }
 
-    private fun hasUnmeteredInternet(context: Context): Boolean {
+    private fun hasUnmeteredInternet(context: Context, allowMetered: Boolean): Boolean {
         val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
         val isMetered = cm.isActiveNetworkMetered
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && !isMetered
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            (allowMetered || !isMetered)
     }
 }
 

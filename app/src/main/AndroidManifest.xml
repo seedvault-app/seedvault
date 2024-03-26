@@ -156,6 +156,11 @@
             </intent-filter>
         </receiver>
 
+        <!-- Used by Workmanager to schedule our workers -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
         <!-- Used to start actual BackupService depending on scheduling criteria -->
         <service
             android:name=".storage.StorageBackupJobService"

@@ -1,7 +1,6 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
 import android.app.backup.IBackupManager
-import android.os.UserHandle
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import cash.z.ecc.android.bip39.Mnemonics
@@ -12,8 +11,7 @@ import cash.z.ecc.android.bip39.toSeed
 import com.stevesoltys.seedvault.App
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -32,7 +30,7 @@ internal class RecoveryCodeViewModel(
     private val crypto: Crypto,
     private val keyManager: KeyManager,
     private val backupManager: IBackupManager,
-    private val backupCoordinator: BackupCoordinator,
+    private val backupInitializer: BackupInitializer,
     private val notificationManager: BackupNotificationManager,
     private val storageBackup: StorageBackup,
 ) : AndroidViewModel(app) {
@@ -102,17 +100,16 @@ internal class RecoveryCodeViewModel(
      */
     fun reinitializeBackupLocation() {
         Log.d(TAG, "Re-initializing backup location...")
+        // TODO this code is almost identical to BackupStorageViewModel#onLocationSet(), unify?
         GlobalScope.launch(Dispatchers.IO) {
             // remove old storage snapshots and clear cache
             storageBackup.deleteAllSnapshots()
             storageBackup.clearCache()
             try {
                 // initialize the new location
-                if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
-                    UserHandle.myUserId(),
-                    arrayOf(TRANSPORT_ID),
-                    null
-                )
+                if (backupManager.isBackupEnabled) backupInitializer.initialize({ }) {
+                    // no-op
+                }
             } catch (e: IOException) {
                 Log.e(TAG, "Error starting new RestoreSet", e)
             }

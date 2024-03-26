@@ -30,6 +30,11 @@
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_status_title">Backup status</string>
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
+    <string name="settings_backup_status_next_backup">Next backup: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Next backup (estimate): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">once conditions are fulfilled</string>
+    <string name="settings_backup_status_next_backup_usb">Backups will happen automatically when you plug in your USB drive</string>
+    <string name="settings_backup_scheduling_title">Backup scheduling</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="settings_backup_now">Backup now</string>
     <string name="settings_category_storage">Storage backup (beta)</string>
@@ -45,6 +50,15 @@
     <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
     <string name="settings_backup_new_code_dialog_message">To continue using app backups, you need to generate a new recovery code.\n\nWe are sorry for the inconvenience.</string>
     <string name="settings_backup_new_code_code_dialog_ok">New code</string>
+
+    <string name="settings_scheduling_frequency_title">Backup frequency</string>
+    <string name="settings_scheduling_frequency_12_hours">Every 12 hours</string>
+    <string name="settings_scheduling_frequency_daily">Daily</string>
+    <string name="settings_scheduling_frequency_3_days">Every 3 days</string>
+    <string name="settings_scheduling_frequency_weekly">Weekly</string>
+    <string name="settings_scheduling_category_conditions_title">Conditions</string>
+    <string name="settings_scheduling_metered_title">Back up when using mobile data</string>
+    <string name="settings_scheduling_charging_title">Back up only when charging</string>
 
     <string name="settings_expert_title">Expert settings</string>
     <string name="settings_expert_quota_title">Unlimited app quota</string>
@@ -122,6 +136,8 @@
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_success_channel_title">Success notification</string>
     <string name="notification_title">Backup running</string>
+    <string name="notification_apk_text">Backing up APK of %s</string>
+    <string name="notification_apk_not_backed_up">Saving list of apps we can not back up.</string>
     <string name="notification_backup_already_running">Backup already in progress</string>
     <string name="notification_backup_disabled">Backup not enabled</string>
 

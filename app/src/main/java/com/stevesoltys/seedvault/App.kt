@@ -9,7 +9,11 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.ServiceManager.getService
 import android.os.StrictMode
+import android.os.UserHandle
 import android.os.UserManager
+import android.provider.Settings
+import androidx.work.WorkManager
+import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -28,6 +32,8 @@ import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
 import com.stevesoltys.seedvault.ui.storage.RestoreStorageViewModel
+import com.stevesoltys.seedvault.worker.AppBackupWorker
+import com.stevesoltys.seedvault.worker.workerModule
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -41,6 +47,8 @@ import org.koin.dsl.module
  * @author Torsten Grote
  */
 open class App : Application() {
+
+    open val isTest: Boolean = false
 
     private val appModule = module {
         single { SettingsManager(this@App) }
@@ -78,6 +86,7 @@ open class App : Application() {
         permitDiskReads {
             migrateTokenFromMetadataToSettingsManager()
         }
+        if (!isTest) migrateToOwnScheduling()
     }
 
     protected open fun startKoin() = startKoin {
@@ -95,11 +104,13 @@ open class App : Application() {
         restoreModule,
         installModule,
         storageModule,
+        workerModule,
         appModule
     )
 
     private val settingsManager: SettingsManager by inject()
     private val metadataManager: MetadataManager by inject()
+    private val backupManager: IBackupManager by inject()
 
     /**
      * The responsibility for the current token was moved to the [SettingsManager]
@@ -114,6 +125,25 @@ open class App : Application() {
             settingsManager.setNewToken(token)
         }
     }
+
+    /**
+     * Disables the framework scheduling in favor of our own.
+     * Introduced in the first half of 2024 and can be removed after a suitable migration period.
+     */
+    protected open fun migrateToOwnScheduling() {
+        if (!isFrameworkSchedulingEnabled()) return // already on own scheduling
+
+        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
+        if (backupManager.isBackupEnabled) {
+            AppBackupWorker.schedule(applicationContext, settingsManager, UPDATE)
+        }
+        // cancel old D2D worker
+        WorkManager.getInstance(this).cancelUniqueWork("APP_BACKUP")
+    }
+
+    private fun isFrameworkSchedulingEnabled(): Boolean = Settings.Secure.getInt(
+        contentResolver, Settings.Secure.BACKUP_SCHEDULING_ENABLED, 1
+    ) == 1 // 1 means enabled which is the default
 
 }
 

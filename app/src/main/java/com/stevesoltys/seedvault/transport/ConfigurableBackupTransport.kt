@@ -130,8 +130,8 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
     }
 
-    override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long = runBlocking {
-        backupCoordinator.getBackupQuota(packageName, isFullBackup)
+    override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
+        return backupCoordinator.getBackupQuota(packageName, isFullBackup)
     }
 
     override fun clearBackupData(packageInfo: PackageInfo): Int = runBlocking {

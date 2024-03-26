@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ListPreference
+        android:defaultValue="86400000"
+        android:entries="@array/settings_scheduling_frequency_labels"
+        android:entryValues="@array/settings_scheduling_frequency_values"
+        app:icon="@drawable/ic_access_time"
+        app:key="scheduling_frequency"
+        app:title="@string/settings_scheduling_frequency_title"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceCategory
+        app:key="scheduling_category_conditions"
+        app:singleLineTitle="false"
+        app:title="@string/settings_scheduling_category_conditions_title">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="scheduling_metered"
+            android:title="@string/settings_scheduling_metered_title"
+            app:icon="@drawable/ic_network_warning"
+            app:singleLineTitle="false" />
+        <SwitchPreferenceCompat
+            android:id="@+id/d2d_backup_preference"
+            android:defaultValue="true"
+            android:key="scheduling_charging"
+            android:title="@string/settings_scheduling_charging_title"
+            app:icon="@drawable/ic_battery_charging_full"
+            app:singleLineTitle="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        android_target: [ 33, 34 ]
+        android_target: [ 34 ]
         emulator_type: [ aosp_atd ]
         d2d_backup_test: [ true, false ]
     steps:
@@ -40,7 +40,7 @@ jobs:
       - name: Run tests
         uses: Wandalen/wretry.action@v1.3.0
         with:
-          attempt_limit: 3
+          attempt_limit: 1
           action: reactivecircus/android-emulator-runner@v2
           with: |
             api-level: ${{ matrix.android_target }}

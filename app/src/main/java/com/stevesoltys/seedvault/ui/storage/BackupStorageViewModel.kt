@@ -1,30 +1,30 @@
 package com.stevesoltys.seedvault.ui.storage
 
 import android.app.Application
-import android.app.backup.BackupProgress
 import android.app.backup.IBackupManager
-import android.app.backup.IBackupObserver
+import android.app.job.JobInfo
 import android.net.Uri
-import android.os.UserHandle
 import android.util.Log
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.TRANSPORT_ID
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.storage.StorageBackupJobService
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.backup.BackupJobService
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 private val TAG = BackupStorageViewModel::class.java.simpleName
 
 internal class BackupStorageViewModel(
     private val app: Application,
     private val backupManager: IBackupManager,
-    private val backupCoordinator: BackupCoordinator,
+    private val backupInitializer: BackupInitializer,
     private val storageBackup: StorageBackup,
     settingsManager: SettingsManager,
 ) : StorageViewModel(app, settingsManager) {
@@ -33,19 +33,39 @@ internal class BackupStorageViewModel(
 
     override fun onLocationSet(uri: Uri) {
         val isUsb = saveStorage(uri)
+        if (isUsb) {
+            // disable storage backup if new storage is on USB
+            cancelBackupWorkers()
+        } else {
+            // enable it, just in case the previous storage was on USB,
+            // also to update the network requirement of the new storage
+            scheduleBackupWorkers()
+        }
         viewModelScope.launch(Dispatchers.IO) {
             // remove old storage snapshots and clear cache
+            // TODO is this needed? It also does create all 255 chunk folders which takes time
+            //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
             storageBackup.deleteAllSnapshots()
             storageBackup.clearCache()
             try {
                 // initialize the new location (if backups are enabled)
-                if (backupManager.isBackupEnabled) backupManager.initializeTransportsForUser(
-                    UserHandle.myUserId(),
-                    arrayOf(TRANSPORT_ID),
-                    // if storage is on USB and this is not SetupWizard, do a backup right away
-                    InitializationObserver(isUsb && !isSetupWizard)
-                ) else {
-                    InitializationObserver(false).backupFinished(0)
+                if (backupManager.isBackupEnabled) {
+                    val onError = {
+                        Log.e(TAG, "Error starting new RestoreSet")
+                        onInitializationError()
+                    }
+                    backupInitializer.initialize(onError) {
+                        val requestBackup = isUsb && !isSetupWizard
+                        if (requestBackup) {
+                            Log.i(TAG, "Requesting a backup now, because we use USB storage")
+                            AppBackupWorker.scheduleNow(app, reschedule = false)
+                        }
+                        // notify the UI that the location has been set
+                        mLocationChecked.postEvent(LocationResult())
+                    }
+                } else {
+                    // notify the UI that the location has been set
+                    mLocationChecked.postEvent(LocationResult())
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Error starting new RestoreSet", e)
@@ -54,32 +74,27 @@ internal class BackupStorageViewModel(
         }
     }
 
-    @WorkerThread
-    private inner class InitializationObserver(val requestBackup: Boolean) :
-        IBackupObserver.Stub() {
-        override fun onUpdate(currentBackupPackage: String, backupProgress: BackupProgress) {
-            // noop
-        }
-
-        override fun onResult(target: String, status: Int) {
-            // noop
-        }
-
-        override fun backupFinished(status: Int) {
-            if (Log.isLoggable(TAG, Log.INFO)) {
-                Log.i(TAG, "Initialization finished. Status: $status")
+    private fun scheduleBackupWorkers() {
+        val storage = settingsManager.getStorage() ?: error("no storage available")
+        if (!storage.isUsb) {
+            if (backupManager.isBackupEnabled) {
+                AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)
             }
-            if (status == 0) {
-                // notify the UI that the location has been set
-                mLocationChecked.postEvent(LocationResult())
-                if (requestBackup) {
-                    requestBackup(app)
-                }
-            } else {
-                // notify the UI that the location was invalid
-                onInitializationError()
-            }
+            if (settingsManager.isStorageBackupEnabled()) BackupJobService.scheduleJob(
+                context = app,
+                jobServiceClass = StorageBackupJobService::class.java,
+                periodMillis = TimeUnit.HOURS.toMillis(24),
+                networkType = if (storage.requiresNetwork) JobInfo.NETWORK_TYPE_UNMETERED
+                else JobInfo.NETWORK_TYPE_NONE,
+                deviceIdle = false,
+                charging = true
+            )
         }
+    }
+
+    private fun cancelBackupWorkers() {
+        AppBackupWorker.unschedule(app)
+        BackupJobService.cancelJob(app)
     }
 
     private fun onInitializationError() {

@@ -46,6 +46,13 @@
             app:summary="@string/settings_backup_apk_summary"
             app:title="@string/settings_backup_apk_title" />
 
+        <androidx.preference.Preference
+            app:fragment="com.stevesoltys.seedvault.settings.SchedulingFragment"
+            app:icon="@drawable/ic_access_time"
+            app:key="backup_scheduling"
+            app:title="@string/settings_backup_scheduling_title"
+            app:summary="Next backup: Never" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_category_storage">

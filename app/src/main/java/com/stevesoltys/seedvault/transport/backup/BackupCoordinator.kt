@@ -13,21 +13,17 @@ import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -65,7 +61,6 @@ internal class BackupCoordinator(
     private val plugin: StoragePlugin,
     private val kv: KVBackup,
     private val full: FullBackup,
-    private val apkBackup: ApkBackup,
     private val clock: Clock,
     private val packageService: PackageService,
     private val metadataManager: MetadataManager,
@@ -91,12 +86,13 @@ internal class BackupCoordinator(
      * @return the token of the new [RestoreSet].
      */
     @Throws(IOException::class)
-    private suspend fun startNewRestoreSet(): Long {
+    private suspend fun startNewRestoreSet() {
         val token = clock.time()
         Log.i(TAG, "Starting new RestoreSet with token $token...")
         settingsManager.setNewToken(token)
         plugin.startNewRestoreSet(token)
-        return token
+        Log.d(TAG, "Resetting backup metadata...")
+        metadataManager.onDeviceInitialization(token)
     }
 
     /**
@@ -120,18 +116,14 @@ internal class BackupCoordinator(
     suspend fun initializeDevice(): Int = try {
         // we don't respect the intended system behavior here by always starting a new [RestoreSet]
         // instead of simply deleting the current one
-        val token = startNewRestoreSet()
+        startNewRestoreSet()
         Log.i(TAG, "Initialize Device!")
         plugin.initializeDevice()
-        Log.d(TAG, "Resetting backup metadata for token $token...")
-        plugin.getMetadataOutputStream(token).use {
-            metadataManager.onDeviceInitialization(token, it)
-        }
         // [finishBackup] will only be called when we return [TRANSPORT_OK] here
         // so we remember that we initialized successfully
         state.calledInitialize = true
         TRANSPORT_OK
-    } catch (e: IOException) {
+    } catch (e: Exception) {
         Log.e(TAG, "Error initializing device", e)
         // Show error notification if we needed init or were ready for backups
         if (metadataManager.requiresInit || settingsManager.canDoBackupNow()) nm.onBackupError()
@@ -156,13 +148,7 @@ internal class BackupCoordinator(
      *                      otherwise for key-value backup.
      * @return Current limit on backup size in bytes.
      */
-    suspend fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
-        if (packageName != MAGIC_PACKAGE_MANAGER) {
-            // try to back up APK here as later methods are sometimes not called
-            // TODO move this into BackupWorker
-            backUpApk(context.packageManager.getPackageInfo(packageName, GET_SIGNING_CERTIFICATES))
-        }
-
+    fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         // report back quota
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")
         val quota = if (isFullBackup) full.getQuota() else kv.getQuota()
@@ -233,14 +219,11 @@ internal class BackupCoordinator(
         state.cancelReason = UNKNOWN_ERROR
         if (metadataManager.requiresInit) {
             Log.w(TAG, "Metadata requires re-init!")
-            // start a new restore set to upgrade from legacy format
-            // by starting a clean backup with all files using the new version
-            try {
-                startNewRestoreSet()
-            } catch (e: IOException) {
-                Log.e(TAG, "Error starting new restore set", e)
-            }
-            // this causes a backup error, but things should go back to normal afterwards
+            // Tell the system that we are not initialized, it will initialize us afterwards.
+            // This will start a new restore set to upgrade from legacy format
+            // by starting a clean backup with all files using the new version.
+            //
+            // This causes a backup error, but things should go back to normal afterwards.
             return TRANSPORT_NOT_INITIALIZED
         }
         val token = settingsManager.getToken() ?: error("no token in performFullBackup")
@@ -369,25 +352,14 @@ internal class BackupCoordinator(
             // tell K/V backup to finish
             var result = kv.finishBackup()
             if (result == TRANSPORT_OK) {
-                val isPmBackup = packageName == MAGIC_PACKAGE_MANAGER
+                val isNormalBackup = packageName != MAGIC_PACKAGE_MANAGER
                 // call onPackageBackedUp for @pm@ only if we can do backups right now
-                if (!isPmBackup || settingsManager.canDoBackupNow()) {
+                if (isNormalBackup || settingsManager.canDoBackupNow()) {
                     try {
                         onPackageBackedUp(packageInfo, BackupType.KV, size)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
                         result = TRANSPORT_PACKAGE_REJECTED
-                    }
-                }
-                // hook in here to back up APKs of apps that are otherwise not allowed for backup
-                // TODO move this into BackupWorker
-                if (isPmBackup && settingsManager.canDoBackupNow()) {
-                    try {
-                        backUpApksOfNotBackedUpPackages()
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error backing up APKs of opt-out apps: ", e)
-                        // We are re-throwing this, because we want to know about problems here
-                        throw e
                     }
                 }
             }
@@ -418,65 +390,6 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    @VisibleForTesting
-    internal suspend fun backUpApksOfNotBackedUpPackages() {
-        Log.d(TAG, "Checking if APKs of opt-out apps need backup...")
-        val notBackedUpPackages = packageService.notBackedUpPackages
-        notBackedUpPackages.forEachIndexed { i, packageInfo ->
-            val packageName = packageInfo.packageName
-            try {
-                nm.onOptOutAppBackup(packageName, i + 1, notBackedUpPackages.size)
-                val packageState = if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
-                val wasBackedUp = backUpApk(packageInfo, packageState)
-                if (wasBackedUp) {
-                    Log.d(TAG, "Was backed up: $packageName")
-                } else {
-                    Log.d(TAG, "Not backed up: $packageName - ${packageState.name}")
-                    val packageMetadata =
-                        metadataManager.getPackageMetadata(packageName)
-                    val oldPackageState = packageMetadata?.state
-                    if (oldPackageState != packageState) {
-                        Log.i(
-                            TAG, "Package $packageName was in $oldPackageState" +
-                                ", update to $packageState"
-                        )
-                        plugin.getMetadataOutputStream().use {
-                            metadataManager.onPackageBackupError(packageInfo, packageState, it)
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                Log.e(TAG, "Error backing up opt-out APK of $packageName", e)
-            }
-        }
-    }
-
-    /**
-     * Backs up an APK for the given [PackageInfo].
-     *
-     * @return true if a backup was performed and false if no backup was needed or it failed.
-     */
-    private suspend fun backUpApk(
-        packageInfo: PackageInfo,
-        packageState: PackageState = UNKNOWN_ERROR,
-    ): Boolean {
-        val packageName = packageInfo.packageName
-        return try {
-            apkBackup.backupApkIfNecessary(packageInfo, packageState) { name ->
-                val token = settingsManager.getToken() ?: throw IOException("no current token")
-                plugin.getOutputStream(token, name)
-            }?.let { packageMetadata ->
-                plugin.getMetadataOutputStream().use {
-                    metadataManager.onApkBackedUp(packageInfo, packageMetadata, it)
-                }
-                true
-            } ?: false
-        } catch (e: IOException) {
-            Log.e(TAG, "Error while writing APK or metadata for $packageName", e)
-            false
-        }
-    }
-
     private suspend fun onPackageBackedUp(packageInfo: PackageInfo, type: BackupType, size: Long?) {
         plugin.getMetadataOutputStream().use {
             metadataManager.onPackageBackedUp(packageInfo, type, size, it)
@@ -503,7 +416,10 @@ internal class BackupCoordinator(
             // back off if storage is removable and not available right now
             storage.isUnavailableUsb(context) -> longBackoff
             // back off if storage is on network, but we have no access
-            storage.isUnavailableNetwork(context) -> HOURS.toMillis(1)
+            storage.isUnavailableNetwork(
+                context = context,
+                allowMetered = settingsManager.useMeteredNetwork,
+            ) -> HOURS.toMillis(1)
             // otherwise no back off
             else -> 0L
         }

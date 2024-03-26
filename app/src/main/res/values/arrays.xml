@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: 2024 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
+<resources>
+    <string-array name="settings_scheduling_frequency_labels">
+        <item>@string/settings_scheduling_frequency_12_hours</item>
+        <item>@string/settings_scheduling_frequency_daily</item>
+        <item>@string/settings_scheduling_frequency_3_days</item>
+        <item>@string/settings_scheduling_frequency_weekly</item>
+    </string-array>
+
+    <string-array name="settings_scheduling_frequency_values">
+        <item>43200000</item>
+        <item>86400000</item>
+        <item>259200000</item>
+        <item>604800000</item>
+    </string-array>
+</resources>

@@ -28,10 +28,12 @@ import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
@@ -98,7 +100,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onDeviceInitialization(token, storageOutputStream)
+        manager.onDeviceInitialization(token)
 
         assertEquals(token, manager.getBackupToken())
         assertEquals(0L, manager.getLastBackupTime())
@@ -121,7 +123,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
 
         assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
 
@@ -144,7 +146,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
 
         assertEquals(packageMetadata.copy(system = true), manager.getPackageMetadata(packageName))
 
@@ -171,9 +173,9 @@ class MetadataManagerTest {
         )
 
         expectReadFromCache()
-        expectModifyMetadata(initialMetadata)
+        expectWriteToCache(initialMetadata)
 
-        manager.onApkBackedUp(packageInfo, updatedPackageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, updatedPackageMetadata)
 
         assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
 
@@ -184,7 +186,7 @@ class MetadataManagerTest {
     }
 
     @Test
-    fun `test onApkBackedUp() limits state changes`() {
+    fun `test onApkBackedUp() does not change package state`() {
         var version = Random.nextLong(Long.MAX_VALUE)
         var packageMetadata = PackageMetadata(
             version = version,
@@ -193,12 +195,12 @@ class MetadataManagerTest {
         )
 
         expectReadFromCache()
-        expectModifyMetadata(initialMetadata)
+        expectWriteToCache(initialMetadata)
         val oldState = UNKNOWN_ERROR
 
         // state doesn't change for APK_AND_DATA
         packageMetadata = packageMetadata.copy(version = ++version, state = APK_AND_DATA)
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
         assertEquals(
             packageMetadata.copy(state = oldState),
             manager.getPackageMetadata(packageName)
@@ -206,7 +208,7 @@ class MetadataManagerTest {
 
         // state doesn't change for QUOTA_EXCEEDED
         packageMetadata = packageMetadata.copy(version = ++version, state = QUOTA_EXCEEDED)
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
         assertEquals(
             packageMetadata.copy(state = oldState),
             manager.getPackageMetadata(packageName)
@@ -214,31 +216,64 @@ class MetadataManagerTest {
 
         // state doesn't change for NO_DATA
         packageMetadata = packageMetadata.copy(version = ++version, state = NO_DATA)
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
         assertEquals(
             packageMetadata.copy(state = oldState),
             manager.getPackageMetadata(packageName)
         )
 
-        // state DOES change for NOT_ALLOWED
+        // state doesn't change for NOT_ALLOWED
         packageMetadata = packageMetadata.copy(version = ++version, state = NOT_ALLOWED)
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
         assertEquals(
-            packageMetadata.copy(state = NOT_ALLOWED),
+            packageMetadata.copy(state = oldState),
             manager.getPackageMetadata(packageName)
         )
 
-        // state DOES change for WAS_STOPPED
+        // state doesn't change for WAS_STOPPED
         packageMetadata = packageMetadata.copy(version = ++version, state = WAS_STOPPED)
-        manager.onApkBackedUp(packageInfo, packageMetadata, storageOutputStream)
+        manager.onApkBackedUp(packageInfo, packageMetadata)
         assertEquals(
-            packageMetadata.copy(state = WAS_STOPPED),
+            packageMetadata.copy(state = oldState),
             manager.getPackageMetadata(packageName)
         )
 
         verify {
             cacheInputStream.close()
             cacheOutputStream.close()
+        }
+    }
+
+    @Test
+    fun `test onApkBackedUp() throws while writing local cache`() {
+        val packageMetadata = PackageMetadata(
+            time = 0L,
+            version = Random.nextLong(Long.MAX_VALUE),
+            installer = getRandomString(),
+            signatures = listOf("sig")
+        )
+
+        expectReadFromCache()
+
+        assertNull(manager.getPackageMetadata(packageName))
+
+        every { metadataWriter.encode(initialMetadata) } returns encodedMetadata
+        every {
+            context.openFileOutput(
+                METADATA_CACHE_FILE,
+                MODE_PRIVATE
+            )
+        } throws FileNotFoundException()
+
+        assertThrows<IOException> {
+            manager.onApkBackedUp(packageInfo, packageMetadata)
+        }
+
+        // metadata change got reverted
+        assertNull(manager.getPackageMetadata(packageName))
+
+        verify {
+            cacheInputStream.close()
         }
     }
 
@@ -317,10 +352,7 @@ class MetadataManagerTest {
         }
 
         assertEquals(0L, manager.getLastBackupTime()) // time was reverted
-        assertEquals(
-            initialMetadata.packageMetadataMap[packageName],
-            manager.getPackageMetadata(packageName)
-        )
+        assertNull(manager.getPackageMetadata(packageName)) // no package metadata got added
 
         verify { cacheInputStream.close() }
     }
@@ -359,6 +391,70 @@ class MetadataManagerTest {
     }
 
     @Test
+    fun `test onPackageDoesNotGetBackedUp() updates state`() {
+        val updatedMetadata = initialMetadata.copy()
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = NOT_ALLOWED)
+
+        expectReadFromCache()
+        expectWriteToCache(updatedMetadata)
+
+        manager.onPackageDoesNotGetBackedUp(packageInfo, NOT_ALLOWED)
+
+        assertEquals(
+            updatedMetadata.packageMetadataMap[packageName],
+            manager.getPackageMetadata(packageName),
+        )
+    }
+
+    @Test
+    fun `test onPackageDoesNotGetBackedUp() creates new state`() {
+        val updatedMetadata = initialMetadata.copy()
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = WAS_STOPPED)
+        initialMetadata.packageMetadataMap.remove(packageName)
+
+        expectReadFromCache()
+        expectWriteToCache(updatedMetadata)
+
+        manager.onPackageDoesNotGetBackedUp(packageInfo, WAS_STOPPED)
+
+        assertEquals(
+            updatedMetadata.packageMetadataMap[packageName],
+            manager.getPackageMetadata(packageName),
+        )
+    }
+
+    @Test
+    fun `test onPackageBackupError() updates state`() {
+        val updatedMetadata = initialMetadata.copy()
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = NO_DATA)
+
+        expectReadFromCache()
+        expectModifyMetadata(updatedMetadata)
+
+        manager.onPackageBackupError(packageInfo, NO_DATA, storageOutputStream, BackupType.KV)
+    }
+
+    @Test
+    fun `test onPackageBackupError() inserts new package`() {
+        val updatedMetadata = initialMetadata.copy()
+        updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = WAS_STOPPED)
+        initialMetadata.packageMetadataMap.remove(packageName)
+
+        expectReadFromCache()
+        expectModifyMetadata(updatedMetadata)
+
+        manager.onPackageBackupError(packageInfo, WAS_STOPPED, storageOutputStream)
+    }
+
+    @Test
+    fun `test uploadMetadata() uploads`() {
+        expectReadFromCache()
+        every { metadataWriter.write(initialMetadata, storageOutputStream) } just Runs
+
+        manager.uploadMetadata(storageOutputStream)
+    }
+
+    @Test
     fun `test getBackupToken() on first run`() {
         every { context.openFileInput(METADATA_CACHE_FILE) } throws FileNotFoundException()
 
@@ -386,15 +482,7 @@ class MetadataManagerTest {
 
     private fun expectModifyMetadata(metadata: BackupMetadata) {
         every { metadataWriter.write(metadata, storageOutputStream) } just Runs
-        every { metadataWriter.encode(metadata) } returns encodedMetadata
-        every {
-            context.openFileOutput(
-                METADATA_CACHE_FILE,
-                MODE_PRIVATE
-            )
-        } returns cacheOutputStream
-        every { cacheOutputStream.write(encodedMetadata) } just Runs
-        every { cacheOutputStream.close() } just Runs
+        expectWriteToCache(metadata)
     }
 
     private fun expectReadFromCache() {
@@ -404,6 +492,18 @@ class MetadataManagerTest {
         every { cacheInputStream.read(byteArray) } returns -1
         every { metadataReader.decode(ByteArray(0)) } returns initialMetadata
         every { cacheInputStream.close() } just Runs
+    }
+
+    private fun expectWriteToCache(metadata: BackupMetadata) {
+        every { metadataWriter.encode(metadata) } returns encodedMetadata
+        every {
+            context.openFileOutput(
+                METADATA_CACHE_FILE,
+                MODE_PRIVATE
+            )
+        } returns cacheOutputStream
+        every { cacheOutputStream.write(encodedMetadata) } just Runs
+        every { cacheOutputStream.close() } just Runs
     }
 
 }

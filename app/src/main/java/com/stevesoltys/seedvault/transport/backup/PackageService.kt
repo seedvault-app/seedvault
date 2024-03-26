@@ -74,6 +74,22 @@ internal class PackageService(
         }
 
     /**
+     * A list of packages that is installed and that we need to re-install for restore,
+     * such as user-installed packages or updated system apps.
+     */
+    val allUserPackages: List<PackageInfo>
+        @WorkerThread
+        get() {
+            // We need the GET_SIGNING_CERTIFICATES flag here,
+            // because the package info is used by [ApkBackup] which needs signing info.
+            return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
+                .filter { packageInfo -> // only apps that are:
+                    !packageInfo.isNotUpdatedSystemApp() && // not vanilla system apps
+                        packageInfo.packageName != context.packageName // not this app
+                }
+        }
+
+    /**
      * A list of packages that will not be backed up,
      * because they are currently force-stopped for example.
      */
@@ -90,9 +106,9 @@ internal class PackageService(
                 }.sortedBy { packageInfo ->
                     packageInfo.packageName
                 }.also { notAllowed ->
-                    // log eligible packages
+                    // log packages that don't get backed up
                     if (Log.isLoggable(TAG, INFO)) {
-                        Log.i(TAG, "${notAllowed.size} apps do not allow backup:")
+                        Log.i(TAG, "${notAllowed.size} apps do not get backed up:")
                         logPackages(notAllowed.map { it.packageName })
                     }
                 }
@@ -122,22 +138,6 @@ internal class PackageService(
                 !packageInfo.allowsBackup() &&
                     !packageInfo.isSystemApp()
             }
-        }
-
-    val expectedAppTotals: ExpectedAppTotals
-        @WorkerThread
-        get() {
-            var appsTotal = 0
-            var appsNotIncluded = 0
-            packageManager.getInstalledPackages(GET_INSTRUMENTATION).forEach { packageInfo ->
-                if (packageInfo.isUserVisible(context)) {
-                    appsTotal++
-                    if (packageInfo.doesNotGetBackedUp()) {
-                        appsNotIncluded++
-                    }
-                }
-            }
-            return ExpectedAppTotals(appsTotal, appsNotIncluded)
         }
 
     fun getVersionName(packageName: String): String? = try {
@@ -207,19 +207,6 @@ internal class PackageService(
         return !allowsBackup() || isStopped()
     }
 }
-
-internal data class ExpectedAppTotals(
-    /**
-     * The total number of non-system apps eligible for backup.
-     */
-    val appsTotal: Int,
-    /**
-     * The number of non-system apps that do not get backed up.
-     * These are included here, because we'll at least back up their APKs,
-     * so at least the app itself does get restored.
-     */
-    val appsNotGettingBackedUp: Int,
-)
 
 internal fun PackageInfo.isUserVisible(context: Context): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false

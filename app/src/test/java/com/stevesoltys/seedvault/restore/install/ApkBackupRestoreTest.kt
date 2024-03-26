@@ -10,12 +10,11 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.transport.backup.ApkBackup
+import com.stevesoltys.seedvault.worker.ApkBackup
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -121,7 +120,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
-        apkBackup.backupApkIfNecessary(packageInfo, PackageState.APK_AND_DATA, outputStreamGetter)
+        apkBackup.backupApkIfNecessary(packageInfo, outputStreamGetter)
 
         assertArrayEquals(apkBytes, outputStream.toByteArray())
         assertArrayEquals(splitBytes, splitOutputStream.toByteArray())

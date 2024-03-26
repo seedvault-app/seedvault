@@ -14,9 +14,6 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
-import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
@@ -36,7 +33,7 @@ internal class MetadataManager(
     private val crypto: Crypto,
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
 ) {
 
     private val uninitializedMetadata = BackupMetadata(token = 0L, salt = "")
@@ -61,14 +58,15 @@ internal class MetadataManager(
     /**
      * Call this when initializing a new device.
      *
-     * Existing [BackupMetadata] will be cleared, use the given new token,
-     * and written encrypted to the given [OutputStream] as well as the internal cache.
+     * Existing [BackupMetadata] will be cleared
+     * and new metadata with the given [token] will be written to the internal cache
+     * with a fresh salt.
      */
     @Synchronized
     @Throws(IOException::class)
-    fun onDeviceInitialization(token: Long, metadataOutputStream: OutputStream) {
+    fun onDeviceInitialization(token: Long) {
         val salt = crypto.getRandomBytes(METADATA_SALT_SIZE).encodeBase64()
-        modifyMetadata(metadataOutputStream) {
+        modifyCachedMetadata {
             metadata = BackupMetadata(token = token, salt = salt)
         }
     }
@@ -76,42 +74,25 @@ internal class MetadataManager(
     /**
      * Call this after a package's APK has been backed up successfully.
      *
-     * It updates the packages' metadata
-     * and writes it encrypted to the given [OutputStream] as well as the internal cache.
-     *
-     * Closing the [OutputStream] is the responsibility of the caller.
+     * It updates the packages' metadata to the internal cache.
+     * You still need to call [uploadMetadata] to persist all local modifications.
      */
     @Synchronized
     @Throws(IOException::class)
     fun onApkBackedUp(
         packageInfo: PackageInfo,
         packageMetadata: PackageMetadata,
-        metadataOutputStream: OutputStream,
     ) {
         val packageName = packageInfo.packageName
         metadata.packageMetadataMap[packageName]?.let {
             check(packageMetadata.version != null) {
                 "APK backup returned version null"
             }
-            check(it.version == null || it.version < packageMetadata.version) {
-                "APK backup backed up the same or a smaller version:" +
-                    "was ${it.version} is ${packageMetadata.version}"
-            }
         }
         val oldPackageMetadata = metadata.packageMetadataMap[packageName]
             ?: PackageMetadata()
-        // only allow state change if backup of this package is not allowed,
-        // because we need to change from the default of UNKNOWN_ERROR here,
-        // but otherwise don't want to modify the state since set elsewhere.
-        val newState =
-            if (packageMetadata.state == NOT_ALLOWED || packageMetadata.state == WAS_STOPPED) {
-                packageMetadata.state
-            } else {
-                oldPackageMetadata.state
-            }
-        modifyMetadata(metadataOutputStream) {
+        modifyCachedMetadata {
             metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
-                state = newState,
                 system = packageInfo.isSystemApp(),
                 version = packageMetadata.version,
                 installer = packageMetadata.installer,
@@ -143,21 +124,20 @@ internal class MetadataManager(
             val now = clock.time()
             metadata.time = now
             metadata.d2dBackup = settingsManager.d2dBackupsEnabled()
-
-            if (metadata.packageMetadataMap.containsKey(packageName)) {
-                metadata.packageMetadataMap[packageName]!!.time = now
-                metadata.packageMetadataMap[packageName]!!.state = APK_AND_DATA
-                metadata.packageMetadataMap[packageName]!!.backupType = type
-                // don't override a previous K/V size, if there were no K/V changes
-                if (size != null) metadata.packageMetadataMap[packageName]!!.size = size
-            } else {
-                metadata.packageMetadataMap[packageName] = PackageMetadata(
+            metadata.packageMetadataMap.getOrPut(packageName) {
+                PackageMetadata(
                     time = now,
                     state = APK_AND_DATA,
                     backupType = type,
                     size = size,
                     system = packageInfo.isSystemApp(),
                 )
+            }.apply {
+                time = now
+                state = APK_AND_DATA
+                backupType = type
+                // don't override a previous K/V size, if there were no K/V changes
+                if (size != null) this.size = size
             }
         }
     }
@@ -177,24 +157,69 @@ internal class MetadataManager(
         backupType: BackupType? = null,
     ) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
-        val packageName = packageInfo.packageName
         modifyMetadata(metadataOutputStream) {
-            if (metadata.packageMetadataMap.containsKey(packageName)) {
-                metadata.packageMetadataMap[packageName]!!.state = packageState
-            } else {
-                metadata.packageMetadataMap[packageName] = PackageMetadata(
+            metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
+                PackageMetadata(
                     time = 0L,
                     state = packageState,
                     backupType = backupType,
                     system = packageInfo.isSystemApp()
                 )
-            }
+            }.state = packageState
+        }
+    }
+
+    /**
+     * Call this for all packages we can not back up for some reason.
+     *
+     * It updates the packages' local metadata.
+     * You still need to call [uploadMetadata] to persist all local modifications.
+     */
+    @Synchronized
+    @Throws(IOException::class)
+    internal fun onPackageDoesNotGetBackedUp(
+        packageInfo: PackageInfo,
+        packageState: PackageState,
+    ) = modifyCachedMetadata {
+        metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
+            PackageMetadata(
+                time = 0L,
+                state = packageState,
+                system = packageInfo.isSystemApp(),
+            )
+        }.state = packageState
+    }
+
+    /**
+     * Uploads metadata to given [metadataOutputStream] after performing local modifications.
+     */
+    @Synchronized
+    @Throws(IOException::class)
+    fun uploadMetadata(metadataOutputStream: OutputStream) {
+        metadataWriter.write(metadata, metadataOutputStream)
+    }
+
+    @Throws(IOException::class)
+    private fun modifyCachedMetadata(modFun: () -> Unit) {
+        val oldMetadata = metadata.copy( // copy map, otherwise it will re-use same reference
+            packageMetadataMap = PackageMetadataMap(metadata.packageMetadataMap),
+        )
+        try {
+            modFun.invoke()
+            writeMetadataToCache()
+        } catch (e: IOException) {
+            Log.w(TAG, "Error writing metadata to storage", e)
+            // revert metadata and do not write it to cache
+            metadata = oldMetadata
+            throw IOException(e)
         }
     }
 
     @Throws(IOException::class)
     private fun modifyMetadata(metadataOutputStream: OutputStream, modFun: () -> Unit) {
-        val oldMetadata = metadata.copy()
+        val oldMetadata = metadata.copy( // copy map, otherwise it will re-use same reference
+            packageMetadataMap = PackageMetadataMap(metadata.packageMetadataMap),
+        )
         try {
             modFun.invoke()
             metadataWriter.write(metadata, metadataOutputStream)
@@ -240,18 +265,6 @@ internal class MetadataManager(
     @Synchronized
     fun getPackageMetadata(packageName: String): PackageMetadata? {
         return metadata.packageMetadataMap[packageName]?.copy()
-    }
-
-    @Synchronized
-    fun getPackagesNumBackedUp(): Int {
-        // FIXME we are under-reporting packages here,
-        //  because we have no way to also include upgraded system apps
-        return metadata.packageMetadataMap.filter { (_, packageMetadata) ->
-            !packageMetadata.system && ( // ignore system apps
-                packageMetadata.state == APK_AND_DATA || // either full success
-                    packageMetadata.state == NO_DATA // or apps that simply had no data
-                )
-        }.count()
     }
 
     @Synchronized

@@ -19,6 +19,8 @@ import org.koin.dsl.module
 
 class TestApp : App() {
 
+    override val isTest: Boolean = true
+
     private val testCryptoModule = module {
         factory<CipherFactory> { CipherFactoryImpl(get()) }
         single<KeyManager> { KeyManagerTestImpl() }

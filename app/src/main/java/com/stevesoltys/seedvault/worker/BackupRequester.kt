@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.worker
 
 import android.app.backup.BackupManager
 import android.app.backup.IBackupManager
@@ -12,6 +12,7 @@ import android.os.RemoteException
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.BackupMonitor
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
 import org.koin.core.component.KoinComponent
@@ -34,12 +35,13 @@ internal class BackupRequester(
     val packageService: PackageService,
 ) : KoinComponent {
 
+    val isBackupEnabled: Boolean get() = backupManager.isBackupEnabled
+
     private val packages = packageService.eligiblePackages
     private val observer = NotificationBackupObserver(
         context = context,
         backupRequester = this,
         requestedPackages = packages.size,
-        appTotals = packageService.expectedAppTotals,
     )
     private val monitor = BackupMonitor()
 
@@ -100,7 +102,7 @@ internal class BackupRequester(
             (packageIndex + NUM_PACKAGES_PER_TRANSACTION).coerceAtMost(packages.size)
         val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
         val numBackingUp = packageIndex + packageChunk.size
-        Log.i(TAG, "Requesting backup for $numBackingUp/${packages.size} packages...")
+        Log.i(TAG, "Requesting backup for $numBackingUp of ${packages.size} packages...")
         packageIndex += packageChunk.size
         return packageChunk
     }

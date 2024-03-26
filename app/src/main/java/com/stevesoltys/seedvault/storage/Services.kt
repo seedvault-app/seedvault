@@ -1,7 +1,8 @@
 package com.stevesoltys.seedvault.storage
 
 import android.content.Intent
-import com.stevesoltys.seedvault.transport.requestBackup
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.worker.AppBackupWorker
 import org.calyxos.backup.storage.api.BackupObserver
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StorageBackup
@@ -23,6 +24,7 @@ force running with:
   adb shell cmd jobscheduler run -f com.stevesoltys.seedvault 0
 
  */
+
 internal class StorageBackupJobService : BackupJobService(StorageBackupService::class.java)
 
 internal class StorageBackupService : BackupService() {
@@ -32,6 +34,7 @@ internal class StorageBackupService : BackupService() {
     }
 
     override val storageBackup: StorageBackup by inject()
+    private val settingsManager: SettingsManager by inject()
 
     // use lazy delegate because context isn't available during construction time
     override val backupObserver: BackupObserver by lazy {
@@ -40,7 +43,8 @@ internal class StorageBackupService : BackupService() {
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {
         if (intent.getBooleanExtra(EXTRA_START_APP_BACKUP, false)) {
-            requestBackup(applicationContext)
+            val isUsb = settingsManager.getStorage()?.isUsb ?: false
+            AppBackupWorker.scheduleNow(applicationContext, reschedule = !isUsb)
         }
     }
 }
