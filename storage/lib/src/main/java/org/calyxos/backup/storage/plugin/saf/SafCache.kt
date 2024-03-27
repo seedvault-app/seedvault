@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.plugin.saf
 
 import androidx.documentfile.provider.DocumentFile
 import org.calyxos.backup.storage.api.StoredSnapshot
+import org.calyxos.backup.storage.plugin.PluginConstants.CHUNK_FOLDER_COUNT
 
 /**
  * Accessing files and attributes via SAF is costly.

@@ -108,7 +108,7 @@ internal class SmallFileBackup(
      * Returns null, if there's space in the zip chunk and the next file can be added.
      */
     @Throws(IOException::class, GeneralSecurityException::class)
-    private fun makeZipChunk(
+    private suspend fun makeZipChunk(
         window: List<ContentFile>,
         missingChunkIds: List<String>,
     ): SmallFileBackupResult? {
@@ -127,7 +127,7 @@ internal class SmallFileBackup(
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    private fun finalizeAndReset(
+    private suspend fun finalizeAndReset(
         zipChunker: ZipChunker,
         missingChunkIds: List<String>,
     ): SmallFileBackupResult {

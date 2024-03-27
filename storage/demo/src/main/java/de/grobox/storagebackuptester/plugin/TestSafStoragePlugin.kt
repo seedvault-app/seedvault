@@ -42,12 +42,12 @@ class TestSafStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override fun getChunkOutputStream(chunkId: String): OutputStream {
+    override suspend fun getChunkOutputStream(chunkId: String): OutputStream {
         if (getLocationUri() == null) return nullStream
         return super.getChunkOutputStream(chunkId)
     }
 
-    override fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
+    override suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
         if (root == null) return nullStream
         return super.getBackupSnapshotOutputStream(timestamp)
     }

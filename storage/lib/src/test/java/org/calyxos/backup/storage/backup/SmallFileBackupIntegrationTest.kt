@@ -91,7 +91,7 @@ internal class SmallFileBackupIntegrationTest {
 
         every { mac.doFinal(any<ByteArray>()) } returns chunkId
         every { chunksCache.get(any()) } returns null
-        every { storagePlugin.getChunkOutputStream(any()) } returns outputStream2
+        coEvery { storagePlugin.getChunkOutputStream(any()) } returns outputStream2
         every {
             chunksCache.insert(match<CachedChunk> { cachedChunk ->
                 cachedChunk.id == chunkId.toHexString() &&

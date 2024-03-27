@@ -22,6 +22,7 @@ public sealed class SnapshotResult {
 public data class StoredSnapshot(
     /**
      * The unique ID of the current device/user combination chosen by the [StoragePlugin].
+     * It may include an '.sv' extension.
      */
     public val userId: String,
     /**

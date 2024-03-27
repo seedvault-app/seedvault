@@ -32,10 +32,10 @@ public interface StoragePlugin {
     public fun hasMasterKey(): Boolean
 
     @Throws(IOException::class)
-    public fun getChunkOutputStream(chunkId: String): OutputStream
+    public suspend fun getChunkOutputStream(chunkId: String): OutputStream
 
     @Throws(IOException::class)
-    public fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream
+    public suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream
 
     /* Restore */
 

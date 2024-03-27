@@ -2,13 +2,11 @@ package com.stevesoltys.seedvault.plugins.webdav
 
 import android.content.Context
 import android.util.Log
-import at.bitfire.dav4jvm.BasicDigestAuthHandler
 import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.ResourceType
-import at.bitfire.dav4jvm.property.ResourceType.Companion.COLLECTION
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
@@ -16,65 +14,25 @@ import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.FILE_NO_MEDIA
 import com.stevesoltys.seedvault.plugins.tokenRegex
 import com.stevesoltys.seedvault.settings.Storage
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okio.BufferedSink
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-private val TAG = WebDavStoragePlugin::class.java.simpleName
-const val DEBUG_LOG = true
-const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
-
-@OptIn(DelicateCoroutinesApi::class)
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class WebDavStoragePlugin(
     context: Context,
     webDavConfig: WebDavConfig,
-) : StoragePlugin {
-
-    private val authHandler = BasicDigestAuthHandler(
-        domain = null, // Optional, to only authenticate against hosts with this domain.
-        username = webDavConfig.username,
-        password = webDavConfig.password,
-    )
-    private val okHttpClient = OkHttpClient.Builder()
-        .followRedirects(false)
-        .authenticator(authHandler)
-        .addNetworkInterceptor(authHandler)
-        .build()
-
-    private val url = "${webDavConfig.url}/$DIRECTORY_ROOT"
+) : WebDavStorage(webDavConfig), StoragePlugin {
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
-        try {
-            val location = "$url/$token".toHttpUrl()
-            val davCollection = DavCollection(okHttpClient, location)
+        val location = "$url/$token".toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
 
-            val response = suspendCoroutine { cont ->
-                davCollection.mkCol(null) { response ->
-                    cont.resume(response)
-                }
-            }
-            debugLog { "startNewRestoreSet($token) = $response" }
-        } catch (e: Exception) {
-            if (e is IOException) throw e
-            else throw IOException(e)
-        }
+        val response = davCollection.createFolder()
+        debugLog { "startNewRestoreSet($token) = $response" }
     }
 
     @Throws(IOException::class)
@@ -107,8 +65,9 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getOutputStream(token: Long, name: String): OutputStream {
+        val location = "$url/$token/$name".toHttpUrl()
         return try {
-            doGetOutputStream(token, name)
+            getOutputStream(location)
         } catch (e: Exception) {
             if (e is IOException) throw e
             else throw IOException("Error getting OutputStream for $token and $name: ", e)
@@ -116,65 +75,14 @@ internal class WebDavStoragePlugin(
     }
 
     @Throws(IOException::class)
-    private suspend fun doGetOutputStream(token: Long, name: String): OutputStream {
-        val location = "$url/$token/$name".toHttpUrl()
-        val davCollection = DavCollection(okHttpClient, location)
-
-        val pipedInputStream = PipedInputStream()
-        val pipedOutputStream = PipedCloseActionOutputStream(pipedInputStream)
-
-        val body = object : RequestBody() {
-            override fun contentType() = "application/octet-stream".toMediaType()
-            override fun writeTo(sink: BufferedSink) {
-                pipedInputStream.use { inputStream ->
-                    sink.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-            }
-        }
-        val deferred = GlobalScope.async(Dispatchers.IO) {
-            davCollection.put(body) { response ->
-                debugLog { "getOutputStream($token, $name) = $response" }
-            }
-        }
-        pipedOutputStream.doOnClose {
-            runBlocking { // blocking i/o wait
-                deferred.await()
-            }
-        }
-        return pipedOutputStream
-    }
-
-    @Throws(IOException::class)
     override suspend fun getInputStream(token: Long, name: String): InputStream {
+        val location = "$url/$token/$name".toHttpUrl()
         return try {
-            doGetInputStream(token, name)
+            getInputStream(location)
         } catch (e: Exception) {
             if (e is IOException) throw e
             else throw IOException("Error getting InputStream for $token and $name: ", e)
         }
-    }
-
-    @Throws(IOException::class)
-    private fun doGetInputStream(token: Long, name: String): InputStream {
-        val location = "$url/$token/$name".toHttpUrl()
-        val davCollection = DavCollection(okHttpClient, location)
-
-        val pipedInputStream = PipedInputStream()
-        val pipedOutputStream = PipedOutputStream(pipedInputStream)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            davCollection.get(accept = "", headers = null) { response ->
-                val inputStream = response.body?.byteStream()
-                    ?: throw IOException("No response body")
-                debugLog { "getInputStream($token, $name) = $response" }
-                pipedOutputStream.use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-        }
-        return pipedInputStream
     }
 
     @Throws(IOException::class)
@@ -262,36 +170,6 @@ internal class WebDavStoragePlugin(
             !name.endsWith(".SeedSnap")
     }
 
-    private fun Response.isFolder(): Boolean {
-        return this[ResourceType::class.java]?.types?.contains(COLLECTION) == true
-    }
-
     override val providerPackageName: String = context.packageName // 100% built-in plugin
-
-    private class PipedCloseActionOutputStream(
-        inputStream: PipedInputStream,
-    ) : PipedOutputStream(inputStream) {
-
-        private var onClose: (() -> Unit)? = null
-
-        @Throws(IOException::class)
-        override fun close() {
-            super.close()
-            try {
-                onClose?.invoke()
-            } catch (e: Exception) {
-                if (e is IOException) throw e
-                else throw IOException(e)
-            }
-        }
-
-        fun doOnClose(function: () -> Unit) {
-            this.onClose = function
-        }
-    }
-
-    private fun debugLog(block: () -> String) {
-        if (DEBUG_LOG) Log.d(TAG, block())
-    }
 
 }

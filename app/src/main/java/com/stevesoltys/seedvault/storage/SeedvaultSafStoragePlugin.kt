@@ -8,7 +8,7 @@ import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import org.calyxos.backup.storage.plugin.saf.SafStoragePlugin
 import javax.crypto.SecretKey
 
-internal class SeedvaultStoragePlugin(
+internal class SeedvaultSafStoragePlugin(
     private val appContext: Context,
     private val storage: DocumentsStorage,
     private val keyManager: KeyManager,

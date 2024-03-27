@@ -37,7 +37,7 @@ internal class ChunkWriter(
     private val buffer = ByteArray(bufferSize)
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    fun writeChunk(
+    suspend fun writeChunk(
         inputStream: InputStream,
         chunks: List<Chunk>,
         missingChunkIds: List<String>,
@@ -67,7 +67,7 @@ internal class ChunkWriter(
     }
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    private fun writeChunkData(chunkId: String, writer: (OutputStream) -> Unit) {
+    private suspend fun writeChunkData(chunkId: String, writer: (OutputStream) -> Unit) {
         storagePlugin.getChunkOutputStream(chunkId).use { chunkStream ->
             chunkStream.write(VERSION.toInt())
             val ad = streamCrypto.getAssociatedDataForChunk(chunkId)
@@ -102,7 +102,7 @@ internal class ChunkWriter(
      * @return true if the chunk was written or false, if it was present already.
      */
     @Throws(IOException::class, GeneralSecurityException::class)
-    fun writeZipChunk(
+    suspend fun writeZipChunk(
         chunk: ZipChunk,
         zip: ByteArrayOutputStream,
         missingChunkIds: List<String>,

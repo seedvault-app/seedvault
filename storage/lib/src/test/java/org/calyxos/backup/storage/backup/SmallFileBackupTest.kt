@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.backup
 
 import android.content.ContentResolver
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -99,7 +100,7 @@ internal class SmallFileBackupTest {
             if (cachedFile == null) emptyList() else cachedFile.chunks - availableChunkIds
 
         addFile(file, cachedFile)
-        every { zipChunker.finalizeAndReset(missingChunks) } returns zipChunk
+        coEvery { zipChunker.finalizeAndReset(missingChunks) } returns zipChunk
         every { filesCache.upsert(sameCachedFile(newCachedFile)) } just Runs
 
         val result = smallFileBackup.backupFiles(files, availableChunkIds, null)
@@ -123,7 +124,7 @@ internal class SmallFileBackupTest {
         every { filesCache.getByUri(file1.uri) } returns null
         every { contentResolver.openInputStream(file1.uri) } throws IOException()
         addFile(file2)
-        every { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk
+        coEvery { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk
         every { filesCache.upsert(sameCachedFile(cachedFile2)) } just Runs
 
         val result = smallFileBackup.backupFiles(files, availableChunkIds, null)
@@ -148,7 +149,7 @@ internal class SmallFileBackupTest {
 
         addFile(file1)
         every { zipChunker.fitsFile(file2) } returns false
-        every { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk1 andThen zipChunk2
+        coEvery { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk1 andThen zipChunk2
         every { filesCache.upsert(sameCachedFile(cachedFile1)) } just Runs
         addFile(file2)
         // zipChunker.finalizeAndReset defined above for both files
@@ -178,7 +179,7 @@ internal class SmallFileBackupTest {
         addFile(file1)
         every { zipChunker.fitsFile(file2) } returns true
         addFile(file2)
-        every { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk
+        coEvery { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk
         every { filesCache.upsert(sameCachedFile(cachedFile1)) } just Runs
         every { filesCache.upsert(sameCachedFile(cachedFile2)) } just Runs
 
@@ -200,7 +201,7 @@ internal class SmallFileBackupTest {
         addFile(file1)
         every { zipChunker.fitsFile(file2) } returns true
         addFile(file2)
-        every { zipChunker.finalizeAndReset(emptyList()) } throws IOException()
+        coEvery { zipChunker.finalizeAndReset(emptyList()) } throws IOException()
 
         val result = smallFileBackup.backupFiles(files, hashSetOf(), null)
         assertEquals(emptySet<String>(), result.chunkIds)

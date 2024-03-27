@@ -19,7 +19,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.SnapshotResult
@@ -150,14 +149,14 @@ internal class BackupRestoreTest {
         } returns ByteArrayInputStream(fileDBytes) andThen ByteArrayInputStream(fileDBytes)
 
         // output streams and caching
-        every { plugin.getChunkOutputStream(any()) } returnsMany listOf(
+        coEvery { plugin.getChunkOutputStream(any()) } returnsMany listOf(
             zipChunkOutputStream, mOutputStream, dOutputStream
         )
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        every {
+        coEvery {
             plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
         } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
@@ -296,25 +295,25 @@ internal class BackupRestoreTest {
 
         // output streams for deterministic chunks
         val id040f32 = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
             )
         } returns id040f32
         val id901fbc = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
             )
         } returns id901fbc
         val id5adea3 = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
             )
         } returns id5adea3
         val id40d00c = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
             )
@@ -324,7 +323,7 @@ internal class BackupRestoreTest {
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        every {
+        coEvery {
             plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
         } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
@@ -332,7 +331,7 @@ internal class BackupRestoreTest {
         backup.runBackup(null)
 
         // chunks were only written to storage once
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             plugin.getChunkOutputStream(
                 "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
             plugin.getChunkOutputStream(

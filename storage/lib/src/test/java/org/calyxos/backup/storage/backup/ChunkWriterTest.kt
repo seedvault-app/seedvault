@@ -7,9 +7,11 @@ package org.calyxos.backup.storage.backup
 
 import io.mockk.MockKMatcherScope
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
@@ -45,7 +47,7 @@ internal class ChunkWriterTest {
     }
 
     @Test
-    fun testTwoByteChunksNotCached() {
+    fun testTwoByteChunksNotCached() = runBlocking {
         val inputBytes = byteArrayOf(0x00, 0x01, 0x02, 0x03, 0x04, 0x05)
         val inputStream = ByteArrayInputStream(inputBytes)
         val chunks = listOf(
@@ -64,9 +66,9 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get the output streams for the chunks
-        every { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
-        every { storagePlugin.getChunkOutputStream(chunkId2) } returns chunk2Output
-        every { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId2) } returns chunk2Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
 
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
@@ -103,7 +105,7 @@ internal class ChunkWriterTest {
     }
 
     @Test
-    fun testCachedChunksSkippedIfNotMissing() {
+    fun testCachedChunksSkippedIfNotMissing() = runBlocking {
         val inputBytes = byteArrayOf(0x00, 0x01, 0x02, 0x03, 0x04, 0x05)
         val inputStream = ByteArrayInputStream(inputBytes)
         val chunks = listOf(
@@ -120,7 +122,7 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get and wrap the output stream for chunk that is missing
-        every { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
         every {
             streamCrypto.newEncryptingStream(streamKey, chunk1Output, bytes(34))
@@ -130,7 +132,7 @@ internal class ChunkWriterTest {
         every { chunksCache.insert(chunks[0].toCachedChunk()) } just Runs
 
         // get and wrap the output stream for chunk that isn't cached
-        every { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
         every { streamCrypto.getAssociatedDataForChunk(chunkId3) } returns ad3
         every {
             streamCrypto.newEncryptingStream(streamKey, chunk3Output, bytes(34))
@@ -149,7 +151,7 @@ internal class ChunkWriterTest {
     }
 
     @Test
-    fun testLargerRandomChunks() {
+    fun testLargerRandomChunks() = runBlocking {
         val chunk1Bytes = Random.nextBytes(Random.nextInt(1, 1024 * 1024))
         val chunk2Bytes = Random.nextBytes(Random.nextInt(1, 1024 * 1024))
         val chunk3Bytes = Random.nextBytes(Random.nextInt(1, 1024 * 1024))
@@ -173,8 +175,8 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get the output streams for the chunks
-        every { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
-        every { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
+        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
 
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1

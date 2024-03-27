@@ -74,7 +74,7 @@ internal class FileBackup(
     )
 
     @Throws(IOException::class, GeneralSecurityException::class)
-    private fun backupFile(
+    private suspend fun backupFile(
         file: ContentFile,
         availableChunkIds: HashSet<String>,
     ): FileBackupResult {
