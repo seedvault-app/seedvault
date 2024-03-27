@@ -55,7 +55,7 @@
     <string name="storage_fragment_backup_title">バックアップを保存する場所を選択してください</string>
     <string name="settings_backup_recovery_code_summary">既存のコードを確認するか、新しいコードを生成します</string>
     <string name="storage_fake_nextcloud_summary_unavailable">アカウントが見つかりません。新しくセットアップします。 (またはパスコードを無効にします)。</string>
-    <string name="settings_backup_apk_summary">アプリ自体をバックアップします。そうしないと、アプリデータのみがバックアップされます。</string>
+    <string name="settings_backup_apk_summary">アプリ自体をバックアップしてください。さもなければ、アプリのデータのみがバックアップされます。</string>
     <string name="about_title">このアプリについて</string>
     <string name="recovery_code_confirm_intro">12 単語のリカバリコードを入力して、必要なときに機能することを確認してください。</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> の空き</string>

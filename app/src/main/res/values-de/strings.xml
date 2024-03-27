@@ -204,4 +204,7 @@
     <string name="about_contributor_content">Eine <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Liste der Mitwirkenden</a> findest du auf GitHub.</string>
     <string name="about_contributing_organizations_title">Mitwirkende Organisationen</string>
     <string name="storage_user_selected_location_title">Benutzerdefinierter Speicherort</string>
+    <string name="notification_success_channel_title">Erfolgsbenachrichtigung</string>
+    <string name="settings_expert_d2d_title">Gerät-zu-Gerät-Sicherungen</string>
+    <string name="settings_expert_d2d_summary">Dies erzwingt Sicherungen für die meisten Apps, auch wenn diese dies nicht zulassen. Dies ist experimentell, die Verwendung erfolgt auf eigene Gefahr.</string>
 </resources>
