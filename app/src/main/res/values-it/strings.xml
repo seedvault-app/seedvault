@@ -65,7 +65,7 @@
     <string name="settings_auto_restore_summary_usb">Nota: è necessario collegare %1$s per permettere il ripristino.</string>
     <string name="current_destination_string">Stato backup e impostazioni</string>
     <string name="data_management_label">Backup Seedvault</string>
-    <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size">%1$s</xliff:g> liberi</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> liberi</string>
     <string name="about_version">Versione: %s</string>
     <string name="about_summary">Una applicazione di backup facente uso della API interna di backup di Android.</string>
     <string name="about_title">Ulteriori info</string>

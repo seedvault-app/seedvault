@@ -8,7 +8,7 @@
     <string name="notification_backup_title">Backup de armazenamento</string>
     <string name="notification_backup_scanning">Escaneando arquivos…</string>
     <string name="notification_prune">Removendo backups antigos…</string>
-    <string name="notification_restore_channel_title">Restauração de armazenamento</string>
+    <string name="notification_restore_channel_title">Restauração do armazenamento</string>
     <string name="notification_restore_complete_title">%1$d de %2$d arquivos restaurados</string>
     <string name="snapshots_empty">Nenhum backup de armazenamento encontrado
 \n
@@ -17,6 +17,6 @@
     <string name="snapshots_title">Backups de armazenamento disponíveis</string>
     <string name="notification_backup_backup_files">Fazendo backup de arquivos…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
-    <string name="snapshots_error">Erro ao carregar instantâneos</string>
+    <string name="snapshots_error">Erro ao carregar snapshots</string>
     <string name="content_options">Opções</string>
 </resources>

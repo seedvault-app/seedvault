@@ -1,2 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="settings_backup_apk_title">Copii de rezervă aplicații</string>
+    <string name="settings_backup_apk_dialog_title">Dezactivezi cu adevărat crearea copiilor de rezervă pentru aplicații?</string>
+    <string name="settings_backup_apk_dialog_message">Dezactivarea copiilor de rezervă pentru aplicații nu va dezactiva crearea copiilor de rezervă pentru datele aplicațiilor. Cu toate acestea, nu se va restaurat automat.
+\n
+\nVa trebui să instalezi manual toate aplicațiile în timp ce „Restaurare automată” este activată.</string>
+    <string name="settings_backup_apk_dialog_cancel">Anulează</string>
+    <string name="settings_backup_apk_dialog_disable">Dezactivează crearea copiilor de rezervă pentru aplicații</string>
+    <string name="settings_backup_status_title">Stare copii de rezervă</string>
+    <string name="backup">Copii de rezervă</string>
+    <string name="storage_check_fragment_restore_title">Se caută copii de rezervă…</string>
+    <string name="backup_app_warning">Avertisment copie de rezervă</string>
+    <string name="restore_app_status_install_error">Nu s-a putut instala</string>
+    <string name="restore_next">Înainte</string>
+    <string name="restore_storage_choose_snapshot">Alege o copie de rezervă de stocare pentru restaurare (beta)</string>
+    <string name="restore_storage_got_it">Am înțeles</string>
+    <string name="storage_internal_warning_title">Avertisment</string>
+    <string name="current_destination_string">Starea și setările copiei de rezervă</string>
+    <string name="restore_backup_button">Restaurează copia de rezervă</string>
+    <string name="settings_backup_location_internal">Stocare internă</string>
+    <string name="settings_backup_last_backup_never">Niciodată</string>
+    <string name="data_management_label">Copii de rezervă Seedvault</string>
+    <string name="settings_backup">Copii de rezervă pentru aplicațiile mele</string>
+    <string name="settings_backup_apk_summary">Copii de rezervă pentru aplicațiile în sine. În caz contrar, se vor crea copii de rezervă numai pentru datele aplicațiilor.</string>
+    <string name="settings_backup_dialog_message">Când activezi din nou copiile de rezervă , procesul de creare a copiilor de rezervă poate dura mai mult decât de obicei și va folosi spațiu de stocare suplimentar.</string>
+    <string name="settings_info">Toate copiile de rezervă sunt criptate pe telefon. Pentru a restabili din copia de rezervă, vei avea nevoie de codul de recuperare din 12 cuvinte.</string>
+    <string name="settings_auto_restore_summary">La reinstalarea unei aplicații, se restaurează setările și datele pentru care s-au făcut copie de rezervă .</string>
+    <string name="settings_backup_storage_dialog_message">Crearea copiilor de rezervă pentru fișiere este regim beta și este posibil să nu funcționeze. Nu te baza pe ea pentru datele importante.</string>
+    <string name="settings_backup_storage_battery_optimization">Avertisment: Fără crearea automată a copiilor de rezervă, optimizarea bateriei este activă.</string>
+    <string name="settings_backup_location">Locația copiei de rezervă</string>
+    <string name="settings_backup_location_none">Niciuna</string>
+    <string name="settings_expert_d2d_summary">Acest lucru forțează crearea copiilor de rezervă pentru majoritatea aplicațiilor, chiar și atunci când acestea le interzic. Aceasta este regim alfa, utilizează pe propriul risc.</string>
+    <string name="settings_expert_logcat_summary">Dezvoltatorii pot diagnostica erori cu aceste jurnale.
+\n
+\nAvertisment: fișierul jurnal poate conține informații de identificare personală. Examinează înainte și șterge după distribuire!</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nu se recomandă)</string>
+    <string name="storage_fake_nextcloud_summary">Atinge pentru a instala</string>
+    <string name="storage_fake_davx5_summary_installed">Atinge pentru a configura o montare WebDAV</string>
+    <string name="storage_check_fragment_backup_title">Se inițializează locația copiilor de rezervă…</string>
+    <string name="storage_check_fragment_patience">Acest lucru poate dura ceva timp…</string>
+    <string name="storage_check_fragment_permission_error">Nu se poate obține permisiunea de a scrie în locația copiilor de rezervă.</string>
+    <string name="recovery_code_title">Cod de recuperare</string>
+    <string name="settings_category_app_data_backup">Copiere de rezervă a datelor aplicațiilor</string>
+    <string name="about_contributing_organizations_title">Organizații care contribuie</string>
+    <string name="restore_title">Restaurare din copia de rezervă</string>
+    <string name="restore_choose_restore_set">Alege o copie de rezervă pentru restaurare</string>
+    <string name="restore_restore_set_times">Ultima copie de rezervă %1$s · Prima %2$s.</string>
+    <string name="restore_skip_apps">Omite restabilirea aplicațiilor</string>
+    <string name="restore_invalid_location_title">Nu s-au găsit copii de rezervă</string>
+    <string name="restore_invalid_location_message">Nu s-au găsit copii de rezervă în această locație.
+\n
+\nAlege o altă locație care conține un dosar %s.</string>
+    <string name="restore_set_error">A apărut o eroare la încărcarea copiilor de rezervă.</string>
+    <string name="storage_internal_warning_message">Ai ales stocarea internă pentru crearea copiilor de rezervă. Aceasta nu va fi disponibilă atunci când telefonul este pierdut sau spart.</string>
+    <string name="settings_backup_recovery_code">Cod de recuperare</string>
+    <string name="storage_fake_davx5_summary_unavailable">Suportul WebDAV nu este disponibil. Configurează unul.</string>
+    <string name="storage_check_fragment_error_button">Înapoi</string>
+    <string name="recovery_code_write_it_down">Notează-le pe hârtie acum!</string>
+    <string name="notification_success_text">Pentru %1$d din %2$d aplicații s-a creat copie de rezervă (%3$s). Atinge pentru a afla mai multe.</string>
+    <string name="notification_failed_title">Crearea copiei de rezervă a eșuat</string>
+    <string name="notification_error_channel_title">Notificare de eroare</string>
+    <string name="notification_error_title">Eroare la crearea copiei de rezervă</string>
+    <string name="restore_magic_package">Manager pachete de sistem</string>
+    <string name="restore_finished_success">Restaurare completă</string>
+    <string name="restore_finished_error">A apărut o eroare la restaurarea copiei de rezervă.</string>
+    <string name="restore_finished_button">Finalizează</string>
+    <string name="restore_storage_in_progress_title">Fișierele sunt restaurate…</string>
+    <string name="restore_storage_in_progress_info">Fișierele sunt restaurate în fundal. Poți începe să utilizezi telefonul în timp ce aceasta rulează.
+\n
+\nUnele aplicații (de exemplu, Signal sau WhatsApp) ar putea necesita restaurarea completă a fișierelor pentru a importa o copie de rezervă. Încearcă să eviți pornirea acelor aplicații înainte ca restaurarea fișierelor să fie finalizată.</string>
+    <string name="about_summary">O aplicație pentru crearea copiilor de rezervă care utilizează API-ul intern al Android. Este Software Liber, lansat sub licență Apache 2.
+\n
+\nCa toate programele, Seedvault poate conține erori sau vulnerabilități.</string>
+    <string name="settings_category_apps">Copii de rezervă pentru aplicații</string>
+    <string name="settings_category_storage">Copie de rezervă pentru stocare (beta)</string>
+    <string name="settings_backup_storage_title">Creează copie de rezervă fișierelor mele</string>
+    <string name="settings_backup_files_title">Fișiere și dosare incluse</string>
+    <string name="storage_check_fragment_backup_error">A apărut o eroare la accesarea locației copiilor de rezervă.</string>
+    <string name="notification_success_title">Creare copie de rezervă finalizată</string>
+    <string name="restore_app_quota_exceeded">Cota copiilor de rezervă a fost depășită</string>
+    <string name="restore_skip">Nu restaura</string>
+    <string name="restore_app_status_installed">Reinstalat</string>
+    <string name="settings_backup_new_code_dialog_message">Pentru a continua să utilizezi copiile de rezervă ale aplicației, trebuie să generezi un nou cod de recuperare.
+\n
+\nNe cerem scuze pentru neplăcere.</string>
+    <string name="settings_backup_new_code_dialog_title">Este necesar un nou cod de recuperare</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Cod nou</string>
+    <string name="recovery_code_input_hint_6">Cuvântul 6</string>
+    <string name="recovery_code_input_hint_7">Cuvântul 7</string>
+    <string name="recovery_code_verification_error_title">Cod de recuperare incorect</string>
+    <string name="notification_error_no_main_key_text">Generează un nou cod de recuperare pentru a finaliza actualizarea și a continua să utilizezi copii de rezervă.</string>
+    <string name="notification_error_no_main_key_title">Copii de rezervă dezactivate</string>
+    <string name="restore_app_not_allowed">Aplicația nu a permis crearea copiei de rezervă</string>
+    <string name="restore_restoring">Restaurând copia de rezervă</string>
+    <string name="restore_storage_skip">Omite restaurarea fișierelor</string>
+    <string name="recovery_code_verification_try_again">Reîncearcă</string>
+    <string name="about_contributor_headline">Contribuitori</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a></string>
+    <string name="notification_backup_disabled">Crearea copiilor de rezervă nu este activată</string>
+    <string name="notification_error_action">Remediază</string>
+    <string name="notification_restore_error_channel_title">Eroare de restaurare automată a unității flash</string>
+    <string name="notification_restore_error_title">Nu s-au putut restaura datele pentru %1$s</string>
+    <string name="notification_restore_error_text">Conectează %1$s înainte de a instala aplicația pentru a-i restaura datele din copia de rezervă.</string>
+    <string name="notification_restore_error_action">Dezinstalează aplicația</string>
+    <string name="storage_internal_warning_use_anyway">Folosește oricum</string>
+    <string name="settings_expert_logcat_title">Salvează jurnalul aplicației</string>
+    <string name="storage_fake_drive_title">Flash Drive USB</string>
+    <string name="recovery_code_done_button">Verifică</string>
+    <string name="storage_fragment_warning_delete">Copiile de rezervă existente în această locație vor fi șterse.</string>
+    <string name="storage_fake_drive_summary">Trebuie conectat</string>
+    <string name="recovery_code_input_hint_1">Cuvântul 1</string>
+    <string name="recovery_code_input_hint_11">Cuvântul 11</string>
+    <string name="recovery_code_input_hint_5">Cuvântul 5</string>
+    <string name="recovery_code_input_hint_12">Cuvântul 12</string>
+    <string name="recovery_code_input_hint_8">Cuvântul 8</string>
+    <string name="recovery_code_input_hint_9">Cuvântul 9</string>
+    <string name="recovery_code_error_invalid_word">Cuvânt greșit.</string>
+    <string name="recovery_code_input_hint_10">Cuvântul 10</string>
+    <string name="recovery_code_recreated">Noul cod de recuperare a fost creat cu succes</string>
+    <string name="recovery_code_auth_title">Reintrodu blocarea ecranului</string>
+    <string name="recovery_code_auth_description">Introdu acreditările dispozitivului pentru a continua</string>
+    <string name="about_title">Despre</string>
+    <string name="restore_set_empty_result">Nu s-au găsit copii de rezervă adecvate în această locație.
+\n
+\nAcest lucru se datorează cel mai probabil unui cod de recuperare greșit sau unei erori de stocare.</string>
+    <string name="restore_installing_packages">Reinstalarea aplicațiilor</string>
+    <string name="restore_app_status_installing">Reinstalare</string>
+    <string name="restore_app_status_restored">Date restaurate</string>
+    <string name="restore_app_status_failed">Restaurarea a eșuat</string>
+    <string name="restore_app_status_warning">Avertisment de restabilire</string>
+    <string name="error_no_store">Eroare: nu este instalat niciun magazin de aplicații</string>
+    <string name="storage_internal_warning_choose_other">Alege alta</string>
+    <string name="about_contributor_content">Consultă GitHub pentru o <a href="https://github.com/seedvault-app/seedvault/graphs/contributors"> listă a colaboratorilor</a>.</string>
+    <string name="settings_backup_dialog_disable">Oprește oricum</string>
+    <string name="settings_auto_restore_title">Restaurare automată</string>
+    <string name="settings_auto_restore_summary_usb">Notă: %1$s trebuie conectat la rețea pentru ca acest lucru să funcționeze.</string>
+    <string name="settings_backup_dialog_title">Dezactivezi cu adevărat crearea copiilor de rezervă pentru aplicații?</string>
+    <string name="settings_backup_status_summary">Ultima copie de rezervă: %1$s</string>
+    <string name="settings_backup_exclude_apps">Excludere aplicații</string>
+    <string name="settings_backup_now">Creează o copie de rezervă acum</string>
+    <string name="settings_backup_files_summary">Nimic</string>
+    <string name="settings_backup_recovery_code_summary">Verifică codul existent sau generează unul nou</string>
+    <string name="settings_backup_storage_dialog_title">Caracteristică beta</string>
+    <string name="settings_backup_storage_dialog_ok">Activează oricum</string>
+    <string name="settings_expert_title">Setări expert</string>
+    <string name="settings_expert_quota_title">Cotă nelimitată pentru aplicații</string>
+    <string name="settings_expert_quota_summary">Nu impune o limitare a dimensiunii copiilor de rezervă ale aplicațiilor.
+\n
+\nAvertisment: acest lucru poate umple rapid locația de stocare. Nu este necesar pentru majoritatea aplicațiilor.</string>
+    <string name="settings_expert_d2d_title">Copii de rezervă de la dispozitiv la dispozitiv</string>
+    <string name="settings_expert_logcat_error">Eroare: nu s-a putut salva jurnalul aplicației</string>
+    <string name="storage_fragment_backup_title">Alege unde să fie stocate copiile de rezervă</string>
+    <string name="storage_fragment_restore_title">Unde să găsesc copiile de rezervă?</string>
+    <string name="storage_fragment_warning">Persoanele cu acces la locația de stocare pot afla ce aplicații folosești, dar nu au acces la datele aplicațiilor.</string>
+    <string name="storage_user_selected_location_title">Locație aleasă de utilizator</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> liber</string>
+    <string name="storage_fake_nextcloud_summary_installed">Atinge pentru a configura contul</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nu este instalat</string>
+    <string name="recovery_code_12_word_intro">Ai nevoie de codul de recuperare din 12 cuvinte pentru a restabili datele din copia de rezervă.</string>
+    <string name="recovery_code_confirm_button">Confirmă codul</string>
+    <string name="recovery_code_confirm_intro">Introdu codul de recuperare din 12 cuvinte pentru a te asigura că va funcționa atunci când ai nevoie de el.</string>
+    <string name="recovery_code_input_intro">Introdu codul de recuperare din 12 cuvinte pe care l-ai notat când ai configurat copiile de rezervă.</string>
+    <string name="backup_app_success">Creare reușită a copiei de rezervă</string>
+    <string name="notification_success_channel_title">Notificare de succes</string>
+    <string name="notification_title">Rulează crearea copiei de rezervă</string>
+    <string name="recovery_code_input_hint_2">Cuvântul 2</string>
+    <string name="recovery_code_input_hint_3">Cuvântul 3</string>
+    <string name="recovery_code_input_hint_4">Cuvântul 4</string>
+    <string name="recovery_code_error_empty_word">Ai uitat să introduci acest cuvânt.</string>
+    <string name="recovery_code_error_checksum_word">Codul este greșit. Verifică toate cuvintele, precum și poziția lor și încearcă din nou!</string>
+    <string name="recovery_code_verification_ok_title">Cod de recuperare verificat</string>
+    <string name="recovery_code_verification_ok_message">Codul este corect și va funcționa pentru restaurarea copiei de rezervă.</string>
+    <string name="recovery_code_verification_error_message">Ai introdus un cod de recuperare greșit. Încearcă din nou!
+\n
+\nDacă ai pierdut codul, apasă pe „Generează cod nou” de mai jos.</string>
+    <string name="recovery_code_verification_generate_new">Generează un cod nou</string>
+    <string name="recovery_code_verification_new_dialog_title">Așteaptă o secundă…</string>
+    <string name="recovery_code_verification_new_dialog_message">Generarea unui cod nou va face copiile de rezervă existente inaccesibile. Vom încerca să le ștergem dacă este posibil.
+\n
+\nEști sigur că vrei să faci asta?</string>
+    <string name="notification_channel_title">Notificare copie de rezervă</string>
+    <string name="notification_error_text">O copie de rezervă a dispozitivului nu a putut fi executată.</string>
+    <string name="backup_app_in_progress">Creare copii de rezervă</string>
+    <string name="restore_app_not_installed">Aplicația nu este instalată</string>
+</resources>

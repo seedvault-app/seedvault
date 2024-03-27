@@ -159,12 +159,12 @@
     <string name="restore_storage_got_it">Listo</string>
     <string name="settings_backup_files_title">Archivos y carpetas incluidos</string>
     <string name="settings_category_apps">Copia de seguridad de la app</string>
-    <string name="settings_category_storage">Copia de seguridad del almacenamiento (experimental)</string>
-    <string name="settings_backup_storage_dialog_title">Característica experimental</string>
-    <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía experimental y podría no funcionar. No confíe en ella para los datos importantes.</string>
+    <string name="settings_category_storage">Copia de seguridad del almacenamiento (fase beta)</string>
+    <string name="settings_backup_storage_dialog_title">Característica en fase beta</string>
+    <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía en fase beta y podría no funcionar. No confíe en ella para los datos importantes.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">No instalada</string>
     <string name="restore_skip_apps">No restaurar aplicaciones</string>
-    <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (experimental)</string>
+    <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (fase beta)</string>
     <string name="restore_storage_in_progress_info">Sus archivos se están restaurando en segundo plano. Puede empezar a usar su teléfono mientras se está ejecutando.
 \n
 \nAlgunas aplicaciones (por ejemplo, Signal o WhatsApp) pueden requerir que los archivos estén completamente restaurados para importar una copia de seguridad. Intente evitar iniciar esas aplicaciones antes de que la restauración de los archivos se haya completado.</string>
@@ -204,4 +204,7 @@
     <string name="about_contributor_headline">Colaboradores</string>
     <string name="about_contributor_content">En GitHub encontrará una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a>.</string>
     <string name="storage_user_selected_location_title">Ubicación elegida por el usuario</string>
+    <string name="settings_expert_d2d_title">Copias de seguridad de dispositivo a dispositivo</string>
+    <string name="settings_expert_d2d_summary">Esto obliga a realizar copias de seguridad para la mayoría de las aplicaciones, incluso cuando no las permiten. Esta en fase alpha, úselo bajo su propio riesgo.</string>
+    <string name="notification_success_channel_title">Notificación exitosa</string>
 </resources>

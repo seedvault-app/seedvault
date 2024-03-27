@@ -204,4 +204,10 @@
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET χρηματοδότηση από την NLnet</a></string>
     <string name="storage_user_selected_location_title">Τοποθεσία επιλεγμένη από το χρήστη</string>
+    <string name="settings_expert_d2d_title">Αντίγραφα ασφαλείας από συσκευή σε συσκευή</string>
+    <string name="settings_expert_d2d_summary">Αυτό αναγκάζει τη δημιουργία αντιγράφων ασφαλείας για τις περισσότερες εφαρμογές, ακόμη και όταν τις απαγορεύουν. Αυτό είναι πειραματικό, χρησιμοποιήστε με δική σας ευθύνη.
+\n
+\n1. Για να δημιουργήσετε αντίγραφα ασφαλείας εφαρμογών σε λειτουργία D2D, θα χρειαστεί να εκτελέσετε μη αυτόματα το \"Backup now\".
+\n
+\n2. Το Android μπορεί να αντικαταστήσει τα αντίγραφα ασφαλείας D2D για εφαρμογές που συνήθως επιτρέπουν τη δημιουργία αντιγράφων ασφαλείας.</string>
 </resources>
