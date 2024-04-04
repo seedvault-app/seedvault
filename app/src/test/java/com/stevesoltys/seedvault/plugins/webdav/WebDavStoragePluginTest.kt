@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.assertThrows
@@ -34,15 +35,17 @@ internal class WebDavStoragePluginTest : TransportTest() {
         val token = System.currentTimeMillis()
         val metadata = getRandomByteArray()
 
+        // need to initialize, to have root .SeedVaultAndroidBackup folder
+        plugin.initializeDevice()
+        plugin.startNewRestoreSet(token)
+
         // initially, we don't have any backups
         assertEquals(emptySet<EncryptedMetadata>(), plugin.getAvailableBackups()?.toSet())
 
         // and no data
         assertFalse(plugin.hasData(token, FILE_BACKUP_METADATA))
 
-        // start a new restore set, initialize it and write out the metadata file
-        plugin.startNewRestoreSet(token)
-        plugin.initializeDevice()
+        // write out the metadata file
         plugin.getOutputStream(token, FILE_BACKUP_METADATA).use {
             it.write(metadata)
         }
@@ -81,6 +84,20 @@ internal class WebDavStoragePluginTest : TransportTest() {
             plugin.getInputStream(token, file).use {
                 it.readAllBytes()
             }
+        }
+        Unit
+    }
+
+    @Test
+    fun `test missing root dir`() = runBlocking {
+        val plugin = WebDavStoragePlugin(context, WebDavTestConfig.getConfig(), getRandomString())
+
+        assertNull(plugin.getAvailableBackups())
+
+        assertFalse(plugin.hasData(42L, "foo"))
+
+        assertThrows<IOException> {
+            plugin.removeData(42L, "foo")
         }
         Unit
     }

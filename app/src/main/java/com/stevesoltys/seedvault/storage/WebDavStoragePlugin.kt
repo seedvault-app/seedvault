@@ -8,6 +8,7 @@ import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.ResourceType
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
+import com.stevesoltys.seedvault.plugins.webdav.DIRECTORY_ROOT
 import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
 import com.stevesoltys.seedvault.plugins.webdav.WebDavStorage
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -30,7 +31,8 @@ internal class WebDavStoragePlugin(
      */
     androidId: String,
     webDavConfig: WebDavConfig,
-) : WebDavStorage(webDavConfig), StoragePlugin {
+    root: String = DIRECTORY_ROOT,
+) : WebDavStorage(webDavConfig, root), StoragePlugin {
 
     /**
      * The folder name is our user ID plus .sv extension (for SeedVault).
@@ -38,6 +40,24 @@ internal class WebDavStoragePlugin(
      * so we don't leak anything by not hashing this and can use it as is.
      */
     private val folder: String = "$androidId.sv"
+
+    @Throws(IOException::class)
+    override suspend fun init() {
+        val location = url.toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        try {
+            davCollection.head { response ->
+                debugLog { "Root exists: $response" }
+            }
+        } catch (e: NotFoundException) {
+            val response = davCollection.createFolder()
+            debugLog { "init() = $response" }
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException(e)
+        }
+    }
 
     @Throws(IOException::class)
     override suspend fun getAvailableChunkIds(): List<String> {
@@ -211,18 +231,13 @@ internal class WebDavStoragePlugin(
                         val match = snapshotRegex.matchEntire(response.hrefName())
                         if (match != null) {
                             val timestamp = match.groupValues[1].toLong()
-                            val folderName =
-                                response.href.pathSegments[response.href.pathSegments.size - 2]
-                            val storedSnapshot = StoredSnapshot(folderName, timestamp)
+                            val storedSnapshot = StoredSnapshot(folder, timestamp)
                             snapshots.add(storedSnapshot)
                         }
                     }
                 }
             }
             Log.i(TAG, "getCurrentBackupSnapshots took $duration")
-        } catch (e: NotFoundException) {
-            debugLog { "Folder not found: $location" }
-            davCollection.createFolder()
         } catch (e: Exception) {
             if (e is IOException) throw e
             else throw IOException("Error getting current snapshots: ", e)

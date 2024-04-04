@@ -45,8 +45,7 @@ internal class BackupStorageViewModel(
             // remove old storage snapshots and clear cache
             // TODO is this needed? It also does create all 255 chunk folders which takes time
             //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
-            storageBackup.deleteAllSnapshots()
-            storageBackup.clearCache()
+            storageBackup.init()
             try {
                 // initialize the new location (if backups are enabled)
                 if (backupManager.isBackupEnabled) {

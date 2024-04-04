@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.storage
 
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.getRandomByteArray
+import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.plugins.webdav.WebDavTestConfig
 import com.stevesoltys.seedvault.transport.backup.BackupTest
 import io.mockk.mockk
@@ -15,6 +16,8 @@ import org.calyxos.backup.storage.api.StoredSnapshot
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
+import java.io.IOException
 
 internal class WebDavStoragePluginTest : BackupTest() {
 
@@ -27,6 +30,9 @@ internal class WebDavStoragePluginTest : BackupTest() {
     fun `test chunks`() = runBlocking {
         val chunkId1 = getRandomByteArray(32).toHexString()
         val chunkBytes1 = getRandomByteArray()
+
+        // init to create root folder
+        plugin.init()
 
         // first we don't have any chunks
         assertEquals(emptyList<String>(), plugin.getAvailableChunkIds())
@@ -54,6 +60,9 @@ internal class WebDavStoragePluginTest : BackupTest() {
     @Test
     fun `test snapshots`() = runBlocking {
         val snapshotBytes = getRandomByteArray()
+
+        // init to create root folder
+        plugin.init()
 
         // first we don't have any snapshots
         assertEquals(emptyList<StoredSnapshot>(), plugin.getCurrentBackupSnapshots())
@@ -96,6 +105,45 @@ internal class WebDavStoragePluginTest : BackupTest() {
         } finally {
             plugin.deleteBackupSnapshot(snapshot)
         }
+    }
+
+    @Test
+    fun `test missing root dir`() = runBlocking {
+        val plugin = WebDavStoragePlugin(
+            keyManager = keyManager,
+            androidId = "foo",
+            webDavConfig = WebDavTestConfig.getConfig(),
+            root = getRandomString(),
+        )
+
+        assertThrows<IOException> {
+            plugin.getCurrentBackupSnapshots()
+        }
+        assertThrows<IOException> {
+            plugin.getBackupSnapshotsForRestore()
+        }
+        assertThrows<IOException> {
+            plugin.getAvailableChunkIds()
+        }
+        assertThrows<IOException> {
+            plugin.deleteChunks(listOf("foo"))
+        }
+        assertThrows<IOException> {
+            plugin.deleteBackupSnapshot(snapshot)
+        }
+        assertThrows<IOException> {
+            plugin.getBackupSnapshotOutputStream(snapshot.timestamp).close()
+        }
+        assertThrows<IOException> {
+            plugin.getBackupSnapshotInputStream(snapshot).use { it.readAllBytes() }
+        }
+        assertThrows<IOException> {
+            plugin.getChunkOutputStream("foo").close()
+        }
+        assertThrows<IOException> {
+            plugin.getChunkInputStream(snapshot, "foo").use { it.readAllBytes() }
+        }
+        Unit
     }
 
 }

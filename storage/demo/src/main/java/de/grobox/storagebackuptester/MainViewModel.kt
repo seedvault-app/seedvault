@@ -32,11 +32,11 @@ import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 
 private val logEmptyState = """
     Press the button below to simulate a backup. Your files won't be changed and not uploaded anywhere. This is just to test code for a future real backup.
-    
+
     Please come back to this app from time to time and run a backup again to see if it correctly identifies files that were added/changed.
-    
+
     Note that after updating this app, it might need to re-backup all files again.
-    
+
     Thanks for testing!
 """.trimIndent()
 private const val TAG = "MainViewModel"
@@ -98,8 +98,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     fun setBackupLocation(uri: Uri?) {
         if (uri != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                storageBackup.deleteAllSnapshots()
-                storageBackup.clearCache()
+                storageBackup.init()
             }
         }
         settingsManager.setBackupLocation(uri)

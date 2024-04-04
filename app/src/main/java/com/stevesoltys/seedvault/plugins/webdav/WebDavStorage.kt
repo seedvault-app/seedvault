@@ -38,6 +38,7 @@ const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
 @OptIn(DelicateCoroutinesApi::class)
 internal abstract class WebDavStorage(
     webDavConfig: WebDavConfig,
+    root: String = DIRECTORY_ROOT,
 ) {
 
     companion object {
@@ -61,7 +62,7 @@ internal abstract class WebDavStorage(
         .retryOnConnectionFailure(true)
         .build()
 
-    protected val url = "${webDavConfig.url}/$DIRECTORY_ROOT"
+    protected val url = "${webDavConfig.url}/$root"
 
     @Throws(IOException::class)
     protected suspend fun getOutputStream(location: HttpUrl): OutputStream {

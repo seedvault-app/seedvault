@@ -105,6 +105,16 @@ public class StorageBackup(
     }
 
     /**
+     * Ensures the storage is set-up to receive backups and deletes all snapshots
+     * (see [deleteAllSnapshots]) as well as clears local cache (see [clearCache]).
+     */
+    public suspend fun init() {
+        plugin.init()
+        deleteAllSnapshots()
+        clearCache()
+    }
+
+    /**
      * Run this on a new storage location to ensure that there are no old snapshots
      * (potentially encrypted with an old key) laying around.
      * Using a storage location with existing data is not supported.

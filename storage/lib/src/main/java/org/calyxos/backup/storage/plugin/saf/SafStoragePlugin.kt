@@ -75,6 +75,10 @@ public abstract class SafStoragePlugin(
         return "$timestamp.SeedSnap"
     }
 
+    override suspend fun init() {
+        // no-op as we are getting [root] created from super class
+    }
+
     @Throws(IOException::class)
     override suspend fun getAvailableChunkIds(): List<String> {
         val folder = folder ?: return emptyList()

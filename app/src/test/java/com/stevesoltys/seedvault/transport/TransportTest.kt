@@ -73,6 +73,7 @@ internal abstract class TransportTest {
         mockkStatic(Log::class)
         val logTagSlot = slot<String>()
         val logMsgSlot = slot<String>()
+        val logExSlot = slot<Throwable>()
         every { Log.v(any(), any()) } returns 0
         every { Log.d(capture(logTagSlot), capture(logMsgSlot)) } answers {
             println("${logTagSlot.captured} - ${logMsgSlot.captured}")
@@ -83,7 +84,11 @@ internal abstract class TransportTest {
         every { Log.w(any(), ofType(String::class)) } returns 0
         every { Log.w(any(), ofType(String::class), any()) } returns 0
         every { Log.e(any(), any()) } returns 0
-        every { Log.e(any(), any(), any()) } returns 0
+        every { Log.e(capture(logTagSlot), capture(logMsgSlot), capture(logExSlot)) } answers {
+            println("${logTagSlot.captured} - ${logMsgSlot.captured} ${logExSlot.captured}")
+            logExSlot.captured.printStackTrace()
+            0
+        }
     }
 
 }

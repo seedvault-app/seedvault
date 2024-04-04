@@ -24,7 +24,8 @@ import kotlin.coroutines.suspendCoroutine
 internal class WebDavStoragePlugin(
     context: Context,
     webDavConfig: WebDavConfig,
-) : WebDavStorage(webDavConfig), StoragePlugin {
+    root: String = DIRECTORY_ROOT,
+) : WebDavStorage(webDavConfig, root), StoragePlugin {
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
@@ -39,6 +40,20 @@ internal class WebDavStoragePlugin(
     override suspend fun initializeDevice() {
         // TODO does it make sense to delete anything
         //  when [startNewRestoreSet] is always called first? Maybe unify both calls?
+        val location = url.toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        try {
+            davCollection.head { response ->
+                debugLog { "Root exists: $response" }
+            }
+        } catch (e: NotFoundException) {
+            val response = davCollection.createFolder()
+            debugLog { "initializeDevice() = $response" }
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException(e)
+        }
     }
 
     @Throws(IOException::class)
