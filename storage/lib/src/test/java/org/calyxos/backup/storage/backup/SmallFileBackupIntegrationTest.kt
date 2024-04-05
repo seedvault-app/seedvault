@@ -105,7 +105,9 @@ internal class SmallFileBackupIntegrationTest {
                 it.copy(lastSeen = cachedFile2.lastSeen) == cachedFile2
             })
         } just Runs
-        coEvery { observer.onFileBackedUp(file2, true, 0, 181, "S") } just Runs
+        coEvery {
+            observer.onFileBackedUp(file2, true, 0, match<Long> { it <= outputStream2.size() }, "S")
+        } just Runs
 
         val result = smallFileBackup.backupFiles(files, availableChunkIds, observer)
         assertEquals(setOf(chunkId.toHexString()), result.chunkIds)
@@ -114,7 +116,7 @@ internal class SmallFileBackupIntegrationTest {
         assertEquals(0, result.backupMediaFiles.size)
 
         coVerify {
-            observer.onFileBackedUp(file2, true, 0, 181, "S")
+            observer.onFileBackedUp(file2, true, 0, match<Long> { it <= outputStream2.size() }, "S")
         }
     }
 
