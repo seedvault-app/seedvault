@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.ui.storage
 
+import android.annotation.UiThread
 import android.app.Application
 import android.content.Context
 import android.content.Context.USB_SERVICE
@@ -11,6 +12,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.permitDiskReads
@@ -21,6 +23,8 @@ import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private val TAG = StorageViewModel::class.java.simpleName
 
@@ -38,7 +42,7 @@ internal abstract class StorageViewModel(
     protected val mLocationChecked = MutableLiveEvent<LocationResult>()
     internal val locationChecked: LiveEvent<LocationResult> get() = mLocationChecked
 
-    private val storageRootFetcher by lazy { StorageRootFetcher(app, isRestoreOperation) }
+    private val storageOptionFetcher by lazy { StorageOptionFetcher(app, isRestoreOperation) }
     private var safOption: SafOption? = null
 
     internal var isSetupWizard: Boolean = false
@@ -60,11 +64,11 @@ internal abstract class StorageViewModel(
     }
 
     internal fun loadStorageRoots() {
-        if (storageRootFetcher.getRemovableStorageListener() == null) {
-            storageRootFetcher.setRemovableStorageListener(this)
+        if (storageOptionFetcher.getRemovableStorageListener() == null) {
+            storageOptionFetcher.setRemovableStorageListener(this)
         }
         Thread {
-            mStorageOptions.postValue(storageRootFetcher.getStorageOptions())
+            mStorageOptions.postValue(storageOptionFetcher.getStorageOptions())
         }.start()
     }
 
@@ -88,7 +92,7 @@ internal abstract class StorageViewModel(
         val takeFlags = FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
         app.contentResolver.takePersistableUriPermission(uri, takeFlags)
 
-        onLocationSet(uri)
+        onSafUriSet(uri)
     }
 
     /**
@@ -144,10 +148,10 @@ internal abstract class StorageViewModel(
         return false
     }
 
-    abstract fun onLocationSet(uri: Uri)
+    abstract fun onSafUriSet(uri: Uri)
 
     override fun onCleared() {
-        storageRootFetcher.setRemovableStorageListener(null)
+        storageOptionFetcher.setRemovableStorageListener(null)
         super.onCleared()
     }
 

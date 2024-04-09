@@ -1,4 +1,9 @@
-package com.stevesoltys.seedvault.ui.storage
+/*
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.content.Intent
@@ -9,8 +14,13 @@ import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.plugins.saf.StorageRootResolver.getIcon
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DAVX5
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_NEXTCLOUD
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_ROUND_SYNC
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
+import com.stevesoltys.seedvault.ui.storage.StorageOption
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
-import com.stevesoltys.seedvault.ui.storage.StorageRootResolver.getIcon
 
 private const val DAVX5_PACKAGE = "at.bitfire.davdroid"
 private const val DAVX5_ACTIVITY = "at.bitfire.davdroid.ui.webdav.WebdavMountsActivity"
@@ -29,15 +39,15 @@ internal class SafStorageOptions(
 
     private val packageManager = context.packageManager
 
-    internal fun checkOrAddExtraRoots(roots: ArrayList<SafOption>) {
+    internal fun checkOrAddExtraRoots(roots: ArrayList<StorageOption>) {
         checkOrAddUsbRoot(roots)
         checkOrAddDavX5Root(roots)
         checkOrAddNextCloudRoot(roots)
         checkOrAddRoundSyncRoots(roots)
     }
 
-    private fun checkOrAddUsbRoot(roots: ArrayList<SafOption>) {
-        if (doNotInclude(AUTHORITY_STORAGE, roots) { it.isUsb }) return
+    private fun checkOrAddUsbRoot(roots: ArrayList<StorageOption>) {
+        if (doNotInclude(AUTHORITY_STORAGE, roots) { it is SafOption && it.isUsb }) return
 
         val root = SafOption(
             authority = AUTHORITY_STORAGE,
@@ -57,11 +67,11 @@ internal class SafStorageOptions(
     /**
      * Add a storage root for each child directory at the RoundSync root, if it exists.
      */
-    private fun checkOrAddRoundSyncRoots(roots: ArrayList<SafOption>) {
+    private fun checkOrAddRoundSyncRoots(roots: ArrayList<StorageOption>) {
 
         val roundSyncRoot = roots.firstOrNull {
-            it.authority == AUTHORITY_ROUND_SYNC
-        } ?: return
+            it is SafOption && it.authority == AUTHORITY_ROUND_SYNC
+        } as? SafOption ?: return
 
         roots.remove(roundSyncRoot)
 
@@ -105,7 +115,7 @@ internal class SafStorageOptions(
      *
      * If it *is* installed and this is restore, the user can set up a new account by clicking.
      */
-    private fun checkOrAddDavX5Root(roots: ArrayList<SafOption>) {
+    private fun checkOrAddDavX5Root(roots: ArrayList<StorageOption>) {
         if (doNotInclude(AUTHORITY_DAVX5, roots)) return
 
         val intent = Intent().apply {
@@ -155,7 +165,7 @@ internal class SafStorageOptions(
      *  because we don't know if there's just no account or an activated passcode
      *  (which hides existing accounts).
      */
-    private fun checkOrAddNextCloudRoot(roots: ArrayList<SafOption>) {
+    private fun checkOrAddNextCloudRoot(roots: ArrayList<StorageOption>) {
         if (doNotInclude(AUTHORITY_NEXTCLOUD, roots)) return
 
         val intent = Intent().apply {
@@ -202,11 +212,12 @@ internal class SafStorageOptions(
 
     private fun doNotInclude(
         authority: String,
-        roots: ArrayList<SafOption>,
-        doNotIncludeIfTrue: ((SafOption) -> Boolean)? = null,
+        roots: ArrayList<StorageOption>,
+        doNotIncludeIfTrue: ((StorageOption) -> Boolean)? = null,
     ): Boolean {
         if (!isAuthoritySupported(authority)) return true
         for (root in roots) {
+            if (root !is SafOption) continue
             if (root.authority == authority && doNotIncludeIfTrue?.invoke(root) != false) {
                 return true
             }

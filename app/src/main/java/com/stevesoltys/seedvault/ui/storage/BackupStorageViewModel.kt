@@ -31,7 +31,7 @@ internal class BackupStorageViewModel(
 
     override val isRestoreOperation = false
 
-    override fun onLocationSet(uri: Uri) {
+    override fun onSafUriSet(uri: Uri) {
         val isUsb = saveStorage(uri)
         if (isUsb) {
             // disable storage backup if new storage is on USB

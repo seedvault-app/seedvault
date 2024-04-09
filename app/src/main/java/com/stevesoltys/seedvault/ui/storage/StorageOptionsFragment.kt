@@ -55,7 +55,7 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_storage_options, container, false)
 
         titleView = v.requireViewById(R.id.titleView)
         warningIcon = v.requireViewById(R.id.warningIcon)

@@ -22,7 +22,7 @@ internal class RestoreStorageViewModel(
 
     override val isRestoreOperation = true
 
-    override fun onLocationSet(uri: Uri) {
+    override fun onSafUriSet(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             val storage = createStorage(uri)
             val hasBackup = try {

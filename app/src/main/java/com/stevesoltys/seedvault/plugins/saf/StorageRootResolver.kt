@@ -1,4 +1,9 @@
-package com.stevesoltys.seedvault.ui.storage
+/*
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package com.stevesoltys.seedvault.plugins.saf
 
 import android.Manifest.permission.MANAGE_DOCUMENTS
 import android.content.Context
@@ -19,8 +24,16 @@ import android.provider.DocumentsContract.Root.FLAG_REMOVABLE_USB
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_CREATE
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.getStorageContext
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DAVX5
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DOWNLOADS
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_NEXTCLOUD
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_ROUND_SYNC
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
+import com.stevesoltys.seedvault.ui.storage.ROOT_ID_DEVICE
+import com.stevesoltys.seedvault.ui.storage.ROOT_ID_HOME
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
 internal object StorageRootResolver {
@@ -126,23 +139,23 @@ internal object StorageRootResolver {
     fun getIcon(context: Context, authority: String, rootId: String, icon: Int): Drawable? {
         return getPackageIcon(context, authority, icon) ?: when {
             authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> {
-                context.getDrawable(R.drawable.ic_phone_android)
+                getDrawable(context, R.drawable.ic_phone_android)
             }
 
             authority == AUTHORITY_STORAGE && rootId != ROOT_ID_HOME -> {
-                context.getDrawable(R.drawable.ic_usb)
+                getDrawable(context, R.drawable.ic_usb)
             }
 
             authority == AUTHORITY_NEXTCLOUD -> {
-                context.getDrawable(R.drawable.nextcloud)
+                getDrawable(context, R.drawable.nextcloud)
             }
 
             authority == AUTHORITY_DAVX5 -> {
-                context.getDrawable(R.drawable.davx5)
+                getDrawable(context, R.drawable.davx5)
             }
 
             authority == AUTHORITY_ROUND_SYNC -> {
-                context.getDrawable(R.drawable.round_sync)
+                getDrawable(context, R.drawable.round_sync)
             }
 
             else -> null
