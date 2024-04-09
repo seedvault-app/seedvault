@@ -62,6 +62,7 @@ internal abstract class WebDavStorage(
         .retryOnConnectionFailure(true)
         .build()
 
+    protected val baseUrl = webDavConfig.url
     protected val url = "${webDavConfig.url}/$root"
 
     @Throws(IOException::class)

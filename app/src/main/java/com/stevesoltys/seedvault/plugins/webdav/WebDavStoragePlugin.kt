@@ -27,6 +27,22 @@ internal class WebDavStoragePlugin(
     root: String = DIRECTORY_ROOT,
 ) : WebDavStorage(webDavConfig, root), StoragePlugin {
 
+    override suspend fun test(): Boolean {
+        val location = baseUrl.toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        val webDavSupported = suspendCoroutine { cont ->
+            davCollection.options { davCapabilities, response ->
+                debugLog { "test() = $davCapabilities $response" }
+                if (davCapabilities.contains("1")) cont.resume(true)
+                else if (davCapabilities.contains("2")) cont.resume(true)
+                else if (davCapabilities.contains("3")) cont.resume(true)
+                else cont.resume(false)
+            }
+        }
+        return webDavSupported
+    }
+
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
         val location = "$url/$token".toHttpUrl()

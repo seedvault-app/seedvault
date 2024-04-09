@@ -31,6 +31,17 @@ internal class WebDavStoragePluginTest : TransportTest() {
     private val plugin = WebDavStoragePlugin(context, WebDavTestConfig.getConfig())
 
     @Test
+    fun `test self-test`() = runBlocking {
+        assertTrue(plugin.test())
+
+        val plugin2 = WebDavStoragePlugin(context, WebDavConfig("https://github.com/", "", ""))
+        val e = assertThrows<Exception> {
+            assertFalse(plugin2.test())
+        }
+        println(e)
+    }
+
+    @Test
     fun `test restore sets and reading+writing`() = runBlocking {
         val token = System.currentTimeMillis()
         val metadata = getRandomByteArray()

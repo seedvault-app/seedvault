@@ -33,6 +33,11 @@ internal class DocumentsProviderStoragePlugin(
 
     private val packageManager: PackageManager = appContext.packageManager
 
+    override suspend fun test(): Boolean {
+        val dir = storage.rootBackupDir
+        return dir != null && dir.exists()
+    }
+
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
         // reset current storage

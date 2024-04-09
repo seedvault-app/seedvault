@@ -10,6 +10,12 @@ import java.io.OutputStream
 interface StoragePlugin {
 
     /**
+     * Returns true if the plugin is working, or false if it isn't.
+     * @throws Exception any kind of exception to provide more info on the error
+     */
+    suspend fun test(): Boolean
+
+    /**
      * Start a new [RestoreSet] with the given token.
      *
      * This is typically followed by a call to [initializeDevice].
