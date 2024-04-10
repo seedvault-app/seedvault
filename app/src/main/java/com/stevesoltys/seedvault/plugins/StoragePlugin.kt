@@ -2,7 +2,7 @@ package com.stevesoltys.seedvault.plugins
 
 import android.app.backup.RestoreSet
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -59,7 +59,7 @@ interface StoragePlugin {
      */
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun hasBackup(storage: Storage): Boolean
+    suspend fun hasBackup(safStorage: SafStorage): Boolean
 
     /**
      * Get the set of all backups currently available for restore.

@@ -29,7 +29,7 @@ class SchedulingFragment : PreferenceFragmentCompat(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val storage = settingsManager.getStorage()
+        val storage = settingsManager.getSafStorage()
         if (storage?.isUsb == true) {
             findPreference<PreferenceCategory>("scheduling_category_conditions")?.isEnabled = false
         }

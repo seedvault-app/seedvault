@@ -49,7 +49,7 @@ class PluginTest : KoinComponent {
 
     @Before
     fun setup() = runBlocking {
-        every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
+        every { mockedSettingsManager.getSafStorage() } returns settingsManager.getSafStorage()
         storage.rootBackupDir?.deleteContents(context)
             ?: error("Select a storage location in the app first!")
     }
@@ -76,7 +76,7 @@ class PluginTest : KoinComponent {
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
         assertEquals(0, storagePlugin.getAvailableBackups()?.toList()?.size)
-        val s = settingsManager.getStorage() ?: error("no storage")
+        val s = settingsManager.getSafStorage() ?: error("no storage")
         assertFalse(storagePlugin.hasBackup(s))
 
         // prepare returned tokens requested when initializing device

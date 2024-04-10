@@ -13,7 +13,7 @@ import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.FILE_NO_MEDIA
 import com.stevesoltys.seedvault.plugins.tokenRegex
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.io.IOException
 import java.io.InputStream
@@ -135,7 +135,7 @@ internal class WebDavStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun hasBackup(storage: Storage): Boolean {
+    override suspend fun hasBackup(safStorage: SafStorage): Boolean {
         // TODO this requires refactoring
         return true
     }

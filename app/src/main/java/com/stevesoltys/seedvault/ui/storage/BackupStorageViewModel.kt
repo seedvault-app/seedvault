@@ -74,7 +74,7 @@ internal class BackupStorageViewModel(
     }
 
     private fun scheduleBackupWorkers() {
-        val storage = settingsManager.getStorage() ?: error("no storage available")
+        val storage = settingsManager.getSafStorage() ?: error("no storage available")
         if (!storage.isUsb) {
             if (backupManager.isBackupEnabled) {
                 AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)

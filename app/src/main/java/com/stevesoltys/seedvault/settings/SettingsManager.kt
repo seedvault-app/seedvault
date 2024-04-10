@@ -12,6 +12,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -88,24 +89,24 @@ class SettingsManager(private val context: Context) {
         token = newToken
     }
 
-    // FIXME Storage is currently plugin specific and not generic
-    fun setStorage(storage: Storage) {
+    // FIXME SafStorage is currently plugin specific and not generic
+    fun setSafStorage(safStorage: SafStorage) {
         prefs.edit()
-            .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
-            .putString(PREF_KEY_STORAGE_NAME, storage.name)
-            .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
-            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, storage.requiresNetwork)
+            .putString(PREF_KEY_STORAGE_URI, safStorage.uri.toString())
+            .putString(PREF_KEY_STORAGE_NAME, safStorage.name)
+            .putBoolean(PREF_KEY_STORAGE_IS_USB, safStorage.isUsb)
+            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, safStorage.requiresNetwork)
             .apply()
     }
 
-    fun getStorage(): Storage? {
+    fun getSafStorage(): SafStorage? {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null)
             ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         val requiresNetwork = prefs.getBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, false)
-        return Storage(uri, name, isUsb, requiresNetwork)
+        return SafStorage(uri, name, isUsb, requiresNetwork)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
@@ -144,7 +145,7 @@ class SettingsManager(private val context: Context) {
      */
     @WorkerThread
     fun canDoBackupNow(): Boolean {
-        val storage = getStorage() ?: return false
+        val storage = getSafStorage() ?: return false
         val systemContext = context.getStorageContext { storage.isUsb }
         return !storage.isUnavailableUsb(systemContext) &&
             !storage.isUnavailableNetwork(context, useMeteredNetwork)

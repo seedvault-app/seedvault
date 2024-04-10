@@ -411,7 +411,7 @@ internal class BackupCoordinator(
         val longBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
-        val storage = settingsManager.getStorage() ?: return longBackoff
+        val storage = settingsManager.getSafStorage() ?: return longBackoff
         return when {
             // back off if storage is removable and not available right now
             storage.isUnavailableUsb(context) -> longBackoff

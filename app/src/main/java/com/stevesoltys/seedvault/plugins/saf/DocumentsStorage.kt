@@ -18,7 +18,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.settings.Storage
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -45,9 +44,9 @@ internal class DocumentsStorage(
     private val appContext: Context,
     private val settingsManager: SettingsManager,
 ) {
-    internal var storage: Storage? = null
+    internal var safStorage: SafStorage? = null
         get() {
-            if (field == null) field = settingsManager.getStorage()
+            if (field == null) field = settingsManager.getSafStorage()
             return field
         }
 
@@ -56,14 +55,14 @@ internal class DocumentsStorage(
      */
     private val context: Context
         get() = appContext.getStorageContext {
-            storage?.isUsb == true
+            safStorage?.isUsb == true
         }
     private val contentResolver: ContentResolver get() = context.contentResolver
 
     internal var rootBackupDir: DocumentFile? = null
         get() = runBlocking {
             if (field == null) {
-                val parent = storage?.getDocumentFile(context)
+                val parent = safStorage?.getDocumentFile(context)
                     ?: return@runBlocking null
                 field = try {
                     parent.createOrGetDirectory(context, DIRECTORY_ROOT).apply {
@@ -104,13 +103,13 @@ internal class DocumentsStorage(
      * Resets this storage abstraction, forcing it to re-fetch cached values on next access.
      */
     fun reset(newToken: Long?) {
-        storage = null
+        safStorage = null
         currentToken = newToken
         rootBackupDir = null
         currentSetDir = null
     }
 
-    fun getAuthority(): String? = storage?.uri?.authority
+    fun getAuthority(): String? = safStorage?.uri?.authority
 
     @Throws(IOException::class)
     suspend fun getSetDir(token: Long = currentToken ?: error("no token")): DocumentFile? {

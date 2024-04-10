@@ -17,7 +17,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.ApkBackup
 import io.mockk.Runs
@@ -58,7 +58,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
-    private val storage = Storage(
+    private val safStorage = SafStorage(
         uri = Uri.EMPTY,
         name = getRandomString(),
         isUsb = false,
@@ -290,7 +290,7 @@ internal class BackupCoordinatorTest : BackupTest() {
             )
         } just Runs
         coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
-        every { settingsManager.getStorage() } returns storage
+        every { settingsManager.getSafStorage() } returns safStorage
         every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs
 
@@ -340,7 +340,7 @@ internal class BackupCoordinatorTest : BackupTest() {
             )
         } just Runs
         coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
-        every { settingsManager.getStorage() } returns storage
+        every { settingsManager.getSafStorage() } returns safStorage
         every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs
 

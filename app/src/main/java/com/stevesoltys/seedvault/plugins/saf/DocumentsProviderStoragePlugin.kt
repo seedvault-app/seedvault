@@ -9,7 +9,6 @@ import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.tokenRegex
-import com.stevesoltys.seedvault.settings.Storage
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -28,7 +27,7 @@ internal class DocumentsProviderStoragePlugin(
      */
     private val context: Context
         get() = appContext.getStorageContext {
-            storage.storage?.isUsb == true
+            storage.safStorage?.isUsb == true
         }
 
     private val packageManager: PackageManager = appContext.packageManager
@@ -79,10 +78,10 @@ internal class DocumentsProviderStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun hasBackup(storage: Storage): Boolean {
+    override suspend fun hasBackup(safStorage: SafStorage): Boolean {
         // potentially get system user context if needed here
-        val c = appContext.getStorageContext { storage.isUsb }
-        val parent = DocumentFile.fromTreeUri(c, storage.uri) ?: throw AssertionError()
+        val c = appContext.getStorageContext { safStorage.isUsb }
+        val parent = DocumentFile.fromTreeUri(c, safStorage.uri) ?: throw AssertionError()
         val rootDir = parent.findFileBlocking(c, DIRECTORY_ROOT) ?: return false
         val backupSets = getBackups(c, rootDir)
         return backupSets.isNotEmpty()

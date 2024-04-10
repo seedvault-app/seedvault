@@ -16,10 +16,10 @@ import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.settings.BackupManagerSettings
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
@@ -47,7 +47,7 @@ internal abstract class StorageViewModel(
 
     internal var isSetupWizard: Boolean = false
     internal val hasStorageSet: Boolean
-        get() = settingsManager.getStorage() != null
+        get() = settingsManager.getSafStorage() != null
     abstract val isRestoreOperation: Boolean
 
     companion object {
@@ -55,7 +55,7 @@ internal abstract class StorageViewModel(
             context: Context,
             settingsManager: SettingsManager,
         ): Boolean {
-            val storage = settingsManager.getStorage() ?: return false
+            val storage = settingsManager.getSafStorage() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
                 storage.getDocumentFile(context).isDirectory
@@ -106,20 +106,20 @@ internal abstract class StorageViewModel(
         return saveStorage(storage)
     }
 
-    protected fun createStorage(uri: Uri): Storage {
+    protected fun createStorage(uri: Uri): SafStorage {
         val root = safOption ?: throw IllegalStateException("no storage root")
         val name = if (root.isInternal()) {
             "${root.title} (${app.getString(R.string.settings_backup_location_internal)})"
         } else {
             root.title
         }
-        return Storage(uri, name, root.isUsb, root.requiresNetwork)
+        return SafStorage(uri, name, root.isUsb, root.requiresNetwork)
     }
 
-    protected fun saveStorage(storage: Storage): Boolean {
-        settingsManager.setStorage(storage)
+    protected fun saveStorage(safStorage: SafStorage): Boolean {
+        settingsManager.setSafStorage(safStorage)
 
-        if (storage.isUsb) {
+        if (safStorage.isUsb) {
             Log.d(TAG, "Selected storage is a removable USB device.")
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
@@ -129,9 +129,9 @@ internal abstract class StorageViewModel(
         }
         BackupManagerSettings.resetDefaults(app.contentResolver)
 
-        Log.d(TAG, "New storage location saved: ${storage.uri}")
+        Log.d(TAG, "New storage location saved: ${safStorage.uri}")
 
-        return storage.isUsb
+        return safStorage.isUsb
     }
 
     private fun saveUsbDevice(): Boolean {

@@ -169,7 +169,7 @@ internal class RestoreCoordinator(
                     // check if we even have a backup of that app
                     if (metadataManager.getPackageMetadata(pmPackageName) != null) {
                         // remind user to plug in storage device
-                        val storageName = settingsManager.getStorage()?.name
+                        val storageName = settingsManager.getSafStorage()?.name
                             ?: context.getString(R.string.settings_backup_location_none)
                         notificationManager.onRemovableStorageNotAvailableForRestore(
                             pmPackageName,
@@ -365,7 +365,7 @@ internal class RestoreCoordinator(
 
     // TODO this is plugin specific, needs to be factored out when supporting different plugins
     private fun isStorageRemovableAndNotAvailable(): Boolean {
-        val storage = settingsManager.getStorage() ?: return false
+        val storage = settingsManager.getSafStorage() ?: return false
         return storage.isUnavailableUsb(context)
     }
 

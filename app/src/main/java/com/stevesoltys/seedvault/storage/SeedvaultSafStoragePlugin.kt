@@ -18,7 +18,7 @@ internal class SeedvaultSafStoragePlugin(
      */
     override val context: Context
         get() = appContext.getStorageContext {
-            storage.storage?.isUsb == true
+            storage.safStorage?.isUsb == true
         }
     override val root: DocumentFile
         get() = storage.rootBackupDir ?: error("No storage set")

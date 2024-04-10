@@ -17,7 +17,7 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
             confirmCode()
         }
 
-        if (settingsManager.getStorage() == null) {
+        if (settingsManager.getSafStorage() == null) {
             chooseStorageLocation()
         } else {
             changeBackupLocation()

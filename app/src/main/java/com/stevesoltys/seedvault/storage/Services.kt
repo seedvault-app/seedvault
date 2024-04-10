@@ -43,7 +43,7 @@ internal class StorageBackupService : BackupService() {
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {
         if (intent.getBooleanExtra(EXTRA_START_APP_BACKUP, false)) {
-            val isUsb = settingsManager.getStorage()?.isUsb ?: false
+            val isUsb = settingsManager.getSafStorage()?.isUsb ?: false
             AppBackupWorker.scheduleNow(applicationContext, reschedule = !isUsb)
         }
     }
