@@ -1,5 +1,5 @@
 # Seedvault
-[![Build](https://github.com/seedvault-app/seedvault/workflows/Build/badge.svg?branch=master)](https://github.com/seedvault-app/seedvault/actions?query=branch%3Amaster+workflow%3ABuild)
+[![Build](https://github.com/seedvault-app/seedvault/actions/workflows/build.yml/badge.svg)](https://github.com/seedvault-app/seedvault/actions/workflows/build.yml)
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
