@@ -100,7 +100,8 @@
 
         <activity
             android:name=".ui.storage.StorageActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.storage.PermissionGrantActivity"

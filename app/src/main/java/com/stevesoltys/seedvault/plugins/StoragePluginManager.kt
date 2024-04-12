@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.SafFactory
+import com.stevesoltys.seedvault.plugins.webdav.WebDavFactory
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginEnum
 
@@ -47,6 +48,7 @@ class StoragePluginManager(
     private val context: Context,
     private val settingsManager: SettingsManager,
     safFactory: SafFactory,
+    webDavFactory: WebDavFactory,
 ) {
 
     private var _appPlugin: StoragePlugin<*>?
@@ -79,6 +81,14 @@ class StoragePluginManager(
                 _appPlugin = safFactory.createAppStoragePlugin(safStorage, documentsStorage)
                 _filesPlugin = safFactory.createFilesStoragePlugin(safStorage, documentsStorage)
                 _storageProperties = safStorage
+            }
+
+            StoragePluginEnum.WEB_DAV -> {
+                val webDavProperties =
+                    settingsManager.webDavProperties ?: error("No WebDAV config saved")
+                _appPlugin = webDavFactory.createAppStoragePlugin(webDavProperties.config)
+                _filesPlugin = webDavFactory.createFilesStoragePlugin(webDavProperties.config)
+                _storageProperties = webDavProperties
             }
 
             null -> {

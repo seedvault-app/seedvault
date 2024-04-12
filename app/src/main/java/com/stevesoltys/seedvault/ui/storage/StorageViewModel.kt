@@ -11,6 +11,10 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
@@ -21,6 +25,7 @@ import kotlinx.coroutines.launch
 internal abstract class StorageViewModel(
     private val app: Application,
     protected val safHandler: SafHandler,
+    protected val webdavHandler: WebDavHandler,
     protected val settingsManager: SettingsManager,
     protected val storagePluginManager: StoragePluginManager,
 ) : AndroidViewModel(app), RemovableStorageListener {
@@ -79,10 +84,25 @@ internal abstract class StorageViewModel(
     }
 
     abstract fun onSafUriSet(safStorage: SafStorage)
+    abstract fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin)
 
     override fun onCleared() {
         storageOptionFetcher.setRemovableStorageListener(null)
         super.onCleared()
+    }
+    val webdavConfigState get() = webdavHandler.configState
+
+    fun onWebDavConfigReceived(url: String, user: String, pass: String) {
+        val config = WebDavConfig(url = url, username = user, password = pass)
+        viewModelScope.launch(Dispatchers.IO) {
+            webdavHandler.onConfigReceived(config)
+        }
+    }
+
+    @UiThread
+    fun onWebDavConfigSuccess(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+        mLocationSet.setEvent(true)
+        onWebDavConfigSet(properties, plugin)
     }
 
 }

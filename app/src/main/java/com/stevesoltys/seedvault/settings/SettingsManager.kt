@@ -5,13 +5,15 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
-import androidx.annotation.WorkerThread
 import androidx.preference.PreferenceManager
-import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler.Companion.createWebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -26,6 +28,7 @@ private const val PREF_KEY_STORAGE_PLUGIN = "storagePlugin"
 
 internal enum class StoragePluginEnum { // don't rename, will break existing installs
     SAF,
+    WEB_DAV,
 }
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
@@ -37,6 +40,10 @@ private const val PREF_KEY_FLASH_DRIVE_NAME = "flashDriveName"
 private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
 private const val PREF_KEY_FLASH_DRIVE_VENDOR_ID = "flashDriveVendorId"
 private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
+
+private const val PREF_KEY_WEBDAV_URL = "webDavUrl"
+private const val PREF_KEY_WEBDAV_USER = "webDavUser"
+private const val PREF_KEY_WEBDAV_PASS = "webDavPass"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
@@ -94,7 +101,6 @@ class SettingsManager(private val context: Context) {
         token = newToken
     }
 
-    // FIXME SafStorage is currently plugin specific and not generic
     internal val storagePluginType: StoragePluginEnum?
         get() = prefs.getString(PREF_KEY_STORAGE_PLUGIN, StoragePluginEnum.SAF.name)?.let {
             try {
@@ -107,6 +113,7 @@ class SettingsManager(private val context: Context) {
     fun setStoragePlugin(plugin: StoragePlugin<*>) {
         val value = when (plugin) {
             is DocumentsProviderStoragePlugin -> StoragePluginEnum.SAF
+            is WebDavStoragePlugin -> StoragePluginEnum.WEB_DAV
             else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
         }.name
         prefs.edit()
@@ -159,20 +166,22 @@ class SettingsManager(private val context: Context) {
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
 
-    /**
-     * Check if we are able to do backups now by examining possible pre-conditions
-     * such as plugged-in flash drive or internet access.
-     *
-     * Should be run off the UI thread (ideally I/O) because of disk access.
-     *
-     * @return true if a backup is possible, false if not.
-     */
-    @WorkerThread
-    fun canDoBackupNow(): Boolean {
-        val storage = getSafStorage() ?: return false
-        val systemContext = context.getStorageContext { storage.isUsb }
-        return !storage.isUnavailableUsb(systemContext) &&
-            !storage.isUnavailableNetwork(context, useMeteredNetwork)
+    val webDavProperties: WebDavProperties?
+        get() {
+            val config = WebDavConfig(
+                url = prefs.getString(PREF_KEY_WEBDAV_URL, null) ?: return null,
+                username = prefs.getString(PREF_KEY_WEBDAV_USER, null) ?: return null,
+                password = prefs.getString(PREF_KEY_WEBDAV_PASS, null) ?: return null,
+            )
+            return createWebDavProperties(context, config)
+        }
+
+    fun saveWebDavConfig(config: WebDavConfig) {
+        prefs.edit()
+            .putString(PREF_KEY_WEBDAV_URL, config.url)
+            .putString(PREF_KEY_WEBDAV_USER, config.username)
+            .putString(PREF_KEY_WEBDAV_PASS, config.password)
+            .apply()
     }
 
     fun backupApks(): Boolean {

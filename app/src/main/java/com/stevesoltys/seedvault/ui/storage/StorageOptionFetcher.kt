@@ -62,7 +62,9 @@ internal class StorageOptionFetcher(private val context: Context, private val is
     internal fun getRemovableStorageListener() = listener
 
     internal fun getStorageOptions(): List<StorageOption> {
-        val roots = ArrayList<StorageOption>()
+        val roots = ArrayList<StorageOption>().apply {
+            add(WebDavOption(context))
+        }
         val intent = Intent(PROVIDER_INTERFACE)
         val providers = packageManager.queryIntentContentProviders(intent, 0)
         for (info in providers) {

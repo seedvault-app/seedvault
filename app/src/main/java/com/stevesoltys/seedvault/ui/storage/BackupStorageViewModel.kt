@@ -10,6 +10,9 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -29,9 +32,10 @@ internal class BackupStorageViewModel(
     private val backupInitializer: BackupInitializer,
     private val storageBackup: StorageBackup,
     safHandler: SafHandler,
+    webDavHandler: WebDavHandler,
     settingsManager: SettingsManager,
     storagePluginManager: StoragePluginManager,
-) : StorageViewModel(app, safHandler, settingsManager, storagePluginManager) {
+) : StorageViewModel(app, safHandler, webDavHandler, settingsManager, storagePluginManager) {
 
     override val isRestoreOperation = false
 
@@ -47,6 +51,13 @@ internal class BackupStorageViewModel(
             scheduleBackupWorkers()
         }
         onStorageLocationSet(safStorage.isUsb)
+    }
+
+    override fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+        webdavHandler.save(properties)
+        webdavHandler.setPlugin(properties, plugin)
+        scheduleBackupWorkers()
+        onStorageLocationSet(isUsb = false)
     }
 
     private fun onStorageLocationSet(isUsb: Boolean) {
