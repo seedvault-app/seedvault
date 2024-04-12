@@ -19,12 +19,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
-import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import androidx.work.WorkInfo
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
@@ -77,7 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             when (enabled) {
                 true -> return@OnPreferenceChangeListener trySetBackupEnabled(true)
                 false -> {
-                    AlertDialog.Builder(requireContext())
+                    MaterialAlertDialogBuilder(requireContext())
                         .setIcon(R.drawable.ic_warning)
                         .setTitle(R.string.settings_backup_dialog_title)
                         .setMessage(R.string.settings_backup_dialog_message)
@@ -123,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         apkBackup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
             val enable = newValue as Boolean
             if (enable) return@OnPreferenceChangeListener true
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setIcon(R.drawable.ic_warning)
                 .setTitle(R.string.settings_backup_apk_dialog_title)
                 .setMessage(R.string.settings_backup_apk_dialog_message)
@@ -313,7 +313,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onEnablingStorageBackup() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setIcon(R.drawable.ic_warning)
             .setTitle(R.string.settings_backup_storage_dialog_title)
             .setMessage(R.string.settings_backup_storage_dialog_message)
@@ -341,7 +341,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun showCodeRegenerationNeededDialog() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setIcon(R.drawable.ic_vpn_key)
             .setTitle(R.string.settings_backup_new_code_dialog_title)
             .setMessage(R.string.settings_backup_new_code_dialog_message)

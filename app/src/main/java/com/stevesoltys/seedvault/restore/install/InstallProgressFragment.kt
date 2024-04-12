@@ -19,11 +19,11 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -96,7 +96,7 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         adapter.setFinished()
         button.isEnabled = true
         if (!hasShownFailDialog && installResult.hasFailed) {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setIcon(R.drawable.ic_warning)
                 .setTitle(R.string.restore_installing_error_title)
                 .setMessage(R.string.restore_installing_error_message)

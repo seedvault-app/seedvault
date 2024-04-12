@@ -16,7 +16,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree
 import androidx.annotation.CallSuper
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.saf.StorageRootResolver
 import com.stevesoltys.seedvault.ui.BackupActivity
@@ -89,7 +89,7 @@ class StorageActivity : BackupActivity() {
 
     private fun onInvalidLocation(errorMsg: String) {
         if (viewModel.isRestoreOperation) {
-            val dialog = AlertDialog.Builder(this)
+            val dialog = MaterialAlertDialogBuilder(this)
                 .setTitle(getString(R.string.restore_invalid_location_title))
                 .setMessage(errorMsg)
                 .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }

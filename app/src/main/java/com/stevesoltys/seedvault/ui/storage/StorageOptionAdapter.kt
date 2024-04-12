@@ -15,9 +15,9 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import com.stevesoltys.seedvault.ui.storage.StorageOptionAdapter.StorageOptionViewHolder
@@ -91,7 +91,7 @@ internal class StorageOptionAdapter(
     }
 
     private fun showWarningDialog(context: Context, item: StorageOption) {
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(R.string.storage_internal_warning_title)
             .setMessage(R.string.storage_internal_warning_message)
             .setPositiveButton(R.string.storage_internal_warning_choose_other) { dialog, _ ->
