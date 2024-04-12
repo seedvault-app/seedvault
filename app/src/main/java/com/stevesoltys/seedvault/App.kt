@@ -13,13 +13,14 @@ import android.os.StrictMode
 import android.os.UserHandle
 import android.os.UserManager
 import android.provider.Settings
-import androidx.work.WorkManager
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
+import androidx.work.WorkManager
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.metadataModule
-import com.stevesoltys.seedvault.plugins.saf.documentsProviderModule
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.storagePluginModuleSaf
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
@@ -54,15 +55,41 @@ open class App : Application() {
     private val appModule = module {
         single { SettingsManager(this@App) }
         single { BackupNotificationManager(this@App) }
+        single { StoragePluginManager(this@App, get(), get()) }
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
         factory { AppListRetriever(this@App, get(), get(), get()) }
 
-        viewModel { SettingsViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
+        viewModel {
+            SettingsViewModel(
+                app = this@App,
+                settingsManager = get(),
+                keyManager = get(),
+                pluginManager = get(),
+                metadataManager = get(),
+                appListRetriever = get(),
+                storageBackup = get(),
+                backupManager = get(),
+                backupInitializer = get(),
+            )
+        }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }
-        viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get()) }
-        viewModel { RestoreStorageViewModel(this@App, get(), get()) }
-        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel { BackupStorageViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel { RestoreStorageViewModel(this@App, get(), get(), get()) }
+        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
+        viewModel {
+            BackupStorageViewModel(
+                app = this@App,
+                backupManager = get(),
+                backupInitializer = get(),
+                storageBackup = get(),
+                safHandler = get(),
+                settingsManager = get(),
+                storagePluginManager = get(),
+            )
+        }
+        viewModel { RestoreStorageViewModel(this@App, get(), get(), get()) }
+        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
         viewModel { FileSelectionViewModel(this@App, get()) }
     }
 
@@ -100,7 +127,7 @@ open class App : Application() {
         cryptoModule,
         headerModule,
         metadataModule,
-        documentsProviderModule, // storage plugin
+        storagePluginModuleSaf, // storage plugin
         backupModule,
         restoreModule,
         installModule,

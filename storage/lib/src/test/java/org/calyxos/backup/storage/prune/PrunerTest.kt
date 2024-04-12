@@ -32,11 +32,11 @@ import org.junit.Test
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class PrunerTest {
 
     private val db: Db = mockk()
     private val chunksCache: ChunksCache = mockk()
+    private val pluginGetter: () -> StoragePlugin = mockk()
     private val plugin: StoragePlugin = mockk()
     private val snapshotRetriever: SnapshotRetriever = mockk()
     private val retentionManager: RetentionManager = mockk()
@@ -46,12 +46,13 @@ internal class PrunerTest {
 
     init {
         mockLog(false)
+        every { pluginGetter() } returns plugin
         every { db.getChunksCache() } returns chunksCache
         every { plugin.getMasterKey() } returns masterKey
         every { streamCrypto.deriveStreamKey(masterKey) } returns streamKey
     }
 
-    private val pruner = Pruner(db, retentionManager, plugin, snapshotRetriever, streamCrypto)
+    private val pruner = Pruner(db, retentionManager, pluginGetter, snapshotRetriever, streamCrypto)
 
     @Test
     fun test() = runBlocking {

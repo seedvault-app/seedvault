@@ -14,9 +14,8 @@ import org.calyxos.backup.storage.restore.readVersion
 import java.io.IOException
 import java.security.GeneralSecurityException
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class SnapshotRetriever(
-    private val storagePlugin: StoragePlugin,
+    private val storagePlugin: () -> StoragePlugin,
     private val streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
@@ -26,7 +25,7 @@ internal class SnapshotRetriever(
         InvalidProtocolBufferException::class,
     )
     suspend fun getSnapshot(streamKey: ByteArray, storedSnapshot: StoredSnapshot): BackupSnapshot {
-        return storagePlugin.getBackupSnapshotInputStream(storedSnapshot).use { inputStream ->
+        return storagePlugin().getBackupSnapshotInputStream(storedSnapshot).use { inputStream ->
             val version = inputStream.readVersion()
             val timestamp = storedSnapshot.timestamp
             val ad = streamCrypto.getAssociatedDataForSnapshot(timestamp, version.toByte())

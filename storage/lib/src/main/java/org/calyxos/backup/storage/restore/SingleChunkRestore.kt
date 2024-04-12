@@ -13,9 +13,8 @@ import org.calyxos.backup.storage.crypto.StreamCrypto
 
 private const val TAG = "SingleChunkRestore"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class SingleChunkRestore(
-    storagePlugin: StoragePlugin,
+    storagePlugin: () -> StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,

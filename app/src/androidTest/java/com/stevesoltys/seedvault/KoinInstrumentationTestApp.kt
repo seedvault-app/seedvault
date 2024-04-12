@@ -41,19 +41,20 @@ class KoinInstrumentationTestApp : App() {
 
             viewModel {
                 currentRestoreViewModel =
-                    spyk(RestoreViewModel(context, get(), get(), get(), get(), get(), get()))
+                    spyk(RestoreViewModel(context, get(), get(), get(), get(), get(), get(), get()))
                 currentRestoreViewModel!!
             }
 
             viewModel {
-                currentBackupStorageViewModel =
-                    spyk(BackupStorageViewModel(context, get(), get(), get(), get()))
+                val viewModel =
+                    BackupStorageViewModel(context, get(), get(), get(), get(), get(), get(), get())
+                currentBackupStorageViewModel = spyk(viewModel)
                 currentBackupStorageViewModel!!
             }
 
             viewModel {
                 currentRestoreStorageViewModel =
-                    spyk(RestoreStorageViewModel(context, get(), get()))
+                    spyk(RestoreStorageViewModel(context, get(), get(), get(), get()))
                 currentRestoreStorageViewModel!!
             }
         }

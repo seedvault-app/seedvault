@@ -7,6 +7,7 @@ import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -21,15 +22,19 @@ import java.io.FileInputStream
 import java.io.IOException
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackupTest : BackupTest() {
 
-    private val plugin = mockk<StoragePlugin>()
-    private val backup = FullBackup(plugin, settingsManager, inputFactory, crypto)
+    private val storagePluginManager: StoragePluginManager = mockk()
+    private val plugin = mockk<StoragePlugin<*>>()
+    private val backup = FullBackup(storagePluginManager, settingsManager, inputFactory, crypto)
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
     private val inputStream = mockk<FileInputStream>()
     private val ad = getADForFull(VERSION, packageInfo.packageName)
+
+    init {
+        every { storagePluginManager.appPlugin } returns plugin
+    }
 
     @Test
     fun `has no initial state`() {

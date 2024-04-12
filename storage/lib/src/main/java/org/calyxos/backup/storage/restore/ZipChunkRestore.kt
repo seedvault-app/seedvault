@@ -17,9 +17,8 @@ import java.util.zip.ZipInputStream
 
 private const val TAG = "ZipChunkRestore"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ZipChunkRestore(
-    storagePlugin: StoragePlugin,
+    storagePlugin: () -> StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,

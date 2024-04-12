@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import io.mockk.Runs
@@ -33,15 +34,22 @@ import java.security.GeneralSecurityException
 import java.util.zip.GZIPOutputStream
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestoreTest : RestoreTest() {
 
-    private val plugin = mockk<StoragePlugin>()
+    private val storagePluginManager: StoragePluginManager = mockk()
+    private val plugin = mockk<StoragePlugin<*>>()
+    @Suppress("DEPRECATION")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
-    private val restore =
-        KVRestore(plugin, legacyPlugin, outputFactory, headerReader, crypto, dbManager)
+    private val restore = KVRestore(
+        pluginManager = storagePluginManager,
+        legacyPlugin = legacyPlugin,
+        outputFactory = outputFactory,
+        headerReader = headerReader,
+        crypto = crypto,
+        dbManager = dbManager,
+    )
 
     private val db = mockk<KVDb>()
     private val ad = getADForKV(VERSION, packageInfo.packageName)
@@ -60,6 +68,8 @@ internal class KVRestoreTest : RestoreTest() {
     init {
         // for InputStream#readBytes()
         mockkStatic("kotlin.io.ByteStreamsKt")
+
+        every { storagePluginManager.appPlugin } returns plugin
     }
 
     @Test
@@ -180,7 +190,6 @@ internal class KVRestoreTest : RestoreTest() {
     }
 
     @Test
-    @Suppress("Deprecation")
     fun `v0 listing records throws`() = runBlocking {
         restore.initializeState(0x00, token, name, packageInfo)
 

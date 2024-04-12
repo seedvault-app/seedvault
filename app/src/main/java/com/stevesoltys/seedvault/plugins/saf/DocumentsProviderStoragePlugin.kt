@@ -2,6 +2,7 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
@@ -16,19 +17,15 @@ import java.io.OutputStream
 
 private val TAG = DocumentsProviderStoragePlugin::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderStoragePlugin(
     private val appContext: Context,
     private val storage: DocumentsStorage,
-) : StoragePlugin {
+) : StoragePlugin<Uri> {
 
     /**
      * Attention: This context might be from a different user. Use with care.
      */
-    private val context: Context
-        get() = appContext.getStorageContext {
-            storage.safStorage?.isUsb == true
-        }
+    private val context: Context get() = appContext.getStorageContext { storage.safStorage.isUsb }
 
     private val packageManager: PackageManager = appContext.packageManager
 
@@ -77,16 +74,6 @@ internal class DocumentsProviderStoragePlugin(
         if (!file.delete()) throw IOException("Failed to delete $name")
     }
 
-    @Throws(IOException::class)
-    override suspend fun hasBackup(safStorage: SafStorage): Boolean {
-        // potentially get system user context if needed here
-        val c = appContext.getStorageContext { safStorage.isUsb }
-        val parent = DocumentFile.fromTreeUri(c, safStorage.uri) ?: throw AssertionError()
-        val rootDir = parent.findFileBlocking(c, DIRECTORY_ROOT) ?: return false
-        val backupSets = getBackups(c, rootDir)
-        return backupSets.isNotEmpty()
-    }
-
     override suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
         val backupSets = getBackups(context, rootDir)
@@ -110,7 +97,6 @@ internal class DocumentsProviderStoragePlugin(
 
 class BackupSet(val token: Long, val metadataFile: DocumentFile)
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal suspend fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
     val backupSets = ArrayList<BackupSet>()
     val files = try {

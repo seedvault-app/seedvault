@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -41,7 +42,6 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 @ExperimentalCoroutinesApi
 internal class ApkRestoreTest : TransportTest() {
 
@@ -49,18 +49,19 @@ internal class ApkRestoreTest : TransportTest() {
     private val strictContext: Context = mockk<Context>().apply {
         every { packageManager } returns pm
     }
-    private val storagePlugin: StoragePlugin = mockk()
+    private val storagePluginManager: StoragePluginManager = mockk()
+    private val storagePlugin: StoragePlugin<*> = mockk()
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
 
     private val apkRestore: ApkRestore = ApkRestore(
-        strictContext,
-        storagePlugin,
-        legacyStoragePlugin,
-        crypto,
-        splitCompatChecker,
-        apkInstaller
+        context = strictContext,
+        pluginManager = storagePluginManager,
+        legacyStoragePlugin = legacyStoragePlugin,
+        crypto = crypto,
+        splitCompatChecker = splitCompatChecker,
+        apkInstaller = apkInstaller,
     )
 
     private val icon: Drawable = mockk()
@@ -85,6 +86,8 @@ internal class ApkRestoreTest : TransportTest() {
     init {
         // as we don't do strict signature checking, we can use a relaxed mock
         packageInfo.signingInfo = mockk(relaxed = true)
+
+        every { storagePluginManager.appPlugin } returns storagePlugin
     }
 
     @Test

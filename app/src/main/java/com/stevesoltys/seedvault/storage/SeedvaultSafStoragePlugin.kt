@@ -16,12 +16,8 @@ internal class SeedvaultSafStoragePlugin(
     /**
      * Attention: This context might be from a different user. Use with care.
      */
-    override val context: Context
-        get() = appContext.getStorageContext {
-            storage.safStorage?.isUsb == true
-        }
-    override val root: DocumentFile
-        get() = storage.rootBackupDir ?: error("No storage set")
+    override val context: Context get() = appContext.getStorageContext { storage.safStorage.isUsb }
+    override val root: DocumentFile get() = storage.rootBackupDir ?: error("No storage set")
 
     override fun getMasterKey(): SecretKey = keyManager.getMainKey()
     override fun hasMasterKey(): Boolean = keyManager.hasMainKey()

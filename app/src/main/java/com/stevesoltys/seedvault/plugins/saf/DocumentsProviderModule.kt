@@ -1,14 +1,22 @@
 package com.stevesoltys.seedvault.plugins.saf
 
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.settings.SettingsManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val documentsProviderModule = module {
-    single { DocumentsStorage(androidContext(), get()) }
+val storagePluginModuleSaf = module {
+    single { SafFactory(androidContext(), get(), get()) }
+    single { SafHandler(androidContext(), get(), get(), get()) }
 
-    single<StoragePlugin> { DocumentsProviderStoragePlugin(androidContext(), get()) }
     @Suppress("Deprecation")
-    single<LegacyStoragePlugin> { DocumentsProviderLegacyPlugin(androidContext(), get()) }
+    single<LegacyStoragePlugin> {
+        DocumentsProviderLegacyPlugin(
+            context = androidContext(),
+            storageGetter = {
+                val safStorage = get<SettingsManager>().getSafStorage() ?: error("No SAF storage")
+                DocumentsStorage(androidContext(), get(), safStorage)
+            },
+        )
+    }
 }

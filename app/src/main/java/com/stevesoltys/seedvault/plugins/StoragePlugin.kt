@@ -1,13 +1,11 @@
 package com.stevesoltys.seedvault.plugins
 
 import android.app.backup.RestoreSet
-import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-interface StoragePlugin {
+interface StoragePlugin<T> {
 
     /**
      * Returns true if the plugin is working, or false if it isn't.
@@ -52,14 +50,6 @@ interface StoragePlugin {
      */
     @Throws(IOException::class)
     suspend fun removeData(token: Long, name: String)
-
-    /**
-     * Searches if there's really a backup available in the given storage location.
-     * Returns true if at least one was found and false otherwise.
-     */
-    @WorkerThread
-    @Throws(IOException::class)
-    suspend fun hasBackup(safStorage: SafStorage): Boolean
 
     /**
      * Get the set of all backups currently available for restore.

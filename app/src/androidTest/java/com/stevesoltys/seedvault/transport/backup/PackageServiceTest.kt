@@ -24,7 +24,7 @@ class PackageServiceTest : KoinComponent {
 
     private val settingsManager: SettingsManager by inject()
 
-    private val storagePlugin: StoragePlugin by inject()
+    private val storagePlugin: StoragePlugin<*> by inject()
 
     @Test
     fun testNotAllowedPackages() {

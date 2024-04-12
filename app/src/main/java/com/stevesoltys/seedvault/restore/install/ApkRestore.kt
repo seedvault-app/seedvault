@@ -10,6 +10,7 @@ import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
@@ -28,7 +29,7 @@ private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
     private val context: Context,
-    private val storagePlugin: StoragePlugin,
+    private val pluginManager: StoragePluginManager,
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin,
     private val crypto: Crypto,
@@ -37,6 +38,7 @@ internal class ApkRestore(
 ) {
 
     private val pm = context.packageManager
+    private val storagePlugin get() = pluginManager.appPlugin
 
     fun restore(backup: RestorableBackup) = flow {
         // we don't filter out apps without APK, so the user can manually install them
@@ -87,7 +89,7 @@ internal class ApkRestore(
         emit(installResult)
     }
 
-    @Suppress("ThrowsCount", "BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
+    @Suppress("ThrowsCount")
     @Throws(IOException::class, SecurityException::class)
     private suspend fun restore(
         collector: FlowCollector<InstallResult>,
@@ -212,7 +214,6 @@ internal class ApkRestore(
      * @return a [Pair] of the cached [File] and SHA-256 hash.
      */
     @Throws(IOException::class)
-    @Suppress("BlockingMethodInNonBlockingContext") // flows on Dispatcher.IO
     private suspend fun cacheApk(
         version: Byte,
         token: Long,

@@ -10,12 +10,13 @@ import java.io.IOException
 import java.io.InputStream
 
 @WorkerThread
-@Suppress("BlockingMethodInNonBlockingContext", "Deprecation") // all methods do I/O
+@Suppress("Deprecation")
 internal class DocumentsProviderLegacyPlugin(
     private val context: Context,
-    private val storage: DocumentsStorage,
+    private val storageGetter: () -> DocumentsStorage,
 ) : LegacyStoragePlugin {
 
+    private val storage get() = storageGetter()
     private var packageDir: DocumentFile? = null
     private var packageChildren: List<DocumentFile>? = null
 

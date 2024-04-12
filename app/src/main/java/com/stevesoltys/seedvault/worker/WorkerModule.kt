@@ -31,7 +31,7 @@ val workerModule = module {
             metadataManager = get(),
             packageService = get(),
             apkBackup = get(),
-            plugin = get(),
+            pluginManager = get(),
             nm = get()
         )
     }

@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -30,21 +31,25 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVBackupTest : BackupTest() {
 
-    private val plugin = mockk<StoragePlugin>()
+    private val pluginManager = mockk<StoragePluginManager>()
     private val dataInput = mockk<BackupDataInput>()
     private val dbManager = mockk<KvDbManager>()
 
-    private val backup = KVBackup(plugin, settingsManager, inputFactory, crypto, dbManager)
+    private val backup = KVBackup(pluginManager, settingsManager, inputFactory, crypto, dbManager)
 
     private val db = mockk<KVDb>()
+    private val plugin = mockk<StoragePlugin<*>>()
     private val packageName = packageInfo.packageName
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val dataValue = Random.nextBytes(23)
     private val dbBytes = Random.nextBytes(42)
     private val inputStream = ByteArrayInputStream(dbBytes)
+
+    init {
+        every { pluginManager.appPlugin } returns plugin
+    }
 
     @Test
     fun `has no initial state`() {
@@ -231,7 +236,7 @@ internal class KVBackupTest : BackupTest() {
         every { dbManager.existsDb(pmPackageInfo.packageName) } returns false
         every { crypto.getNameForPackage(salt, pmPackageInfo.packageName) } returns name
         every { dbManager.getDb(pmPackageInfo.packageName) } returns db
-        every { settingsManager.canDoBackupNow() } returns false
+        every { pluginManager.canDoBackupNow() } returns false
         every { db.put(key, dataValue) } just Runs
         getDataInput(listOf(true, false))
 

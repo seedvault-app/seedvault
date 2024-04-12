@@ -34,6 +34,8 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
@@ -59,12 +61,13 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
+    private val pluginManager: StoragePluginManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
     private val backupInitializer: BackupInitializer,
-) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
+) : RequireProvisioningViewModel(app, settingsManager, keyManager, pluginManager) {
 
     private val contentResolver = app.contentResolver
     private val connectivityManager: ConnectivityManager? =
@@ -131,9 +134,9 @@ internal class SettingsViewModel(
     }
 
     override fun onStorageLocationChanged() {
-        val storage = settingsManager.getSafStorage() ?: return
+        val storage = pluginManager.storageProperties ?: return
 
-        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb}")
+        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb})")
         if (storage.isUsb) {
             // disable storage backup if new storage is on USB
             cancelAppBackup()
@@ -149,24 +152,27 @@ internal class SettingsViewModel(
 
     fun onWorkerStateChanged() {
         viewModelScope.launch(Dispatchers.IO) {
-            val canDo = settingsManager.canDoBackupNow() &&
+            val canDo = pluginManager.canDoBackupNow() &&
                 appBackupWorkInfo.value?.state != WorkInfo.State.RUNNING
             mBackupPossible.postValue(canDo)
         }
     }
 
     private fun onStoragePropertiesChanged() {
-        val storage = settingsManager.getSafStorage() ?: return
+        val storage = pluginManager.storageProperties ?: return
 
         Log.d(TAG, "onStoragePropertiesChanged")
-        // register storage observer
-        try {
-            contentResolver.unregisterContentObserver(storageObserver)
-            contentResolver.registerContentObserver(storage.uri, false, storageObserver)
-        } catch (e: SecurityException) {
-            // This can happen if the app providing the storage was uninstalled.
-            // validLocationIsSet() gets called elsewhere and prompts for a new storage location.
-            Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+        if (storage is SafStorage) {
+            // register storage observer
+            try {
+                contentResolver.unregisterContentObserver(storageObserver)
+                contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+            } catch (e: SecurityException) {
+                // This can happen if the app providing the storage was uninstalled.
+                // validLocationIsSet() gets called elsewhere
+                // and prompts for a new storage location.
+                Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+            }
         }
 
         // register network observer if needed
@@ -301,7 +307,7 @@ internal class SettingsViewModel(
         }
     }
 
-    fun cancelAppBackup() {
+    private fun cancelAppBackup() {
         AppBackupWorker.unschedule(app)
     }
 

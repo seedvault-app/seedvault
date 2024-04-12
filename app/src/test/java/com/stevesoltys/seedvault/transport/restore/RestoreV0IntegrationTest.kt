@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
@@ -35,7 +36,6 @@ import javax.crypto.spec.SecretKeySpec
 /**
  * Tests that we can still restore Version 0 backups with current code.
  */
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreV0IntegrationTest : TransportTest() {
 
     private val outputFactory = mockk<OutputFactory>()
@@ -49,30 +49,31 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val dbManager = mockk<KvDbManager>()
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
+    private val storagePluginManager: StoragePluginManager = mockk()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
-    private val backupPlugin = mockk<StoragePlugin>()
+    private val backupPlugin = mockk<StoragePlugin<*>>()
     private val kvRestore = KVRestore(
-        backupPlugin,
-        legacyPlugin,
-        outputFactory,
-        headerReader,
-        cryptoImpl,
-        dbManager
+        pluginManager = storagePluginManager,
+        legacyPlugin = legacyPlugin,
+        outputFactory = outputFactory,
+        headerReader = headerReader,
+        crypto = cryptoImpl,
+        dbManager = dbManager,
     )
     private val fullRestore =
-        FullRestore(backupPlugin, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(storagePluginManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
-        context,
-        crypto,
-        settingsManager,
-        metadataManager,
-        notificationManager,
-        backupPlugin,
-        kvRestore,
-        fullRestore,
-        metadataReader
+        context = context,
+        crypto = crypto,
+        settingsManager = settingsManager,
+        metadataManager = metadataManager,
+        notificationManager = notificationManager,
+        pluginManager = storagePluginManager,
+        kv = kvRestore,
+        full = fullRestore,
+        metadataReader = metadataReader,
     ).apply { beforeStartRestore(metadata.copy(version = 0x00)) }
 
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
@@ -115,6 +116,10 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val key64 = key.encodeBase64()
     private val key2 = "RestoreKey2"
     private val key264 = key2.encodeBase64()
+
+    init {
+        every { storagePluginManager.appPlugin } returns backupPlugin
+    }
 
     @Test
     fun `test key-value backup and restore with 2 records`() = runBlocking {

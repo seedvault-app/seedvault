@@ -11,38 +11,38 @@ val backupModule = module {
             context = androidContext(),
             backupManager = get(),
             settingsManager = get(),
-            plugin = get()
+            pluginManager = get(),
         )
     }
     single<KvDbManager> { KvDbManagerImpl(androidContext()) }
     single {
         KVBackup(
-            plugin = get(),
+            pluginManager = get(),
             settingsManager = get(),
             inputFactory = get(),
             crypto = get(),
-            dbManager = get()
+            dbManager = get(),
         )
     }
     single {
         FullBackup(
-            plugin = get(),
+            pluginManager = get(),
             settingsManager = get(),
             inputFactory = get(),
-            crypto = get()
+            crypto = get(),
         )
     }
     single {
         BackupCoordinator(
             context = androidContext(),
-            plugin = get(),
+            pluginManager = get(),
             kv = get(),
             full = get(),
             clock = get(),
             packageService = get(),
             metadataManager = get(),
             settingsManager = get(),
-            nm = get()
+            nm = get(),
         )
     }
 }

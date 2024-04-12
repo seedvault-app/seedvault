@@ -58,7 +58,6 @@ import java.io.OutputStream
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupRestoreTest {
 
     @get:Rule
@@ -71,9 +70,10 @@ internal class BackupRestoreTest {
     private val contentResolver: ContentResolver = mockk()
 
     private val fileScanner: FileScanner = mockk()
+    private val pluginGetter: () -> StoragePlugin = mockk()
     private val plugin: StoragePlugin = mockk()
     private val fileRestore: FileRestore = mockk()
-    private val snapshotRetriever = SnapshotRetriever(plugin)
+    private val snapshotRetriever = SnapshotRetriever(pluginGetter)
     private val cacheRepopulater: ChunksCacheRepopulater = mockk()
 
     init {
@@ -84,6 +84,7 @@ internal class BackupRestoreTest {
 
         mockkStatic("org.calyxos.backup.storage.UriUtilsKt")
 
+        every { pluginGetter() } returns plugin
         every { db.getFilesCache() } returns filesCache
         every { db.getChunksCache() } returns chunksCache
         every { plugin.getMasterKey() } returns SecretKeySpec(
@@ -94,11 +95,11 @@ internal class BackupRestoreTest {
         every { context.contentResolver } returns contentResolver
     }
 
-    private val restore = Restore(context, plugin, snapshotRetriever, fileRestore)
+    private val restore = Restore(context, pluginGetter, snapshotRetriever, fileRestore)
 
     @Test
     fun testZipAndSingleRandom(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, plugin, cacheRepopulater)
+        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater)
 
         val smallFileMBytes = Random.nextBytes(Random.nextInt(SMALL_FILE_SIZE_MAX))
         val smallFileM = getRandomMediaFile(smallFileMBytes.size)
@@ -235,7 +236,7 @@ internal class BackupRestoreTest {
 
     @Test
     fun testMultiChunks(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, plugin, cacheRepopulater, 4)
+        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater, 4)
 
         val chunk1 = byteArrayOf(0x00, 0x01, 0x02, 0x03)
         val chunk2 = byteArrayOf(0x04, 0x05, 0x06, 0x07)

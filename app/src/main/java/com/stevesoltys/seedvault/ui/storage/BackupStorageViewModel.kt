@@ -3,11 +3,13 @@ package com.stevesoltys.seedvault.ui.storage
 import android.app.Application
 import android.app.backup.IBackupManager
 import android.app.job.JobInfo
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafHandler
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -26,14 +28,17 @@ internal class BackupStorageViewModel(
     private val backupManager: IBackupManager,
     private val backupInitializer: BackupInitializer,
     private val storageBackup: StorageBackup,
+    safHandler: SafHandler,
     settingsManager: SettingsManager,
-) : StorageViewModel(app, settingsManager) {
+    storagePluginManager: StoragePluginManager,
+) : StorageViewModel(app, safHandler, settingsManager, storagePluginManager) {
 
     override val isRestoreOperation = false
 
-    override fun onSafUriSet(uri: Uri) {
-        val isUsb = saveStorage(uri)
-        if (isUsb) {
+    override fun onSafUriSet(safStorage: SafStorage) {
+        safHandler.save(safStorage)
+        safHandler.setPlugin(safStorage)
+        if (safStorage.isUsb) {
             // disable storage backup if new storage is on USB
             cancelBackupWorkers()
         } else {
@@ -41,12 +46,16 @@ internal class BackupStorageViewModel(
             // also to update the network requirement of the new storage
             scheduleBackupWorkers()
         }
+        onStorageLocationSet(safStorage.isUsb)
+    }
+
+    private fun onStorageLocationSet(isUsb: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            // remove old storage snapshots and clear cache
-            // TODO is this needed? It also does create all 255 chunk folders which takes time
-            //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
-            storageBackup.init()
             try {
+                // remove old storage snapshots and clear cache
+                // TODO For SAF, this also does create all 255 chunk folders which takes time
+                //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
+                storageBackup.init()
                 // initialize the new location (if backups are enabled)
                 if (backupManager.isBackupEnabled) {
                     val onError = {
@@ -74,7 +83,7 @@ internal class BackupStorageViewModel(
     }
 
     private fun scheduleBackupWorkers() {
-        val storage = settingsManager.getSafStorage() ?: error("no storage available")
+        val storage = storagePluginManager.storageProperties ?: error("no storage available")
         if (!storage.isUsb) {
             if (backupManager.isBackupEnabled) {
                 AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)

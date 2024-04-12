@@ -13,7 +13,7 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
@@ -32,9 +32,8 @@ private class FullRestoreState(
 
 private val TAG = FullRestore::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class FullRestore(
-    private val plugin: StoragePlugin,
+    private val pluginManager: StoragePluginManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -42,6 +41,7 @@ internal class FullRestore(
     private val crypto: Crypto,
 ) {
 
+    private val plugin get() = pluginManager.appPlugin
     private var state: FullRestoreState? = null
 
     fun hasState() = state != null

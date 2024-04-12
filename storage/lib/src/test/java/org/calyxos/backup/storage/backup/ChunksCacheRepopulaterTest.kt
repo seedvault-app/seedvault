@@ -26,18 +26,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ChunksCacheRepopulaterTest {
 
     private val db: Db = mockk()
     private val chunksCache: ChunksCache = mockk()
+    private val pluginGetter: () -> StoragePlugin = mockk()
     private val plugin: StoragePlugin = mockk()
     private val snapshotRetriever: SnapshotRetriever = mockk()
     private val streamKey = "This is a backup key for testing".toByteArray()
-    private val cacheRepopulater = ChunksCacheRepopulater(db, plugin, snapshotRetriever)
+    private val cacheRepopulater = ChunksCacheRepopulater(db, pluginGetter, snapshotRetriever)
 
     init {
         mockLog()
+        every { pluginGetter() } returns plugin
         every { db.getChunksCache() } returns chunksCache
     }
 

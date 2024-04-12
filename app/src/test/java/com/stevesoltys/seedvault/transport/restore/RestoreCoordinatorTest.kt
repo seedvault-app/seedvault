@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -35,25 +36,25 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
-    private val plugin = mockk<StoragePlugin>()
+    private val storagePluginManager: StoragePluginManager = mockk()
+    private val plugin = mockk<StoragePlugin<*>>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
 
     private val restore = RestoreCoordinator(
-        context,
-        crypto,
-        settingsManager,
-        metadataManager,
-        notificationManager,
-        plugin,
-        kv,
-        full,
-        metadataReader
+        context = context,
+        crypto = crypto,
+        settingsManager = settingsManager,
+        metadataManager = metadataManager,
+        notificationManager = notificationManager,
+        pluginManager = storagePluginManager,
+        kv = kv,
+        full = full,
+        metadataReader = metadataReader,
     )
 
     private val inputStream = mockk<InputStream>()
@@ -71,6 +72,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     init {
         metadata.packageMetadataMap[packageInfo2.packageName] =
             PackageMetadata(backupType = BackupType.FULL)
+
+        every { storagePluginManager.appPlugin } returns plugin
     }
 
     @Test
@@ -164,7 +167,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() =
         runBlocking {
-            every { settingsManager.getSafStorage() } returns safStorage
+            every { storagePluginManager.storageProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns true
             every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
             every { safStorage.name } returns storageName
@@ -188,7 +191,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() =
         runBlocking {
-            every { settingsManager.getSafStorage() } returns safStorage
+            every { storagePluginManager.storageProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns false
 
             restore.beforeStartRestore(metadata)
@@ -204,7 +207,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
-        every { settingsManager.getSafStorage() } returns safStorage
+        every { storagePluginManager.storageProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
 

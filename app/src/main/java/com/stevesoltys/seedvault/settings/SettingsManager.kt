@@ -3,15 +3,14 @@ package com.stevesoltys.seedvault.settings
 import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
-import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
@@ -22,6 +21,12 @@ internal const val PREF_KEY_AUTO_RESTORE = "auto_restore"
 internal const val PREF_KEY_SCHED_FREQ = "scheduling_frequency"
 internal const val PREF_KEY_SCHED_METERED = "scheduling_metered"
 internal const val PREF_KEY_SCHED_CHARGING = "scheduling_charging"
+
+private const val PREF_KEY_STORAGE_PLUGIN = "storagePlugin"
+
+internal enum class StoragePluginEnum { // don't rename, will break existing installs
+    SAF,
+}
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
@@ -90,6 +95,25 @@ class SettingsManager(private val context: Context) {
     }
 
     // FIXME SafStorage is currently plugin specific and not generic
+    internal val storagePluginType: StoragePluginEnum?
+        get() = prefs.getString(PREF_KEY_STORAGE_PLUGIN, StoragePluginEnum.SAF.name)?.let {
+            try {
+                StoragePluginEnum.valueOf(it)
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
+
+    fun setStoragePlugin(plugin: StoragePlugin<*>) {
+        val value = when (plugin) {
+            is DocumentsProviderStoragePlugin -> StoragePluginEnum.SAF
+            else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
+        }.name
+        prefs.edit()
+            .putString(PREF_KEY_STORAGE_PLUGIN, value)
+            .apply()
+    }
+
     fun setSafStorage(safStorage: SafStorage) {
         prefs.edit()
             .putString(PREF_KEY_STORAGE_URI, safStorage.uri.toString())
@@ -193,42 +217,6 @@ class SettingsManager(private val context: Context) {
         prefs.edit()
             .putBoolean(PREF_KEY_D2D_BACKUPS, enabled)
             .apply()
-    }
-}
-
-data class Storage(
-    val uri: Uri,
-    val name: String,
-    val isUsb: Boolean,
-    val requiresNetwork: Boolean,
-) {
-    fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
-        ?: throw AssertionError("Should only happen on API < 21.")
-
-    /**
-     * Returns true if this is USB storage that is not available, false otherwise.
-     *
-     * Must be run off UI thread (ideally I/O).
-     */
-    @WorkerThread
-    fun isUnavailableUsb(context: Context): Boolean {
-        return isUsb && !getDocumentFile(context).isDirectory
-    }
-
-    /**
-     * Returns true if this is storage that requires network access,
-     * but it isn't available right now.
-     */
-    fun isUnavailableNetwork(context: Context, allowMetered: Boolean): Boolean {
-        return requiresNetwork && !hasUnmeteredInternet(context, allowMetered)
-    }
-
-    private fun hasUnmeteredInternet(context: Context, allowMetered: Boolean): Boolean {
-        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
-        val isMetered = cm.isActiveNetworkMetered
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            (allowMetered || !isMetered)
     }
 }
 

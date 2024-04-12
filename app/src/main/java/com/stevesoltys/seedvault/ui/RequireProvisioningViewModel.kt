@@ -3,13 +3,14 @@ package com.stevesoltys.seedvault.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.ui.storage.StorageViewModel
 
 abstract class RequireProvisioningViewModel(
     protected val app: Application,
     protected val settingsManager: SettingsManager,
     protected val keyManager: KeyManager,
+    private val pluginManager: StoragePluginManager,
 ) : AndroidViewModel(app) {
 
     abstract val isRestoreOperation: Boolean
@@ -18,7 +19,7 @@ abstract class RequireProvisioningViewModel(
     internal val chooseBackupLocation: LiveEvent<Boolean> get() = mChooseBackupLocation
     internal fun chooseBackupLocation() = mChooseBackupLocation.setEvent(true)
 
-    internal fun validLocationIsSet() = StorageViewModel.validLocationIsSet(app, settingsManager)
+    internal fun validLocationIsSet() = pluginManager.isValidAppPluginSet()
 
     internal fun recoveryCodeIsSet() = keyManager.hasBackupKey()
 

@@ -13,7 +13,6 @@ import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.FILE_NO_MEDIA
 import com.stevesoltys.seedvault.plugins.tokenRegex
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.io.IOException
 import java.io.InputStream
@@ -25,7 +24,7 @@ internal class WebDavStoragePlugin(
     context: Context,
     webDavConfig: WebDavConfig,
     root: String = DIRECTORY_ROOT,
-) : WebDavStorage(webDavConfig, root), StoragePlugin {
+) : WebDavStorage(webDavConfig, root), StoragePlugin<WebDavConfig> {
 
     override suspend fun test(): Boolean {
         val location = baseUrl.toHttpUrl()
@@ -132,12 +131,6 @@ internal class WebDavStoragePlugin(
             if (e is IOException) throw e
             else throw IOException(e)
         }
-    }
-
-    @Throws(IOException::class)
-    override suspend fun hasBackup(safStorage: SafStorage): Boolean {
-        // TODO this requires refactoring
-        return true
     }
 
     override suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>? {

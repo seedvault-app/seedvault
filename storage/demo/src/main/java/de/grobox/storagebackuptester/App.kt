@@ -18,7 +18,7 @@ class App : Application() {
     val settingsManager: SettingsManager by lazy { SettingsManager(applicationContext) }
     val storageBackup: StorageBackup by lazy {
         val plugin = TestSafStoragePlugin(this) { settingsManager.getBackupLocation() }
-        StorageBackup(this, plugin)
+        StorageBackup(this, { plugin })
     }
 
     override fun onCreate() {

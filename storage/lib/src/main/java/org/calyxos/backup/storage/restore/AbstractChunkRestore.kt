@@ -14,13 +14,14 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.security.GeneralSecurityException
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal abstract class AbstractChunkRestore(
-    private val storagePlugin: StoragePlugin,
+    private val storagePluginGetter: () -> StoragePlugin,
     private val fileRestore: FileRestore,
     private val streamCrypto: StreamCrypto,
     private val streamKey: ByteArray,
 ) {
+
+    private val storagePlugin get() = storagePluginGetter()
 
     @Throws(IOException::class, GeneralSecurityException::class)
     protected suspend fun getAndDecryptChunk(

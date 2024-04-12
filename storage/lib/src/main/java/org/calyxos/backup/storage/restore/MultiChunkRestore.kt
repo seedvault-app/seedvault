@@ -24,7 +24,7 @@ private const val TAG = "MultiChunkRestore"
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class MultiChunkRestore(
     private val context: Context,
-    storagePlugin: StoragePlugin,
+    storagePlugin: () -> StoragePlugin,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,
