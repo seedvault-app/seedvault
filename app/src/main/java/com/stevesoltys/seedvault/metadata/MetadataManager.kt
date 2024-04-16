@@ -312,7 +312,7 @@ internal class MetadataManager(
     private fun getUserName(): String? {
         val perm = "android.permission.QUERY_USERS"
         return if (context.checkSelfPermission(perm) == PERMISSION_GRANTED) {
-            val userManager = context.getSystemService(UserManager::class.java)
+            val userManager = context.getSystemService(UserManager::class.java) ?: return false
             userManager.userName
         } else null
     }
