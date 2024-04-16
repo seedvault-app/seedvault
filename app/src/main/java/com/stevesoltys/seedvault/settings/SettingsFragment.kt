@@ -91,8 +91,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         backupLocation = findPreference("backup_location")!!
         backupLocation.setOnPreferenceClickListener {
-            viewModel.chooseBackupLocation()
-            true
+            if (viewModel.isBackupRunning.value) {
+                // don't allow changing backup destination while backup is running
+                // TODO we could show toast or snackbar here
+                false
+            } else {
+                viewModel.chooseBackupLocation()
+                true
+            }
         }
 
         autoRestore = findPreference(PREF_KEY_AUTO_RESTORE)!!

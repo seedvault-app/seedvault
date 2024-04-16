@@ -80,7 +80,7 @@ internal class SettingsViewModel(
 
     override val isRestoreOperation = false
 
-    private val isBackupRunning: StateFlow<Boolean>
+    val isBackupRunning: StateFlow<Boolean>
     private val mBackupPossible = MutableLiveData(false)
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
