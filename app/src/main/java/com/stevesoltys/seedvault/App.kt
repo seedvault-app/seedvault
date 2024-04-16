@@ -57,6 +57,7 @@ open class App : Application() {
         single { SettingsManager(this@App) }
         single { BackupNotificationManager(this@App) }
         single { StoragePluginManager(this@App, get(), get(), get()) }
+        single { BackupStateManager(this@App) }
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
         factory { AppListRetriever(this@App, get(), get(), get()) }
@@ -72,6 +73,7 @@ open class App : Application() {
                 storageBackup = get(),
                 backupManager = get(),
                 backupInitializer = get(),
+                backupStateManager = get(),
             )
         }
         viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }

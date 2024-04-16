@@ -3,6 +3,8 @@ package com.stevesoltys.seedvault.storage
 import android.content.Intent
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.worker.AppBackupWorker
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.calyxos.backup.storage.api.BackupObserver
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StorageBackup
@@ -31,6 +33,8 @@ internal class StorageBackupService : BackupService() {
 
     companion object {
         internal const val EXTRA_START_APP_BACKUP = "startAppBackup"
+        private val _isRunning = MutableStateFlow(false)
+        val isRunning = _isRunning.asStateFlow()
     }
 
     override val storageBackup: StorageBackup by inject()
@@ -39,6 +43,16 @@ internal class StorageBackupService : BackupService() {
     // use lazy delegate because context isn't available during construction time
     override val backupObserver: BackupObserver by lazy {
         NotificationBackupObserver(applicationContext)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        _isRunning.value = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _isRunning.value = false
     }
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {

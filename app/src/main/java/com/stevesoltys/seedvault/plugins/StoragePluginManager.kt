@@ -139,9 +139,23 @@ class StoragePluginManager(
     @WorkerThread
     fun canDoBackupNow(): Boolean {
         val storage = storageProperties ?: return false
-        val systemContext = context.getStorageContext { storage.isUsb }
-        return !storage.isUnavailableUsb(systemContext) &&
+        return !isOnUnavailableUsb() &&
             !storage.isUnavailableNetwork(context, settingsManager.useMeteredNetwork)
+    }
+
+    /**
+     * Checks if storage is on a flash drive.
+     *
+     * Should be run off the UI thread (ideally I/O) because of disk access.
+     *
+     * @return true if flash drive is not plugged in,
+     * false if storage isn't on flash drive or it isn't plugged in.
+     */
+    @WorkerThread
+    fun isOnUnavailableUsb(): Boolean {
+        val storage = storageProperties ?: return false
+        val systemContext = context.getStorageContext { storage.isUsb }
+        return storage.isUnavailableUsb(systemContext)
     }
 
 }

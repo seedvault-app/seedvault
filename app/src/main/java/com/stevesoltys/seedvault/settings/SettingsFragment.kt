@@ -151,7 +151,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             setAppBackupStatusSummary(time)
         }
         viewModel.appBackupWorkInfo.observe(viewLifecycleOwner) { workInfo ->
-            viewModel.onWorkerStateChanged()
             setAppBackupSchedulingSummary(workInfo)
         }
 
