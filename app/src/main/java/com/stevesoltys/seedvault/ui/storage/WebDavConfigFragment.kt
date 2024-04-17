@@ -93,6 +93,11 @@ class WebDavConfigFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onDestroy() {
+        viewModel.resetWebDavConfig()
+        super.onDestroy()
+    }
+
     private fun onConfigStateChanged(state: WebDavConfigState) {
         when (state) {
             WebDavConfigState.Empty -> {

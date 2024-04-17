@@ -65,6 +65,10 @@ internal class WebDavHandler(
         }
     }
 
+    fun resetConfigState() {
+        _configState.value = WebDavConfigState.Empty
+    }
+
     /**
      * Searches if there's really an app backup available in the given storage location.
      * Returns true if at least one was found and false otherwise.

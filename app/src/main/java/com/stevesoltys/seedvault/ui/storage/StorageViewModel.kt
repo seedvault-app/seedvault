@@ -99,6 +99,8 @@ internal abstract class StorageViewModel(
         }
     }
 
+    fun resetWebDavConfig() = webdavHandler.resetConfigState()
+
     @UiThread
     fun onWebDavConfigSuccess(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
         mLocationSet.setEvent(true)
