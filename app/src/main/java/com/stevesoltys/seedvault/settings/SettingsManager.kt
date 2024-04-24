@@ -102,11 +102,23 @@ class SettingsManager(private val context: Context) {
     }
 
     internal val storagePluginType: StoragePluginEnum?
-        get() = prefs.getString(PREF_KEY_STORAGE_PLUGIN, StoragePluginEnum.SAF.name)?.let {
-            try {
-                StoragePluginEnum.valueOf(it)
-            } catch (e: IllegalArgumentException) {
-                null
+        get() {
+            val savedType = prefs.getString(PREF_KEY_STORAGE_PLUGIN, null)
+            return if (savedType == null) {
+                // check if this is an existing user that needs to be migrated
+                // this check could be removed after a reasonable migration time (added 2024)
+                if (prefs.getString(PREF_KEY_STORAGE_URI, null) != null) {
+                    prefs.edit()
+                        .putString(PREF_KEY_STORAGE_PLUGIN, StoragePluginEnum.SAF.name)
+                        .apply()
+                    StoragePluginEnum.SAF
+                } else null
+            } else savedType.let {
+                try {
+                    StoragePluginEnum.valueOf(it)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
             }
         }
 
