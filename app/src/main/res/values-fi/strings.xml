@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="storage_available_bytes"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" example="1 GB" id="size"> %1$s </xliff:g> vapaana</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size"> %1$s </xliff:g> vapaana</string>
     <string name="about_version">Versio: %s</string>
     <string name="about_summary">Varmuuskopiosovellus, joka käyttää Androidin sisäistä varmuuskopiosovellusrajapintaa.</string>
     <string name="about_title">Tietoa</string>

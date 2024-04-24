@@ -203,4 +203,8 @@
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">קרן NGI0 PET מבית NLnet</a></string>
     <string name="storage_user_selected_location_title">מקום לבחירת המשתמש</string>
+    <string name="settings_expert_d2d_title">גיבויי מכשיר למכשיר</string>
+    <string name="settings_expert_d2d_summary">כופה את גיבוי רוב היישומונים, אפילו אם הם מסרבים לזה. יכולת ניסיונית ראשית, נא להשתמש במשנה זהירות.</string>
+    <string name="notification_success_channel_title">התראה על הצלחה</string>
+    <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו (%3$s). למידע נוסף נא לגעת.</string>
 </resources>

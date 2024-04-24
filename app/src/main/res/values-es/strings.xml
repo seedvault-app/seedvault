@@ -159,12 +159,12 @@
     <string name="restore_storage_got_it">Listo</string>
     <string name="settings_backup_files_title">Archivos y carpetas incluidos</string>
     <string name="settings_category_apps">Copia de seguridad de la app</string>
-    <string name="settings_category_storage">Copia de seguridad del almacenamiento (experimental)</string>
-    <string name="settings_backup_storage_dialog_title">Característica experimental</string>
-    <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía experimental y podría no funcionar. No confíe en ella para los datos importantes.</string>
+    <string name="settings_category_storage">Copia de seguridad del almacenamiento (fase beta)</string>
+    <string name="settings_backup_storage_dialog_title">Característica en fase beta</string>
+    <string name="settings_backup_storage_dialog_message">La copia de seguridad de los archivos es todavía en fase beta y podría no funcionar. No confíe en ella para los datos importantes.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">No instalada</string>
     <string name="restore_skip_apps">No restaurar aplicaciones</string>
-    <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (experimental)</string>
+    <string name="restore_storage_choose_snapshot">Elija una copia de seguridad de almacenamiento para restaurar (fase beta)</string>
     <string name="restore_storage_in_progress_info">Sus archivos se están restaurando en segundo plano. Puede empezar a usar su teléfono mientras se está ejecutando.
 \n
 \nAlgunas aplicaciones (por ejemplo, Signal o WhatsApp) pueden requerir que los archivos estén completamente restaurados para importar una copia de seguridad. Intente evitar iniciar esas aplicaciones antes de que la restauración de los archivos se haya completado.</string>
@@ -204,4 +204,22 @@
     <string name="about_contributor_headline">Colaboradores</string>
     <string name="about_contributor_content">En GitHub encontrará una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a>.</string>
     <string name="storage_user_selected_location_title">Ubicación elegida por el usuario</string>
+    <string name="settings_expert_d2d_title">Copias de seguridad de dispositivo a dispositivo</string>
+    <string name="settings_expert_d2d_summary">Esto obliga a realizar copias de seguridad para la mayoría de las aplicaciones, incluso cuando no las permiten. Esta en fase alpha, úselo bajo su propio riesgo.</string>
+    <string name="notification_success_channel_title">Notificación exitosa</string>
+    <string name="settings_backup_status_next_backup_usb">Las copias de seguridad se realizarán automáticamente después de conectar la unidad USB</string>
+    <string name="settings_scheduling_frequency_3_days">Cada 3 días</string>
+    <string name="settings_scheduling_frequency_weekly">Semanalmente</string>
+    <string name="settings_scheduling_category_conditions_title">Condiciones</string>
+    <string name="settings_scheduling_metered_title">Copia de seguridad cuando utilice datos móviles</string>
+    <string name="notification_apk_text">Copia de seguridad del APK de %s</string>
+    <string name="notification_apk_not_backed_up">Guardando la lista de aplicaciones de las que no podemos hacer una copia de seguridad.</string>
+    <string name="settings_backup_status_next_backup">Siguiente copia de seguridad: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Próxima copia de seguridad (estimación): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">una vez cumplidas las condiciones</string>
+    <string name="settings_backup_scheduling_title">Programación de copias de seguridad</string>
+    <string name="settings_scheduling_frequency_title">Frecuencia de la copia de seguridad</string>
+    <string name="settings_scheduling_frequency_12_hours">Cada 12 horas</string>
+    <string name="settings_scheduling_frequency_daily">Diariamente</string>
+    <string name="settings_scheduling_charging_title">Copia de seguridad solo cuando se carga</string>
 </resources>

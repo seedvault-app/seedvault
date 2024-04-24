@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Opțiuni</string>
+    <string name="notification_restore_title">Se restaurează fișierele…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d din %2$d fișiere restaurate</string>
+    <string name="snapshots_title">Backup-uri disponibile</string>
+    <string name="snapshots_error">Eroare la încărcarea instantaneelor</string>
+    <string name="content_downloads">Descărcări</string>
+    <string name="notification_backup_title">Backup stocare</string>
+    <string name="notification_backup_scanning">Se scanează fișierele…</string>
+    <string name="notification_backup_backup_files">Se fac copii de rezervă ale fișierelor…</string>
+    <string name="notification_prune">Se elimină vechile copii de rezervă…</string>
+    <string name="notification_restore_channel_title">Restaurare stocare</string>
+    <string name="snapshots_empty">Nu s-au găsit copii de rezervă
+\n
+\nNe pare rău, dar nu există nimic care să poată fi restaurat.</string>
+    <string name="content_images">Fotografii și imagini</string>
+    <string name="content_videos">Videoclipuri</string>
+    <string name="content_audio">Fișiere audio</string>
+    <string name="content_add">Adaugă</string>
+</resources>

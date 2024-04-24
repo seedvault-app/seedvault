@@ -145,8 +145,8 @@
     <string name="settings_category_apps">Αντίγραφο ασφαλείας εφαρμογών</string>
     <string name="settings_backup_storage_title">Δημιουργία αντιγράφου ασφαλείας των αρχείων μου</string>
     <string name="settings_backup_files_summary">Κανένα</string>
-    <string name="settings_backup_storage_dialog_title">Πειραματικό χαρακτηριστικό</string>
-    <string name="settings_backup_storage_dialog_message">Η δημιουργία αντιγράφου ασφαλείας αρχείων είναι ακόμη πειραματική και μπορεί να μην λειτουργήσει. Μην βασίζεστε σε αυτή για σημαντικά δεδομένα.</string>
+    <string name="settings_backup_storage_dialog_title">Χαρακτηριστικό beta</string>
+    <string name="settings_backup_storage_dialog_message">Η δημιουργία αντιγράφου ασφαλείας αρχείων είναι σε στάδιο beta και μπορεί να μην λειτουργήσει. Μην βασίζεστε σε αυτή για σημαντικά δεδομένα.</string>
     <string name="storage_fragment_warning_delete">Τα υπάρχοντα αντίγραφα ασφαλείας σε αυτήν την τοποθεσία θα διαγραφούν.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Νέος κωδικός</string>
     <string name="settings_expert_title">Προηγμένες ρυθμίσεις</string>
@@ -156,12 +156,12 @@
     <string name="recovery_code_auth_title">Εισάγετε εκ νέου το κλείδωμα οθόνης</string>
     <string name="restore_skip_apps">Παράλειψη επαναφοράς εφαρμογών</string>
     <string name="restore_storage_skip">Παράλειψη επαναφοράς αρχείων</string>
-    <string name="restore_storage_choose_snapshot">Επιλέξτε ένα αντίγραφο ασφαλείας χώρου αποθήκευσης για επαναφορά (πειραματικό)</string>
+    <string name="restore_storage_choose_snapshot">Επιλέξτε ένα αντίγραφο ασφαλείας χώρου αποθήκευσης για επαναφορά (beta)</string>
     <string name="restore_storage_got_it">Το κατάλαβα</string>
     <string name="settings_backup_files_title">Περιλαμβανόμενα αρχεία και φάκελοι</string>
     <string name="settings_backup_storage_dialog_ok">Ενεργοποίηση ούτως ή άλλως</string>
     <string name="settings_backup_storage_battery_optimization">Προειδοποίηση: Τα αυτόματα αντίγραφα ασφαλείας απενεργοποιήθηκαν επειδή η βελτιστοποίηση μπαταρίας είναι ενεργή.</string>
-    <string name="settings_category_storage">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης (πειραματικό)</string>
+    <string name="settings_category_storage">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης (beta)</string>
     <string name="settings_backup_new_code_dialog_title">Απαιτείται νέος κωδικός επαναφοράς</string>
     <string name="settings_backup_new_code_dialog_message">Για να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας εφαρμογών, πρέπει να δημιουργήσετε έναν νέο κωδικό επαναφοράς.
 \n
@@ -204,4 +204,22 @@
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET χρηματοδότηση από την NLnet</a></string>
     <string name="storage_user_selected_location_title">Τοποθεσία επιλεγμένη από το χρήστη</string>
+    <string name="settings_expert_d2d_title">Αντίγραφα ασφαλείας από συσκευή σε συσκευή</string>
+    <string name="settings_expert_d2d_summary">Αυτό αναγκάζει τη δημιουργία αντιγράφων ασφαλείας για τις περισσότερες εφαρμογές, ακόμη και όταν το απαγορεύουν. Αυτό είναι σε στάδιο alpha, χρησιμοποιήστε με δική σας ευθύνη.</string>
+    <string name="settings_backup_status_next_backup_past">μόλις πληρούνται οι προϋποθέσεις</string>
+    <string name="settings_backup_scheduling_title">Προγραμματισμός δημιουργίας αντιγράφων ασφαλείας</string>
+    <string name="settings_scheduling_frequency_title">Συχνότητα αντίγραφων ασφάλειας</string>
+    <string name="settings_scheduling_frequency_12_hours">Κάθε 12 ώρες</string>
+    <string name="settings_scheduling_frequency_daily">Καθημερινά</string>
+    <string name="settings_scheduling_frequency_3_days">Κάθε 3 ημέρες</string>
+    <string name="settings_scheduling_frequency_weekly">Εβδομαδιαία</string>
+    <string name="settings_scheduling_category_conditions_title">Προϋποθέσεις</string>
+    <string name="settings_scheduling_metered_title">Δημιουργία αντιγράφων ασφαλείας κατά τη χρήση δεδομένων κινητής τηλεφωνίας</string>
+    <string name="settings_scheduling_charging_title">Δημιουργία αντιγράφων ασφαλείας μόνο κατά τη φόρτιση</string>
+    <string name="notification_apk_text">Δημιουργία αντιγράφου ασφαλείας APK του %s</string>
+    <string name="settings_backup_status_next_backup_estimate">Επόμενο αντίγραφο ασφαλείας (εκτίμηση): %1$s</string>
+    <string name="notification_success_channel_title">Ειδοποίηση επιτυχίας</string>
+    <string name="settings_backup_status_next_backup">Επόμενο αντίγραφο ασφαλείας: %1$s</string>
+    <string name="settings_backup_status_next_backup_usb">Τα αντίγραφα ασφαλείας θα συμβούν αυτόματα όταν συνδέσετε τη μονάδα USB</string>
+    <string name="notification_apk_not_backed_up">Αποθήκευση λίστας εφαρμογών για τις οποίες δεν μπορούμε να δημιουργήσουμε αντίγραφα ασφαλείας.</string>
 </resources>

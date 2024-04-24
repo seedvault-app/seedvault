@@ -142,7 +142,7 @@
     <string name="current_destination_string">Stav a nastavení zálohy</string>
     <string name="data_management_label">Záloha Seedvault</string>
     <string name="backup">Záloha</string>
-    <string name="settings_category_storage">Záloha úložiště (experimentální)</string>
+    <string name="settings_category_storage">Záloha úložiště (beta)</string>
     <string name="settings_backup_files_title">Zahrnuté soubory a složky</string>
     <string name="restore_storage_in_progress_info">Vaše soubory jsou obnovovány na pozadí. Během tohoto procesu můžete začít používat telefon.
 \n
@@ -153,9 +153,9 @@
     <string name="settings_backup_files_summary">Žádné</string>
     <string name="settings_expert_title">Odborné nastavení</string>
     <string name="settings_expert_quota_title">Neomezená kvóta aplikací</string>
-    <string name="settings_backup_storage_dialog_title">Experimentální funkce</string>
+    <string name="settings_backup_storage_dialog_title">Beta funkce</string>
     <string name="settings_backup_storage_dialog_ok">Přesto zapnout</string>
-    <string name="settings_backup_storage_dialog_message">Zálohování souborů je stále experimentální a nemusí fungovat. Nespoléhejte se na něj, pokud jde o důležitá data.</string>
+    <string name="settings_backup_storage_dialog_message">Zálohování souborů je ve fázi beta a nemusí fungovat. Nespoléhejte se na něj, pokud jde o důležitá data.</string>
     <string name="settings_expert_quota_summary">Neomezuje velikost záloh aplikací.
 \n
 \nUpozornění: Toto může rychle zaplnit vaše úložiště. Pro většinu aplikací není potřeba.</string>
@@ -163,7 +163,7 @@
     <string name="storage_fake_davx5_summary_unavailable">Připojení WebDAV není k dispozici. Nastavte ho.</string>
     <string name="restore_skip_apps">Přeskočit obnovení aplikací</string>
     <string name="recovery_code_auth_title">Zadejte znovu zámek obrazovky</string>
-    <string name="restore_storage_choose_snapshot">Vyberte zálohu úložiště pro obnovení (experimentální)</string>
+    <string name="restore_storage_choose_snapshot">Vyberte zálohu úložiště pro obnovení (beta)</string>
     <string name="restore_storage_skip">Přeskočit obnovení souborů</string>
     <string name="restore_storage_got_it">Chápu</string>
     <string name="restore_storage_in_progress_title">Obnovují se soubory…</string>
@@ -204,4 +204,22 @@
     <string name="restore_app_status_installing">Opětovná instalace</string>
     <string name="restore_app_status_installed">Znovu nainstalováno</string>
     <string name="storage_user_selected_location_title">Umístění zvolené uživatelem</string>
+    <string name="settings_expert_d2d_title">Zálohy zařízení na zařízení</string>
+    <string name="settings_expert_d2d_summary">Tato možnost vynutí zálohy u většiny aplikací, i když je dané aplikace zakazují. Jedná se o možnost ve fázi alfa, používejte ji na vlastní nebezpečí.</string>
+    <string name="notification_success_channel_title">Oznámení o úspěchu</string>
+    <string name="settings_backup_status_next_backup">Další záloha: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Další záloha (přibližně): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">po splnění podmínek</string>
+    <string name="settings_backup_status_next_backup_usb">Zálohy budou provedeny automaticky po připojení USB disku</string>
+    <string name="settings_backup_scheduling_title">Plánování záloh</string>
+    <string name="settings_scheduling_frequency_weekly">Týdně</string>
+    <string name="settings_scheduling_category_conditions_title">Podmínky</string>
+    <string name="settings_scheduling_frequency_title">Frekvence záloh</string>
+    <string name="settings_scheduling_frequency_12_hours">Každých 12 hodin</string>
+    <string name="settings_scheduling_frequency_daily">Denně</string>
+    <string name="settings_scheduling_frequency_3_days">Každé 3 dny</string>
+    <string name="settings_scheduling_metered_title">Zálohovat při používání mobilních dat</string>
+    <string name="settings_scheduling_charging_title">Zálohovat pouze při nabíjení</string>
+    <string name="notification_apk_text">Zálohování souboru APK aplikace %s</string>
+    <string name="notification_apk_not_backed_up">Ukládání seznamu aplikací, které nelze zálohovat.</string>
 </resources>
