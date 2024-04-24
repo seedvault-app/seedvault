@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Alternativ</string>
+    <string name="content_images">Foton och bilder</string>
+    <string name="content_videos">Videor</string>
+    <string name="content_audio">Ljudfiler</string>
+    <string name="content_downloads">Hämtningar</string>
+    <string name="content_add">Lägg till</string>
+    <string name="notification_backup_scanning">Skannar filer …</string>
+    <string name="notification_backup_backup_files">Säkerhetskopierar filer …</string>
+    <string name="notification_prune">Tar bort gamla säkerhetskopior …</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d av %2$d filer återställda</string>
+</resources>

@@ -147,7 +147,7 @@
 \n
 \nBazı uygulamalar (örn. Signal veya WhatsApp), bir yedeklemeyi içe aktarmak için dosyaların tamamen geri yüklenmesini gerektirebilir. Dosya geri yükleme işlemi tamamlanmadan bu uygulamaları başlatmaktan kaçının.</string>
     <string name="restore_storage_in_progress_title">Dosyalar geri yükleniyor…</string>
-    <string name="restore_storage_choose_snapshot">Geri yüklenecek bir depolama yedeklemesi seçin (deneysel)</string>
+    <string name="restore_storage_choose_snapshot">Geri yüklenecek bir depolama yedeklemesi seçin (beta aşamasında)</string>
     <string name="restore_storage_skip">Dosyaları geri yüklemeyi atla</string>
     <string name="restore_skip_apps">Uygulamaları geri yüklemeyi atla</string>
     <string name="recovery_code_auth_description">Devam etmek için aygıt kimlik bilgilerinizi girin</string>
@@ -161,12 +161,12 @@
     <string name="settings_expert_quota_title">Sınırsız uygulama kotası</string>
     <string name="settings_expert_title">Uzman ayarları</string>
     <string name="settings_backup_storage_dialog_ok">Yine de etkinleştir</string>
-    <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek hala deneyseldir ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
-    <string name="settings_backup_storage_dialog_title">Deneysel özellik</string>
+    <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek beta aşamasındadır ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
+    <string name="settings_backup_storage_dialog_title">Beta aşamasındaki özellik</string>
     <string name="settings_backup_files_summary">Yok</string>
     <string name="settings_backup_files_title">Dahil edilen dosya ve klasörler</string>
     <string name="settings_backup_storage_title">Dosyalarımı yedekle</string>
-    <string name="settings_category_storage">Depolama yedekle (deneysel)</string>
+    <string name="settings_category_storage">Depolama yedekle (beta aşamasında)</string>
     <string name="settings_category_apps">Uygulama yedekle</string>
     <string name="settings_backup_storage_battery_optimization">Uyarı: Pil iyileştirme etkin olduğundan otomatik yedekleme yok.</string>
     <string name="settings_backup_new_code_dialog_title">Yeni kurtarma kodu gerekli</string>
@@ -204,4 +204,22 @@
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>
     <string name="about_contributing_organizations_title">Katkıda Bulunan Kuruluşlar</string>
     <string name="storage_user_selected_location_title">Kullanıcının seçtiği konum</string>
+    <string name="settings_expert_d2d_title">Aygıttan aygıta yedeklemeler</string>
+    <string name="settings_expert_d2d_summary">Bu, izin vermeseler bile çoğu uygulama için yedeklemeyi zorlar. Bu alfa aşamasındadır, riski size ait olmak üzere kullanın.</string>
+    <string name="notification_success_channel_title">Başarı bildirimi</string>
+    <string name="settings_backup_status_next_backup_usb">USB belleğinizi taktığınızda yedeklemeler otomatik olarak gerçekleşecek</string>
+    <string name="settings_backup_scheduling_title">Yedekleme zamanlaması</string>
+    <string name="settings_scheduling_frequency_12_hours">12 saatte bir</string>
+    <string name="settings_scheduling_frequency_3_days">3 günde bir</string>
+    <string name="settings_scheduling_category_conditions_title">Koşullar</string>
+    <string name="settings_scheduling_metered_title">Mobil veri kullanırken yedekle</string>
+    <string name="settings_scheduling_charging_title">Yalnızca şarj olurken yedekle</string>
+    <string name="notification_apk_not_backed_up">Yedeklenemeyen uygulamaların listesi kaydediliyor.</string>
+    <string name="settings_backup_status_next_backup">Sonraki yedekleme: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Sonraki yedekleme (tahmini): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">koşullar sağlandığında</string>
+    <string name="settings_scheduling_frequency_title">Yedekleme sıklığı</string>
+    <string name="settings_scheduling_frequency_daily">Günlük</string>
+    <string name="settings_scheduling_frequency_weekly">Haftalık</string>
+    <string name="notification_apk_text">%s APK\'sı yedekleniyor</string>
 </resources>

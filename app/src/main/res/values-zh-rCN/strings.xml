@@ -147,7 +147,7 @@
 \n
 \n某些应用程序（例如 Signal 或 WhatsApp）可能在文件完全恢复后才能导入备份。尽量避免在文件恢复完成之前启动这些应用程序。</string>
     <string name="restore_storage_in_progress_title">正在恢复文件…</string>
-    <string name="restore_storage_choose_snapshot">选择要恢复的存储备份（实验性）</string>
+    <string name="restore_storage_choose_snapshot">选择要恢复的存储备份（测试）</string>
     <string name="restore_storage_skip">跳过恢复文件</string>
     <string name="restore_skip_apps">跳过恢复应用程序</string>
     <string name="recovery_code_auth_description">输入您的设备凭据以继续</string>
@@ -161,12 +161,12 @@
     <string name="settings_expert_quota_title">无限应用配额</string>
     <string name="settings_expert_title">专家设置</string>
     <string name="settings_backup_storage_dialog_ok">仍要启用</string>
-    <string name="settings_backup_storage_dialog_message">文件备份仍处于试验阶段，可能无法正常工作。不要依靠它备份重要数据。</string>
-    <string name="settings_backup_storage_dialog_title">实验性功能</string>
+    <string name="settings_backup_storage_dialog_message">文件备份仍处于测试阶段，可能无法正常工作。不要依靠它备份重要数据。</string>
+    <string name="settings_backup_storage_dialog_title">测试功能</string>
     <string name="settings_backup_files_summary">无</string>
     <string name="settings_backup_files_title">包括的文件和文件夹</string>
     <string name="settings_backup_storage_title">备份我的文件</string>
-    <string name="settings_category_storage">存储备份（实验性）</string>
+    <string name="settings_category_storage">存储备份（测试）</string>
     <string name="settings_category_apps">应用程序备份</string>
     <string name="settings_backup_new_code_dialog_title">需要新的恢复代码</string>
     <string name="settings_backup_new_code_code_dialog_ok">新代码</string>
@@ -204,4 +204,22 @@
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> 用于 <a href="https://calyxos.org">CalyxOS</a>
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
     <string name="storage_user_selected_location_title">用户选择的位置</string>
+    <string name="settings_expert_d2d_title">设备到设备的备份</string>
+    <string name="settings_expert_d2d_summary">这会强制备份多数应用，即使这些应用不允许备份。此功能处于 alpha 状态，使用后果自负。</string>
+    <string name="notification_success_channel_title">成功通知</string>
+    <string name="settings_backup_status_next_backup">下次备份：%1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">下次备份（预计）：%1$s</string>
+    <string name="settings_backup_status_next_backup_past">一旦条件满足</string>
+    <string name="settings_backup_scheduling_title">备份时间安排</string>
+    <string name="settings_scheduling_frequency_title">备份频率</string>
+    <string name="settings_scheduling_frequency_12_hours">每 12 小时</string>
+    <string name="settings_scheduling_frequency_3_days">每 3 天</string>
+    <string name="settings_scheduling_category_conditions_title">条件</string>
+    <string name="settings_scheduling_metered_title">使用移动数据时备份</string>
+    <string name="settings_scheduling_charging_title">仅充电时备份</string>
+    <string name="notification_apk_text">正在备份 %s 的 APK</string>
+    <string name="notification_apk_not_backed_up">正在保存我们无法备份的应用的列表。</string>
+    <string name="settings_backup_status_next_backup_usb">当你插入 U 盘时备份会自动发生</string>
+    <string name="settings_scheduling_frequency_daily">每天</string>
+    <string name="settings_scheduling_frequency_weekly">每周</string>
 </resources>

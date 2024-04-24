@@ -11,4 +11,8 @@
     <string name="settings_backup_dialog_title">Ska backup för appar verkligen stängas av\?</string>
     <string name="settings_backup_dialog_message">När du återaktiverar säkerhetskopior kommer processen att ta längre tid än normalt samt nyttja ytterligare lagringsutrymme.</string>
     <string name="settings_backup_dialog_disable">Stäng av ändå</string>
+    <string name="settings_backup_apk_dialog_cancel">Avbryt</string>
+    <string name="settings_backup_status_summary">Senaste säkerhetskopiering: %1$s</string>
+    <string name="settings_backup_status_next_backup">Nästa säkerhetskopiering: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Näst säkerhetskopiering (uppskattning): %1$s</string>
 </resources>

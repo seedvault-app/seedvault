@@ -2,7 +2,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_text">Feito o backup da app %1$d de %2$d (%3$s). Toque para saber mais.</string>
     <string name="notification_backup_already_running">Backup em andamento</string>
-    <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
+    <string name="about_summary">Um aplicativo de backup que usa a API de backup interna do Android. É software gratuito, lançado sob a licença \"Apache 2\".
+\n
+\nComo todo software, o Seedvault pode conter bugs ou vulnerabilidades.</string>
     <string name="about_title">Sobre</string>
     <string name="storage_internal_warning_use_anyway">Usar assim mesmo</string>
     <string name="storage_internal_warning_choose_other">Escolha outro</string>
@@ -143,12 +145,12 @@
     <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
     <string name="restore_storage_got_it">Entendi</string>
     <string name="settings_category_apps">Backup de app</string>
-    <string name="settings_category_storage">Backup de armazenamento (experimental)</string>
+    <string name="settings_category_storage">Backup do armazenamento (beta)</string>
     <string name="settings_backup_storage_title">Faça backup dos meus ficheiros</string>
     <string name="settings_backup_files_title">Ficheiros e pastas incluídos</string>
     <string name="settings_backup_files_summary">Nenhum</string>
-    <string name="settings_backup_storage_dialog_title">Recurso experimental</string>
-    <string name="settings_backup_storage_dialog_message">O backup de ficheiros ainda é experimental e pode não funcionar. Não confie nele para dados importantes.</string>
+    <string name="settings_backup_storage_dialog_title">Recurso beta</string>
+    <string name="settings_backup_storage_dialog_message">O backup de arquivos está em beta e pode não funcionar. Não dependa dele para salvar dados importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Ativar mesmo assim</string>
     <string name="settings_expert_title">Configurações para especialistas</string>
     <string name="settings_expert_quota_title">Cota ilimitada de apps</string>
@@ -161,7 +163,7 @@
     <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
     <string name="restore_skip_apps">Pular restauração de apps</string>
     <string name="restore_storage_skip">Pular restauração de ficheiros</string>
-    <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (experimental)</string>
+    <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (beta)</string>
     <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados …</string>
     <string name="restore_storage_in_progress_info">Os seus ficheiros estão sendo restaurados em segundo plano. Pode usar o seu telefone durante a execução.
 \n
@@ -187,4 +189,37 @@
     <string name="settings_backup_dialog_disable">Desligar mesmo assim</string>
     <string name="settings_expert_logcat_title">Salvar registro de app</string>
     <string name="settings_expert_logcat_error">Erro: Não foi possível salvar os registros do app</string>
+    <string name="storage_user_selected_location_title">Local escolhido pelo usuário</string>
+    <string name="settings_scheduling_metered_title">Fazer backup mesmo ao usar dados móveis</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Instituto Calyx</a> para o uso no <a href="https://calyxos.org">CalyxOS</a> 
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund por NLnet</a></string>
+    <string name="storage_fake_davx5_summary_installed">Toque para configurar uma montagem WebDAV</string>
+    <string name="about_contributor_headline">Contribuidores</string>
+    <string name="about_contributor_content">Veja uma <a href="https://github.com/seedvault-aplicativo/seedvault/graphs/contributors">lista de contribuidores</a> no GitHub.</string>
+    <string name="about_contributing_organizations_title">Organizações Contribuidoras</string>
+    <string name="settings_backup_dialog_message">Quando você ativar os backups novamente, o processo de backup pode demorar mais do que normal e utilizará mais espaço de armazenamento.</string>
+    <string name="settings_backup_dialog_title">Deseja realmente desativar o backup de aplicativos?</string>
+    <string name="settings_backup_status_next_backup">Próximo backup: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Próximo backup (estimado): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">quando as condições forem cumpridas</string>
+    <string name="settings_backup_status_next_backup_usb">Backups serão feitos automaticamente quando você conectar seu dispositivo de armazenamento USB</string>
+    <string name="settings_backup_scheduling_title">Agendamento do backup</string>
+    <string name="settings_scheduling_frequency_title">Frequência do backup</string>
+    <string name="settings_scheduling_frequency_12_hours">A cada 12 horas</string>
+    <string name="settings_scheduling_frequency_daily">Diariamente</string>
+    <string name="settings_scheduling_frequency_3_days">A cada 3 dias</string>
+    <string name="settings_scheduling_frequency_weekly">Semanalmente</string>
+    <string name="settings_scheduling_category_conditions_title">Condições</string>
+    <string name="settings_scheduling_charging_title">Fazer backup somente quando o dispositivo estiver carregando</string>
+    <string name="settings_expert_logcat_summary">Os desenvolvedores podem diagnosticar bugs com esses logs.
+\n
+\nAviso: O arquivo de log pode conter informações de identificação pessoal. Analise antes e o exclua após compartilhar!</string>
+    <string name="settings_expert_d2d_summary">Isso força o backup para a maioria dos aplicativos, mesmo quando eles não permitem. Isso está em alpha, use por conta própria.</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
+    <string name="storage_fake_davx5_summary_unavailable">Montagem WebDAV não disponível. Configure uma.</string>
+    <string name="notification_success_channel_title">Notificação de sucesso</string>
+    <string name="notification_apk_text">Fazendo backup do APK de %s</string>
+    <string name="notification_apk_not_backed_up">Salvando uma lista dos aplicativos que não podemos fazer backup.</string>
+    <string name="backup_app_success">Backup concluído</string>
+    <string name="settings_expert_d2d_title">Backups de dispositivo para dispositivo</string>
 </resources>

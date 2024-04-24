@@ -143,12 +143,12 @@
     <string name="notification_channel_title">Powiadomienie o kopii zapasowej</string>
     <string name="recovery_code_recreated">Pomyślnie utworzono nowy kod przywracania</string>
     <string name="settings_category_apps">Kopia zapasowa aplikacji</string>
-    <string name="settings_backup_storage_dialog_message">Kopia zapasowa plików jest w fazie eksperymentalnej i może nie działać. Nie polegaj na niej dla ważnych danych.</string>
+    <string name="settings_backup_storage_dialog_message">Tworzenie kopii zapasowych plików jest w wersji beta i może nie działać. Nie należy na niej polegać w przypadku ważnych danych.</string>
     <string name="settings_backup_files_title">Dodane pliki i foldery</string>
-    <string name="settings_category_storage">Kopia zapasowa pamięci masowej (eksperymentalne)</string>
+    <string name="settings_category_storage">Kopia zapasowa pamięci masowej (beta)</string>
     <string name="settings_backup_storage_title">Kopia zapasowa plików</string>
     <string name="settings_backup_files_summary">Żadne</string>
-    <string name="settings_backup_storage_dialog_title">Funkcjonalność eksperymentalna</string>
+    <string name="settings_backup_storage_dialog_title">Funkcja w wersji beta</string>
     <string name="settings_backup_storage_dialog_ok">Włącz mimo wszystko</string>
     <string name="settings_backup_storage_battery_optimization">Uwaga: Brak automatycznych kopii zapasowych, ponieważ optymalizacja baterii jest włączona.</string>
     <string name="settings_backup_new_code_dialog_title">Wymagany nowy kod odzyskiwania</string>
@@ -185,7 +185,7 @@
     <string name="settings_expert_logcat_error">Błąd: Nie można zapisać dziennika aplikacji</string>
     <string name="storage_user_selected_location_title">Lokalizacja wybrana przez użytkownika</string>
     <string name="restore_storage_got_it">Zrozumiano</string>
-    <string name="restore_storage_choose_snapshot">Wybierz kopię zapasową do przywrócenia (eksperymentalne)</string>
+    <string name="restore_storage_choose_snapshot">Wybierz kopię zapasową do przywrócenia (beta)</string>
     <string name="restore_storage_in_progress_info">Twoje pliki są przywracanę w tle. Możesz używać telefonu w trakcie przywracania.
 \n
 \nNiektóre aplikacje (np. Signal czy WhatsApp) mogę wymagać by pliki były w pełni przywrócona aby zaimportować kopię zapasową. Postaraj się nie włączć tych aplikacji przed zakończeniem przywracania.</string>
@@ -200,4 +200,26 @@
 \n
 \nUwaga: Plik z raportem błędów może zawierać informacje na podstawie których można cię zidentyfikować. Zapoznaj się z nim i usuń go gdy nie będzie ci już potrzebny!</string>
     <string name="recovery_code_auth_description">Wprowadź informacje swojego urządzenia aby kontynuować</string>
+    <string name="settings_backup_status_next_backup_usb">Kopie zapasowe będą tworzone automatycznie po podłączeniu dysku USB</string>
+    <string name="settings_backup_status_next_backup_past">po spełnieniu warunków</string>
+    <string name="settings_backup_scheduling_title">Harmonogram tworzenia kopii zapasowych</string>
+    <string name="about_contributor_content">Wejdź na stronę GitHuba <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista współautorów</a>.</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a>do użytku w<a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET sfinansowany przez NLnet</a></string>
+    <string name="about_contributing_organizations_title">Organizacje współpracujące</string>
+    <string name="settings_backup_status_next_backup">Kolejna kopia zapasowa: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Kolejna kopia zapasowa (szacunkowo):%1$s</string>
+    <string name="settings_scheduling_frequency_title">Częstotliwość tworzenia kopii zapasowych</string>
+    <string name="settings_scheduling_frequency_12_hours">Co 12 godzin</string>
+    <string name="settings_scheduling_frequency_daily">Codziennie</string>
+    <string name="settings_scheduling_frequency_3_days">Co 3 dni</string>
+    <string name="settings_scheduling_frequency_weekly">Tygodniowo</string>
+    <string name="settings_scheduling_category_conditions_title">Warunki</string>
+    <string name="settings_scheduling_metered_title">Tworzenie kopii zapasowych podczas korzystania z danych mobilnych</string>
+    <string name="settings_scheduling_charging_title">Tworzenie kopii zapasowej tylko podczas ładowania</string>
+    <string name="notification_success_channel_title">Powiadomienie o powodzeniu</string>
+    <string name="notification_apk_text">Tworzenie kopii zapasowej APK %s</string>
+    <string name="notification_apk_not_backed_up">Zapisywanie listy aplikacji, których kopii zapasowej nie możemy utworzyć.</string>
+    <string name="settings_expert_d2d_title">Kopie zapasowe między urządzeniami</string>
+    <string name="settings_expert_d2d_summary">Wymusza to tworzenie kopii zapasowych dla większości aplikacji, nawet jeśli na to nie zezwalają. Funkcja w wersji alfa, używasz na własne ryzyko.</string>
 </resources>
