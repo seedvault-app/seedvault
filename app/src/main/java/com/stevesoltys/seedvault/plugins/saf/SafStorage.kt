@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.net.Uri
+import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.plugins.StorageProperties
@@ -16,6 +17,11 @@ data class SafStorage(
     override val name: String,
     override val isUsb: Boolean,
     override val requiresNetwork: Boolean,
+    /**
+     * The [COLUMN_ROOT_ID] for the [uri].
+     * This is only nullable for historic reasons, because we didn't always store it.
+     */
+    val rootId: String?,
 ) : StorageProperties<Uri>() {
 
     val uri: Uri = config

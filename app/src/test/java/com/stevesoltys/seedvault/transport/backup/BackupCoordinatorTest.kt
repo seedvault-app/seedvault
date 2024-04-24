@@ -64,6 +64,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         name = getRandomString(),
         isUsb = false,
         requiresNetwork = false,
+        rootId = null,
     )
 
     init {

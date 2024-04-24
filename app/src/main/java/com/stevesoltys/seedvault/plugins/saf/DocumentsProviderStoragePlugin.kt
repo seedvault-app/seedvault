@@ -3,13 +3,21 @@ package com.stevesoltys.seedvault.plugins.saf
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Environment
+import android.os.StatFs
+import android.provider.DocumentsContract
+import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
+import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import android.util.Log
+import androidx.core.database.getIntOrNull
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.tokenRegex
+import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
+import com.stevesoltys.seedvault.ui.storage.ROOT_ID_DEVICE
 import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -33,6 +41,32 @@ internal class DocumentsProviderStoragePlugin(
     override suspend fun test(): Boolean {
         val dir = storage.rootBackupDir
         return dir != null && dir.exists()
+    }
+
+    override suspend fun getFreeSpace(): Long? {
+        val rootId = storage.safStorage.rootId ?: return null
+        val authority = storage.safStorage.uri.authority
+        // using DocumentsContract#buildRootUri(String, String) with rootId directly doesn't work
+        val rootUri = DocumentsContract.buildRootsUri(authority)
+        val projection = arrayOf(COLUMN_AVAILABLE_BYTES)
+        // query directly for our rootId
+        val bytesAvailable = context.contentResolver.query(
+            rootUri, projection, "$COLUMN_ROOT_ID=?", arrayOf(rootId), null
+        )?.use { c ->
+            if (!c.moveToNext()) return@use null // no results
+            val bytes = c.getIntOrNull(c.getColumnIndex(COLUMN_AVAILABLE_BYTES))
+            if (bytes != null && bytes >= 0) return@use bytes.toLong()
+            else return@use null
+        }
+        // if we didn't get anything from SAF, try some known hacks
+        return if (bytesAvailable == null && authority == AUTHORITY_STORAGE) {
+            if (rootId == ROOT_ID_DEVICE) {
+                StatFs(Environment.getDataDirectory().absolutePath).availableBytes
+            } else if (storage.safStorage.isUsb) {
+                val documentId = storage.safStorage.uri.lastPathSegment ?: return null
+                StatFs("/mnt/media_rw/${documentId.trimEnd(':')}").availableBytes
+            } else null
+        } else bytesAvailable
     }
 
     @Throws(IOException::class)

@@ -70,6 +70,17 @@ class PluginTest : KoinComponent {
         assertNotNull(storagePlugin.providerPackageName)
     }
 
+    @Test
+    fun testTest() = runBlocking(Dispatchers.IO) {
+        assertTrue(storagePlugin.test())
+    }
+
+    @Test
+    fun testGetFreeSpace() = runBlocking(Dispatchers.IO) {
+        val freeBytes = storagePlugin.getFreeSpace() ?: error("no free space retrieved")
+        assertTrue(freeBytes > 0)
+    }
+
     /**
      * This test initializes the storage three times while creating two new restore sets.
      *
