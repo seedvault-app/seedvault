@@ -40,7 +40,7 @@ internal class SafHandler(
         } else {
             safOption.title
         }
-        return SafStorage(uri, name, safOption.isUsb, safOption.requiresNetwork)
+        return SafStorage(uri, name, safOption.isUsb, safOption.requiresNetwork, safOption.rootId)
     }
 
     /**

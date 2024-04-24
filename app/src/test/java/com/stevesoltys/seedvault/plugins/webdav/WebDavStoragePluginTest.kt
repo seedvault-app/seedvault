@@ -42,6 +42,12 @@ internal class WebDavStoragePluginTest : TransportTest() {
     }
 
     @Test
+    fun `test getting free space`() = runBlocking {
+        val freeBytes = plugin.getFreeSpace() ?: fail()
+        assertTrue(freeBytes > 0)
+    }
+
+    @Test
     fun `test restore sets and reading+writing`() = runBlocking {
         val token = System.currentTimeMillis()
         val metadata = getRandomByteArray()

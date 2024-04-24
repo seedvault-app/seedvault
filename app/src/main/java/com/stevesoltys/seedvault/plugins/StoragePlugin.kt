@@ -14,6 +14,13 @@ interface StoragePlugin<T> {
     suspend fun test(): Boolean
 
     /**
+     * Retrieves the available storage space in bytes.
+     * @return the number of bytes available or null if the number is unknown.
+     * Returning a negative number or zero to indicate unknown is discouraged.
+     */
+    suspend fun getFreeSpace(): Long?
+
+    /**
      * Start a new [RestoreSet] with the given token.
      *
      * This is typically followed by a call to [initializeDevice].

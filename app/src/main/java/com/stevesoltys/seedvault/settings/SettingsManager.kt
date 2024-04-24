@@ -32,6 +32,7 @@ internal enum class StoragePluginType { // don't rename, will break existing ins
 }
 
 private const val PREF_KEY_STORAGE_URI = "storageUri"
+private const val PREF_KEY_STORAGE_ROOT_ID = "storageRootId"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
 private const val PREF_KEY_STORAGE_IS_USB = "storageIsUsb"
 private const val PREF_KEY_STORAGE_REQUIRES_NETWORK = "storageRequiresNetwork"
@@ -136,6 +137,7 @@ class SettingsManager(private val context: Context) {
     fun setSafStorage(safStorage: SafStorage) {
         prefs.edit()
             .putString(PREF_KEY_STORAGE_URI, safStorage.uri.toString())
+            .putString(PREF_KEY_STORAGE_ROOT_ID, safStorage.rootId)
             .putString(PREF_KEY_STORAGE_NAME, safStorage.name)
             .putBoolean(PREF_KEY_STORAGE_IS_USB, safStorage.isUsb)
             .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, safStorage.requiresNetwork)
@@ -149,7 +151,8 @@ class SettingsManager(private val context: Context) {
             ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         val requiresNetwork = prefs.getBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, false)
-        return SafStorage(uri, name, isUsb, requiresNetwork)
+        val rootId = prefs.getString(PREF_KEY_STORAGE_ROOT_ID, null)
+        return SafStorage(uri, name, isUsb, requiresNetwork, rootId)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {

@@ -6,6 +6,7 @@ import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.DisplayName
+import at.bitfire.dav4jvm.property.QuotaAvailableBytes
 import at.bitfire.dav4jvm.property.ResourceType
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
@@ -41,6 +42,25 @@ internal class WebDavStoragePlugin(
             }
         }
         return webDavSupported
+    }
+
+    override suspend fun getFreeSpace(): Long? {
+        val location = url.toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        val availableBytes = suspendCoroutine { cont ->
+            davCollection.propfind(depth = 0, QuotaAvailableBytes.NAME) { response, _ ->
+                debugLog { "getFreeSpace() = $response" }
+                val quota = response.properties.getOrNull(0) as? QuotaAvailableBytes
+                val availableBytes = quota?.quotaAvailableBytes ?: -1
+                if (availableBytes > 0) {
+                    cont.resume(availableBytes)
+                } else {
+                    cont.resume(null)
+                }
+            }
+        }
+        return availableBytes
     }
 
     @Throws(IOException::class)
