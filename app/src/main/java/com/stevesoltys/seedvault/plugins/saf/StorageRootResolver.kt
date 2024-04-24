@@ -10,6 +10,8 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Environment
+import android.os.StatFs
 import android.os.UserHandle
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
@@ -99,6 +101,7 @@ internal object StorageRootResolver {
         val rootId = cursor.getString(COLUMN_ROOT_ID)!!
         if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_HOME) return null
         val documentId = cursor.getString(COLUMN_DOCUMENT_ID) ?: return null
+        val isUsb = flags and FLAG_REMOVABLE_USB != 0
         return SafOption(
             authority = authority,
             rootId = rootId,
@@ -106,11 +109,22 @@ internal object StorageRootResolver {
             icon = getIcon(context, authority, rootId, cursor.getInt(COLUMN_ICON)),
             title = cursor.getString(COLUMN_TITLE)!!,
             summary = cursor.getString(COLUMN_SUMMARY),
-            availableBytes = cursor.getLong(COLUMN_AVAILABLE_BYTES).let { bytes ->
-                // AOSP 11 reports -1 instead of null
-                if (bytes == -1L) null else bytes
+            availableBytes = cursor.getInt(COLUMN_AVAILABLE_BYTES).let { bytes ->
+                // AOSP 11+ reports -1 instead of null
+                if (bytes == -1) {
+                    try {
+                        if (isUsb) {
+                            StatFs("/mnt/media_rw/${documentId.trimEnd(':')}").availableBytes
+                        } else if (authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE) {
+                            StatFs(Environment.getDataDirectory().absolutePath).availableBytes
+                        } else null
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error getting available bytes for $rootId ", e)
+                        null
+                    }
+                } else bytes.toLong()
             },
-            isUsb = flags and FLAG_REMOVABLE_USB != 0,
+            isUsb = isUsb,
             requiresNetwork = flags and FLAG_LOCAL_ONLY == 0 // not local only == requires network
         )
     }
