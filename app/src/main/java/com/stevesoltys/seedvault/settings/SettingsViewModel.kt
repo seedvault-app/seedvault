@@ -221,8 +221,7 @@ internal class SettingsViewModel(
                 i.putExtra(EXTRA_START_APP_BACKUP, true)
                 startForegroundService(app, i)
             } else {
-                val isUsb = settingsManager.getSafStorage()?.isUsb ?: false
-                AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
+                AppBackupWorker.scheduleNow(app, reschedule = !pluginManager.isOnRemovableDrive)
             }
         }
     }
@@ -301,20 +300,19 @@ internal class SettingsViewModel(
     }
 
     fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
-        val storage = settingsManager.getSafStorage() ?: error("no storage available")
-        if (!storage.isUsb && backupManager.isBackupEnabled) {
+        if (!pluginManager.isOnRemovableDrive && backupManager.isBackupEnabled) {
             AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
         }
     }
 
     fun scheduleFilesBackup() {
-        val storage = settingsManager.getSafStorage() ?: error("no storage available")
-        if (!storage.isUsb && settingsManager.isStorageBackupEnabled()) {
+        if (!pluginManager.isOnRemovableDrive && settingsManager.isStorageBackupEnabled()) {
+            val requiresNetwork = pluginManager.storageProperties?.requiresNetwork == true
             BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,
                 periodMillis = HOURS.toMillis(24),
-                networkType = if (storage.requiresNetwork) NETWORK_TYPE_UNMETERED
+                networkType = if (requiresNetwork) NETWORK_TYPE_UNMETERED
                 else NETWORK_TYPE_NONE,
                 deviceIdle = false,
                 charging = true

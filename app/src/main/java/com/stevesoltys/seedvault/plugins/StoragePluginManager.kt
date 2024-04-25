@@ -72,6 +72,7 @@ class StoragePluginManager(
         get() {
             return _storageProperties
         }
+    val isOnRemovableDrive: Boolean get() = storageProperties?.isUsb == true
 
     init {
         when (settingsManager.storagePluginType) {
