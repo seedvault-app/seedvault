@@ -44,9 +44,9 @@ class RestoreSetFragment : Fragment() {
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.restoreSetResults.observe(viewLifecycleOwner, { result ->
+        viewModel.restoreSetResults.observe(viewLifecycleOwner) { result ->
             onRestoreResultsLoaded(result)
-        })
+        }
 
         skipView.setOnClickListener {
             viewModel.onFinishClickedAfterRestoringAppData()
@@ -72,7 +72,10 @@ class RestoreSetFragment : Fragment() {
             listView.visibility = VISIBLE
             progressBar.visibility = INVISIBLE
 
-            listView.adapter = RestoreSetAdapter(viewModel, results.restorableBackups)
+            listView.adapter = RestoreSetAdapter(
+                listener = viewModel,
+                items = results.restorableBackups.sortedByDescending { it.time },
+            )
         }
     }
 
