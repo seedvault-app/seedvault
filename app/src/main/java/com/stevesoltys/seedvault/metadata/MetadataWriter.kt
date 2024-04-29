@@ -61,6 +61,7 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                     put(JSON_PACKAGE_SPLITS, JSONArray().apply {
                         for (split in splits) put(JSONObject().apply {
                             put(JSON_PACKAGE_SPLIT_NAME, split.name)
+                            if (split.size != null) put(JSON_PACKAGE_SIZE, split.size)
                             put(JSON_PACKAGE_SHA256, split.sha256)
                         })
                     })

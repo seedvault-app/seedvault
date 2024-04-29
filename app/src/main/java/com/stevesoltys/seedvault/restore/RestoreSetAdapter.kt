@@ -3,8 +3,11 @@ package com.stevesoltys.seedvault.restore
 import android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE
 import android.text.format.DateUtils.HOUR_IN_MILLIS
 import android.text.format.DateUtils.getRelativeTimeSpanString
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -33,6 +36,7 @@ internal class RestoreSetAdapter(
 
         private val titleView = v.requireViewById<TextView>(R.id.titleView)
         private val subtitleView = v.requireViewById<TextView>(R.id.subtitleView)
+        private val sizeView = v.requireViewById<TextView>(R.id.sizeView)
 
         internal fun bind(item: RestorableBackup) {
             v.setOnClickListener { listener.onRestorableBackupClicked(item) }
@@ -42,6 +46,16 @@ internal class RestoreSetAdapter(
             val setup = getRelativeTime(item.token)
             subtitleView.text =
                 v.context.getString(R.string.restore_restore_set_times, lastBackup, setup)
+            val size = item.size
+            if (size == null) {
+                sizeView.visibility = GONE
+            } else {
+                sizeView.text = v.context.getString(
+                    R.string.restore_restore_set_size,
+                    Formatter.formatShortFileSize(v.context, size),
+                )
+                sizeView.visibility = VISIBLE
+            }
         }
 
         private fun getRelativeTime(time: Long): CharSequence {

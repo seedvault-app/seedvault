@@ -194,13 +194,16 @@ internal class ApkBackup(
         // that we exceed the maximum file name length, so we use the hash instead.
         // The downside is that we need to read the file two times.
         val messageDigest = MessageDigest.getInstance("SHA-256")
-        getApkInputStream(sourceDir).use { inputStream ->
+        val size = getApkInputStream(sourceDir).use { inputStream ->
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var readCount = 0
             var bytes = inputStream.read(buffer)
             while (bytes >= 0) {
+                readCount += bytes
                 messageDigest.update(buffer, 0, bytes)
                 bytes = inputStream.read(buffer)
             }
+            readCount
         }
         val sha256 = messageDigest.digest().encodeBase64()
         val name = crypto.getNameForApk(metadataManager.salt, packageName, splitName)
@@ -210,7 +213,7 @@ internal class ApkBackup(
                 inputStream.copyTo(outputStream)
             }
         }
-        return ApkSplit(splitName, sha256)
+        return ApkSplit(splitName, size.toLong(), sha256)
     }
 
 }

@@ -169,6 +169,9 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
             val jsonApkSplit = jsonSplits.getJSONObject(i)
             val apkSplit = ApkSplit(
                 name = jsonApkSplit.getString(JSON_PACKAGE_SPLIT_NAME),
+                size = jsonApkSplit.optLong(JSON_PACKAGE_SIZE, -1L).let {
+                    if (it < 0L) null else it
+                },
                 sha256 = jsonApkSplit.getString(JSON_PACKAGE_SHA256)
             )
             splits.add(apkSplit)
