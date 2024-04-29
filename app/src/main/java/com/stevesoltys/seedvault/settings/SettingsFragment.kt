@@ -275,13 +275,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup_usb)
             return
         }
-        if (workInfo == null) return
 
-        val nextScheduleTimeMillis = workInfo.nextScheduleTimeMillis
-        if (workInfo.state == WorkInfo.State.RUNNING) {
+        val nextScheduleTimeMillis = workInfo?.nextScheduleTimeMillis ?: Long.MAX_VALUE
+        if (workInfo != null && workInfo.state == WorkInfo.State.RUNNING) {
             val text = getString(R.string.notification_title)
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup, text)
         } else if (nextScheduleTimeMillis == Long.MAX_VALUE) {
+            Log.i(TAG, "No backup scheduled! workInfo: $workInfo")
             val text = getString(R.string.settings_backup_last_backup_never)
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup, text)
         } else {
