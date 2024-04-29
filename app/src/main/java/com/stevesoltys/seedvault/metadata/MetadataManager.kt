@@ -58,6 +58,8 @@ internal class MetadataManager(
             return field
         }
 
+    val backupSize: Long? get() = metadata.size
+
     /**
      * Call this when initializing a new device.
      *

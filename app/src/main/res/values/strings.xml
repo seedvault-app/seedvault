@@ -195,6 +195,7 @@
     <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
     <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
+    <string name="restore_restore_set_size">Size: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="restore_skip">Don\'t restore</string>
     <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>

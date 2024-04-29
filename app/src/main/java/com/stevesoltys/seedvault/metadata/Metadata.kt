@@ -20,7 +20,12 @@ data class BackupMetadata(
     internal val deviceName: String = "${Build.MANUFACTURER} ${Build.MODEL}",
     internal var d2dBackup: Boolean = false,
     internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap(),
-)
+) {
+    val size: Long?
+        get() = packageMetadataMap.values.sumOf { m ->
+            (m.size ?: 0L) + (m.splits?.sumOf { it.size ?: 0L } ?: 0L)
+        }
+}
 
 internal const val JSON_METADATA = "@meta@"
 internal const val JSON_METADATA_VERSION = "version"
@@ -89,6 +94,7 @@ data class PackageMetadata(
 
 data class ApkSplit(
     val name: String,
+    val size: Long?,
     val sha256: String,
     // There's also a revisionCode, but it doesn't seem to be used just yet
 )

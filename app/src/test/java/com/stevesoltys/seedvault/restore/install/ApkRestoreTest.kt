@@ -269,8 +269,8 @@ internal class ApkRestoreTest : TransportTest() {
         val split2Name = getRandomString()
         packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
             splits = listOf(
-                ApkSplit(split1Name, getRandomBase64()),
-                ApkSplit(split2Name, getRandomBase64())
+                ApkSplit(split1Name, Random.nextLong(), getRandomBase64()),
+                ApkSplit(split2Name, Random.nextLong(), getRandomBase64())
             )
         )
 
@@ -293,7 +293,7 @@ internal class ApkRestoreTest : TransportTest() {
         // add one APK split to metadata
         val splitName = getRandomString()
         packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
-            splits = listOf(ApkSplit(splitName, getRandomBase64(23)))
+            splits = listOf(ApkSplit(splitName, Random.nextLong(), getRandomBase64(23)))
         )
 
         // cache APK and get icon as well as app name
@@ -318,7 +318,7 @@ internal class ApkRestoreTest : TransportTest() {
             val splitName = getRandomString()
             val sha256 = getRandomBase64(23)
             packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
-                splits = listOf(ApkSplit(splitName, sha256))
+                splits = listOf(ApkSplit(splitName, Random.nextLong(), sha256))
             )
 
             // cache APK and get icon as well as app name
@@ -343,8 +343,8 @@ internal class ApkRestoreTest : TransportTest() {
         val split2sha256 = "ZqZ1cVH47lXbEncWx-Pc4L6AdLZOIO2lQuXB5GypxB4"
         packageMetadataMap[packageName] = packageMetadataMap[packageName]!!.copy(
             splits = listOf(
-                ApkSplit(split1Name, split1sha256),
-                ApkSplit(split2Name, split2sha256)
+                ApkSplit(split1Name, Random.nextLong(), split1sha256),
+                ApkSplit(split2Name, Random.nextLong(), split2sha256)
             )
         )
 

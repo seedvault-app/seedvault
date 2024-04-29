@@ -76,7 +76,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         installer = getRandomString(),
         sha256 = "eHx5jjmlvBkQNVuubQzYejay4Q_QICqD47trAF2oNHI",
         signatures = listOf("AwIB"),
-        splits = listOf(ApkSplit(splitName, splitSha256))
+        splits = listOf(ApkSplit(splitName, Random.nextLong(), splitSha256))
     )
     private val packageMetadataMap: PackageMetadataMap = hashMapOf(packageName to packageMetadata)
     private val installerName = packageMetadata.installer
