@@ -33,8 +33,8 @@ internal class StorageBackupService : BackupService() {
 
     companion object {
         internal const val EXTRA_START_APP_BACKUP = "startAppBackup"
-        private val _isRunning = MutableStateFlow(false)
-        val isRunning = _isRunning.asStateFlow()
+        private val mIsRunning = MutableStateFlow(false)
+        val isRunning = mIsRunning.asStateFlow()
     }
 
     override val storageBackup: StorageBackup by inject()
@@ -47,12 +47,12 @@ internal class StorageBackupService : BackupService() {
 
     override fun onCreate() {
         super.onCreate()
-        _isRunning.value = true
+        mIsRunning.value = true
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        _isRunning.value = false
+        mIsRunning.value = false
     }
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {

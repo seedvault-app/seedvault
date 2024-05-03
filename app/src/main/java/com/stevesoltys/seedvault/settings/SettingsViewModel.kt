@@ -99,11 +99,11 @@ internal class SettingsViewModel(
     private val mAppEditMode = MutableLiveData<Boolean>()
     internal val appEditMode: LiveData<Boolean> = mAppEditMode
 
-    private val _filesSummary = MutableLiveData<String>()
-    internal val filesSummary: LiveData<String> = _filesSummary
+    private val mFilesSummary = MutableLiveData<String>()
+    internal val filesSummary: LiveData<String> = mFilesSummary
 
-    private val _initEvent = MutableLiveEvent<Boolean>()
-    val initEvent: LiveEvent<Boolean> = _initEvent
+    private val mInitEvent = MutableLiveEvent<Boolean>()
+    val initEvent: LiveEvent<Boolean> = mInitEvent
 
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
@@ -252,7 +252,7 @@ internal class SettingsViewModel(
     @UiThread
     fun loadFilesSummary() = viewModelScope.launch {
         val uriSummary = storageBackup.getUriSummaryString()
-        _filesSummary.value = uriSummary.ifEmpty {
+        mFilesSummary.value = uriSummary.ifEmpty {
             app.getString(R.string.settings_backup_files_summary)
         }
     }
@@ -268,10 +268,10 @@ internal class SettingsViewModel(
                 }
                 viewModelScope.launch(Dispatchers.IO) {
                     backupInitializer.initialize(onError) {
-                        _initEvent.postEvent(false)
+                        mInitEvent.postEvent(false)
                         scheduleAppBackup(CANCEL_AND_REENQUEUE)
                     }
-                    _initEvent.postEvent(true)
+                    mInitEvent.postEvent(true)
                 }
             }
             // enable call log backups for existing installs (added end of 2020)

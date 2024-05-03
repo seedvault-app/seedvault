@@ -21,8 +21,8 @@ private val TAG = ConfigurableBackupTransportService::class.java.simpleName
 class ConfigurableBackupTransportService : Service(), KoinComponent {
 
     companion object {
-        private val _isRunning = MutableStateFlow(false)
-        val isRunning = _isRunning.asStateFlow()
+        private val mIsRunning = MutableStateFlow(false)
+        val isRunning = mIsRunning.asStateFlow()
     }
 
     private var transport: ConfigurableBackupTransport? = null
@@ -34,7 +34,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
         transport = ConfigurableBackupTransport(applicationContext)
-        _isRunning.value = true
+        mIsRunning.value = true
         Log.d(TAG, "Service created.")
     }
 
@@ -55,7 +55,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
         super.onDestroy()
         notificationManager.onServiceDestroyed()
         transport = null
-        _isRunning.value = false
+        mIsRunning.value = false
         Log.d(TAG, "Service destroyed.")
     }
 

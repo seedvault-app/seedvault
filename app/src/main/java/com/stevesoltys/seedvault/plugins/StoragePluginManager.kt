@@ -23,26 +23,26 @@ class StoragePluginManager(
     webDavFactory: WebDavFactory,
 ) {
 
-    private var _appPlugin: StoragePlugin<*>?
-    private var _filesPlugin: org.calyxos.backup.storage.api.StoragePlugin?
-    private var _storageProperties: StorageProperties<*>?
+    private var mAppPlugin: StoragePlugin<*>?
+    private var mFilesPlugin: org.calyxos.backup.storage.api.StoragePlugin?
+    private var mStorageProperties: StorageProperties<*>?
 
     val appPlugin: StoragePlugin<*>
         @Synchronized
         get() {
-            return _appPlugin ?: error("App plugin was loaded, but still null")
+            return mAppPlugin ?: error("App plugin was loaded, but still null")
         }
 
     val filesPlugin: org.calyxos.backup.storage.api.StoragePlugin
         @Synchronized
         get() {
-            return _filesPlugin ?: error("Files plugin was loaded, but still null")
+            return mFilesPlugin ?: error("Files plugin was loaded, but still null")
         }
 
     val storageProperties: StorageProperties<*>?
         @Synchronized
         get() {
-            return _storageProperties
+            return mStorageProperties
         }
     val isOnRemovableDrive: Boolean get() = storageProperties?.isUsb == true
 
@@ -51,30 +51,30 @@ class StoragePluginManager(
             StoragePluginEnum.SAF -> {
                 val safStorage = settingsManager.getSafStorage() ?: error("No SAF storage saved")
                 val documentsStorage = DocumentsStorage(context, settingsManager, safStorage)
-                _appPlugin = safFactory.createAppStoragePlugin(safStorage, documentsStorage)
-                _filesPlugin = safFactory.createFilesStoragePlugin(safStorage, documentsStorage)
-                _storageProperties = safStorage
+                mAppPlugin = safFactory.createAppStoragePlugin(safStorage, documentsStorage)
+                mFilesPlugin = safFactory.createFilesStoragePlugin(safStorage, documentsStorage)
+                mStorageProperties = safStorage
             }
 
             StoragePluginEnum.WEB_DAV -> {
                 val webDavProperties =
                     settingsManager.webDavProperties ?: error("No WebDAV config saved")
-                _appPlugin = webDavFactory.createAppStoragePlugin(webDavProperties.config)
-                _filesPlugin = webDavFactory.createFilesStoragePlugin(webDavProperties.config)
-                _storageProperties = webDavProperties
+                mAppPlugin = webDavFactory.createAppStoragePlugin(webDavProperties.config)
+                mFilesPlugin = webDavFactory.createFilesStoragePlugin(webDavProperties.config)
+                mStorageProperties = webDavProperties
             }
 
             null -> {
-                _appPlugin = null
-                _filesPlugin = null
-                _storageProperties = null
+                mAppPlugin = null
+                mFilesPlugin = null
+                mStorageProperties = null
             }
         }
     }
 
     fun isValidAppPluginSet(): Boolean {
-        if (_appPlugin == null || _filesPlugin == null) return false
-        if (_appPlugin is DocumentsProviderStoragePlugin) {
+        if (mAppPlugin == null || mFilesPlugin == null) return false
+        if (mAppPlugin is DocumentsProviderStoragePlugin) {
             val storage = settingsManager.getSafStorage() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
@@ -96,9 +96,9 @@ class StoragePluginManager(
         filesPlugin: org.calyxos.backup.storage.api.StoragePlugin,
     ) {
         settingsManager.setStoragePlugin(appPlugin)
-        _storageProperties = storageProperties
-        _appPlugin = appPlugin
-        _filesPlugin = filesPlugin
+        mStorageProperties = storageProperties
+        mAppPlugin = appPlugin
+        mFilesPlugin = filesPlugin
     }
 
     /**

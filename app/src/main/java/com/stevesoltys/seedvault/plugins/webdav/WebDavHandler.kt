@@ -46,27 +46,27 @@ internal class WebDavHandler(
         }
     }
 
-    private val _configState = MutableStateFlow<WebDavConfigState>(WebDavConfigState.Empty)
-    val configState = _configState.asStateFlow()
+    private val mConfigState = MutableStateFlow<WebDavConfigState>(WebDavConfigState.Empty)
+    val configState = mConfigState.asStateFlow()
 
     suspend fun onConfigReceived(config: WebDavConfig) {
-        _configState.value = WebDavConfigState.Checking
+        mConfigState.value = WebDavConfigState.Checking
         val plugin = webDavFactory.createAppStoragePlugin(config) as WebDavStoragePlugin
         try {
             if (plugin.test()) {
                 val properties = createWebDavProperties(context, config)
-                _configState.value = WebDavConfigState.Success(properties, plugin)
+                mConfigState.value = WebDavConfigState.Success(properties, plugin)
             } else {
-                _configState.value = WebDavConfigState.Error(null)
+                mConfigState.value = WebDavConfigState.Error(null)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error testing WebDAV config at ${config.url}", e)
-            _configState.value = WebDavConfigState.Error(e)
+            mConfigState.value = WebDavConfigState.Error(e)
         }
     }
 
     fun resetConfigState() {
-        _configState.value = WebDavConfigState.Empty
+        mConfigState.value = WebDavConfigState.Empty
     }
 
     /**
