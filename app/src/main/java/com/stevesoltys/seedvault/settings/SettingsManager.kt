@@ -26,7 +26,7 @@ internal const val PREF_KEY_SCHED_CHARGING = "scheduling_charging"
 
 private const val PREF_KEY_STORAGE_PLUGIN = "storagePlugin"
 
-internal enum class StoragePluginEnum { // don't rename, will break existing installs
+internal enum class StoragePluginType { // don't rename, will break existing installs
     SAF,
     WEB_DAV,
 }
@@ -101,7 +101,7 @@ class SettingsManager(private val context: Context) {
         token = newToken
     }
 
-    internal val storagePluginType: StoragePluginEnum?
+    internal val storagePluginType: StoragePluginType?
         get() {
             val savedType = prefs.getString(PREF_KEY_STORAGE_PLUGIN, null)
             return if (savedType == null) {
@@ -109,13 +109,13 @@ class SettingsManager(private val context: Context) {
                 // this check could be removed after a reasonable migration time (added 2024)
                 if (prefs.getString(PREF_KEY_STORAGE_URI, null) != null) {
                     prefs.edit()
-                        .putString(PREF_KEY_STORAGE_PLUGIN, StoragePluginEnum.SAF.name)
+                        .putString(PREF_KEY_STORAGE_PLUGIN, StoragePluginType.SAF.name)
                         .apply()
-                    StoragePluginEnum.SAF
+                    StoragePluginType.SAF
                 } else null
             } else savedType.let {
                 try {
-                    StoragePluginEnum.valueOf(it)
+                    StoragePluginType.valueOf(it)
                 } catch (e: IllegalArgumentException) {
                     null
                 }
@@ -124,8 +124,8 @@ class SettingsManager(private val context: Context) {
 
     fun setStoragePlugin(plugin: StoragePlugin<*>) {
         val value = when (plugin) {
-            is DocumentsProviderStoragePlugin -> StoragePluginEnum.SAF
-            is WebDavStoragePlugin -> StoragePluginEnum.WEB_DAV
+            is DocumentsProviderStoragePlugin -> StoragePluginType.SAF
+            is WebDavStoragePlugin -> StoragePluginType.WEB_DAV
             else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
         }.name
         prefs.edit()
