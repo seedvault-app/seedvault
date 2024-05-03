@@ -158,13 +158,14 @@ internal suspend fun DocumentFile.createOrGetFile(
             if (this.name != name) {
                 throw IOException("File named ${this.name}, but should be $name")
             }
-        } ?: throw IOException()
+        } ?: throw IOException("could not find nor create")
     } catch (e: Exception) {
         // SAF can throw all sorts of exceptions, so wrap it in IOException.
         // E.g. IllegalArgumentException can be thrown by FileSystemProvider#isChildDocument()
         // when flash drive is not plugged-in:
         // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/core/java/com/android/internal/content/FileSystemProvider.java#135
-        throw IOException(e)
+        if (e is IOException) throw e
+        else throw IOException(e)
     }
 }
 
