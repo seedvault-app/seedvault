@@ -16,6 +16,7 @@ import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.plugin.PluginConstants.CHUNK_FOLDER_COUNT
 import org.calyxos.backup.storage.plugin.PluginConstants.MIME_TYPE
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import org.calyxos.backup.storage.plugin.PluginConstants.chunkFolderRegex
 import org.calyxos.backup.storage.plugin.PluginConstants.chunkRegex
 import org.calyxos.backup.storage.plugin.PluginConstants.folderRegex
@@ -72,7 +73,7 @@ public abstract class SafStoragePlugin(
         }
 
     private fun timestampToSnapshot(timestamp: Long): String {
-        return "$timestamp.SeedSnap"
+        return "$timestamp$SNAPSHOT_EXT"
     }
 
     override suspend fun init() {

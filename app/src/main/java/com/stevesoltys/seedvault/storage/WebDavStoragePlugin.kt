@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.plugins.webdav.WebDavStorage
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import org.calyxos.backup.storage.plugin.PluginConstants.chunkRegex
 import org.calyxos.backup.storage.plugin.PluginConstants.snapshotRegex
 import org.koin.core.time.measureDuration
@@ -136,13 +137,13 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
-        val location = "$url/$folder/$timestamp.SeedSnap".toHttpUrl()
+        val location = "$url/$folder/$timestamp$SNAPSHOT_EXT".toHttpUrl()
         debugLog { "getBackupSnapshotOutputStream($location)" }
         return try {
             getOutputStream(location)
         } catch (e: Exception) {
             if (e is IOException) throw e
-            else throw IOException("Error getting OutputStream for $timestamp.SeedSnap: ", e)
+            else throw IOException("Error getting OutputStream for $timestamp$SNAPSHOT_EXT: ", e)
         }
     }
 
@@ -184,7 +185,7 @@ internal class WebDavStoragePlugin(
     @Throws(IOException::class)
     override suspend fun getBackupSnapshotInputStream(storedSnapshot: StoredSnapshot): InputStream {
         val timestamp = storedSnapshot.timestamp
-        val location = "$url/${storedSnapshot.userId}/$timestamp.SeedSnap".toHttpUrl()
+        val location = "$url/${storedSnapshot.userId}/$timestamp$SNAPSHOT_EXT".toHttpUrl()
         debugLog { "getBackupSnapshotInputStream($location)" }
         return try {
             getInputStream(location)
@@ -251,7 +252,7 @@ internal class WebDavStoragePlugin(
         val timestamp = storedSnapshot.timestamp
         Log.d(TAG, "Deleting snapshot $timestamp")
 
-        val location = "$url/${storedSnapshot.userId}/$timestamp.SeedSnap".toHttpUrl()
+        val location = "$url/${storedSnapshot.userId}/$timestamp$SNAPSHOT_EXT".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         try {

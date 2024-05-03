@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.FILE_NO_MEDIA
 import com.stevesoltys.seedvault.plugins.tokenRegex
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -191,7 +192,7 @@ internal class WebDavStoragePlugin(
     private fun isUnexpectedFile(name: String): Boolean {
         return name != FILE_NO_MEDIA &&
             !chunkFolderRegex.matches(name) &&
-            !name.endsWith(".SeedSnap")
+            !name.endsWith(SNAPSHOT_EXT)
     }
 
     override val providerPackageName: String = context.packageName // 100% built-in plugin

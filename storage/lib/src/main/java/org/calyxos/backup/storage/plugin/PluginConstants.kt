@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.plugin
 
 public object PluginConstants {
 
+    public const val SNAPSHOT_EXT: String = ".SeedSnap"
     public val folderRegex: Regex = Regex("^[a-f0-9]{16}\\.sv$")
     public val chunkFolderRegex: Regex = Regex("[a-f0-9]{2}")
     public val chunkRegex: Regex = Regex("[a-f0-9]{64}")

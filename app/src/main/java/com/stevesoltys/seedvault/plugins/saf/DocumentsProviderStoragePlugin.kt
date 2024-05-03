@@ -10,6 +10,7 @@ import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.tokenRegex
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -149,5 +150,5 @@ private fun DocumentFile.getTokenOrNull(name: String?): Long? {
 private fun isUnexpectedFile(name: String): Boolean {
     return name != FILE_NO_MEDIA &&
         !chunkFolderRegex.matches(name) &&
-        !name.endsWith(".SeedSnap")
+        !name.endsWith(SNAPSHOT_EXT)
 }
