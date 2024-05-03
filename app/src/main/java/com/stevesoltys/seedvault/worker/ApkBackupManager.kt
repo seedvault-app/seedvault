@@ -110,6 +110,9 @@ internal class ApkBackupManager(
             } ?: false
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK for $packageName", e)
+            if (e.message?.contains("No space left on device") == true) {
+                nm.onInsufficientSpaceError()
+            }
             false
         }
     }

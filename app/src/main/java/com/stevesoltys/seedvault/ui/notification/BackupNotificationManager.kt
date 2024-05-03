@@ -17,6 +17,7 @@ import android.text.format.Formatter
 import android.util.Log
 import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.CATEGORY_ERROR
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
@@ -36,9 +37,10 @@ private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
 internal const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_SUCCESS = 2
 private const val NOTIFICATION_ID_ERROR = 3
-private const val NOTIFICATION_ID_RESTORE_ERROR = 4
-private const val NOTIFICATION_ID_BACKGROUND = 5
-private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 6
+private const val NOTIFICATION_ID_SPACE_ERROR = 4
+private const val NOTIFICATION_ID_RESTORE_ERROR = 5
+private const val NOTIFICATION_ID_BACKGROUND = 6
+private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 7
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -212,6 +214,20 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun onBackupErrorSeen() {
         nm.cancel(NOTIFICATION_ID_ERROR)
+    }
+
+    fun onInsufficientSpaceError() {
+        val notification = Builder(context, CHANNEL_ID_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
+            setContentTitle(context.getString(R.string.notification_space_error_title))
+            setContentText(context.getString(R.string.notification_space_error_text))
+            setWhen(System.currentTimeMillis())
+            setOnlyAlertOnce(true)
+            setAutoCancel(true)
+            setPriority(PRIORITY_HIGH)
+            setCategory(CATEGORY_ERROR)
+        }.build()
+        nm.notify(NOTIFICATION_ID_SPACE_ERROR, notification)
     }
 
     @SuppressLint("RestrictedApi")

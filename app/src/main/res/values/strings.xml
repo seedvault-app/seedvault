@@ -160,6 +160,9 @@
     <string name="notification_error_text">A device backup failed to run.</string>
     <string name="notification_error_action">Fix</string>
 
+    <string name="notification_space_error_title">Insufficient backup space</string>
+    <string name="notification_space_error_text">Your backup location is running out of space. Free up space, so backups can run.</string>
+
     <string name="notification_restore_error_channel_title">Auto restore flash drive error</string>
     <string name="notification_restore_error_title">Could not restore data for %1$s</string>
     <string name="notification_restore_error_text">Plug in your %1$s before installing the app to restore its data from backup.</string>
