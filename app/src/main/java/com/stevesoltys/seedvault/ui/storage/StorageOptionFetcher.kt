@@ -13,9 +13,11 @@ import android.provider.DocumentsContract.PROVIDER_INTERFACE
 import android.provider.DocumentsContract.buildRootsUri
 import android.util.Log
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.plugins.saf.SafStorageOptions
+import com.stevesoltys.seedvault.plugins.saf.StorageRootResolver
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
-private val TAG = StorageRootFetcher::class.java.simpleName
+private val TAG = StorageOptionFetcher::class.java.simpleName
 
 const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
 const val ROOT_ID_DEVICE = "primary"
@@ -30,7 +32,7 @@ internal interface RemovableStorageListener {
     fun onStorageChanged()
 }
 
-internal class StorageRootFetcher(private val context: Context, private val isRestore: Boolean) {
+internal class StorageOptionFetcher(private val context: Context, private val isRestore: Boolean) {
 
     private val packageManager = context.packageManager
     private val contentResolver = context.contentResolver
@@ -60,7 +62,9 @@ internal class StorageRootFetcher(private val context: Context, private val isRe
     internal fun getRemovableStorageListener() = listener
 
     internal fun getStorageOptions(): List<StorageOption> {
-        val roots = ArrayList<SafOption>()
+        val roots = ArrayList<StorageOption>().apply {
+            add(WebDavOption(context))
+        }
         val intent = Intent(PROVIDER_INTERFACE)
         val providers = packageManager.queryIntentContentProviders(intent, 0)
         for (info in providers) {

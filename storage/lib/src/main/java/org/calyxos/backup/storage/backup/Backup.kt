@@ -35,12 +35,11 @@ internal class BackupResult(
     )
 }
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class Backup(
     private val context: Context,
     private val db: Db,
     private val fileScanner: FileScanner,
-    private val storagePlugin: StoragePlugin,
+    private val storagePluginGetter: () -> StoragePlugin,
     private val cacheRepopulater: ChunksCacheRepopulater,
     chunkSizeMax: Int = CHUNK_SIZE_MAX,
     private val streamCrypto: StreamCrypto = StreamCrypto,
@@ -54,6 +53,7 @@ internal class Backup(
     }
 
     private val contentResolver = context.contentResolver
+    private val storagePlugin get() = storagePluginGetter()
     private val filesCache = db.getFilesCache()
     private val chunksCache = db.getChunksCache()
 

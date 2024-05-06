@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault
 
+import android.net.Uri
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -28,20 +29,24 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 @RunWith(AndroidJUnit4::class)
-@Suppress("BlockingMethodInNonBlockingContext")
 @MediumTest
 class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val settingsManager: SettingsManager by inject()
     private val mockedSettingsManager: SettingsManager = mockk()
-    private val storage = DocumentsStorage(context, mockedSettingsManager)
+    private val storage = DocumentsStorage(
+        appContext = context,
+        settingsManager = mockedSettingsManager,
+        safStorage = settingsManager.getSafStorage() ?: error("No SAF storage"),
+    )
 
-    private val storagePlugin: StoragePlugin = DocumentsProviderStoragePlugin(context, storage)
+    private val storagePlugin: StoragePlugin<Uri> = DocumentsProviderStoragePlugin(context, storage)
 
     @Suppress("Deprecation")
-    private val legacyStoragePlugin: LegacyStoragePlugin =
-        DocumentsProviderLegacyPlugin(context, storage)
+    private val legacyStoragePlugin: LegacyStoragePlugin = DocumentsProviderLegacyPlugin(context) {
+        storage
+    }
 
     private val token = System.currentTimeMillis() - 365L * 24L * 60L * 60L * 1000L
     private val packageInfo = PackageInfoBuilder.newBuilder().setPackageName("org.example").build()
@@ -49,7 +54,7 @@ class PluginTest : KoinComponent {
 
     @Before
     fun setup() = runBlocking {
-        every { mockedSettingsManager.getStorage() } returns settingsManager.getStorage()
+        every { mockedSettingsManager.getSafStorage() } returns settingsManager.getSafStorage()
         storage.rootBackupDir?.deleteContents(context)
             ?: error("Select a storage location in the app first!")
     }
@@ -76,8 +81,6 @@ class PluginTest : KoinComponent {
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
         assertEquals(0, storagePlugin.getAvailableBackups()?.toList()?.size)
-        val s = settingsManager.getStorage() ?: error("no storage")
-        assertFalse(storagePlugin.hasBackup(s))
 
         // prepare returned tokens requested when initializing device
         every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
@@ -92,7 +95,6 @@ class PluginTest : KoinComponent {
 
         // one backup available now
         assertEquals(1, storagePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(storagePlugin.hasBackup(s))
 
         // initializing again (with another restore set) does add a restore set
         storagePlugin.startNewRestoreSet(token + 1)
@@ -100,7 +102,6 @@ class PluginTest : KoinComponent {
         storagePlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
         assertEquals(2, storagePlugin.getAvailableBackups()?.toList()?.size)
-        assertTrue(storagePlugin.hasBackup(s))
 
         // initializing again (without new restore set) doesn't change number of restore sets
         storagePlugin.initializeDevice()

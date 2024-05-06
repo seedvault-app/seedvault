@@ -7,6 +7,8 @@ import android.os.IBinder
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -18,6 +20,11 @@ private val TAG = ConfigurableBackupTransportService::class.java.simpleName
  */
 class ConfigurableBackupTransportService : Service(), KoinComponent {
 
+    companion object {
+        private val mIsRunning = MutableStateFlow(false)
+        val isRunning = mIsRunning.asStateFlow()
+    }
+
     private var transport: ConfigurableBackupTransport? = null
 
     private val keyManager: KeyManager by inject()
@@ -27,6 +34,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
         transport = ConfigurableBackupTransport(applicationContext)
+        mIsRunning.value = true
         Log.d(TAG, "Service created.")
     }
 
@@ -47,6 +55,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
         super.onDestroy()
         notificationManager.onServiceDestroyed()
         transport = null
+        mIsRunning.value = false
         Log.d(TAG, "Service destroyed.")
     }
 

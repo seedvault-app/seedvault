@@ -16,7 +16,8 @@ import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -35,29 +36,29 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
-    private val plugin = mockk<StoragePlugin>()
+    private val storagePluginManager: StoragePluginManager = mockk()
+    private val plugin = mockk<StoragePlugin<*>>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
 
     private val restore = RestoreCoordinator(
-        context,
-        crypto,
-        settingsManager,
-        metadataManager,
-        notificationManager,
-        plugin,
-        kv,
-        full,
-        metadataReader
+        context = context,
+        crypto = crypto,
+        settingsManager = settingsManager,
+        metadataManager = metadataManager,
+        notificationManager = notificationManager,
+        pluginManager = storagePluginManager,
+        kv = kv,
+        full = full,
+        metadataReader = metadataReader,
     )
 
     private val inputStream = mockk<InputStream>()
-    private val storage: Storage = mockk()
+    private val safStorage: SafStorage = mockk()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
@@ -71,6 +72,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     init {
         metadata.packageMetadataMap[packageInfo2.packageName] =
             PackageMetadata(backupType = BackupType.FULL)
+
+        every { storagePluginManager.appPlugin } returns plugin
     }
 
     @Test
@@ -164,10 +167,10 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() =
         runBlocking {
-            every { settingsManager.getStorage() } returns storage
-            every { storage.isUnavailableUsb(context) } returns true
+            every { storagePluginManager.storageProperties } returns safStorage
+            every { safStorage.isUnavailableUsb(context) } returns true
             every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
-            every { storage.name } returns storageName
+            every { safStorage.name } returns storageName
             every {
                 notificationManager.onRemovableStorageNotAvailableForRestore(
                     packageName,
@@ -188,8 +191,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() =
         runBlocking {
-            every { settingsManager.getStorage() } returns storage
-            every { storage.isUnavailableUsb(context) } returns false
+            every { storagePluginManager.storageProperties } returns safStorage
+            every { safStorage.isUnavailableUsb(context) } returns false
 
             restore.beforeStartRestore(metadata)
             assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
@@ -204,8 +207,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
-        every { settingsManager.getStorage() } returns storage
-        every { storage.isUnavailableUsb(context) } returns true
+        every { storagePluginManager.storageProperties } returns safStorage
+        every { safStorage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))

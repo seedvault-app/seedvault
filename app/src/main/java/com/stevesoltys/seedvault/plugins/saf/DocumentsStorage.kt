@@ -1,5 +1,3 @@
-@file:Suppress("BlockingMethodInNonBlockingContext")
-
 package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.ContentResolver
@@ -18,7 +16,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.settings.Storage
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -44,27 +41,19 @@ private val TAG = DocumentsStorage::class.java.simpleName
 internal class DocumentsStorage(
     private val appContext: Context,
     private val settingsManager: SettingsManager,
+    internal val safStorage: SafStorage,
 ) {
-    internal var storage: Storage? = null
-        get() {
-            if (field == null) field = settingsManager.getStorage()
-            return field
-        }
 
     /**
      * Attention: This context might be from a different user. Use with care.
      */
-    private val context: Context
-        get() = appContext.getStorageContext {
-            storage?.isUsb == true
-        }
+    private val context: Context get() = appContext.getStorageContext { safStorage.isUsb }
     private val contentResolver: ContentResolver get() = context.contentResolver
 
     internal var rootBackupDir: DocumentFile? = null
         get() = runBlocking {
             if (field == null) {
-                val parent = storage?.getDocumentFile(context)
-                    ?: return@runBlocking null
+                val parent = safStorage.getDocumentFile(context)
                 field = try {
                     parent.createOrGetDirectory(context, DIRECTORY_ROOT).apply {
                         // create .nomedia file to prevent Android's MediaScanner
@@ -104,13 +93,12 @@ internal class DocumentsStorage(
      * Resets this storage abstraction, forcing it to re-fetch cached values on next access.
      */
     fun reset(newToken: Long?) {
-        storage = null
         currentToken = newToken
         rootBackupDir = null
         currentSetDir = null
     }
 
-    fun getAuthority(): String? = storage?.uri?.authority
+    fun getAuthority(): String? = safStorage.uri.authority
 
     @Throws(IOException::class)
     suspend fun getSetDir(token: Long = currentToken ?: error("no token")): DocumentFile? {

@@ -28,12 +28,13 @@ private const val TAG = "Restore"
 
 internal class Restore(
     context: Context,
-    private val storagePlugin: StoragePlugin,
+    private val storagePluginGetter: () -> StoragePlugin,
     private val snapshotRetriever: SnapshotRetriever,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
+    private val storagePlugin get() = storagePluginGetter()
     private val streamKey by lazy {
         // This class might get instantiated before the StoragePlugin had time to provide the key
         // so we need to get it lazily here to prevent crashes. We can still crash later,
@@ -47,13 +48,13 @@ internal class Restore(
 
     // lazily instantiate these, so they don't try to get the streamKey too early
     private val zipChunkRestore by lazy {
-        ZipChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey)
+        ZipChunkRestore(storagePluginGetter, fileRestore, streamCrypto, streamKey)
     }
     private val singleChunkRestore by lazy {
-        SingleChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey)
+        SingleChunkRestore(storagePluginGetter, fileRestore, streamCrypto, streamKey)
     }
     private val multiChunkRestore by lazy {
-        MultiChunkRestore(context, storagePlugin, fileRestore, streamCrypto, streamKey)
+        MultiChunkRestore(context, storagePluginGetter, fileRestore, streamCrypto, streamKey)
     }
 
     fun getBackupSnapshots(): Flow<SnapshotResult> = flow {

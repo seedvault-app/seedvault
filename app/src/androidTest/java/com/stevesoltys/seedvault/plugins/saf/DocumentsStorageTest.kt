@@ -39,13 +39,16 @@ import java.io.IOException
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Suppress("BlockingMethodInNonBlockingContext")
 @MediumTest
 class DocumentsStorageTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val settingsManager by inject<SettingsManager>()
-    private val storage = DocumentsStorage(context, settingsManager)
+    private val storage = DocumentsStorage(
+        appContext = context,
+        settingsManager = settingsManager,
+        safStorage = settingsManager.getSafStorage() ?: error("No SAF storage"),
+    )
 
     private val filename = getRandomBase64()
     private lateinit var file: DocumentFile

@@ -30,7 +30,6 @@ import java.security.MessageDigest
 
 private val TAG = ApkBackup::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackup(
     private val pm: PackageManager,
     private val crypto: Crypto,

@@ -19,10 +19,9 @@ import kotlin.time.toDuration
 
 private const val TAG = "ChunksCacheRepopulater"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ChunksCacheRepopulater(
     private val db: Db,
-    private val storagePlugin: StoragePlugin,
+    private val storagePlugin: () -> StoragePlugin,
     private val snapshotRetriever: SnapshotRetriever,
 ) {
 
@@ -43,7 +42,7 @@ internal class ChunksCacheRepopulater(
         availableChunkIds: HashSet<String>,
     ) {
         val start = System.currentTimeMillis()
-        val snapshots = storagePlugin.getCurrentBackupSnapshots().mapNotNull { storedSnapshot ->
+        val snapshots = storagePlugin().getCurrentBackupSnapshots().mapNotNull { storedSnapshot ->
             try {
                 snapshotRetriever.getSnapshot(streamKey, storedSnapshot)
             } catch (e: GeneralSecurityException) {
@@ -63,7 +62,7 @@ internal class ChunksCacheRepopulater(
         // delete chunks that are not references by any snapshot anymore
         val chunksToDelete = availableChunkIds.subtract(cachedChunks.map { it.id })
         val deletionDuration = measure {
-            storagePlugin.deleteChunks(chunksToDelete.toList())
+            storagePlugin().deleteChunks(chunksToDelete.toList())
         }
         Log.i(TAG, "Deleting ${chunksToDelete.size} chunks took $deletionDuration")
     }

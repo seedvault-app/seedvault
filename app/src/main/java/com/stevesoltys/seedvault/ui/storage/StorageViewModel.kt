@@ -1,32 +1,33 @@
 package com.stevesoltys.seedvault.ui.storage
 
+import android.annotation.UiThread
 import android.app.Application
-import android.content.Context
-import android.content.Context.USB_SERVICE
-import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
-import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-import android.hardware.usb.UsbManager
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.isMassStorage
-import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.settings.BackupManagerSettings
-import com.stevesoltys.seedvault.settings.FlashDrive
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafHandler
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.settings.Storage
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
-
-private val TAG = StorageViewModel::class.java.simpleName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 internal abstract class StorageViewModel(
     private val app: Application,
+    protected val safHandler: SafHandler,
+    protected val webdavHandler: WebDavHandler,
     protected val settingsManager: SettingsManager,
+    protected val storagePluginManager: StoragePluginManager,
 ) : AndroidViewModel(app), RemovableStorageListener {
 
     private val mStorageOptions = MutableLiveData<List<StorageOption>>()
@@ -38,38 +39,29 @@ internal abstract class StorageViewModel(
     protected val mLocationChecked = MutableLiveEvent<LocationResult>()
     internal val locationChecked: LiveEvent<LocationResult> get() = mLocationChecked
 
-    private val storageRootFetcher by lazy { StorageRootFetcher(app, isRestoreOperation) }
+    private val storageOptionFetcher by lazy { StorageOptionFetcher(app, isRestoreOperation) }
     private var safOption: SafOption? = null
 
     internal var isSetupWizard: Boolean = false
     internal val hasStorageSet: Boolean
-        get() = settingsManager.getStorage() != null
+        get() = storagePluginManager.storageProperties != null
     abstract val isRestoreOperation: Boolean
 
-    companion object {
-        internal fun validLocationIsSet(
-            context: Context,
-            settingsManager: SettingsManager,
-        ): Boolean {
-            val storage = settingsManager.getStorage() ?: return false
-            if (storage.isUsb) return true
-            return permitDiskReads {
-                storage.getDocumentFile(context).isDirectory
-            }
-        }
-    }
-
     internal fun loadStorageRoots() {
-        if (storageRootFetcher.getRemovableStorageListener() == null) {
-            storageRootFetcher.setRemovableStorageListener(this)
+        if (storageOptionFetcher.getRemovableStorageListener() == null) {
+            storageOptionFetcher.setRemovableStorageListener(this)
         }
         Thread {
-            mStorageOptions.postValue(storageRootFetcher.getStorageOptions())
+            mStorageOptions.postValue(storageOptionFetcher.getStorageOptions())
         }.start()
     }
 
     override fun onStorageChanged() = loadStorageRoots()
 
+    /**
+     * Remembers that the user chose SAF.
+     * Usually followed by a call of [onUriPermissionResultReceived].
+     */
     fun onSafOptionChosen(option: SafOption) {
         safOption = option
     }
@@ -80,75 +72,39 @@ internal abstract class StorageViewModel(
             mLocationChecked.setEvent(LocationResult(msg))
             return
         }
+        require(safOption?.uri == uri) { "URIs differ: ${safOption?.uri} != $uri" }
+
+        val root = safOption ?: throw IllegalStateException("no storage root")
+        val safStorage = safHandler.onConfigReceived(uri, root)
 
         // inform UI that a location has been successfully selected
         mLocationSet.setEvent(true)
 
-        // persist permission to access backup folder across reboots
-        val takeFlags = FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
-        app.contentResolver.takePersistableUriPermission(uri, takeFlags)
-
-        onLocationSet(uri)
+        onSafUriSet(safStorage)
     }
 
-    /**
-     * Saves the storage behind the given [Uri] (and saved [safOption]).
-     *
-     * @return true if the storage is a USB flash drive, false otherwise.
-     */
-    protected fun saveStorage(uri: Uri): Boolean {
-        // store backup storage location in settings
-        val storage = createStorage(uri)
-        return saveStorage(storage)
-    }
-
-    protected fun createStorage(uri: Uri): Storage {
-        val root = safOption ?: throw IllegalStateException("no storage root")
-        val name = if (root.isInternal()) {
-            "${root.title} (${app.getString(R.string.settings_backup_location_internal)})"
-        } else {
-            root.title
-        }
-        return Storage(uri, name, root.isUsb, root.requiresNetwork)
-    }
-
-    protected fun saveStorage(storage: Storage): Boolean {
-        settingsManager.setStorage(storage)
-
-        if (storage.isUsb) {
-            Log.d(TAG, "Selected storage is a removable USB device.")
-            val wasSaved = saveUsbDevice()
-            // reset stored flash drive, if we did not update it
-            if (!wasSaved) settingsManager.setFlashDrive(null)
-        } else {
-            settingsManager.setFlashDrive(null)
-        }
-        BackupManagerSettings.resetDefaults(app.contentResolver)
-
-        Log.d(TAG, "New storage location saved: ${storage.uri}")
-
-        return storage.isUsb
-    }
-
-    private fun saveUsbDevice(): Boolean {
-        val manager = app.getSystemService(USB_SERVICE) as UsbManager
-        manager.deviceList.values.forEach { device ->
-            if (device.isMassStorage()) {
-                val flashDrive = FlashDrive.from(device)
-                settingsManager.setFlashDrive(flashDrive)
-                Log.d(TAG, "Saved flash drive: $flashDrive")
-                return true
-            }
-        }
-        Log.e(TAG, "No USB device found even though we were expecting one.")
-        return false
-    }
-
-    abstract fun onLocationSet(uri: Uri)
+    abstract fun onSafUriSet(safStorage: SafStorage)
+    abstract fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin)
 
     override fun onCleared() {
-        storageRootFetcher.setRemovableStorageListener(null)
+        storageOptionFetcher.setRemovableStorageListener(null)
         super.onCleared()
+    }
+    val webdavConfigState get() = webdavHandler.configState
+
+    fun onWebDavConfigReceived(url: String, user: String, pass: String) {
+        val config = WebDavConfig(url = url, username = user, password = pass)
+        viewModelScope.launch(Dispatchers.IO) {
+            webdavHandler.onConfigReceived(config)
+        }
+    }
+
+    fun resetWebDavConfig() = webdavHandler.resetConfigState()
+
+    @UiThread
+    fun onWebDavConfigSuccess(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+        mLocationSet.setEvent(true)
+        onWebDavConfigSet(properties, plugin)
     }
 
 }

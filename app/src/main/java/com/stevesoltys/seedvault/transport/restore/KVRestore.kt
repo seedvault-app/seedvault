@@ -16,13 +16,12 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.IOException
 import java.security.GeneralSecurityException
-import java.util.ArrayList
 import java.util.zip.GZIPInputStream
 import javax.crypto.AEADBadTagException
 
@@ -39,9 +38,8 @@ private class KVRestoreState(
 
 private val TAG = KVRestore::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class KVRestore(
-    private val plugin: StoragePlugin,
+    private val pluginManager: StoragePluginManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -50,6 +48,7 @@ internal class KVRestore(
     private val dbManager: KvDbManager,
 ) {
 
+    private val plugin get() = pluginManager.appPlugin
     private var state: KVRestoreState? = null
 
     /**

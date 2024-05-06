@@ -1,13 +1,17 @@
 package com.stevesoltys.seedvault.plugins
 
 import android.app.backup.RestoreSet
-import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.settings.Storage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 
-interface StoragePlugin {
+interface StoragePlugin<T> {
+
+    /**
+     * Returns true if the plugin is working, or false if it isn't.
+     * @throws Exception any kind of exception to provide more info on the error
+     */
+    suspend fun test(): Boolean
 
     /**
      * Start a new [RestoreSet] with the given token.
@@ -48,14 +52,6 @@ interface StoragePlugin {
     suspend fun removeData(token: Long, name: String)
 
     /**
-     * Searches if there's really a backup available in the given storage location.
-     * Returns true if at least one was found and false otherwise.
-     */
-    @WorkerThread
-    @Throws(IOException::class)
-    suspend fun hasBackup(storage: Storage): Boolean
-
-    /**
      * Get the set of all backups currently available for restore.
      *
      * @return metadata for the set of restore images available,
@@ -75,4 +71,7 @@ interface StoragePlugin {
 
 }
 
-class EncryptedMetadata(val token: Long, val inputStreamRetriever: () -> InputStream)
+class EncryptedMetadata(val token: Long, val inputStreamRetriever: suspend () -> InputStream)
+
+internal val tokenRegex = Regex("([0-9]{13})") // good until the year 2286
+internal val chunkFolderRegex = Regex("[a-f0-9]{2}")

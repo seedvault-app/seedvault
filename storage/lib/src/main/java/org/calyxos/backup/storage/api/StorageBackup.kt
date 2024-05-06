@@ -36,10 +36,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 private const val TAG = "StorageBackup"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 public class StorageBackup(
     private val context: Context,
-    private val plugin: StoragePlugin,
+    private val pluginGetter: () -> StoragePlugin,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
@@ -50,18 +49,18 @@ public class StorageBackup(
     private val uriStore by lazy { db.getUriStore() }
 
     private val mediaScanner by lazy { MediaScanner(context) }
-    private val snapshotRetriever = SnapshotRetriever(plugin)
-    private val chunksCacheRepopulater = ChunksCacheRepopulater(db, plugin, snapshotRetriever)
+    private val snapshotRetriever = SnapshotRetriever(pluginGetter)
+    private val chunksCacheRepopulater = ChunksCacheRepopulater(db, pluginGetter, snapshotRetriever)
     private val backup by lazy {
         val documentScanner = DocumentScanner(context)
         val fileScanner = FileScanner(uriStore, mediaScanner, documentScanner)
-        Backup(context, db, fileScanner, plugin, chunksCacheRepopulater)
+        Backup(context, db, fileScanner, pluginGetter, chunksCacheRepopulater)
     }
     private val restore by lazy {
-        Restore(context, plugin, snapshotRetriever, FileRestore(context, mediaScanner))
+        Restore(context, pluginGetter, snapshotRetriever, FileRestore(context, mediaScanner))
     }
     private val retention = RetentionManager(context)
-    private val pruner by lazy { Pruner(db, retention, plugin, snapshotRetriever) }
+    private val pruner by lazy { Pruner(db, retention, pluginGetter, snapshotRetriever) }
 
     private val backupRunning = AtomicBoolean(false)
     private val restoreRunning = AtomicBoolean(false)
@@ -105,6 +104,16 @@ public class StorageBackup(
     }
 
     /**
+     * Ensures the storage is set-up to receive backups and deletes all snapshots
+     * (see [deleteAllSnapshots]) as well as clears local cache (see [clearCache]).
+     */
+    public suspend fun init() {
+        pluginGetter().init()
+        deleteAllSnapshots()
+        clearCache()
+    }
+
+    /**
      * Run this on a new storage location to ensure that there are no old snapshots
      * (potentially encrypted with an old key) laying around.
      * Using a storage location with existing data is not supported.
@@ -113,9 +122,9 @@ public class StorageBackup(
      */
     public suspend fun deleteAllSnapshots(): Unit = withContext(dispatcher) {
         try {
-            plugin.getCurrentBackupSnapshots().forEach {
+            pluginGetter().getCurrentBackupSnapshots().forEach {
                 try {
-                    plugin.deleteBackupSnapshot(it)
+                    pluginGetter().deleteBackupSnapshot(it)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error deleting snapshot $it", e)
                 }

@@ -1,0 +1,17 @@
+java_import {
+    name: "seedvault-lib-dav4jvm",
+    jars: ["dav4jvm-2.2.1.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-okhttp",
+    jars: ["okhttp-4.11.0.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-okio",
+    jars: ["okio-jvm-3.7.0.jar"],
+    sdk_version: "current",
+}

@@ -55,7 +55,7 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val v: View = inflater.inflate(R.layout.fragment_storage_root, container, false)
+        val v: View = inflater.inflate(R.layout.fragment_storage_options, container, false)
 
         titleView = v.requireViewById(R.id.titleView)
         warningIcon = v.requireViewById(R.id.warningIcon)
@@ -115,11 +115,21 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
     }
 
     override fun onClick(storageOption: StorageOption) {
-        if (storageOption is SafOption) {
-            viewModel.onSafOptionChosen(storageOption)
-            openDocumentTree.launch(storageOption.uri)
-        } else {
-            throw IllegalArgumentException("Non-SAF storage not yet supported")
+        when (storageOption) {
+            is SafOption -> {
+                viewModel.onSafOptionChosen(storageOption)
+                openDocumentTree.launch(storageOption.uri)
+            }
+
+            is WebDavOption -> {
+                val isRestore = requireArguments().getBoolean(INTENT_EXTRA_IS_RESTORE)
+                val f = WebDavConfigFragment.newInstance(isRestore)
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fragment, f)
+                    addToBackStack("WebDAV")
+                    commit()
+                }
+            }
         }
     }
 

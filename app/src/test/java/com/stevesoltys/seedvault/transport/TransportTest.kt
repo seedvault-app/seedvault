@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.slot
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import kotlin.random.Random
@@ -70,13 +71,24 @@ internal abstract class TransportTest {
 
     init {
         mockkStatic(Log::class)
+        val logTagSlot = slot<String>()
+        val logMsgSlot = slot<String>()
+        val logExSlot = slot<Throwable>()
         every { Log.v(any(), any()) } returns 0
-        every { Log.d(any(), any()) } returns 0
+        every { Log.d(capture(logTagSlot), capture(logMsgSlot)) } answers {
+            println("${logTagSlot.captured} - ${logMsgSlot.captured}")
+            0
+        }
+        every { Log.d(any(), any(), any()) } returns 0
         every { Log.i(any(), any()) } returns 0
         every { Log.w(any(), ofType(String::class)) } returns 0
         every { Log.w(any(), ofType(String::class), any()) } returns 0
         every { Log.e(any(), any()) } returns 0
-        every { Log.e(any(), any(), any()) } returns 0
+        every { Log.e(capture(logTagSlot), capture(logMsgSlot), capture(logExSlot)) } answers {
+            println("${logTagSlot.captured} - ${logMsgSlot.captured} ${logExSlot.captured}")
+            logExSlot.captured.printStackTrace()
+            0
+        }
     }
 
 }

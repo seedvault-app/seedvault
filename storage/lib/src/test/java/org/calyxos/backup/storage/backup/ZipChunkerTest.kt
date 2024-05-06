@@ -6,9 +6,11 @@
 package org.calyxos.backup.storage.backup
 
 import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.getRandomDocFile
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.toHexString
@@ -76,7 +78,7 @@ internal class ZipChunkerTest {
     }
 
     @Test
-    fun `two files finalizeAndReset()`() {
+    fun `two files finalizeAndReset()`() = runBlocking {
         val file1 = getRandomDocFile(4)
         val file2 = getRandomDocFile(8)
         val chunkIdBytes = Random.nextBytes(64)
@@ -90,7 +92,7 @@ internal class ZipChunkerTest {
         zipChunker.addFile(file2, fileInputStream)
 
         every { mac.doFinal(any()) } returns chunkIdBytes
-        every { chunkWriter.writeZipChunk(zipChunk, any(), missingChunks) } returns wasWritten
+        coEvery { chunkWriter.writeZipChunk(zipChunk, any(), missingChunks) } returns wasWritten
 
         assertEquals(
             zipChunk.copy(wasUploaded = wasWritten),
@@ -104,7 +106,7 @@ internal class ZipChunkerTest {
     }
 
     @Test
-    fun `throwing in finalizeAndReset() resets counter`() {
+    fun `throwing in finalizeAndReset() resets counter`() = runBlocking {
         val file1 = getRandomDocFile(4)
         val file2 = getRandomDocFile(8)
         val chunkIdBytes = Random.nextBytes(64)
@@ -117,7 +119,7 @@ internal class ZipChunkerTest {
         zipChunker.addFile(file2, fileInputStream)
 
         every { mac.doFinal(any()) } returns chunkIdBytes
-        every { chunkWriter.writeZipChunk(zipChunk, any(), missingChunks) } throws IOException()
+        coEvery { chunkWriter.writeZipChunk(zipChunk, any(), missingChunks) } throws IOException()
 
         assertFailsWith(IOException::class) {
             zipChunker.finalizeAndReset(missingChunks)

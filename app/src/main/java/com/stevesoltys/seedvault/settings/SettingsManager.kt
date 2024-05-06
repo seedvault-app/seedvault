@@ -3,15 +3,17 @@ package com.stevesoltys.seedvault.settings
 import android.content.Context
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import androidx.annotation.UiThread
-import androidx.annotation.WorkerThread
-import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
-import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler.Companion.createWebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -22,6 +24,13 @@ internal const val PREF_KEY_SCHED_FREQ = "scheduling_frequency"
 internal const val PREF_KEY_SCHED_METERED = "scheduling_metered"
 internal const val PREF_KEY_SCHED_CHARGING = "scheduling_charging"
 
+private const val PREF_KEY_STORAGE_PLUGIN = "storagePlugin"
+
+internal enum class StoragePluginType { // don't rename, will break existing installs
+    SAF,
+    WEB_DAV,
+}
+
 private const val PREF_KEY_STORAGE_URI = "storageUri"
 private const val PREF_KEY_STORAGE_NAME = "storageName"
 private const val PREF_KEY_STORAGE_IS_USB = "storageIsUsb"
@@ -31,6 +40,10 @@ private const val PREF_KEY_FLASH_DRIVE_NAME = "flashDriveName"
 private const val PREF_KEY_FLASH_DRIVE_SERIAL_NUMBER = "flashSerialNumber"
 private const val PREF_KEY_FLASH_DRIVE_VENDOR_ID = "flashDriveVendorId"
 private const val PREF_KEY_FLASH_DRIVE_PRODUCT_ID = "flashDriveProductId"
+
+private const val PREF_KEY_WEBDAV_URL = "webDavUrl"
+private const val PREF_KEY_WEBDAV_USER = "webDavUser"
+private const val PREF_KEY_WEBDAV_PASS = "webDavPass"
 
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
@@ -88,24 +101,55 @@ class SettingsManager(private val context: Context) {
         token = newToken
     }
 
-    // FIXME Storage is currently plugin specific and not generic
-    fun setStorage(storage: Storage) {
+    internal val storagePluginType: StoragePluginType?
+        get() {
+            val savedType = prefs.getString(PREF_KEY_STORAGE_PLUGIN, null)
+            return if (savedType == null) {
+                // check if this is an existing user that needs to be migrated
+                // this check could be removed after a reasonable migration time (added 2024)
+                if (prefs.getString(PREF_KEY_STORAGE_URI, null) != null) {
+                    prefs.edit()
+                        .putString(PREF_KEY_STORAGE_PLUGIN, StoragePluginType.SAF.name)
+                        .apply()
+                    StoragePluginType.SAF
+                } else null
+            } else savedType.let {
+                try {
+                    StoragePluginType.valueOf(it)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
+            }
+        }
+
+    fun setStoragePlugin(plugin: StoragePlugin<*>) {
+        val value = when (plugin) {
+            is DocumentsProviderStoragePlugin -> StoragePluginType.SAF
+            is WebDavStoragePlugin -> StoragePluginType.WEB_DAV
+            else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
+        }.name
         prefs.edit()
-            .putString(PREF_KEY_STORAGE_URI, storage.uri.toString())
-            .putString(PREF_KEY_STORAGE_NAME, storage.name)
-            .putBoolean(PREF_KEY_STORAGE_IS_USB, storage.isUsb)
-            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, storage.requiresNetwork)
+            .putString(PREF_KEY_STORAGE_PLUGIN, value)
             .apply()
     }
 
-    fun getStorage(): Storage? {
+    fun setSafStorage(safStorage: SafStorage) {
+        prefs.edit()
+            .putString(PREF_KEY_STORAGE_URI, safStorage.uri.toString())
+            .putString(PREF_KEY_STORAGE_NAME, safStorage.name)
+            .putBoolean(PREF_KEY_STORAGE_IS_USB, safStorage.isUsb)
+            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, safStorage.requiresNetwork)
+            .apply()
+    }
+
+    fun getSafStorage(): SafStorage? {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null)
             ?: throw IllegalStateException("no storage name")
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         val requiresNetwork = prefs.getBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, false)
-        return Storage(uri, name, isUsb, requiresNetwork)
+        return SafStorage(uri, name, isUsb, requiresNetwork)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {
@@ -134,20 +178,22 @@ class SettingsManager(private val context: Context) {
         return FlashDrive(name, serialNumber, vendorId, productId)
     }
 
-    /**
-     * Check if we are able to do backups now by examining possible pre-conditions
-     * such as plugged-in flash drive or internet access.
-     *
-     * Should be run off the UI thread (ideally I/O) because of disk access.
-     *
-     * @return true if a backup is possible, false if not.
-     */
-    @WorkerThread
-    fun canDoBackupNow(): Boolean {
-        val storage = getStorage() ?: return false
-        val systemContext = context.getStorageContext { storage.isUsb }
-        return !storage.isUnavailableUsb(systemContext) &&
-            !storage.isUnavailableNetwork(context, useMeteredNetwork)
+    val webDavProperties: WebDavProperties?
+        get() {
+            val config = WebDavConfig(
+                url = prefs.getString(PREF_KEY_WEBDAV_URL, null) ?: return null,
+                username = prefs.getString(PREF_KEY_WEBDAV_USER, null) ?: return null,
+                password = prefs.getString(PREF_KEY_WEBDAV_PASS, null) ?: return null,
+            )
+            return createWebDavProperties(context, config)
+        }
+
+    fun saveWebDavConfig(config: WebDavConfig) {
+        prefs.edit()
+            .putString(PREF_KEY_WEBDAV_URL, config.url)
+            .putString(PREF_KEY_WEBDAV_USER, config.username)
+            .putString(PREF_KEY_WEBDAV_PASS, config.password)
+            .apply()
     }
 
     fun backupApks(): Boolean {
@@ -192,42 +238,6 @@ class SettingsManager(private val context: Context) {
         prefs.edit()
             .putBoolean(PREF_KEY_D2D_BACKUPS, enabled)
             .apply()
-    }
-}
-
-data class Storage(
-    val uri: Uri,
-    val name: String,
-    val isUsb: Boolean,
-    val requiresNetwork: Boolean,
-) {
-    fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, uri)
-        ?: throw AssertionError("Should only happen on API < 21.")
-
-    /**
-     * Returns true if this is USB storage that is not available, false otherwise.
-     *
-     * Must be run off UI thread (ideally I/O).
-     */
-    @WorkerThread
-    fun isUnavailableUsb(context: Context): Boolean {
-        return isUsb && !getDocumentFile(context).isDirectory
-    }
-
-    /**
-     * Returns true if this is storage that requires network access,
-     * but it isn't available right now.
-     */
-    fun isUnavailableNetwork(context: Context, allowMetered: Boolean): Boolean {
-        return requiresNetwork && !hasUnmeteredInternet(context, allowMetered)
-    }
-
-    private fun hasUnmeteredInternet(context: Context, allowMetered: Boolean): Boolean {
-        val cm = context.getSystemService(ConnectivityManager::class.java) ?: return false
-        val isMetered = cm.isActiveNetworkMetered
-        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-            (allowMetered || !isMetered)
     }
 }
 

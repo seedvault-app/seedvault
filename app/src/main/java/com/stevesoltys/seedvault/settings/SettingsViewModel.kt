@@ -28,12 +28,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
@@ -44,6 +46,9 @@ import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.StorageBackup
@@ -59,12 +64,14 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
+    private val pluginManager: StoragePluginManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
     private val backupInitializer: BackupInitializer,
-) : RequireProvisioningViewModel(app, settingsManager, keyManager) {
+    backupStateManager: BackupStateManager,
+) : RequireProvisioningViewModel(app, settingsManager, keyManager, pluginManager) {
 
     private val contentResolver = app.contentResolver
     private val connectivityManager: ConnectivityManager? =
@@ -73,6 +80,7 @@ internal class SettingsViewModel(
 
     override val isRestoreOperation = false
 
+    val isBackupRunning: StateFlow<Boolean>
     private val mBackupPossible = MutableLiveData(false)
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
@@ -91,11 +99,11 @@ internal class SettingsViewModel(
     private val mAppEditMode = MutableLiveData<Boolean>()
     internal val appEditMode: LiveData<Boolean> = mAppEditMode
 
-    private val _filesSummary = MutableLiveData<String>()
-    internal val filesSummary: LiveData<String> = _filesSummary
+    private val mFilesSummary = MutableLiveData<String>()
+    internal val filesSummary: LiveData<String> = mFilesSummary
 
-    private val _initEvent = MutableLiveEvent<Boolean>()
-    val initEvent: LiveEvent<Boolean> = _initEvent
+    private val mInitEvent = MutableLiveEvent<Boolean>()
+    val initEvent: LiveEvent<Boolean> = mInitEvent
 
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
@@ -122,18 +130,27 @@ internal class SettingsViewModel(
             // this shouldn't cause disk reads, but it still does
             viewModelScope
         }
+        isBackupRunning = backupStateManager.isBackupRunning.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false,
+        )
         scope.launch {
             // ensures the lastBackupTime LiveData gets set
             metadataManager.getLastBackupTime()
+            // update running state
+            isBackupRunning.collect {
+                onBackupRunningStateChanged()
+            }
         }
         onStoragePropertiesChanged()
         loadFilesSummary()
     }
 
     override fun onStorageLocationChanged() {
-        val storage = settingsManager.getStorage() ?: return
+        val storage = pluginManager.storageProperties ?: return
 
-        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb}")
+        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb})")
         if (storage.isUsb) {
             // disable storage backup if new storage is on USB
             cancelAppBackup()
@@ -147,26 +164,29 @@ internal class SettingsViewModel(
         onStoragePropertiesChanged()
     }
 
-    fun onWorkerStateChanged() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val canDo = settingsManager.canDoBackupNow() &&
-                appBackupWorkInfo.value?.state != WorkInfo.State.RUNNING
+    private fun onBackupRunningStateChanged() {
+        if (isBackupRunning.value) mBackupPossible.postValue(false)
+        else viewModelScope.launch(Dispatchers.IO) {
+            val canDo = !isBackupRunning.value && !pluginManager.isOnUnavailableUsb()
             mBackupPossible.postValue(canDo)
         }
     }
 
     private fun onStoragePropertiesChanged() {
-        val storage = settingsManager.getStorage() ?: return
+        val storage = pluginManager.storageProperties ?: return
 
         Log.d(TAG, "onStoragePropertiesChanged")
-        // register storage observer
-        try {
-            contentResolver.unregisterContentObserver(storageObserver)
-            contentResolver.registerContentObserver(storage.uri, false, storageObserver)
-        } catch (e: SecurityException) {
-            // This can happen if the app providing the storage was uninstalled.
-            // validLocationIsSet() gets called elsewhere and prompts for a new storage location.
-            Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+        if (storage is SafStorage) {
+            // register storage observer
+            try {
+                contentResolver.unregisterContentObserver(storageObserver)
+                contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+            } catch (e: SecurityException) {
+                // This can happen if the app providing the storage was uninstalled.
+                // validLocationIsSet() gets called elsewhere
+                // and prompts for a new storage location.
+                Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+            }
         }
 
         // register network observer if needed
@@ -174,6 +194,7 @@ internal class SettingsViewModel(
             connectivityManager?.unregisterNetworkCallback(networkCallback)
             networkCallback.registered = false
         } else if (!networkCallback.registered && storage.requiresNetwork) {
+            // TODO we may want to warn the user when they start a backup on a metered connection
             val request = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
@@ -181,7 +202,7 @@ internal class SettingsViewModel(
             networkCallback.registered = true
         }
         // update whether we can do backups right now or not
-        onWorkerStateChanged()
+        onBackupRunningStateChanged()
     }
 
     override fun onCleared() {
@@ -200,8 +221,7 @@ internal class SettingsViewModel(
                 i.putExtra(EXTRA_START_APP_BACKUP, true)
                 startForegroundService(app, i)
             } else {
-                val isUsb = settingsManager.getStorage()?.isUsb ?: false
-                AppBackupWorker.scheduleNow(app, reschedule = !isUsb)
+                AppBackupWorker.scheduleNow(app, reschedule = !pluginManager.isOnRemovableDrive)
             }
         }
     }
@@ -232,7 +252,7 @@ internal class SettingsViewModel(
     @UiThread
     fun loadFilesSummary() = viewModelScope.launch {
         val uriSummary = storageBackup.getUriSummaryString()
-        _filesSummary.value = uriSummary.ifEmpty {
+        mFilesSummary.value = uriSummary.ifEmpty {
             app.getString(R.string.settings_backup_files_summary)
         }
     }
@@ -248,10 +268,10 @@ internal class SettingsViewModel(
                 }
                 viewModelScope.launch(Dispatchers.IO) {
                     backupInitializer.initialize(onError) {
-                        _initEvent.postEvent(false)
+                        mInitEvent.postEvent(false)
                         scheduleAppBackup(CANCEL_AND_REENQUEUE)
                     }
-                    _initEvent.postEvent(true)
+                    mInitEvent.postEvent(true)
                 }
             }
             // enable call log backups for existing installs (added end of 2020)
@@ -280,20 +300,19 @@ internal class SettingsViewModel(
     }
 
     fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
-        val storage = settingsManager.getStorage() ?: error("no storage available")
-        if (!storage.isUsb && backupManager.isBackupEnabled) {
+        if (!pluginManager.isOnRemovableDrive && backupManager.isBackupEnabled) {
             AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
         }
     }
 
     fun scheduleFilesBackup() {
-        val storage = settingsManager.getStorage() ?: error("no storage available")
-        if (!storage.isUsb && settingsManager.isStorageBackupEnabled()) {
+        if (!pluginManager.isOnRemovableDrive && settingsManager.isStorageBackupEnabled()) {
+            val requiresNetwork = pluginManager.storageProperties?.requiresNetwork == true
             BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,
                 periodMillis = HOURS.toMillis(24),
-                networkType = if (storage.requiresNetwork) NETWORK_TYPE_UNMETERED
+                networkType = if (requiresNetwork) NETWORK_TYPE_UNMETERED
                 else NETWORK_TYPE_NONE,
                 deviceIdle = false,
                 charging = true
@@ -301,7 +320,7 @@ internal class SettingsViewModel(
         }
     }
 
-    fun cancelAppBackup() {
+    private fun cancelAppBackup() {
         AppBackupWorker.unschedule(app)
     }
 

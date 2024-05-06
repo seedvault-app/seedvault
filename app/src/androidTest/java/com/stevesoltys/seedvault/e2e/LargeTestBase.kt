@@ -22,7 +22,6 @@ import com.stevesoltys.seedvault.e2e.screen.impl.DocumentPickerScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.RecoveryCodeScreen
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -69,8 +68,6 @@ internal interface LargeTestBase : KoinComponent {
 
     val keyManager: KeyManager get() = get()
 
-    val documentsStorage: DocumentsStorage get() = get()
-
     val spyMetadataManager: MetadataManager get() = get()
 
     val backupManager: IBackupManager get() = get()
@@ -84,7 +81,6 @@ internal interface LargeTestBase : KoinComponent {
     fun resetApplicationState() {
         backupManager.setAutoRestore(false)
         settingsManager.setNewToken(null)
-        documentsStorage.reset(null)
 
         val sharedPreferences = permitDiskReads {
             PreferenceManager.getDefaultSharedPreferences(targetContext)

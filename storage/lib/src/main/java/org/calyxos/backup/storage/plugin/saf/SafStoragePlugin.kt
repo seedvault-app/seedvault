@@ -14,6 +14,13 @@ import androidx.documentfile.provider.DocumentFile
 import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.measure
+import org.calyxos.backup.storage.plugin.PluginConstants.CHUNK_FOLDER_COUNT
+import org.calyxos.backup.storage.plugin.PluginConstants.MIME_TYPE
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
+import org.calyxos.backup.storage.plugin.PluginConstants.chunkFolderRegex
+import org.calyxos.backup.storage.plugin.PluginConstants.chunkRegex
+import org.calyxos.backup.storage.plugin.PluginConstants.folderRegex
+import org.calyxos.backup.storage.plugin.PluginConstants.snapshotRegex
 import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.createDirectoryOrThrow
 import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.createFileOrThrow
 import org.calyxos.backup.storage.plugin.saf.DocumentFileExt.findFileBlocking
@@ -24,13 +31,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.time.ExperimentalTime
-
-private val folderRegex = Regex("^[a-f0-9]{16}\\.sv$")
-private val chunkFolderRegex = Regex("[a-f0-9]{2}")
-private val chunkRegex = Regex("[a-f0-9]{64}")
-private val snapshotRegex = Regex("([0-9]{13})\\.SeedSnap") // good until the year 2286
-private const val MIME_TYPE: String = "application/octet-stream"
-internal const val CHUNK_FOLDER_COUNT = 256
 
 private const val TAG = "SafStoragePlugin"
 
@@ -73,7 +73,11 @@ public abstract class SafStoragePlugin(
         }
 
     private fun timestampToSnapshot(timestamp: Long): String {
-        return "$timestamp.SeedSnap"
+        return "$timestamp$SNAPSHOT_EXT"
+    }
+
+    override suspend fun init() {
+        // no-op as we are getting [root] created from super class
     }
 
     @Throws(IOException::class)
@@ -154,7 +158,7 @@ public abstract class SafStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override fun getChunkOutputStream(chunkId: String): OutputStream {
+    override suspend fun getChunkOutputStream(chunkId: String): OutputStream {
         val chunkFolderName = chunkId.substring(0, 2)
         val chunkFolder =
             cache.backupChunkFolders[chunkFolderName] ?: error("No folder for chunk $chunkId")
@@ -164,7 +168,7 @@ public abstract class SafStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
+    override suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
         val folder = folder ?: throw IOException()
         val name = timestampToSnapshot(timestamp)
         // TODO should we check if it exists first?

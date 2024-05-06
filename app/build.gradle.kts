@@ -159,6 +159,9 @@ dependencies {
 
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.6.jar"))
 
+    // dav4jvm - later versions of okhttp need kotlin > 1.9.0
+    implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
+
     /**
      * Test Dependencies (do not concern the AOSP build)
      */

@@ -14,6 +14,13 @@ import javax.crypto.SecretKey
 public interface StoragePlugin {
 
     /**
+     * Prepares the storage location for storing backups.
+     * Call this before using the [StoragePlugin] for the first time.
+     */
+    @Throws(IOException::class)
+    public suspend fun init()
+
+    /**
      * Called before starting a backup run to ensure that all cached chunks are still available.
      * Plugins should use this opportunity
      * to ensure they are ready to store a large number of chunks.
@@ -32,10 +39,10 @@ public interface StoragePlugin {
     public fun hasMasterKey(): Boolean
 
     @Throws(IOException::class)
-    public fun getChunkOutputStream(chunkId: String): OutputStream
+    public suspend fun getChunkOutputStream(chunkId: String): OutputStream
 
     @Throws(IOException::class)
-    public fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream
+    public suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream
 
     /* Restore */
 

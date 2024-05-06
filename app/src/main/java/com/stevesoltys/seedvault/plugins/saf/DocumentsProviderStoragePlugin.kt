@@ -2,12 +2,15 @@ package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.settings.Storage
+import com.stevesoltys.seedvault.plugins.chunkFolderRegex
+import com.stevesoltys.seedvault.plugins.tokenRegex
+import org.calyxos.backup.storage.plugin.PluginConstants.SNAPSHOT_EXT
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -15,21 +18,22 @@ import java.io.OutputStream
 
 private val TAG = DocumentsProviderStoragePlugin::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class DocumentsProviderStoragePlugin(
     private val appContext: Context,
     private val storage: DocumentsStorage,
-) : StoragePlugin {
+) : StoragePlugin<Uri> {
 
     /**
      * Attention: This context might be from a different user. Use with care.
      */
-    private val context: Context
-        get() = appContext.getStorageContext {
-            storage.storage?.isUsb == true
-        }
+    private val context: Context get() = appContext.getStorageContext { storage.safStorage.isUsb }
 
     private val packageManager: PackageManager = appContext.packageManager
+
+    override suspend fun test(): Boolean {
+        val dir = storage.rootBackupDir
+        return dir != null && dir.exists()
+    }
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
@@ -71,16 +75,6 @@ internal class DocumentsProviderStoragePlugin(
         if (!file.delete()) throw IOException("Failed to delete $name")
     }
 
-    @Throws(IOException::class)
-    override suspend fun hasBackup(storage: Storage): Boolean {
-        // potentially get system user context if needed here
-        val c = appContext.getStorageContext { storage.isUsb }
-        val parent = DocumentFile.fromTreeUri(c, storage.uri) ?: throw AssertionError()
-        val rootDir = parent.findFileBlocking(c, DIRECTORY_ROOT) ?: return false
-        val backupSets = getBackups(c, rootDir)
-        return backupSets.isNotEmpty()
-    }
-
     override suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>? {
         val rootDir = storage.rootBackupDir ?: return null
         val backupSets = getBackups(context, rootDir)
@@ -104,7 +98,6 @@ internal class DocumentsProviderStoragePlugin(
 
 class BackupSet(val token: Long, val metadataFile: DocumentFile)
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal suspend fun getBackups(context: Context, rootDir: DocumentFile): List<BackupSet> {
     val backupSets = ArrayList<BackupSet>()
     val files = try {
@@ -137,9 +130,6 @@ internal suspend fun getBackups(context: Context, rootDir: DocumentFile): List<B
     return backupSets
 }
 
-private val tokenRegex = Regex("([0-9]{13})") // good until the year 2286
-private val chunkFolderRegex = Regex("[a-f0-9]{2}")
-
 private fun DocumentFile.getTokenOrNull(name: String?): Long? {
     val looksLikeToken = name != null && tokenRegex.matches(name)
     // check for isDirectory only if we already have a valid token (causes DB query)
@@ -160,5 +150,5 @@ private fun DocumentFile.getTokenOrNull(name: String?): Long? {
 private fun isUnexpectedFile(name: String): Boolean {
     return name != FILE_NO_MEDIA &&
         !chunkFolderRegex.matches(name) &&
-        !name.endsWith(".SeedSnap")
+        !name.endsWith(SNAPSHOT_EXT)
 }

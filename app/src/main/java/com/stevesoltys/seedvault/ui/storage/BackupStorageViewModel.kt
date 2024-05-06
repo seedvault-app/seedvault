@@ -3,11 +3,16 @@ package com.stevesoltys.seedvault.ui.storage
 import android.app.Application
 import android.app.backup.IBackupManager
 import android.app.job.JobInfo
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.saf.SafHandler
+import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
+import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -26,14 +31,18 @@ internal class BackupStorageViewModel(
     private val backupManager: IBackupManager,
     private val backupInitializer: BackupInitializer,
     private val storageBackup: StorageBackup,
+    safHandler: SafHandler,
+    webDavHandler: WebDavHandler,
     settingsManager: SettingsManager,
-) : StorageViewModel(app, settingsManager) {
+    storagePluginManager: StoragePluginManager,
+) : StorageViewModel(app, safHandler, webDavHandler, settingsManager, storagePluginManager) {
 
     override val isRestoreOperation = false
 
-    override fun onLocationSet(uri: Uri) {
-        val isUsb = saveStorage(uri)
-        if (isUsb) {
+    override fun onSafUriSet(safStorage: SafStorage) {
+        safHandler.save(safStorage)
+        safHandler.setPlugin(safStorage)
+        if (safStorage.isUsb) {
             // disable storage backup if new storage is on USB
             cancelBackupWorkers()
         } else {
@@ -41,13 +50,23 @@ internal class BackupStorageViewModel(
             // also to update the network requirement of the new storage
             scheduleBackupWorkers()
         }
+        onStorageLocationSet(safStorage.isUsb)
+    }
+
+    override fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+        webdavHandler.save(properties)
+        webdavHandler.setPlugin(properties, plugin)
+        scheduleBackupWorkers()
+        onStorageLocationSet(isUsb = false)
+    }
+
+    private fun onStorageLocationSet(isUsb: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            // remove old storage snapshots and clear cache
-            // TODO is this needed? It also does create all 255 chunk folders which takes time
-            //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
-            storageBackup.deleteAllSnapshots()
-            storageBackup.clearCache()
             try {
+                // remove old storage snapshots and clear cache
+                // TODO For SAF, this also does create all 255 chunk folders which takes time
+                //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
+                storageBackup.init()
                 // initialize the new location (if backups are enabled)
                 if (backupManager.isBackupEnabled) {
                     val onError = {
@@ -75,7 +94,7 @@ internal class BackupStorageViewModel(
     }
 
     private fun scheduleBackupWorkers() {
-        val storage = settingsManager.getStorage() ?: error("no storage available")
+        val storage = storagePluginManager.storageProperties ?: error("no storage available")
         if (!storage.isUsb) {
             if (backupManager.isBackupEnabled) {
                 AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)

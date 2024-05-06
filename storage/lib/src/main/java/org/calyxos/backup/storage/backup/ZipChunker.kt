@@ -61,7 +61,7 @@ internal class ZipChunker(
      * This object gets reset for the next operation.
      */
     @Throws(IOException::class, GeneralSecurityException::class)
-    fun finalizeAndReset(missingChunkIds: List<String>): ZipChunk = try {
+    suspend fun finalizeAndReset(missingChunkIds: List<String>): ZipChunk = try {
         zipOutputStream.finish()
         zipOutputStream.close()
 

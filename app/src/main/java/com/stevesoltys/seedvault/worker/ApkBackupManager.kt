@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -28,7 +29,7 @@ internal class ApkBackupManager(
     private val metadataManager: MetadataManager,
     private val packageService: PackageService,
     private val apkBackup: ApkBackup,
-    private val plugin: StoragePlugin,
+    private val pluginManager: StoragePluginManager,
     private val nm: BackupNotificationManager,
 ) {
 
@@ -50,7 +51,7 @@ internal class ApkBackupManager(
             keepTrying {
                 // upload all local changes only at the end,
                 // so we don't have to re-upload the metadata
-                plugin.getMetadataOutputStream().use { outputStream ->
+                pluginManager.appPlugin.getMetadataOutputStream().use { outputStream ->
                     metadataManager.uploadMetadata(outputStream)
                 }
             }
@@ -102,7 +103,7 @@ internal class ApkBackupManager(
         return try {
             apkBackup.backupApkIfNecessary(packageInfo) { name ->
                 val token = settingsManager.getToken() ?: throw IOException("no current token")
-                plugin.getOutputStream(token, name)
+                pluginManager.appPlugin.getOutputStream(token, name)
             }?.let { packageMetadata ->
                 metadataManager.onApkBackedUp(packageInfo, packageMetadata)
                 true
@@ -125,7 +126,9 @@ internal class ApkBackupManager(
         }
     }
 
-    private suspend fun StoragePlugin.getMetadataOutputStream(token: Long? = null): OutputStream {
+    private suspend fun StoragePlugin<*>.getMetadataOutputStream(
+        token: Long? = null,
+    ): OutputStream {
         val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
         return getOutputStream(t, FILE_BACKUP_METADATA)
     }

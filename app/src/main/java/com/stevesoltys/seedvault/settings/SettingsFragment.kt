@@ -22,6 +22,8 @@ import androidx.preference.TwoStatePreference
 import androidx.work.WorkInfo
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.StorageProperties
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.toRelativeTime
 import org.koin.android.ext.android.inject
@@ -33,7 +35,7 @@ private val TAG = SettingsFragment::class.java.name
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val viewModel: SettingsViewModel by sharedViewModel()
-    private val settingsManager: SettingsManager by inject()
+    private val storagePluginManager: StoragePluginManager by inject()
     private val backupManager: IBackupManager by inject()
 
     private lateinit var backup: TwoStatePreference
@@ -48,7 +50,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var menuBackupNow: MenuItem? = null
     private var menuRestore: MenuItem? = null
 
-    private var storage: Storage? = null
+    private val storageProperties: StorageProperties<*>?
+        get() = storagePluginManager.storageProperties
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         permitDiskReads {
@@ -88,8 +91,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         backupLocation = findPreference("backup_location")!!
         backupLocation.setOnPreferenceClickListener {
-            viewModel.chooseBackupLocation()
-            true
+            if (viewModel.isBackupRunning.value) {
+                // don't allow changing backup destination while backup is running
+                // TODO we could show toast or snackbar here
+                false
+            } else {
+                viewModel.chooseBackupLocation()
+                true
+            }
         }
 
         autoRestore = findPreference(PREF_KEY_AUTO_RESTORE)!!
@@ -148,7 +157,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             setAppBackupStatusSummary(time)
         }
         viewModel.appBackupWorkInfo.observe(viewLifecycleOwner) { workInfo ->
-            viewModel.onWorkerStateChanged()
             setAppBackupSchedulingSummary(workInfo)
         }
 
@@ -164,7 +172,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // we need to re-set the title when returning to this fragment
         activity?.setTitle(R.string.backup)
 
-        storage = settingsManager.getStorage()
         setBackupEnabledState()
         setBackupLocationSummary()
         setAutoRestoreState()
@@ -241,7 +248,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         activity?.contentResolver?.let {
             autoRestore.isChecked = Settings.Secure.getInt(it, BACKUP_AUTO_RESTORE, 1) == 1
         }
-        val storage = this.storage
+        val storage = this.storageProperties
         if (storage?.isUsb == true) {
             autoRestore.summary = getString(R.string.settings_auto_restore_summary) + "\n\n" +
                 getString(R.string.settings_auto_restore_summary_usb, storage.name)
@@ -252,7 +259,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setBackupLocationSummary() {
         // get name of storage location
-        backupLocation.summary = storage?.name ?: getString(R.string.settings_backup_location_none)
+        backupLocation.summary =
+            storageProperties?.name ?: getString(R.string.settings_backup_location_none)
     }
 
     private fun setAppBackupStatusSummary(lastBackupInMillis: Long?) {
@@ -271,7 +279,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      * says that nothing is scheduled which can happen when backup destination is on flash drive.
      */
     private fun setAppBackupSchedulingSummary(workInfo: WorkInfo?) {
-        if (storage?.isUsb == true) {
+        if (storageProperties?.isUsb == true) {
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup_usb)
             return
         }

@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.worker.ApkBackup
@@ -38,7 +39,6 @@ import java.nio.file.Path
 import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackupRestoreTest : TransportTest() {
 
     private val pm: PackageManager = mockk()
@@ -46,16 +46,17 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { packageManager } returns pm
     }
 
+    private val storagePluginManager: StoragePluginManager = mockk()
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
-    private val storagePlugin: StoragePlugin = mockk()
+    private val storagePlugin: StoragePlugin<*> = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
 
     private val apkBackup = ApkBackup(pm, crypto, settingsManager, metadataManager)
     private val apkRestore: ApkRestore = ApkRestore(
         context = strictContext,
-        storagePlugin = storagePlugin,
+        pluginManager = storagePluginManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
@@ -90,6 +91,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
 
     init {
         mockkStatic(PackageUtils::class)
+        every { storagePluginManager.appPlugin } returns storagePlugin
     }
 
     @Test

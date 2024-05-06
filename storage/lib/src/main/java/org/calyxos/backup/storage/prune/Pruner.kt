@@ -19,15 +19,15 @@ import kotlin.time.ExperimentalTime
 
 private val TAG = Pruner::class.java.simpleName
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class Pruner(
     private val db: Db,
     private val retentionManager: RetentionManager,
-    private val storagePlugin: StoragePlugin,
+    private val storagePluginGetter: () -> StoragePlugin,
     private val snapshotRetriever: SnapshotRetriever,
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
+    private val storagePlugin get() = storagePluginGetter()
     private val chunksCache = db.getChunksCache()
     private val streamKey = try {
         streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())

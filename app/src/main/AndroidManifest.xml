@@ -16,6 +16,9 @@
     <!-- This is needed to check for internet access when backup is stored on network storage -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Used for internal WebDAV plugin -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- This is needed to inform users about backup status and errors -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -97,7 +100,8 @@
 
         <activity
             android:name=".ui.storage.StorageActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.storage.PermissionGrantActivity"

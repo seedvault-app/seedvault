@@ -38,7 +38,6 @@ import java.io.OutputStream
 import java.nio.file.Path
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class ApkBackupTest : BackupTest() {
 
     private val pm: PackageManager = mockk()

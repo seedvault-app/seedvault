@@ -19,7 +19,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.SnapshotResult
@@ -59,7 +58,6 @@ import java.io.OutputStream
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class BackupRestoreTest {
 
     @get:Rule
@@ -72,9 +70,10 @@ internal class BackupRestoreTest {
     private val contentResolver: ContentResolver = mockk()
 
     private val fileScanner: FileScanner = mockk()
+    private val pluginGetter: () -> StoragePlugin = mockk()
     private val plugin: StoragePlugin = mockk()
     private val fileRestore: FileRestore = mockk()
-    private val snapshotRetriever = SnapshotRetriever(plugin)
+    private val snapshotRetriever = SnapshotRetriever(pluginGetter)
     private val cacheRepopulater: ChunksCacheRepopulater = mockk()
 
     init {
@@ -85,6 +84,7 @@ internal class BackupRestoreTest {
 
         mockkStatic("org.calyxos.backup.storage.UriUtilsKt")
 
+        every { pluginGetter() } returns plugin
         every { db.getFilesCache() } returns filesCache
         every { db.getChunksCache() } returns chunksCache
         every { plugin.getMasterKey() } returns SecretKeySpec(
@@ -95,11 +95,11 @@ internal class BackupRestoreTest {
         every { context.contentResolver } returns contentResolver
     }
 
-    private val restore = Restore(context, plugin, snapshotRetriever, fileRestore)
+    private val restore = Restore(context, pluginGetter, snapshotRetriever, fileRestore)
 
     @Test
     fun testZipAndSingleRandom(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, plugin, cacheRepopulater)
+        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater)
 
         val smallFileMBytes = Random.nextBytes(Random.nextInt(SMALL_FILE_SIZE_MAX))
         val smallFileM = getRandomMediaFile(smallFileMBytes.size)
@@ -150,14 +150,14 @@ internal class BackupRestoreTest {
         } returns ByteArrayInputStream(fileDBytes) andThen ByteArrayInputStream(fileDBytes)
 
         // output streams and caching
-        every { plugin.getChunkOutputStream(any()) } returnsMany listOf(
+        coEvery { plugin.getChunkOutputStream(any()) } returnsMany listOf(
             zipChunkOutputStream, mOutputStream, dOutputStream
         )
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        every {
+        coEvery {
             plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
         } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
@@ -236,7 +236,7 @@ internal class BackupRestoreTest {
 
     @Test
     fun testMultiChunks(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, plugin, cacheRepopulater, 4)
+        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater, 4)
 
         val chunk1 = byteArrayOf(0x00, 0x01, 0x02, 0x03)
         val chunk2 = byteArrayOf(0x04, 0x05, 0x06, 0x07)
@@ -296,25 +296,25 @@ internal class BackupRestoreTest {
 
         // output streams for deterministic chunks
         val id040f32 = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
             )
         } returns id040f32
         val id901fbc = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
             )
         } returns id901fbc
         val id5adea3 = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
             )
         } returns id5adea3
         val id40d00c = ByteArrayOutputStream()
-        every {
+        coEvery {
             plugin.getChunkOutputStream(
                 "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
             )
@@ -324,7 +324,7 @@ internal class BackupRestoreTest {
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        every {
+        coEvery {
             plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
         } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
@@ -332,7 +332,7 @@ internal class BackupRestoreTest {
         backup.runBackup(null)
 
         // chunks were only written to storage once
-        verify(exactly = 1) {
+        coVerify(exactly = 1) {
             plugin.getChunkOutputStream(
                 "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
             plugin.getChunkOutputStream(
