@@ -100,6 +100,7 @@
     <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
     <string name="storage_webdav_option_summary">Integrated direct WebDAV access</string>
     <string name="storage_webdav_config_url">WebDAV URL</string>
+    <string name="storage_webdav_config_url_helper">Be sure to enter the full URL here. E.g. for Nextcloud, it has the form https://yourserver.com/remote.php/webdav</string>
     <string name="storage_webdav_config_user">User name</string>
     <string name="storage_webdav_config_pass">Password</string>
     <string name="storage_webdav_config_button">Use WebDAV cloud</string>
