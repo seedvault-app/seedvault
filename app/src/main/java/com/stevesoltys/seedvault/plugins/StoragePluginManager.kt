@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.plugins
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
@@ -129,6 +130,19 @@ class StoragePluginManager(
         val storage = storageProperties ?: return false
         val systemContext = context.getStorageContext { storage.isUsb }
         return storage.isUnavailableUsb(systemContext)
+    }
+
+    /**
+     * Retrieves the amount of free space in bytes, or null if unknown.
+     */
+    @WorkerThread
+    suspend fun getFreeSpace(): Long? {
+        return try {
+            appPlugin.getFreeSpace()
+        } catch (e: Exception) {
+            Log.e("StoragePluginManager", "Error getting free space: ", e)
+            null
+        }
     }
 
 }
