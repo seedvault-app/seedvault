@@ -120,7 +120,10 @@ class AppBackupWorker(
             if (isStopped) {
                 Result.retry()
             } else {
-                doBackup()
+                val result = doBackup()
+                // only allow retrying if rescheduling is allowed
+                if (tags.contains(TAG_RESCHEDULE)) return result
+                else Result.success()
             }
         } finally {
             // schedule next backup, because the old one gets lost
