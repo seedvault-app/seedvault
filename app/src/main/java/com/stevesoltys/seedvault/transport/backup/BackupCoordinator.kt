@@ -382,6 +382,7 @@ internal class BackupCoordinator(
                 onPackageBackedUp(packageInfo, BackupType.FULL, size)
             } catch (e: Exception) {
                 Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
+                if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
                 result = TRANSPORT_PACKAGE_REJECTED
             }
             result

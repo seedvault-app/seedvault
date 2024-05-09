@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -34,10 +35,18 @@ import kotlin.random.Random
 internal class KVBackupTest : BackupTest() {
 
     private val pluginManager = mockk<StoragePluginManager>()
+    private val notificationManager = mockk<BackupNotificationManager>()
     private val dataInput = mockk<BackupDataInput>()
     private val dbManager = mockk<KvDbManager>()
 
-    private val backup = KVBackup(pluginManager, settingsManager, inputFactory, crypto, dbManager)
+    private val backup = KVBackup(
+        pluginManager = pluginManager,
+        settingsManager = settingsManager,
+        nm = notificationManager,
+        inputFactory = inputFactory,
+        crypto = crypto,
+        dbManager = dbManager
+    )
 
     private val db = mockk<KVDb>()
     private val plugin = mockk<StoragePlugin<*>>()

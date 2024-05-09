@@ -19,6 +19,7 @@ val backupModule = module {
         KVBackup(
             pluginManager = get(),
             settingsManager = get(),
+            nm = get(),
             inputFactory = get(),
             crypto = get(),
             dbManager = get(),

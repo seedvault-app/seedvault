@@ -9,6 +9,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import androidx.annotation.WorkerThread
+import at.bitfire.dav4jvm.exception.HttpException
 import java.io.IOException
 
 abstract class StorageProperties<T> {
@@ -37,5 +38,12 @@ abstract class StorageProperties<T> {
 }
 
 fun Exception.isOutOfSpace(): Boolean {
-    return this is IOException && message?.contains("No space left on device") == true
+    return when (this) {
+        is IOException -> message?.contains("No space left on device") == true ||
+            (cause as? HttpException)?.code == 507
+
+        is HttpException -> code == 507
+
+        else -> false
+    }
 }
