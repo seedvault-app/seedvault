@@ -28,6 +28,7 @@ val backupModule = module {
         FullBackup(
             pluginManager = get(),
             settingsManager = get(),
+            nm = get(),
             inputFactory = get(),
             crypto = get(),
         )

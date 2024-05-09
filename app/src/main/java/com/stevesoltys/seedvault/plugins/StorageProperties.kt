@@ -9,6 +9,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import androidx.annotation.WorkerThread
+import java.io.IOException
 
 abstract class StorageProperties<T> {
     abstract val config: T
@@ -33,4 +34,8 @@ abstract class StorageProperties<T> {
         val capabilities = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
         return capabilities.hasCapability(NET_CAPABILITY_INTERNET) && (allowMetered || !isMetered)
     }
+}
+
+fun Exception.isOutOfSpace(): Boolean {
+    return this is IOException && message?.contains("No space left on device") == true
 }
