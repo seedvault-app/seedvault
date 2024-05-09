@@ -26,6 +26,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -360,9 +361,7 @@ internal class BackupCoordinator(
                         onPackageBackedUp(packageInfo, BackupType.KV, size)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
-                        if (e is IOException &&
-                            e.message?.contains("No space left on device") == true
-                        ) nm.onInsufficientSpaceError()
+                        if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
                         result = TRANSPORT_PACKAGE_REJECTED
                     }
                 }

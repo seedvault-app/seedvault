@@ -65,8 +65,13 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val backupPlugin = mockk<StoragePlugin<*>>()
     private val kvBackup =
         KVBackup(storagePluginManager, settingsManager, inputFactory, cryptoImpl, dbManager)
-    private val fullBackup =
-        FullBackup(storagePluginManager, settingsManager, inputFactory, cryptoImpl)
+    private val fullBackup = FullBackup(
+        pluginManager = storagePluginManager,
+        settingsManager = settingsManager,
+        nm = notificationManager,
+        inputFactory = inputFactory,
+        crypto = cryptoImpl,
+    )
     private val apkBackup = mockk<ApkBackup>()
     private val packageService: PackageService = mockk()
     private val backup = BackupCoordinator(

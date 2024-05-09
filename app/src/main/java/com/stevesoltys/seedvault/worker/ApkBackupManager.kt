@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -110,9 +111,7 @@ internal class ApkBackupManager(
             } ?: false
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK for $packageName", e)
-            if (e.message?.contains("No space left on device") == true) {
-                nm.onInsufficientSpaceError()
-            }
+            if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
             false
         }
     }

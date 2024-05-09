@@ -12,7 +12,9 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import libcore.io.IoUtils.closeQuietly
 import java.io.EOFException
 import java.io.IOException
@@ -41,6 +43,7 @@ private val TAG = FullBackup::class.java.simpleName
 internal class FullBackup(
     private val pluginManager: StoragePluginManager,
     private val settingsManager: SettingsManager,
+    private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
 ) {
@@ -170,6 +173,7 @@ internal class FullBackup(
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error handling backup data for ${state.packageName}: ", e)
+            if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
             TRANSPORT_ERROR
         }
     }
