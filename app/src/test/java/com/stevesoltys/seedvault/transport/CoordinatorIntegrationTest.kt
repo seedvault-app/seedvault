@@ -63,8 +63,14 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val backupPlugin = mockk<StoragePlugin<*>>()
-    private val kvBackup =
-        KVBackup(storagePluginManager, settingsManager, inputFactory, cryptoImpl, dbManager)
+    private val kvBackup = KVBackup(
+        pluginManager = storagePluginManager,
+        settingsManager = settingsManager,
+        nm = notificationManager,
+        inputFactory = inputFactory,
+        crypto = cryptoImpl,
+        dbManager = dbManager,
+    )
     private val fullBackup = FullBackup(
         pluginManager = storagePluginManager,
         settingsManager = settingsManager,

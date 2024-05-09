@@ -14,7 +14,9 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
 import java.util.zip.GZIPOutputStream
 
@@ -34,6 +36,7 @@ private val TAG = KVBackup::class.java.simpleName
 internal class KVBackup(
     private val pluginManager: StoragePluginManager,
     private val settingsManager: SettingsManager,
+    private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
     private val dbManager: KvDbManager,
@@ -214,6 +217,7 @@ internal class KVBackup(
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error uploading DB", e)
+            if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
             TRANSPORT_ERROR
         } finally {
             this.state = null
