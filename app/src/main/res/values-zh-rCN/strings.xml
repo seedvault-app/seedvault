@@ -222,4 +222,13 @@
     <string name="settings_backup_status_next_backup_usb">当你插入 U 盘时备份会自动发生</string>
     <string name="settings_scheduling_frequency_daily">每天</string>
     <string name="settings_scheduling_frequency_weekly">每周</string>
+    <string name="storage_webdav_option_summary">集成了直接 WebDAV 访问</string>
+    <string name="storage_webdav_config_pass">密码</string>
+    <string name="storage_webdav_config_button">使用 WebDAV 云</string>
+    <string name="storage_webdav_config_malformed_url">无效的 WebDAV URL</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_option_title">WebDAV 云 （公测）</string>
+    <string name="storage_webdav_config_url">WebDAV URL</string>
+    <string name="storage_webdav_config_user">用户名</string>
+    <string name="storage_webdav_config_url_helper">确保在此输入完整 URL。比如对于 Nextcloud，符合要求的 URL 应形如 https://yourserver.com/remote.php/webdav</string>
 </resources>

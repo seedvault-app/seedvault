@@ -43,7 +43,7 @@
     <string name="recovery_code_verification_try_again">Spróbuj ponownie</string>
     <string name="recovery_code_verification_error_message">Wprowadzono nieprawidłowy kod przywracania. Spróbuj ponownie!
 \n
-\nJeśli nie pamiętasz kodu, naciśnij na „Wygeneruj nowy kod” poniżej.</string>
+\nJeśli nie pamiętasz kodu, dotknij „Wygeneruj nowy kod” poniżej.</string>
     <string name="recovery_code_verification_error_title">Nieprawidłowy kod przywracania</string>
     <string name="recovery_code_verification_ok_message">Twój kod jest prawidłowy i będzie działał przy przywracaniu kopii zapasowej.</string>
     <string name="recovery_code_verification_ok_title">Zweryfikowano kod przywracania</string>
@@ -78,7 +78,7 @@
     <string name="about_version">Wersja: %s</string>
     <string name="restore_restoring_error_message">Możesz zainstalować te aplikacje ręcznie, a Automatyczne przywracanie spróbuje przywrócić ich dane (jeżeli włączone).</string>
     <string name="restore_restoring_error_title">Nie udało się przywrócić niektórych aplikacji</string>
-    <string name="restore_installing_tap_to_install">Naciśnij, aby zainstalować</string>
+    <string name="restore_installing_tap_to_install">Dotknij, aby zainstalować</string>
     <string name="restore_installing_error_message">Dane mogą być przywrócone tylko jeżeli aplikacja jest zainstalowana.
 \n
 \nNaciśnij na nieudane aplikacje, aby spróbować zainstalować je ręcznie, zanim przejdziesz dalej.</string>
@@ -194,7 +194,7 @@
     <string name="settings_expert_quota_summary">Nie limituj wielkości kopi zapasowej aplikacji.
 \n
 \nUwaga: Ta opcja może w krótkim czasie zapełnić miejsce na dysku. Niepotrzebne większości aplikacji.</string>
-    <string name="storage_fake_davx5_summary_installed">Stuknij by ustawić punkt montażu WebDAV</string>
+    <string name="storage_fake_davx5_summary_installed">Dotknij, aby ustawić punkt montażu WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">Punkt montażu WebDAV niedostępny. Ustaw go.</string>
     <string name="settings_expert_logcat_summary">Deweloperzy mogą zdiagnozować błędy za pomocą informacji zawartych w raportach błędów.
 \n
@@ -222,4 +222,13 @@
     <string name="notification_apk_not_backed_up">Zapisywanie listy aplikacji, których kopii zapasowej nie możemy utworzyć.</string>
     <string name="settings_expert_d2d_title">Kopie zapasowe między urządzeniami</string>
     <string name="settings_expert_d2d_summary">Wymusza to tworzenie kopii zapasowych dla większości aplikacji, nawet jeśli na to nie zezwalają. Funkcja w wersji alfa, używasz na własne ryzyko.</string>
+    <string name="storage_webdav_option_summary">Zintegrowany bezpośredni dostęp WebDAV</string>
+    <string name="storage_webdav_config_button">Używaj chmury WebDAV</string>
+    <string name="storage_webdav_config_malformed_url">Nieprawidłowy adres URL WebDAV</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_option_title">Chmura WebDAV (wersja beta)</string>
+    <string name="storage_webdav_config_url">Adres URL WebDAV</string>
+    <string name="storage_webdav_config_user">Nazwa użytkownika</string>
+    <string name="storage_webdav_config_pass">Hasło</string>
+    <string name="storage_webdav_config_url_helper">Pamiętaj, aby podać tutaj pełny adres URL. Np. dla Nextcloud ma on postać https://twojserwer.com/remote.php/webdav</string>
 </resources>

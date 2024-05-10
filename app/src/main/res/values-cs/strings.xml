@@ -222,4 +222,13 @@
     <string name="settings_scheduling_charging_title">Zálohovat pouze při nabíjení</string>
     <string name="notification_apk_text">Zálohování souboru APK aplikace %s</string>
     <string name="notification_apk_not_backed_up">Ukládání seznamu aplikací, které nelze zálohovat.</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_summary">Integrovaný přímý přístup k WebDAV</string>
+    <string name="storage_webdav_config_url">Adresa WebDAV</string>
+    <string name="storage_webdav_config_user">Uživatelské jméno</string>
+    <string name="storage_webdav_config_pass">Heslo</string>
+    <string name="storage_webdav_config_button">Použít WebDAV cloud</string>
+    <string name="storage_webdav_config_malformed_url">Neplatná adresa WebDAV</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_config_url_helper">Dejte pozor, abyste sem zadali celou adresu URL. Například pro službu Nextcloud bude mít adresa tvar https://vasserver.cz/remote.php/webdav</string>
 </resources>

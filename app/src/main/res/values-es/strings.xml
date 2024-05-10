@@ -222,4 +222,13 @@
     <string name="settings_scheduling_frequency_12_hours">Cada 12 horas</string>
     <string name="settings_scheduling_frequency_daily">Diariamente</string>
     <string name="settings_scheduling_charging_title">Copia de seguridad solo cuando se carga</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_summary">Acceso directo integrado a WebDAV</string>
+    <string name="storage_webdav_config_url">Url a WebDAV</string>
+    <string name="storage_webdav_config_user">Nombre de usuario</string>
+    <string name="storage_webdav_config_pass">Contraseña</string>
+    <string name="storage_webdav_config_button">Utilizar WebDAV cloud</string>
+    <string name="storage_webdav_config_malformed_url">Url no válida a WebDAV</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_config_url_helper">Asegúrate de introducir aquí la URL completa. Por ejemplo, para Nextcloud, tiene la forma https://yourserver.com/remote.php/webdav</string>
 </resources>

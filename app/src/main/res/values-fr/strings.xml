@@ -49,8 +49,8 @@
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde des applications</string>
     <string name="settings_category_app_data_backup">Sauvegarde des données de l’appli</string>
-    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
-    <string name="settings_auto_restore_summary">Lors de la réinstallation d’une appli, restaurer les paramètres et les données sauvegardés.</string>
+    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
+    <string name="settings_auto_restore_summary">Lors de la réinstallation d’une application, restaurer les paramètres et les données sauvegardées.</string>
     <string name="settings_auto_restore_title">Restaurer automatiquement</string>
     <string name="settings_info">Toutes les sauvegardes sont stockées sur votre téléphone et chiffrées. Pour restaurer une sauvegarde, vous aurez besoin de votre code de récupération constitué de 12 mots.</string>
     <string name="settings_backup_last_backup_never">Jamais</string>
@@ -168,7 +168,7 @@
     <string name="recovery_code_auth_title">Saisissez à nouveau vos identifiants</string>
     <string name="notification_error_no_main_key_text">Générez un nouveau code de récupération pour terminer la mise à jour et continuer à utiliser vos sauvegardes.</string>
     <string name="storage_fake_davx5_summary_installed">Appuyez pour configurer un montage WebDAV</string>
-    <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegarde automatique car l\'optimisation de la batterie est activée.</string>
+    <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegardes automatique scar l\'optimisation de la batterie est activée.</string>
     <string name="settings_backup_new_code_dialog_title">Nouveau code de récupération requis</string>
     <string name="settings_backup_new_code_dialog_message">Pour continuer à utiliser les sauvegardes d\'applications, vous devez générer un nouveau code de récupération.
 \n
@@ -188,8 +188,30 @@
     <string name="restore_app_status_failed">Échec de la restauration</string>
     <string name="restore_app_status_warning">Alerte de restauration</string>
     <string name="settings_backup_dialog_disable">Eteindre quand même</string>
-    <string name="settings_expert_logcat_title">Sauvegarde des logs</string>
+    <string name="settings_expert_logcat_title">Sauvegarde des logs de l\'application</string>
     <string name="settings_backup_dialog_message">A la prochaine activation ,
 \nLe processus de sauvegarde peux durer plus longtemps et utilisera du stockage additionnel.</string>
     <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App\?</string>
+    <string name="about_contributing_organizations_title">Organisations participantes</string>
+    <string name="settings_backup_scheduling_title">Planification des sauvegardes</string>
+    <string name="settings_backup_status_next_backup_estimate">Prochaine sauvegarde (estimée) : %1$s</string>
+    <string name="settings_backup_status_next_backup_past">une fois que les conditions sont remplies</string>
+    <string name="settings_scheduling_frequency_title">Fréquence des sauvegardes</string>
+    <string name="settings_scheduling_frequency_12_hours">Toutes les 12 heures</string>
+    <string name="settings_scheduling_frequency_3_days">Tous les 3 jours</string>
+    <string name="settings_scheduling_frequency_weekly">Hebdomadaire</string>
+    <string name="settings_scheduling_category_conditions_title">Conditions</string>
+    <string name="settings_scheduling_charging_title">Sauvegarde uniquement lors de la charge</string>
+    <string name="settings_scheduling_metered_title">Sauvegarde lors l\'utilisation des données mobiles</string>
+    <string name="settings_expert_logcat_error">Erreur : sauvegarde impossible des logs de l\'application</string>
+    <string name="notification_apk_not_backed_up">Enregistrer la liste des applications que nous ne pouvons pas sauvegarder.</string>
+    <string name="notification_apk_text">Sauvegarde de l\'APK de %s</string>
+    <string name="about_contributor_content">Veuillez consulter GitHub pour la <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">liste des contributeurs</a>.</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Non recommandé)</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Institut Calyx</a> pour l\'usage de <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET sponsorisé par NLnet</a></string>
+    <string name="settings_backup_status_next_backup">Prochaine sauvegarde : %1$s</string>
+    <string name="settings_backup_status_next_backup_usb">Les sauvegardes se joueront automatiquement quand vous brancherez votre disque USB</string>
+    <string name="settings_scheduling_frequency_daily">Journalier</string>
+    <string name="notification_success_channel_title">Notification de succès</string>
 </resources>
