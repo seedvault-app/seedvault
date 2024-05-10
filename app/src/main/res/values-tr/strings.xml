@@ -222,4 +222,13 @@
     <string name="settings_scheduling_frequency_daily">Günlük</string>
     <string name="settings_scheduling_frequency_weekly">Haftalık</string>
     <string name="notification_apk_text">%s APK\'sı yedekleniyor</string>
+    <string name="storage_webdav_option_summary">Bütünleşik doğrudan WebDAV erişimi</string>
+    <string name="storage_webdav_config_button">WebDAV bulutu kullan</string>
+    <string name="storage_webdav_config_malformed_url">Geçersiz WebDAV URL\'si</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_option_title">WebDAV Bulut (beta)</string>
+    <string name="storage_webdav_config_url">WebDAV URL\'si</string>
+    <string name="storage_webdav_config_user">Kullanıcı adı</string>
+    <string name="storage_webdav_config_pass">Parola</string>
+    <string name="storage_webdav_config_url_helper">URL\'nin tamamını buraya girdiğinizden emin olun. Örneğin Nextcloud için https://sunucunuz.com/remote.php/webdav şeklindedir</string>
 </resources>

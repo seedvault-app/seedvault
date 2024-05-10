@@ -11,4 +11,12 @@
     <string name="notification_prune">Tar bort gamla säkerhetskopior …</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d av %2$d filer återställda</string>
+    <string name="notification_backup_title">Säkerhetskopia av lagring</string>
+    <string name="snapshots_title">Tillgängliga säkerhetskopior av lagring</string>
+    <string name="notification_restore_channel_title">Återställning av lagring</string>
+    <string name="notification_restore_title">Återställer filer …</string>
+    <string name="snapshots_empty">Inga säkerhetskopior av lagring hittades
+\n
+\nTyvärr, det finns inget att återställa.</string>
+    <string name="snapshots_error">Fel vid inläsning av ögonblicksbilder</string>
 </resources>

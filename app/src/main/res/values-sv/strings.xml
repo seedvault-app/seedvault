@@ -15,4 +15,14 @@
     <string name="settings_backup_status_summary">Senaste säkerhetskopiering: %1$s</string>
     <string name="settings_backup_status_next_backup">Nästa säkerhetskopiering: %1$s</string>
     <string name="settings_backup_status_next_backup_estimate">Näst säkerhetskopiering (uppskattning): %1$s</string>
+    <string name="settings_backup_apk_title">Säkerhetskopiering av app</string>
+    <string name="settings_backup_apk_dialog_title">Vill du verkligen inaktivera säkerhetskopiering av appar?</string>
+    <string name="settings_auto_restore_title">Automatisk återställning</string>
+    <string name="settings_auto_restore_summary">Återställ säkerhetskopierade inställningar och data vid ominstallation av en app.</string>
+    <string name="settings_auto_restore_summary_usb">Observera: Din %1$s behöver vara inkopplad för att detta ska fungera.</string>
+    <string name="settings_category_app_data_backup">Säkerhetskopiering av appdata</string>
+    <string name="settings_info">Alla säkerhetskopior är krypterade på din telefon. För att återställa från en säkerhetskopia behöver du din återställningskod med 12 ord.</string>
+    <string name="settings_backup_apk_summary">Säkerhetskopiera själva apparna. Annars kommer endast apparnas data att säkerhetskopieras.</string>
+    <string name="data_management_label">Seedvault Säkerhetskopiering</string>
+    <string name="current_destination_string">Status och inställningar för säkerhetskopiering</string>
 </resources>
