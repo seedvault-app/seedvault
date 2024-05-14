@@ -231,4 +231,7 @@
     <string name="storage_webdav_config_user">Nazwa użytkownika</string>
     <string name="storage_webdav_config_pass">Hasło</string>
     <string name="storage_webdav_config_url_helper">Pamiętaj, aby podać tutaj pełny adres URL. Np. dla Nextcloud ma on postać https://twojserwer.com/remote.php/webdav</string>
+    <string name="notification_space_error_text">W lokalizacji kopii zapasowej brakuje miejsca. Zwolnij miejsce, aby umożliwić tworzenie kopii zapasowych.</string>
+    <string name="restore_restore_set_size">Rozmiar: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="notification_space_error_title">Niewystarczająca ilość miejsca na kopię zapasową</string>
 </resources>

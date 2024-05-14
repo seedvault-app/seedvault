@@ -231,4 +231,7 @@
     <string name="storage_webdav_config_user">Kullanıcı adı</string>
     <string name="storage_webdav_config_pass">Parola</string>
     <string name="storage_webdav_config_url_helper">URL\'nin tamamını buraya girdiğinizden emin olun. Örneğin Nextcloud için https://sunucunuz.com/remote.php/webdav şeklindedir</string>
+    <string name="notification_space_error_title">Yetersiz yedekleme alanı</string>
+    <string name="restore_restore_set_size">Boyut: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="notification_space_error_text">Yedekleme konumunuzun alanı tükeniyor. Yedeklemelerin çalışabilmesi için alan boşaltın.</string>
 </resources>

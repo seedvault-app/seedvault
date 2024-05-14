@@ -231,4 +231,7 @@
     <string name="storage_webdav_config_url">WebDAV URL</string>
     <string name="storage_webdav_config_user">用户名</string>
     <string name="storage_webdav_config_url_helper">确保在此输入完整 URL。比如对于 Nextcloud，符合要求的 URL 应形如 https://yourserver.com/remote.php/webdav</string>
+    <string name="notification_space_error_title">备份空间不够</string>
+    <string name="notification_space_error_text">你选择的备份位置剩余空间不足。要能运行备份，请腾出空间。</string>
+    <string name="restore_restore_set_size">大小: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
 </resources>
