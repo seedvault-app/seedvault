@@ -231,4 +231,7 @@
     <string name="storage_webdav_config_malformed_url">Neplatná adresa WebDAV</string>
     <string name="storage_webdav_name">WebDAV %s</string>
     <string name="storage_webdav_config_url_helper">Dejte pozor, abyste sem zadali celou adresu URL. Například pro službu Nextcloud bude mít adresa tvar https://vasserver.cz/remote.php/webdav</string>
+    <string name="notification_space_error_title">Nedostatek místa pro zálohy</string>
+    <string name="restore_restore_set_size">Velikost: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="notification_space_error_text">Vašemu umístění záloh dochází místo. Uvolněte jej, aby mohly probíhat další zálohy.</string>
 </resources>

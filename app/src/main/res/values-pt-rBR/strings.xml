@@ -231,4 +231,7 @@
     <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
     <string name="storage_webdav_config_url">URL do WebDAV</string>
     <string name="storage_webdav_config_url_helper">Certifique-se de digitar a URL inteira aqui. Ex: para o Nextcloud, ela tem a forma de https://seuservidor.com/remote.php/webdav</string>
+    <string name="notification_space_error_title">Espaço de backup insuficiente</string>
+    <string name="notification_space_error_text">A sua localização de backup está quase sem espaço. Libere mais espaço, para que os backups possam ser feitos.</string>
+    <string name="restore_restore_set_size">Tamanho: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
 </resources>

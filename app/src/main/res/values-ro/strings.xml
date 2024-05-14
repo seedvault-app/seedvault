@@ -231,4 +231,7 @@
     <string name="backup_app_no_data">Aplicația a raportat că nu există date pentru a face copii de rezervă</string>
     <string name="backup_section_not_allowed">Aplicații care nu permit backup de date</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Contul nu este disponibil. Configurează unul (sau dezactivează parola).</string>
+    <string name="notification_space_error_title">Spațiu insuficient</string>
+    <string name="notification_space_error_text">Locația copiilor de rezervă rămâne fără spațiu. Eliberează spațiu, astfel încât să poată rula copiile de rezervă.</string>
+    <string name="restore_restore_set_size">Dimensiune: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
 </resources>
