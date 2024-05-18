@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.stevesoltys.seedvault.plugins.webdav
 
 import android.content.Context
