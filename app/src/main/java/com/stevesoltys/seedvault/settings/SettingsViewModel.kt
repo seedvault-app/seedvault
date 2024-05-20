@@ -97,6 +97,9 @@ internal class SettingsViewModel(
 
     private val mAppStatusList = lastBackupTime.switchMap {
         // updates app list when lastBackupTime changes
+        // FIXME: Since we are currently updating that time a lot,
+        //  re-fetching everything on each change hammers the system hard
+        //  which can cause android.os.DeadObjectException
         getAppStatusResult()
     }
     internal val appStatusList: LiveData<AppStatusResult> = mAppStatusList

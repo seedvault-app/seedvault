@@ -61,10 +61,10 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         }
 
         progressBar.visibility = VISIBLE
-        viewModel.appStatusList.observe(viewLifecycleOwner, { result ->
+        viewModel.appStatusList.observe(viewLifecycleOwner) { result ->
             adapter.update(result.appStatusList, result.diff)
             progressBar.visibility = INVISIBLE
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -73,10 +73,10 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         appEditMenuItem = menu.findItem(R.id.edit_app_blacklist)
 
         // observe edit mode changes here where we are sure to have the MenuItem
-        viewModel.appEditMode.observe(viewLifecycleOwner, { enabled ->
+        viewModel.appEditMode.observe(viewLifecycleOwner) { enabled ->
             appEditMenuItem.isChecked = enabled
             adapter.setEditMode(enabled)
-        })
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

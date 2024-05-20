@@ -7,7 +7,11 @@ package com.stevesoltys.seedvault.settings
 
 import android.annotation.StringRes
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_MAIN
+import android.content.Intent.CATEGORY_LAUNCHER
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.MATCH_SYSTEM_ONLY
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.annotation.WorkerThread
@@ -80,6 +84,10 @@ internal class AppListRetriever(
             Pair(PACKAGE_NAME_CALL_LOG, R.string.backup_call_log),
             Pair(PACKAGE_NAME_CONTACTS, R.string.backup_contacts)
         )
+        // filter intent for apps with a launcher activity
+        val i = Intent(ACTION_MAIN).apply {
+            addCategory(CATEGORY_LAUNCHER)
+        }
         return specialPackages.map { (packageName, stringId) ->
             val metadata = metadataManager.getPackageMetadata(packageName)
             val status = if (packageName == PACKAGE_NAME_CONTACTS && metadata?.state == null) {
@@ -97,6 +105,18 @@ internal class AppListRetriever(
                 status = status,
                 isSpecial = true
             )
+        } + context.packageManager.queryIntentActivities(i, MATCH_SYSTEM_ONLY).map {
+            val packageName = it.activityInfo.packageName
+            val metadata = metadataManager.getPackageMetadata(packageName)
+            AppStatus(
+                packageName = packageName,
+                enabled = settingsManager.isBackupEnabled(packageName),
+                icon = getIcon(packageName),
+                name = it.loadLabel(context.packageManager).toString(),
+                time = metadata?.time ?: 0,
+                size = metadata?.size,
+                status = metadata?.state.toAppBackupState(),
+            )
         }
     }
 
@@ -108,9 +128,6 @@ internal class AppListRetriever(
             val status = metadata?.state.toAppBackupState()
             if (status == NOT_YET_BACKED_UP) {
                 Log.w(TAG, "No metadata available for: ${it.packageName}")
-            }
-            if (metadata?.hasApk() == false) {
-                Log.w(TAG, "No APK stored for: ${it.packageName}")
             }
             AppStatus(
                 packageName = it.packageName,
