@@ -118,10 +118,10 @@ internal class MutableInstallResult(override val total: Int) : InstallResult {
 }
 
 data class ApkInstallResult(
-    val packageName: CharSequence,
+    val packageName: String,
     val progress: Int,
     val state: ApkInstallState,
-    val name: CharSequence? = null,
+    val name: String? = null,
     val icon: Drawable? = null,
     val installerPackageName: CharSequence? = null,
 ) : Comparable<ApkInstallResult> {
@@ -132,9 +132,13 @@ data class ApkInstallResult(
 
 internal class FailedFirstComparator : Comparator<ApkInstallResult> {
     override fun compare(a1: ApkInstallResult, a2: ApkInstallResult): Int {
-        return (if (a1.state == FAILED && a2.state != FAILED) -1
+        return if (a1.state == FAILED && a2.state != FAILED) -1
         else if (a2.state == FAILED && a1.state != FAILED) 1
-        else a1.compareTo(a2))
+        else {
+            val str = a1.name ?: a1.packageName
+            val otherStr = a2.name ?: a2.packageName
+            str.compareTo(otherStr, true)
+        }
     }
 }
 

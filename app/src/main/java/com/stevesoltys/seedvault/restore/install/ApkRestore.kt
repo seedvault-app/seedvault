@@ -66,6 +66,7 @@ internal class ApkRestore(
                 packageName = packageName,
                 progress = progress,
                 state = if (isAllowedToInstallApks) QUEUED else FAILED,
+                name = metadata.name?.toString(),
                 installerPackageName = metadata.installer
             )
         }
@@ -153,7 +154,7 @@ internal class ApkRestore(
             publicSourceDir = cachedApk.absolutePath
         }
         val icon = appInfo?.loadIcon(pm)
-        val name = appInfo?.let { pm.getApplicationLabel(it) }
+        val name = appInfo?.let { pm.getApplicationLabel(it).toString() }
 
         installResult.update(packageName) { result ->
             result.copy(state = IN_PROGRESS, name = name, icon = icon)
