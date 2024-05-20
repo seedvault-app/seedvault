@@ -96,15 +96,15 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
             v.background = clickableBackground
             if (editMode) {
                 v.setOnClickListener {
-                    switchView.toggle()
-                    item.enabled = switchView.isChecked
+                    checkBox.toggle()
+                    item.enabled = checkBox.isChecked
                     toggleListener.onAppStatusToggled(item)
                 }
                 appInfo.visibility = GONE
                 appStatus.visibility = INVISIBLE
                 progressBar.visibility = INVISIBLE
-                switchView.visibility = VISIBLE
-                switchView.isChecked = item.enabled
+                checkBox.visibility = VISIBLE
+                checkBox.isChecked = item.enabled
             } else {
                 v.setOnClickListener(null)
                 v.setOnLongClickListener {
@@ -130,7 +130,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                     }
                     appInfo.visibility = VISIBLE
                 }
-                switchView.visibility = INVISIBLE
+                checkBox.visibility = INVISIBLE
             }
             // show disabled items differently
             showEnabled(item.enabled)

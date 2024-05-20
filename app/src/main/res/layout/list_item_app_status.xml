@@ -8,9 +8,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="40dp"
-    android:layout_marginEnd="40dp"
+    android:layout_marginHorizontal="16dp"
     android:background="?android:selectableItemBackground"
+    android:paddingHorizontal="24dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:screenReaderFocusable="true">
@@ -35,7 +35,7 @@
         android:layout_marginEnd="16dp"
         android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/appInfo"
-        app:layout_constraintEnd_toStartOf="@+id/switchView"
+        app:layout_constraintEnd_toStartOf="@+id/checkboxView"
         app:layout_constraintStart_toEndOf="@+id/appIcon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Seedvault Backup" />
@@ -72,8 +72,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchView"
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/checkboxView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
