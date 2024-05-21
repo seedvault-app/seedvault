@@ -13,6 +13,7 @@ import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
@@ -61,6 +62,8 @@ import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import com.stevesoltys.seedvault.worker.FILE_BACKUP_ICONS
+import com.stevesoltys.seedvault.worker.IconManager
 import com.stevesoltys.seedvault.worker.NUM_PACKAGES_PER_TRANSACTION
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -83,6 +86,7 @@ internal const val PACKAGES_PER_CHUNK = NUM_PACKAGES_PER_TRANSACTION
 internal class SelectedAppsState(
     val apps: List<SelectableAppItem>,
     val allSelected: Boolean,
+    val iconsLoaded: Boolean,
 )
 
 internal class RestoreViewModel(
@@ -92,6 +96,7 @@ internal class RestoreViewModel(
     private val backupManager: IBackupManager,
     private val restoreCoordinator: RestoreCoordinator,
     private val apkRestore: ApkRestore,
+    private val iconManager: IconManager,
     storageBackup: StorageBackup,
     pluginManager: StoragePluginManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -175,6 +180,7 @@ internal class RestoreViewModel(
 
     override fun onRestorableBackupClicked(restorableBackup: RestorableBackup) {
         mChosenRestorableBackup.value = restorableBackup
+        // filter and sort app items for display
         val items = restorableBackup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             if (metadata.time == 0L && !metadata.hasApk()) null
             else if (packageName == MAGIC_PACKAGE_MANAGER) null
@@ -183,8 +189,33 @@ internal class RestoreViewModel(
             if (i1.metadata.system == i2.metadata.system) i1.name.compareTo(i2.name, true)
             else i1.metadata.system.compareTo(i2.metadata.system)
         }
-        mSelectedApps.value = SelectedAppsState(items, true)
+        mSelectedApps.value =
+            SelectedAppsState(apps = items, allSelected = true, iconsLoaded = false)
+        // download icons
+        viewModelScope.launch(Dispatchers.IO) {
+            val plugin = pluginManager.appPlugin
+            val token = restorableBackup.token
+            val packagesWithIcons = try {
+                plugin.getInputStream(token, FILE_BACKUP_ICONS).use {
+                    iconManager.downloadIcons(it)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading icons:", e)
+                emptySet()
+            }
+            // update state, so it knows that icons have loaded
+            val updatedItems = items.map { item ->
+                item.copy(hasIcon = item.packageName in packagesWithIcons)
+            }
+            val newState =
+                SelectedAppsState(updatedItems, allSelected = true, iconsLoaded = true)
+            mSelectedApps.postValue(newState)
+        }
         mDisplayFragment.setEvent(SELECT_APPS)
+    }
+
+    suspend fun loadIcon(packageName: String, callback: (Bitmap) -> Unit) {
+        iconManager.loadIcon(packageName, callback)
     }
 
     fun onCheckAllAppsClicked() {
@@ -193,11 +224,11 @@ internal class RestoreViewModel(
         if (allSelected) {
             // unselect all
             val newApps = apps.map { if (it.selected) it.copy(selected = false) else it }
-            mSelectedApps.value = SelectedAppsState(newApps, false)
+            mSelectedApps.value = SelectedAppsState(newApps, false, iconsLoaded = true)
         } else {
             // select all
             val newApps = apps.map { if (!it.selected) it.copy(selected = true) else it }
-            mSelectedApps.value = SelectedAppsState(newApps, true)
+            mSelectedApps.value = SelectedAppsState(newApps, true, iconsLoaded = true)
         }
     }
 
@@ -214,7 +245,7 @@ internal class RestoreViewModel(
                 allSelected = allSelected && app.selected
             }
         }
-        mSelectedApps.value = SelectedAppsState(apps, allSelected)
+        mSelectedApps.value = SelectedAppsState(apps, allSelected, iconsLoaded = true)
     }
 
     internal fun onNextClickedAfterSelectingApps() {

@@ -95,7 +95,19 @@ open class App : Application() {
             )
         }
         viewModel { RestoreStorageViewModel(this@App, get(), get(), get(), get()) }
-        viewModel { RestoreViewModel(this@App, get(), get(), get(), get(), get(), get(), get()) }
+        viewModel {
+            RestoreViewModel(
+                app = this@App,
+                settingsManager = get(),
+                keyManager = get(),
+                backupManager = get(),
+                restoreCoordinator = get(),
+                apkRestore = get(),
+                iconManager = get(),
+                storageBackup = get(),
+                pluginManager = get(),
+            )
+        }
         viewModel { FileSelectionViewModel(this@App, get()) }
     }
 

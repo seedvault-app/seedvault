@@ -69,7 +69,7 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
-    private val pluginManager: StoragePluginManager,
+    pluginManager: StoragePluginManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,

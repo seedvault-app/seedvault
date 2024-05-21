@@ -1,5 +1,6 @@
 package com.stevesoltys.seedvault.restore
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -18,7 +20,7 @@ class AppSelectionFragment : Fragment() {
     private val viewModel: RestoreViewModel by sharedViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
-    private val adapter = AppSelectionAdapter { item ->
+    private val adapter = AppSelectionAdapter(lifecycleScope, this::loadIcon) { item ->
         viewModel.onAppSelected(item)
     }
 
@@ -64,7 +66,15 @@ class AppSelectionFragment : Fragment() {
         viewModel.selectedApps.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.apps)
             toggleAllView.isChecked = state.allSelected
+            // enable toggle all views only after icons have loaded
+            toggleAllView.isEnabled = state.iconsLoaded
+            toggleAllTextView.isEnabled = state.iconsLoaded
+            button.isEnabled = state.iconsLoaded
         }
+    }
+
+    private suspend fun loadIcon(packageName: String, callback: (Bitmap) -> Unit) {
+        viewModel.loadIcon(packageName, callback)
     }
 
 }
