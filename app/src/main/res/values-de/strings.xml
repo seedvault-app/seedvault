@@ -162,11 +162,11 @@
     <string name="settings_expert_title">Experteneinstellungen</string>
     <string name="settings_backup_storage_dialog_ok">Trotzdem aktivieren</string>
     <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist noch experimentell und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
-    <string name="settings_backup_storage_dialog_title">Experimentelle Funktion</string>
+    <string name="settings_backup_storage_dialog_title">Beta-Funktion</string>
     <string name="settings_backup_files_summary">Keine</string>
     <string name="settings_backup_files_title">Enthaltene Dateien und Ordner</string>
     <string name="settings_backup_storage_title">Meine Dateien sichern</string>
-    <string name="settings_category_storage">Speichersicherung (experimentell)</string>
+    <string name="settings_category_storage">Speichersicherung (Beta)</string>
     <string name="settings_category_apps">App-Sicherung</string>
     <string name="storage_fake_davx5_summary_installed">Tippe, um eine WebDAV-Verbindung einzurichten</string>
     <string name="error_no_store">Fehler: Kein App-Store installiert</string>
@@ -207,4 +207,30 @@
     <string name="notification_success_channel_title">Erfolgsbenachrichtigung</string>
     <string name="settings_expert_d2d_title">Gerät-zu-Gerät-Sicherungen</string>
     <string name="settings_expert_d2d_summary">Dies erzwingt Sicherungen für die meisten Apps, auch wenn diese dies nicht zulassen. Dies ist experimentell, die Verwendung erfolgt auf eigene Gefahr.</string>
+    <string name="storage_webdav_option_title">WebDAV-Cloud (Beta)</string>
+    <string name="storage_webdav_option_summary">Integrierter direkter WebDAV-Zugang</string>
+    <string name="storage_webdav_config_url">WebDAV-URL</string>
+    <string name="notification_apk_not_backed_up">Liste der Apps, die wir nicht sichern können, wird gespeichert.</string>
+    <string name="settings_backup_scheduling_title">Planung der Datensicherung</string>
+    <string name="settings_scheduling_frequency_3_days">Alle 3 Tage</string>
+    <string name="settings_backup_status_next_backup">Nächste Datensicherung: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Nächste Datensicherung (Schätzung): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">sobald die Bedingungen erfüllt sind</string>
+    <string name="settings_backup_status_next_backup_usb">Die Datensicherung erfolgt automatisch, wenn Sie Ihr USB-Laufwerk anschließen</string>
+    <string name="settings_scheduling_frequency_title">Häufigkeit der Datensicherung</string>
+    <string name="settings_scheduling_frequency_12_hours">Alle 12 Stunden</string>
+    <string name="settings_scheduling_frequency_daily">Täglich</string>
+    <string name="settings_scheduling_category_conditions_title">Bedingungen</string>
+    <string name="settings_scheduling_frequency_weekly">Wöchentlich</string>
+    <string name="settings_scheduling_metered_title">Datensicherung bei Nutzung mobiler Daten</string>
+    <string name="settings_scheduling_charging_title">Datensicherung nur beim Aufladen</string>
+    <string name="notification_space_error_title">Unzureichender Speicherplatz für die Datensicherung</string>
+    <string name="restore_restore_set_size">Größe: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="storage_webdav_config_url_helper">Achten Sie darauf, dass Sie hier die vollständige URL eingeben. Für Nextcloud z. B. hat sie die Form https://yourserver.com/remote.php/webdav</string>
+    <string name="storage_webdav_config_user">Benutzername</string>
+    <string name="storage_webdav_config_pass">Passwort</string>
+    <string name="storage_webdav_config_button">WebDAV-Cloud verwenden</string>
+    <string name="storage_webdav_config_malformed_url">Ungültige WebDAV-URL</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="notification_apk_text">APK von %s wird gesichert</string>
 </resources>
