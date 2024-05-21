@@ -231,4 +231,7 @@
     <string name="storage_webdav_config_malformed_url">Url no válida a WebDAV</string>
     <string name="storage_webdav_name">WebDAV %s</string>
     <string name="storage_webdav_config_url_helper">Asegúrate de introducir aquí la URL completa. Por ejemplo, para Nextcloud, tiene la forma https://yourserver.com/remote.php/webdav</string>
+    <string name="notification_space_error_title">No hay espacio suficiente para la copia de seguridad</string>
+    <string name="notification_space_error_text">La ubicación de la copia de seguridad se está quedando sin espacio. Libere espacio para que se puedan realizar las copias de seguridad.</string>
+    <string name="restore_restore_set_size">Tamaño: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
 </resources>

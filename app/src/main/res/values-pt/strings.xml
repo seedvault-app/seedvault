@@ -214,12 +214,12 @@
     <string name="settings_expert_logcat_summary">Os desenvolvedores podem diagnosticar bugs com esses logs.
 \n
 \nAviso: O arquivo de log pode conter informações de identificação pessoal. Analise antes e o exclua após compartilhar!</string>
-    <string name="settings_expert_d2d_summary">Isso força o backup para a maioria dos aplicativos, mesmo quando eles não permitem. Isso está em alpha, use por conta própria.</string>
+    <string name="settings_expert_d2d_summary">Isso força o backup para a maioria das aplicações, mesmo quando elas não permitem. Isso está em alpha, use por conta própria.</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
     <string name="storage_fake_davx5_summary_unavailable">Montagem WebDAV não disponível. Configure uma.</string>
     <string name="notification_success_channel_title">Notificação de sucesso</string>
     <string name="notification_apk_text">Fazendo backup do APK de %s</string>
-    <string name="notification_apk_not_backed_up">Salvando uma lista dos aplicativos que não podemos fazer backup.</string>
+    <string name="notification_apk_not_backed_up">Salvando uma lista das aplicações que não podemos fazer backup.</string>
     <string name="backup_app_success">Backup concluído</string>
     <string name="settings_expert_d2d_title">Backups de dispositivo para dispositivo</string>
 </resources>
