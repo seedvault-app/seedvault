@@ -42,10 +42,22 @@ internal class IconManager(
         val packageManager = context.packageManager
         ZipOutputStream(outputStream).use { zip ->
             zip.setLevel(BEST_SPEED)
+            val entries = mutableSetOf<String>()
             packageService.allUserPackages.forEach {
                 val drawable = packageManager.getApplicationIcon(it.applicationInfo)
                 if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
                 val entry = ZipEntry(it.packageName)
+                zip.putNextEntry(entry)
+                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
+                entries.add(it.packageName)
+                zip.closeEntry()
+            }
+            packageService.launchableSystemApps.forEach {
+                val drawable = it.loadIcon(packageManager)
+                if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
+                // check for duplicates (e.g. updated launchable system app)
+                if (it.activityInfo.packageName in entries) return@forEach
+                val entry = ZipEntry(it.activityInfo.packageName)
                 zip.putNextEntry(entry)
                 drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
                 zip.closeEntry()
