@@ -19,6 +19,8 @@ import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -28,6 +30,7 @@ import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
@@ -62,6 +65,7 @@ import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import com.stevesoltys.seedvault.ui.systemData
 import com.stevesoltys.seedvault.worker.FILE_BACKUP_ICONS
 import com.stevesoltys.seedvault.worker.IconManager
 import com.stevesoltys.seedvault.worker.NUM_PACKAGES_PER_TRANSACTION
@@ -78,6 +82,7 @@ import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTA
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
+import java.util.Locale
 
 private val TAG = RestoreViewModel::class.java.simpleName
 
@@ -183,12 +188,19 @@ internal class RestoreViewModel(
         // filter and sort app items for display
         val items = restorableBackup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             if (metadata.time == 0L && !metadata.hasApk()) null
-            else if (packageName == MAGIC_PACKAGE_MANAGER) null
+            else if (metadata.system && !metadata.isLaunchableSystemApp) null
             else SelectableAppItem(packageName, metadata, true)
-        }.sortedWith { i1, i2 ->
-            if (i1.metadata.system == i2.metadata.system) i1.name.compareTo(i2.name, true)
-            else i1.metadata.system.compareTo(i2.metadata.system)
+        }.sortedBy {
+            it.name.lowercase(Locale.getDefault())
+        }.toMutableList()
+        val systemDataItems = systemData.mapNotNull { (packageName, data) ->
+            val metadata = restorableBackup.packageMetadataMap[packageName]
+                ?: return@mapNotNull null
+            if (metadata.time == 0L && !metadata.hasApk()) return@mapNotNull null
+            val name = app.getString(data.nameRes)
+            SelectableAppItem(packageName, metadata.copy(name = name), true, hasIcon = true)
         }
+        items.addAll(0, systemDataItems)
         mSelectedApps.value =
             SelectedAppsState(apps = items, allSelected = true, iconsLoaded = false)
         // download icons
@@ -205,7 +217,7 @@ internal class RestoreViewModel(
             }
             // update state, so it knows that icons have loaded
             val updatedItems = items.map { item ->
-                item.copy(hasIcon = item.packageName in packagesWithIcons)
+                item.copy(hasIcon = item.hasIcon ?: false || item.packageName in packagesWithIcons)
             }
             val newState =
                 SelectedAppsState(updatedItems, allSelected = true, iconsLoaded = true)
@@ -214,8 +226,15 @@ internal class RestoreViewModel(
         mDisplayFragment.setEvent(SELECT_APPS)
     }
 
-    suspend fun loadIcon(packageName: String, callback: (Bitmap) -> Unit) {
-        iconManager.loadIcon(packageName, callback)
+    suspend fun loadIcon(item: SelectableAppItem, callback: (Bitmap) -> Unit) {
+        if (item.metadata.system && !item.metadata.isLaunchableSystemApp &&
+            item.packageName in systemData.keys
+        ) {
+            val bitmap = getDrawable(app, systemData[item.packageName]!!.iconRes)!!.toBitmap()
+            callback(bitmap)
+        } else {
+            iconManager.loadIcon(item.packageName, callback)
+        }
     }
 
     fun onCheckAllAppsClicked() {

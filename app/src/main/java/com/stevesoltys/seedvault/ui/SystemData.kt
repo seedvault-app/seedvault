@@ -23,5 +23,5 @@ val systemData = mapOf(
 
 data class SystemData(
     @StringRes val nameRes: Int,
-    @DrawableRes val iconRes: Int?,
+    @DrawableRes val iconRes: Int,
 )

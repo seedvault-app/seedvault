@@ -7,44 +7,66 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView.ScaleType.CENTER
+import android.widget.ImageView.ScaleType.FIT_CENTER
+import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.restore.AppSelectionAdapter.AppSelectionViewHolder
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+
+sealed interface AppSelectionItem
+
+internal class AppSelectionSection(@StringRes val titleRes: Int) : AppSelectionItem
 
 internal data class SelectableAppItem(
     val packageName: String,
     val metadata: PackageMetadata,
     val selected: Boolean,
     val hasIcon: Boolean? = null,
-) {
+) : AppSelectionItem {
     val name: String get() = metadata.name?.toString() ?: packageName
 }
 
 internal class AppSelectionAdapter(
     val scope: CoroutineScope,
-    val iconLoader: suspend (String, (Bitmap) -> Unit) -> Unit,
+    val iconLoader: suspend (SelectableAppItem, (Bitmap) -> Unit) -> Unit,
     val listener: (SelectableAppItem) -> Unit,
-) : Adapter<AppSelectionViewHolder>() {
+) : Adapter<RecyclerView.ViewHolder>() {
 
-    private val diffCallback = object : ItemCallback<SelectableAppItem>() {
+    private val diffCallback = object : ItemCallback<AppSelectionItem>() {
         override fun areItemsTheSame(
-            oldItem: SelectableAppItem,
-            newItem: SelectableAppItem,
-        ): Boolean = oldItem.packageName == newItem.packageName
+            oldItem: AppSelectionItem,
+            newItem: AppSelectionItem,
+        ): Boolean {
+            return if (oldItem is AppSelectionSection && newItem is AppSelectionSection) {
+                oldItem.titleRes == newItem.titleRes
+            } else if (oldItem is SelectableAppItem && newItem is SelectableAppItem) {
+                oldItem.packageName == newItem.packageName
+            } else {
+                false
+            }
+        }
 
         override fun areContentsTheSame(
-            old: SelectableAppItem,
-            new: SelectableAppItem,
+            old: AppSelectionItem,
+            new: AppSelectionItem,
         ): Boolean {
-            return old.selected == new.selected && old.hasIcon == new.hasIcon
+            return if (old is AppSelectionSection && new is AppSelectionSection) {
+                true
+            } else if (old is SelectableAppItem && new is SelectableAppItem) {
+                old.selected == new.selected && old.hasIcon == new.hasIcon
+            } else {
+                false
+            }
         }
     }
     private val differ = AsyncListDiffer(this, diffCallback)
@@ -55,27 +77,67 @@ internal class AppSelectionAdapter(
 
     override fun getItemId(position: Int): Long = position.toLong() // items never get added/removed
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppSelectionViewHolder {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item_app_status, parent, false)
-        return AppSelectionViewHolder(v)
+    override fun getItemViewType(position: Int): Int = when (differ.currentList[position]) {
+        is SelectableAppItem -> 0
+        is AppSelectionSection -> 1
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            0 -> {
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.list_item_app_status, parent, false)
+                SelectableAppViewHolder(v)
+            }
+
+            1 -> {
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.list_item_app_section_title, parent, false)
+                AppSelectionSectionViewHolder(v)
+            }
+
+            else -> throw AssertionError("unknown view type")
+        }
     }
 
     override fun getItemCount() = differ.currentList.size
 
-    override fun onBindViewHolder(holder: AppSelectionViewHolder, position: Int) {
-        holder.bind(differ.currentList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is SelectableAppViewHolder -> {
+                holder.bind(differ.currentList[position] as SelectableAppItem)
+            }
+
+            is AppSelectionSectionViewHolder -> {
+                holder.bind(differ.currentList[position] as AppSelectionSection)
+            }
+        }
     }
 
-    fun submitList(items: List<SelectableAppItem>) {
-        differ.submitList(items)
+    fun submitList(items: List<AppSelectionItem>) {
+        val itemsWithSections = items.toMutableList().apply {
+            val i = indexOfLast {
+                it as SelectableAppItem
+                it.metadata.system && !it.metadata.isLaunchableSystemApp
+            }
+            add(i + 1, AppSelectionSection(R.string.backup_section_user))
+            add(0, AppSelectionSection(R.string.backup_section_system))
+        }
+        differ.submitList(itemsWithSections)
     }
 
-    override fun onViewRecycled(holder: AppSelectionViewHolder) {
-        holder.iconJob?.cancel()
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is SelectableAppViewHolder) holder.iconJob?.cancel()
     }
 
-    internal inner class AppSelectionViewHolder(v: View) : AppViewHolder(v) {
+    class AppSelectionSectionViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        private val titleView: TextView = v as TextView
+        fun bind(item: AppSelectionSection) {
+            titleView.setText(item.titleRes)
+        }
+    }
+
+    internal inner class SelectableAppViewHolder(v: View) : AppViewHolder(v) {
 
         var iconJob: Job? = null
 
@@ -99,7 +161,9 @@ internal class AppSelectionAdapter(
             } else if (item.hasIcon) {
                 appIcon.alpha = 0.5f
                 iconJob = scope.launch {
-                    iconLoader(item.packageName) { bitmap ->
+                    iconLoader(item) { bitmap ->
+                        val isSpecial = item.metadata.system && !item.metadata.isLaunchableSystemApp
+                        appIcon.scaleType = if (isSpecial) CENTER else FIT_CENTER
                         appIcon.setImageBitmap(bitmap)
                         appIcon.alpha = 1f
                     }

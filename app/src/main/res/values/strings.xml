@@ -182,6 +182,7 @@
     <string name="backup_settings">Device settings</string>
     <string name="backup_call_log">Call history</string>
     <string name="backup_contacts">Local contacts</string>
+    <string name="backup_system_apps">System apps</string>
     <string name="backup_section_user">Apps</string>
     <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
     <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>

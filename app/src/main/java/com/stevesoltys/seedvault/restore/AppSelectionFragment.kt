@@ -73,8 +73,8 @@ class AppSelectionFragment : Fragment() {
         }
     }
 
-    private suspend fun loadIcon(packageName: String, callback: (Bitmap) -> Unit) {
-        viewModel.loadIcon(packageName, callback)
+    private suspend fun loadIcon(item: SelectableAppItem, callback: (Bitmap) -> Unit) {
+        viewModel.loadIcon(item, callback)
     }
 
 }
