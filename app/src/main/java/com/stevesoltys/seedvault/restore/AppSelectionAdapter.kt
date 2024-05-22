@@ -25,7 +25,7 @@ internal data class SelectableAppItem(
     val selected: Boolean,
     val hasIcon: Boolean? = null,
 ) {
-    val name: String get() = packageName
+    val name: String get() = metadata.name?.toString() ?: packageName
 }
 
 internal class AppSelectionAdapter(
@@ -107,8 +107,7 @@ internal class AppSelectionAdapter(
             } else {
                 appIcon.alpha = 1f
             }
-            appIcon.setImageResource(R.drawable.ic_launcher_default)
-            appName.text = item.packageName
+            appName.text = item.name
             val time = if (item.metadata.time > 0) DateUtils.getRelativeTimeSpanString(
                 item.metadata.time,
                 System.currentTimeMillis(),
