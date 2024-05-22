@@ -57,8 +57,14 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
                 if (packageMetadata.size != null) {
                     put(JSON_PACKAGE_SIZE, packageMetadata.size)
                 }
+                if (packageMetadata.name != null) {
+                    put(JSON_PACKAGE_APP_NAME, packageMetadata.name)
+                }
                 if (packageMetadata.system) {
-                    put(JSON_PACKAGE_SYSTEM, packageMetadata.system)
+                    put(JSON_PACKAGE_SYSTEM, true)
+                }
+                if (packageMetadata.isLaunchableSystemApp) {
+                    put(JSON_PACKAGE_SYSTEM_LAUNCHER, true)
                 }
                 packageMetadata.version?.let { put(JSON_PACKAGE_VERSION, it) }
                 packageMetadata.installer?.let { put(JSON_PACKAGE_INSTALLER, it) }

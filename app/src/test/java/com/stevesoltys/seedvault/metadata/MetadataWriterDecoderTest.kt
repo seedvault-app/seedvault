@@ -63,6 +63,10 @@ internal class MetadataWriterDecoderTest {
                     time = Random.nextLong(),
                     state = APK_AND_DATA,
                     backupType = BackupType.FULL,
+                    size = Random.nextLong(0, Long.MAX_VALUE),
+                    name = getRandomString(),
+                    system = Random.nextBoolean(),
+                    isLaunchableSystemApp = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     splits = listOf(
@@ -94,6 +98,7 @@ internal class MetadataWriterDecoderTest {
                     time = Random.nextLong(),
                     state = QUOTA_EXCEEDED,
                     backupType = BackupType.FULL,
+                    name = null,
                     size = Random.nextLong(0..Long.MAX_VALUE),
                     system = Random.nextBoolean(),
                     version = Random.nextLong(),
@@ -108,6 +113,7 @@ internal class MetadataWriterDecoderTest {
                     state = NO_DATA,
                     backupType = BackupType.KV,
                     size = null,
+                    name = getRandomString(),
                     system = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
@@ -121,6 +127,7 @@ internal class MetadataWriterDecoderTest {
                     state = NOT_ALLOWED,
                     size = 0,
                     system = Random.nextBoolean(),
+                    isLaunchableSystemApp = Random.nextBoolean(),
                     version = Random.nextLong(),
                     installer = getRandomString(),
                     sha256 = getRandomString(),
@@ -138,10 +145,11 @@ internal class MetadataWriterDecoderTest {
     private fun getMetadata(
         packageMetadata: HashMap<String, PackageMetadata> = HashMap(),
     ): BackupMetadata {
+        val version = Random.nextBytes(1)[0]
         return BackupMetadata(
-            version = Random.nextBytes(1)[0],
+            version = version,
             token = Random.nextLong(),
-            salt = getRandomBase64(32),
+            salt = if (version != 0.toByte()) getRandomBase64(32) else "",
             time = Random.nextLong(),
             androidVersion = Random.nextInt(),
             androidIncremental = getRandomString(),
