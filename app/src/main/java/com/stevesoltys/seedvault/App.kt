@@ -141,6 +141,7 @@ open class App : Application() {
     private val settingsManager: SettingsManager by inject()
     private val metadataManager: MetadataManager by inject()
     private val backupManager: IBackupManager by inject()
+    private val pluginManager: StoragePluginManager by inject()
 
     /**
      * The responsibility for the current token was moved to the [SettingsManager]
@@ -161,10 +162,14 @@ open class App : Application() {
      * Introduced in the first half of 2024 and can be removed after a suitable migration period.
      */
     protected open fun migrateToOwnScheduling() {
-        if (!isFrameworkSchedulingEnabled()) return // already on own scheduling
+        if (!isFrameworkSchedulingEnabled()) { // already on own scheduling
+            // fix things for removable drive users who had a job scheduled here before
+            if (pluginManager.isOnRemovableDrive) AppBackupWorker.unschedule(applicationContext)
+            return
+        }
 
         backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
-        if (backupManager.isBackupEnabled) {
+        if (backupManager.isBackupEnabled && !pluginManager.isOnRemovableDrive) {
             AppBackupWorker.schedule(applicationContext, settingsManager, UPDATE)
         }
         // cancel old D2D worker
