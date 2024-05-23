@@ -6,12 +6,13 @@
 package com.stevesoltys.seedvault.worker
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat.WEBP_LOSSY
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import kotlinx.coroutines.Dispatchers
@@ -92,23 +93,24 @@ internal class IconManager(
     }
 
     private val defaultIcon by lazy {
-        getDrawable(context, R.drawable.ic_launcher_default)!!.toBitmap()
+        getDrawable(context, R.drawable.ic_launcher_default)!!
     }
 
     /**
      * Tries to load the icons for the given [packageName]
      * that was downloaded before with [downloadIcons].
-     * Calls [callback] on the UiThread with the loaded [Bitmap] or the default icon.
+     * Calls [callback] on the UiThread with the loaded [Drawable] or the default icon.
      */
-    suspend fun loadIcon(packageName: String, callback: (Bitmap) -> Unit) {
+    suspend fun loadIcon(packageName: String, callback: (Drawable) -> Unit) {
         try {
             withContext(Dispatchers.IO) {
                 val folder = File(context.cacheDir, CACHE_FOLDER)
                 val file = File(folder, packageName)
                 file.inputStream().use { inputStream ->
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    val drawable =
+                        BitmapFactory.decodeStream(inputStream).toDrawable(context.resources)
                     withContext(Dispatchers.Main) {
-                        callback(bitmap)
+                        callback(drawable)
                     }
                 }
             }

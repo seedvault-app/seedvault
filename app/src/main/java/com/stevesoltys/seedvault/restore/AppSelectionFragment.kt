@@ -1,6 +1,6 @@
 package com.stevesoltys.seedvault.restore
 
-import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -73,7 +73,7 @@ class AppSelectionFragment : Fragment() {
         }
     }
 
-    private suspend fun loadIcon(item: SelectableAppItem, callback: (Bitmap) -> Unit) {
+    private suspend fun loadIcon(item: SelectableAppItem, callback: (Drawable) -> Unit) {
         viewModel.loadIcon(item, callback)
     }
 

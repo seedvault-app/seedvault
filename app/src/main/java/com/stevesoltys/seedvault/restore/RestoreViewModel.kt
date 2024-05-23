@@ -13,14 +13,13 @@ import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -199,7 +198,7 @@ internal class RestoreViewModel(
                 ?: return@mapNotNull null
             if (metadata.time == 0L && !metadata.hasApk()) return@mapNotNull null
             val name = app.getString(data.nameRes)
-            SelectableAppItem(packageName, metadata.copy(name = name), true, hasIcon = true)
+            SelectableAppItem(packageName, metadata.copy(name = name), true)
         }
         val systemItem = SelectableAppItem(
             packageName = PACKAGE_NAME_SYSTEM,
@@ -227,10 +226,10 @@ internal class RestoreViewModel(
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading icons:", e)
                 emptySet()
-            }
+            } + systemData.keys + setOf(PACKAGE_NAME_SYSTEM)
             // update state, so it knows that icons have loaded
             val updatedItems = items.map { item ->
-                item.copy(hasIcon = item.hasIcon ?: false || item.packageName in packagesWithIcons)
+                item.copy(hasIcon = item.packageName in packagesWithIcons)
             }
             val newState =
                 SelectedAppsState(updatedItems, allSelected = true, iconsLoaded = true)
@@ -239,13 +238,13 @@ internal class RestoreViewModel(
         mDisplayFragment.setEvent(SELECT_APPS)
     }
 
-    suspend fun loadIcon(item: SelectableAppItem, callback: (Bitmap) -> Unit) {
+    suspend fun loadIcon(item: SelectableAppItem, callback: (Drawable) -> Unit) {
         if (item.packageName == PACKAGE_NAME_SYSTEM) {
-            val bitmap = getDrawable(app, R.drawable.ic_app_settings)!!.toBitmap()
-            callback(bitmap)
+            val drawable = getDrawable(app, R.drawable.ic_app_settings)!!
+            callback(drawable)
         } else if (item.metadata.isInternalSystem && item.packageName in systemData.keys) {
-            val bitmap = getDrawable(app, systemData[item.packageName]!!.iconRes)!!.toBitmap()
-            callback(bitmap)
+            val drawable = getDrawable(app, systemData[item.packageName]!!.iconRes)!!
+            callback(drawable)
         } else {
             iconManager.loadIcon(item.packageName, callback)
         }

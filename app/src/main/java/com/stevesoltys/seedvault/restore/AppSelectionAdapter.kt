@@ -1,6 +1,6 @@
 package com.stevesoltys.seedvault.restore
 
-import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import android.text.format.Formatter
 import android.view.LayoutInflater
@@ -39,7 +39,7 @@ internal data class SelectableAppItem(
 
 internal class AppSelectionAdapter(
     val scope: CoroutineScope,
-    val iconLoader: suspend (SelectableAppItem, (Bitmap) -> Unit) -> Unit,
+    val iconLoader: suspend (SelectableAppItem, (Drawable) -> Unit) -> Unit,
     val listener: (SelectableAppItem) -> Unit,
 ) : Adapter<RecyclerView.ViewHolder>() {
 
@@ -156,16 +156,18 @@ internal class AppSelectionAdapter(
             checkBox.visibility = if (item.hasIcon == null) INVISIBLE else VISIBLE
             progressBar.visibility = if (item.hasIcon == null) VISIBLE else INVISIBLE
 
+            val isSpecial = item.metadata.isInternalSystem
+            appIcon.scaleType = FIT_CENTER
             appIcon.setImageResource(R.drawable.ic_launcher_default)
-            if (item.hasIcon == null) {
+            appIcon.scaleType = if (isSpecial) CENTER else FIT_CENTER
+            if (item.hasIcon == null && !isSpecial) {
                 appIcon.alpha = 0.5f
-            } else if (item.hasIcon) {
+            } else if (item.hasIcon == true || isSpecial) {
                 appIcon.alpha = 0.5f
                 iconJob = scope.launch {
                     iconLoader(item) { bitmap ->
-                        val isSpecial = item.metadata.system && !item.metadata.isLaunchableSystemApp
                         appIcon.scaleType = if (isSpecial) CENTER else FIT_CENTER
-                        appIcon.setImageBitmap(bitmap)
+                        appIcon.setImageDrawable(bitmap)
                         appIcon.alpha = 1f
                     }
                 }
