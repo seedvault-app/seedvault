@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.ui.AppViewHolder
+import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -118,7 +119,7 @@ internal class AppSelectionAdapter(
         val itemsWithSections = items.toMutableList().apply {
             val i = indexOfLast {
                 it as SelectableAppItem
-                it.metadata.system && !it.metadata.isLaunchableSystemApp
+                it.packageName == PACKAGE_NAME_SYSTEM
             }
             add(i + 1, AppSelectionSection(R.string.backup_section_user))
             add(0, AppSelectionSection(R.string.backup_section_system))

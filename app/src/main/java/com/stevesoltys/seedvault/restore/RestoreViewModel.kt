@@ -63,6 +63,7 @@ import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
+import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import com.stevesoltys.seedvault.ui.systemData
@@ -188,7 +189,7 @@ internal class RestoreViewModel(
         // filter and sort app items for display
         val items = restorableBackup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             if (metadata.time == 0L && !metadata.hasApk()) null
-            else if (metadata.system && !metadata.isLaunchableSystemApp) null
+            else if (metadata.isInternalSystem) null
             else SelectableAppItem(packageName, metadata, true)
         }.sortedBy {
             it.name.lowercase(Locale.getDefault())
@@ -200,6 +201,18 @@ internal class RestoreViewModel(
             val name = app.getString(data.nameRes)
             SelectableAppItem(packageName, metadata.copy(name = name), true, hasIcon = true)
         }
+        val systemItem = SelectableAppItem(
+            packageName = PACKAGE_NAME_SYSTEM,
+            metadata = PackageMetadata(
+                time = restorableBackup.packageMetadataMap.values.maxOf {
+                    if (it.system) it.time else -1
+                },
+                system = true,
+                name = app.getString(R.string.backup_system_apps),
+            ),
+            selected = true,
+        )
+        items.add(0, systemItem)
         items.addAll(0, systemDataItems)
         mSelectedApps.value =
             SelectedAppsState(apps = items, allSelected = true, iconsLoaded = false)
@@ -227,9 +240,10 @@ internal class RestoreViewModel(
     }
 
     suspend fun loadIcon(item: SelectableAppItem, callback: (Bitmap) -> Unit) {
-        if (item.metadata.system && !item.metadata.isLaunchableSystemApp &&
-            item.packageName in systemData.keys
-        ) {
+        if (item.packageName == PACKAGE_NAME_SYSTEM) {
+            val bitmap = getDrawable(app, R.drawable.ic_app_settings)!!.toBitmap()
+            callback(bitmap)
+        } else if (item.metadata.isInternalSystem && item.packageName in systemData.keys) {
             val bitmap = getDrawable(app, systemData[item.packageName]!!.iconRes)!!.toBitmap()
             callback(bitmap)
         } else {
@@ -274,8 +288,18 @@ internal class RestoreViewModel(
             Pair(it.packageName, it.selected)
         } ?: error("no selected apps")
         // filter out unselected packages
-        val packages = backup.packageMetadataMap.filterKeys { packageName ->
-            apps[packageName] != true // packages that weren't found, won't get filtered
+        // Attention: This code is complicated and hard to test, proceed with plenty of care!
+        val restoreSystemApps = apps[PACKAGE_NAME_SYSTEM] != false
+        val packages = backup.packageMetadataMap.filter { (packageName, metadata) ->
+            val isSelected = apps[packageName]
+            @Suppress("IfThenToElvis") // the code is more readable like this
+            if (isSelected == null) { // was not in list
+                // internal system apps were not in the list and are controlled by meta item
+                if (metadata.isInternalSystem) restoreSystemApps // only if allowed by meta item
+                else true // non-system packages that weren't found, won't get filtered
+            } else { // was in list and either selected or not
+                isSelected
+            }
         } as PackageMetadataMap
         // replace original chosen backup with unselected packages removed
         mChosenRestorableBackup.value = backup.copy(

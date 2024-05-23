@@ -13,6 +13,7 @@ internal const val PACKAGE_NAME_SMS = "com.android.providers.telephony"
 internal const val PACKAGE_NAME_SETTINGS = "com.android.providers.settings"
 internal const val PACKAGE_NAME_CALL_LOG = "com.android.calllogbackup"
 internal const val PACKAGE_NAME_CONTACTS = "org.calyxos.backup.contacts"
+internal const val PACKAGE_NAME_SYSTEM = "@org.calyxos.system@"
 
 val systemData = mapOf(
     PACKAGE_NAME_SMS to SystemData(R.string.backup_sms, R.drawable.ic_message),
