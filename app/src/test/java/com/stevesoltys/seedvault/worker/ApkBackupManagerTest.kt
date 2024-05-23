@@ -249,7 +249,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     private suspend fun expectUploadIcons() {
         val stream = ByteArrayOutputStream()
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_ICONS) } returns stream
-        every { iconManager.uploadIcons(stream) } just Runs
+        every { iconManager.uploadIcons(token, stream) } just Runs
     }
 
     private fun expectAllAppsWillGetBackedUp() {

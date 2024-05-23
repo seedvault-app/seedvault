@@ -20,6 +20,7 @@ val workerModule = module {
         IconManager(
             context = androidContext(),
             packageService = get(),
+            crypto = get(),
         )
     }
     single {

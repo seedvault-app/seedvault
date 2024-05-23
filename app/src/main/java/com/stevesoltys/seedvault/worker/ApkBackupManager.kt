@@ -101,7 +101,7 @@ internal class ApkBackupManager(
         try {
             val token = settingsManager.getToken() ?: throw IOException("no current token")
             pluginManager.appPlugin.getOutputStream(token, FILE_BACKUP_ICONS).use {
-                iconManager.uploadIcons(it)
+                iconManager.uploadIcons(token, it)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error uploading icons: ", e)

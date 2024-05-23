@@ -14,13 +14,19 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.crypto.TYPE_ICONS
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
+import java.security.GeneralSecurityException
 import java.util.zip.Deflater.BEST_SPEED
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -35,33 +41,36 @@ private val TAG = IconManager::class.simpleName
 internal class IconManager(
     private val context: Context,
     private val packageService: PackageService,
+    private val crypto: Crypto,
 ) {
 
-    @Throws(IOException::class)
-    fun uploadIcons(outputStream: OutputStream) {
+    @Throws(IOException::class, GeneralSecurityException::class)
+    fun uploadIcons(token: Long, outputStream: OutputStream) {
         Log.d(TAG, "Start uploading icons")
         val packageManager = context.packageManager
-        ZipOutputStream(outputStream).use { zip ->
-            zip.setLevel(BEST_SPEED)
-            val entries = mutableSetOf<String>()
-            packageService.allUserPackages.forEach {
-                val drawable = packageManager.getApplicationIcon(it.applicationInfo)
-                if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
-                val entry = ZipEntry(it.packageName)
-                zip.putNextEntry(entry)
-                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
-                entries.add(it.packageName)
-                zip.closeEntry()
-            }
-            packageService.launchableSystemApps.forEach {
-                val drawable = it.loadIcon(packageManager)
-                if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
-                // check for duplicates (e.g. updated launchable system app)
-                if (it.activityInfo.packageName in entries) return@forEach
-                val entry = ZipEntry(it.activityInfo.packageName)
-                zip.putNextEntry(entry)
-                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
-                zip.closeEntry()
+        crypto.newEncryptingStream(outputStream, getAD(VERSION, token)).use { cryptoStream ->
+            ZipOutputStream(cryptoStream).use { zip ->
+                zip.setLevel(BEST_SPEED)
+                val entries = mutableSetOf<String>()
+                packageService.allUserPackages.forEach {
+                    val drawable = packageManager.getApplicationIcon(it.applicationInfo)
+                    if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
+                    val entry = ZipEntry(it.packageName)
+                    zip.putNextEntry(entry)
+                    drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
+                    entries.add(it.packageName)
+                    zip.closeEntry()
+                }
+                packageService.launchableSystemApps.forEach {
+                    val drawable = it.loadIcon(packageManager)
+                    if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
+                    // check for duplicates (e.g. updated launchable system app)
+                    if (it.activityInfo.packageName in entries) return@forEach
+                    val entry = ZipEntry(it.activityInfo.packageName)
+                    zip.putNextEntry(entry)
+                    drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
+                    zip.closeEntry()
+                }
             }
         }
         Log.d(TAG, "Finished uploading icons")
@@ -71,21 +80,23 @@ internal class IconManager(
      * Downloads icons file from given [inputStream].
      * @return a set of package names for which icons were found
      */
-    @Throws(IOException::class, SecurityException::class)
-    fun downloadIcons(inputStream: InputStream): Set<String> {
+    @Throws(IOException::class, SecurityException::class, GeneralSecurityException::class)
+    fun downloadIcons(version: Byte, token: Long, inputStream: InputStream): Set<String> {
         Log.d(TAG, "Start downloading icons")
         val folder = File(context.cacheDir, CACHE_FOLDER)
         if (!folder.isDirectory && !folder.mkdirs())
             throw IOException("Can't create cache folder for icons")
         val set = mutableSetOf<String>()
-        ZipInputStream(inputStream).use { zip ->
-            var entry = zip.nextEntry
-            while (entry != null) {
-                File(folder, entry.name).outputStream().use { outputStream ->
-                    zip.copyTo(outputStream)
+        crypto.newDecryptingStream(inputStream, getAD(version, token)).use { cryptoStream ->
+            ZipInputStream(cryptoStream).use { zip ->
+                var entry = zip.nextEntry
+                while (entry != null) {
+                    File(folder, entry.name).outputStream().use { outputStream ->
+                        zip.copyTo(outputStream)
+                    }
+                    set.add(entry.name)
+                    entry = zip.nextEntry
                 }
-                set.add(entry.name)
-                entry = zip.nextEntry
             }
         }
         Log.d(TAG, "Finished downloading icons")
@@ -121,5 +132,11 @@ internal class IconManager(
             }
         }
     }
+
+    private fun getAD(version: Byte, token: Long) = ByteBuffer.allocate(2 + 8)
+        .put(version)
+        .put(TYPE_ICONS)
+        .put(token.toByteArray())
+        .array()
 
 }

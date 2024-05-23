@@ -221,7 +221,7 @@ internal class RestoreViewModel(
             val token = restorableBackup.token
             val packagesWithIcons = try {
                 plugin.getInputStream(token, FILE_BACKUP_ICONS).use {
-                    iconManager.downloadIcons(it)
+                    iconManager.downloadIcons(restorableBackup.version, token, it)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading icons:", e)
