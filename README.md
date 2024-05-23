@@ -3,7 +3,7 @@
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 
-If you are having an issue/question, please look at our [FAQ](../../wiki/FAQ).
+If you are having an issue/question, please look at our [FAQ](https://github.com/seedvault-app/seedvault/wiki/FAQ).
 
 ## Components
 
