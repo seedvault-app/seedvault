@@ -15,7 +15,7 @@ val installModule = module {
     factory { ApkSplitCompatibilityChecker(get()) }
     factory {
         ApkRestore(androidContext(), get(), get(), get(), get(), get()) {
-            androidContext().getSystemService(UserManager::class.java).isAllowedToInstallApks()
+            androidContext().getSystemService(UserManager::class.java)!!.isAllowedToInstallApks()
         }
     }
 }
