@@ -71,6 +71,9 @@ internal class AppSelectionManager(
                 time = restorableBackup.packageMetadataMap.values.maxOf {
                     if (it.system) it.time else -1
                 },
+                size = restorableBackup.packageMetadataMap.values.sumOf {
+                    if (it.system) it.size ?: 0L else 0L
+                },
                 system = true,
                 name = context.getString(R.string.backup_system_apps),
             ),
