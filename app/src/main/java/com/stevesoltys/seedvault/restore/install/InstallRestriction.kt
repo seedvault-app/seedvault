@@ -6,17 +6,23 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.os.UserManager
+import android.os.UserManager.DISALLOW_INSTALL_APPS
+import android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES
+import android.os.UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES_GLOBALLY
 
 internal fun interface InstallRestriction {
     fun isAllowedToInstallApks(): Boolean
 }
 
-private fun UserManager.isRestricted(restriction: String): Boolean {
+private fun UserManager.isDisallowed(restriction: String): Boolean {
     return userRestrictions.getBoolean(restriction, false)
 }
 
 internal fun UserManager.isAllowedToInstallApks(): Boolean {
-    return isRestricted(UserManager.DISALLOW_INSTALL_APPS) ||
-        isRestricted(UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES) ||
-        isRestricted(UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES_GLOBALLY)
+    // install isn't allowed if one of those user restrictions is set
+    val disallowed = isDisallowed(DISALLOW_INSTALL_APPS) ||
+        isDisallowed(DISALLOW_INSTALL_UNKNOWN_SOURCES) ||
+        isDisallowed(DISALLOW_INSTALL_UNKNOWN_SOURCES_GLOBALLY)
+    // install is allowed, if it isn't disallowed
+    return !disallowed
 }
