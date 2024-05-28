@@ -66,6 +66,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     fun `Package state of app that is not stopped gets recorded as not-allowed`() = runBlocking {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
 
         expectUploadIcons()
 
@@ -91,6 +92,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     fun `Package state of app gets recorded even if no previous state`() = runBlocking {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
 
         expectUploadIcons()
 
@@ -122,6 +124,7 @@ internal class ApkBackupManagerTest : TransportTest() {
 
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
 
         expectUploadIcons()
 
@@ -147,6 +150,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     fun `Package state only updated when changed`() = runBlocking {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
 
         expectUploadIcons()
 
@@ -154,6 +158,25 @@ internal class ApkBackupManagerTest : TransportTest() {
             metadataManager.getPackageMetadata(packageInfo.packageName)
         } returns packageMetadata
         every { packageMetadata.state } returns NOT_ALLOWED
+
+        every { settingsManager.backupApks() } returns false
+        expectFinalUpload()
+        every { nm.onApkBackupDone() } just Runs
+
+        apkBackupManager.backup()
+
+        verifyAll(inverse = true) {
+            metadataManager.onPackageDoesNotGetBackedUp(packageInfo, NOT_ALLOWED)
+        }
+    }
+
+    @Test
+    fun `Package state only updated if not excluded`() = runBlocking {
+        every { nm.onAppsNotBackedUp() } just Runs
+        every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns false
+
+        expectUploadIcons()
 
         every { settingsManager.backupApks() } returns false
         expectFinalUpload()
@@ -217,6 +240,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     fun `we keep trying to upload metadata at the end`() = runBlocking {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
+        every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
 
         expectUploadIcons()
 
@@ -247,6 +271,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     }
 
     private suspend fun expectUploadIcons() {
+        every { settingsManager.getToken() } returns token
         val stream = ByteArrayOutputStream()
         coEvery { plugin.getOutputStream(token, FILE_BACKUP_ICONS) } returns stream
         every { iconManager.uploadIcons(token, stream) } just Runs

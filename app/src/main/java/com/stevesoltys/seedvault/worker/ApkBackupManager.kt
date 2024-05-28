@@ -80,6 +80,7 @@ internal class ApkBackupManager(
         nm.onAppsNotBackedUp()
         packageService.notBackedUpPackages.forEach { packageInfo ->
             val packageName = packageInfo.packageName
+            if (!settingsManager.isBackupEnabled(packageName)) return@forEach
             try {
                 val packageState = if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
                 val packageMetadata = metadataManager.getPackageMetadata(packageName)
