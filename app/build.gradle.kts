@@ -181,7 +181,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junit5.get()}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${libs.versions.junit5.get()}")
     testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${libs.versions.coroutines.get()}")
+    testImplementation(
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${libs.versions.coroutines.get()}"
+    )
     testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation("org.bitcoinj:bitcoinj-core:0.16.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${libs.versions.junit5.get()}")

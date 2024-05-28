@@ -23,7 +23,6 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
@@ -68,10 +67,6 @@ import com.stevesoltys.seedvault.worker.IconManager
 import com.stevesoltys.seedvault.worker.NUM_PACKAGES_PER_TRANSACTION
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.StorageBackup
@@ -117,16 +112,9 @@ internal class RestoreViewModel(
     internal val selectedApps: LiveData<SelectedAppsState> =
         appSelectionManager.selectedAppsLiveData
 
-    internal val installResult: LiveData<InstallResult> =
-        mChosenRestorableBackup.switchMap { backup ->
-            // TODO does this stay stable when re-observing this LiveData?
-            // TODO pass in app selection done by user
-            getInstallResult(backup)
-        }
-    internal val installIntentCreator by lazy { InstallIntentCreator(app.packageManager) }
+    internal val installResult: LiveData<InstallResult> = apkRestore.installResult.asLiveData()
 
-    private val mNextButtonEnabled = MutableLiveData<Boolean>().apply { value = false }
-    internal val nextButtonEnabled: LiveData<Boolean> = mNextButtonEnabled
+    internal val installIntentCreator by lazy { InstallIntentCreator(app.packageManager) }
 
     private val mRestoreProgress = MutableLiveData<LinkedList<AppRestoreResult>>().apply {
         value = LinkedList<AppRestoreResult>().apply {
@@ -193,33 +181,26 @@ internal class RestoreViewModel(
         }
     }
 
+    suspend fun loadIcon(packageName: String, callback: (Drawable) -> Unit) {
+        iconManager.loadIcon(packageName, callback)
+    }
+
     fun onCheckAllAppsClicked() = appSelectionManager.onCheckAllAppsClicked()
     fun onAppSelected(item: SelectableAppItem) = appSelectionManager.onAppSelected(item)
 
     internal fun onNextClickedAfterSelectingApps() {
         val backup = chosenRestorableBackup.value ?: error("No chosen backup")
         // replace original chosen backup with unselected packages removed
-        mChosenRestorableBackup.value = appSelectionManager.onAppSelectionFinished(backup)
+        val filteredBackup = appSelectionManager.onAppSelectionFinished(backup)
+        mChosenRestorableBackup.value = filteredBackup
+        viewModelScope.launch(ioDispatcher) {
+            apkRestore.restore(filteredBackup)
+        }
         // tell UI to move to InstallFragment
         mDisplayFragment.setEvent(RESTORE_APPS)
     }
 
-    private fun getInstallResult(backup: RestorableBackup): LiveData<InstallResult> {
-        @Suppress("EXPERIMENTAL_API_USAGE")
-        return apkRestore.restore(backup)
-            .onStart {
-                Log.d(TAG, "Start InstallResult Flow")
-            }.catch { e ->
-                Log.d(TAG, "Exception in InstallResult Flow", e)
-            }.onCompletion { e ->
-                Log.d(TAG, "Completed InstallResult Flow", e)
-                mNextButtonEnabled.postValue(true)
-            }
-            .flowOn(ioDispatcher)
-            // collect on the same thread, so concurrency issues don't mess up live data updates
-            // e.g. InstallResult#isFinished isn't reported too early.
-            .asLiveData(ioDispatcher)
-    }
+    fun reCheckFailedPackage(packageName: String) = apkRestore.reCheckFailedPackage(packageName)
 
     internal fun onNextClickedAfterInstallingApps() {
         mDisplayFragment.postEvent(RESTORE_BACKUP)

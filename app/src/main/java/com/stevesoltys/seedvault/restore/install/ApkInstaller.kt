@@ -49,8 +49,8 @@ internal class ApkInstaller(private val context: Context) {
         cachedApks: List<File>,
         packageName: String,
         installerPackageName: String?,
-        installResult: MutableInstallResult,
-    ) = suspendCancellableCoroutine<InstallResult> { cont ->
+        installResult: InstallResult,
+    ) = suspendCancellableCoroutine { cont ->
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, i: Intent) {
                 if (i.action != BROADCAST_ACTION) return
@@ -110,7 +110,7 @@ internal class ApkInstaller(private val context: Context) {
         i: Intent,
         expectedPackageName: String,
         cachedApks: List<File>,
-        installResult: MutableInstallResult,
+        installResult: InstallResult,
     ): InstallResult {
         val packageName = i.getStringExtra(EXTRA_PACKAGE_NAME)!!
         val success = i.getIntExtra(EXTRA_STATUS, -1) == STATUS_SUCCESS

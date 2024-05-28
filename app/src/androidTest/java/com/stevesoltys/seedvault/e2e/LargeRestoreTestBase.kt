@@ -108,9 +108,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         withContext(Dispatchers.Main) {
             withTimeout(RESTORE_TIMEOUT) {
-                while (spyRestoreViewModel.installResult.value == null ||
-                    spyRestoreViewModel.nextButtonEnabled.value == false
-                ) {
+                while (spyRestoreViewModel.installResult.value?.isFinished != true) {
                     delay(100)
                 }
             }
