@@ -18,6 +18,7 @@ import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import com.stevesoltys.seedvault.ui.systemData
 import com.stevesoltys.seedvault.worker.FILE_BACKUP_ICONS
 import com.stevesoltys.seedvault.worker.IconManager
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +39,7 @@ internal class AppSelectionManager(
     private val pluginManager: StoragePluginManager,
     private val iconManager: IconManager,
     private val coroutineScope: CoroutineScope,
+    private val workDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
     private val initialState = SelectedAppsState(
@@ -84,7 +86,7 @@ internal class AppSelectionManager(
         selectedApps.value =
             SelectedAppsState(apps = items, allSelected = true, iconsLoaded = false)
         // download icons
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(workDispatcher) {
             val plugin = pluginManager.appPlugin
             val token = restorableBackup.token
             val packagesWithIcons = try {
