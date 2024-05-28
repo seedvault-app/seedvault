@@ -176,7 +176,7 @@ dependencies {
     // anything less than 'implementation' fails tests run with gradlew
     testImplementation(aospLibs)
     testImplementation("androidx.test.ext:junit:1.1.5")
-    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junit5.get()}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${libs.versions.junit5.get()}")

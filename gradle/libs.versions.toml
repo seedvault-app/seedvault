@@ -11,12 +11,12 @@ ktlint = "11.5.0"
 
 # Android SDK versions
 compileSdk = "34"
-minSdk = "33"
+minSdk = "34"
 targetSdk = "34"
 
 # Test versions
 junit4 = "4.13.2"
-junit5 = "5.10.0" # careful, upgrading this can change a Cipher's IV size in tests!?
+junit5 = "5.10.2" # careful, upgrading this can change a Cipher's IV size in tests!?
 mockk = "1.13.4" # newer versions require kotlin > 1.8.10
 espresso = "3.4.0"
 
