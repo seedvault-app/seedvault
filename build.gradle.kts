@@ -5,12 +5,6 @@
 
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-buildscript {
-    repositories {
-        google()
-    }
-}
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -19,10 +13,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.kapt) apply false
     alias(libs.plugins.jetbrains.dokka) apply false
     alias(libs.plugins.jlleitschuh.ktlint) apply false
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
 }
 
 subprojects {
