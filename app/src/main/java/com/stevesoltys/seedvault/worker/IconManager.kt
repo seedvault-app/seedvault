@@ -53,7 +53,8 @@ internal class IconManager(
                 zip.setLevel(BEST_SPEED)
                 val entries = mutableSetOf<String>()
                 packageService.allUserPackages.forEach {
-                    val drawable = packageManager.getApplicationIcon(it.applicationInfo)
+                    val applicationInfo = it.applicationInfo ?: return@forEach
+                    val drawable = packageManager.getApplicationIcon(applicationInfo)
                     if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
                     val entry = ZipEntry(it.packageName)
                     zip.putNextEntry(entry)
