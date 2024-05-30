@@ -32,6 +32,7 @@ espresso = "3.4.0"
 # 1.9.0 Android 14 (QPR2)
 # Check: https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r29/build.txt
 kotlin = { strictly = "1.9.0" }
+ksp = "1.9.0-1.0.13" # Keep in match with kotlin version
 
 # Lint versions
 lint-rules = { strictly = "0.1.0" }
@@ -108,8 +109,8 @@ coroutines = ["kotlinx-coroutines-core-jvm", "kotlinx-coroutines-android"]
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+google-ksp  = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-protobuf  = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 jetbrains-dokka  = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 jetbrains-kotlin-android  = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-jetbrains-kotlin-kapt  = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 jlleitschuh-ktlint  = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

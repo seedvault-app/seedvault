@@ -6,9 +6,9 @@ import com.google.protobuf.gradle.id
  */
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.jetbrains.dokka)
 }
 
@@ -94,7 +94,7 @@ dependencies {
     implementation(libs.google.protobuf.javalite)
     implementation(libs.google.tink.android)
 
-    kapt(group = "androidx.room", name = "room-compiler", version = libs.versions.room.get())
+    ksp(group = "androidx.room", name = "room-compiler", version = libs.versions.room.get())
     lintChecks(libs.thirdegg.lint.rules)
     testImplementation("junit:junit:${libs.versions.junit4.get()}")
     testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")

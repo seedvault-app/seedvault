@@ -5,9 +5,9 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
