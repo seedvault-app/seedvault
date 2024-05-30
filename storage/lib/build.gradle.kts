@@ -5,11 +5,11 @@ import com.google.protobuf.gradle.id
  * SPDX-License-Identifier: Apache-2.0
  */
 plugins {
-    id("com.google.protobuf")
-    id("org.jetbrains.kotlin.kapt")
-    id("org.jetbrains.dokka")
-    id("com.android.library")
-    kotlin("android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
+    alias(libs.plugins.jetbrains.dokka)
 }
 
 android {
@@ -98,7 +98,7 @@ dependencies {
     lintChecks(libs.thirdegg.lint.rules)
     testImplementation("junit:junit:${libs.versions.junit4.get()}")
     testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.aosp.kotlin.get()}")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.kotlin.get()}")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation(
         "androidx.test.espresso:espresso-core:${libs.versions.espresso.get()}"

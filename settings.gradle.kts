@@ -32,14 +32,6 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://jitpack.io")
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("build.libs.toml"))
-        }
-        create("plugins") {
-            from(files("build.plugins.toml"))
-        }
-    }
 }
 
 rootProject.name = "Seedvault"
