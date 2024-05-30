@@ -72,9 +72,10 @@ android {
         languageVersion = "1.8"
     }
 
-    packagingOptions {
-        exclude("META-INF/LICENSE.md")
-        exclude("META-INF/LICENSE-notice.md")
+    packaging {
+        resources {
+            excludes += listOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+        }
     }
 
     testOptions.unitTests {

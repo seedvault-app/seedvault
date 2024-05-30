@@ -15,6 +15,6 @@
 # https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r29/build.txt
 kotlin = "1.9.0"
 
-androidGradle = "8.1.2"
+androidGradle = "8.4.1"
 protobuf = "0.9.4"
 ktlint = "11.5.0"
