@@ -63,6 +63,9 @@ internal class ApkRestore(
             // The @pm@ package needs to be included in [backup], but can't be installed like an app
             if (packageName == MAGIC_PACKAGE_MANAGER) return@mapNotNull null
             // we don't filter out apps without APK, so the user can manually install them
+            // exception is system apps without APK, as those can usually not be installed manually
+            if (metadata.system && !metadata.hasApk()) return@mapNotNull null
+            // apps that made it here get a state class for tracking
             ApkInstallResult(
                 packageName = packageName,
                 state = if (isAllowedToInstallApks) QUEUED else FAILED,

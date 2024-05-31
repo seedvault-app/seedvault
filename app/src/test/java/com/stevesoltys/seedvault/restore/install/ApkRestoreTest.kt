@@ -428,6 +428,32 @@ internal class ApkRestoreTest : TransportTest() {
     }
 
     @Test
+    fun `system app without APK get filtered out`() = runBlocking {
+        // only backed up package is a system app without an APK
+        packageMetadataMap[packageName] = PackageMetadata(
+            time = 23L,
+            system = true,
+            isLaunchableSystemApp = Random.nextBoolean(),
+        ).also { assertFalse(it.hasApk()) }
+
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+
+            awaitItem().also { finishedItem ->
+                println(finishedItem.installResults.values.toList())
+                // the only package provided should have been filtered, leaving 0 packages.
+                assertEquals(0, finishedItem.total)
+                assertTrue(finishedItem.isFinished)
+            }
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
     fun `no apks get installed when blocked by policy`() = runBlocking {
         every { installRestriction.isAllowedToInstallApks() } returns false
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
