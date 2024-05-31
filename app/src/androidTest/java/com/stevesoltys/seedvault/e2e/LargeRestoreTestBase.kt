@@ -72,6 +72,10 @@ internal interface LargeRestoreTestBase : LargeTestBase {
             backupListItem.clickAndWaitForNewWindow()
             waitUntilIdle()
 
+            waitForAppSelectionLoaded()
+            // just tap next in app selection
+            appsSelectedButton.clickAndWaitForNewWindow()
+
             waitForInstallResult()
 
             if (someAppsNotInstalledText.exists()) {
@@ -102,6 +106,17 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         spyOnFullRestoreData(result)
         spyOnKVRestoreData(result)
+    }
+
+    private fun waitForAppSelectionLoaded() = runBlocking {
+        withContext(Dispatchers.Main) {
+            withTimeout(RESTORE_TIMEOUT) {
+                while (spyRestoreViewModel.selectedApps.value?.apps?.isNotEmpty() != true) {
+                    delay(100)
+                }
+            }
+        }
+        waitUntilIdle()
     }
 
     private fun waitForInstallResult() = runBlocking {

@@ -11,6 +11,8 @@ object RestoreScreen : UiDeviceScreen<RestoreScreen>() {
 
     val backupListItem = findObject { textContains("Last backup") }
 
+    val appsSelectedButton = findObject { text("Restore backup") }
+
     val nextButton = findObject { text("Next") }
 
     val finishButton = findObject { text("Finish") }
