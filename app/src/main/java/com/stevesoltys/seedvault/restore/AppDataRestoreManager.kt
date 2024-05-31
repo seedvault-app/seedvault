@@ -20,7 +20,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -37,8 +39,15 @@ import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import java.util.LinkedList
+import java.util.Locale
 
 private val TAG = AppDataRestoreManager::class.simpleName
+
+internal data class AppRestoreResult(
+    val packageName: String,
+    val name: String,
+    val state: AppBackupState,
+)
 
 internal class AppDataRestoreManager(
     private val context: Context,
@@ -50,17 +59,17 @@ internal class AppDataRestoreManager(
     private var session: IRestoreSession? = null
     private val monitor = BackupMonitor()
 
-    private val mRestoreProgress = MutableLiveData<LinkedList<AppRestoreResult>>().apply {
-        value = LinkedList<AppRestoreResult>().apply {
+    private val mRestoreProgress = MutableLiveData(
+        LinkedList<AppRestoreResult>().apply {
             add(
                 AppRestoreResult(
                     packageName = MAGIC_PACKAGE_MANAGER,
-                    name = getAppName(context, MAGIC_PACKAGE_MANAGER),
-                    state = IN_PROGRESS
+                    name = getAppName(context, MAGIC_PACKAGE_MANAGER).toString(),
+                    state = IN_PROGRESS,
                 )
             )
         }
-    }
+    )
     val restoreProgress: LiveData<LinkedList<AppRestoreResult>> get() = mRestoreProgress
     private val mRestoreBackupResult = MutableLiveData<RestoreBackupResult>()
     val restoreBackupResult: LiveData<RestoreBackupResult> get() = mRestoreBackupResult
@@ -88,13 +97,13 @@ internal class AppDataRestoreManager(
             return
         }
 
-        val packages = restorableBackup.packageMetadataMap.keys.toList()
         val observer = RestoreObserver(
             restoreCoordinator = restoreCoordinator,
             restorableBackup = restorableBackup,
             session = session,
-            packages = packages,
-            monitor = monitor
+            // sort packages (reverse) alphabetically, since we move from bottom to top
+            packages = restorableBackup.packageMetadataMap.packagesSortedByNameDescending,
+            monitor = monitor,
         )
 
         // We need to retrieve the restore sets before starting the restore.
@@ -128,9 +137,12 @@ internal class AppDataRestoreManager(
         updateLatestPackage(list, backup)
 
         // add current package
-        list.addFirst(
-            AppRestoreResult(packageName, getAppName(context, packageName), IN_PROGRESS)
+        val name = getAppName(
+            context = context,
+            packageName = packageName,
+            fallback = backup.packageMetadataMap[packageName]?.name?.toString() ?: packageName,
         )
+        list.addFirst(AppRestoreResult(packageName, name.toString(), IN_PROGRESS))
         mRestoreProgress.postValue(list)
     }
 
@@ -167,14 +179,25 @@ internal class AppDataRestoreManager(
 
         // add missing packages as failed
         val seenPackages = list.map { it.packageName }.toSet()
-        val expectedPackages = backup.packageMetadataMap.keys
+        val expectedPackages =
+            backup.packageMetadataMap.packagesSortedByNameDescending.toMutableSet()
         expectedPackages.removeAll(seenPackages)
-        for (packageName: String in expectedPackages) {
-            // TODO don't add if it was a NO_DATA system app
+        for (packageName in expectedPackages) {
             val failedStatus = getFailedStatus(packageName, backup)
-            val appResult =
-                AppRestoreResult(packageName, getAppName(context, packageName), failedStatus)
-            list.addFirst(appResult)
+            if (failedStatus == FAILED_NO_DATA &&
+                backup.packageMetadataMap[packageName]?.isInternalSystem == true
+            ) {
+                // don't add internal system apps that had NO_DATA to backup
+            } else {
+                val name = getAppName(
+                    context = context,
+                    packageName = packageName,
+                    fallback = backup.packageMetadataMap[packageName]?.name?.toString()
+                        ?: packageName,
+                )
+                val appResult = AppRestoreResult(packageName, name.toString(), failedStatus)
+                list.addFirst(appResult)
+            }
         }
         mRestoreProgress.postValue(list)
 
@@ -186,7 +209,6 @@ internal class AppDataRestoreManager(
         session = null
     }
 
-    // TODO  sort apps alphabetically
     @WorkerThread
     private inner class RestoreObserver(
         private val restoreCoordinator: RestoreCoordinator,
@@ -244,6 +266,7 @@ internal class AppDataRestoreManager(
             val token = backupMetadata.token
             val result = session.restorePackages(token, this, packageChunk, monitor)
 
+            @Suppress("UNRESOLVED_REFERENCE") // BackupManager.SUCCESS
             if (result != BackupManager.SUCCESS) {
                 Log.e(TAG, "restorePackages() returned non-zero value: $result")
             }
@@ -295,6 +318,7 @@ internal class AppDataRestoreManager(
         }
 
         private fun getRestoreResult(): RestoreBackupResult {
+            @Suppress("UNRESOLVED_REFERENCE") // BackupManager.SUCCESS
             val failedChunks = chunkResults
                 .filter { it.value != BackupManager.SUCCESS }
                 .map { "chunk ${it.key} failed with error ${it.value}" }
@@ -310,4 +334,15 @@ internal class AppDataRestoreManager(
             }
         }
     }
+
+    private val PackageMetadataMap.packagesSortedByNameDescending: List<String>
+        get() {
+            return asIterable().sortedByDescending { (packageName, metadata) ->
+                // sort packages (reverse) alphabetically, since we move from bottom to top
+                (metadata.name?.toString() ?: packageName).lowercase(Locale.getDefault())
+            }.mapNotNull {
+                // don't try to restore this helper package, as it doesn't really exist
+                if (it.key == NO_DATA_END_SENTINEL) null else it.key
+            }
+        }
 }

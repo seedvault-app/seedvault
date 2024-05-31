@@ -167,14 +167,18 @@ internal class NotificationBackupObserver(
 
 }
 
-fun getAppName(context: Context, packageId: String): CharSequence {
-    if (packageId == MAGIC_PACKAGE_MANAGER || packageId.startsWith("@")) {
+fun getAppName(
+    context: Context,
+    packageName: String,
+    fallback: String = packageName,
+): CharSequence {
+    if (packageName == MAGIC_PACKAGE_MANAGER || packageName.startsWith("@")) {
         return context.getString(R.string.restore_magic_package)
     }
     return try {
-        val appInfo = context.packageManager.getApplicationInfo(packageId, 0)
+        val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
         context.packageManager.getApplicationLabel(appInfo)
     } catch (e: NameNotFoundException) {
-        packageId
+        fallback
     }
 }

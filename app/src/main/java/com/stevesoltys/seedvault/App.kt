@@ -201,6 +201,7 @@ open class App : Application() {
 
 const val MAGIC_PACKAGE_MANAGER: String = PACKAGE_MANAGER_SENTINEL
 const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
+const val NO_DATA_END_SENTINEL = "@end@"
 const val GLOBAL_METADATA_KEY = "@meta@"
 const val ERROR_BACKUP_CANCELLED: Int = BackupManager.ERROR_BACKUP_CANCELLED
 
