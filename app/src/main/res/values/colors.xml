@@ -19,7 +19,7 @@
     <color name="statusBarColor">@color/primary</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#69 -->
     <!-- private resource, access it from colorError attribute instead -->
-    <color name="red">?android:attr/colorError</color>
+    <color name="red">@*android:color/error_color_device_default_dark</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#35 -->
     <color name="ic_launcher_background">@color/accent</color>
 
