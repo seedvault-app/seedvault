@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
@@ -149,6 +150,7 @@ internal class AppSelectionManager(
             @Suppress("IfThenToElvis") // the code is more readable like this
             if (isSelected == null) { // was not in list
                 if (packageName == MAGIC_PACKAGE_MANAGER) true // @pm@ is essential for restore
+                else if (packageName == NO_DATA_END_SENTINEL) false // @end@ is not real
                 // internal system apps were not in the list and are controlled by meta item,
                 // so allow them only if meta item was selected
                 else if (metadata.isInternalSystem) restoreSystemApps
