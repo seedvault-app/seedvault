@@ -5,24 +5,14 @@
 
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
-buildscript {
-    repositories {
-        google()
-    }
-}
-
 plugins {
-    id("com.android.application") version plugins.versions.androidGradle apply false
-    id("com.android.library") version plugins.versions.androidGradle apply false
-    id("com.google.protobuf") version plugins.versions.protobuf apply false
-    id("org.jetbrains.kotlin.android") version plugins.versions.kotlin apply false
-    id("org.jetbrains.kotlin.kapt") version plugins.versions.kotlin apply false
-    id("org.jetbrains.dokka") version plugins.versions.kotlin apply false
-    id("org.jlleitschuh.gradle.ktlint") version plugins.versions.ktlint apply false
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.google.ksp) apply false
+    alias(libs.plugins.google.protobuf) apply false
+    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.jetbrains.dokka) apply false
+    alias(libs.plugins.jlleitschuh.ktlint) apply false
 }
 
 subprojects {

@@ -1,11 +1,14 @@
 #
-# SPDX-FileCopyrightText: 2023 The Calyx Institute
+# SPDX-FileCopyrightText: 2024 The Calyx Institute
 # SPDX-License-Identifier: Apache-2.0
 #
 
-[metadata]
-
 [versions]
+# Gradle plugin versions
+androidGradlePlugin = "8.4.1"
+protobufPlugin = "0.9.4"
+ktlint = "11.5.0"
+
 # Android SDK versions
 compileSdk = "34"
 minSdk = "33"
@@ -21,9 +24,15 @@ espresso = "3.4.0"
 # We use "strictly" to enforce the version cannot be overriden by transitive dependencies.
 # We need to enforce that the versions we use are the same as AOSP to ensure compatibility.
 
-# Kotlin versions
-# https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r29/build.txt
-aosp-kotlin = { strictly = "1.9.0" }
+# 1.3.61 Android 11
+# 1.4.30 Android 12
+# 1.6.10 Android 13
+# 1.7.20 Android 13 (QPR2)
+# 1.8.10 Android 14
+# 1.9.0 Android 14 (QPR2)
+# Check: https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r29/build.txt
+kotlin = { strictly = "1.9.0" }
+ksp = "1.9.0-1.0.13" # Keep in match with kotlin version
 
 # Lint versions
 lint-rules = { strictly = "0.1.0" }
@@ -64,9 +73,9 @@ androidx-work-runtime = { strictly = "2.10.0-alpha01" }
 
 [libraries]
 # Kotlin standard dependencies
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "aosp-kotlin" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "aosp-kotlin" }
-kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "aosp-kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin" }
 
 # Lint dependencies
 thirdegg-lint-rules = { module = "com.github.thirdegg:lint-rules", version.ref = "lint-rules" }
@@ -96,3 +105,12 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlin-stdlib-common"]
 coroutines = ["kotlinx-coroutines-core-jvm", "kotlinx-coroutines-android"]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+google-ksp  = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-protobuf  = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+jetbrains-dokka  = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+jetbrains-kotlin-android  = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jlleitschuh-ktlint  = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
