@@ -11,10 +11,9 @@ if [ -z "$ANDROID_HOME" ]; then
 fi
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-DEVELOPMENT_DIR=$SCRIPT_DIR/..
 ROOT_PROJECT_DIR=$SCRIPT_DIR/../../..
 
-EMULATOR_DEVICE_NAME=$($ANDROID_HOME/platform-tools/adb devices | grep emulator | cut -f1)
+EMULATOR_DEVICE_NAME=$("$ANDROID_HOME"/platform-tools/adb devices | grep emulator | cut -f1)
 
 if [ -z "$EMULATOR_DEVICE_NAME" ]; then
   echo "Emulator device name not found"
@@ -29,13 +28,9 @@ $ADB remount # remount /system as writable
 
 echo "Installing Seedvault app..."
 $ADB shell mkdir -p /system/priv-app/Seedvault
-$ADB push $ROOT_PROJECT_DIR/app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk
+$ADB push "$ROOT_PROJECT_DIR"/app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk
 
 echo "Installing Seedvault permissions..."
-$ADB push $ROOT_PROJECT_DIR/permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
-$ADB push $ROOT_PROJECT_DIR/allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
-$ADB shell am force-stop com.stevesoltys.seedvault
+$ADB push "$ROOT_PROJECT_DIR"/permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
+$ADB push "$ROOT_PROJECT_DIR"/allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
 $ADB shell am broadcast -a android.intent.action.BOOT_COMPLETED
-
-echo "Setting Seedvault transport..."
-$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
