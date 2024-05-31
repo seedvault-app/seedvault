@@ -66,7 +66,9 @@ import com.stevesoltys.seedvault.ui.systemData
 import com.stevesoltys.seedvault.worker.IconManager
 import com.stevesoltys.seedvault.worker.NUM_PACKAGES_PER_TRANSACTION
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.StorageBackup
@@ -328,6 +330,8 @@ internal class RestoreViewModel(
 
     override fun onCleared() {
         super.onCleared()
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch(ioDispatcher) { iconManager.removeIcons() }
         closeSession()
     }
 

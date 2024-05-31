@@ -10,6 +10,7 @@ import android.graphics.Bitmap.CompressFormat.WEBP_LOSSY
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
@@ -132,6 +133,13 @@ internal class IconManager(
                 callback(defaultIcon)
             }
         }
+    }
+
+    @WorkerThread
+    fun removeIcons() {
+        val folder = File(context.cacheDir, CACHE_FOLDER)
+        val result = folder.deleteRecursively()
+        Log.e(TAG, "Could delete icons: $result")
     }
 
     private fun getAD(version: Byte, token: Long) = ByteBuffer.allocate(2 + 8)
