@@ -26,12 +26,12 @@
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
     <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
     <string name="settings_category_app_data_backup">App data backup</string>
-    <string name="settings_backup_apk_title">App backup</string>
+    <string name="settings_backup_apk_title">APK backup</string>
     <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
-    <string name="settings_backup_apk_dialog_title">Really disable app backup?</string>
-    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically.\n\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
+    <string name="settings_backup_apk_dialog_title">Really disable APK backup?</string>
+    <string name="settings_backup_apk_dialog_message">Disabled APK backup will still back up app data. However, it will not get restored automatically.\n\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
     <string name="settings_backup_apk_dialog_cancel">Cancel</string>
-    <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
+    <string name="settings_backup_apk_dialog_disable">Disable APK backup</string>
     <string name="settings_backup_status_title">Backup status</string>
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_status_next_backup">Next backup: %1$s</string>
@@ -151,7 +151,7 @@
     <string name="notification_success_channel_title">Success notification</string>
     <string name="notification_title">Backup running</string>
     <string name="notification_apk_text">Backing up APK of %s</string>
-    <string name="notification_apk_not_backed_up">Saving list of apps we can not back up.</string>
+    <string name="notification_apk_not_backed_up">Saving list of apps which APKs we can not back up.</string>
     <string name="notification_backup_already_running">Backup already in progress</string>
     <string name="notification_backup_disabled">Backup not enabled</string>
 
