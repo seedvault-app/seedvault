@@ -15,6 +15,10 @@ echo "Installing Seedvault permissions..."
 adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
 adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
 
+echo "Rebooting emulator..."
+adb reboot
+adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+
 echo "Setting Seedvault transport..."
 sleep 10
 adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
