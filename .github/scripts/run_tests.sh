@@ -7,6 +7,8 @@ while [ $index -lt 60 ]; do
   index=$((index + 1))
 done
 
+adb shell bmgr enable false
+
 D2D_BACKUP_TEST=$1
 
 large_test_exit_code=0
