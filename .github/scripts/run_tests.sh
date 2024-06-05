@@ -1,27 +1,11 @@
-#
-# SPDX-FileCopyrightText: 2023 The Calyx Institute
-# SPDX-License-Identifier: Apache-2.0
-#
+echo "Settings transport to Seedvault..."
+index=0
 
-adb root
-sleep 5
-adb remount
-
-echo "Installing Seedvault app..."
-adb shell mkdir -p /system/priv-app/Seedvault
-adb push app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk
-
-echo "Installing Seedvault permissions..."
-adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
-adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
-
-echo "Rebooting emulator..."
-adb reboot
-adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
-
-echo "Setting Seedvault transport..."
-sleep 10
-adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
+while [ $index -lt 60 ]; do
+  adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport && break
+  sleep 5
+  index=$((index + 1))
+done
 
 D2D_BACKUP_TEST=$1
 
@@ -31,16 +15,16 @@ large_test_exit_code=0
 adb pull /sdcard/seedvault_test_results
 
 if [ "$large_test_exit_code" -ne 0 ]; then
-    echo 'Large tests failed.'
-    exit 1
+  echo 'Large tests failed.'
+  exit 1
 fi
 
 medium_test_exit_code=0
 ./gradlew --stacktrace -Pinstrumented_test_size=medium :app:connectedAndroidTest || medium_test_exit_code=$?
 
 if [ "$medium_test_exit_code" -ne 0 ]; then
-    echo 'Medium tests failed.'
-    exit 1
+  echo 'Medium tests failed.'
+  exit 1
 fi
 
 exit 0
