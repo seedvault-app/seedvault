@@ -5,11 +5,9 @@
 
 package com.stevesoltys.seedvault.e2e
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.stevesoltys.seedvault.transport.ConfigurableBackupTransportService
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -47,13 +45,10 @@ internal abstract class SeedvaultLargeTest :
         resetApplicationState()
         clearTestBackups()
 
-        targetContext.startService(
-            Intent(targetContext, ConfigurableBackupTransportService::class.java)
-        )
-
-        sleep(120000)
-
+        runCommand("bmgr enable true")
+        sleep(60000)
         runCommand("bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport")
+        sleep(60000)
 
         startRecordingTest(keepRecordingScreen, name.methodName)
         restoreBaselineBackup()
