@@ -79,10 +79,10 @@ echo "Rebooting emulator..."
 $ADB reboot
 $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
 
-echo "Setting backup transport to Seedvault..."
-$ADB shell bmgr enable true
-sleep 5
-$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
+#echo "Setting backup transport to Seedvault..."
+$ADB shell bmgr enable false
+#sleep 5
+#$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
 
 echo "Downloading and extracting test backup to '/sdcard/seedvault_baseline'..."
 

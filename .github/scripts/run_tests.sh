@@ -1,13 +1,6 @@
 echo "Settings transport to Seedvault..."
 index=0
 
-while [ $index -lt 60 ]; do
-  adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport && break
-  sleep 5
-  index=$((index + 1))
-done
-
-adb shell bmgr enable false
 
 D2D_BACKUP_TEST=$1
 
