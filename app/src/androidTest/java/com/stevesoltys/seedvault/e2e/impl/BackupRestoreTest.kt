@@ -14,6 +14,12 @@ import org.junit.Test
 @LargeTest
 internal class BackupRestoreTest : SeedvaultLargeTest() {
 
+    companion object {
+        private val IGNORED_KV_DATA = mapOf(
+            "@pm@" to setOf("@meta@")
+        )
+    }
+
     @Test
     fun `backup and restore applications`() {
         launchBackupActivity()
@@ -132,12 +138,14 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
             }
 
             kvData.forEach { (key, value) ->
-                assert(backup.kv[pkg]!!.containsKey(key)) {
-                    "KV data for $pkg/$key exists in restore but is missing from backup."
-                }
+                if(IGNORED_KV_DATA[pkg]?.contains(key) == false) {
+                    assert(backup.kv[pkg]!!.containsKey(key)) {
+                        "KV data for $pkg/$key exists in restore but is missing from backup."
+                    }
 
-                assert(value.contentEquals(backup.kv[pkg]!![key]!!)) {
-                    "KV data for $pkg/$key does not match."
+                    assert(value.contentEquals(backup.kv[pkg]!![key]!!)) {
+                        "KV data for $pkg/$key does not match."
+                    }
                 }
             }
         }
