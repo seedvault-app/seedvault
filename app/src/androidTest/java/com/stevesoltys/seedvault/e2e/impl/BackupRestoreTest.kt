@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.e2e.impl
 
 import androidx.test.filters.LargeTest
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTest
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTestResult
 import com.stevesoltys.seedvault.metadata.PackageState
@@ -13,12 +14,6 @@ import org.junit.Test
 
 @LargeTest
 internal class BackupRestoreTest : SeedvaultLargeTest() {
-
-    companion object {
-        private val IGNORED_KV_DATA = mapOf(
-            "@pm@" to setOf("@meta@")
-        )
-    }
 
     @Test
     fun `backup and restore applications`() {
@@ -133,12 +128,12 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
     ) {
         // Assert all "key/value" restored data matches the backup data.
         restore.kv.forEach { (pkg, kvData) ->
-            assert(backup.kv.containsKey(pkg)) {
-                "KV data for $pkg missing from backup."
-            }
+            if (pkg != MAGIC_PACKAGE_MANAGER) {
+                assert(backup.kv.containsKey(pkg)) {
+                    "KV data for $pkg missing from backup."
+                }
 
-            kvData.forEach { (key, value) ->
-                if(IGNORED_KV_DATA[pkg]?.contains(key) == false) {
+                kvData.forEach { (key, value) ->
                     assert(backup.kv[pkg]!!.containsKey(key)) {
                         "KV data for $pkg/$key exists in restore but is missing from backup."
                     }
