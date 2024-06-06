@@ -1,6 +1,7 @@
 echo "Settings transport to Seedvault..."
 index=0
 
+adb shell bmgr autorestore false
 
 D2D_BACKUP_TEST=$1
 
