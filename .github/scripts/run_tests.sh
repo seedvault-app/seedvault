@@ -2,7 +2,7 @@ echo "Settings transport to Seedvault..."
 index=0
 
 adb shell bmgr autorestore false
-adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+./gradlew --stacktrace :app:installDebugAndroidTest
 sleep 60
 
 D2D_BACKUP_TEST=$1
