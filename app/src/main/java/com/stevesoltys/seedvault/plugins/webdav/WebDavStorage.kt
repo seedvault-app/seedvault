@@ -54,9 +54,9 @@ internal abstract class WebDavStorage(
         .followRedirects(false)
         .authenticator(authHandler)
         .addNetworkInterceptor(authHandler)
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(120, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(240, TimeUnit.SECONDS)
         .pingInterval(45, TimeUnit.SECONDS)
         .connectionSpecs(listOf(ConnectionSpec.MODERN_TLS))
         .retryOnConnectionFailure(true)
@@ -73,6 +73,7 @@ internal abstract class WebDavStorage(
         val pipedOutputStream = PipedCloseActionOutputStream(pipedInputStream)
 
         val body = object : RequestBody() {
+            override fun isOneShot(): Boolean = true
             override fun contentType() = "application/octet-stream".toMediaType()
             override fun writeTo(sink: BufferedSink) {
                 pipedInputStream.use { inputStream ->
