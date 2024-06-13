@@ -8,7 +8,11 @@ package com.stevesoltys.seedvault.plugins.webdav
 import android.util.Log
 import at.bitfire.dav4jvm.BasicDigestAuthHandler
 import at.bitfire.dav4jvm.DavCollection
+import at.bitfire.dav4jvm.MultiResponseCallback
 import at.bitfire.dav4jvm.Response
+import at.bitfire.dav4jvm.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.exception.HttpException
+import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.ResourceType
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -122,6 +126,47 @@ internal abstract class WebDavStorage(
             }
         }
         return pipedInputStream
+    }
+
+    /**
+     * Tries to do [DavCollection.propfind] with a depth of `2` which is not in RFC4918.
+     * Since `infinity` isn't supported by nginx either,
+     * we fallback to iterating over all folders found with depth `1`
+     * and do another PROPFIND on those, passing the given [callback].
+     */
+    protected fun DavCollection.propfindDepthTwo(callback: MultiResponseCallback) {
+        try {
+            propfind(
+                depth = 2, // this isn't defined in RFC4918
+                reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+                callback = callback,
+            )
+        } catch (e: HttpException) {
+            if (e.code == 400) {
+                Log.i(TAG, "Got ${e.response}, trying two depth=1 PROPFINDs...")
+                propfindFakeTwo(callback)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private fun DavCollection.propfindFakeTwo(callback: MultiResponseCallback) {
+        propfind(
+            depth = 1,
+            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+        ) { response, relation ->
+            debugLog { "propFindFakeTwo() = $response" }
+            // This callback will be called for everything in the folder
+            callback.onResponse(response, relation)
+            if (relation != SELF && response.isFolder()) {
+                DavCollection(okHttpClient, response.href).propfind(
+                    depth = 1,
+                    reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+                    callback = callback,
+                )
+            }
+        }
     }
 
     protected suspend fun DavCollection.createFolder(xmlBody: String? = null): okhttp3.Response {

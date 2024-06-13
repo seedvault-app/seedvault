@@ -9,6 +9,7 @@ import android.content.Context
 import android.util.Log
 import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.QuotaAvailableBytes
@@ -174,20 +175,25 @@ internal class WebDavStoragePlugin(
 
         // get all restore set tokens in root folder
         val tokens = ArrayList<Long>()
-        davCollection.propfind(
-            depth = 2,
-            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
-        ) { response, relation ->
-            debugLog { "getAvailableBackups() = $response" }
-            // This callback will be called for every file in the folder
-            if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2 &&
-                response.hrefName() == FILE_BACKUP_METADATA
-            ) {
-                val tokenName = response.href.pathSegments[response.href.pathSegments.size - 2]
-                getTokenOrNull(tokenName)?.let { token ->
-                    tokens.add(token)
+        try {
+            davCollection.propfind(
+                depth = 2,
+                reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+            ) { response, relation ->
+                debugLog { "getAvailableBackups() = $response" }
+                // This callback will be called for every file in the folder
+                if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2 &&
+                    response.hrefName() == FILE_BACKUP_METADATA
+                ) {
+                    val tokenName = response.href.pathSegments[response.href.pathSegments.size - 2]
+                    getTokenOrNull(tokenName)?.let { token ->
+                        tokens.add(token)
+                    }
                 }
             }
+        } catch (e: HttpException) {
+            if (e.code == 400) getBackupTokenWithDepthOne(davCollection, tokens)
+            else throw e
         }
         val tokenIterator = tokens.iterator()
         return generateSequence {
@@ -195,6 +201,34 @@ internal class WebDavStoragePlugin(
             val token = tokenIterator.next()
             EncryptedMetadata(token) {
                 getInputStream(token, FILE_BACKUP_METADATA)
+            }
+        }
+    }
+
+    private fun getBackupTokenWithDepthOne(davCollection: DavCollection, tokens: ArrayList<Long>) {
+        davCollection.propfind(
+            depth = 1,
+            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+        ) { response, relation ->
+            debugLog { "getBackupTokenWithDepthOne() = $response" }
+
+            // we are only interested in sub-folders, skip rest
+            if (relation == SELF || !response.isFolder()) return@propfind
+
+            val token = getTokenOrNull(response.hrefName()) ?: return@propfind
+            val tokenUrl = response.href.newBuilder()
+                .addPathSegment(FILE_BACKUP_METADATA)
+                .build()
+            // check if .backup.metadata file exists using HEAD request,
+            // because some servers (e.g. nginx don't list hidden files with PROPFIND)
+            try {
+                DavCollection(okHttpClient, tokenUrl).head {
+                    debugLog { "getBackupTokenWithDepthOne() = $response" }
+                    tokens.add(token)
+                }
+            } catch (e: Exception) {
+                // just log exception and continue, we want to find all files that are there
+                Log.e(TAG, "Error retrieving $tokenUrl: ", e)
             }
         }
     }

@@ -71,6 +71,10 @@ internal class WebDavStoragePluginTest : TransportTest() {
         plugin.getOutputStream(token, FILE_BACKUP_METADATA).use {
             it.write(metadata)
         }
+
+        // now we have data
+        assertTrue(plugin.hasData(token, FILE_BACKUP_METADATA))
+
         try {
             // now we have one backup matching our token
             val backups = plugin.getAvailableBackups()?.toSet() ?: fail()
