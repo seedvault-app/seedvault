@@ -19,7 +19,7 @@ If you are having an issue/question, please look at our [FAQ](https://github.com
 
 ## Requirements
 
-SeedVault is developed alongwith AOSP releases
+SeedVault is developed along with AOSP releases
 
 We update it every time Google releases a new Android version, make any changes required for basic functionality, and any improvements possible through API changes in the OS.
 
