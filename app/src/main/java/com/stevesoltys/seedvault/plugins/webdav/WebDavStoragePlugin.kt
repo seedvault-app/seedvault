@@ -163,7 +163,7 @@ internal class WebDavStoragePlugin(
     override suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>? {
         return try {
             doGetAvailableBackups()
-        } catch (e: Exception) {
+        } catch (e: Throwable) { // NoClassDefFound isn't an [Exception], can get thrown by dav4jvm
             Log.e(TAG, "Error getting available backups: ", e)
             null
         }
