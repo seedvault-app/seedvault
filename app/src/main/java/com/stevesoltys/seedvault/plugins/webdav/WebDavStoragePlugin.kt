@@ -34,7 +34,7 @@ internal class WebDavStoragePlugin(
 ) : WebDavStorage(webDavConfig, root), StoragePlugin<WebDavConfig> {
 
     override suspend fun test(): Boolean {
-        val location = baseUrl.toHttpUrl()
+        val location = (if (baseUrl.endsWith('/')) baseUrl else "$baseUrl/").toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val webDavSupported = suspendCoroutine { cont ->
@@ -50,7 +50,7 @@ internal class WebDavStoragePlugin(
     }
 
     override suspend fun getFreeSpace(): Long? {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val availableBytes = suspendCoroutine { cont ->
@@ -70,7 +70,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
-        val location = "$url/$token".toHttpUrl()
+        val location = "$url/$token/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val response = davCollection.createFolder()
@@ -81,7 +81,7 @@ internal class WebDavStoragePlugin(
     override suspend fun initializeDevice() {
         // TODO does it make sense to delete anything
         //  when [startNewRestoreSet] is always called first? Maybe unify both calls?
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         try {
@@ -169,7 +169,7 @@ internal class WebDavStoragePlugin(
     }
 
     private suspend fun doGetAvailableBackups(): Sequence<EncryptedMetadata> {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         // get all restore set tokens in root folder

@@ -49,7 +49,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun init() {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         try {
@@ -67,7 +67,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getAvailableChunkIds(): List<String> {
-        val location = "$url/$folder".toHttpUrl()
+        val location = "$url/$folder/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getAvailableChunkIds($location)" }
 
@@ -117,7 +117,7 @@ internal class WebDavStoragePlugin(
     ) {
         val s = missingChunkFolders.size
         for ((i, chunkFolderName) in missingChunkFolders.withIndex()) {
-            val location = "$url/$folder/$chunkFolderName".toHttpUrl()
+            val location = "$url/$folder/$chunkFolderName/".toHttpUrl()
             val davCollection = DavCollection(okHttpClient, location)
             val response = davCollection.createFolder()
             debugLog { "Created missing folder $chunkFolderName (${i + 1}/$s) $response" }
@@ -156,7 +156,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getBackupSnapshotsForRestore(): List<StoredSnapshot> {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getBackupSnapshotsForRestore($location)" }
 
@@ -220,7 +220,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getCurrentBackupSnapshots(): List<StoredSnapshot> {
-        val location = "$url/$folder".toHttpUrl()
+        val location = "$url/$folder/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getCurrentBackupSnapshots($location)" }
 
