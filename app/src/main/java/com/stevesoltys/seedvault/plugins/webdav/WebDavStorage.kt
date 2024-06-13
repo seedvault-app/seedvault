@@ -142,7 +142,7 @@ internal abstract class WebDavStorage(
                 callback = callback,
             )
         } catch (e: HttpException) {
-            if (e.code == 400) {
+            if (e.isUnsupportedPropfind()) {
                 Log.i(TAG, "Got ${e.response}, trying two depth=1 PROPFINDs...")
                 propfindFakeTwo(callback)
             } else {
@@ -167,6 +167,18 @@ internal abstract class WebDavStorage(
                 )
             }
         }
+    }
+
+    protected fun HttpException.isUnsupportedPropfind(): Boolean {
+        // nginx returns 400 for depth=2
+        if (code == 400) {
+            return true
+        }
+        // lighttpd returns 403 with <DAV:propfind-finite-depth/> error as if we used infinity
+        if (code == 403 && responseBody?.contains("propfind-finite-depth") == true) {
+            return true
+        }
+        return false
     }
 
     protected suspend fun DavCollection.createFolder(xmlBody: String? = null): okhttp3.Response {

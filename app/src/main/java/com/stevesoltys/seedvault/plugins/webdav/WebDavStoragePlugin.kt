@@ -192,7 +192,7 @@ internal class WebDavStoragePlugin(
                 }
             }
         } catch (e: HttpException) {
-            if (e.code == 400) getBackupTokenWithDepthOne(davCollection, tokens)
+            if (e.isUnsupportedPropfind()) getBackupTokenWithDepthOne(davCollection, tokens)
             else throw e
         }
         val tokenIterator = tokens.iterator()
