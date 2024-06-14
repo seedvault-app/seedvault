@@ -9,8 +9,12 @@ import android.util.Log
 import at.bitfire.dav4jvm.BasicDigestAuthHandler
 import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.MultiResponseCallback
+import at.bitfire.dav4jvm.Property
+import at.bitfire.dav4jvm.PropertyFactory
+import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.XmlUtils.NS_WEBDAV
 import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.ResourceType
@@ -27,6 +31,7 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.internal.closeQuietly
 import okio.BufferedSink
+import org.xmlpull.v1.XmlPullParser
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -68,6 +73,10 @@ internal abstract class WebDavStorage(
 
     protected val baseUrl = webDavConfig.url
     protected val url = "${webDavConfig.url}/$root"
+
+    init {
+        PropertyRegistry.register(GetLastModified.Factory)
+    }
 
     @Throws(IOException::class)
     protected suspend fun getOutputStream(location: HttpUrl): OutputStream {
@@ -236,4 +245,20 @@ internal abstract class WebDavStorage(
         }
     }
 
+}
+
+/**
+ * A fake version of [at.bitfire.dav4jvm.property.GetLastModified] which we register
+ * so we don't need to depend on `org.apache.commons.lang3` which is used for date parsing.
+ */
+class GetLastModified : Property {
+    companion object {
+        @JvmField
+        val NAME = Property.Name(NS_WEBDAV, "getlastmodified")
+    }
+
+    object Factory : PropertyFactory {
+        override fun getName() = NAME
+        override fun create(parser: XmlPullParser): GetLastModified? = null
+    }
 }
