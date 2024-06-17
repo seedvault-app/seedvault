@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   instrumentation_tests:
-    runs-on: macos-11
+    runs-on: macos-12
     if: github.repository == 'seedvault-app/seedvault'
     timeout-minutes: 80
     strategy:
