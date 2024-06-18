@@ -18,6 +18,7 @@ import android.net.NetworkRequest
 import android.net.Uri
 import android.os.BadParcelableException
 import android.os.Process.myUid
+import android.os.UserHandle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -308,6 +309,8 @@ internal class SettingsViewModel(
     }
 
     fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
+        // disable framework scheduling, because another transport may have enabled it
+        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
         if (!pluginManager.isOnRemovableDrive && backupManager.isBackupEnabled) {
             AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
         }
