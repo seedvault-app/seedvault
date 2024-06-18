@@ -49,7 +49,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun init() {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         try {
@@ -67,7 +67,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getAvailableChunkIds(): List<String> {
-        val location = "$url/$folder".toHttpUrl()
+        val location = "$url/$folder/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getAvailableChunkIds($location)" }
 
@@ -77,10 +77,7 @@ internal class WebDavStoragePlugin(
         val chunkIds = ArrayList<String>()
         try {
             val duration = measureDuration {
-                davCollection.propfind(
-                    depth = 2,
-                    reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
-                ) { response, relation ->
+                davCollection.propfindDepthTwo { response, relation ->
                     debugLog { "getAvailableChunkIds() = $response" }
                     // This callback will be called for every file in the folder
                     if (relation != SELF && response.isFolder()) {
@@ -117,7 +114,7 @@ internal class WebDavStoragePlugin(
     ) {
         val s = missingChunkFolders.size
         for ((i, chunkFolderName) in missingChunkFolders.withIndex()) {
-            val location = "$url/$folder/$chunkFolderName".toHttpUrl()
+            val location = "$url/$folder/$chunkFolderName/".toHttpUrl()
             val davCollection = DavCollection(okHttpClient, location)
             val response = davCollection.createFolder()
             debugLog { "Created missing folder $chunkFolderName (${i + 1}/$s) $response" }
@@ -156,19 +153,16 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getBackupSnapshotsForRestore(): List<StoredSnapshot> {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getBackupSnapshotsForRestore($location)" }
 
         val snapshots = ArrayList<StoredSnapshot>()
         try {
-            davCollection.propfind(
-                depth = 2,
-                reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
-            ) { response, relation ->
+            davCollection.propfindDepthTwo { response, relation ->
                 debugLog { "getBackupSnapshotsForRestore() = $response" }
                 // This callback will be called for every file in the folder
-                if (relation != SELF && !response.isFolder()) {
+                if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2) {
                     val name = response.hrefName()
                     val match = snapshotRegex.matchEntire(name)
                     if (match != null) {
@@ -220,7 +214,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun getCurrentBackupSnapshots(): List<StoredSnapshot> {
-        val location = "$url/$folder".toHttpUrl()
+        val location = "$url/$folder/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         debugLog { "getCurrentBackupSnapshots($location)" }
 

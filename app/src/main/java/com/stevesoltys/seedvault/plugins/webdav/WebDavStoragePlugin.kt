@@ -9,6 +9,7 @@ import android.content.Context
 import android.util.Log
 import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.QuotaAvailableBytes
@@ -34,7 +35,7 @@ internal class WebDavStoragePlugin(
 ) : WebDavStorage(webDavConfig, root), StoragePlugin<WebDavConfig> {
 
     override suspend fun test(): Boolean {
-        val location = baseUrl.toHttpUrl()
+        val location = (if (baseUrl.endsWith('/')) baseUrl else "$baseUrl/").toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val webDavSupported = suspendCoroutine { cont ->
@@ -50,7 +51,7 @@ internal class WebDavStoragePlugin(
     }
 
     override suspend fun getFreeSpace(): Long? {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val availableBytes = suspendCoroutine { cont ->
@@ -70,7 +71,7 @@ internal class WebDavStoragePlugin(
 
     @Throws(IOException::class)
     override suspend fun startNewRestoreSet(token: Long) {
-        val location = "$url/$token".toHttpUrl()
+        val location = "$url/$token/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         val response = davCollection.createFolder()
@@ -81,7 +82,7 @@ internal class WebDavStoragePlugin(
     override suspend fun initializeDevice() {
         // TODO does it make sense to delete anything
         //  when [startNewRestoreSet] is always called first? Maybe unify both calls?
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         try {
@@ -162,32 +163,37 @@ internal class WebDavStoragePlugin(
     override suspend fun getAvailableBackups(): Sequence<EncryptedMetadata>? {
         return try {
             doGetAvailableBackups()
-        } catch (e: Exception) {
+        } catch (e: Throwable) { // NoClassDefFound isn't an [Exception], can get thrown by dav4jvm
             Log.e(TAG, "Error getting available backups: ", e)
             null
         }
     }
 
     private suspend fun doGetAvailableBackups(): Sequence<EncryptedMetadata> {
-        val location = url.toHttpUrl()
+        val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
         // get all restore set tokens in root folder
         val tokens = ArrayList<Long>()
-        davCollection.propfind(
-            depth = 2,
-            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
-        ) { response, relation ->
-            debugLog { "getAvailableBackups() = $response" }
-            // This callback will be called for every file in the folder
-            if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2 &&
-                response.hrefName() == FILE_BACKUP_METADATA
-            ) {
-                val tokenName = response.href.pathSegments[response.href.pathSegments.size - 2]
-                getTokenOrNull(tokenName)?.let { token ->
-                    tokens.add(token)
+        try {
+            davCollection.propfind(
+                depth = 2,
+                reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+            ) { response, relation ->
+                debugLog { "getAvailableBackups() = $response" }
+                // This callback will be called for every file in the folder
+                if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2 &&
+                    response.hrefName() == FILE_BACKUP_METADATA
+                ) {
+                    val tokenName = response.href.pathSegments[response.href.pathSegments.size - 2]
+                    getTokenOrNull(tokenName)?.let { token ->
+                        tokens.add(token)
+                    }
                 }
             }
+        } catch (e: HttpException) {
+            if (e.isUnsupportedPropfind()) getBackupTokenWithDepthOne(davCollection, tokens)
+            else throw e
         }
         val tokenIterator = tokens.iterator()
         return generateSequence {
@@ -195,6 +201,34 @@ internal class WebDavStoragePlugin(
             val token = tokenIterator.next()
             EncryptedMetadata(token) {
                 getInputStream(token, FILE_BACKUP_METADATA)
+            }
+        }
+    }
+
+    private fun getBackupTokenWithDepthOne(davCollection: DavCollection, tokens: ArrayList<Long>) {
+        davCollection.propfind(
+            depth = 1,
+            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+        ) { response, relation ->
+            debugLog { "getBackupTokenWithDepthOne() = $response" }
+
+            // we are only interested in sub-folders, skip rest
+            if (relation == SELF || !response.isFolder()) return@propfind
+
+            val token = getTokenOrNull(response.hrefName()) ?: return@propfind
+            val tokenUrl = response.href.newBuilder()
+                .addPathSegment(FILE_BACKUP_METADATA)
+                .build()
+            // check if .backup.metadata file exists using HEAD request,
+            // because some servers (e.g. nginx don't list hidden files with PROPFIND)
+            try {
+                DavCollection(okHttpClient, tokenUrl).head {
+                    debugLog { "getBackupTokenWithDepthOne() = $response" }
+                    tokens.add(token)
+                }
+            } catch (e: Exception) {
+                // just log exception and continue, we want to find all files that are there
+                Log.e(TAG, "Error retrieving $tokenUrl: ", e)
             }
         }
     }

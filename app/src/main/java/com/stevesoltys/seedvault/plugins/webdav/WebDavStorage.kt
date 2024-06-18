@@ -8,7 +8,15 @@ package com.stevesoltys.seedvault.plugins.webdav
 import android.util.Log
 import at.bitfire.dav4jvm.BasicDigestAuthHandler
 import at.bitfire.dav4jvm.DavCollection
+import at.bitfire.dav4jvm.MultiResponseCallback
+import at.bitfire.dav4jvm.Property
+import at.bitfire.dav4jvm.PropertyFactory
+import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response
+import at.bitfire.dav4jvm.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.XmlUtils.NS_WEBDAV
+import at.bitfire.dav4jvm.exception.HttpException
+import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.ResourceType
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +31,7 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.internal.closeQuietly
 import okio.BufferedSink
+import org.xmlpull.v1.XmlPullParser
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -64,6 +73,10 @@ internal abstract class WebDavStorage(
 
     protected val baseUrl = webDavConfig.url
     protected val url = "${webDavConfig.url}/$root"
+
+    init {
+        PropertyRegistry.register(GetLastModified.Factory)
+    }
 
     @Throws(IOException::class)
     protected suspend fun getOutputStream(location: HttpUrl): OutputStream {
@@ -124,6 +137,59 @@ internal abstract class WebDavStorage(
         return pipedInputStream
     }
 
+    /**
+     * Tries to do [DavCollection.propfind] with a depth of `2` which is not in RFC4918.
+     * Since `infinity` isn't supported by nginx either,
+     * we fallback to iterating over all folders found with depth `1`
+     * and do another PROPFIND on those, passing the given [callback].
+     */
+    protected fun DavCollection.propfindDepthTwo(callback: MultiResponseCallback) {
+        try {
+            propfind(
+                depth = 2, // this isn't defined in RFC4918
+                reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+                callback = callback,
+            )
+        } catch (e: HttpException) {
+            if (e.isUnsupportedPropfind()) {
+                Log.i(TAG, "Got ${e.response}, trying two depth=1 PROPFINDs...")
+                propfindFakeTwo(callback)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private fun DavCollection.propfindFakeTwo(callback: MultiResponseCallback) {
+        propfind(
+            depth = 1,
+            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+        ) { response, relation ->
+            debugLog { "propFindFakeTwo() = $response" }
+            // This callback will be called for everything in the folder
+            callback.onResponse(response, relation)
+            if (relation != SELF && response.isFolder()) {
+                DavCollection(okHttpClient, response.href).propfind(
+                    depth = 1,
+                    reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+                    callback = callback,
+                )
+            }
+        }
+    }
+
+    protected fun HttpException.isUnsupportedPropfind(): Boolean {
+        // nginx returns 400 for depth=2
+        if (code == 400) {
+            return true
+        }
+        // lighttpd returns 403 with <DAV:propfind-finite-depth/> error as if we used infinity
+        if (code == 403 && responseBody?.contains("propfind-finite-depth") == true) {
+            return true
+        }
+        return false
+    }
+
     protected suspend fun DavCollection.createFolder(xmlBody: String? = null): okhttp3.Response {
         return try {
             suspendCoroutine { cont ->
@@ -179,4 +245,20 @@ internal abstract class WebDavStorage(
         }
     }
 
+}
+
+/**
+ * A fake version of [at.bitfire.dav4jvm.property.GetLastModified] which we register
+ * so we don't need to depend on `org.apache.commons.lang3` which is used for date parsing.
+ */
+class GetLastModified : Property {
+    companion object {
+        @JvmField
+        val NAME = Property.Name(NS_WEBDAV, "getlastmodified")
+    }
+
+    object Factory : PropertyFactory {
+        override fun getName() = NAME
+        override fun create(parser: XmlPullParser): GetLastModified? = null
+    }
 }

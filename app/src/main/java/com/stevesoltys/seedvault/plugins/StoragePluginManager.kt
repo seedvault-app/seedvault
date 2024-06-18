@@ -139,7 +139,7 @@ class StoragePluginManager(
     suspend fun getFreeSpace(): Long? {
         return try {
             appPlugin.getFreeSpace()
-        } catch (e: Exception) {
+        } catch (e: Throwable) { // NoClassDefFound isn't an [Exception], can get thrown by dav4jvm
             Log.e("StoragePluginManager", "Error getting free space: ", e)
             null
         }
