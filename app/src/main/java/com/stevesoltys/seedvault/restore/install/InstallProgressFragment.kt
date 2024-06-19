@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.restore.install
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
@@ -31,7 +33,8 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
     private val viewModel: RestoreViewModel by sharedViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
-    private val adapter = InstallProgressAdapter(this)
+    private val adapter = InstallProgressAdapter(lifecycleScope, this::loadIcon, this)
+    private var hasShownFailDialog = false
 
     private lateinit var progressBar: ProgressBar
     private lateinit var titleView: TextView
@@ -72,35 +75,27 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         viewModel.installResult.observe(viewLifecycleOwner) { result ->
             onInstallResult(result)
         }
-
-        viewModel.nextButtonEnabled.observe(viewLifecycleOwner) { enabled ->
-            button.isEnabled = enabled
-        }
     }
 
     private fun onInstallResult(installResult: InstallResult) {
         // skip this screen, if there are no apps to install
-        if (installResult.isFinished && installResult.isEmpty) {
+        if (installResult.hasNoAppsToInstall) {
             viewModel.onNextClickedAfterInstallingApps()
+        } else {
+            // update progress bar
+            progressBar.progress = installResult.progress
+            progressBar.max = installResult.total
+
+            // just update adapter, or perform final action, if finished
+            if (installResult.isFinished) onFinished(installResult)
+            else updateAdapter(installResult.list)
         }
-
-        // if finished, treat all still queued apps as failed and resort/redisplay adapter items
-        if (installResult.isFinished) {
-            installResult.queuedToFailed()
-            adapter.setFinished()
-        }
-
-        // update progress bar
-        progressBar.progress = installResult.progress
-        progressBar.max = installResult.total
-
-        // just update adapter, or perform final action, if finished
-        if (installResult.isFinished) onFinished(installResult)
-        else updateAdapter(installResult.getNotQueued())
     }
 
     private fun onFinished(installResult: InstallResult) {
-        if (installResult.hasFailed) {
+        adapter.setFinished()
+        button.isEnabled = true
+        if (!hasShownFailDialog && installResult.hasFailed) {
             AlertDialog.Builder(requireContext())
                 .setIcon(R.drawable.ic_warning)
                 .setTitle(R.string.restore_installing_error_title)
@@ -109,18 +104,20 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
                     dialog.dismiss()
                 }
                 .setOnDismissListener {
-                    updateAdapter(installResult.getNotQueued())
+                    hasShownFailDialog = true
+                    updateAdapter(installResult.list)
                 }
                 .show()
         } else {
-            updateAdapter(installResult.getNotQueued())
+            updateAdapter(installResult.list)
         }
     }
 
-    private fun updateAdapter(items: Collection<ApkInstallResult>) {
+    private fun updateAdapter(items: List<ApkInstallResult>) {
         val position = layoutManager.findFirstVisibleItemPosition()
-        adapter.update(items)
-        if (position == 0) layoutManager.scrollToPosition(0)
+        adapter.update(items) {
+            if (position == 0) layoutManager.scrollToPosition(0)
+        }
     }
 
     override fun onFailedItemClicked(item: ApkInstallResult) {
@@ -131,14 +128,14 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
         }
     }
 
+    private suspend fun loadIcon(item: ApkInstallResult, callback: (Drawable) -> Unit) {
+        viewModel.loadIcon(item.packageName, callback)
+    }
+
     private val installAppLauncher = registerForActivityResult(InstallApp()) { packageName ->
         val result = viewModel.installResult.value ?: return@registerForActivityResult
         if (result.isFinished) {
-            val changed = result.reCheckFailedPackage(
-                requireContext().packageManager,
-                packageName.toString()
-            )
-            if (changed) adapter.update(result.getNotQueued())
+            viewModel.reCheckFailedPackage(packageName.toString())
         }
     }
 

@@ -11,7 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
@@ -25,15 +25,12 @@ import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_WAS_STOPPED
 import com.stevesoltys.seedvault.ui.AppBackupState.NOT_YET_BACKED_UP
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
+import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import com.stevesoltys.seedvault.ui.systemData
 import java.util.Locale
 
 private const val TAG = "AppListRetriever"
-
-private const val PACKAGE_NAME_SMS = "com.android.providers.telephony"
-private const val PACKAGE_NAME_SETTINGS = "com.android.providers.settings"
-private const val PACKAGE_NAME_CALL_LOG = "com.android.calllogbackup"
-private const val PACKAGE_NAME_CONTACTS = "org.calyxos.backup.contacts"
 
 sealed class AppListItem
 
@@ -64,7 +61,7 @@ internal class AppListRetriever(
 
         val appListSections = linkedMapOf(
             AppSectionTitle(R.string.backup_section_system) to getSpecialApps(),
-            AppSectionTitle(R.string.backup_section_user) to getUserApps(),
+            AppSectionTitle(R.string.backup_section_user) to getApps(),
             AppSectionTitle(R.string.backup_section_not_allowed) to getNotAllowedApps()
         ).filter { it.value.isNotEmpty() }
 
@@ -74,13 +71,7 @@ internal class AppListRetriever(
     }
 
     private fun getSpecialApps(): List<AppListItem> {
-        val specialPackages = listOf(
-            Pair(PACKAGE_NAME_SMS, R.string.backup_sms),
-            Pair(PACKAGE_NAME_SETTINGS, R.string.backup_settings),
-            Pair(PACKAGE_NAME_CALL_LOG, R.string.backup_call_log),
-            Pair(PACKAGE_NAME_CONTACTS, R.string.backup_contacts)
-        )
-        return specialPackages.map { (packageName, stringId) ->
+        return systemData.map { (packageName, data) ->
             val metadata = metadataManager.getPackageMetadata(packageName)
             val status = if (packageName == PACKAGE_NAME_CONTACTS && metadata?.state == null) {
                 // handle local contacts backup specially as it might not be installed
@@ -90,38 +81,52 @@ internal class AppListRetriever(
             AppStatus(
                 packageName = packageName,
                 enabled = settingsManager.isBackupEnabled(packageName),
-                icon = getIcon(packageName),
-                name = context.getString(stringId),
+                icon = data.iconRes?.let { getDrawable(context, it) }
+                    ?: getIconFromPackageManager(packageName),
+                name = context.getString(data.nameRes),
                 time = metadata?.time ?: 0,
                 size = metadata?.size,
                 status = status,
-                isSpecial = true
+                isSpecial = true,
             )
         }
     }
 
-    private fun getUserApps(): List<AppStatus> {
-        val locale = Locale.getDefault()
-        return packageService.userApps.map {
+    private fun getApps(): List<AppStatus> {
+        val userPackages = mutableSetOf<String>()
+        val userApps = packageService.userApps.map {
+            userPackages.add(it.packageName)
             val metadata = metadataManager.getPackageMetadata(it.packageName)
             val time = metadata?.time ?: 0
             val status = metadata?.state.toAppBackupState()
             if (status == NOT_YET_BACKED_UP) {
                 Log.w(TAG, "No metadata available for: ${it.packageName}")
             }
-            if (metadata?.hasApk() == false) {
-                Log.w(TAG, "No APK stored for: ${it.packageName}")
-            }
             AppStatus(
                 packageName = it.packageName,
                 enabled = settingsManager.isBackupEnabled(it.packageName),
-                icon = getIcon(it.packageName),
+                icon = getIconFromPackageManager(it.packageName),
                 name = getAppName(context, it.packageName).toString(),
                 time = time,
                 size = metadata?.size,
-                status = status
+                status = status,
             )
-        }.sortedBy { it.name.lowercase(locale) }
+        }
+        val locale = Locale.getDefault()
+        return (userApps + packageService.launchableSystemApps.mapNotNull {
+            val packageName = it.activityInfo.packageName
+            if (packageName in userPackages) return@mapNotNull null
+            val metadata = metadataManager.getPackageMetadata(packageName)
+            AppStatus(
+                packageName = packageName,
+                enabled = settingsManager.isBackupEnabled(packageName),
+                icon = getIconFromPackageManager(packageName),
+                name = it.loadLabel(context.packageManager).toString(),
+                time = metadata?.time ?: 0,
+                size = metadata?.size,
+                status = metadata?.state.toAppBackupState(),
+            )
+        }).sortedBy { it.name.lowercase(locale) }
     }
 
     private fun getNotAllowedApps(): List<AppStatus> {
@@ -130,28 +135,19 @@ internal class AppListRetriever(
             AppStatus(
                 packageName = it.packageName,
                 enabled = settingsManager.isBackupEnabled(it.packageName),
-                icon = getIcon(it.packageName),
+                icon = getIconFromPackageManager(it.packageName),
                 name = getAppName(context, it.packageName).toString(),
                 time = 0,
                 size = null,
-                status = FAILED_NOT_ALLOWED
+                status = FAILED_NOT_ALLOWED,
             )
         }.sortedBy { it.name.lowercase(locale) }
-    }
-
-    private fun getIcon(packageName: String): Drawable = when (packageName) {
-        MAGIC_PACKAGE_MANAGER -> context.getDrawable(R.drawable.ic_launcher_default)!!
-        PACKAGE_NAME_SMS -> context.getDrawable(R.drawable.ic_message)!!
-        PACKAGE_NAME_SETTINGS -> context.getDrawable(R.drawable.ic_settings)!!
-        PACKAGE_NAME_CALL_LOG -> context.getDrawable(R.drawable.ic_call)!!
-        PACKAGE_NAME_CONTACTS -> context.getDrawable(R.drawable.ic_contacts)!!
-        else -> getIconFromPackageManager(packageName)
     }
 
     private fun getIconFromPackageManager(packageName: String): Drawable = try {
         pm.getApplicationIcon(packageName)
     } catch (e: PackageManager.NameNotFoundException) {
-        context.getDrawable(R.drawable.ic_launcher_default)!!
+        getDrawable(context, R.drawable.ic_launcher_default)!!
     }
 
     private fun PackageState?.toAppBackupState(): AppBackupState = when (this) {

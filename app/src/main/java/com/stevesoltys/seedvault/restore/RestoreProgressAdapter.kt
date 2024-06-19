@@ -6,21 +6,40 @@
 package com.stevesoltys.seedvault.restore
 
 import android.content.pm.PackageManager.NameNotFoundException
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreProgressAdapter.PackageViewHolder
-import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppViewHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.LinkedList
 
-internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
+internal class RestoreProgressAdapter(
+    val scope: CoroutineScope,
+    val iconLoader: suspend (AppRestoreResult, (Drawable) -> Unit) -> Unit,
+) : Adapter<PackageViewHolder>() {
 
-    private val items = LinkedList<AppRestoreResult>()
+    private val diffCallback = object : ItemCallback<AppRestoreResult>() {
+        override fun areItemsTheSame(
+            oldItem: AppRestoreResult,
+            newItem: AppRestoreResult,
+        ): Boolean {
+            return oldItem.packageName == newItem.packageName
+        }
+
+        override fun areContentsTheSame(old: AppRestoreResult, new: AppRestoreResult): Boolean {
+            return old.name == new.name && old.state == new.state
+        }
+    }
+    private val differ = AsyncListDiffer(this, diffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PackageViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -28,37 +47,24 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
         return PackageViewHolder(v)
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = differ.currentList.size
 
     override fun onBindViewHolder(holder: PackageViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(differ.currentList[position])
     }
 
-    fun update(newItems: LinkedList<AppRestoreResult>) {
-        val diffResult = DiffUtil.calculateDiff(Diff(items, newItems))
-        items.clear()
-        items.addAll(newItems)
-        diffResult.dispatchUpdatesTo(this)
+    fun update(newItems: LinkedList<AppRestoreResult>, callback: Runnable) {
+        // add .toList(), because [AppDataRestoreManager] still re-uses the same list,
+        // but AsyncListDiffer needs a new one.
+        differ.submitList(newItems.toList(), callback)
     }
 
-    private class Diff(
-        private val oldItems: LinkedList<AppRestoreResult>,
-        private val newItems: LinkedList<AppRestoreResult>,
-    ) : DiffUtil.Callback() {
-
-        override fun getOldListSize() = oldItems.size
-        override fun getNewListSize() = newItems.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition].packageName == newItems[newItemPosition].packageName
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldItems[oldItemPosition] == newItems[newItemPosition]
-        }
+    override fun onViewRecycled(holder: PackageViewHolder) {
+        holder.iconJob?.cancel()
     }
 
-    class PackageViewHolder(v: View) : AppViewHolder(v) {
+    inner class PackageViewHolder(v: View) : AppViewHolder(v) {
+        var iconJob: Job? = null
         fun bind(item: AppRestoreResult) {
             appName.text = item.name
             if (item.packageName == MAGIC_PACKAGE_MANAGER) {
@@ -67,7 +73,11 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
                 try {
                     appIcon.setImageDrawable(pm.getApplicationIcon(item.packageName))
                 } catch (e: NameNotFoundException) {
-                    appIcon.setImageResource(R.drawable.ic_launcher_default)
+                    iconJob = scope.launch {
+                        iconLoader(item) { bitmap ->
+                            appIcon.setImageDrawable(bitmap)
+                        }
+                    }
                 }
             }
             setState(item.state, true)
@@ -75,9 +85,3 @@ internal class RestoreProgressAdapter : Adapter<PackageViewHolder>() {
     }
 
 }
-
-internal data class AppRestoreResult(
-    val packageName: String,
-    val name: CharSequence,
-    val state: AppBackupState,
-)

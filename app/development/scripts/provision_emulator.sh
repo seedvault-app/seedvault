@@ -20,25 +20,23 @@ EMULATOR_NAME=$1
 SYSTEM_IMAGE=$2
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-DEVELOPMENT_DIR=$SCRIPT_DIR/..
-ROOT_PROJECT_DIR=$SCRIPT_DIR/../../..
 
 echo "Downloading system image..."
-yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "$SYSTEM_IMAGE"
+yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --install "$SYSTEM_IMAGE"
 
 # create AVD if it doesn't exist
-if $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list avd | grep -q "$EMULATOR_NAME"; then
+if "$ANDROID_HOME"/cmdline-tools/latest/bin/avdmanager list avd | grep -q "$EMULATOR_NAME"; then
   echo "AVD already exists. Skipping creation."
 else
   echo "Creating AVD..."
-  echo 'no' | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$EMULATOR_NAME" -k "$SYSTEM_IMAGE"
+  echo 'no' | "$ANDROID_HOME"/cmdline-tools/latest/bin/avdmanager create avd -n "$EMULATOR_NAME" -k "$SYSTEM_IMAGE"
   sleep 1
 fi
 
-EMULATOR_DEVICE_NAME=$($ANDROID_HOME/platform-tools/adb devices | grep emulator | cut -f1)
+EMULATOR_DEVICE_NAME=$("$ANDROID_HOME"/platform-tools/adb devices | grep emulator | cut -f1)
 
 if [ -z "$EMULATOR_DEVICE_NAME" ]; then
-    $SCRIPT_DIR/start_emulator.sh "$EMULATOR_NAME"
+    "$SCRIPT_DIR"/start_emulator.sh "$EMULATOR_NAME"
 fi
 
 # wait for emulator device to appear with 180 second timeout
@@ -47,7 +45,7 @@ echo "Waiting for emulator device..."
 for i in {1..180}; do
   if [ -z "$EMULATOR_DEVICE_NAME" ]; then
     sleep 1
-    EMULATOR_DEVICE_NAME=$($ANDROID_HOME/platform-tools/adb devices | grep emulator | cut -f1)
+    EMULATOR_DEVICE_NAME=$("$ANDROID_HOME"/platform-tools/adb devices | grep emulator | cut -f1)
   else
     break
   fi
@@ -73,16 +71,14 @@ $ADB reboot # need to reboot first time we remount
 $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
 
 echo "Provisioning emulator for Seedvault..."
-$SCRIPT_DIR/install_app.sh
+"$SCRIPT_DIR"/install_app.sh
 
 echo "Rebooting emulator..."
 $ADB reboot
 $ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
 
-echo "Setting backup transport to Seedvault..."
-$ADB shell bmgr enable true
-sleep 5
-$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
+echo "Disabling backup..."
+$ADB shell bmgr enable false
 
 echo "Downloading and extracting test backup to '/sdcard/seedvault_baseline'..."
 

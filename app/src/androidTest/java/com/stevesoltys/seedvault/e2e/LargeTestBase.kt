@@ -113,9 +113,11 @@ internal interface LargeTestBase : KoinComponent {
     }
 
     fun testResultFilename(testName: String): String {
+        val arguments = InstrumentationRegistry.getArguments()
+        val d2d = if (arguments.getString("d2d_backup_test") == "true") "d2d" else ""
         val simpleDateFormat = SimpleDateFormat("yyyyMMdd_hhmmss")
         val timeStamp = simpleDateFormat.format(Calendar.getInstance().time)
-        return "${timeStamp}_${testName.replace(" ", "_")}"
+        return "${timeStamp}_${d2d}_${testName.replace(" ", "_")}"
     }
 
     @OptIn(DelicateCoroutinesApi::class)

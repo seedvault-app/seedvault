@@ -176,11 +176,15 @@ dependencies {
     // anything less than 'implementation' fails tests run with gradlew
     testImplementation(aospLibs)
     testImplementation("androidx.test.ext:junit:1.1.5")
-    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junit5.get()}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${libs.versions.junit5.get()}")
     testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
+    testImplementation(
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${libs.versions.coroutines.get()}"
+    )
+    testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation("org.bitcoinj:bitcoinj-core:0.16.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${libs.versions.junit5.get()}")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${libs.versions.junit5.get()}")

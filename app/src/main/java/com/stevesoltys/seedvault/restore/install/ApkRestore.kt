@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.util.Log
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
@@ -26,10 +27,12 @@ import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import com.stevesoltys.seedvault.worker.copyStreamsAndGetHash
 import com.stevesoltys.seedvault.worker.getSignatures
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.io.File
 import java.io.IOException
+import java.util.Locale
 
 private val TAG = ApkRestore::class.java.simpleName
 
@@ -47,70 +50,69 @@ internal class ApkRestore(
     private val pm = context.packageManager
     private val storagePlugin get() = pluginManager.appPlugin
 
-    fun restore(backup: RestorableBackup) = flow {
-        // we don't filter out apps without APK, so the user can manually install them
-        val packages = backup.packageMetadataMap.filter {
+    private val mInstallResult = MutableStateFlow(InstallResult())
+    val installResult = mInstallResult.asStateFlow()
+
+    suspend fun restore(backup: RestorableBackup) {
+        val isAllowedToInstallApks = installRestriction.isAllowedToInstallApks()
+        // assemble all apps in a list and sort it by name, than transform it back to a (sorted) map
+        val packages = backup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             // We need to exclude the DocumentsProvider used to retrieve backup data.
             // Otherwise, it gets killed when we install it, terminating our restoration.
-            it.key != storagePlugin.providerPackageName
-        }
-        val isAllowedToInstallApks = installRestriction.isAllowedToInstallApks()
-        val total = packages.size
-        var progress = 0
-
-        // queue all packages and emit LiveData
-        val installResult = MutableInstallResult(total)
-        packages.forEach { (packageName, metadata) ->
-            progress++
-            installResult[packageName] = ApkInstallResult(
+            if (packageName == storagePlugin.providerPackageName) return@mapNotNull null
+            // The @pm@ package needs to be included in [backup], but can't be installed like an app
+            if (packageName == MAGIC_PACKAGE_MANAGER) return@mapNotNull null
+            // we don't filter out apps without APK, so the user can manually install them
+            // exception is system apps without APK, as those can usually not be installed manually
+            if (metadata.system && !metadata.hasApk()) return@mapNotNull null
+            // apps that made it here get a state class for tracking
+            ApkInstallResult(
                 packageName = packageName,
-                progress = progress,
                 state = if (isAllowedToInstallApks) QUEUED else FAILED,
-                installerPackageName = metadata.installer
+                metadata = metadata,
             )
+        }.sortedBy { apkInstallResult -> // sort list alphabetically ignoring case
+            apkInstallResult.name?.lowercase(Locale.getDefault())
+        }.associateBy { apkInstallResult -> // use a map, so we can quickly update individual apps
+            apkInstallResult.packageName
         }
-        if (isAllowedToInstallApks) {
-            emit(installResult)
-        } else {
-            installResult.isFinished = true
-            emit(installResult)
-            return@flow
+        if (!isAllowedToInstallApks) { // not allowed to install, so return list with all failed
+            mInstallResult.value = InstallResult(packages, true)
+            return
         }
+        mInstallResult.value = InstallResult(packages)
 
-        // re-install individual packages and emit updates
-        for ((packageName, metadata) in packages) {
+        // re-install individual packages and emit updates (start from last and work your way up)
+        for ((packageName, apkInstallResult) in packages.asIterable().reversed()) {
             try {
-                if (metadata.hasApk()) {
-                    restore(this, backup, packageName, metadata, installResult)
+                if (apkInstallResult.metadata.hasApk()) {
+                    restore(backup, packageName, apkInstallResult.metadata)
                 } else {
-                    emit(installResult.fail(packageName))
+                    mInstallResult.update { it.fail(packageName) }
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
-                emit(installResult.fail(packageName))
+                mInstallResult.update { it.fail(packageName) }
             } catch (e: SecurityException) {
                 Log.e(TAG, "Security error re-installing APK for $packageName.", e)
-                emit(installResult.fail(packageName))
+                mInstallResult.update { it.fail(packageName) }
             } catch (e: TimeoutCancellationException) {
                 Log.e(TAG, "Timeout while re-installing APK for $packageName.", e)
-                emit(installResult.fail(packageName))
+                mInstallResult.update { it.fail(packageName) }
             } catch (e: Exception) {
                 Log.e(TAG, "Unexpected exception while re-installing APK for $packageName.", e)
-                emit(installResult.fail(packageName))
+                mInstallResult.update { it.fail(packageName) }
             }
         }
-        installResult.isFinished = true
-        emit(installResult)
+        mInstallResult.update { it.copy(isFinished = true) }
     }
 
     @Suppress("ThrowsCount")
     @Throws(IOException::class, SecurityException::class)
     private suspend fun restore(
-        collector: FlowCollector<InstallResult>,
         backup: RestorableBackup,
         packageName: String,
         metadata: PackageMetadata,
-        installResult: MutableInstallResult,
     ) {
         // cache the APK and get its hash
         val (cachedApk, sha256) = cacheApk(backup.version, backup.token, backup.salt, packageName)
@@ -153,34 +155,32 @@ internal class ApkRestore(
             publicSourceDir = cachedApk.absolutePath
         }
         val icon = appInfo?.loadIcon(pm)
-        val name = appInfo?.let { pm.getApplicationLabel(it) }
+        val name = appInfo?.let { pm.getApplicationLabel(it).toString() }
 
-        installResult.update(packageName) { result ->
-            result.copy(state = IN_PROGRESS, name = name, icon = icon)
-        }
-        collector.emit(installResult)
-
-        // ensure system apps are actually already installed and newer system apps as well
-        if (metadata.system) {
-            shouldInstallSystemApp(packageName, metadata, installResult)?.let {
-                collector.emit(it)
-                return
+        mInstallResult.update {
+            it.update(packageName) { result ->
+                result.copy(state = IN_PROGRESS, name = name, icon = icon)
             }
         }
 
+        // ensure system apps are actually already installed and newer system apps as well
+        if (metadata.system) shouldInstallSystemApp(packageName, metadata)?.let {
+            mInstallResult.value = it
+            return
+        }
+
         // process further APK splits, if available
-        val cachedApks =
-            cacheSplitsIfNeeded(backup, packageName, cachedApk, metadata.splits)
+        val cachedApks = cacheSplitsIfNeeded(backup, packageName, cachedApk, metadata.splits)
         if (cachedApks == null) {
             Log.w(TAG, "Not installing $packageName because of incompatible splits.")
-            collector.emit(installResult.fail(packageName))
+            mInstallResult.update { it.fail(packageName) }
             return
         }
 
         // install APK and emit updates from it
         val result =
-            apkInstaller.install(cachedApks, packageName, metadata.installer, installResult)
-        collector.emit(result)
+            apkInstaller.install(cachedApks, packageName, metadata.installer, installResult.value)
+        mInstallResult.value = result
     }
 
     /**
@@ -239,7 +239,6 @@ internal class ApkRestore(
         val cachedApk = File.createTempFile(packageName + suffix, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
         val inputStream = if (version == 0.toByte()) {
-            @Suppress("Deprecation")
             legacyStoragePlugin.getApkInputStream(token, packageName, suffix)
         } else {
             val name = crypto.getNameForApk(salt, packageName, suffix)
@@ -256,26 +255,38 @@ internal class ApkRestore(
     private fun shouldInstallSystemApp(
         packageName: String,
         metadata: PackageMetadata,
-        installResult: MutableInstallResult,
     ): InstallResult? {
         val installedPackageInfo = try {
             pm.getPackageInfo(packageName, 0)
         } catch (e: PackageManager.NameNotFoundException) {
             Log.w(TAG, "Not installing system app $packageName because not installed here.")
             // we report a different FAILED status here to prevent manual installs
-            return installResult.fail(packageName, FAILED_SYSTEM_APP)
+            return installResult.value.fail(packageName, FAILED_SYSTEM_APP)
         }
         // metadata.version is not null, because here hasApk() must be true
         val isOlder = metadata.version!! <= installedPackageInfo.longVersionCode
         return if (isOlder) {
             Log.w(TAG, "Not installing $packageName because ours is older.")
-            installResult.update(packageName) { it.copy(state = SUCCEEDED) }
+            installResult.value.update(packageName) { it.copy(state = SUCCEEDED) }
         } else if (!installedPackageInfo.isSystemApp()) {
             Log.w(TAG, "Not installing $packageName because not a system app here.")
-            installResult.update(packageName) { it.copy(state = SUCCEEDED) }
+            installResult.value.update(packageName) { it.copy(state = SUCCEEDED) }
         } else {
             null // everything is good, we can re-install this
         }
     }
 
+    /**
+     * Once [InstallResult.isFinished] is true,
+     * this can be called to re-check a package in state [FAILED].
+     * If it is now installed, the state will be changed to [SUCCEEDED].
+     */
+    fun reCheckFailedPackage(packageName: String) {
+        check(installResult.value.isFinished) {
+            "re-checking failed packages only allowed when finished"
+        }
+        if (context.packageManager.isInstalled(packageName)) mInstallResult.update { result ->
+            result.update(packageName) { it.copy(state = SUCCEEDED) }
+        }
+    }
 }

@@ -177,12 +177,13 @@
 
     <!-- App Backup and Restore State -->
 
-    <string name="backup_section_system">System apps</string>
+    <string name="backup_section_system">System data</string>
     <string name="backup_sms">SMS text messages</string>
     <string name="backup_settings">Device settings</string>
     <string name="backup_call_log">Call history</string>
     <string name="backup_contacts">Local contacts</string>
-    <string name="backup_section_user">Installed apps</string>
+    <string name="backup_system_apps">System apps</string>
+    <string name="backup_section_user">Apps</string>
     <!-- This text gets shown for apps that the OS did not try to backup for whatever reason e.g. no backup was run yet -->
     <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
     <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
@@ -209,6 +210,8 @@
     <string name="restore_invalid_location_message">We could not find any backups at this location.\n\nPlease choose another location that contains a %s folder.</string>
     <string name="restore_set_error">An error occurred while loading the backups.</string>
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
+    <string name="restore_select_packages">Select apps to restore</string>
+    <string name="restore_select_packages_all">All of the following apps</string>
     <string name="restore_installing_packages">Re-installing apps</string>
     <string name="restore_app_status_installing">Re-installing</string>
     <string name="restore_app_status_installed">Re-installed</string>

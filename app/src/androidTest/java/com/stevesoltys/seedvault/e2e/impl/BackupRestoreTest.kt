@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.e2e.impl
 
 import androidx.test.filters.LargeTest
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTest
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTestResult
 import com.stevesoltys.seedvault.metadata.PackageState
@@ -127,17 +128,19 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
     ) {
         // Assert all "key/value" restored data matches the backup data.
         restore.kv.forEach { (pkg, kvData) ->
-            assert(backup.kv.containsKey(pkg)) {
-                "KV data for $pkg missing from backup."
-            }
-
-            kvData.forEach { (key, value) ->
-                assert(backup.kv[pkg]!!.containsKey(key)) {
-                    "KV data for $pkg/$key exists in restore but is missing from backup."
+            if (pkg != MAGIC_PACKAGE_MANAGER) {
+                assert(backup.kv.containsKey(pkg)) {
+                    "KV data for $pkg missing from backup."
                 }
 
-                assert(value.contentEquals(backup.kv[pkg]!![key]!!)) {
-                    "KV data for $pkg/$key does not match."
+                kvData.forEach { (key, value) ->
+                    assert(backup.kv[pkg]!!.containsKey(key)) {
+                        "KV data for $pkg/$key exists in restore but is missing from backup."
+                    }
+
+                    assert(value.contentEquals(backup.kv[pkg]!![key]!!)) {
+                        "KV data for $pkg/$key does not match."
+                    }
                 }
             }
         }

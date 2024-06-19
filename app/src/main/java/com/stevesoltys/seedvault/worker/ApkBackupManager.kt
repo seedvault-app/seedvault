@@ -29,6 +29,7 @@ internal class ApkBackupManager(
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val packageService: PackageService,
+    private val iconManager: IconManager,
     private val apkBackup: ApkBackup,
     private val pluginManager: StoragePluginManager,
     private val nm: BackupNotificationManager,
@@ -44,6 +45,8 @@ internal class ApkBackupManager(
             // Since an APK backup does not change the [packageState], we first record it for all
             // packages that don't get backed up.
             recordNotBackedUpPackages()
+            // Upload current icons, so we can show them to user before restore
+            uploadIcons()
             // Now, if APK backups are enabled by the user, we back those up.
             if (settingsManager.backupApks()) {
                 backUpApks()
@@ -77,6 +80,7 @@ internal class ApkBackupManager(
         nm.onAppsNotBackedUp()
         packageService.notBackedUpPackages.forEach { packageInfo ->
             val packageName = packageInfo.packageName
+            if (!settingsManager.isBackupEnabled(packageName)) return@forEach
             try {
                 val packageState = if (packageInfo.isStopped()) WAS_STOPPED else NOT_ALLOWED
                 val packageMetadata = metadataManager.getPackageMetadata(packageName)
@@ -91,6 +95,17 @@ internal class ApkBackupManager(
             } catch (e: IOException) {
                 Log.e(TAG, "Error storing new metadata for $packageName: ", e)
             }
+        }
+    }
+
+    private suspend fun uploadIcons() {
+        try {
+            val token = settingsManager.getToken() ?: throw IOException("no current token")
+            pluginManager.appPlugin.getOutputStream(token, FILE_BACKUP_ICONS).use {
+                iconManager.uploadIcons(token, it)
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Error uploading icons: ", e)
         }
     }
 

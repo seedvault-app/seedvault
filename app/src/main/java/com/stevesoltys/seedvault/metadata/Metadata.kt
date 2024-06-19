@@ -26,7 +26,7 @@ data class BackupMetadata(
     internal var d2dBackup: Boolean = false,
     internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap(),
 ) {
-    val size: Long?
+    val size: Long
         get() = packageMetadataMap.values.sumOf { m ->
             (m.size ?: 0L) + (m.splits?.sumOf { it.size ?: 0L } ?: 0L)
         }
@@ -85,13 +85,16 @@ data class PackageMetadata(
     internal var state: PackageState = UNKNOWN_ERROR,
     internal var backupType: BackupType? = null,
     internal var size: Long? = null,
+    internal var name: CharSequence? = null,
     internal val system: Boolean = false,
+    internal val isLaunchableSystemApp: Boolean = false,
     internal val version: Long? = null,
     internal val installer: String? = null,
     internal val splits: List<ApkSplit>? = null,
     internal val sha256: String? = null,
     internal val signatures: List<String>? = null,
 ) {
+    val isInternalSystem: Boolean = system && !isLaunchableSystemApp
     fun hasApk(): Boolean {
         return version != null && sha256 != null && signatures != null
     }
@@ -110,7 +113,9 @@ internal const val JSON_PACKAGE_TIME = "time"
 internal const val JSON_PACKAGE_BACKUP_TYPE = "backupType"
 internal const val JSON_PACKAGE_STATE = "state"
 internal const val JSON_PACKAGE_SIZE = "size"
+internal const val JSON_PACKAGE_APP_NAME = "name"
 internal const val JSON_PACKAGE_SYSTEM = "system"
+internal const val JSON_PACKAGE_SYSTEM_LAUNCHER = "systemLauncher"
 internal const val JSON_PACKAGE_VERSION = "version"
 internal const val JSON_PACKAGE_INSTALLER = "installer"
 internal const val JSON_PACKAGE_SPLITS = "splits"

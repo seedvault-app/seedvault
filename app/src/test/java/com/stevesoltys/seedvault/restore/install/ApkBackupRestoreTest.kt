@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.graphics.drawable.Drawable
 import android.util.PackageUtils
+import app.cash.turbine.test
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
@@ -19,6 +20,9 @@ import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
+import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.worker.ApkBackup
 import io.mockk.coEvery
@@ -27,12 +31,12 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayInputStream
@@ -52,6 +56,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
     }
 
     private val storagePluginManager: StoragePluginManager = mockk()
+
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val storagePlugin: StoragePlugin<*> = mockk()
@@ -151,23 +156,50 @@ internal class ApkBackupRestoreTest : TransportTest() {
         } returns true
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
         coEvery { storagePlugin.getInputStream(token, suffixName) } returns splitInputStream
+        val resultMap = mapOf(
+            packageName to ApkInstallResult(
+                packageName,
+                state = SUCCEEDED,
+                metadata = packageMetadataMap[packageName] ?: fail(),
+            )
+        )
         coEvery {
             apkInstaller.install(capture(cacheFiles), packageName, installerName, any())
-        } returns MutableInstallResult(1).apply {
-            set(
-                packageName, ApkInstallResult(
-                    packageName,
-                    progress = 1,
-                    state = ApkInstallState.SUCCEEDED
-                )
-            )
-        }
+        } returns InstallResult(resultMap)
 
         val backup = RestorableBackup(metadata.copy(packageMetadataMap = packageMetadataMap))
-        apkRestore.restore(backup).collectIndexed { i, value ->
-            assertFalse(value.hasFailed)
-            assertEquals(1, value.total)
-            if (i == 3) assertTrue(value.isFinished)
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            awaitItem().also {
+                assertFalse(it.hasFailed)
+                assertEquals(1, it.total)
+                assertEquals(0, it.list.size)
+                assertEquals(QUEUED, it.installResults[packageName]?.state)
+                assertFalse(it.isFinished)
+            }
+            awaitItem().also {
+                assertFalse(it.hasFailed)
+                assertEquals(1, it.total)
+                assertEquals(1, it.list.size)
+                assertEquals(IN_PROGRESS, it.installResults[packageName]?.state)
+                assertFalse(it.isFinished)
+            }
+            awaitItem().also {
+                assertFalse(it.hasFailed)
+                assertEquals(1, it.total)
+                assertEquals(1, it.list.size)
+                assertEquals(SUCCEEDED, it.installResults[packageName]?.state)
+                assertFalse(it.isFinished)
+            }
+            awaitItem().also {
+                assertFalse(it.hasFailed)
+                assertEquals(1, it.total)
+                assertEquals(1, it.list.size)
+                assertEquals(SUCCEEDED, it.installResults[packageName]?.state)
+                assertTrue(it.isFinished)
+            }
+            ensureAllEventsConsumed()
         }
 
         val apkFile = File(apkPath.captured)

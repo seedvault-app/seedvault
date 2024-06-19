@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.restore
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
@@ -27,7 +29,7 @@ class RestoreProgressFragment : Fragment() {
     private val viewModel: RestoreViewModel by sharedViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
-    private val adapter = RestoreProgressAdapter()
+    private val adapter = RestoreProgressAdapter(lifecycleScope, this::loadIcon)
 
     private lateinit var progressBar: ProgressBar
     private lateinit var titleView: TextView
@@ -67,17 +69,20 @@ class RestoreProgressFragment : Fragment() {
         // decryption will fail when the device is locked, so keep the screen on to prevent locking
         requireActivity().window.addFlags(FLAG_KEEP_SCREEN_ON)
 
-        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner, { restorableBackup ->
+        viewModel.chosenRestorableBackup.observe(viewLifecycleOwner) { restorableBackup ->
             backupNameView.text = restorableBackup.name
             progressBar.max = restorableBackup.packageMetadataMap.size
-        })
+        }
 
-        viewModel.restoreProgress.observe(viewLifecycleOwner, { list ->
-            stayScrolledAtTop { adapter.update(list) }
+        viewModel.restoreProgress.observe(viewLifecycleOwner) { list ->
             progressBar.progress = list.size
-        })
+            val position = layoutManager.findFirstVisibleItemPosition()
+            adapter.update(list) {
+                if (position == 0) layoutManager.scrollToPosition(0)
+            }
+        }
 
-        viewModel.restoreBackupResult.observe(viewLifecycleOwner, { finished ->
+        viewModel.restoreBackupResult.observe(viewLifecycleOwner) { finished ->
             button.isEnabled = true
             if (finished.hasError()) {
                 backupNameView.text = finished.errorMsg
@@ -87,7 +92,7 @@ class RestoreProgressFragment : Fragment() {
                 onRestoreFinished()
             }
             activity?.window?.clearFlags(FLAG_KEEP_SCREEN_ON)
-        })
+        }
     }
 
     private fun onRestoreFinished() {
@@ -103,10 +108,8 @@ class RestoreProgressFragment : Fragment() {
             .show()
     }
 
-    private fun stayScrolledAtTop(add: () -> Unit) {
-        val position = layoutManager.findFirstVisibleItemPosition()
-        add.invoke()
-        if (position == 0) layoutManager.scrollToPosition(0)
+    private suspend fun loadIcon(item: AppRestoreResult, callback: (Drawable) -> Unit) {
+        viewModel.loadIcon(item.packageName, callback)
     }
 
 }

@@ -5,15 +5,16 @@
 
 package com.stevesoltys.seedvault.restore.install
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.SortedList
-import androidx.recyclerview.widget.SortedListAdapterCallback
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -22,35 +23,33 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 internal interface InstallItemListener {
     fun onFailedItemClicked(item: ApkInstallResult)
 }
 
 internal class InstallProgressAdapter(
+    private val scope: CoroutineScope,
+    private val iconLoader: suspend (ApkInstallResult, (Drawable) -> Unit) -> Unit,
     private val listener: InstallItemListener,
 ) : Adapter<InstallProgressAdapter.AppInstallViewHolder>() {
 
     private var finished = false
-    private val finishedComparator = FailedFirstComparator()
-    private val items = SortedList(
-        ApkInstallResult::class.java,
-        object : SortedListAdapterCallback<ApkInstallResult>(this) {
-            override fun areItemsTheSame(item1: ApkInstallResult, item2: ApkInstallResult) =
-                item1.packageName == item2.packageName
 
-            override fun areContentsTheSame(old: ApkInstallResult, new: ApkInstallResult): Boolean {
-                // update failed items when finished
-                return if (finished) new.state != FAILED && old == new
-                else old == new
-            }
+    private val diffCallback = object : DiffUtil.ItemCallback<ApkInstallResult>() {
+        override fun areItemsTheSame(item1: ApkInstallResult, item2: ApkInstallResult): Boolean =
+            item1.packageName == item2.packageName
 
-            override fun compare(item1: ApkInstallResult, item2: ApkInstallResult): Int {
-                return if (finished) finishedComparator.compare(item1, item2)
-                else item1.compareTo(item2)
-            }
+        override fun areContentsTheSame(old: ApkInstallResult, new: ApkInstallResult): Boolean {
+            // update failed items when finished
+            return if (finished) new.state != FAILED && old == new
+            else old == new
         }
-    )
+    }
+    private val differ = AsyncListDiffer(this, diffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppInstallViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -58,27 +57,33 @@ internal class InstallProgressAdapter(
         return AppInstallViewHolder(v)
     }
 
-    override fun getItemCount() = items.size()
+    override fun getItemCount() = differ.currentList.size
 
     override fun onBindViewHolder(holder: AppInstallViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(differ.currentList[position])
     }
 
-    fun update(items: Collection<ApkInstallResult>) {
-        this.items.replaceAll(items)
+    fun update(items: List<ApkInstallResult>, block: Runnable) {
+        differ.submitList(items, block)
     }
 
     fun setFinished() {
         finished = true
     }
 
-    internal inner class AppInstallViewHolder(v: View) : AppViewHolder(v) {
+    override fun onViewRecycled(holder: AppInstallViewHolder) {
+        holder.iconJob?.cancel()
+    }
 
+    internal inner class AppInstallViewHolder(v: View) : AppViewHolder(v) {
+        var iconJob: Job? = null
         fun bind(item: ApkInstallResult) {
             v.setOnClickListener(null)
             v.background = null
 
-            appIcon.setImageDrawable(item.icon)
+            if (item.icon == null) iconJob = scope.launch {
+                iconLoader(item, appIcon::setImageDrawable)
+            } else appIcon.setImageDrawable(item.icon)
             appName.text = item.name ?: getAppName(v.context, item.packageName.toString())
             appInfo.visibility = GONE
             when (item.state) {

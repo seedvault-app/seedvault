@@ -7,6 +7,9 @@ package com.stevesoltys.seedvault.transport.backup
 
 import android.app.backup.IBackupManager
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_MAIN
+import android.content.Intent.CATEGORY_LAUNCHER
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
@@ -16,6 +19,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_INSTRUMENTATION
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+import android.content.pm.PackageManager.MATCH_SYSTEM_ONLY
+import android.content.pm.ResolveInfo
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
@@ -145,6 +150,16 @@ internal class PackageService(
                 !packageInfo.allowsBackup() &&
                     !packageInfo.isSystemApp()
             }
+        }
+
+    val launchableSystemApps: List<ResolveInfo>
+        @WorkerThread
+        get() {
+            // filter intent for apps with a launcher activity
+            val i = Intent(ACTION_MAIN).apply {
+                addCategory(CATEGORY_LAUNCHER)
+            }
+            return packageManager.queryIntentActivities(i, MATCH_SYSTEM_ONLY)
         }
 
     fun getVersionName(packageName: String): String? = try {

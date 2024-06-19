@@ -7,11 +7,13 @@ package com.stevesoltys.seedvault.metadata
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.UserManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
@@ -27,6 +29,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -54,7 +57,6 @@ import kotlin.random.Random
 @Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [33], // robolectric does not support 34, yet
     application = TestApp::class
 )
 class MetadataManagerTest {
@@ -64,6 +66,7 @@ class MetadataManagerTest {
     private val crypto: Crypto = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
+    private val packageService: PackageService = mockk()
     private val settingsManager: SettingsManager = mockk()
 
     private val manager = MetadataManager(
@@ -72,8 +75,11 @@ class MetadataManagerTest {
         crypto = crypto,
         metadataWriter = metadataWriter,
         metadataReader = metadataReader,
-        settingsManager = settingsManager
+        packageService = packageService,
+        settingsManager = settingsManager,
     )
+
+    private val packageManager: PackageManager = mockk()
 
     private val time = 42L
     private val token = Random.nextLong()
@@ -162,6 +168,7 @@ class MetadataManagerTest {
             signatures = listOf("sig")
         )
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
@@ -185,12 +192,23 @@ class MetadataManagerTest {
             signatures = listOf("sig")
         )
 
+        every { context.packageManager } returns packageManager
+        every { packageService.launchableSystemApps } returns listOf(
+            ResolveInfo().apply {
+                activityInfo = ActivityInfo().apply {
+                    packageName = this@MetadataManagerTest.packageName
+                }
+            }
+        )
         expectReadFromCache()
         expectModifyMetadata(initialMetadata)
 
         manager.onApkBackedUp(packageInfo, packageMetadata)
 
-        assertEquals(packageMetadata.copy(system = true), manager.getPackageMetadata(packageName))
+        assertEquals(
+            packageMetadata.copy(system = true, isLaunchableSystemApp = true),
+            manager.getPackageMetadata(packageName),
+        )
 
         verify {
             cacheInputStream.close()
@@ -214,6 +232,7 @@ class MetadataManagerTest {
             signatures = listOf("sig foo")
         )
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectWriteToCache(initialMetadata)
 
@@ -236,6 +255,7 @@ class MetadataManagerTest {
             signatures = listOf("sig")
         )
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectWriteToCache(initialMetadata)
         val oldState = UNKNOWN_ERROR
@@ -295,6 +315,7 @@ class MetadataManagerTest {
             signatures = listOf("sig")
         )
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
 
         assertNull(manager.getPackageMetadata(packageName))
@@ -330,6 +351,8 @@ class MetadataManagerTest {
         val packageMetadata = PackageMetadata(time)
         updatedMetadata.packageMetadataMap[packageName] = packageMetadata
 
+        every { context.packageManager } returns packageManager
+        every { packageService.launchableSystemApps } returns emptyList()
         expectReadFromCache()
         every { clock.time() } returns time
         expectModifyMetadata(initialMetadata)
@@ -342,6 +365,7 @@ class MetadataManagerTest {
                 backupType = BackupType.FULL,
                 size = size,
                 system = true,
+                isLaunchableSystemApp = false,
             ),
             manager.getPackageMetadata(packageName)
         )
@@ -361,6 +385,7 @@ class MetadataManagerTest {
         expectModifyMetadata(initialMetadata)
 
         every { settingsManager.d2dBackupsEnabled() } returns true
+        every { context.packageManager } returns packageManager
 
         manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L, storageOutputStream)
         assertTrue(initialMetadata.d2dBackup)
@@ -382,6 +407,7 @@ class MetadataManagerTest {
         updatedMetadata.packageMetadataMap[packageName] =
             PackageMetadata(updateTime, APK_AND_DATA, BackupType.KV, size)
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         every { clock.time() } returns updateTime
         every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
@@ -414,6 +440,7 @@ class MetadataManagerTest {
             PackageMetadata(time, state = APK_AND_DATA)
 
         expectReadFromCache()
+        every { context.packageManager } returns packageManager
         every { clock.time() } returns time
         expectModifyMetadata(updatedMetadata)
 
@@ -437,6 +464,7 @@ class MetadataManagerTest {
         val updatedMetadata = initialMetadata.copy()
         updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = NOT_ALLOWED)
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectWriteToCache(updatedMetadata)
 
@@ -454,6 +482,7 @@ class MetadataManagerTest {
         updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = WAS_STOPPED)
         initialMetadata.packageMetadataMap.remove(packageName)
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectWriteToCache(updatedMetadata)
 
@@ -482,6 +511,7 @@ class MetadataManagerTest {
         updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = WAS_STOPPED)
         initialMetadata.packageMetadataMap.remove(packageName)
 
+        every { context.packageManager } returns packageManager
         expectReadFromCache()
         expectModifyMetadata(updatedMetadata)
 

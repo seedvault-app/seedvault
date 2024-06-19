@@ -15,7 +15,7 @@ abstract class RequireProvisioningViewModel(
     protected val app: Application,
     protected val settingsManager: SettingsManager,
     protected val keyManager: KeyManager,
-    private val pluginManager: StoragePluginManager,
+    protected val pluginManager: StoragePluginManager,
 ) : AndroidViewModel(app) {
 
     abstract val isRestoreOperation: Boolean
