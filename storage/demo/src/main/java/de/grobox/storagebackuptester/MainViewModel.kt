@@ -28,6 +28,7 @@ import org.calyxos.backup.storage.backup.BackupJobService
 import org.calyxos.backup.storage.scanner.DocumentScanner
 import org.calyxos.backup.storage.scanner.MediaScanner
 import org.calyxos.backup.storage.ui.backup.BackupContentViewModel
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 
 private val logEmptyState = """
@@ -47,6 +48,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     private val app: App = application as App
     private val settingsManager = app.settingsManager
     override val storageBackup: StorageBackup = app.storageBackup
+    override val fileSelectionManager = FileSelectionManager()
 
     private val _backupLog = MutableLiveData(BackupProgress(0, 0, logEmptyState))
     val backupLog: LiveData<BackupProgress> = _backupLog
@@ -124,6 +126,11 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     }
 
     fun onSnapshotClicked(item: SnapshotItem) {
+        val snapshot = item.snapshot ?: error("${item.storedSnapshot} had null snapshot")
+        fileSelectionManager.onSnapshotChosen(snapshot)
+    }
+
+    fun onFilesSelected(item: SnapshotItem) {
         val snapshot = item.snapshot
         check(snapshot != null)
 

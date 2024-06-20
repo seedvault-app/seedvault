@@ -46,6 +46,7 @@ import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTAMP_START
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 import org.calyxos.backup.storage.ui.restore.SnapshotViewModel
 import java.util.LinkedList
 
@@ -98,6 +99,8 @@ internal class RestoreViewModel(
         get() = appDataRestoreManager.restoreBackupResult
 
     override val snapshots = storageBackup.getBackupSnapshots().asLiveData(ioDispatcher)
+    override val fileSelectionManager: FileSelectionManager
+        get() = TODO("Not yet implemented")
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
         val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->

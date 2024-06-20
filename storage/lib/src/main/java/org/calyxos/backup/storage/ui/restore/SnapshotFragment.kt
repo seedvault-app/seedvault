@@ -22,6 +22,7 @@ import org.calyxos.backup.storage.api.SnapshotResult
 
 public interface SnapshotViewModel {
     public val snapshots: LiveData<SnapshotResult>
+    public val fileSelectionManager: FileSelectionManager
 }
 
 internal interface SnapshotClickListener {
@@ -46,7 +47,7 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
 
         val adapter = SnapshotAdapter(this)
         list.adapter = adapter
-        viewModel.snapshots.observe(viewLifecycleOwner, {
+        viewModel.snapshots.observe(viewLifecycleOwner) {
             progressBar.visibility = INVISIBLE
             when (it) {
                 is SnapshotResult.Success -> {
@@ -54,6 +55,7 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
                         emptyStateView.visibility = VISIBLE
                     } else adapter.submitList(it.snapshots)
                 }
+
                 is SnapshotResult.Error -> {
                     val color = resources.getColor(R.color.design_default_color_error, null)
                     emptyStateView.setTextColor(color)
@@ -61,7 +63,7 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
                     emptyStateView.visibility = VISIBLE
                 }
             }
-        })
+        }
         return v
     }
 

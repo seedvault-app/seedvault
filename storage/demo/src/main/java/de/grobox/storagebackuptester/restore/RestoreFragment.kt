@@ -52,17 +52,17 @@ class RestoreFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.restoreLog.observe(viewLifecycleOwner, { progress ->
+        viewModel.restoreLog.observe(viewLifecycleOwner) { progress ->
             progress.text?.let { adapter.addItem(it) }
             horizontalProgressBar.max = progress.total
             horizontalProgressBar.setProgress(progress.current, true)
             list.postDelayed({
                 list.scrollToPosition(adapter.itemCount - 1)
             }, 50)
-        })
-        viewModel.restoreProgressVisible.observe(viewLifecycleOwner, { visible ->
+        }
+        viewModel.restoreProgressVisible.observe(viewLifecycleOwner) { visible ->
             progressBar.visibility = if (visible) VISIBLE else INVISIBLE
-        })
+        }
     }
 
     override fun onStart() {
