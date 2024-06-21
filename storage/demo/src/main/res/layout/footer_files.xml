@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  SPDX-FileCopyrightText: 2024 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
+<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="16dp"
+    android:text="@string/select_files_button_restore"
+    android:textColor="#ffffff"
+    app:backgroundTint="?colorAccent"
+    app:icon="@drawable/ic_cloud_restore"
+    app:iconTint="#ffffff"
+    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />

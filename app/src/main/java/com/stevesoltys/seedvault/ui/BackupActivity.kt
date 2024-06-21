@@ -24,8 +24,7 @@ abstract class BackupActivity : AppCompatActivity() {
 
     protected fun showFragment(f: Fragment, addToBackStack: Boolean = false, tag: String? = null) {
         supportFragmentManager.beginTransaction().apply {
-            if (tag == null) replace(R.id.fragment, f)
-            else replace(R.id.fragment, f, tag)
+            replace(R.id.fragment, f, tag)
             if (addToBackStack) addToBackStack(null)
             commit()
         }

@@ -37,17 +37,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_file" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
+    <ViewStub
+        android:id="@+id/bottomStub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:text="@string/select_files_button_restore"
-        android:textColor="#ffffff"
-        app:backgroundTint="?colorAccent"
-        app:icon="@drawable/ic_cloud_restore"
-        app:iconTint="#ffffff"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+        android:inflatedId="@+id/bottomStub"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        tools:layout="@layout/item_custom"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -23,6 +23,7 @@ import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES_STARTED
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_SELECT_FILES
 import com.stevesoltys.seedvault.restore.DisplayFragment.SELECT_APPS
 import com.stevesoltys.seedvault.restore.install.ApkRestore
 import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
@@ -44,6 +45,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTAMP_START
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.restore.FileSelectionManager
@@ -100,6 +102,7 @@ internal class RestoreViewModel(
         get() = appDataRestoreManager.restoreBackupResult
 
     override val snapshots = storageBackup.getBackupSnapshots().asLiveData(ioDispatcher)
+    private var storedSnapshot: StoredSnapshot? = null
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
         val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->
@@ -181,12 +184,22 @@ internal class RestoreViewModel(
     }
 
     @UiThread
-    internal fun startFilesRestore(item: SnapshotItem) {
+    internal fun selectFilesForRestore(item: SnapshotItem) {
+        val snapshot = item.snapshot ?: error("${item.storedSnapshot} had null snapshot")
+        fileSelectionManager.onSnapshotChosen(snapshot)
+        storedSnapshot = item.storedSnapshot
+        mDisplayFragment.setEvent(RESTORE_SELECT_FILES)
+    }
+
+    @UiThread
+    internal fun startFilesRestore() {
+        val storedSnapshot = this.storedSnapshot ?: error("No snapshot stored")
         val i = Intent(app, StorageRestoreService::class.java)
-        i.putExtra(EXTRA_USER_ID, item.storedSnapshot.userId)
-        i.putExtra(EXTRA_TIMESTAMP_START, item.time)
+        i.putExtra(EXTRA_USER_ID, storedSnapshot.userId)
+        i.putExtra(EXTRA_TIMESTAMP_START, storedSnapshot.timestamp)
         app.startForegroundService(i)
         mDisplayFragment.setEvent(RESTORE_FILES_STARTED)
+        this.storedSnapshot = null
     }
 
 }
@@ -208,5 +221,10 @@ internal class RestoreBackupResult(val errorMsg: String? = null) {
 }
 
 internal enum class DisplayFragment {
-    SELECT_APPS, RESTORE_APPS, RESTORE_BACKUP, RESTORE_FILES, RESTORE_FILES_STARTED
+    SELECT_APPS,
+    RESTORE_APPS,
+    RESTORE_BACKUP,
+    RESTORE_FILES,
+    RESTORE_SELECT_FILES,
+    RESTORE_FILES_STARTED,
 }
