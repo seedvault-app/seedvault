@@ -54,6 +54,7 @@ public class FileSelectionManager {
 
     private val allFolders = HashMap<String, FolderItem>()
     private val allFiles = HashMap<String, MutableList<FileItem>>()
+    private var snapshot: BackupSnapshot? = null
     private var expandedFolder: String? = null
 
     private val mFiles = MutableStateFlow<List<FilesItem>>(emptyList())
@@ -61,6 +62,12 @@ public class FileSelectionManager {
 
     @UiThread
     public fun onSnapshotChosen(snapshot: BackupSnapshot) {
+        // clear previous state if existing
+        clearState()
+        // store snapshot for later
+        this.snapshot = snapshot
+
+        // cache files from snapshot within [RestorableFile] (for easier processing)
         snapshot.mediaFilesList.forEach { mediaFile ->
             cacheFileItem(RestorableFile(mediaFile))
         }
@@ -124,6 +131,28 @@ public class FileSelectionManager {
         }
         // re-build list from cache, so selection state gets updated there
         mFiles.value = rebuildListFromCache()
+    }
+
+    @UiThread
+    public fun getBackupSnapshotAndReset(): BackupSnapshot {
+        val snapshot = this.snapshot ?: error("No snapshot stored")
+        // clear previous media files from snapshot
+        val snapshotBuilder = snapshot.toBuilder()
+            .clearMediaFiles()
+            .clearDocumentFiles()
+        // add only selected files back to snapshot
+        allFiles.values.forEach { fileList ->
+            fileList.forEach { file ->
+                if (file.selected && file.file.mediaFile != null) {
+                    snapshotBuilder.addMediaFiles(file.file.mediaFile)
+                } else if (file.selected && file.file.docFile != null) {
+                    snapshotBuilder.addDocumentFiles(file.file.docFile)
+                }
+            }
+        }
+        // clear state to free up memory
+        clearState()
+        return snapshotBuilder.build()
     }
 
     private fun cacheFileItem(restorableFile: RestorableFile) {
@@ -213,6 +242,14 @@ public class FileSelectionManager {
             selected = newSelected,
             partiallySelected = false,
         )
+    }
+
+    private fun clearState() {
+        snapshot = null
+        expandedFolder = null
+        allFolders.clear()
+        allFiles.clear()
+        mFiles.value = emptyList()
     }
 
 }

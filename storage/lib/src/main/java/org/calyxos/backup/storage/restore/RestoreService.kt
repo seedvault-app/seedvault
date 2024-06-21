@@ -9,8 +9,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.api.StoredSnapshot
@@ -18,6 +20,7 @@ import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_TIMESTA
 import org.calyxos.backup.storage.restore.RestoreService.Companion.EXTRA_USER_ID
 import org.calyxos.backup.storage.ui.NOTIFICATION_ID_RESTORE
 import org.calyxos.backup.storage.ui.Notifications
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 
 /**
  * Start to trigger restore as a foreground service. Ensure that you provide the snapshot
@@ -36,6 +39,7 @@ public abstract class RestoreService : Service() {
 
     private val n by lazy { Notifications(applicationContext) }
     protected abstract val storageBackup: StorageBackup
+    protected abstract val fileSelectionManager: FileSelectionManager
     protected abstract val restoreObserver: RestoreObserver?
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -47,8 +51,11 @@ public abstract class RestoreService : Service() {
 
         startForeground(NOTIFICATION_ID_RESTORE, n.getRestoreNotification())
         GlobalScope.launch {
+            val snapshot = withContext(Dispatchers.Main) {
+                fileSelectionManager.getBackupSnapshotAndReset()
+            }
             // TODO offer a way to try again if failed, or do an automatic retry here
-            storageBackup.restoreBackupSnapshot(storedSnapshot, null, restoreObserver)
+            storageBackup.restoreBackupSnapshot(storedSnapshot, snapshot, restoreObserver)
             stopSelf(startId)
         }
         return START_STICKY_COMPATIBILITY

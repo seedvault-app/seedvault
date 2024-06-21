@@ -64,6 +64,7 @@ internal class RestoreViewModel(
     private val iconManager: IconManager,
     storageBackup: StorageBackup,
     pluginManager: StoragePluginManager,
+    override val fileSelectionManager: FileSelectionManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager, pluginManager),
     RestorableBackupClickListener, SnapshotViewModel {
@@ -99,8 +100,6 @@ internal class RestoreViewModel(
         get() = appDataRestoreManager.restoreBackupResult
 
     override val snapshots = storageBackup.getBackupSnapshots().asLiveData(ioDispatcher)
-    override val fileSelectionManager: FileSelectionManager
-        get() = TODO("Not yet implemented")
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
         val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->

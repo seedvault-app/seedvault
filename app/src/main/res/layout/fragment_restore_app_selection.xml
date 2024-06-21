@@ -108,10 +108,6 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backupNameView"
         tools:listitem="@layout/list_item_app_status" />
 
     <Button
@@ -122,9 +118,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:text="@string/restore_backup_button"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appList" />
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

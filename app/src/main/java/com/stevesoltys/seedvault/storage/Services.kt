@@ -18,6 +18,7 @@ import org.calyxos.backup.storage.backup.BackupService
 import org.calyxos.backup.storage.backup.NotificationBackupObserver
 import org.calyxos.backup.storage.restore.NotificationRestoreObserver
 import org.calyxos.backup.storage.restore.RestoreService
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 import org.koin.android.ext.android.inject
 
 /*
@@ -70,6 +71,7 @@ internal class StorageBackupService : BackupService() {
 
 internal class StorageRestoreService : RestoreService() {
     override val storageBackup: StorageBackup by inject()
+    override val fileSelectionManager: FileSelectionManager by inject()
 
     // use lazy delegate because context isn't available during construction time
     override val restoreObserver: RestoreObserver by lazy {

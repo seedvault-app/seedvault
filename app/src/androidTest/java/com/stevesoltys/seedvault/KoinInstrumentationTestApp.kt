@@ -57,6 +57,7 @@ class KoinInstrumentationTestApp : App() {
                             iconManager = get(),
                             storageBackup = get(),
                             pluginManager = get(),
+                            fileSelectionManager = get(),
                         )
                     )
                 currentRestoreViewModel!!

@@ -200,7 +200,7 @@ public class StorageBackup(
 
     public suspend fun restoreBackupSnapshot(
         storedSnapshot: StoredSnapshot,
-        snapshot: BackupSnapshot? = null,
+        snapshot: BackupSnapshot,
         restoreObserver: RestoreObserver? = null,
     ): Boolean = withContext(dispatcher) {
         if (restoreRunning.getAndSet(true)) {

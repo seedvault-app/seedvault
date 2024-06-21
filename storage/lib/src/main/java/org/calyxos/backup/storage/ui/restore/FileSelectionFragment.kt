@@ -33,6 +33,9 @@ public abstract class FileSelectionFragment : Fragment() {
 
         val v = inflater.inflate(R.layout.fragment_select_files, container, false)
         list = v.findViewById(R.id.list)
+        v.findViewById<View>(R.id.fab).setOnClickListener {
+            onRestoreButtonClicked()
+        }
 
         return v
     }
@@ -51,8 +54,10 @@ public abstract class FileSelectionFragment : Fragment() {
         }
     }
 
+    protected abstract fun onRestoreButtonClicked()
+
     @CallSuper
-    public open fun onFileItemsChanged(filesItems: List<FilesItem>) {
+    protected open fun onFileItemsChanged(filesItems: List<FilesItem>) {
         adapter.submitList(filesItems)
     }
 }
