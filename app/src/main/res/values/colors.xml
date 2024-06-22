@@ -13,8 +13,6 @@
     <color name="primaryDark">@color/primary</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#52 -->
     <color name="background">@android:color/system_neutral1_50</color>
-    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#21 -->
-    <color name="actionBarPrimary">@color/primary</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#23 -->
     <color name="statusBarColor">@color/primary</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#69 -->
