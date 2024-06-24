@@ -5,13 +5,13 @@
 
 java_import {
     name: "seedvault-lib-dav4jvm",
-    jars: ["dav4jvm-2.2.1.jar"],
+    jars: ["dav4jvm-b8be778.jar"],
     sdk_version: "current",
 }
 
 java_import {
     name: "seedvault-lib-okhttp",
-    jars: ["okhttp-4.11.0.jar"],
+    jars: ["okhttp-4.12.0.jar"],
     sdk_version: "current",
 }
 

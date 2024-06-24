@@ -14,22 +14,20 @@ import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
-import at.bitfire.dav4jvm.XmlUtils.NS_WEBDAV
 import at.bitfire.dav4jvm.exception.HttpException
-import at.bitfire.dav4jvm.property.DisplayName
-import at.bitfire.dav4jvm.property.ResourceType
+import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.property.webdav.NS_WEBDAV
+import at.bitfire.dav4jvm.property.webdav.ResourceType
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import okhttp3.internal.closeQuietly
 import okio.BufferedSink
 import org.xmlpull.v1.XmlPullParser
 import java.io.IOException
@@ -113,28 +111,10 @@ internal abstract class WebDavStorage(
     protected fun getInputStream(location: HttpUrl): InputStream {
         val davCollection = DavCollection(okHttpClient, location)
 
-        val pipedInputStream = PipedExceptionInputStream()
-        val pipedOutputStream = PipedOutputStream(pipedInputStream)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                davCollection.get(accept = "", headers = null) { response ->
-                    val inputStream = response.body?.byteStream()
-                        ?: throw IOException("No response body")
-                    debugLog { "getInputStream($location) = $response" }
-                    pipedOutputStream.use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-            } catch (e: Exception) {
-                debugLog { "Exception while getting input stream: $e" }
-                // pass exception to stream, so it gets thrown when stream is closed
-                // if we'd just throw it here, it would be uncaught, on a different thread
-                pipedInputStream.throwable = e
-                pipedOutputStream.closeQuietly()
-            }
-        }
-        return pipedInputStream
+        val response = davCollection.get(accept = "", headers = null)
+        debugLog { "getInputStream($location) = $response" }
+        if (response.code / 100 != 2) throw IOException("HTTP error ${response.code}")
+        return response.body?.byteStream() ?: throw IOException()
     }
 
     /**
@@ -233,22 +213,10 @@ internal abstract class WebDavStorage(
         }
     }
 
-    private class PipedExceptionInputStream : PipedInputStream() {
-        var throwable: Throwable? = null
-
-        override fun close() {
-            super.close()
-            throwable?.let { e ->
-                if (e is IOException) throw e
-                else throw IOException(e)
-            }
-        }
-    }
-
 }
 
 /**
- * A fake version of [at.bitfire.dav4jvm.property.GetLastModified] which we register
+ * A fake version of [at.bitfire.dav4jvm.property.webdav.GetLastModified] which we register
  * so we don't need to depend on `org.apache.commons.lang3` which is used for date parsing.
  */
 class GetLastModified : Property {
