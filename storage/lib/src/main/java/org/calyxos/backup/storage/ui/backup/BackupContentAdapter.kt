@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import com.google.android.material.materialswitch.MaterialSwitch
 import org.calyxos.backup.storage.R
 import org.calyxos.backup.storage.api.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
 
@@ -65,7 +65,7 @@ internal class BackupContentAdapter(private val listener: ContentClickListener) 
     }
 
     internal inner class MediaHolder(view: View) : ViewHolder(view) {
-        private val switch: SwitchCompat = view.findViewById(R.id.switchView)
+        private val switch: MaterialSwitch = view.findViewById(R.id.switchView)
 
         override fun bind(item: BackupContentItem) {
             super.bind(item)
