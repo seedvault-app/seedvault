@@ -4,18 +4,17 @@
   -->
 <resources>
 
-    <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
-        <item name="colorAccent">@color/accent</item>
+    <style name="AppTheme" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_primary</item>
+        <item name="colorAccent">@color/accent_primary</item>
         <item name="colorError">@color/red</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="fontFamily">@*android:string/config_bodyFontFamily</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="android:windowLightStatusBar">@bool/isLight</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightNavigationBar">@bool/isLight</item>
-        <item name="android:navigationBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/background</item>
     </style>
 
     <!-- Copied from Settings -->
@@ -75,7 +74,7 @@
         <item name="android:textAlignment">gravity</item>
     </style>
 
-    <style name="SudPrimaryButton" parent="Widget.AppCompat.Button.Colored">
+    <style name="SudPrimaryButton" parent="Widget.Material3.Button.UnelevatedButton">
         <item name="android:buttonStyle">@style/SudPrimaryButton</item>
         <item name="android:theme">@style/SudPrimaryButton</item>
         <item name="buttonStyle">@style/SudPrimaryButton</item>
@@ -90,7 +89,7 @@
         <item name="textAllCaps">false</item>
     </style>
 
-    <style name="SudSecondaryButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+    <style name="SudSecondaryButton" parent="Widget.Material3.Button.TextButton">
         <item name="android:buttonStyle">@style/SudSecondaryButton</item>
         <item name="android:theme">@style/SudSecondaryButton</item>
         <item name="buttonStyle">@style/SudSecondaryButton</item>
