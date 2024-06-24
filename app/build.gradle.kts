@@ -159,13 +159,11 @@ dependencies {
      * in the top-level `libs` folder to reflect that.
      * You can copy these libraries from ~/.gradle/caches/modules-2/files-2.1
      */
-    // later versions than 2.1.1 require newer kotlin version
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.6.jar"))
 
-    // dav4jvm - later versions of okhttp need kotlin > 1.9.0
     implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
 
     /**

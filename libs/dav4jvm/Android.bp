@@ -11,7 +11,7 @@ java_import {
 
 java_import {
     name: "seedvault-lib-okhttp",
-    jars: ["okhttp-4.11.0.jar"],
+    jars: ["okhttp-4.12.0.jar"],
     sdk_version: "current",
 }
 
