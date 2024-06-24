@@ -24,6 +24,7 @@ import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState
+import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
@@ -54,6 +55,7 @@ internal class AppDataRestoreManager(
     private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
     private val restoreCoordinator: RestoreCoordinator,
+    private val storagePluginManager: StoragePluginManager,
 ) {
 
     private var session: IRestoreSession? = null
@@ -97,12 +99,16 @@ internal class AppDataRestoreManager(
             return
         }
 
+        val providerPackageName = storagePluginManager.appPlugin.providerPackageName
         val observer = RestoreObserver(
             restoreCoordinator = restoreCoordinator,
             restorableBackup = restorableBackup,
             session = session,
             // sort packages (reverse) alphabetically, since we move from bottom to top
-            packages = restorableBackup.packageMetadataMap.packagesSortedByNameDescending,
+            packages = restorableBackup.packageMetadataMap.packagesSortedByNameDescending.filter {
+                // filter out current plugin package name, so it doesn't kill our restore
+                it != providerPackageName
+            },
             monitor = monitor,
         )
 
