@@ -14,10 +14,10 @@ import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
-import at.bitfire.dav4jvm.XmlUtils.NS_WEBDAV
 import at.bitfire.dav4jvm.exception.HttpException
-import at.bitfire.dav4jvm.property.DisplayName
-import at.bitfire.dav4jvm.property.ResourceType
+import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.property.webdav.NS_WEBDAV
+import at.bitfire.dav4jvm.property.webdav.ResourceType
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -248,7 +248,7 @@ internal abstract class WebDavStorage(
 }
 
 /**
- * A fake version of [at.bitfire.dav4jvm.property.GetLastModified] which we register
+ * A fake version of [at.bitfire.dav4jvm.property.webdav.GetLastModified] which we register
  * so we don't need to depend on `org.apache.commons.lang3` which is used for date parsing.
  */
 class GetLastModified : Property {

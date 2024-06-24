@@ -9,8 +9,8 @@ import android.util.Log
 import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.NotFoundException
-import at.bitfire.dav4jvm.property.DisplayName
-import at.bitfire.dav4jvm.property.ResourceType
+import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.property.webdav.ResourceType
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.webdav.DIRECTORY_ROOT

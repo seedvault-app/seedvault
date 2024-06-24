@@ -11,9 +11,9 @@ import at.bitfire.dav4jvm.DavCollection
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.exception.NotFoundException
-import at.bitfire.dav4jvm.property.DisplayName
-import at.bitfire.dav4jvm.property.QuotaAvailableBytes
-import at.bitfire.dav4jvm.property.ResourceType
+import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.property.webdav.QuotaAvailableBytes
+import at.bitfire.dav4jvm.property.webdav.ResourceType
 import com.stevesoltys.seedvault.plugins.EncryptedMetadata
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex

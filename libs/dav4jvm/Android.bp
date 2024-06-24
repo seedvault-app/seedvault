@@ -5,7 +5,7 @@
 
 java_import {
     name: "seedvault-lib-dav4jvm",
-    jars: ["dav4jvm-2.2.1.jar"],
+    jars: ["dav4jvm-b8be778.jar"],
     sdk_version: "current",
 }
 
