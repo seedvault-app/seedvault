@@ -21,7 +21,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -35,6 +34,7 @@ import cash.z.ecc.android.bip39.Mnemonics.ChecksumException
 import cash.z.ecc.android.bip39.Mnemonics.InvalidWordException
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
@@ -118,7 +118,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
         for (i in 0 until WORD_NUM) {
             val wordLayout = getWordLayout(i)
-            val editText = wordLayout.editText as AutoCompleteTextView
+            val editText = wordLayout.editText as MaterialAutoCompleteTextView
             editText.onFocusChangeListener = OnFocusChangeListener { _, focus ->
                 if (!focus) wordLayout.isErrorEnabled = false
             }
