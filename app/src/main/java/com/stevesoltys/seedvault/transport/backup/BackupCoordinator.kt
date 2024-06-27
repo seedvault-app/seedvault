@@ -277,6 +277,16 @@ internal class BackupCoordinator(
         return full.performFullBackup(targetPackage, fileDescriptor, flags, token, salt)
     }
 
+    /**
+     * Tells the transport to read [numBytes] bytes of data from the socket file descriptor
+     * provided in the [performFullBackup] call, and deliver those bytes to the datastore.
+     *
+     * @param numBytes The number of bytes of tarball data available to be read from the socket.
+     * @return [TRANSPORT_OK] on successful processing of the data; [TRANSPORT_ERROR] to
+     *    indicate a fatal error situation.  If an error is returned, the system will
+     *    call finishBackup() and stop attempting backups until after a backoff and retry
+     *    interval.
+     */
     suspend fun sendBackupData(numBytes: Int) = full.sendBackupData(numBytes)
 
     /**
