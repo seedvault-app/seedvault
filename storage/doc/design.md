@@ -195,7 +195,7 @@ by using HKDF's expand step with the UTF-8 byte representation of "stream key" a
 This stream key is then used to derive a new key for each stream.
 
 Instead of encrypting, authenticating and segmenting a cleartext stream ourselves,
-we have chosen to employ the [tink library](https://github.com/google/tink) for that task.
+we have chosen to employ the [tink library](https://github.com/tink-crypto/tink-java) for that task.
 Since it does not allow us to work with imported or derived keys,
 we are only using its [AesGcmHkdfStreaming](https://developers.google.com/tink/streaming-aead/aes_gcm_hkdf_streaming)
 to delegate encryption and decryption of byte streams.
