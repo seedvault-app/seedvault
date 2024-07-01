@@ -197,7 +197,7 @@ This stream key is then used to derive a new key for each stream.
 Instead of encrypting, authenticating and segmenting a cleartext stream ourselves,
 we have chosen to employ the [tink library](https://github.com/google/tink) for that task.
 Since it does not allow us to work with imported or derived keys,
-we are only using its [AesGcmHkdfStreaming](https://google.github.io/tink/javadoc/tink-android/1.5.0/index.html?com/google/crypto/tink/subtle/AesGcmHkdfStreaming.html)
+we are only using its [AesGcmHkdfStreaming](https://developers.google.com/tink/streaming-aead/aes_gcm_hkdf_streaming)
 to delegate encryption and decryption of byte streams.
 This follows the OAE2 definition as proposed in the paper
 "Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance"
