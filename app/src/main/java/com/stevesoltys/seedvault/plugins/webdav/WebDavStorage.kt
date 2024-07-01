@@ -197,6 +197,32 @@ internal abstract class WebDavStorage(
 
         private var onClose: (() -> Unit)? = null
 
+        override fun write(b: Int) {
+            try {
+                super.write(b)
+            } catch (e: Exception) {
+                try {
+                    onClose?.invoke()
+                } catch (closeException: Exception) {
+                    e.addSuppressed(closeException)
+                }
+                throw e
+            }
+        }
+
+        override fun write(b: ByteArray?, off: Int, len: Int) {
+            try {
+                super.write(b, off, len)
+            } catch (e: Exception) {
+                try {
+                    onClose?.invoke()
+                } catch (closeException: Exception) {
+                    e.addSuppressed(closeException)
+                }
+                throw e
+            }
+        }
+
         @Throws(IOException::class)
         override fun close() {
             super.close()

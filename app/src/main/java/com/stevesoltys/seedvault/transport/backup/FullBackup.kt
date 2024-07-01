@@ -20,7 +20,7 @@ import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import libcore.io.IoUtils.closeQuietly
+import java.io.Closeable
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
@@ -210,9 +210,9 @@ internal class FullBackup(
         val state = this.state ?: throw AssertionError("Trying to clear empty state.")
         return try {
             state.outputStream?.flush()
-            closeQuietly(state.outputStream)
-            closeQuietly(state.inputStream)
-            closeQuietly(state.inputFileDescriptor)
+            closeLogging(state.outputStream)
+            closeLogging(state.inputStream)
+            closeLogging(state.inputFileDescriptor)
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.w(TAG, "Error when clearing state", e)
@@ -220,6 +220,12 @@ internal class FullBackup(
         } finally {
             this.state = null
         }
+    }
+
+    private fun closeLogging(closable: Closeable?) = try {
+        closable?.close()
+    } catch (e: Exception) {
+        Log.w(TAG, "Error closing: ", e)
     }
 
 }
