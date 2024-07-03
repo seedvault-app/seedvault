@@ -108,8 +108,10 @@ internal class NotificationBackupObserver(
             null // To not disable apps by mistake, we reset it when getting a new non-error result.
         }
 
-        // often [onResult] gets called right away without any [onUpdate] call
-        showProgressNotification(target)
+        // Often [onResult] gets called right away without any [onUpdate] call,
+        // so we show progress notification here as well.
+        // However, only do it on success, to prevent a race causing stuck notifications
+        if (status == 0) showProgressNotification(target)
     }
 
     /**
