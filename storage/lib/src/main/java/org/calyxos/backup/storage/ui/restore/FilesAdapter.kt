@@ -80,12 +80,12 @@ internal class FilesAdapter(
                     R.drawable.ic_chevron_right
                 }
                 expandView.setImageResource(res)
-                itemView.setOnClickListener {
-                    onExpandClicked(item)
-                }
             } else if (item is FileItem) {
                 expandView.setImageResource(getDrawableResource(item))
-                itemView.setOnClickListener(null)
+            }
+            itemView.setOnClickListener {
+                if (item is FolderItem) onExpandClicked(item)
+                else checkBox.toggle()
             }
             itemView.updatePadding(left = indentPadding * item.level)
             nameView.text = item.name

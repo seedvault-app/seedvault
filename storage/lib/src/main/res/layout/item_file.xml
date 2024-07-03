@@ -25,6 +25,7 @@
         android:id="@+id/nameView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:textAppearance="?android:attr/textAppearanceListItem"
         app:layout_constraintEnd_toStartOf="@+id/checkBox"
         app:layout_constraintStart_toEndOf="@+id/expandView"
