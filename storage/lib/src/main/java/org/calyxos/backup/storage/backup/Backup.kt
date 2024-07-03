@@ -33,6 +33,8 @@ internal class BackupResult(
         backupMediaFiles = backupMediaFiles + other.backupMediaFiles,
         backupDocumentFiles = backupDocumentFiles + other.backupDocumentFiles,
     )
+
+    val isEmpty: Boolean = backupMediaFiles.isEmpty() && backupDocumentFiles.isEmpty()
 }
 
 internal class Backup(
@@ -134,6 +136,7 @@ internal class Backup(
             fileBackup.backupFiles(filesResult.files, availableChunkIds, backupObserver)
         }
         val result = largeResult + smallResult
+        if (result.isEmpty) return // TODO maybe warn user that nothing could get backed up?
         val backupSize = result.backupMediaFiles.sumOf { it.size } +
             result.backupDocumentFiles.sumOf { it.size }
         val endTime = System.currentTimeMillis()
