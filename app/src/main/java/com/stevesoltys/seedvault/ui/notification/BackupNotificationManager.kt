@@ -104,6 +104,7 @@ internal class BackupNotificationManager(private val context: Context) {
      * Call after [onApkBackup] or [onAppsNotBackedUp] were called.
      */
     fun onApkBackupDone() {
+        Log.i(TAG, "Cancelled progress notification.")
         nm.cancel(NOTIFICATION_ID_OBSERVER)
     }
 
@@ -196,6 +197,7 @@ internal class BackupNotificationManager(private val context: Context) {
             priority = PRIORITY_LOW
         }.build()
         nm.cancel(NOTIFICATION_ID_OBSERVER)
+        Log.i(TAG, "Cancelled progress notification.")
         nm.notify(NOTIFICATION_ID_SUCCESS, notification)
     }
 
