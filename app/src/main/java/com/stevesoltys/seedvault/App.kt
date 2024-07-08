@@ -33,6 +33,7 @@ import com.stevesoltys.seedvault.settings.AppListRetriever
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import com.stevesoltys.seedvault.storage.storageModule
+import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
 import com.stevesoltys.seedvault.ui.files.FileSelectionViewModel
@@ -185,12 +186,14 @@ open class App : Application() {
             return
         }
 
-        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
-        if (backupManager.isBackupEnabled && !pluginManager.isOnRemovableDrive) {
-            AppBackupWorker.schedule(applicationContext, settingsManager, UPDATE)
+        if (backupManager.currentTransport == TRANSPORT_ID) {
+            backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
+            if (backupManager.isBackupEnabled && !pluginManager.isOnRemovableDrive) {
+                AppBackupWorker.schedule(applicationContext, settingsManager, UPDATE)
+            }
+            // cancel old D2D worker
+            WorkManager.getInstance(this).cancelUniqueWork("APP_BACKUP")
         }
-        // cancel old D2D worker
-        WorkManager.getInstance(this).cancelUniqueWork("APP_BACKUP")
     }
 
     private fun isFrameworkSchedulingEnabled(): Boolean = Settings.Secure.getInt(

@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.app.Application
 import android.app.backup.IBackupManager
 import android.app.job.JobInfo
+import android.os.UserHandle
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
@@ -100,6 +101,8 @@ internal class BackupStorageViewModel(
 
     private fun scheduleBackupWorkers() {
         val storage = storagePluginManager.storageProperties ?: error("no storage available")
+        // disable framework scheduling, because another transport may have enabled it
+        backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
         if (!storage.isUsb) {
             if (backupManager.isBackupEnabled) {
                 AppBackupWorker.schedule(app, settingsManager, CANCEL_AND_REENQUEUE)
