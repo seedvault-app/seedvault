@@ -48,12 +48,12 @@ android {
 
     protobuf {
         protoc {
-            if ("aarch64" == System.getProperty("os.arch")) {
+            artifact = if ("aarch64" == System.getProperty("os.arch")) {
                 // mac m1
-                artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}:osx-x86_64"
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}:osx-x86_64"
             } else {
                 // other
-                artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
             }
         }
         generateProtoTasks {

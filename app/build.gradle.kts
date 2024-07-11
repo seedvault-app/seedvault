@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import com.google.protobuf.gradle.id
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.protobuf)
 }
 
 val gitDescribe = {
@@ -93,6 +95,32 @@ android {
         }
     }
 
+    protobuf {
+        protoc {
+            artifact = if ("aarch64" == System.getProperty("os.arch")) {
+                // mac m1
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}:osx-x86_64"
+            } else {
+                // other
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+            }
+        }
+        generateProtoTasks {
+            all().forEach { task ->
+                task.plugins {
+                    id("java") {
+                        option("lite")
+                    }
+                }
+                task.builtins {
+                    id("kotlin") {
+                        option("lite")
+                    }
+                }
+            }
+        }
+    }
+
     lint {
         abortOnError = true
 
@@ -132,6 +160,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.google.material)
 
+    implementation(libs.google.protobuf.kotlin.lite)
     implementation(libs.google.tink.android)
 
     /**

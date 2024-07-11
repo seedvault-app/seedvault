@@ -93,6 +93,7 @@ thirdegg-lint-rules = { module = "com.github.thirdegg:lint-rules", version.ref =
 # Google dependencies
 google-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 google-protobuf-javalite = { module = 'com.google.protobuf:protobuf-javalite', version.ref = 'protobuf' }
+google-protobuf-kotlin-lite = { module = 'com.google.protobuf:protobuf-kotlin-lite', version.ref = 'protobuf' }
 google-material = { module = 'com.google.android.material:material', version.ref = 'material' }
 
 # Coroutines dependencies

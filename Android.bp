@@ -8,12 +8,18 @@ android_app {
     srcs: [
         "app/src/main/java/**/*.kt",
         "app/src/main/java/**/*.java",
+        "app/src/main/proto/*.proto",
     ],
     resource_dirs: [
         "app/src/main/res",
     ],
+    proto: {
+        type: "lite",
+        local_include_dirs: ["app/src/main/proto"],
+    },
     static_libs: [
         "kotlin-stdlib-jdk8",
+        "libprotobuf-kotlin-lite",
         "androidx.core_core-ktx",
         "androidx.fragment_fragment-ktx",
         "androidx.activity_activity-ktx",
