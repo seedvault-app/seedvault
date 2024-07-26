@@ -34,6 +34,7 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
 
         setContentView(R.layout.activity_fragment_container)
 
+        setSupportActionBar(requireViewById(R.id.toolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         // always start with settings fragment as a base (when fresh start)

@@ -21,20 +21,20 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getMainExecutor
 import androidx.fragment.app.Fragment
 import cash.z.ecc.android.bip39.Mnemonics
 import cash.z.ecc.android.bip39.Mnemonics.ChecksumException
 import cash.z.ecc.android.bip39.Mnemonics.InvalidWordException
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
@@ -118,7 +118,7 @@ class RecoveryCodeInputFragment : Fragment() {
 
         for (i in 0 until WORD_NUM) {
             val wordLayout = getWordLayout(i)
-            val editText = wordLayout.editText as AutoCompleteTextView
+            val editText = wordLayout.editText as MaterialAutoCompleteTextView
             editText.onFocusChangeListener = OnFocusChangeListener { _, focus ->
                 if (!focus) wordLayout.isErrorEnabled = false
             }
@@ -207,7 +207,7 @@ class RecoveryCodeInputFragment : Fragment() {
     }
 
     private fun onExistingCodeChecked(verified: Boolean) {
-        AlertDialog.Builder(requireContext()).apply {
+        MaterialAlertDialogBuilder(requireContext()).apply {
             if (verified) {
                 setTitle(R.string.recovery_code_verification_ok_title)
                 setMessage(R.string.recovery_code_verification_ok_message)
@@ -237,7 +237,7 @@ class RecoveryCodeInputFragment : Fragment() {
     }
 
     private fun generateNewCode() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setIcon(R.drawable.ic_warning)
             .setTitle(R.string.recovery_code_verification_new_dialog_title)
             .setMessage(R.string.recovery_code_verification_new_dialog_message)

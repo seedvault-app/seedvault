@@ -105,7 +105,6 @@
 
         <activity
             android:name=".ui.storage.StorageActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
@@ -115,15 +114,13 @@
 
         <activity
             android:name=".ui.recoverycode.RecoveryCodeActivity"
-            android:label="@string/recovery_code_title"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/recovery_code_title" />
 
         <activity
             android:name=".restore.RestoreActivity"
             android:exported="true"
             android:label="@string/restore_title"
-            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP">
             <intent-filter>
                 <action android:name="com.stevesoltys.seedvault.RESTORE_BACKUP" />
                 <category android:name="android.intent.category.DEFAULT" />

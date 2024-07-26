@@ -19,6 +19,7 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.grobox.storagebackuptester.MainViewModel
 import de.grobox.storagebackuptester.R
 import de.grobox.storagebackuptester.restore.DemoSnapshotFragment
@@ -133,7 +134,7 @@ class SettingsFragment : BackupContentFragment() {
     }
 
     private fun onRestoreClicked() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setIcon(android.R.drawable.stat_sys_warning)
             .setTitle("Warning")
             .setMessage("This will override data and should only be used on a clean phone. Not the one you just made the backup on.")

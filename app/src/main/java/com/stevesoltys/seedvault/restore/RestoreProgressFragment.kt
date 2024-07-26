@@ -14,12 +14,12 @@ import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -99,7 +99,7 @@ class RestoreProgressFragment : Fragment() {
         // check if any restore failed, because the app is not installed
         val failed = viewModel.restoreProgress.value?.any { it.state == FAILED_NOT_INSTALLED }
         if (failed != true) return // nothing left to do if there's no failures due to not installed
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.restore_restoring_error_title)
             .setMessage(R.string.restore_restoring_error_message)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
