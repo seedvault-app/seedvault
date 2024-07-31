@@ -46,9 +46,9 @@ internal abstract class SeedvaultLargeTest :
         clearTestBackups()
 
         runCommand("bmgr enable true")
-        sleep(60_000)
+        sleep(100_000)
         runCommand("bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport")
-        sleep(60_000)
+        sleep(100_000)
 
         startRecordingTest(keepRecordingScreen, name.methodName)
         restoreBaselineBackup()

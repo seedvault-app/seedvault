@@ -8,7 +8,7 @@ adb shell bmgr autorestore false
 
 echo "Installing Seedvault app..."
 ./gradlew --stacktrace :app:installDebugAndroidTest
-sleep 60
+sleep 100
 
 D2D_BACKUP_TEST=$1
 
