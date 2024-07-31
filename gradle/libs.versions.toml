@@ -50,7 +50,7 @@ tink = { strictly = "1.10.0" }
 
 # Coroutines versions
 # https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r53/CHANGES.md
-coroutines = { strictly = "1.7.2" }
+coroutines = { strictly = "1.7.3" } # AOSP has 1.7.2 but several libs require 1.7.3
 
 # AndroidX versions
 # https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/room/room-ktx?autodive=0
