@@ -11,7 +11,13 @@
         <activity
             android:name="com.stevesoltys.seedvault.settings.SettingsActivity"
             android:exported="true"
-            tools:remove="android:permission" />
+            tools:remove="android:permission">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.stevesoltys.seedvault.restore.RestoreActivity"
             android:exported="true"
