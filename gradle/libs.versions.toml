@@ -5,7 +5,7 @@
 
 [versions]
 # Gradle plugin versions
-androidGradlePlugin = "8.4.1"
+androidGradlePlugin = "8.5.1"
 protobufPlugin = "0.9.4"
 ktlint = "11.5.0"
 
@@ -30,45 +30,47 @@ espresso = "3.4.0"
 # 1.7.20 Android 13 (QPR2)
 # 1.8.10 Android 14
 # 1.9.0 Android 14 (QPR2)
-# Check: https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r29/build.txt
-kotlin = { strictly = "1.9.0" }
-ksp = "1.9.0-1.0.13" # Keep in match with kotlin version
+# 1.9.22 Android 14 (QPR3)
+# Check: https://android.googlesource.com/platform/external/kotlinc/+/refs/tags/android-14.0.0_r53/build.txt
+kotlin = { strictly = "1.9.22" }
+ksp = "1.9.22-1.0.17" # Keep in match with kotlin version
+dokka = "1.9.20" # Dokka has no releases after 1.9.20
 
 # Lint versions
 lint-rules = { strictly = "0.1.0" }
 
 # Google versions
-# https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-14.0.0_r29/java/pom.xml#7
+# https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-14.0.0_r53/java/pom.xml#7
 protobuf = { strictly = "3.21.12" }
-# https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r29/current/extras/material-design-x/Android.bp#15
+# https://android.googlesource.com/platform/prebuilts/sdk/+/refs/tags/android-14.0.0_r53/current/extras/material-design-x/Android.bp#15
 material = { strictly = "1.7.0-alpha03" }
 # careful with upgrading tink, so old backups continue to be decryptable
 # https://github.com/tink-crypto/tink-java/releases
 tink = { strictly = "1.10.0" }
 
 # Coroutines versions
-# https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r29/CHANGES.md
-coroutines = { strictly = "1.7.2" }
+# https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-14.0.0_r53/CHANGES.md
+coroutines = { strictly = "1.7.3" } # AOSP has 1.7.2 but several libs require 1.7.3
 
 # AndroidX versions
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/room/room-ktx?autodive=0
-room = { strictly = "2.6.1" } # 2.7.0-alpha01 but that's not released, yet
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/core/core-ktx?autodive=0
-androidx-core = { strictly = "1.13.0-alpha02" } # 1.13.0-alpha01 in AOSP, but uses code from alpha02
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/fragment/fragment-ktx?autodive=0
-androidx-fragment = { strictly = "1.7.0-alpha06" }
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/activity/activity-ktx?autodive=0
-androidx-activity = { strictly = "1.9.0-alpha01" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/room/room-ktx?autodive=0
+room = { strictly = "2.7.0-alpha01" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/core/core-ktx?autodive=0
+androidx-core = { strictly = "1.13.0-beta01" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/fragment/fragment-ktx?autodive=0
+androidx-fragment = { strictly = "1.7.0-beta01" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/activity/activity-ktx?autodive=0
+androidx-activity = { strictly = "1.9.0-alpha03" }
 # https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/preference/preference?autodive=0
 androidx-preference = { strictly = "1.2.0-alpha01" } # 1.3.0-alpha01 in AOSP but isn't released
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/lifecycle/lifecycle-viewmodel-ktx?autodive=0
-androidx-lifecycle-viewmodel-ktx = { strictly = "2.7.0-alpha02" }
-androidx-lifecycle-livedata-ktx = { strictly = "2.7.0-alpha02" }
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/constraintlayout/constraintlayout?autodive=0
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/lifecycle/lifecycle-viewmodel-ktx?autodive=0
+androidx-lifecycle-viewmodel-ktx = { strictly = "2.8.0-alpha02" }
+androidx-lifecycle-livedata-ktx = { strictly = "2.8.0-alpha02" }
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/constraintlayout/constraintlayout?autodive=0
 androidx-constraintlayout = { strictly = "2.2.0-alpha13" }
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/documentfile/documentfile?autodive=0
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/documentfile/documentfile?autodive=0
 androidx-documentfile = { strictly = "1.1.0-alpha01" } # 1.1.0-alpha02 in AOSP but isn't released
-# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r29/current/androidx/m2repository/androidx/work/work-runtime-ktx?autodive=0
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-14.0.0_r53/current/androidx/m2repository/androidx/work/work-runtime-ktx?autodive=0
 androidx-work-runtime = { strictly = "2.10.0-alpha01" }
 
 [libraries]
@@ -111,6 +113,6 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 google-ksp  = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-protobuf  = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
-jetbrains-dokka  = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+jetbrains-dokka  = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 jetbrains-kotlin-android  = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jlleitschuh-ktlint  = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
