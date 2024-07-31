@@ -45,7 +45,7 @@ class SchedulingFragment : PreferenceFragmentCompat(),
         }
     }
 
-    override fun onDisplayPreferenceDialog(preference: Preference?) {
+    override fun onDisplayPreferenceDialog(preference: Preference) {
         when (preference) {
             is ListPreference -> {
                 val dialogFragment = M3ListPreference.newInstance(preference.getKey())
