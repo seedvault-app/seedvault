@@ -56,12 +56,12 @@ abstract class RequireProvisioningActivity : BackupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getViewModel().chooseBackupLocation.observeEvent(this, { show ->
+        getViewModel().chooseBackupLocation.observeEvent(this) { show ->
             if (show) showStorageActivity()
-        })
+        }
     }
 
-    protected fun showStorageActivity() {
+    fun showStorageActivity() {
         val intent = Intent(this, StorageActivity::class.java).apply {
             putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
             putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)
@@ -69,7 +69,7 @@ abstract class RequireProvisioningActivity : BackupActivity() {
         requestLocation.launch(intent)
     }
 
-    protected fun showRecoveryCodeActivity() {
+    fun showRecoveryCodeActivity() {
         val intent = Intent(this, RecoveryCodeActivity::class.java).apply {
             putExtra(INTENT_EXTRA_IS_RESTORE, getViewModel().isRestoreOperation)
             putExtra(INTENT_EXTRA_IS_SETUP_WIZARD, isSetupWizard)

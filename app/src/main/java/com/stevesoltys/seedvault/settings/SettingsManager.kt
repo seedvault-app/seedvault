@@ -247,6 +247,14 @@ class SettingsManager(private val context: Context) {
             .putBoolean(PREF_KEY_D2D_BACKUPS, enabled)
             .apply()
     }
+
+    /**
+     * This assumes that if there's no storage plugin set, it is the first start.
+     * We enforce a storage plugin and don't allow unsetting one,
+     * so this should be a safe assumption.
+     */
+    val isFirstStart get() = prefs.getString(PREF_KEY_STORAGE_PLUGIN, null) == null
+
 }
 
 data class FlashDrive(
