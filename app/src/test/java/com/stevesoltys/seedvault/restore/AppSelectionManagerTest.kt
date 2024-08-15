@@ -83,7 +83,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     ),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             val initialApps = awaitItem()
             // only the meta system app item remains
@@ -116,7 +116,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     ),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             val initialApps = awaitItem()
             assertEquals(4, initialApps.apps.size)
@@ -138,7 +138,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     packageName2 to PackageMetadata(time = 42L),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             // first all are selected
             val initialApps = awaitItem()
@@ -196,7 +196,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     ),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             // all apps (except special ones) have an unknown item state initially
             val initialApps = awaitItem()
@@ -232,7 +232,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     packageName2 to PackageMetadata(time = 42L),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             val initialApps = awaitItem()
             assertEquals(3, initialApps.apps.size)
@@ -319,6 +319,34 @@ internal class AppSelectionManagerTest : TransportTest() {
     }
 
     @Test
+    fun `system apps only pre-selected in setup wizard`() = runTest {
+        val backup = getRestorableBackup(
+            mutableMapOf(
+                packageName1 to PackageMetadata(system = true, isLaunchableSystemApp = false),
+            )
+        )
+        // choose restore set in setup wizard
+        appSelectionManager.selectedAppsFlow.test {
+            awaitItem()
+            appSelectionManager.onRestoreSetChosen(backup, true)
+            // only system apps meta item in list
+            val initialApps = awaitItem()
+            assertEquals(1, initialApps.apps.size)
+            assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
+            assertTrue(initialApps.apps[0].selected) // system settings is selected
+        }
+        appSelectionManager.selectedAppsFlow.test {
+            awaitItem()
+            appSelectionManager.onRestoreSetChosen(backup, false)
+            // only system apps meta item in list
+            val initialApps = awaitItem()
+            assertEquals(1, initialApps.apps.size)
+            assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
+            assertFalse(initialApps.apps[0].selected) // system settings is NOT selected
+        }
+    }
+
+    @Test
     fun `@pm@ doesn't get filtered out`() = runTest {
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
@@ -331,7 +359,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     ),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             // only system apps meta item in list
             val initialApps = awaitItem()
@@ -385,7 +413,7 @@ internal class AppSelectionManagerTest : TransportTest() {
                     ),
                 )
             )
-            appSelectionManager.onRestoreSetChosen(backup)
+            appSelectionManager.onRestoreSetChosen(backup, true)
 
             val initialApps = awaitItem()
             // we have 6 real apps (two are hidden) plus system meta item, makes 5
