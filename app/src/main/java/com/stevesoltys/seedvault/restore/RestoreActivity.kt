@@ -49,6 +49,7 @@ class RestoreActivity : RequireProvisioningActivity() {
         if (savedInstanceState == null) {
             showFragment(RestoreSetFragment())
         }
+        viewModel.isSetupWizard = isSetupWizard
     }
 
     @CallSuper

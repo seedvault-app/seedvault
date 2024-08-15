@@ -52,7 +52,7 @@ internal class AppSelectionManager(
     val selectedAppsFlow = selectedApps.asStateFlow()
     val selectedAppsLiveData: LiveData<SelectedAppsState> = selectedApps.asLiveData()
 
-    fun onRestoreSetChosen(restorableBackup: RestorableBackup) {
+    fun onRestoreSetChosen(restorableBackup: RestorableBackup, isSetupWizard: Boolean) {
         // filter and sort app items for display
         val items = restorableBackup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             if (metadata.time == 0L && !metadata.hasApk()) null
@@ -80,7 +80,7 @@ internal class AppSelectionManager(
                 system = true,
                 name = context.getString(R.string.backup_system_apps),
             ),
-            selected = true,
+            selected = isSetupWizard,
         )
         items.add(0, systemItem)
         items.addAll(0, systemDataItems)

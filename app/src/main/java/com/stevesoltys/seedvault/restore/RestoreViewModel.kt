@@ -72,6 +72,7 @@ internal class RestoreViewModel(
     RestorableBackupClickListener, SnapshotViewModel {
 
     override val isRestoreOperation = true
+    var isSetupWizard = false
 
     private val appSelectionManager =
         AppSelectionManager(app, pluginManager, iconManager, viewModelScope)
@@ -125,7 +126,7 @@ internal class RestoreViewModel(
 
     override fun onRestorableBackupClicked(restorableBackup: RestorableBackup) {
         mChosenRestorableBackup.value = restorableBackup
-        appSelectionManager.onRestoreSetChosen(restorableBackup)
+        appSelectionManager.onRestoreSetChosen(restorableBackup, isSetupWizard)
         mDisplayFragment.setEvent(SELECT_APPS)
     }
 
