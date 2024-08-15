@@ -47,7 +47,7 @@ internal class RestoreFilesFragment : SnapshotFragment() {
     }
 
     override fun onSnapshotClicked(item: SnapshotItem) {
-        viewModel.startFilesRestore(item)
+        viewModel.selectFilesForRestore(item)
     }
 }
 

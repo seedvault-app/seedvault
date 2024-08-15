@@ -39,8 +39,8 @@ class DemoSnapshotFragment : SnapshotFragment() {
     override fun onSnapshotClicked(item: SnapshotItem) {
         viewModel.onSnapshotClicked(item)
         parentFragmentManager.beginTransaction()
-            .replace(R.id.container, RestoreFragment.newInstance())
-            .addToBackStack("RESTORE")
+            .replace(R.id.container, DemoFileSelectionFragment())
+            .addToBackStack("SELECT")
             .commit()
     }
 

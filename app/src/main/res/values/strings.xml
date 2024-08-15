@@ -234,6 +234,7 @@
 
     <string name="restore_storage_skip">Skip restoring files</string>
     <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (beta)</string>
+    <string name="restore_storage_selection_description">Selected files will be restored. Tap folders to see files in them.</string>
     <string name="restore_storage_in_progress_title">Files are being restored…</string>
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
     <string name="restore_storage_got_it">Got it</string>

@@ -12,6 +12,7 @@ import android.util.Log
 import de.grobox.storagebackuptester.plugin.TestSafStoragePlugin
 import de.grobox.storagebackuptester.settings.SettingsManager
 import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 
 class App : Application() {
 
@@ -20,6 +21,7 @@ class App : Application() {
         val plugin = TestSafStoragePlugin(this) { settingsManager.getBackupLocation() }
         StorageBackup(this, { plugin })
     }
+    val fileSelectionManager: FileSelectionManager get() = FileSelectionManager()
 
     override fun onCreate() {
         super.onCreate()

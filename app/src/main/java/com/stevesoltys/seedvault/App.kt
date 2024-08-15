@@ -28,8 +28,8 @@ import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.storagePluginModuleSaf
 import com.stevesoltys.seedvault.plugins.webdav.storagePluginModuleWebDav
-import com.stevesoltys.seedvault.restore.RestoreViewModel
 import com.stevesoltys.seedvault.restore.install.installModule
+import com.stevesoltys.seedvault.restore.restoreUiModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.SettingsViewModel
@@ -37,7 +37,6 @@ import com.stevesoltys.seedvault.storage.storageModule
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.backup.backupModule
 import com.stevesoltys.seedvault.transport.restore.restoreModule
-import com.stevesoltys.seedvault.ui.files.FileSelectionViewModel
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.recoverycode.RecoveryCodeViewModel
 import com.stevesoltys.seedvault.ui.storage.BackupStorageViewModel
@@ -97,20 +96,6 @@ open class App : Application() {
             )
         }
         viewModel { RestoreStorageViewModel(this@App, get(), get(), get(), get()) }
-        viewModel {
-            RestoreViewModel(
-                app = this@App,
-                settingsManager = get(),
-                keyManager = get(),
-                backupManager = get(),
-                restoreCoordinator = get(),
-                apkRestore = get(),
-                iconManager = get(),
-                storageBackup = get(),
-                pluginManager = get(),
-            )
-        }
-        viewModel { FileSelectionViewModel(this@App, get()) }
     }
 
     override fun onCreate() {
@@ -155,6 +140,7 @@ open class App : Application() {
         installModule,
         storageModule,
         workerModule,
+        restoreUiModule,
         appModule
     )
 

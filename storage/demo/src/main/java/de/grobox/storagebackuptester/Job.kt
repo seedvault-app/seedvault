@@ -14,6 +14,7 @@ import org.calyxos.backup.storage.backup.BackupService
 import org.calyxos.backup.storage.backup.NotificationBackupObserver
 import org.calyxos.backup.storage.restore.NotificationRestoreObserver
 import org.calyxos.backup.storage.restore.RestoreService
+import org.calyxos.backup.storage.ui.restore.FileSelectionManager
 import java.util.concurrent.TimeUnit.HOURS
 
 // debug with:
@@ -45,6 +46,8 @@ class DemoBackupService : BackupService() {
 class DemoRestoreService : RestoreService() {
     // use lazy delegate because context isn't available during construction time
     override val storageBackup: StorageBackup by lazy { (application as App).storageBackup }
+    override val fileSelectionManager: FileSelectionManager
+        get() = (application as App).fileSelectionManager
     override val restoreObserver: RestoreObserver by lazy {
         NotificationRestoreObserver(applicationContext)
     }

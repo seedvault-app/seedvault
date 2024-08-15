@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES_STARTED
+import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_SELECT_FILES
 import com.stevesoltys.seedvault.restore.DisplayFragment.SELECT_APPS
 import com.stevesoltys.seedvault.restore.install.InstallProgressFragment
 import com.stevesoltys.seedvault.ui.RequireProvisioningActivity
@@ -35,7 +36,12 @@ class RestoreActivity : RequireProvisioningActivity() {
                 RESTORE_APPS -> showFragment(InstallProgressFragment())
                 RESTORE_BACKUP -> showFragment(RestoreProgressFragment())
                 RESTORE_FILES -> showFragment(RestoreFilesFragment())
-                RESTORE_FILES_STARTED -> showFragment(RestoreFilesStartedFragment())
+                RESTORE_SELECT_FILES -> showFragment(FilesSelectionFragment(), true)
+                RESTORE_FILES_STARTED -> {
+                    // pop back stack, so back navigation doesn't bring us to RESTORE_SELECT_FILES
+                    supportFragmentManager.popBackStackImmediate()
+                    showFragment(RestoreFilesStartedFragment())
+                }
                 else -> throw AssertionError()
             }
         }

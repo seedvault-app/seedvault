@@ -24,6 +24,7 @@ import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.SnapshotResult
 import org.calyxos.backup.storage.api.StorageBackup
+import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.BackupJobService
 import org.calyxos.backup.storage.scanner.DocumentScanner
 import org.calyxos.backup.storage.scanner.MediaScanner
@@ -47,6 +48,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     private val app: App = application as App
     private val settingsManager = app.settingsManager
     override val storageBackup: StorageBackup = app.storageBackup
+    override val fileSelectionManager = app.fileSelectionManager
 
     private val _backupLog = MutableLiveData(BackupProgress(0, 0, logEmptyState))
     val backupLog: LiveData<BackupProgress> = _backupLog
@@ -62,6 +64,7 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
 
     override val snapshots: LiveData<SnapshotResult>
         get() = storageBackup.getBackupSnapshots().asLiveData(Dispatchers.IO)
+    private var storedSnapshot: StoredSnapshot? = null
 
     init {
         viewModelScope.launch { loadContent() }
@@ -124,8 +127,14 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
     }
 
     fun onSnapshotClicked(item: SnapshotItem) {
-        val snapshot = item.snapshot
-        check(snapshot != null)
+        val snapshot = item.snapshot ?: error("${item.storedSnapshot} had null snapshot")
+        fileSelectionManager.onSnapshotChosen(snapshot)
+        storedSnapshot = item.storedSnapshot
+    }
+
+    fun onFilesSelected() {
+        val storedSnapshot = this.storedSnapshot ?: error("No snapshot stored")
+        val snapshot = fileSelectionManager.getBackupSnapshotAndReset()
 
         // example for how to do restore via foreground service
 //        app.startForegroundService(Intent(app, DemoRestoreService::class.java).apply {
@@ -137,8 +146,9 @@ class MainViewModel(application: Application) : BackupContentViewModel(applicati
         _restoreProgressVisible.value = true
         val restoreObserver = RestoreStats(app, _restoreLog)
         viewModelScope.launch {
-            storageBackup.restoreBackupSnapshot(item.storedSnapshot, snapshot, restoreObserver)
+            storageBackup.restoreBackupSnapshot(storedSnapshot, snapshot, restoreObserver)
             _restoreProgressVisible.value = false
+            this@MainViewModel.storedSnapshot = null
         }
     }
 
