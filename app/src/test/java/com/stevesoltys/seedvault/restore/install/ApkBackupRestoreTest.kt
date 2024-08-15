@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.restore.install
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.Signature
 import android.graphics.drawable.Drawable
 import android.util.PackageUtils
@@ -145,6 +146,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         val cacheFiles = slot<List<File>>()
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         every { strictContext.cacheDir } returns tmpFile
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns inputStream

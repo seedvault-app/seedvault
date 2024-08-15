@@ -85,10 +85,14 @@ internal class ApkRestore(
         // re-install individual packages and emit updates (start from last and work your way up)
         for ((packageName, apkInstallResult) in packages.asIterable().reversed()) {
             try {
-                if (apkInstallResult.metadata.hasApk()) {
-                    restore(backup, packageName, apkInstallResult.metadata)
-                } else {
+                if (isInstalled(packageName, apkInstallResult.metadata)) {
+                    mInstallResult.update { result ->
+                        result.update(packageName) { it.copy(state = SUCCEEDED) }
+                    }
+                } else if (!apkInstallResult.metadata.hasApk()) { // no APK available for install
                     mInstallResult.update { it.fail(packageName) }
+                } else {
+                    restore(backup, packageName, apkInstallResult.metadata)
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Error re-installing APK for $packageName.", e)
@@ -105,6 +109,23 @@ internal class ApkRestore(
             }
         }
         mInstallResult.update { it.copy(isFinished = true) }
+    }
+
+    @Throws(SecurityException::class)
+    private fun isInstalled(packageName: String, metadata: PackageMetadata): Boolean {
+        @Suppress("DEPRECATION") // GET_SIGNATURES is needed even though deprecated
+        val flags = GET_SIGNING_CERTIFICATES or GET_SIGNATURES
+        val packageInfo = try {
+            pm.getPackageInfo(packageName, flags)
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        } ?: return false
+        val signatures = metadata.signatures
+        if (signatures != null && signatures != packageInfo.signingInfo.getSignatures()) {
+            // this will get caught and flag app as failed, could receive dedicated handling later
+            throw SecurityException("Signature mismatch for $packageName")
+        }
+        return packageInfo.longVersionCode >= (metadata.version ?: 0)
     }
 
     @Suppress("ThrowsCount")
