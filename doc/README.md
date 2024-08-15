@@ -20,17 +20,55 @@ in a structured form.
 
 *Chunk*: Larger files are cut into re-usable chunks that are the unit of de-duplication.
 
-*Blob*: A blob is a chunk stored encrypted and compressed in the repository.
+*Blob*: A blob is a chunk stored compressed and encrypted as an individual file in the repository.
 
 *Snapshot*: A snapshot stands for the state of a collection of apps
 that have been backed up at some point in time.
 The state here means the app data as delivered by the system (may be incomplete or absent)
 and the apps themselves as device specific APK files as installed at time of backup.
+It is compressed and encrypted as an individual file in the repository.
 
 *Storage ID*: A storage ID is the SHA-256 hash of the content stored in the repository.
-This ID is required in order to load the file from the repository.
+This ID is required in order to load the file from the repository,
+because it is represented in the stored file name.
 
-## Repository Layout
+## Repository
+
+All data is stored in a repository.
+Repositories consist of several directories and files to store blobs and snapshots.
+
+All files in a repository are encrypted, only written once and never modified afterwards.
+
+### Repository Context
+
+Historically, all data that Seedvault saves to external storage
+is below a `.SeedVaultAndroidBackup` directory.
+It can contain one or more repositories as users may use the same storage location
+for several devices or user accounts.
+As having to choose and remember a specific folder is considered bad UX
+for the regular Android user,
+Seedvault creates a repository for the user.
+
+### Repository ID
+
+The folder name is the ID of the repository.
+It is the result of applying HMAC-SHA256 with the string "app backup repoId key"
+(see [cryptography](#cryptography)) to the
+[`ANDROID_ID`](https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID)
+which is a 64-bit number (expressed as a hexadecimal string) provided by the operating system.
+It is unique to each combination of app-signing key, user, and device.
+This design should guarantee that only one single app ever backs up to or prunes the repository.
+Also, if the user generates a new recovery key and thus all keys change,
+Seedvault will not attempt to back up into the repository tied to the old key.
+
+For restore, we iterate through all repositories and only offer snapshots for restore
+that can be decrypted with the key provided by the user.
+Hence, a restore may run on a second device while the first device is doing a backup.
+
+Note: A repository used for file backup is stored in a folder of the format `[ANDROID_ID].sv`
+and thus completely separate.
+
+### Repository Layout
 
 The name of all files in the repository starts with the lower case hexadecimal representation
 of the storage ID, which is the SHA-256 hash of the file's contents.
@@ -38,7 +76,10 @@ This allows for easy verification of files for accidental modifications,
 like disk read errors, by simply running the program `sha256sum` on the file
 and comparing its output to the file name.
 
-All files in a repository are only written once and never modified afterwards.
+Blobs are stored in a directory named after the first two characters of their name.
+Snapshots are stored in the repository root and have a `.snapshot` extension.
+
+Example of a repository with two snapshots and several blobs:
 
 ```console
 .SeedVaultAndroidBackup
@@ -56,31 +97,6 @@ All files in a repository are only written once and never modified afterwards.
     ├── 3ec79977ef0cf5de7b08cd12b874cd0f62bbaf7f07f3497a5b1bbcc8cb39b1ce.snapshot
 ```
 
-Historically, all data that Seedvault saves to backup storage
-is below a `.SeedVaultAndroidBackup` directory.
-It can contain one or more repositories as users may use the same backup storage
-for several devices or user accounts.
-As having to choose and remember a specific folder is considered bad UX
-for the regular Android user,
-Seedvault creates a repository for the user.
-
-The folder name is the ID of the repository.
-It is the result of applying HMAC-SHA256 with the "app backup repoId key"
-(see [cryptography](#cryptography)) to the
-[`ANDROID_ID`](https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID)
-which is a 64-bit number (expressed as a hexadecimal string) provided by the operating system.
-It is unique to each combination of app-signing key, user, and device.
-This design should guarantee that only one single app ever backs up to or prunes the repository.
-Also, if the user generates a new recovery key and thus all keys change,
-Seedvault will not attempt to back up into the repository tied to the old key.
-
-For restore, we iterate through all repositories and only offer snapshots for restore
-that can be decrypted with the key provided by the user.
-Hence, a restore may run on a second device while the first device is doing a backup.
-
-Note: A repository used for file backup is stored in a folder of the format `[ANDROID_ID].sv`
-and thus completely separate.
-
 ## Data Format
 
 All files stored in the repository start with a version byte
@@ -89,8 +105,9 @@ followed by an encrypted and authenticated payload (see also [Cryptography](#cry
 The version (currently `0x02`) is used to be able to modify aspects of the design in the future
 and to provide backwards compatibility.
 
-Blobs include the raw bytes of the compressed chunks
-and snapshots their compressed protobuf encoding.
+Blob payloads include the raw bytes of the compressed chunks
+and snapshot payloads their compressed protobuf encoding.
+Compression is using the [zstd](http://www.zstd.net/) algorithm in its default configuration.
 
 ```console
 ┏━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -99,9 +116,17 @@ and snapshots their compressed protobuf encoding.
 ┗━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
+The structure of the encrypted tink payload is explored further
+in [Stream Encryption](#stream-encryption).
+
 ## Snapshots
 
-Encoded [in protobuf format](../app/src/main/proto/snapshot.proto).
+Snapshots include information about the state of a collection of apps
+that have been backed up at some point in time.
+
+It is encoded [in protobuf format](../app/src/main/proto/snapshot.proto), compressed with zstd 
+and encrypted.
+
 Example printed as JSON:
 
 ```json
@@ -176,17 +201,20 @@ Example printed as JSON:
 }
 ```
 
-The `chunkIds` and `iconChunkIds` fields contain a list with plain text SHA-256 hashes
+The `chunkIds` and `iconChunkIds` fields contain an ordered list with plain text SHA-256 hashes
 which can be found in the main `blobs` dictionary.
 This contains a mapping from plain text SHA-256 hashes to storage IDs and size information.
+The decrypted and uncompressed chunks concatenated in order result in the original plaintext data.
+The `iconChunkIds` field assemble to a ZIP file where each entry is a
+WebP encoded image, one icon for each app in the backup.
+The entry name is the package name of the app.
 
 At the beginning of most operations, we download all available snapshots
 to get information about all blobs that should be available in the repository.
 We may additionally retrieve a list of all blobs directly from the repository
 to ensure they are actually (still) present.
 
-Snapshot files start with the SHA-256 hash of the content of the file
-and use a `.snapshot` extension.
+Snapshot file names start with the SHA-256 hash of their content and use a `.snapshot` extension.
 
 ## Cryptography
 
@@ -198,12 +226,12 @@ This section is based on and thus very similar to encryption of
 Seedvault already uses [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
 to give users a mnemonic recovery code and for generating deterministic keys.
 The derived key has 512 bits
-and Seedvault used to use the first 256 bits as an AES key to encrypt app data.
+and Seedvault previously used the first 256 bits as an AES key to encrypt app data.
 Unfortunately, this key's usage is limited by Android's keystore to encryption and decryption.
-Therefore, the second 256 bits are be imported into Android's keystore for use with `HMAC-SHA256`,
-so that this key can act as a main key we can deterministically derive additional keys from
+Therefore, the second 256 bits get imported into Android's keystore for use with `HMAC-SHA256`,
+so that this key can act as a main key that we can deterministically derive additional keys from
 by using HKDF ([RFC5869](https://tools.ietf.org/html/rfc5869)).
-These second 256 bits must not be used for any other purpose in the future.
+These second 256 bits *must not* be used for any other purpose in the future.
 We use them for a main key to avoid users having to handle yet another secret.
 
 For deriving keys, we are only using the HKDF's second 'expand' step,
@@ -216,7 +244,8 @@ This should be fine as the input key material is already a cryptographically str
 
 The original entropy comes from a BIP39 seed (12 words = 128 bit size)
 obtained from Java's `SecureRandom`.
-A PBKDF SHA512 based derivation defined in BIP39 turns this into a 512 bit seed key.
+A PBKDF SHA512 based derivation defined in BIP39 turns this into a 512 bit seed key
+as described above.
 
 The derived seed key (512 bit size) gets split into two parts:
 1. legacy app data encryption key (unused) - 256 bit - first half of seed key
@@ -229,34 +258,43 @@ The derived seed key (512 bit size) gets split into two parts:
 
 ### Stream Encryption
 
-When a stream is written to backup storage,
+When a stream is written to the repository,
 it starts with a header consisting of a single byte indicating the backup format version
 (currently `0x02`) followed by the encrypted payload.
 
-All data written to backup storage will be encrypted with a fresh key
+All data written to the repository will be encrypted with a fresh key
 to prevent issues with nonce/IV re-use of a single key.
 
 We derive a stream key from the main key
-by using HKDF's expand step with the UTF-8 byte representation of "app backup stream key"
+by using HKDF's expand step with the UTF-8 byte representation of the string "app backup stream key"
 as info input.
 This stream key is then used to derive a new key for each stream.
 
 Instead of encrypting, authenticating and segmenting a cleartext stream ourselves,
 we have chosen to employ the [tink library](https://github.com/tink-crypto/tink-java) for that task.
-Since it does not allow us to work with imported or derived keys,
-we are only using its [AesGcmHkdfStreaming](https://developers.google.com/tink/streaming-aead/aes_gcm_hkdf_streaming)
-to delegate encryption and decryption of byte streams.
+Since it does not allow us to work with imported or derived keys
+and its recommended
+[high-level API](https://developers.google.com/tink/encrypt-large-files-or-data-streams)
+requires this,
+we are directly using its
+[AesGcmHkdfStreaming](https://developers.google.com/tink/streaming-aead/aes_gcm_hkdf_streaming)
+primitive to delegate encryption and decryption of byte streams.
 This follows the OAE2 definition as proposed in the paper
 "Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance"
 ([PDF](https://eprint.iacr.org/2015/189.pdf)).
 
-It adds its own 40 byte header consisting of header length (1 byte), salt and nonce prefix.
+It adds its own 40 byte header consisting of header length (1 byte), salt (32 bytes)
+and nonce prefix.
 Then it adds one or more segments, each up to 1 MB in size.
 All segments are encrypted with a fresh key that is derived by using HKDF
-on our stream key with another internal random salt (32 bytes) and associated data as info
+on our stream key, the salt and associated data as info
 ([documentation](https://github.com/google/tink/blob/v1.5.0/docs/WIRE-FORMAT.md#streaming-encryption)).
 
-All types of files written to backup storage have the following format:
+Note that the tink documentation (currently) recommends 128 bit keys,
+while we use 256 bit keys.
+Otherwise, we stick to the recommended defaults.
+
+All types of files written to the repository have the following format:
 
 ```console
     ┏━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -267,11 +305,11 @@ All types of files written to backup storage have the following format:
     ┗━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
-When writing app data or apps to backup storage,
-the authenticated associated data (AAD) contains the backup version as the only byte
-(to prevent downgrade attacks) as it would otherwise not be authenticated.
+When writing to the repository,
+the authenticated associated data (AAD) of each file contains the backup version as the only byte
+(to prevent downgrade attacks) to ensure it is also authenticated.
 Other data is not included as renaming and swapping out files is made impossible
-by their file name being the content hash.
+by their file name starting with the content hash (which must be checked when reading).
 
 ## Content-defined chunking
 
@@ -282,20 +320,22 @@ because in our tests it presented a good trade-off
 between deduplication ratio and number of small chunks.
 Data smaller than 1.5 MiB will not be chunked further and be left as a single chunk.
 
-TODO: Can we do something to prevent watermarking attacks against single chunk files,
-      like padding somewhat them after compression, but before encryption?
-
 The FastCDC algorithm uses a gear table containing 256 random integers with 31 bits.
 When this table changes, the resulting chunks will be different.
 Hence, every repository always uses the same gear table.
 However, to make watermarking attacks harder,
 we use the "app backup gear table key" that gets derived from our main key
 to deterministically compute a gear table using AES CTR to cipher 32 null bytes with a null IV.
+If an attacker is somehow able to reverse engineer the gear table *and* the derived key,
+they know how we chunk larger files, but they should be unable to retrieve our main key.
 
-TODO: Is it safe to compute the gear table like this? We do derive a dedicated key for this
-      that we don't use for anything else.
-      Still, the IV as well as the encrypted bytes are known to the attacker.
-      Also, it may be be possible to reverse the gear table with chosen plaintext attacks.
+Since a random gear table computed like this may not be sufficient for attackers
+able to control (part of the) plaintext, e.g. sending a file in a messaging app,
+and due to the presence of lots of data consisting of only a single chunk,
+we apply additional random padding to all chunks.
+The plaintext gets padded with random bytes after compression and before encryption.
+
+**TODO** determine the details of the padding.
 
 ## Operations
 
@@ -314,10 +354,8 @@ TODO: Is it safe to compute the gear table like this? We do derive a dedicated k
     * chunks already in the repository are not uploaded again, only their hash recorded
     * new chunks get compressed, encrypted and hashed to determine their storage ID, then uploaded
   * remember ordered list of chunk IDs for the app (and its APKs)
-* add newly packed chunks to local index
-* upload consolidated index, remove old index
 * add all apps, their chunk IDs (and related metadata) to new snapshot and upload that
-* at the end prune old snapshots based on retention rules
+* at the end, delete old snapshots based on retention rules, then do [pruning](#pruning).
 
 ### Resume interrupted backup
 
@@ -375,6 +413,77 @@ New snapshots only get added after all blobs they reference have been uploaded.
 
 Blobs only get deleted after all snapshots that reference them have been deleted first.
 
+## Threat Model
+
+It is a design goal to be able to securely store backups
+in a location that is not completely trusted
+(e.g. a shared system where others can potentially access the files).
+
+### General assumptions
+
+  * The device a backup is created on is trusted.
+    This is the most basic requirement, and it is essential for creating trustworthy backups.
+  * The user does not share the recovery code with an attacker.
+  * There is no protection against attackers deleting files at the storage location.
+    Nothing can be done about this.
+    If this needs to be guaranteed, get a secure location without any access from third parties,
+    e.g. a flash drive.
+  * Advances in cryptography attacks against the cryptographic primitives used
+    (i.e. AES-GCM-256 and SHA-256) have not occurred.
+    Such advances could render the confidentiality or integrity protections useless.
+  * Sufficient advances in computing have not occurred to make brute-force attacks
+    against cryptographic protections feasible.
+
+### Guarantees
+
+  * Unencrypted content of stored files and metadata (other than size and creation time of files)
+    cannot be accessed without the recovery code for the repository.
+    Everything is encrypted and authenticated.
+  * Modifications to data stored in the repository (due to bad RAM, broken hard-disk, etc.)
+    can be detected.
+  * Data that has been tampered with will not be decrypted.
+
+### Possible attacks 
+
+With the aforementioned assumptions and guarantees in mind,
+the following are examples of things an attacker could achieve in various circumstances.
+
+An adversary with read access to your backup storage location could:
+
+  * Attempt a brute force recovery code guessing attack against a copy of the repository.
+  * Infer the size of backups by using creation timestamps of repository files.
+  * Make guesses if a user is using a specific app
+    by comparing the size of newly appearing files in the repository 
+    with the (split) APKs of that app and its update cycle.
+    Applied padding and key-based chunking may reduce attacker's confidence in guesses. 
+
+An adversary with network access could:
+
+  * Attempt to DoS the server storing the backup repository
+    or the network connection between client and server.
+  * Determine from where you create your backups (i.e. the location where the requests originate).
+  * Determine where you store your backups (i.e. which provider/target system).
+  * If the backend uses an encrypted connection,
+    infer the size of backups by observing network traffic.
+    If no encrypted connection is used, everything an attacker with read access (above) can do.
+
+### Attacks if assumptions are violated
+
+The following are examples of the implications associated
+with violating some of the aforementioned assumptions.
+
+An adversary who compromises (via malware, physical access, etc.) the device making backups could:
+
+  * Render the entire backup process untrustworthy
+    (e.g., intercept recovery code, copy files, manipulate data).
+  * Recover the encryption key from memory, thus decrypt backups from past and future.
+  * Create snapshots (containing garbage data) and eventually remove all correct snapshots.
+
+An adversary with write access to your files at the storage location could:
+
+  * Delete or manipulate your backups,
+    thereby impairing your ability to restore from the compromised storage location.
+
 ## Differences to restic
 
 Even though the design was initially inspired by restic,
@@ -413,8 +522,12 @@ that result in the following differences:
 
 The following individuals have reviewed this document and provided helpful feedback.
 
+* Aayush Gupta
+* Michael Rogers
 * Thomas Waldmann
+* Tommy Webb
 * Alexander Weiss
+* Opal Wright
 
 As they have reviewed different parts and different versions at different times,
 this acknowledgement should not be mistaken for their endorsement of the current design
