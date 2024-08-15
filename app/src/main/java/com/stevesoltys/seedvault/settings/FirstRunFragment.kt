@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.settings
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
@@ -16,7 +17,6 @@ import com.stevesoltys.seedvault.restore.RestoreActivity
 class FirstRunFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        isCancelable = false // is what really works, specifying it for the dialog only doesn't
         return MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.first_start_text)
             .setPositiveButton(R.string.setup_button) { dialog, _ ->
@@ -31,7 +31,10 @@ class FirstRunFragment : DialogFragment() {
                 dialog.dismiss()
                 requireActivity().finish()
             }
-            .setCancelable(false)
             .create()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        requireActivity().finish()
     }
 }
