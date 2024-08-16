@@ -10,8 +10,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.RemoteException
-import android.provider.Settings
-import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -25,6 +23,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import androidx.work.WorkInfo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
@@ -41,6 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private val viewModel: SettingsViewModel by sharedViewModel()
     private val storagePluginManager: StoragePluginManager by inject()
+    private val backupStateManager: BackupStateManager by inject()
     private val backupManager: IBackupManager by inject()
 
     private lateinit var backup: TwoStatePreference
@@ -251,7 +251,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setAutoRestoreState() {
         activity?.contentResolver?.let {
-            autoRestore.isChecked = Settings.Secure.getInt(it, BACKUP_AUTO_RESTORE, 1) == 1
+            autoRestore.isChecked = backupStateManager.isAutoRestoreEnabled
         }
         val storage = this.storageProperties
         if (storage?.isUsb == true) {

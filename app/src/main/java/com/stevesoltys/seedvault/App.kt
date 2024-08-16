@@ -17,7 +17,6 @@ import android.os.ServiceManager.getService
 import android.os.StrictMode
 import android.os.UserHandle
 import android.os.UserManager
-import android.provider.Settings
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.WorkManager
 import com.google.android.material.color.DynamicColors
@@ -148,6 +147,7 @@ open class App : Application() {
     private val metadataManager: MetadataManager by inject()
     private val backupManager: IBackupManager by inject()
     private val pluginManager: StoragePluginManager by inject()
+    private val backupStateManager: BackupStateManager by inject()
 
     /**
      * The responsibility for the current token was moved to the [SettingsManager]
@@ -168,7 +168,7 @@ open class App : Application() {
      * Introduced in the first half of 2024 and can be removed after a suitable migration period.
      */
     protected open fun migrateToOwnScheduling() {
-        if (!isFrameworkSchedulingEnabled()) { // already on own scheduling
+        if (!backupStateManager.isFrameworkSchedulingEnabled) { // already on own scheduling
             // fix things for removable drive users who had a job scheduled here before
             if (pluginManager.isOnRemovableDrive) AppBackupWorker.unschedule(applicationContext)
             return
@@ -183,10 +183,6 @@ open class App : Application() {
             WorkManager.getInstance(this).cancelUniqueWork("APP_BACKUP")
         }
     }
-
-    private fun isFrameworkSchedulingEnabled(): Boolean = Settings.Secure.getInt(
-        contentResolver, Settings.Secure.BACKUP_SCHEDULING_ENABLED, 1
-    ) == 1 // 1 means enabled which is the default
 
 }
 
