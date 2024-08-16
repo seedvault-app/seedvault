@@ -100,12 +100,16 @@ internal data class MediaFile(
             .setName(fileName)
             .setSize(size)
             .addAllChunkIds(chunkIds)
+            .setIsFavorite(isFavorite)
             .setVolume(if (volume == MediaStore.VOLUME_EXTERNAL_PRIMARY) "" else volume)
         if (lastModified != null) {
             builder.lastModified = lastModified
         }
         if (zipIndex != null) {
             builder.zipIndex = zipIndex
+        }
+        if (ownerPackageName != null) {
+            builder.setOwnerPackageName(ownerPackageName)
         }
         return builder.build()
     }
