@@ -116,13 +116,25 @@ internal class Notifications(private val context: Context) {
 
     internal fun showRestoreCompleteNotification(
         restored: Int,
+        duplicates: Int,
+        errors: Int,
         total: Int,
         intent: PendingIntent?,
     ) {
         val title = context.getString(R.string.notification_restore_complete_title, restored, total)
+        val msg = StringBuilder().apply {
+            if (duplicates > 0) {
+                append(context.getString(R.string.notification_restore_complete_dups, duplicates))
+            }
+            if (errors > 0) {
+                if (duplicates > 0) append("\n")
+                append(context.getString(R.string.notification_restore_complete_errors, errors))
+            }
+        }.toString().ifEmpty { null }
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_BACKUP).apply {
             setSmallIcon(R.drawable.ic_cloud_done)
             setContentTitle(title)
+            setContentText(msg)
             setOngoing(false)
             setShowWhen(true)
             setAutoCancel(true)

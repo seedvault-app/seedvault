@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.api
 
 public interface RestoreObserver {
     public fun onRestoreStart(numFiles: Int, totalSize: Long)
+    public fun onFileDuplicatesRemoved(num: Int)
     public fun onFileRestored(file: BackupFile, bytesWritten: Long, tag: String)
 
     /**

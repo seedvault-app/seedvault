@@ -21,24 +21,32 @@ internal data class RestorableChunk(
 
     /**
      * Call this after the RestorableChunk is complete and **before** using it for restore.
+     *
+     * @return the number of duplicate files removed
      */
-    fun finalize() {
+    fun finalize(): Int {
         // entries in the zip chunk need to be sorted by their index in the zip
         files.sortBy { it.zipIndex }
         // There might be duplicates in case the *exact* same set of files exists more than once
         // so they'll produce the same chunk ID.
         // But since the content is there and this is an unlikely scenario, we drop the duplicates.
         var lastIndex = 0
+        var numRemoved = 0
         val iterator = files.iterator()
         while (iterator.hasNext()) {
             val file = iterator.next()
             val i = file.zipIndex
             when {
                 i < lastIndex -> error("unsorted list")
-                i == lastIndex -> iterator.remove() // remove duplicate
+                i == lastIndex -> { // remove duplicate
+                    numRemoved++
+                    iterator.remove()
+                }
+
                 i > lastIndex -> lastIndex = i // gaps are possible when we don't restore all files
             }
         }
+        return numRemoved
     }
 }
 
@@ -87,6 +95,14 @@ internal data class FileSplitterResult(
      * Files referenced in [multiChunkMap] sorted for restoring.
      */
     val multiChunkFiles: Collection<RestorableFile>,
+    /**
+     * The number of duplicate files that was removed from [zipChunks].
+     * Duplicate files in [zipChunks] with the same chunk ID will have the same index in the ZIP.
+     * So we remove them to make restore easier.
+     * With some extra work, we could restore those files,
+     * but by not doing so we are probably doing a favor to the user.
+     */
+    val numRemovedDuplicates: Int,
 )
 
 /**
@@ -121,7 +137,7 @@ internal object FileSplitter {
             }
         }
         // entries in the zip chunk need to be sorted by their index in the zip, duplicated removed
-        zipChunkMap.values.forEach { zipChunk -> zipChunk.finalize() }
+        val numRemovedDuplicates = zipChunkMap.values.sumOf { zipChunk -> zipChunk.finalize() }
         val singleChunks = chunkMap.values.filter { it.isSingle }
         val multiChunks = chunkMap.filterValues { !it.isSingle }
         return FileSplitterResult(
@@ -129,6 +145,7 @@ internal object FileSplitter {
             singleChunks = singleChunks,
             multiChunkMap = multiChunks,
             multiChunkFiles = getMultiFiles(multiChunks),
+            numRemovedDuplicates = numRemovedDuplicates,
         )
     }
 
@@ -145,6 +162,7 @@ internal object FileSplitter {
                 f1.chunkIdsCount == f2.chunkIdsCount -> {
                     f1.chunkIds.joinToString().compareTo(f2.chunkIds.joinToString())
                 }
+
                 else -> 1
             }
         }

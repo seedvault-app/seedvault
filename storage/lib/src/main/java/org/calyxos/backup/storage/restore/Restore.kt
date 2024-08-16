@@ -110,8 +110,10 @@ internal class Restore(
         observer?.onRestoreStart(filesTotal, totalSize)
 
         val split = FileSplitter.splitSnapshot(snapshot)
+        observer?.onFileDuplicatesRemoved(split.numRemovedDuplicates)
+        var restoredFiles = split.numRemovedDuplicates // count removed dups, so numbers add up
+
         val version = snapshot.version
-        var restoredFiles = 0
         val smallFilesDuration = measure {
             restoredFiles += zipChunkRestore.restore(
                 version,

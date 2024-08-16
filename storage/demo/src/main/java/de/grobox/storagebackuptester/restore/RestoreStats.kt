@@ -13,7 +13,6 @@ import de.grobox.storagebackuptester.backup.getSpeed
 import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.restore.NotificationRestoreObserver
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 data class RestoreProgress(
@@ -39,6 +38,10 @@ class RestoreStats(
         val totalSizeStr = Formatter.formatShortFileSize(context, totalSize)
         val text = "Restoring $totalFiles file(s) $totalSizeStr...\n"
         liveData.postValue(RestoreProgress(filesProcessed, totalFiles, text))
+    }
+
+    override fun onFileDuplicatesRemoved(num: Int) {
+        // no-op
     }
 
     override fun onFileRestored(
@@ -68,7 +71,6 @@ class RestoreStats(
         liveData.postValue(RestoreProgress(filesProcessed, totalFiles))
     }
 
-    @OptIn(ExperimentalTime::class)
     override fun onRestoreComplete(restoreDuration: Long) {
         super.onRestoreComplete(restoreDuration)
         val sb = StringBuilder("\n")
