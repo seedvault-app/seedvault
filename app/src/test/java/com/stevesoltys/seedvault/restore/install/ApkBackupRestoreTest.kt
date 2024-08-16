@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.restore.install
 
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
@@ -12,6 +13,7 @@ import android.content.pm.Signature
 import android.graphics.drawable.Drawable
 import android.util.PackageUtils
 import app.cash.turbine.test
+import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
@@ -57,6 +59,8 @@ internal class ApkBackupRestoreTest : TransportTest() {
     }
 
     private val storagePluginManager: StoragePluginManager = mockk()
+    private val backupManager: IBackupManager = mockk()
+    private val backupStateManager: BackupStateManager = mockk()
 
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
@@ -68,6 +72,8 @@ internal class ApkBackupRestoreTest : TransportTest() {
     private val apkBackup = ApkBackup(pm, crypto, settingsManager, metadataManager)
     private val apkRestore: ApkRestore = ApkRestore(
         context = strictContext,
+        backupManager = backupManager,
+        backupStateManager = backupStateManager,
         pluginManager = storagePluginManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
@@ -146,6 +152,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         val cacheFiles = slot<List<File>>()
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
         every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         every { strictContext.cacheDir } returns tmpFile
         every { crypto.getNameForApk(salt, packageName, "") } returns name

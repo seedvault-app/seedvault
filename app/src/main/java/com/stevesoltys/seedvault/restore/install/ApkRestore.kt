@@ -5,11 +5,13 @@
 
 package com.stevesoltys.seedvault.restore.install
 
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.util.Log
+import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.ApkSplit
@@ -38,6 +40,8 @@ private val TAG = ApkRestore::class.java.simpleName
 
 internal class ApkRestore(
     private val context: Context,
+    private val backupManager: IBackupManager,
+    private val backupStateManager: BackupStateManager,
     private val pluginManager: StoragePluginManager,
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin,
@@ -81,9 +85,24 @@ internal class ApkRestore(
             return
         }
         mInstallResult.value = InstallResult(packages)
+        val autoRestore = backupStateManager.isAutoRestoreEnabled
+        try {
+            // disable auto-restore before installing apps, if it was enabled before
+            if (autoRestore) backupManager.setAutoRestore(false)
+            reInstallApps(backup, packages.asIterable().reversed())
+        } finally {
+            // re-enable auto-restore, if it was enabled before
+            if (autoRestore) backupManager.setAutoRestore(true)
+        }
+        mInstallResult.update { it.copy(isFinished = true) }
+    }
 
+    private suspend fun reInstallApps(
+        backup: RestorableBackup,
+        packages: List<Map.Entry<String, ApkInstallResult>>,
+    ) {
         // re-install individual packages and emit updates (start from last and work your way up)
-        for ((packageName, apkInstallResult) in packages.asIterable().reversed()) {
+        for ((packageName, apkInstallResult) in packages) {
             try {
                 if (isInstalled(packageName, apkInstallResult.metadata)) {
                     mInstallResult.update { result ->
@@ -108,7 +127,6 @@ internal class ApkRestore(
                 mInstallResult.update { it.fail(packageName) }
             }
         }
-        mInstallResult.update { it.copy(isFinished = true) }
     }
 
     @Throws(SecurityException::class)
