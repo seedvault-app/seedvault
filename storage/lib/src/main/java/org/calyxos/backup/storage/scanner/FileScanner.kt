@@ -16,7 +16,6 @@ import org.calyxos.backup.storage.content.DocFile
 import org.calyxos.backup.storage.content.MediaFile
 import org.calyxos.backup.storage.db.UriStore
 import org.calyxos.backup.storage.measure
-import kotlin.time.ExperimentalTime
 
 internal class FileScannerResult(
     val smallFiles: List<ContentFile>,
@@ -36,7 +35,6 @@ internal class FileScanner(
         private const val FILES_LARGE = "large"
     }
 
-    @OptIn(ExperimentalTime::class)
     fun getFiles(): FileScannerResult {
         // scan both APIs
         val mediaFiles = ArrayList<ContentFile>()
