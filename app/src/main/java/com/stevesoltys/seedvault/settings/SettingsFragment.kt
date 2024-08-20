@@ -189,9 +189,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         inflater.inflate(R.menu.settings_menu, menu)
         menuBackupNow = menu.findItem(R.id.action_backup)
         menuRestore = menu.findItem(R.id.action_restore)
-        if (resources.getBoolean(R.bool.show_restore_in_settings)) {
-            menuRestore?.isVisible = true
-        }
         viewModel.backupPossible.observe(viewLifecycleOwner) { possible ->
             menuBackupNow?.isEnabled = possible
             menuRestore?.isEnabled = possible

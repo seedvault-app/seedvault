@@ -5,16 +5,6 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--
-    Normally, restoring from backup is only available during initial device setup.
-    You can make it always available at your own risk.
-    Keep in mind that the Auto-Restore feature works independently from this.
-
-    Launch an intent with the action "com.stevesoltys.seedvault.RESTORE_BACKUP"
-    to trigger restore during device setup.
-    -->
-    <bool name="show_restore_in_settings">false</bool>
-
-    <!--
     Add only storage here that is also available
     when restoring from backup (e.g. initial device setup)
     -->

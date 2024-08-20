@@ -154,18 +154,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".SecretCodeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.telephony.action.SECRET_CODE" />
-                <!-- *#*#RESTORE#*#* -->
-                <data
-                    android:host="7378673"
-                    android:scheme="android_secret_code" />
-            </intent-filter>
-        </receiver>
-
         <!-- Used by Workmanager to schedule our workers -->
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
