@@ -38,14 +38,16 @@ import kotlin.math.min
 private const val CHANNEL_ID_OBSERVER = "NotificationBackupObserver"
 private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
+private const val CHANNEL_ID_RESTORE = "NotificationRestore"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
 internal const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_SUCCESS = 2
 private const val NOTIFICATION_ID_ERROR = 3
 private const val NOTIFICATION_ID_SPACE_ERROR = 4
-private const val NOTIFICATION_ID_RESTORE_ERROR = 5
-private const val NOTIFICATION_ID_BACKGROUND = 6
-private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 7
+internal const val NOTIFICATION_ID_RESTORE = 5
+private const val NOTIFICATION_ID_RESTORE_ERROR = 6
+private const val NOTIFICATION_ID_BACKGROUND = 7
+private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 8
 
 private val TAG = BackupNotificationManager::class.java.simpleName
 
@@ -55,6 +57,7 @@ internal class BackupNotificationManager(private val context: Context) {
         createNotificationChannel(getObserverChannel())
         createNotificationChannel(getSuccessChannel())
         createNotificationChannel(getErrorChannel())
+        createNotificationChannel(getRestoreChannel())
         createNotificationChannel(getRestoreErrorChannel())
     }
 
@@ -75,6 +78,11 @@ internal class BackupNotificationManager(private val context: Context) {
     private fun getErrorChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_error_channel_title)
         return NotificationChannel(CHANNEL_ID_ERROR, title, IMPORTANCE_DEFAULT)
+    }
+
+    private fun getRestoreChannel(): NotificationChannel {
+        val title = context.getString(R.string.notification_restore_error_channel_title)
+        return NotificationChannel(CHANNEL_ID_RESTORE, title, IMPORTANCE_LOW)
     }
 
     private fun getRestoreErrorChannel(): NotificationChannel {
@@ -233,6 +241,18 @@ internal class BackupNotificationManager(private val context: Context) {
             setCategory(CATEGORY_ERROR)
         }.build()
         nm.notify(NOTIFICATION_ID_SPACE_ERROR, notification)
+    }
+
+    fun getRestoreNotification() = Notification.Builder(context, CHANNEL_ID_RESTORE).apply {
+        setSmallIcon(R.drawable.ic_cloud_restore)
+        setContentTitle(context.getString(R.string.notification_restore_title))
+        setOngoing(true)
+        setShowWhen(false)
+        setWhen(System.currentTimeMillis())
+    }.build()
+
+    fun cancelRestoreNotification() {
+        nm.cancel(NOTIFICATION_ID_RESTORE)
     }
 
     @SuppressLint("RestrictedApi")

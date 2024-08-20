@@ -177,13 +177,19 @@
             android:exported="false"
             android:label="BackupJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <!-- Does the actual backup work as a foreground service -->
+        <!-- Does app restore as a foreground service -->
+        <service
+            android:name=".restore.RestoreService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:label="RestoreService" />
+        <!-- Does the actual file backup work as a foreground service -->
         <service
             android:name=".storage.StorageBackupService"
             android:exported="false"
             android:foregroundServiceType="dataSync"
             android:label="BackupService" />
-        <!-- Does restore as a foreground service -->
+        <!-- Does file restore as a foreground service -->
         <service
             android:name=".storage.StorageRestoreService"
             android:exported="false"

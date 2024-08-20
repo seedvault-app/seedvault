@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.app.backup.IBackupManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
@@ -126,6 +127,13 @@ internal class ApkBackupRestoreTest : TransportTest() {
             assertTrue(createNewFile())
             writeBytes(splitBytes)
         }.absolutePath)
+
+        // related to starting/stopping service
+        every { strictContext.packageName } returns "org.foo.bar"
+        every {
+            strictContext.startForegroundService(any())
+        } returns ComponentName(strictContext, "org.foo.bar.Class")
+        every { strictContext.stopService(any()) } returns true
 
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
