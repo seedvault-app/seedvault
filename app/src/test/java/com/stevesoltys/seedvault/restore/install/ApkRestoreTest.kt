@@ -5,15 +5,18 @@
 
 package com.stevesoltys.seedvault.restore.install
 
+import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_INSTALLED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.graphics.drawable.Drawable
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
+import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
@@ -30,9 +33,14 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.worker.getSignatures
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
@@ -54,6 +62,8 @@ internal class ApkRestoreTest : TransportTest() {
     private val strictContext: Context = mockk<Context>().apply {
         every { packageManager } returns pm
     }
+    private val backupManager: IBackupManager = mockk()
+    private val backupStateManager: BackupStateManager = mockk()
     private val storagePluginManager: StoragePluginManager = mockk()
     private val storagePlugin: StoragePlugin<*> = mockk()
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
@@ -63,6 +73,8 @@ internal class ApkRestoreTest : TransportTest() {
 
     private val apkRestore: ApkRestore = ApkRestore(
         context = strictContext,
+        backupManager = backupManager,
+        backupStateManager = backupStateManager,
         pluginManager = storagePluginManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
@@ -104,6 +116,7 @@ internal class ApkRestoreTest : TransportTest() {
         val backup = swapPackages(hashMapOf(packageName to packageMetadata))
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
@@ -117,11 +130,67 @@ internal class ApkRestoreTest : TransportTest() {
     }
 
     @Test
+    fun `test app without APK does not attempt install`(@TempDir tmpDir: Path) = runBlocking {
+        // remove all APK info
+        val packageMetadata = packageMetadata.copy(
+            version = null,
+            installer = null,
+            sha256 = null,
+            signatures = null,
+        )
+        val backup = swapPackages(hashMapOf(packageName to packageMetadata))
+
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            assertEquals(QUEUED, awaitItem()[packageName].state)
+            assertEquals(FAILED, awaitItem()[packageName].state)
+            assertTrue(awaitItem().isFinished)
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
+    fun `test app without APK succeeds if installed`(@TempDir tmpDir: Path) = runBlocking {
+        // remove all APK info
+        val packageMetadata = packageMetadata.copy(
+            version = null,
+            installer = null,
+            sha256 = null,
+            signatures = null,
+        )
+        val backup = swapPackages(hashMapOf(packageName to packageMetadata))
+
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+
+        val packageInfo: PackageInfo = mockk()
+        every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
+        every { packageInfo.longVersionCode } returns 42
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            assertEquals(QUEUED, awaitItem()[packageName].state)
+            assertEquals(SUCCEEDED, awaitItem()[packageName].state)
+            assertTrue(awaitItem().isFinished)
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
     fun `package name mismatch causes FAILED status`(@TempDir tmpDir: Path) = runBlocking {
         // change package name to random string
         packageInfo.packageName = getRandomString()
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
@@ -138,6 +207,8 @@ internal class ApkRestoreTest : TransportTest() {
     @Test
     fun `test apkInstaller throws exceptions`(@TempDir tmpDir: Path) = runBlocking {
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         cacheBaseApkAndGetInfo(tmpDir)
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
@@ -163,6 +234,8 @@ internal class ApkRestoreTest : TransportTest() {
         val installResult = InstallResult(packagesMap)
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         cacheBaseApkAndGetInfo(tmpDir)
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
@@ -191,6 +264,8 @@ internal class ApkRestoreTest : TransportTest() {
         val installResult = InstallResult(packagesMap)
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         coEvery {
             legacyStoragePlugin.getApkInputStream(token, packageName, "")
@@ -211,6 +286,100 @@ internal class ApkRestoreTest : TransportTest() {
     }
 
     @Test
+    fun `test app only installed not already installed`(@TempDir tmpDir: Path) = runBlocking {
+        val packageInfo: PackageInfo = mockk()
+        mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
+        every { packageInfo.signingInfo.getSignatures() } returns packageMetadata.signatures!!
+        every {
+            packageInfo.longVersionCode
+        } returns packageMetadata.version!! + Random.nextLong(0, 2) // can be newer
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            awaitQueuedItem()
+            awaitItem().also { systemItem ->
+                val result = systemItem[packageName]
+                assertEquals(SUCCEEDED, result.state)
+            }
+            awaitItem().also { finishedItem ->
+                assertTrue(finishedItem.isFinished)
+            }
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
+    fun `test app still installed if older version is installed`(@TempDir tmpDir: Path) =
+        runBlocking {
+            val packageInfo: PackageInfo = mockk()
+            mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
+            every { installRestriction.isAllowedToInstallApks() } returns true
+            every { backupStateManager.isAutoRestoreEnabled } returns false
+            every { storagePlugin.providerPackageName } returns storageProviderPackageName
+            every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
+            every { packageInfo.signingInfo.getSignatures() } returns packageMetadata.signatures!!
+            every { packageInfo.longVersionCode } returns packageMetadata.version!! - 1
+
+            cacheBaseApkAndGetInfo(tmpDir)
+            val packagesMap = mapOf(
+                packageName to ApkInstallResult(
+                    packageName,
+                    state = SUCCEEDED,
+                    metadata = PackageMetadata(),
+                )
+            )
+            val installResult = InstallResult(packagesMap)
+            coEvery {
+                apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
+            } returns installResult
+
+            apkRestore.installResult.test {
+                awaitItem() // initial empty state
+                apkRestore.restore(backup)
+                awaitQueuedItem()
+                awaitInProgressItem()
+                awaitItem().also { systemItem ->
+                    val result = systemItem[packageName]
+                    assertEquals(SUCCEEDED, result.state)
+                }
+                awaitItem().also { finishedItem ->
+                    assertTrue(finishedItem.isFinished)
+                }
+                ensureAllEventsConsumed()
+            }
+        }
+
+    @Test
+    fun `test app fails if installed with different signer`(@TempDir tmpDir: Path) = runBlocking {
+        val packageInfo: PackageInfo = mockk()
+        mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
+        every { packageInfo.signingInfo.getSignatures() } returns listOf("foobar")
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            awaitQueuedItem()
+            awaitItem().also { systemItem ->
+                val result = systemItem[packageName]
+                assertEquals(FAILED, result.state)
+            }
+            awaitItem().also { finishedItem ->
+                assertTrue(finishedItem.isFinished)
+            }
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
     fun `test system apps only reinstalled when older system apps exist`(@TempDir tmpDir: Path) =
         runBlocking {
             val packageMetadata = this@ApkRestoreTest.packageMetadata.copy(system = true)
@@ -220,13 +389,15 @@ internal class ApkRestoreTest : TransportTest() {
             val isSystemApp = Random.nextBoolean()
 
             every { installRestriction.isAllowedToInstallApks() } returns true
+            every { backupStateManager.isAutoRestoreEnabled } returns false
+            every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
             cacheBaseApkAndGetInfo(tmpDir)
             every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
             if (willFail) {
                 every {
                     pm.getPackageInfo(packageName, 0)
-                } throws PackageManager.NameNotFoundException()
+                } throws NameNotFoundException()
             } else {
                 installedPackageInfo.applicationInfo = mockk {
                     flags =
@@ -287,6 +458,8 @@ internal class ApkRestoreTest : TransportTest() {
         )
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -312,6 +485,8 @@ internal class ApkRestoreTest : TransportTest() {
         )
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -340,6 +515,8 @@ internal class ApkRestoreTest : TransportTest() {
             )
 
             every { installRestriction.isAllowedToInstallApks() } returns true
+            every { backupStateManager.isAutoRestoreEnabled } returns false
+            every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
             // cache APK and get icon as well as app name
             cacheBaseApkAndGetInfo(tmpDir)
 
@@ -370,6 +547,8 @@ internal class ApkRestoreTest : TransportTest() {
         )
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         // cache APK and get icon as well as app name
         cacheBaseApkAndGetInfo(tmpDir)
 
@@ -411,6 +590,7 @@ internal class ApkRestoreTest : TransportTest() {
     @Test
     fun `storage provider app does not get reinstalled`() = runBlocking {
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
         // set the storage provider package name to match our current package name,
         // and ensure that the current package is therefore skipped.
         every { storagePlugin.providerPackageName } returns packageName
@@ -437,6 +617,7 @@ internal class ApkRestoreTest : TransportTest() {
         ).also { assertFalse(it.hasApk()) }
 
         every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns false
         every { storagePlugin.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
@@ -450,6 +631,40 @@ internal class ApkRestoreTest : TransportTest() {
                 assertTrue(finishedItem.isFinished)
             }
             ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
+    fun `auto restore gets turned off, if it was on`(@TempDir tmpDir: Path) = runBlocking {
+        val packagesMap = mapOf(
+            packageName to ApkInstallResult(
+                packageName,
+                state = SUCCEEDED,
+                metadata = PackageMetadata(),
+            )
+        )
+        val installResult = InstallResult(packagesMap)
+
+        every { installRestriction.isAllowedToInstallApks() } returns true
+        every { backupStateManager.isAutoRestoreEnabled } returns true
+        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backupManager.setAutoRestore(false) } just Runs
+        every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
+        // cache APK and get icon as well as app name
+        cacheBaseApkAndGetInfo(tmpDir)
+        coEvery {
+            apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
+        } returns installResult
+        every { backupManager.setAutoRestore(true) } just Runs
+
+        apkRestore.installResult.test {
+            awaitItem() // initial empty state
+            apkRestore.restore(backup)
+            assertQueuedProgressSuccessFinished()
+        }
+        verifyOrder {
+            backupManager.setAutoRestore(false)
+            backupManager.setAutoRestore(true)
         }
     }
 

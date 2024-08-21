@@ -6,6 +6,9 @@
 package com.stevesoltys.seedvault
 
 import android.content.Context
+import android.provider.Settings
+import android.provider.Settings.Secure.BACKUP_AUTO_RESTORE
+import android.provider.Settings.Secure.BACKUP_SCHEDULING_ENABLED
 import android.util.Log
 import androidx.work.WorkInfo.State.RUNNING
 import androidx.work.WorkManager
@@ -22,6 +25,7 @@ class BackupStateManager(
 ) {
 
     private val workManager = WorkManager.getInstance(context)
+    private val contentResolver = context.contentResolver
 
     val isBackupRunning: Flow<Boolean> = combine(
         flow = ConfigurableBackupTransportService.isRunning,
@@ -36,5 +40,11 @@ class BackupStateManager(
         )
         appBackupRunning || filesBackupRunning || workInfoState == RUNNING
     }
+
+    val isAutoRestoreEnabled: Boolean
+        get() = Settings.Secure.getInt(contentResolver, BACKUP_AUTO_RESTORE, 1) == 1
+
+    val isFrameworkSchedulingEnabled: Boolean
+        get() = Settings.Secure.getInt(contentResolver, BACKUP_SCHEDULING_ENABLED, 1) == 1
 
 }
