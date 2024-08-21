@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault
 
+import android.app.backup.IBackupManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -37,6 +38,7 @@ class UsbIntentReceiver : UsbMonitor() {
     // using KoinComponent would crash robolectric tests :(
     private val settingsManager: SettingsManager by lazy { get().get() }
     private val metadataManager: MetadataManager by lazy { get().get() }
+    private val backupManager: IBackupManager by lazy { get().get() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
         if (action != ACTION_USB_DEVICE_ATTACHED) return false
@@ -67,8 +69,10 @@ class UsbIntentReceiver : UsbMonitor() {
             // this starts an app backup afterwards
             i.putExtra(EXTRA_START_APP_BACKUP, true)
             startForegroundService(context, i)
-        } else {
+        } else if (backupManager.isBackupEnabled) {
             AppBackupWorker.scheduleNow(context, reschedule = false)
+        } else {
+            Log.d(TAG, "Neither files nor app backup enabled, do nothing.")
         }
     }
 
