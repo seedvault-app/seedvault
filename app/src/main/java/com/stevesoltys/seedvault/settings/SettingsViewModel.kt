@@ -85,6 +85,7 @@ internal class SettingsViewModel(
     private val workManager = WorkManager.getInstance(app)
 
     override val isRestoreOperation = false
+    val isFirstStart get() = settingsManager.isFirstStart
 
     val isBackupRunning: StateFlow<Boolean>
     private val mBackupPossible = MutableLiveData(false)
