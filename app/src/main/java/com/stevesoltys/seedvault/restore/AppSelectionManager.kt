@@ -85,7 +85,7 @@ internal class AppSelectionManager(
         items.add(0, systemItem)
         items.addAll(0, systemDataItems)
         selectedApps.value =
-            SelectedAppsState(apps = items, allSelected = true, iconsLoaded = false)
+            SelectedAppsState(apps = items, allSelected = isSetupWizard, iconsLoaded = false)
         // download icons
         coroutineScope.launch(workDispatcher) {
             val plugin = pluginManager.appPlugin
@@ -103,7 +103,7 @@ internal class AppSelectionManager(
                 item.copy(hasIcon = item.packageName in packagesWithIcons)
             }
             selectedApps.value =
-                SelectedAppsState(updatedItems, allSelected = true, iconsLoaded = true)
+                SelectedAppsState(updatedItems, allSelected = isSetupWizard, iconsLoaded = true)
         }
     }
 
