@@ -122,8 +122,6 @@ internal class FileRestore(
         val contentValues = ContentValues().apply {
             put(MediaColumns.DISPLAY_NAME, mediaFile.name)
             put(MediaColumns.RELATIVE_PATH, mediaFile.path)
-            // changing owner requires backup permission
-            put(MediaColumns.OWNER_PACKAGE_NAME, mediaFile.ownerPackageName)
             put(MediaColumns.IS_PENDING, 1)
             put(MediaColumns.IS_FAVORITE, if (mediaFile.isFavorite) 1 else 0)
         }
@@ -139,6 +137,9 @@ internal class FileRestore(
         contentValues.clear()
         contentValues.apply {
             put(MediaColumns.IS_PENDING, 0)
+            // changing owner requires backup permission
+            // done here because we are not allowed to access pending media we don't own
+            put(MediaColumns.OWNER_PACKAGE_NAME, mediaFile.ownerPackageName)
         }
         try {
             contentResolver.update(uri, contentValues, null, null)
