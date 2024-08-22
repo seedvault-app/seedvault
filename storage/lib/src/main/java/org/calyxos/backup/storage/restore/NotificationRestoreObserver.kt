@@ -18,11 +18,16 @@ public open class NotificationRestoreObserver internal constructor(private val n
 
     private var totalFiles = 0
     private var filesRestored = 0
+    private var filesRemovedAsDuplicates = 0
     private var filesWithError = 0
 
     override fun onRestoreStart(numFiles: Int, totalSize: Long) {
         totalFiles = numFiles
         n.updateRestoreNotification(filesRestored + filesWithError, totalFiles)
+    }
+
+    override fun onFileDuplicatesRemoved(num: Int) {
+        filesRemovedAsDuplicates = num
     }
 
     override fun onFileRestored(file: BackupFile, bytesWritten: Long, tag: String) {
@@ -36,7 +41,13 @@ public open class NotificationRestoreObserver internal constructor(private val n
     }
 
     override fun onRestoreComplete(restoreDuration: Long) {
-        n.showRestoreCompleteNotification(filesRestored, totalFiles, getRestoreCompleteIntent())
+        n.showRestoreCompleteNotification(
+            restored = filesRestored,
+            duplicates = filesRemovedAsDuplicates,
+            errors = filesWithError,
+            total = totalFiles,
+            intent = getRestoreCompleteIntent(),
+        )
     }
 
     protected open fun getRestoreCompleteIntent(): PendingIntent? {

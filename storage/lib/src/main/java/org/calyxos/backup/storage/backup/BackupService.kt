@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.backup
 
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
 import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.GlobalScope
@@ -30,7 +31,8 @@ public abstract class BackupService : Service() {
         Log.d(TAG, "onStartCommand $intent $flags $startId")
         startForeground(
             NOTIFICATION_ID_BACKUP,
-            n.getBackupNotification(R.string.notification_backup_scanning)
+            n.getBackupNotification(R.string.notification_backup_scanning),
+            FOREGROUND_SERVICE_TYPE_MANIFEST,
         )
         GlobalScope.launch {
             val success = storageBackup.runBackup(backupObserver)
@@ -38,7 +40,8 @@ public abstract class BackupService : Service() {
                 // only prune old backups when backup run was successful
                 startForeground(
                     NOTIFICATION_ID_PRUNE,
-                    n.getPruneNotification(R.string.notification_prune)
+                    n.getPruneNotification(R.string.notification_prune),
+                    FOREGROUND_SERVICE_TYPE_MANIFEST,
                 )
                 storageBackup.pruneOldBackups(backupObserver)
             }

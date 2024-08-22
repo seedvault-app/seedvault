@@ -56,7 +56,7 @@ public class DocumentScanner(context: Context) {
             queryUri, PROJECTION, null, null, null
         )
         val documentFiles = ArrayList<DocFile>(cursor?.count ?: 0)
-        cursor?.use { it ->
+        cursor?.use {
             while (it.moveToNext()) {
                 val id = it.getString(PROJECTION_ID)
                 val documentUri = DocumentsContract.buildDocumentUriUsingTree(uri, id)

@@ -7,6 +7,7 @@ package org.calyxos.backup.storage.restore
 
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST
 import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,11 @@ public abstract class RestoreService : Service() {
         if (timestamp < 0) error("No timestamp in intent: $intent")
         val storedSnapshot = StoredSnapshot(userId, timestamp)
 
-        startForeground(NOTIFICATION_ID_RESTORE, n.getRestoreNotification())
+        startForeground(
+            NOTIFICATION_ID_RESTORE,
+            n.getRestoreNotification(),
+            FOREGROUND_SERVICE_TYPE_MANIFEST,
+        )
         GlobalScope.launch {
             val snapshot = withContext(Dispatchers.Main) {
                 fileSelectionManager.getBackupSnapshotAndReset()

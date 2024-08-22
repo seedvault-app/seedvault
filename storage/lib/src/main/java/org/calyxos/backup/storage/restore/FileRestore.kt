@@ -24,7 +24,6 @@ import kotlin.random.Random
 
 private const val TAG = "FileRestore"
 
-@Suppress("BlockingMethodInNonBlockingContext")
 internal class FileRestore(
     private val context: Context,
     private val mediaScanner: MediaScanner,
@@ -46,10 +45,12 @@ internal class FileRestore(
                 bytes = restoreFile(file.mediaFile, streamWriter)
                 finalTag = "M$tag"
             }
+
             file.docFile != null -> {
                 bytes = restoreFile(file, streamWriter)
                 finalTag = "D$tag"
             }
+
             else -> {
                 error("unexpected file: $file")
             }
@@ -63,39 +64,45 @@ internal class FileRestore(
         streamWriter: suspend (outputStream: OutputStream) -> Long,
     ): Long {
         // ensure directory exists
-        @Suppress("DEPRECATION")
         val dir = File("${getExternalStorageDirectory()}/${docFile.dir}")
         if (!dir.mkdirs() && !dir.isDirectory) {
             throw IOException("Could not create ${dir.absolutePath}")
         }
-        // find non-existing file-name
         var file = File(dir, docFile.name)
-        var i = 0
-        // we don't support existing files, but at least don't overwrite them when they do exist
-        while (file.exists()) {
-            i++
-            val lastDot = docFile.name.lastIndexOf('.')
-            val newName = if (lastDot == -1) "${docFile.name} ($i)"
-            else docFile.name.replaceRange(lastDot..lastDot, " ($i).")
-            file = File(dir, newName)
-        }
-        val bytesWritten = try {
-            // copy chunk(s) into file
-            file.outputStream().use { outputStream ->
-                streamWriter(outputStream)
+        // TODO should we also calculate and check the chunk IDs?
+        if (file.isFile && file.length() == docFile.size &&
+            file.lastModified() == docFile.lastModified
+        ) {
+            Log.i(TAG, "Not restoring $file, already there unchanged.")
+            return file.length() // not restoring existing file with same length and date
+        } else {
+            var i = 0
+            // don't overwrite existing files, if they exist
+            while (file.exists()) { // find non-existing file-name
+                i++
+                val lastDot = docFile.name.lastIndexOf('.')
+                val newName = if (lastDot == -1) "${docFile.name} ($i)"
+                else docFile.name.replaceRange(lastDot..lastDot, " ($i).")
+                file = File(dir, newName)
             }
-        } catch (e: IOException) {
-            file.delete()
-            throw e
+            val bytesWritten = try {
+                // copy chunk(s) into file
+                file.outputStream().use { outputStream ->
+                    streamWriter(outputStream)
+                }
+            } catch (e: IOException) {
+                file.delete()
+                throw e
+            }
+            // re-set lastModified timestamp
+            file.setLastModified(docFile.lastModified ?: 0)
+
+            // This might be a media file, so do we need to index it.
+            // Otherwise things like a wrong size of 0 bytes in MediaStore can happen.
+            indexFile(file)
+
+            return bytesWritten
         }
-        // re-set lastModified timestamp
-        file.setLastModified(docFile.lastModified ?: 0)
-
-        // This might be a media file, so do we need to index it.
-        // Otherwise things like a wrong size of 0 bytes in MediaStore can happen.
-        indexFile(file)
-
-        return bytesWritten
     }
 
     @Throws(IOException::class)
@@ -103,12 +110,18 @@ internal class FileRestore(
         mediaFile: BackupMediaFile,
         streamWriter: suspend (outputStream: OutputStream) -> Long,
     ): Long {
+        // TODO should we also calculate and check the chunk IDs?
+        if (mediaScanner.existsMediaFileUnchanged(mediaFile)) {
+            Log.i(
+                TAG,
+                "Not restoring ${mediaFile.path}/${mediaFile.name}, already there unchanged."
+            )
+            return mediaFile.size
+        }
         // Insert pending media item into MediaStore
         val contentValues = ContentValues().apply {
             put(MediaColumns.DISPLAY_NAME, mediaFile.name)
             put(MediaColumns.RELATIVE_PATH, mediaFile.path)
-            // changing owner requires backup permission
-            put(MediaColumns.OWNER_PACKAGE_NAME, mediaFile.ownerPackageName)
             put(MediaColumns.IS_PENDING, 1)
             put(MediaColumns.IS_FAVORITE, if (mediaFile.isFavorite) 1 else 0)
         }
@@ -124,6 +137,9 @@ internal class FileRestore(
         contentValues.clear()
         contentValues.apply {
             put(MediaColumns.IS_PENDING, 0)
+            // changing owner requires backup permission
+            // done here because we are not allowed to access pending media we don't own
+            put(MediaColumns.OWNER_PACKAGE_NAME, mediaFile.ownerPackageName)
         }
         try {
             contentResolver.update(uri, contentValues, null, null)
@@ -143,7 +159,6 @@ internal class FileRestore(
     }
 
     private fun setLastModifiedOnMediaFile(mediaFile: BackupMediaFile, uri: Uri) {
-        @Suppress("DEPRECATION")
         val extDir = getExternalStorageDirectory()
 
         // re-set lastModified as we can't use the MediaStore for this (read-only property)

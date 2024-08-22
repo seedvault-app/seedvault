@@ -6,6 +6,7 @@
 package org.calyxos.backup.storage.scanner
 
 import android.content.ContentResolver.QUERY_ARG_SQL_SELECTION
+import android.content.ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -21,6 +22,7 @@ import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.api.MediaType
+import org.calyxos.backup.storage.backup.BackupMediaFile
 import org.calyxos.backup.storage.content.MediaFile
 import java.io.File
 
@@ -77,6 +79,37 @@ public class MediaScanner(context: Context) {
                 while (c.moveToNext()) add(createMediaFile(c, uri))
             }
         }
+    }
+
+    internal fun existsMediaFileUnchanged(mediaFile: BackupMediaFile): Boolean {
+        val uri = MediaType.fromBackupMediaType(mediaFile.type).contentUri
+        val extras = Bundle().apply {
+            // search for files with same path and name
+            val query = StringBuilder().apply {
+                append("${MediaStore.MediaColumns.MIME_TYPE}!='$MIME_TYPE_DIR'")
+                append(" AND ")
+                append("${MediaStore.MediaColumns.RELATIVE_PATH}=?")
+                append(" AND ")
+                append("${MediaStore.MediaColumns.DISPLAY_NAME}=?")
+            }
+            putString(QUERY_ARG_SQL_SELECTION, query.toString())
+            val args = arrayOf(
+                mediaFile.path + "/", // Note trailing slash that is important
+                mediaFile.name,
+            )
+            putStringArray(QUERY_ARG_SQL_SELECTION_ARGS, args)
+        }
+
+        contentResolver.query(uri, PROJECTION, extras, null)?.use { c ->
+            while (c.moveToNext()) {
+                val f = createMediaFile(c, uri)
+                // note that we get seconds, but store milliseconds
+                if (f.dateModified == mediaFile.lastModified / 1000 && f.size == mediaFile.size) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     internal fun getPath(uri: Uri): String? {

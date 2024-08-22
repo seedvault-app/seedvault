@@ -138,7 +138,7 @@ public class FileSelectionManager {
                     val name = if (i >= parts.size - 1) {
                         parts[i]
                     } else {
-                        parts.subList(i, parts.size).joinToString { "/" }
+                        parts.subList(i, parts.size).joinToString("/")
                     }
                     levels[folder] = Pair(subPathLevel.first + 1, name)
                     return@forEach
