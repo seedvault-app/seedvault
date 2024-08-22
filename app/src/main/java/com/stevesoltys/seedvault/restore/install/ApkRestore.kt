@@ -90,7 +90,8 @@ internal class ApkRestore(
         val i = Intent(context, RestoreService::class.java)
         val autoRestore = backupStateManager.isAutoRestoreEnabled
         try {
-            context.startForegroundService(i)
+            // don't use startForeground(), because we may stop it sooner than the system likes
+            context.startService(i)
             // disable auto-restore before installing apps, if it was enabled before
             if (autoRestore) backupManager.setAutoRestore(false)
             reInstallApps(backup, packages.asIterable().reversed())

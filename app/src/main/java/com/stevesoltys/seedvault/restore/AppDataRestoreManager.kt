@@ -123,7 +123,8 @@ internal class AppDataRestoreManager(
                 RestoreBackupResult(context.getString(R.string.restore_set_error))
             )
         } else {
-            context.startForegroundService(foregroundServiceIntent)
+            // don't use startForeground(), because we may stop it sooner than the system likes
+            context.startService(foregroundServiceIntent)
         }
     }
 

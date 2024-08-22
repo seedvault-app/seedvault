@@ -112,7 +112,7 @@ internal class ApkRestoreTest : TransportTest() {
         // related to starting/stopping service
         every { strictContext.packageName } returns "org.foo.bar"
         every {
-            strictContext.startForegroundService(any())
+            strictContext.startService(any())
         } returns ComponentName(strictContext, "org.foo.bar.Class")
         every { strictContext.stopService(any()) } returns true
     }
