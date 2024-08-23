@@ -26,6 +26,7 @@ import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
 import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.seedvault.core.crypto.KeyManager
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -37,6 +38,7 @@ internal class PrunerTest {
     private val db: Db = mockk()
     private val chunksCache: ChunksCache = mockk()
     private val pluginGetter: () -> StoragePlugin = mockk()
+    private val keyManager: KeyManager = mockk()
     private val plugin: StoragePlugin = mockk()
     private val snapshotRetriever: SnapshotRetriever = mockk()
     private val retentionManager: RetentionManager = mockk()
@@ -48,11 +50,12 @@ internal class PrunerTest {
         mockLog(false)
         every { pluginGetter() } returns plugin
         every { db.getChunksCache() } returns chunksCache
-        every { plugin.getMasterKey() } returns masterKey
+        every { keyManager.getMainKey() } returns masterKey
         every { streamCrypto.deriveStreamKey(masterKey) } returns streamKey
     }
 
-    private val pruner = Pruner(db, retentionManager, pluginGetter, snapshotRetriever, streamCrypto)
+    private val pruner =
+        Pruner(db, retentionManager, pluginGetter, keyManager, snapshotRetriever, streamCrypto)
 
     @Test
     fun test() = runBlocking {

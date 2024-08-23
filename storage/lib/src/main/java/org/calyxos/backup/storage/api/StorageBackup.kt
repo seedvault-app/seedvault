@@ -31,6 +31,7 @@ import org.calyxos.backup.storage.scanner.DocumentScanner
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.MediaScanner
 import org.calyxos.backup.storage.toStoredUri
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -39,6 +40,7 @@ private const val TAG = "StorageBackup"
 public class StorageBackup(
     private val context: Context,
     private val pluginGetter: () -> StoragePlugin,
+    private val keyManager: KeyManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
@@ -54,13 +56,16 @@ public class StorageBackup(
     private val backup by lazy {
         val documentScanner = DocumentScanner(context)
         val fileScanner = FileScanner(uriStore, mediaScanner, documentScanner)
-        Backup(context, db, fileScanner, pluginGetter, chunksCacheRepopulater)
+        Backup(context, db, fileScanner, pluginGetter, keyManager, chunksCacheRepopulater)
     }
     private val restore by lazy {
-        Restore(context, pluginGetter, snapshotRetriever, FileRestore(context, mediaScanner))
+        val fileRestore = FileRestore(context, mediaScanner)
+        Restore(context, pluginGetter, keyManager, snapshotRetriever, fileRestore)
     }
     private val retention = RetentionManager(context)
-    private val pruner by lazy { Pruner(db, retention, pluginGetter, snapshotRetriever) }
+    private val pruner by lazy {
+        Pruner(db, retention, pluginGetter, keyManager, snapshotRetriever)
+    }
 
     private val backupRunning = AtomicBoolean(false)
     private val restoreRunning = AtomicBoolean(false)

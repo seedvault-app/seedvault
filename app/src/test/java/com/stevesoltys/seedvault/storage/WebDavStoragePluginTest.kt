@@ -5,12 +5,10 @@
 
 package com.stevesoltys.seedvault.storage
 
-import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.plugins.webdav.WebDavTestConfig
 import com.stevesoltys.seedvault.transport.backup.BackupTest
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.junit.Assert.assertArrayEquals
@@ -21,8 +19,7 @@ import java.io.IOException
 
 internal class WebDavStoragePluginTest : BackupTest() {
 
-    private val keyManager: KeyManager = mockk()
-    private val plugin = WebDavStoragePlugin(keyManager, "foo", WebDavTestConfig.getConfig())
+    private val plugin = WebDavStoragePlugin("foo", WebDavTestConfig.getConfig())
 
     private val snapshot = StoredSnapshot("foo.sv", System.currentTimeMillis())
 
@@ -85,7 +82,7 @@ internal class WebDavStoragePluginTest : BackupTest() {
             )
 
             // other device writes another snapshot
-            val otherPlugin = WebDavStoragePlugin(keyManager, "bar", WebDavTestConfig.getConfig())
+            val otherPlugin = WebDavStoragePlugin("bar", WebDavTestConfig.getConfig())
             val otherSnapshot = StoredSnapshot("bar.sv", System.currentTimeMillis())
             val otherSnapshotBytes = getRandomByteArray()
             assertEquals(emptyList<String>(), otherPlugin.getAvailableChunkIds())
@@ -110,7 +107,6 @@ internal class WebDavStoragePluginTest : BackupTest() {
     @Test
     fun `test missing root dir`() = runBlocking {
         val plugin = WebDavStoragePlugin(
-            keyManager = keyManager,
             androidId = "foo",
             webDavConfig = WebDavTestConfig.getConfig(),
             root = getRandomString(),

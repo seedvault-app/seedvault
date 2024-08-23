@@ -46,6 +46,7 @@ import org.calyxos.backup.storage.restore.RestorableFile
 import org.calyxos.backup.storage.restore.Restore
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
+import org.calyxos.seedvault.core.crypto.KeyManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -71,6 +72,7 @@ internal class BackupRestoreTest {
 
     private val fileScanner: FileScanner = mockk()
     private val pluginGetter: () -> StoragePlugin = mockk()
+    private val keyManager: KeyManager = mockk()
     private val plugin: StoragePlugin = mockk()
     private val fileRestore: FileRestore = mockk()
     private val snapshotRetriever = SnapshotRetriever(pluginGetter)
@@ -87,7 +89,7 @@ internal class BackupRestoreTest {
         every { pluginGetter() } returns plugin
         every { db.getFilesCache() } returns filesCache
         every { db.getChunksCache() } returns chunksCache
-        every { plugin.getMasterKey() } returns SecretKeySpec(
+        every { keyManager.getMainKey() } returns SecretKeySpec(
             "This is a backup key for testing".toByteArray(),
             0, KEY_SIZE_BYTES, ALGORITHM_HMAC
         )
@@ -95,11 +97,11 @@ internal class BackupRestoreTest {
         every { context.contentResolver } returns contentResolver
     }
 
-    private val restore = Restore(context, pluginGetter, snapshotRetriever, fileRestore)
+    private val restore = Restore(context, pluginGetter, keyManager, snapshotRetriever, fileRestore)
 
     @Test
     fun testZipAndSingleRandom(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater)
+        val backup = Backup(context, db, fileScanner, pluginGetter, keyManager, cacheRepopulater)
 
         val smallFileMBytes = Random.nextBytes(Random.nextInt(SMALL_FILE_SIZE_MAX))
         val smallFileM = getRandomMediaFile(smallFileMBytes.size)
@@ -236,7 +238,8 @@ internal class BackupRestoreTest {
 
     @Test
     fun testMultiChunks(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater, 4)
+        val backup =
+            Backup(context, db, fileScanner, pluginGetter, keyManager, cacheRepopulater, 4)
 
         val chunk1 = byteArrayOf(0x00, 0x01, 0x02, 0x03)
         val chunk2 = byteArrayOf(0x04, 0x05, 0x06, 0x07)

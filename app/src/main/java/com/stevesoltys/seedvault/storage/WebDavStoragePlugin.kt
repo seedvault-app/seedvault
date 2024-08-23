@@ -11,7 +11,6 @@ import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.webdav.DisplayName
 import at.bitfire.dav4jvm.property.webdav.ResourceType
-import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.plugins.chunkFolderRegex
 import com.stevesoltys.seedvault.plugins.webdav.DIRECTORY_ROOT
 import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
@@ -26,12 +25,10 @@ import org.koin.core.time.measureDuration
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import javax.crypto.SecretKey
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 internal class WebDavStoragePlugin(
-    private val keyManager: KeyManager,
     /**
      * The result of Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
      */
@@ -120,9 +117,6 @@ internal class WebDavStoragePlugin(
             debugLog { "Created missing folder $chunkFolderName (${i + 1}/$s) $response" }
         }
     }
-
-    override fun getMasterKey(): SecretKey = keyManager.getMainKey()
-    override fun hasMasterKey(): Boolean = keyManager.hasMainKey()
 
     @Throws(IOException::class)
     override suspend fun getChunkOutputStream(chunkId: String): OutputStream {

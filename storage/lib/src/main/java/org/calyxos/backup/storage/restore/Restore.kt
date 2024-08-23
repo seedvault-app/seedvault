@@ -19,6 +19,7 @@ import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.io.InputStream
 import java.security.GeneralSecurityException
@@ -28,6 +29,7 @@ private const val TAG = "Restore"
 internal class Restore(
     context: Context,
     private val storagePluginGetter: () -> StoragePlugin,
+    private val keyManager: KeyManager,
     private val snapshotRetriever: SnapshotRetriever,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto = StreamCrypto,
@@ -39,7 +41,7 @@ internal class Restore(
         // so we need to get it lazily here to prevent crashes. We can still crash later,
         // if the plugin is not providing a key as it should when performing calls into this class.
         try {
-            streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+            streamCrypto.deriveStreamKey(keyManager.getMainKey())
         } catch (e: GeneralSecurityException) {
             throw AssertionError(e)
         }

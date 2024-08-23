@@ -13,6 +13,7 @@ import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.security.GeneralSecurityException
 import kotlin.time.ExperimentalTime
@@ -23,6 +24,7 @@ internal class Pruner(
     private val db: Db,
     private val retentionManager: RetentionManager,
     private val storagePluginGetter: () -> StoragePlugin,
+    keyManager: KeyManager,
     private val snapshotRetriever: SnapshotRetriever,
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
@@ -30,7 +32,7 @@ internal class Pruner(
     private val storagePlugin get() = storagePluginGetter()
     private val chunksCache = db.getChunksCache()
     private val streamKey = try {
-        streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+        streamCrypto.deriveStreamKey(keyManager.getMainKey())
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }

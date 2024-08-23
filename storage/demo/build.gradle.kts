@@ -69,6 +69,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(project(":storage:lib"))
 
     implementation(libs.bundles.kotlin)

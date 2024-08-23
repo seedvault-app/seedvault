@@ -24,7 +24,7 @@ internal const val KEY_ALIAS_MAIN = "com.stevesoltys.seedvault.main"
 private const val KEY_ALGORITHM_BACKUP = "AES"
 private const val KEY_ALGORITHM_MAIN = "HmacSHA256"
 
-interface KeyManager {
+interface KeyManager : org.calyxos.seedvault.core.crypto.KeyManager {
     /**
      * Store a new backup key derived from the given [seed].
      *
@@ -57,14 +57,6 @@ interface KeyManager {
      * because the key can not leave the [KeyStore]'s hardware security module.
      */
     fun getBackupKey(): SecretKey
-
-    /**
-     * Returns the main key, so it can be used for deriving sub-keys.
-     *
-     * Note that any attempt to export the key will return null or an empty [ByteArray],
-     * because the key can not leave the [KeyStore]'s hardware security module.
-     */
-    fun getMainKey(): SecretKey
 }
 
 internal class KeyManagerImpl(

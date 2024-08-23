@@ -19,6 +19,7 @@ import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.security.GeneralSecurityException
 import kotlin.time.Duration
@@ -42,6 +43,7 @@ internal class Backup(
     private val db: Db,
     private val fileScanner: FileScanner,
     private val storagePluginGetter: () -> StoragePlugin,
+    keyManager: KeyManager,
     private val cacheRepopulater: ChunksCacheRepopulater,
     chunkSizeMax: Int = CHUNK_SIZE_MAX,
     private val streamCrypto: StreamCrypto = StreamCrypto,
@@ -60,12 +62,12 @@ internal class Backup(
     private val chunksCache = db.getChunksCache()
 
     private val mac = try {
-        ChunkCrypto.getMac(ChunkCrypto.deriveChunkIdKey(storagePlugin.getMasterKey()))
+        ChunkCrypto.getMac(ChunkCrypto.deriveChunkIdKey(keyManager.getMainKey()))
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }
     private val streamKey = try {
-        streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+        streamCrypto.deriveStreamKey(keyManager.getMainKey())
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }

@@ -8,13 +8,10 @@ package de.grobox.storagebackuptester.plugin
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import de.grobox.storagebackuptester.crypto.KeyManager
 import org.calyxos.backup.storage.plugin.saf.SafStoragePlugin
 import java.io.IOException
 import java.io.OutputStream
-import javax.crypto.SecretKey
 
-@Suppress("BlockingMethodInNonBlockingContext")
 class TestSafStoragePlugin(
     appContext: Context,
     private val getLocationUri: () -> Uri?,
@@ -31,14 +28,6 @@ class TestSafStoragePlugin(
         override fun write(b: Int) {
             // oops
         }
-    }
-
-    override fun getMasterKey(): SecretKey {
-        return KeyManager.getMasterKey()
-    }
-
-    override fun hasMasterKey(): Boolean {
-        return KeyManager.hasMasterKey()
     }
 
     @Throws(IOException::class)
