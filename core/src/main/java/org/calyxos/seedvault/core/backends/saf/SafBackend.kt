@@ -6,7 +6,13 @@
 package org.calyxos.seedvault.core.backends.saf
 
 import android.content.Context
+import android.os.Environment
+import android.os.StatFs
+import android.provider.DocumentsContract
+import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
+import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import android.provider.DocumentsContract.renameDocument
+import androidx.core.database.getIntOrNull
 import androidx.documentfile.provider.DocumentFile
 import io.github.oshai.kotlinlogging.KotlinLogging
 import okio.BufferedSink
@@ -31,6 +37,9 @@ import org.calyxos.seedvault.core.getBackendContext
 import java.io.IOException
 import kotlin.reflect.KClass
 
+internal const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
+internal const val ROOT_ID_DEVICE = "primary"
+
 public class SafBackend(
     private val appContext: Context,
     private val safConfig: SafConfig,
@@ -46,11 +55,33 @@ public class SafBackend(
     private val cache = DocumentFileCache(context, safConfig.getDocumentFile(context), root)
 
     override suspend fun test(): Boolean {
-        TODO("Not yet implemented")
+        return cache.getRootFile().isDirectory
     }
 
     override suspend fun getFreeSpace(): Long? {
-        TODO("Not yet implemented")
+        val rootId = safConfig.rootId ?: return null
+        val authority = safConfig.uri.authority
+        // using DocumentsContract#buildRootUri(String, String) with rootId directly doesn't work
+        val rootUri = DocumentsContract.buildRootsUri(authority)
+        val projection = arrayOf(COLUMN_AVAILABLE_BYTES)
+        // query directly for our rootId
+        val bytesAvailable = context.contentResolver.query(
+            rootUri, projection, "$COLUMN_ROOT_ID=?", arrayOf(rootId), null
+        )?.use { c ->
+            if (!c.moveToNext()) return@use null // no results
+            val bytes = c.getIntOrNull(c.getColumnIndex(COLUMN_AVAILABLE_BYTES))
+            if (bytes != null && bytes >= 0) return@use bytes.toLong()
+            else return@use null
+        }
+        // if we didn't get anything from SAF, try some known hacks
+        return if (bytesAvailable == null && authority == AUTHORITY_STORAGE) {
+            if (rootId == ROOT_ID_DEVICE) {
+                StatFs(Environment.getDataDirectory().absolutePath).availableBytes
+            } else if (safConfig.isUsb) {
+                val documentId = safConfig.uri.lastPathSegment ?: return null
+                StatFs("/mnt/media_rw/${documentId.trimEnd(':')}").availableBytes
+            } else null
+        } else bytesAvailable
     }
 
     override suspend fun save(handle: FileHandle): BufferedSink {
@@ -156,6 +187,11 @@ public class SafBackend(
         }
     }
 
-    override val providerPackageName: String? get() = TODO("Not yet implemented")
+    override val providerPackageName: String? by lazy {
+        val authority = safConfig.uri.authority ?: return@lazy null
+        val providerInfo = context.packageManager.resolveContentProvider(authority, 0)
+            ?: return@lazy null
+        providerInfo.packageName
+    }
 
 }

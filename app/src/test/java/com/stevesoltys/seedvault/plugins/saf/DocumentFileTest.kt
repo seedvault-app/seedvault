@@ -14,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.TestApp
 import io.mockk.every
 import io.mockk.mockk
+import org.calyxos.seedvault.core.backends.saf.getTreeDocumentFile
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

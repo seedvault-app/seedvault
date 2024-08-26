@@ -11,7 +11,6 @@ import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.SafFactory
 import com.stevesoltys.seedvault.plugins.webdav.WebDavFactory
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -51,9 +50,8 @@ class StoragePluginManager(
         when (settingsManager.storagePluginType) {
             StoragePluginType.SAF -> {
                 val safStorage = settingsManager.getSafStorage() ?: error("No SAF storage saved")
-                val documentsStorage = DocumentsStorage(context, settingsManager, safStorage)
-                mAppPlugin = safFactory.createAppStoragePlugin(safStorage, documentsStorage)
-                mFilesPlugin = safFactory.createFilesStoragePlugin(safStorage, documentsStorage)
+                mAppPlugin = safFactory.createAppStoragePlugin(safStorage)
+                mFilesPlugin = safFactory.createFilesStoragePlugin(safStorage)
                 mStorageProperties = safStorage
             }
 

@@ -7,22 +7,26 @@ package de.grobox.storagebackuptester.plugin
 
 import android.content.Context
 import android.net.Uri
-import androidx.documentfile.provider.DocumentFile
 import org.calyxos.backup.storage.plugin.saf.SafStoragePlugin
+import org.calyxos.seedvault.core.backends.saf.SafBackend
+import org.calyxos.seedvault.core.backends.saf.SafConfig
 import java.io.IOException
 import java.io.OutputStream
 
 class TestSafStoragePlugin(
-    appContext: Context,
+    private val appContext: Context,
     private val getLocationUri: () -> Uri?,
 ) : SafStoragePlugin(appContext) {
 
-    override val context = appContext
-    override val root: DocumentFile?
-        get() {
-            val uri = getLocationUri() ?: return null
-            return DocumentFile.fromTreeUri(context, uri) ?: error("No doc file from tree Uri")
-        }
+    private val safConfig
+        get() = SafConfig(
+            config = getLocationUri() ?: error("no uri"),
+            name = "foo",
+            isUsb = false,
+            requiresNetwork = false,
+            rootId = "bar",
+        )
+    override val delegate: SafBackend get() = SafBackend(appContext, safConfig)
 
     private val nullStream = object : OutputStream() {
         override fun write(b: Int) {
@@ -37,7 +41,6 @@ class TestSafStoragePlugin(
     }
 
     override suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
-        if (root == null) return nullStream
         return super.getBackupSnapshotOutputStream(timestamp)
     }
 

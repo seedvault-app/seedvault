@@ -11,7 +11,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val storagePluginModuleSaf = module {
-    single { SafFactory(androidContext(), get(), get()) }
+    single { SafFactory(androidContext()) }
     single { SafHandler(androidContext(), get(), get(), get()) }
 
     @Suppress("Deprecation")

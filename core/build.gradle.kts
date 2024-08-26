@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.bundles.kotlin)
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.core.ktx)
     // implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("okio-jvm-3.7.0.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
     implementation("io.github.oshai:kotlin-logging-jvm:6.0.3")

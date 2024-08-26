@@ -5,18 +5,15 @@
 
 package com.stevesoltys.seedvault
 
-import android.net.Uri
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderLegacyPlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsStorage
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
-import com.stevesoltys.seedvault.plugins.saf.deleteContents
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
 import io.mockk.mockk
@@ -24,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -46,7 +42,7 @@ class PluginTest : KoinComponent {
         safStorage = settingsManager.getSafStorage() ?: error("No SAF storage"),
     )
 
-    private val storagePlugin: StoragePlugin<Uri> = DocumentsProviderStoragePlugin(context, storage)
+    private val storagePlugin = DocumentsProviderStoragePlugin(context, storage.safStorage)
 
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = DocumentsProviderLegacyPlugin(context) {
@@ -60,13 +56,12 @@ class PluginTest : KoinComponent {
     @Before
     fun setup() = runBlocking {
         every { mockedSettingsManager.getSafStorage() } returns settingsManager.getSafStorage()
-        storage.rootBackupDir?.deleteContents(context)
-            ?: error("Select a storage location in the app first!")
+        storagePlugin.removeAll()
     }
 
     @After
     fun tearDown() = runBlocking {
-        storage.rootBackupDir?.deleteContents(context)
+        storagePlugin.removeAll()
         Unit
     }
 
@@ -124,9 +119,6 @@ class PluginTest : KoinComponent {
         storagePlugin.getOutputStream(token + 1, FILE_BACKUP_METADATA)
             .writeAndClose(getRandomByteArray())
         assertEquals(2, storagePlugin.getAvailableBackups()?.toList()?.size)
-
-        // ensure that the new backup dir exist
-        assertTrue(storage.currentSetDir!!.exists())
     }
 
     @Test

@@ -25,6 +25,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import org.calyxos.seedvault.core.backends.saf.getTreeDocumentFile
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -60,11 +61,7 @@ internal class DocumentsStorage(
             if (field == null) {
                 val parent = safStorage.getDocumentFile(context)
                 field = try {
-                    parent.createOrGetDirectory(context, DIRECTORY_ROOT).apply {
-                        // create .nomedia file to prevent Android's MediaScanner
-                        // from trying to index the backup
-                        createOrGetFile(context, FILE_NO_MEDIA)
-                    }
+                    parent.createOrGetDirectory(context, DIRECTORY_ROOT)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating root backup dir.", e)
                     null
@@ -73,41 +70,8 @@ internal class DocumentsStorage(
             field
         }
 
-    private var currentToken: Long? = null
-        get() {
-            if (field == null) field = settingsManager.getToken()
-            return field
-        }
-
-    var currentSetDir: DocumentFile? = null
-        get() = runBlocking {
-            if (field == null) {
-                if (currentToken == 0L) return@runBlocking null
-                field = try {
-                    rootBackupDir?.createOrGetDirectory(context, currentToken.toString())
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error creating current restore set dir.", e)
-                    null
-                }
-            }
-            field
-        }
-        private set
-
-    /**
-     * Resets this storage abstraction, forcing it to re-fetch cached values on next access.
-     */
-    fun reset(newToken: Long?) {
-        currentToken = newToken
-        rootBackupDir = null
-        currentSetDir = null
-    }
-
-    fun getAuthority(): String? = safStorage.uri.authority
-
     @Throws(IOException::class)
-    suspend fun getSetDir(token: Long = currentToken ?: error("no token")): DocumentFile? {
-        if (token == currentToken) return currentSetDir
+    suspend fun getSetDir(token: Long): DocumentFile? {
         return rootBackupDir?.findFileBlocking(context, token.toString())
     }
 
@@ -148,33 +112,6 @@ internal class DocumentsStorage(
 }
 
 /**
- * Checks if a file exists and if not, creates it.
- *
- * If we were trying to create it right away, some providers create "filename (1)".
- */
-@Throws(IOException::class)
-internal suspend fun DocumentFile.createOrGetFile(
-    context: Context,
-    name: String,
-    mimeType: String = MIME_TYPE,
-): DocumentFile {
-    return try {
-        findFileBlocking(context, name) ?: createFile(mimeType, name)?.apply {
-            if (this.name != name) {
-                throw IOException("File named ${this.name}, but should be $name")
-            }
-        } ?: throw IOException("could not find nor create")
-    } catch (e: Exception) {
-        // SAF can throw all sorts of exceptions, so wrap it in IOException.
-        // E.g. IllegalArgumentException can be thrown by FileSystemProvider#isChildDocument()
-        // when flash drive is not plugged-in:
-        // http://aosp.opersys.com/xref/android-11.0.0_r8/xref/frameworks/base/core/java/com/android/internal/content/FileSystemProvider.java#135
-        if (e is IOException) throw e
-        else throw IOException(e)
-    }
-}
-
-/**
  * Checks if a directory already exists and if not, creates it.
  */
 @Throws(IOException::class)
@@ -184,11 +121,6 @@ suspend fun DocumentFile.createOrGetDirectory(context: Context, name: String): D
             throw IOException("Directory named ${this.name}, but should be $name")
         }
     } ?: throw IOException()
-}
-
-@Throws(IOException::class)
-suspend fun DocumentFile.deleteContents(context: Context) {
-    for (file in listFilesBlocking(context)) file.delete()
 }
 
 fun DocumentFile.assertRightFile(packageInfo: PackageInfo) {
@@ -222,26 +154,6 @@ suspend fun DocumentFile.listFilesBlocking(context: Context): List<DocumentFile>
         }
     }
     return result
-}
-
-/**
- * An extremely dirty reflection hack to instantiate a TreeDocumentFile with a parent.
- *
- * All other public ways to get a TreeDocumentFile only work from [Uri]s
- * (e.g. [DocumentFile.fromTreeUri]) and always set parent to null.
- *
- * We have a test for this method to ensure CI will alert us when this reflection breaks.
- * Also, [DocumentFile] is part of AndroidX, so we control the dependency and notice when it fails.
- */
-@VisibleForTesting
-internal fun getTreeDocumentFile(parent: DocumentFile, context: Context, uri: Uri): DocumentFile {
-    @SuppressWarnings("MagicNumber")
-    val constructor = parent.javaClass.declaredConstructors.find {
-        it.name == "androidx.documentfile.provider.TreeDocumentFile" && it.parameterCount == 3
-    }
-    check(constructor != null) { "Could not find constructor for TreeDocumentFile" }
-    constructor.isAccessible = true
-    return constructor.newInstance(parent, context, uri) as DocumentFile
 }
 
 /**

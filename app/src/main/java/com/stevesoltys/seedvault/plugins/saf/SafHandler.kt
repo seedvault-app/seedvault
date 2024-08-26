@@ -50,8 +50,7 @@ internal class SafHandler(
     @WorkerThread
     @Throws(IOException::class)
     suspend fun hasAppBackup(safStorage: SafStorage): Boolean {
-        val storage = DocumentsStorage(context, settingsManager, safStorage)
-        val appPlugin = safFactory.createAppStoragePlugin(safStorage, storage)
+        val appPlugin = safFactory.createAppStoragePlugin(safStorage)
         val backups = appPlugin.getAvailableBackups()
         return backups != null && backups.iterator().hasNext()
     }
@@ -85,11 +84,10 @@ internal class SafHandler(
     }
 
     fun setPlugin(safStorage: SafStorage) {
-        val storage = DocumentsStorage(context, settingsManager, safStorage)
         storagePluginManager.changePlugins(
             storageProperties = safStorage,
-            appPlugin = safFactory.createAppStoragePlugin(safStorage, storage),
-            filesPlugin = safFactory.createFilesStoragePlugin(safStorage, storage),
+            appPlugin = safFactory.createAppStoragePlugin(safStorage),
+            filesPlugin = safFactory.createFilesStoragePlugin(safStorage),
         )
     }
 }
