@@ -40,12 +40,6 @@ interface StoragePlugin<T> {
     suspend fun initializeDevice()
 
     /**
-     * Return true if there is data stored for the given name.
-     */
-    @Throws(IOException::class)
-    suspend fun hasData(token: Long, name: String): Boolean
-
-    /**
      * Return a raw byte stream for writing data for the given name.
      */
     @Throws(IOException::class)

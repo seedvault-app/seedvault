@@ -234,48 +234,36 @@ internal class RestoreCoordinator(
         if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
 
         val packageName = packageInfo.packageName
-        val type = try {
-            when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
-                BackupType.KV -> {
-                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
-                    if (plugin.hasData(state.token, name)) {
-                        Log.i(TAG, "Found K/V data for $packageName.")
-                        kv.initializeState(
-                            version = version,
-                            token = state.token,
-                            name = name,
-                            packageInfo = packageInfo,
-                            autoRestorePackageInfo = state.autoRestorePackageInfo
-                        )
-                        state.currentPackage = packageName
-                        TYPE_KEY_VALUE
-                    } else throw IOException("No data found for $packageName. Skipping.")
-                }
-
-                BackupType.FULL -> {
-                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
-                    if (plugin.hasData(state.token, name)) {
-                        Log.i(TAG, "Found full backup data for $packageName.")
-                        full.initializeState(version, state.token, name, packageInfo)
-                        state.currentPackage = packageName
-                        TYPE_FULL_STREAM
-                    } else throw IOException("No data found for $packageName. Skipping...")
-                }
-
-                null -> {
-                    Log.i(TAG, "No backup type found for $packageName. Skipping...")
-                    state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
-                        Log.w(TAG, "State was ${s.name}")
-                    }
-                    failedPackages.add(packageName)
-                    return nextRestorePackage()
-                }
+        val type = when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
+            BackupType.KV -> {
+                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                kv.initializeState(
+                    version = version,
+                    token = state.token,
+                    name = name,
+                    packageInfo = packageInfo,
+                    autoRestorePackageInfo = state.autoRestorePackageInfo
+                )
+                state.currentPackage = packageName
+                TYPE_KEY_VALUE
             }
-        } catch (e: IOException) {
-            Log.e(TAG, "Error finding restore data for $packageName.", e)
-            failedPackages.add(packageName)
-            // don't return null and cause abort here, but try next package
-            return nextRestorePackage()
+
+            BackupType.FULL -> {
+                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                full.initializeState(version, state.token, name, packageInfo)
+                state.currentPackage = packageName
+                TYPE_FULL_STREAM
+            }
+
+            null -> {
+                Log.i(TAG, "No backup type found for $packageName. Skipping...")
+                state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
+                    Log.w(TAG, "State was ${s.name}")
+                }
+                failedPackages.add(packageName)
+                // don't return null and cause abort here, but try next package
+                return nextRestorePackage()
+            }
         }
         return RestoreDescription(packageName, type)
     }

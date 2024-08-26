@@ -199,17 +199,9 @@ class PluginTest : KoinComponent {
         val name1 = getRandomBase64()
         val name2 = getRandomBase64()
 
-        // no data available initially
-        assertFalse(storagePlugin.hasData(token, name1))
-        assertFalse(storagePlugin.hasData(token, name2))
-
         // write full backup data
         val data = getRandomByteArray(5 * 1024 * 1024)
         storagePlugin.getOutputStream(token, name1).writeAndClose(data)
-
-        // data is available now, but only this token
-        assertTrue(storagePlugin.hasData(token, name1))
-        assertFalse(storagePlugin.hasData(token + 1, name1))
 
         // restore data matches backed up data
         assertReadEquals(data, storagePlugin.getInputStream(token, name1))
@@ -217,19 +209,13 @@ class PluginTest : KoinComponent {
         // write and check data for second package
         val data2 = getRandomByteArray(5 * 1024 * 1024)
         storagePlugin.getOutputStream(token, name2).writeAndClose(data2)
-        assertTrue(storagePlugin.hasData(token, name2))
         assertReadEquals(data2, storagePlugin.getInputStream(token, name2))
 
         // remove data of first package again and ensure that no more data is found
         storagePlugin.removeData(token, name1)
-        assertFalse(storagePlugin.hasData(token, name1))
-
-        // second package is still there
-        assertTrue(storagePlugin.hasData(token, name2))
 
         // ensure that it gets deleted as well
         storagePlugin.removeData(token, name2)
-        assertFalse(storagePlugin.hasData(token, name2))
     }
 
     private fun initStorage(token: Long) = runBlocking {

@@ -190,7 +190,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
         // find data for K/V backup
         every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
-        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -264,7 +263,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
         // find data for K/V backup
         every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
-        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
@@ -327,7 +325,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
         // finds data for full backup
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backupPlugin.hasData(token, name) } returns true
 
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)

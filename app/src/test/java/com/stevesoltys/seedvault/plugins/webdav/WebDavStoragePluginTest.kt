@@ -64,16 +64,10 @@ internal class WebDavStoragePluginTest : TransportTest() {
         // initially, we don't have any backups
         assertEquals(emptySet<EncryptedMetadata>(), plugin.getAvailableBackups()?.toSet())
 
-        // and no data
-        assertFalse(plugin.hasData(token, FILE_BACKUP_METADATA))
-
         // write out the metadata file
         plugin.getOutputStream(token, FILE_BACKUP_METADATA).use {
             it.write(metadata)
         }
-
-        // now we have data
-        assertTrue(plugin.hasData(token, FILE_BACKUP_METADATA))
 
         try {
             // now we have one backup matching our token
@@ -86,9 +80,6 @@ internal class WebDavStoragePluginTest : TransportTest() {
                 metadata,
                 plugin.getInputStream(token, FILE_BACKUP_METADATA).use { it.readAllBytes() },
             )
-
-            // it has data now
-            assertTrue(plugin.hasData(token, FILE_BACKUP_METADATA))
         } finally {
             // remove data at the end, so consecutive test runs pass
             plugin.removeData(token, FILE_BACKUP_METADATA)

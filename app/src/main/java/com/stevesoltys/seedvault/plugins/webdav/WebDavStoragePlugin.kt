@@ -99,28 +99,6 @@ internal class WebDavStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun hasData(token: Long, name: String): Boolean {
-        val location = "$url/$token/$name".toHttpUrl()
-        val davCollection = DavCollection(okHttpClient, location)
-
-        return try {
-            val response = suspendCoroutine { cont ->
-                davCollection.head { response ->
-                    cont.resume(response)
-                }
-            }
-            debugLog { "hasData($token, $name) = $response" }
-            response.isSuccessful
-        } catch (e: NotFoundException) {
-            debugLog { "hasData($token, $name) = $e" }
-            false
-        } catch (e: Exception) {
-            if (e is IOException) throw e
-            else throw IOException(e)
-        }
-    }
-
-    @Throws(IOException::class)
     override suspend fun getOutputStream(token: Long, name: String): OutputStream {
         val location = "$url/$token/$name".toHttpUrl()
         return try {

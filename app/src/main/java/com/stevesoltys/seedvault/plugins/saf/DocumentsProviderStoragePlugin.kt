@@ -88,12 +88,6 @@ internal class DocumentsProviderStoragePlugin(
     }
 
     @Throws(IOException::class)
-    override suspend fun hasData(token: Long, name: String): Boolean {
-        val setDir = storage.getSetDir(token) ?: return false
-        return setDir.findFileBlocking(context, name) != null
-    }
-
-    @Throws(IOException::class)
     override suspend fun getOutputStream(token: Long, name: String): OutputStream {
         val setDir = storage.getSetDir(token) ?: throw IOException()
         val file = setDir.createOrGetFile(context, name)
