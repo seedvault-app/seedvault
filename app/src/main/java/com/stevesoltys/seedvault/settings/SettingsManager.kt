@@ -15,11 +15,11 @@ import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
-import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
 import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import java.util.concurrent.ConcurrentSkipListSet
 
 internal const val PREF_KEY_TOKEN = "token"

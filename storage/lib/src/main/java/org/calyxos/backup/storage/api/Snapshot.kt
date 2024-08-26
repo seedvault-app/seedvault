@@ -29,7 +29,9 @@ public data class StoredSnapshot(
      * The timestamp identifying a snapshot of the [userId].
      */
     public val timestamp: Long,
-)
+) {
+    public val androidId: String = userId.substringBefore(".sv")
+}
 
 /**
  * Defines which backup snapshots should be retained when pruning backups.

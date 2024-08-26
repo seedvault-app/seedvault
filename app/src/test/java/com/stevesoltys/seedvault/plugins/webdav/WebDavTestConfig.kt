@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.plugins.webdav
 
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import org.junit.Assume.assumeFalse
 import org.junit.jupiter.api.Assertions.fail
 

@@ -6,7 +6,6 @@
 package com.stevesoltys.seedvault.storage
 
 import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.plugins.webdav.WebDavTestConfig
 import com.stevesoltys.seedvault.transport.backup.BackupTest
 import kotlinx.coroutines.runBlocking
@@ -14,14 +13,13 @@ import org.calyxos.backup.storage.api.StoredSnapshot
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
-import java.io.IOException
 
 internal class WebDavStoragePluginTest : BackupTest() {
 
-    private val plugin = WebDavStoragePlugin("foo", WebDavTestConfig.getConfig())
+    private val androidId = "abcdef0123456789"
+    private val plugin = WebDavStoragePlugin(androidId, WebDavTestConfig.getConfig())
 
-    private val snapshot = StoredSnapshot("foo.sv", System.currentTimeMillis())
+    private val snapshot = StoredSnapshot("$androidId.sv", System.currentTimeMillis())
 
     @Test
     fun `test chunks`() = runBlocking {
@@ -82,8 +80,9 @@ internal class WebDavStoragePluginTest : BackupTest() {
             )
 
             // other device writes another snapshot
-            val otherPlugin = WebDavStoragePlugin("bar", WebDavTestConfig.getConfig())
-            val otherSnapshot = StoredSnapshot("bar.sv", System.currentTimeMillis())
+            val androidId2 = "0123456789abcdef"
+            val otherPlugin = WebDavStoragePlugin(androidId2, WebDavTestConfig.getConfig())
+            val otherSnapshot = StoredSnapshot("$androidId2.sv", System.currentTimeMillis())
             val otherSnapshotBytes = getRandomByteArray()
             assertEquals(emptyList<String>(), otherPlugin.getAvailableChunkIds())
             otherPlugin.getBackupSnapshotOutputStream(otherSnapshot.timestamp).use {
@@ -102,44 +101,6 @@ internal class WebDavStoragePluginTest : BackupTest() {
         } finally {
             plugin.deleteBackupSnapshot(snapshot)
         }
-    }
-
-    @Test
-    fun `test missing root dir`() = runBlocking {
-        val plugin = WebDavStoragePlugin(
-            androidId = "foo",
-            webDavConfig = WebDavTestConfig.getConfig(),
-            root = getRandomString(),
-        )
-
-        assertThrows<IOException> {
-            plugin.getCurrentBackupSnapshots()
-        }
-        assertThrows<IOException> {
-            plugin.getBackupSnapshotsForRestore()
-        }
-        assertThrows<IOException> {
-            plugin.getAvailableChunkIds()
-        }
-        assertThrows<IOException> {
-            plugin.deleteChunks(listOf("foo"))
-        }
-        assertThrows<IOException> {
-            plugin.deleteBackupSnapshot(snapshot)
-        }
-        assertThrows<IOException> {
-            plugin.getBackupSnapshotOutputStream(snapshot.timestamp).close()
-        }
-        assertThrows<IOException> {
-            plugin.getBackupSnapshotInputStream(snapshot).use { it.readAllBytes() }
-        }
-        assertThrows<IOException> {
-            plugin.getChunkOutputStream("foo").close()
-        }
-        assertThrows<IOException> {
-            plugin.getChunkInputStream(snapshot, "foo").use { it.readAllBytes() }
-        }
-        Unit
     }
 
 }

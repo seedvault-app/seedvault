@@ -11,6 +11,7 @@ import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.exception.NotFoundException
+import at.bitfire.dav4jvm.property.webdav.QuotaAvailableBytes
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -51,7 +52,7 @@ import kotlin.reflect.KClass
 private const val DEBUG_LOG = true
 
 @OptIn(DelicateCoroutinesApi::class)
-internal class WebDavBackend(
+public class WebDavBackend(
     webDavConfig: WebDavConfig,
     root: String = DIRECTORY_ROOT,
 ) : Backend {
@@ -75,11 +76,51 @@ internal class WebDavBackend(
         .retryOnConnectionFailure(true)
         .build()
 
-    private val url = "${webDavConfig.url}/$root"
+    private val baseUrl = webDavConfig.url.trimEnd('/')
+    private val url = "$baseUrl/$root"
     private val folders = mutableSetOf<HttpUrl>() // cache for existing/created folders
 
     init {
         PropertyRegistry.register(GetLastModified.Factory)
+    }
+
+    override suspend fun test(): Boolean {
+        val location = "$baseUrl/".toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        val hasCaps = suspendCoroutine { cont ->
+            davCollection.options { davCapabilities, response ->
+                log.debugLog { "test() = $davCapabilities $response" }
+                if (davCapabilities.contains("1")) cont.resume(true)
+                else if (davCapabilities.contains("2")) cont.resume(true)
+                else if (davCapabilities.contains("3")) cont.resume(true)
+                else cont.resume(false)
+            }
+        }
+        if (!hasCaps) return false
+
+        val rootCollection = DavCollection(okHttpClient, "$url/foo".toHttpUrl())
+        rootCollection.ensureFoldersExist(log, folders) // only considers parents, so foo isn't used
+        return true
+    }
+
+    override suspend fun getFreeSpace(): Long? {
+        val location = "$url/".toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+
+        val availableBytes = suspendCoroutine { cont ->
+            davCollection.propfind(depth = 0, QuotaAvailableBytes.NAME) { response, _ ->
+                log.debugLog { "getFreeSpace() = $response" }
+                val quota = response.properties.getOrNull(0) as? QuotaAvailableBytes
+                val availableBytes = quota?.quotaAvailableBytes ?: -1
+                if (availableBytes > 0) {
+                    cont.resume(availableBytes)
+                } else {
+                    cont.resume(null)
+                }
+            }
+        }
+        return availableBytes
     }
 
     override suspend fun save(handle: FileHandle): BufferedSink {
@@ -118,10 +159,15 @@ internal class WebDavBackend(
         val location = handle.toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
-        val response = davCollection.get(accept = "", headers = null)
+        val response = try {
+            davCollection.get(accept = "", headers = null)
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException("Error loading $location", e)
+        }
         log.debugLog { "load($location) = $response" }
         if (response.code / 100 != 2) throw IOException("HTTP error ${response.code}")
-        return response.body?.source() ?: throw IOException()
+        return response.body?.source() ?: throw IOException("Body was null for $location")
     }
 
     override suspend fun list(
@@ -145,58 +191,67 @@ internal class WebDavBackend(
         }
         val davCollection = DavCollection(okHttpClient, location)
         val tokenFolders = mutableSetOf<HttpUrl>()
-        davCollection.propfindDepthInfinity(depth) { response, relation ->
-            log.debugLog { "list() = $response" }
+        try {
+            davCollection.propfindDepthInfinity(depth) { response, relation ->
+                log.debugLog { "list() = $response" }
 
-            // work around nginx's inability to find files starting with .
-            if (relation != SELF && LegacyAppBackupFile.Metadata::class in fileTypes &&
-                response.isFolder() && response.hrefName().matches(tokenRegex)
-            ) {
-                tokenFolders.add(response.href)
-            }
-            if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2) {
-                val name = response.hrefName()
-                val parentName = response.href.pathSegments[response.href.pathSegments.size - 2]
+                // work around nginx's inability to find files starting with .
+                if (relation != SELF && LegacyAppBackupFile.Metadata::class in fileTypes &&
+                    response.isFolder() && response.hrefName().matches(tokenRegex)
+                ) {
+                    tokenFolders.add(response.href)
+                }
+                if (relation != SELF && !response.isFolder() && response.href.pathSize >= 2) {
+                    val name = response.hrefName()
+                    val parentName = response.href.pathSegments[response.href.pathSegments.size - 2]
 
-                if (LegacyAppBackupFile.Metadata::class in fileTypes) {
-                    if (name == FILE_BACKUP_METADATA && parentName.matches(tokenRegex)) {
-                        val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
-                        val size = response.properties.contentLength()
-                        callback(FileInfo(metadata, size))
-                        // we can find .backup.metadata files, so no need for nginx workaround
-                        tokenFolders.clear()
-                    }
-                }
-                if (FileBackupFileType.Snapshot::class in fileTypes ||
-                    FileBackupFileType::class in fileTypes
-                ) {
-                    val match = snapshotRegex.matchEntire(name)
-                    if (match != null) {
-                        val size = response.properties.contentLength()
-                        val snapshot = FileBackupFileType.Snapshot(
-                            androidId = parentName.substringBefore('.'),
-                            time = match.groupValues[1].toLong(),
-                        )
-                        callback(FileInfo(snapshot, size))
-                    }
-                }
-                if ((FileBackupFileType.Blob::class in fileTypes ||
-                        FileBackupFileType::class in fileTypes) && response.href.pathSize >= 3
-                ) {
-                    val androidIdSv =
-                        response.href.pathSegments[response.href.pathSegments.size - 3]
-                    if (folderRegex.matches(androidIdSv) && chunkFolderRegex.matches(parentName)) {
-                        if (chunkRegex.matches(name)) {
-                            val blob = FileBackupFileType.Blob(
-                                androidId = androidIdSv.substringBefore('.'),
-                                name = name,
-                            )
+                    if (LegacyAppBackupFile.Metadata::class in fileTypes) {
+                        if (name == FILE_BACKUP_METADATA && parentName.matches(tokenRegex)) {
+                            val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
                             val size = response.properties.contentLength()
-                            callback(FileInfo(blob, size))
+                            callback(FileInfo(metadata, size))
+                            // we can find .backup.metadata files, so no need for nginx workaround
+                            tokenFolders.clear()
+                        }
+                    }
+                    if (FileBackupFileType.Snapshot::class in fileTypes ||
+                        FileBackupFileType::class in fileTypes
+                    ) {
+                        val match = snapshotRegex.matchEntire(name)
+                        if (match != null) {
+                            val size = response.properties.contentLength()
+                            val snapshot = FileBackupFileType.Snapshot(
+                                androidId = parentName.substringBefore('.'),
+                                time = match.groupValues[1].toLong(),
+                            )
+                            callback(FileInfo(snapshot, size))
+                        }
+                    }
+                    if ((FileBackupFileType.Blob::class in fileTypes ||
+                            FileBackupFileType::class in fileTypes) && response.href.pathSize >= 3
+                    ) {
+                        val androidIdSv =
+                            response.href.pathSegments[response.href.pathSegments.size - 3]
+                        if (folderRegex.matches(androidIdSv) &&
+                            chunkFolderRegex.matches(parentName)
+                        ) {
+                            if (chunkRegex.matches(name)) {
+                                val blob = FileBackupFileType.Blob(
+                                    androidId = androidIdSv.substringBefore('.'),
+                                    name = name,
+                                )
+                                val size = response.properties.contentLength()
+                                callback(FileInfo(blob, size))
+                            }
                         }
                     }
                 }
             }
+        } catch (e: NotFoundException) {
+            log.warn(e) { "$location not found" }
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException("Error listing $location", e)
         }
         // direct query for .backup.metadata as nginx doesn't support listing hidden files
         tokenFolders.forEach { url ->
@@ -251,8 +306,13 @@ internal class WebDavBackend(
         val location = "$url/${from.name}/".toHttpUrl()
         val toUrl = "$url/${to.name}/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
-        davCollection.move(toUrl, false) { response ->
-            log.debugLog { "rename(${from.name}, ${to.name}) = $response" }
+        try {
+            davCollection.move(toUrl, false) { response ->
+                log.debugLog { "rename(${from.name}, ${to.name}) = $response" }
+            }
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException("Error renaming $location to ${to.name}", e)
         }
     }
 
@@ -265,8 +325,13 @@ internal class WebDavBackend(
             }
         } catch (e: NotFoundException) {
             log.info { "Not found: $location" }
+        } catch (e: Exception) {
+            if (e is IOException) throw e
+            else throw IOException("Error removing all at $location", e)
         }
     }
+
+    override val providerPackageName: String? = null // 100% built-in plugin
 
     private fun FileHandle.toHttpUrl(): HttpUrl = when (this) {
         // careful with trailing slashes, use only for folders/collections

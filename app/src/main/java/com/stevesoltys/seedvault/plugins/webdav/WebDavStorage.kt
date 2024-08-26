@@ -29,6 +29,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okio.BufferedSink
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import org.xmlpull.v1.XmlPullParser
 import java.io.IOException
 import java.io.InputStream

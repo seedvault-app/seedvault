@@ -43,6 +43,12 @@ public sealed class LegacyAppBackupFile : FileHandle() {
 
 public sealed class FileBackupFileType : FileHandle() {
     public abstract val androidId: String
+
+    /**
+     * The folder name is our user ID plus .sv extension (for SeedVault).
+     * The user or `androidId` is unique to each combination of app-signing key, user, and device
+     * so we don't leak anything by not hashing this and can use it as is.
+     */
     public val topLevelFolder: TopLevelFolder get() = TopLevelFolder("$androidId.sv")
 
     public data class Blob(

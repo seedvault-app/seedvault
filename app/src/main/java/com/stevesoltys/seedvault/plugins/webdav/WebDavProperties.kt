@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.plugins.webdav
 
 import android.content.Context
 import com.stevesoltys.seedvault.plugins.StorageProperties
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 data class WebDavProperties(
     override val config: WebDavConfig,

@@ -45,6 +45,14 @@ public class SafBackend(
     private val context: Context get() = appContext.getBackendContext { safConfig.isUsb }
     private val cache = DocumentFileCache(context, safConfig.getDocumentFile(context), root)
 
+    override suspend fun test(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getFreeSpace(): Long? {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun save(handle: FileHandle): BufferedSink {
         val file = cache.getFile(handle)
         return file.getOutputStream(context.contentResolver).sink().buffer()
@@ -147,5 +155,7 @@ public class SafBackend(
             it.delete()
         }
     }
+
+    override val providerPackageName: String? get() = TODO("Not yet implemented")
 
 }

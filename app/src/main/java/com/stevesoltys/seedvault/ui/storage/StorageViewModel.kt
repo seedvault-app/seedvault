@@ -16,7 +16,6 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
-import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
 import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
@@ -26,6 +25,7 @@ import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 internal abstract class StorageViewModel(
     private val app: Application,

@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import java.io.IOException
 
 internal sealed interface WebDavConfigState {
