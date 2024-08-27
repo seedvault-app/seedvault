@@ -17,7 +17,6 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
@@ -29,6 +28,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -54,7 +54,7 @@ internal class KVBackupTest : BackupTest() {
     )
 
     private val db = mockk<KVDb>()
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backend = mockk<Backend>()
     private val packageName = packageInfo.packageName
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val dataValue = Random.nextBytes(23)
@@ -62,7 +62,7 @@ internal class KVBackupTest : BackupTest() {
     private val inputStream = ByteArrayInputStream(dbBytes)
 
     init {
-        every { pluginManager.appPlugin } returns plugin
+        every { pluginManager.backend } returns backend
     }
 
     @Test
@@ -96,7 +96,7 @@ internal class KVBackupTest : BackupTest() {
     @Test
     fun `non-incremental backup with data clears old data first`() = runBlocking {
         singleRecordBackup(true)
-        coEvery { plugin.removeData(token, name) } just Runs
+        coEvery { backend.remove(handle) } just Runs
         every { dbManager.deleteDb(packageName) } returns true
 
         assertEquals(
@@ -112,7 +112,7 @@ internal class KVBackupTest : BackupTest() {
     fun `ignoring exception when clearing data when non-incremental backup has data`() =
         runBlocking {
             singleRecordBackup(true)
-            coEvery { plugin.removeData(token, name) } throws IOException()
+            coEvery { backend.remove(handle) } throws IOException()
 
             assertEquals(
                 TRANSPORT_OK,
@@ -210,7 +210,7 @@ internal class KVBackupTest : BackupTest() {
 
         every { db.vacuum() } just Runs
         every { db.close() } just Runs
-        coEvery { plugin.getOutputStream(token, name) } returns outputStream
+        coEvery { backend.save(handle) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
         every { outputStream.close() } just Runs
         assertEquals(TRANSPORT_ERROR, backup.finishBackup())
@@ -230,7 +230,7 @@ internal class KVBackupTest : BackupTest() {
 
         every { db.vacuum() } just Runs
         every { db.close() } just Runs
-        coEvery { plugin.getOutputStream(token, name) } returns outputStream
+        coEvery { backend.save(handle) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
         val ad = getADForKV(VERSION, packageInfo.packageName)
         every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
@@ -264,7 +264,7 @@ internal class KVBackupTest : BackupTest() {
         assertFalse(backup.hasState())
 
         coVerify(exactly = 0) {
-            plugin.getOutputStream(token, name)
+            backend.save(handle)
         }
     }
 
@@ -301,7 +301,7 @@ internal class KVBackupTest : BackupTest() {
         every { db.vacuum() } just Runs
         every { db.close() } just Runs
 
-        coEvery { plugin.getOutputStream(token, name) } returns outputStream
+        coEvery { backend.save(handle) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
         val ad = getADForKV(VERSION, packageInfo.packageName)
         every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream

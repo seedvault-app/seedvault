@@ -20,9 +20,7 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.ApkBackup
@@ -33,6 +31,8 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.IOException
@@ -60,7 +60,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         nm = notificationManager,
     )
 
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backend = mockk<Backend>()
     private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
@@ -73,13 +73,12 @@ internal class BackupCoordinatorTest : BackupTest() {
     )
 
     init {
-        every { pluginManager.appPlugin } returns plugin
+        every { pluginManager.backend } returns backend
     }
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
         expectStartNewRestoreSet()
-        coEvery { plugin.initializeDevice() } just Runs
         every { kv.hasState() } returns false
         every { full.hasState() } returns false
 
@@ -87,10 +86,9 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
     }
 
-    private suspend fun expectStartNewRestoreSet() {
+    private fun expectStartNewRestoreSet() {
         every { clock.time() } returns token
         every { settingsManager.setNewToken(token) } just Runs
-        coEvery { plugin.startNewRestoreSet(token) } just Runs
         every { metadataManager.onDeviceInitialization(token) } just Runs
     }
 
@@ -98,8 +96,9 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `error notification when device initialization fails`() = runBlocking {
         val maybeTrue = Random.nextBoolean()
 
-        expectStartNewRestoreSet()
-        coEvery { plugin.initializeDevice() } throws IOException()
+        every { clock.time() } returns token
+        every { settingsManager.setNewToken(token) } just Runs
+        every { metadataManager.onDeviceInitialization(token) } throws IOException()
         every { metadataManager.requiresInit } returns maybeTrue
         every { pluginManager.canDoBackupNow() } returns !maybeTrue
         every { notificationManager.onBackupError() } just Runs
@@ -117,8 +116,9 @@ internal class BackupCoordinatorTest : BackupTest() {
     @Test
     fun `no error notification when device initialization fails when no backup possible`() =
         runBlocking {
-            expectStartNewRestoreSet()
-            coEvery { plugin.initializeDevice() } throws IOException()
+            every { clock.time() } returns token
+            every { settingsManager.setNewToken(token) } just Runs
+            every { metadataManager.onDeviceInitialization(token) } throws IOException()
             every { metadataManager.requiresInit } returns false
             every { pluginManager.canDoBackupNow() } returns false
 
@@ -142,7 +142,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         // start new restore set
         every { clock.time() } returns token + 1
         every { settingsManager.setNewToken(token + 1) } just Runs
-        coEvery { plugin.startNewRestoreSet(token + 1) } just Runs
         every { metadataManager.onDeviceInitialization(token + 1) } just Runs
 
         every { data.close() } just Runs
@@ -210,7 +209,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.getCurrentPackage() } returns packageInfo
         coEvery { kv.finishBackup() } returns TRANSPORT_OK
         every { settingsManager.getToken() } returns token
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { kv.getCurrentSize() } returns size
         every {
             metadataManager.onPackageBackedUp(
@@ -250,7 +249,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { full.getCurrentPackage() } returns packageInfo
         every { full.finishBackup() } returns result
         every { settingsManager.getToken() } returns token
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { full.getCurrentSize() } returns size
         every {
             metadataManager.onPackageBackedUp(
@@ -385,7 +384,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     private fun expectApkBackupAndMetadataWrite() {
         coEvery { apkBackup.backupApkIfNecessary(any(), any()) } returns packageMetadata
         every { settingsManager.getToken() } returns token
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs
     }
 

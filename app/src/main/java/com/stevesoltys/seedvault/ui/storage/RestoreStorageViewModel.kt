@@ -15,10 +15,10 @@ import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.IOException
 
 private val TAG = RestoreStorageViewModel::class.java.simpleName
@@ -56,17 +56,17 @@ internal class RestoreStorageViewModel(
         }
     }
 
-    override fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+    override fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend) {
         viewModelScope.launch(Dispatchers.IO) {
             val hasBackup = try {
-                webdavHandler.hasAppBackup(plugin)
+                webdavHandler.hasAppBackup(backend)
             } catch (e: IOException) {
                 Log.e(TAG, "Error reading: ${properties.config.url}", e)
                 false
             }
             if (hasBackup) {
                 webdavHandler.save(properties)
-                webdavHandler.setPlugin(properties, plugin)
+                webdavHandler.setPlugin(properties, backend)
                 mLocationChecked.postEvent(LocationResult())
             } else {
                 Log.w(TAG, "Location was rejected: ${properties.config.url}")

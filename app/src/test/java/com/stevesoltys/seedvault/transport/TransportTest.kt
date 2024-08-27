@@ -28,6 +28,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import kotlin.random.Random
@@ -73,6 +74,7 @@ internal abstract class TransportTest {
     protected val name = getRandomString(12)
     protected val name2 = getRandomString(23)
     protected val storageProviderPackageName = getRandomString(23)
+    protected val handle = LegacyAppBackupFile.Blob(token, name)
 
     init {
         mockkStatic(Log::class)

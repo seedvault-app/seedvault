@@ -6,8 +6,8 @@
 package org.calyxos.seedvault.core.backends
 
 import androidx.annotation.VisibleForTesting
-import okio.BufferedSink
-import okio.BufferedSource
+import java.io.InputStream
+import java.io.OutputStream
 import kotlin.reflect.KClass
 
 public interface Backend {
@@ -25,9 +25,9 @@ public interface Backend {
      */
     public suspend fun getFreeSpace(): Long?
 
-    public suspend fun save(handle: FileHandle): BufferedSink
+    public suspend fun save(handle: FileHandle): OutputStream
 
-    public suspend fun load(handle: FileHandle): BufferedSource
+    public suspend fun load(handle: FileHandle): InputStream
 
     public suspend fun list(
         topLevelFolder: TopLevelFolder?,

@@ -11,6 +11,7 @@ import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.plugins.StorageProperties
+import org.calyxos.seedvault.core.backends.saf.SafConfig
 
 data class SafStorage(
     override val config: Uri,
@@ -38,4 +39,12 @@ data class SafStorage(
     override fun isUnavailableUsb(context: Context): Boolean {
         return isUsb && !getDocumentFile(context).isDirectory
     }
+
+    fun toSafConfig() = SafConfig(
+        config = config,
+        name = name,
+        isUsb = isUsb,
+        requiresNetwork = requiresNetwork,
+        rootId = rootId,
+    )
 }

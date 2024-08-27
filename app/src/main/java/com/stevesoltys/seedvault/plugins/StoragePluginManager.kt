@@ -10,11 +10,12 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.SafFactory
 import com.stevesoltys.seedvault.plugins.webdav.WebDavFactory
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginType
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafBackend
 
 class StoragePluginManager(
     private val context: Context,
@@ -23,14 +24,14 @@ class StoragePluginManager(
     webDavFactory: WebDavFactory,
 ) {
 
-    private var mAppPlugin: StoragePlugin<*>?
+    private var mBackend: Backend?
     private var mFilesPlugin: org.calyxos.backup.storage.api.StoragePlugin?
     private var mStorageProperties: StorageProperties<*>?
 
-    val appPlugin: StoragePlugin<*>
+    val backend: Backend
         @Synchronized
         get() {
-            return mAppPlugin ?: error("App plugin was loaded, but still null")
+            return mBackend ?: error("App plugin was loaded, but still null")
         }
 
     val filesPlugin: org.calyxos.backup.storage.api.StoragePlugin
@@ -50,7 +51,7 @@ class StoragePluginManager(
         when (settingsManager.storagePluginType) {
             StoragePluginType.SAF -> {
                 val safStorage = settingsManager.getSafStorage() ?: error("No SAF storage saved")
-                mAppPlugin = safFactory.createAppStoragePlugin(safStorage)
+                mBackend = safFactory.createBackend(safStorage)
                 mFilesPlugin = safFactory.createFilesStoragePlugin(safStorage)
                 mStorageProperties = safStorage
             }
@@ -58,13 +59,13 @@ class StoragePluginManager(
             StoragePluginType.WEB_DAV -> {
                 val webDavProperties =
                     settingsManager.webDavProperties ?: error("No WebDAV config saved")
-                mAppPlugin = webDavFactory.createAppStoragePlugin(webDavProperties.config)
+                mBackend = webDavFactory.createBackend(webDavProperties.config)
                 mFilesPlugin = webDavFactory.createFilesStoragePlugin(webDavProperties.config)
                 mStorageProperties = webDavProperties
             }
 
             null -> {
-                mAppPlugin = null
+                mBackend = null
                 mFilesPlugin = null
                 mStorageProperties = null
             }
@@ -72,8 +73,8 @@ class StoragePluginManager(
     }
 
     fun isValidAppPluginSet(): Boolean {
-        if (mAppPlugin == null || mFilesPlugin == null) return false
-        if (mAppPlugin is DocumentsProviderStoragePlugin) {
+        if (mBackend == null || mFilesPlugin == null) return false
+        if (mBackend is SafBackend) {
             val storage = settingsManager.getSafStorage() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
@@ -91,12 +92,12 @@ class StoragePluginManager(
      */
     fun <T> changePlugins(
         storageProperties: StorageProperties<T>,
-        appPlugin: StoragePlugin<T>,
+        backend: Backend,
         filesPlugin: org.calyxos.backup.storage.api.StoragePlugin,
     ) {
-        settingsManager.setStoragePlugin(appPlugin)
+        settingsManager.setStorageBackend(backend)
         mStorageProperties = storageProperties
-        mAppPlugin = appPlugin
+        mBackend = backend
         mFilesPlugin = filesPlugin
     }
 
@@ -136,7 +137,7 @@ class StoragePluginManager(
     @WorkerThread
     suspend fun getFreeSpace(): Long? {
         return try {
-            appPlugin.getFreeSpace()
+            backend.getFreeSpace()
         } catch (e: Throwable) { // NoClassDefFound isn't an [Exception], can get thrown by dav4jvm
             Log.e("StoragePluginManager", "Error getting free space: ", e)
             null

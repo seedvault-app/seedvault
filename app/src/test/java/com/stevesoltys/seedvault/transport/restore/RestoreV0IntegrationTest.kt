@@ -30,6 +30,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
@@ -58,7 +59,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
-    private val backupPlugin = mockk<StoragePlugin<*>>()
+    private val backend = mockk<Backend>()
     private val kvRestore = KVRestore(
         pluginManager = storagePluginManager,
         legacyPlugin = legacyPlugin,
@@ -123,7 +124,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val key264 = key2.encodeBase64()
 
     init {
-        every { storagePluginManager.appPlugin } returns backupPlugin
+        every { storagePluginManager.backend } returns backend
     }
 
     @Test

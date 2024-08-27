@@ -16,6 +16,7 @@ import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.getAvailableBackups
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.storage.StorageOption
@@ -50,7 +51,7 @@ internal class SafHandler(
     @WorkerThread
     @Throws(IOException::class)
     suspend fun hasAppBackup(safStorage: SafStorage): Boolean {
-        val appPlugin = safFactory.createAppStoragePlugin(safStorage)
+        val appPlugin = safFactory.createBackend(safStorage)
         val backups = appPlugin.getAvailableBackups()
         return backups != null && backups.iterator().hasNext()
     }
@@ -86,7 +87,7 @@ internal class SafHandler(
     fun setPlugin(safStorage: SafStorage) {
         storagePluginManager.changePlugins(
             storageProperties = safStorage,
-            appPlugin = safFactory.createAppStoragePlugin(safStorage),
+            backend = safFactory.createBackend(safStorage),
             filesPlugin = safFactory.createFilesStoragePlugin(safStorage),
         )
     }

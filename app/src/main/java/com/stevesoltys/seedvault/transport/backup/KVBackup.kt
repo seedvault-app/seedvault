@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 import java.util.zip.GZIPOutputStream
 
@@ -47,7 +48,7 @@ internal class KVBackup(
     private val dbManager: KvDbManager,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = pluginManager.backend
     private var state: KVBackupState? = null
 
     fun hasState() = state != null
@@ -207,7 +208,7 @@ internal class KVBackup(
     suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
         Log.i(TAG, "Clearing K/V data of ${packageInfo.packageName}")
         val name = state?.name ?: crypto.getNameForPackage(salt, packageInfo.packageName)
-        plugin.removeData(token, name)
+        backend.remove(LegacyAppBackupFile.Blob(token, name))
         if (!dbManager.deleteDb(packageInfo.packageName)) throw IOException()
     }
 
@@ -254,7 +255,8 @@ internal class KVBackup(
         db.vacuum()
         db.close()
 
-        plugin.getOutputStream(token, name).use { outputStream ->
+        val handle = LegacyAppBackupFile.Blob(token, name)
+        backend.save(handle).use { outputStream ->
             outputStream.write(ByteArray(1) { VERSION })
             val ad = getADForKV(VERSION, packageName)
             crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->

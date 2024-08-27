@@ -17,7 +17,6 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -26,6 +25,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -40,7 +40,7 @@ import kotlin.random.Random
 internal class FullRestoreTest : RestoreTest() {
 
     private val storagePluginManager: StoragePluginManager = mockk()
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backend = mockk<Backend>()
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val restore = FullRestore(
         pluginManager = storagePluginManager,
@@ -55,7 +55,7 @@ internal class FullRestoreTest : RestoreTest() {
     private val ad = getADForFull(VERSION, packageInfo.packageName)
 
     init {
-        every { storagePluginManager.appPlugin } returns plugin
+        every { storagePluginManager.backend } returns backend
     }
 
     @Test
@@ -90,7 +90,7 @@ internal class FullRestoreTest : RestoreTest() {
     fun `getting InputStream for package when getting first chunk throws`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } throws IOException()
+        coEvery { backend.load(handle) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
@@ -103,7 +103,7 @@ internal class FullRestoreTest : RestoreTest() {
     fun `reading version header when getting first chunk throws`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
@@ -117,7 +117,7 @@ internal class FullRestoreTest : RestoreTest() {
     fun `reading unsupported version when getting first chunk`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every {
             headerReader.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(unsupportedVersion)
@@ -133,7 +133,7 @@ internal class FullRestoreTest : RestoreTest() {
     fun `getting decrypted stream when getting first chunk throws`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } throws IOException()
         every { fileDescriptor.close() } just Runs
@@ -149,7 +149,7 @@ internal class FullRestoreTest : RestoreTest() {
         runBlocking {
             restore.initializeState(VERSION, token, name, packageInfo)
 
-            coEvery { plugin.getInputStream(token, name) } returns inputStream
+            coEvery { backend.load(handle) } returns inputStream
             every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
             every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
             every { fileDescriptor.close() } just Runs
@@ -197,7 +197,7 @@ internal class FullRestoreTest : RestoreTest() {
     fun `unexpected version aborts with error`() = runBlocking {
         restore.initializeState(Byte.MAX_VALUE, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every {
             headerReader.readVersion(inputStream, Byte.MAX_VALUE)
         } throws GeneralSecurityException()
@@ -215,7 +215,7 @@ internal class FullRestoreTest : RestoreTest() {
         val decryptedInputStream = ByteArrayInputStream(encryptedBytes)
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
@@ -248,7 +248,7 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     private fun initInputStream() {
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
     }

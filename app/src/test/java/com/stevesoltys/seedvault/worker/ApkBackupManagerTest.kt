@@ -14,9 +14,7 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -30,6 +28,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyAll
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -41,7 +41,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     private val apkBackup: ApkBackup = mockk()
     private val iconManager: IconManager = mockk()
     private val storagePluginManager: StoragePluginManager = mockk()
-    private val plugin: StoragePlugin<*> = mockk()
+    private val backend: Backend = mockk()
     private val nm: BackupNotificationManager = mockk()
 
     private val apkBackupManager = ApkBackupManager(
@@ -59,7 +59,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     private val packageMetadata: PackageMetadata = mockk()
 
     init {
-        every { storagePluginManager.appPlugin } returns plugin
+        every { storagePluginManager.backend } returns backend
     }
 
     @Test
@@ -258,7 +258,7 @@ internal class ApkBackupManagerTest : TransportTest() {
 
         // final upload
         every { settingsManager.getToken() } returns token
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every {
             metadataManager.uploadMetadata(metadataOutputStream)
         } throws IOException() andThenThrows SecurityException() andThenJust Runs
@@ -277,7 +277,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     private suspend fun expectUploadIcons() {
         every { settingsManager.getToken() } returns token
         val stream = ByteArrayOutputStream()
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_ICONS) } returns stream
+        coEvery { backend.save(LegacyAppBackupFile.IconsFile(token)) } returns stream
         every { iconManager.uploadIcons(token, stream) } just Runs
     }
 
@@ -288,7 +288,7 @@ internal class ApkBackupManagerTest : TransportTest() {
 
     private fun expectFinalUpload() {
         every { settingsManager.getToken() } returns token
-        coEvery { plugin.getOutputStream(token, FILE_BACKUP_METADATA) } returns metadataOutputStream
+        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { metadataManager.uploadMetadata(metadataOutputStream) } just Runs
         every { metadataOutputStream.close() } just Runs
     }

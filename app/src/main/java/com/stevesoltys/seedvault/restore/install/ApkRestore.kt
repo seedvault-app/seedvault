@@ -34,6 +34,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.File
 import java.io.IOException
 import java.util.Locale
@@ -54,7 +55,7 @@ internal class ApkRestore(
 ) {
 
     private val pm = context.packageManager
-    private val storagePlugin get() = pluginManager.appPlugin
+    private val backend get() = pluginManager.backend
 
     private val mInstallResult = MutableStateFlow(InstallResult())
     val installResult = mInstallResult.asStateFlow()
@@ -65,7 +66,7 @@ internal class ApkRestore(
         val packages = backup.packageMetadataMap.mapNotNull { (packageName, metadata) ->
             // We need to exclude the DocumentsProvider used to retrieve backup data.
             // Otherwise, it gets killed when we install it, terminating our restoration.
-            if (packageName == storagePlugin.providerPackageName) return@mapNotNull null
+            if (packageName == backend.providerPackageName) return@mapNotNull null
             // The @pm@ package needs to be included in [backup], but can't be installed like an app
             if (packageName == MAGIC_PACKAGE_MANAGER) return@mapNotNull null
             // we don't filter out apps without APK, so the user can manually install them
@@ -294,7 +295,7 @@ internal class ApkRestore(
             legacyStoragePlugin.getApkInputStream(token, packageName, suffix)
         } else {
             val name = crypto.getNameForApk(salt, packageName, suffix)
-            storagePlugin.getInputStream(token, name)
+            backend.load(LegacyAppBackupFile.Blob(token, name))
         }
         val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
         return Pair(cachedApk, sha256)

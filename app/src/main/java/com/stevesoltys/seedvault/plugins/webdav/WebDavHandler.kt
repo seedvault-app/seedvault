@@ -10,10 +10,12 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.getAvailableBackups
 import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import java.io.IOException
 
@@ -22,7 +24,7 @@ internal sealed interface WebDavConfigState {
     object Checking : WebDavConfigState
     class Success(
         val properties: WebDavProperties,
-        val plugin: WebDavStoragePlugin,
+        val backend: Backend,
     ) : WebDavConfigState
 
     class Error(val e: Exception?) : WebDavConfigState
@@ -52,11 +54,11 @@ internal class WebDavHandler(
 
     suspend fun onConfigReceived(config: WebDavConfig) {
         mConfigState.value = WebDavConfigState.Checking
-        val plugin = webDavFactory.createAppStoragePlugin(config) as WebDavStoragePlugin
+        val backend = webDavFactory.createBackend(config)
         try {
-            if (plugin.test()) {
+            if (backend.test()) {
                 val properties = createWebDavProperties(context, config)
-                mConfigState.value = WebDavConfigState.Success(properties, plugin)
+                mConfigState.value = WebDavConfigState.Success(properties, backend)
             } else {
                 mConfigState.value = WebDavConfigState.Error(null)
             }
@@ -76,8 +78,8 @@ internal class WebDavHandler(
      */
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun hasAppBackup(appPlugin: WebDavStoragePlugin): Boolean {
-        val backups = appPlugin.getAvailableBackups()
+    suspend fun hasAppBackup(backend: Backend): Boolean {
+        val backups = backend.getAvailableBackups()
         return backups != null && backups.iterator().hasNext()
     }
 
@@ -85,10 +87,10 @@ internal class WebDavHandler(
         settingsManager.saveWebDavConfig(properties.config)
     }
 
-    fun setPlugin(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+    fun setPlugin(properties: WebDavProperties, backend: Backend) {
         storagePluginManager.changePlugins(
             storageProperties = properties,
-            appPlugin = plugin,
+            backend = backend,
             filesPlugin = webDavFactory.createFilesStoragePlugin(properties.config),
         )
     }

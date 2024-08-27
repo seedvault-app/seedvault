@@ -18,13 +18,13 @@ import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 internal abstract class StorageViewModel(
@@ -89,7 +89,7 @@ internal abstract class StorageViewModel(
     }
 
     abstract fun onSafUriSet(safStorage: SafStorage)
-    abstract fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin)
+    abstract fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend)
 
     override fun onCleared() {
         storageOptionFetcher.setRemovableStorageListener(null)
@@ -107,9 +107,9 @@ internal abstract class StorageViewModel(
     fun resetWebDavConfig() = webdavHandler.resetConfigState()
 
     @UiThread
-    fun onWebDavConfigSuccess(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+    fun onWebDavConfigSuccess(properties: WebDavProperties, backend: Backend) {
         mLocationSet.setEvent(true)
-        onWebDavConfigSet(properties, plugin)
+        onWebDavConfigSet(properties, backend)
     }
 
 }

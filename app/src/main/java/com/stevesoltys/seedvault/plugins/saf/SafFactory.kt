@@ -6,18 +6,16 @@
 package com.stevesoltys.seedvault.plugins.saf
 
 import android.content.Context
-import android.net.Uri
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.storage.SeedvaultSafStoragePlugin
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafBackend
 
 class SafFactory(
     private val context: Context,
 ) {
 
-    internal fun createAppStoragePlugin(
-        safStorage: SafStorage,
-    ): StoragePlugin<Uri> {
-        return DocumentsProviderStoragePlugin(context, safStorage)
+    internal fun createBackend(safStorage: SafStorage): Backend {
+        return SafBackend(context, safStorage.toSafConfig())
     }
 
     internal fun createFilesStoragePlugin(

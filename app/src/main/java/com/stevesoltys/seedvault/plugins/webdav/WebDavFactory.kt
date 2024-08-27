@@ -8,16 +8,15 @@ package com.stevesoltys.seedvault.plugins.webdav
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
-import com.stevesoltys.seedvault.plugins.StoragePlugin
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.webdav.WebDavBackend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 class WebDavFactory(
     private val context: Context,
 ) {
 
-    fun createAppStoragePlugin(config: WebDavConfig): StoragePlugin<WebDavConfig> {
-        return WebDavStoragePlugin(config)
-    }
+    fun createBackend(config: WebDavConfig): Backend = WebDavBackend(config)
 
     fun createFilesStoragePlugin(
         config: WebDavConfig,

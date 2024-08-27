@@ -15,11 +15,6 @@ import android.provider.DocumentsContract.renameDocument
 import androidx.core.database.getIntOrNull
 import androidx.documentfile.provider.DocumentFile
 import io.github.oshai.kotlinlogging.KotlinLogging
-import okio.BufferedSink
-import okio.BufferedSource
-import okio.buffer
-import okio.sink
-import okio.source
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
@@ -35,6 +30,8 @@ import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.getBackendContext
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import kotlin.reflect.KClass
 
 internal const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
@@ -84,14 +81,14 @@ public class SafBackend(
         } else bytesAvailable
     }
 
-    override suspend fun save(handle: FileHandle): BufferedSink {
+    override suspend fun save(handle: FileHandle): OutputStream {
         val file = cache.getFile(handle)
-        return file.getOutputStream(context.contentResolver).sink().buffer()
+        return file.getOutputStream(context.contentResolver)
     }
 
-    override suspend fun load(handle: FileHandle): BufferedSource {
+    override suspend fun load(handle: FileHandle): InputStream {
         val file = cache.getFile(handle)
-        return file.getInputStream(context.contentResolver).source().buffer()
+        return file.getInputStream(context.contentResolver)
     }
 
     override suspend fun list(

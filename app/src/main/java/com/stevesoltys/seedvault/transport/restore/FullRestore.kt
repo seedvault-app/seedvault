@@ -20,6 +20,7 @@ import com.stevesoltys.seedvault.header.getADForFull
 import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import libcore.io.IoUtils.closeQuietly
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
@@ -46,7 +47,7 @@ internal class FullRestore(
     private val crypto: Crypto,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = pluginManager.backend
     private var state: FullRestoreState? = null
 
     fun hasState() = state != null
@@ -114,7 +115,8 @@ internal class FullRestore(
                     crypto.decryptHeader(inputStream, version, packageName)
                     state.inputStream = inputStream
                 } else {
-                    val inputStream = plugin.getInputStream(state.token, state.name)
+                    val handle = LegacyAppBackupFile.Blob(state.token, state.name)
+                    val inputStream = backend.load(handle)
                     val version = headerReader.readVersion(inputStream, state.version)
                     val ad = getADForFull(version, packageName)
                     state.inputStream = crypto.newDecryptingStream(inputStream, ad)

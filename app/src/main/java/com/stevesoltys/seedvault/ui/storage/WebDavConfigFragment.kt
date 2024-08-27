@@ -111,7 +111,7 @@ class WebDavConfigFragment : Fragment(), View.OnClickListener {
             }
 
             is WebDavConfigState.Success -> {
-                viewModel.onWebDavConfigSuccess(state.properties, state.plugin)
+                viewModel.onWebDavConfigSuccess(state.properties, state.backend)
             }
 
             is WebDavConfigState.Error -> {

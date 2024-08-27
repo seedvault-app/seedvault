@@ -17,7 +17,6 @@ import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import com.stevesoltys.seedvault.ui.systemData
-import com.stevesoltys.seedvault.worker.FILE_BACKUP_ICONS
 import com.stevesoltys.seedvault.worker.IconManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.util.Locale
 
 internal class SelectedAppsState(
@@ -88,10 +88,10 @@ internal class AppSelectionManager(
             SelectedAppsState(apps = items, allSelected = isSetupWizard, iconsLoaded = false)
         // download icons
         coroutineScope.launch(workDispatcher) {
-            val plugin = pluginManager.appPlugin
+            val backend = pluginManager.backend
             val token = restorableBackup.token
             val packagesWithIcons = try {
-                plugin.getInputStream(token, FILE_BACKUP_ICONS).use {
+                backend.load(LegacyAppBackupFile.IconsFile(token)).use {
                     iconManager.downloadIcons(restorableBackup.version, token, it)
                 }
             } catch (e: Exception) {

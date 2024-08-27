@@ -56,8 +56,8 @@ public abstract class BackendTest {
         assertNotNull(metadata)
         assertNotNull(snapshot)
 
-        assertArrayEquals(bytes1, plugin.load(metadata as FileHandle).readByteArray())
-        assertArrayEquals(bytes2, plugin.load(snapshot as FileHandle).readByteArray())
+        assertArrayEquals(bytes1, plugin.load(metadata as FileHandle).readAllBytes())
+        assertArrayEquals(bytes2, plugin.load(snapshot as FileHandle).readAllBytes())
 
         val blobName = Random.nextBytes(32).toHexString()
         var blob: FileBackupFileType.Blob? = null
@@ -77,7 +77,7 @@ public abstract class BackendTest {
             }
         }
         assertNotNull(blob)
-        assertArrayEquals(bytes3, plugin.load(blob as FileHandle).readByteArray())
+        assertArrayEquals(bytes3, plugin.load(blob as FileHandle).readAllBytes())
 
         // try listing with top-level folder, should find two files of FileBackupFileType in there
         var numFiles = 0

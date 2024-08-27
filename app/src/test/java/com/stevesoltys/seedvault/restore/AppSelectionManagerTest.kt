@@ -13,13 +13,11 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SETTINGS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
-import com.stevesoltys.seedvault.worker.FILE_BACKUP_ICONS
 import com.stevesoltys.seedvault.worker.IconManager
 import io.mockk.coEvery
 import io.mockk.every
@@ -28,6 +26,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -221,10 +221,10 @@ internal class AppSelectionManagerTest : TransportTest() {
 
     @Test
     fun `test icon loading fails`() = scope.runTest {
-        val appPlugin: StoragePlugin<*> = mockk()
-        every { storagePluginManager.appPlugin } returns appPlugin
+        val backend: Backend = mockk()
+        every { storagePluginManager.backend } returns backend
         coEvery {
-            appPlugin.getInputStream(backupMetadata.token, FILE_BACKUP_ICONS)
+            backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
         } throws IOException()
 
         appSelectionManager.selectedAppsFlow.test {
@@ -427,11 +427,11 @@ internal class AppSelectionManagerTest : TransportTest() {
     }
 
     private fun expectIconLoading(icons: Set<String> = setOf(packageName1, packageName2)) {
-        val appPlugin: StoragePlugin<*> = mockk()
+        val backend: Backend = mockk()
         val inputStream = ByteArrayInputStream(Random.nextBytes(42))
-        every { storagePluginManager.appPlugin } returns appPlugin
+        every { storagePluginManager.backend } returns backend
         coEvery {
-            appPlugin.getInputStream(backupMetadata.token, FILE_BACKUP_ICONS)
+            backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
         } returns inputStream
         every {
             iconManager.downloadIcons(backupMetadata.version, backupMetadata.token, inputStream)

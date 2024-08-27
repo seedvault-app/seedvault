@@ -101,7 +101,7 @@ internal class AppDataRestoreManager(
             return
         }
 
-        val providerPackageName = storagePluginManager.appPlugin.providerPackageName
+        val providerPackageName = storagePluginManager.backend.providerPackageName
         val observer = RestoreObserver(
             restoreCoordinator = restoreCoordinator,
             restorableBackup = restorableBackup,

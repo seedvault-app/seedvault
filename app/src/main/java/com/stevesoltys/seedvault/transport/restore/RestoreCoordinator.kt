@@ -25,12 +25,13 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.getAvailableBackups
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.IOException
 
 /**
@@ -67,13 +68,13 @@ internal class RestoreCoordinator(
     private val metadataReader: MetadataReader,
 ) {
 
-    private val plugin: StoragePlugin<*> get() = pluginManager.appPlugin
+    private val backend: Backend get() = pluginManager.backend
     private var state: RestoreCoordinatorState? = null
     private var backupMetadata: BackupMetadata? = null
     private val failedPackages = ArrayList<String>()
 
     suspend fun getAvailableMetadata(): Map<Long, BackupMetadata>? {
-        val availableBackups = plugin.getAvailableBackups() ?: return null
+        val availableBackups = backend.getAvailableBackups() ?: return null
         val metadataMap = HashMap<Long, BackupMetadata>()
         for (encryptedMetadata in availableBackups) {
             try {

@@ -12,13 +12,13 @@ import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafBackend
+import org.calyxos.seedvault.core.backends.webdav.WebDavBackend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -128,10 +128,10 @@ class SettingsManager(private val context: Context) {
             }
         }
 
-    fun setStoragePlugin(plugin: StoragePlugin<*>) {
+    fun setStorageBackend(plugin: Backend) {
         val value = when (plugin) {
-            is DocumentsProviderStoragePlugin -> StoragePluginType.SAF
-            is WebDavStoragePlugin -> StoragePluginType.WEB_DAV
+            is SafBackend -> StoragePluginType.SAF
+            is WebDavBackend -> StoragePluginType.WEB_DAV
             else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
         }.name
         prefs.edit()

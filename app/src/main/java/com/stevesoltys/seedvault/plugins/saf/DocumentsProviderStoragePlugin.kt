@@ -61,7 +61,7 @@ internal class DocumentsProviderStoragePlugin(
             FILE_BACKUP_ICONS -> LegacyAppBackupFile.IconsFile(token)
             else -> LegacyAppBackupFile.Blob(token, name)
         }
-        return delegate.save(handle).outputStream()
+        return delegate.save(handle)
     }
 
     @Throws(IOException::class)
@@ -71,7 +71,7 @@ internal class DocumentsProviderStoragePlugin(
             FILE_BACKUP_ICONS -> LegacyAppBackupFile.IconsFile(token)
             else -> LegacyAppBackupFile.Blob(token, name)
         }
-        return delegate.load(handle).inputStream()
+        return delegate.load(handle)
     }
 
     @Throws(IOException::class)

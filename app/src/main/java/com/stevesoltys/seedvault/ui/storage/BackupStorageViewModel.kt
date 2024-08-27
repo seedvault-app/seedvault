@@ -18,7 +18,6 @@ import com.stevesoltys.seedvault.plugins.saf.SafHandler
 import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
 import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -27,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -59,9 +59,9 @@ internal class BackupStorageViewModel(
         onStorageLocationSet(safStorage.isUsb)
     }
 
-    override fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+    override fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend) {
         webdavHandler.save(properties)
-        webdavHandler.setPlugin(properties, plugin)
+        webdavHandler.setPlugin(properties, backend)
         scheduleBackupWorkers()
         onStorageLocationSet(isUsb = false)
     }

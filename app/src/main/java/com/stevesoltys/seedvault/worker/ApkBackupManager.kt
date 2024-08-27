@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.getMetadataOutputStream
 import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -21,6 +22,7 @@ import com.stevesoltys.seedvault.transport.backup.isStopped
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import kotlinx.coroutines.delay
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 import java.io.OutputStream
 
@@ -55,7 +57,8 @@ internal class ApkBackupManager(
             keepTrying {
                 // upload all local changes only at the end,
                 // so we don't have to re-upload the metadata
-                pluginManager.appPlugin.getMetadataOutputStream().use { outputStream ->
+                val token = settingsManager.getToken() ?: error("no token")
+                pluginManager.backend.getMetadataOutputStream(token).use { outputStream ->
                     metadataManager.uploadMetadata(outputStream)
                 }
             }
@@ -101,7 +104,8 @@ internal class ApkBackupManager(
     private suspend fun uploadIcons() {
         try {
             val token = settingsManager.getToken() ?: throw IOException("no current token")
-            pluginManager.appPlugin.getOutputStream(token, FILE_BACKUP_ICONS).use {
+            val handle = LegacyAppBackupFile.IconsFile(token)
+            pluginManager.backend.save(handle).use {
                 iconManager.uploadIcons(token, it)
             }
         } catch (e: IOException) {
@@ -119,7 +123,7 @@ internal class ApkBackupManager(
         return try {
             apkBackup.backupApkIfNecessary(packageInfo) { name ->
                 val token = settingsManager.getToken() ?: throw IOException("no current token")
-                pluginManager.appPlugin.getOutputStream(token, name)
+                pluginManager.backend.save(LegacyAppBackupFile.Blob(token, name))
             }?.let { packageMetadata ->
                 metadataManager.onApkBackedUp(packageInfo, packageMetadata)
                 true

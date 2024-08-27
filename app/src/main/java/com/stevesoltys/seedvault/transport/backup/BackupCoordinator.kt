@@ -31,6 +31,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.plugins.getMetadataOutputStream
 import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -74,7 +75,7 @@ internal class BackupCoordinator(
     private val nm: BackupNotificationManager,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = pluginManager.backend
     private val state = CoordinatorState(
         calledInitialize = false,
         calledClearBackupData = false,
@@ -97,7 +98,6 @@ internal class BackupCoordinator(
         val token = clock.time()
         Log.i(TAG, "Starting new RestoreSet with token $token...")
         settingsManager.setNewToken(token)
-        plugin.startNewRestoreSet(token)
         Log.d(TAG, "Resetting backup metadata...")
         metadataManager.onDeviceInitialization(token)
     }
@@ -125,7 +125,6 @@ internal class BackupCoordinator(
         // instead of simply deleting the current one
         startNewRestoreSet()
         Log.i(TAG, "Initialize Device!")
-        plugin.initializeDevice()
         // [finishBackup] will only be called when we return [TRANSPORT_OK] here
         // so we remember that we initialized successfully
         state.calledInitialize = true
@@ -410,7 +409,8 @@ internal class BackupCoordinator(
     }
 
     private suspend fun onPackageBackedUp(packageInfo: PackageInfo, type: BackupType, size: Long?) {
-        plugin.getMetadataOutputStream().use {
+        val token = settingsManager.getToken() ?: error("no token")
+        backend.getMetadataOutputStream(token).use {
             metadataManager.onPackageBackedUp(packageInfo, type, size, it)
         }
     }
@@ -418,7 +418,8 @@ internal class BackupCoordinator(
     private suspend fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
         val packageName = packageInfo.packageName
         try {
-            plugin.getMetadataOutputStream().use {
+            val token = settingsManager.getToken() ?: error("no token")
+            backend.getMetadataOutputStream(token).use {
                 metadataManager.onPackageBackupError(packageInfo, state.cancelReason, it, type)
             }
         } catch (e: IOException) {

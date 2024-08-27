@@ -26,9 +26,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okio.BufferedSink
-import okio.BufferedSource
-import okio.buffer
-import okio.sink
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
@@ -43,6 +40,8 @@ import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.io.PipedInputStream
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -123,7 +122,7 @@ public class WebDavBackend(
         return availableBytes
     }
 
-    override suspend fun save(handle: FileHandle): BufferedSink {
+    override suspend fun save(handle: FileHandle): OutputStream {
         val location = handle.toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         davCollection.ensureFoldersExist(log, folders)
@@ -152,10 +151,10 @@ public class WebDavBackend(
                 deferred.await()
             }
         }
-        return pipedOutputStream.sink().buffer()
+        return pipedOutputStream
     }
 
-    override suspend fun load(handle: FileHandle): BufferedSource {
+    override suspend fun load(handle: FileHandle): InputStream {
         val location = handle.toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
 
@@ -167,7 +166,7 @@ public class WebDavBackend(
         }
         log.debugLog { "load($location) = $response" }
         if (response.code / 100 != 2) throw IOException("HTTP error ${response.code}")
-        return response.body?.source() ?: throw IOException("Body was null for $location")
+        return response.body?.byteStream() ?: throw IOException("Body was null for $location")
     }
 
     override suspend fun list(

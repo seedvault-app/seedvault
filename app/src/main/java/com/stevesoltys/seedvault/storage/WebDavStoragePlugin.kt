@@ -45,13 +45,13 @@ internal class WebDavStoragePlugin(
     @Throws(IOException::class)
     override suspend fun getChunkOutputStream(chunkId: String): OutputStream {
         val fileHandle = FileBackupFileType.Blob(androidId, chunkId)
-        return delegate.save(fileHandle).outputStream()
+        return delegate.save(fileHandle)
     }
 
     @Throws(IOException::class)
     override suspend fun getBackupSnapshotOutputStream(timestamp: Long): OutputStream {
         val fileHandle = FileBackupFileType.Snapshot(androidId, timestamp)
-        return delegate.save(fileHandle).outputStream()
+        return delegate.save(fileHandle)
     }
 
     /************************* Restore *******************************/
@@ -73,7 +73,7 @@ internal class WebDavStoragePlugin(
     override suspend fun getBackupSnapshotInputStream(storedSnapshot: StoredSnapshot): InputStream {
         val androidId = storedSnapshot.androidId
         val handle = FileBackupFileType.Snapshot(androidId, storedSnapshot.timestamp)
-        return delegate.load(handle).inputStream()
+        return delegate.load(handle)
     }
 
     @Throws(IOException::class)
@@ -82,7 +82,7 @@ internal class WebDavStoragePlugin(
         chunkId: String,
     ): InputStream {
         val handle = FileBackupFileType.Blob(snapshot.androidId, chunkId)
-        return delegate.load(handle).inputStream()
+        return delegate.load(handle)
     }
 
     /************************* Pruning *******************************/
