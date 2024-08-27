@@ -17,9 +17,8 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.RestoreService
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
@@ -34,6 +33,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.File
 import java.io.IOException
@@ -45,7 +45,7 @@ internal class ApkRestore(
     private val context: Context,
     private val backupManager: IBackupManager,
     private val backupStateManager: BackupStateManager,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin,
     private val crypto: Crypto,
@@ -55,7 +55,7 @@ internal class ApkRestore(
 ) {
 
     private val pm = context.packageManager
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
 
     private val mInstallResult = MutableStateFlow(InstallResult())
     val installResult = mInstallResult.asStateFlow()
@@ -237,7 +237,7 @@ internal class ApkRestore(
     }
 
     /**
-     * Retrieves APK splits from [StoragePlugin] and caches them locally.
+     * Retrieves APK splits from [Backend] and caches them locally.
      *
      * @throws SecurityException if a split has an unexpected SHA-256 hash.
      * @return a list of all APKs that need to be installed
@@ -275,7 +275,7 @@ internal class ApkRestore(
     }
 
     /**
-     * Retrieves an APK from the [StoragePlugin] and caches it locally
+     * Retrieves an APK from the [Backend] and caches it locally
      * while calculating its SHA-256 hash.
      *
      * @return a [Pair] of the cached [File] and SHA-256 hash.

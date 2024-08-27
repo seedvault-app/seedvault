@@ -13,7 +13,7 @@ import org.calyxos.backup.storage.content.DocFile
 import org.calyxos.backup.storage.content.MediaFile
 import org.calyxos.backup.storage.db.CachedFile
 import org.calyxos.backup.storage.db.FilesCache
-import org.calyxos.backup.storage.openInputStream
+import org.calyxos.seedvault.core.backends.saf.openInputStream
 import java.io.IOException
 import java.security.GeneralSecurityException
 

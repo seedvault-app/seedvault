@@ -17,8 +17,8 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import libcore.io.IoUtils.closeQuietly
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.EOFException
@@ -39,7 +39,7 @@ private class FullRestoreState(
 private val TAG = FullRestore::class.java.simpleName
 
 internal class FullRestore(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -47,7 +47,7 @@ internal class FullRestore(
     private val crypto: Crypto,
 ) {
 
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
     private var state: FullRestoreState? = null
 
     fun hasState() = state != null

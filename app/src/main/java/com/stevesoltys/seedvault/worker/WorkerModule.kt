@@ -39,7 +39,7 @@ val workerModule = module {
             packageService = get(),
             apkBackup = get(),
             iconManager = get(),
-            pluginManager = get(),
+            backendManager = get(),
             nm = get()
         )
     }

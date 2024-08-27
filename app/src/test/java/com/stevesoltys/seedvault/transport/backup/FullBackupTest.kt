@@ -11,7 +11,7 @@ import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -31,11 +31,11 @@ import kotlin.random.Random
 
 internal class FullBackupTest : BackupTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
     private val notificationManager = mockk<BackupNotificationManager>()
     private val backup = FullBackup(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
         inputFactory = inputFactory,
@@ -47,7 +47,7 @@ internal class FullBackupTest : BackupTest() {
     private val ad = getADForFull(VERSION, packageInfo.packageName)
 
     init {
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test

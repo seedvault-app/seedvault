@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.BackendTest
 import org.calyxos.seedvault.core.backends.saf.SafBackend
-import org.calyxos.seedvault.core.backends.saf.SafConfig
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.component.KoinComponent
@@ -27,15 +27,15 @@ class SafBackendTest : BackendTest(), KoinComponent {
     private val settingsManager by inject<SettingsManager>()
     override val plugin: Backend
         get() {
-            val safStorage = settingsManager.getSafStorage() ?: error("No SAF storage")
-            val safConfig = SafConfig(
+            val safStorage = settingsManager.getSafProperties() ?: error("No SAF storage")
+            val safProperties = SafProperties(
                 config = safStorage.config,
                 name = safStorage.name,
                 isUsb = safStorage.isUsb,
                 requiresNetwork = safStorage.requiresNetwork,
                 rootId = safStorage.rootId,
             )
-            return SafBackend(context, safConfig, ".SeedvaultTest")
+            return SafBackend(context, safProperties, ".SeedvaultTest")
         }
 
     @Test

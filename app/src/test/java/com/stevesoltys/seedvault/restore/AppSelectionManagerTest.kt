@@ -13,7 +13,7 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SETTINGS
@@ -47,7 +47,7 @@ import kotlin.random.Random
 )
 internal class AppSelectionManagerTest : TransportTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val iconManager: IconManager = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
     private val scope = TestScope(testDispatcher)
@@ -63,7 +63,7 @@ internal class AppSelectionManagerTest : TransportTest() {
 
     private val appSelectionManager = AppSelectionManager(
         context = context,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         iconManager = iconManager,
         coroutineScope = scope,
         workDispatcher = testDispatcher,
@@ -222,7 +222,7 @@ internal class AppSelectionManagerTest : TransportTest() {
     @Test
     fun `test icon loading fails`() = scope.runTest {
         val backend: Backend = mockk()
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
         coEvery {
             backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
         } throws IOException()
@@ -429,7 +429,7 @@ internal class AppSelectionManagerTest : TransportTest() {
     private fun expectIconLoading(icons: Set<String> = setOf(packageName1, packageName2)) {
         val backend: Backend = mockk()
         val inputStream = ByteArrayInputStream(Random.nextBytes(42))
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
         coEvery {
             backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
         } returns inputStream

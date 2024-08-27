@@ -16,8 +16,8 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -39,11 +39,11 @@ import kotlin.random.Random
 
 internal class FullRestoreTest : RestoreTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val restore = FullRestore(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,
@@ -55,7 +55,7 @@ internal class FullRestoreTest : RestoreTest() {
     private val ad = getADForFull(VERSION, packageInfo.packageName)
 
     init {
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test

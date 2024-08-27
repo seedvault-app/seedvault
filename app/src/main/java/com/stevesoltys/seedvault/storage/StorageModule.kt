@@ -6,10 +6,10 @@
 package com.stevesoltys.seedvault.storage
 
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import org.calyxos.backup.storage.api.StorageBackup
 import org.koin.dsl.module
 
 val storageModule = module {
-    single { StorageBackup(get(), { get<StoragePluginManager>().backend }, get<KeyManager>()) }
+    single { StorageBackup(get(), { get<BackendManager>().backend }, get<KeyManager>()) }
 }

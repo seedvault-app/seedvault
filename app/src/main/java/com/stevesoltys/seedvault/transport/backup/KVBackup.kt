@@ -18,8 +18,8 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
@@ -40,7 +40,7 @@ const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 private val TAG = KVBackup::class.java.simpleName
 
 internal class KVBackup(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
@@ -48,7 +48,7 @@ internal class KVBackup(
     private val dbManager: KvDbManager,
 ) {
 
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
     private var state: KVBackupState? = null
 
     fun hasState() = state != null
@@ -147,7 +147,7 @@ internal class KVBackup(
                 // K/V backups (typically starting with package manager metadata - @pm@)
                 // are scheduled with JobInfo.Builder#setOverrideDeadline()
                 // and thus do not respect backoff.
-                pluginManager.canDoBackupNow()
+                backendManager.canDoBackupNow()
             } else {
                 // all other packages always need upload
                 true

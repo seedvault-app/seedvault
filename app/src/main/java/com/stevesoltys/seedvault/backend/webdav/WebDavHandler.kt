@@ -3,20 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.webdav
+package com.stevesoltys.seedvault.backend.webdav
 
 import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getAvailableBackups
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendFactory
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import java.io.IOException
 
 internal sealed interface WebDavConfigState {
@@ -34,9 +36,9 @@ private val TAG = WebDavHandler::class.java.simpleName
 
 internal class WebDavHandler(
     private val context: Context,
-    private val webDavFactory: WebDavFactory,
+    private val backendFactory: BackendFactory,
     private val settingsManager: SettingsManager,
-    private val storagePluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
 ) {
 
     companion object {
@@ -54,7 +56,7 @@ internal class WebDavHandler(
 
     suspend fun onConfigReceived(config: WebDavConfig) {
         mConfigState.value = WebDavConfigState.Checking
-        val backend = webDavFactory.createBackend(config)
+        val backend = backendFactory.createWebDavBackend(config)
         try {
             if (backend.test()) {
                 val properties = createWebDavProperties(context, config)
@@ -88,10 +90,9 @@ internal class WebDavHandler(
     }
 
     fun setPlugin(properties: WebDavProperties, backend: Backend) {
-        storagePluginManager.changePlugins(
-            storageProperties = properties,
+        backendManager.changePlugins(
             backend = backend,
-            filesPlugin = webDavFactory.createFilesStoragePlugin(properties.config),
+            storageProperties = properties,
         )
     }
 

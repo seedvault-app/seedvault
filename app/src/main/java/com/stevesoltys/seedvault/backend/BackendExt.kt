@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins
+package com.stevesoltys.seedvault.backend
 
 import android.util.Log
+import at.bitfire.dav4jvm.exception.HttpException
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
+import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 
 suspend fun Backend.getMetadataOutputStream(token: Long): OutputStream {
@@ -35,3 +38,16 @@ suspend fun Backend.getAvailableBackups(): Sequence<EncryptedMetadata>? {
         null
     }
 }
+
+fun Exception.isOutOfSpace(): Boolean {
+    return when (this) {
+        is IOException -> message?.contains("No space left on device") == true ||
+            (cause as? HttpException)?.code == 507
+
+        is HttpException -> code == 507
+
+        else -> false
+    }
+}
+
+class EncryptedMetadata(val token: Long, val inputStreamRetriever: suspend () -> InputStream)

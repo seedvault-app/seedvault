@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
@@ -45,7 +45,7 @@ private class KVRestoreState(
 private val TAG = KVRestore::class.java.simpleName
 
 internal class KVRestore(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -54,7 +54,7 @@ internal class KVRestore(
     private val dbManager: KvDbManager,
 ) {
 
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
     private var state: KVRestoreState? = null
 
     /**

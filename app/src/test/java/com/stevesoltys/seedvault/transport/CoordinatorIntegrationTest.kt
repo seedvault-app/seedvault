@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.backup.FullBackup
 import com.stevesoltys.seedvault.transport.backup.InputFactory
@@ -63,13 +63,13 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dbManager = TestKvDbManager()
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val backend = mockk<Backend>()
     private val kvBackup = KVBackup(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
         inputFactory = inputFactory,
@@ -77,7 +77,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         dbManager = dbManager,
     )
     private val fullBackup = FullBackup(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
         inputFactory = inputFactory,
@@ -87,7 +87,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val packageService: PackageService = mockk()
     private val backup = BackupCoordinator(
         context,
-        storagePluginManager,
+        backendManager,
         kvBackup,
         fullBackup,
         clock,
@@ -98,7 +98,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     )
 
     private val kvRestore = KVRestore(
-        storagePluginManager,
+        backendManager,
         legacyPlugin,
         outputFactory,
         headerReader,
@@ -106,14 +106,14 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         dbManager
     )
     private val fullRestore =
-        FullRestore(storagePluginManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backendManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context,
         crypto,
         settingsManager,
         metadataManager,
         notificationManager,
-        storagePluginManager,
+        backendManager,
         kvRestore,
         fullRestore,
         metadataReader
@@ -132,7 +132,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val realName = cryptoImpl.getNameForPackage(salt, packageInfo.packageName)
 
     init {
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test

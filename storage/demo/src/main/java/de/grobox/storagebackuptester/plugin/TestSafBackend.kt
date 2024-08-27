@@ -12,7 +12,7 @@ import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.backends.saf.SafBackend
-import org.calyxos.seedvault.core.backends.saf.SafConfig
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.reflect.KClass
@@ -22,15 +22,15 @@ class TestSafBackend(
     private val getLocationUri: () -> Uri?,
 ) : Backend {
 
-    private val safConfig
-        get() = SafConfig(
+    private val safProperties
+        get() = SafProperties(
             config = getLocationUri() ?: error("no uri"),
             name = "foo",
             isUsb = false,
             requiresNetwork = false,
             rootId = "bar",
         )
-    private val delegate: SafBackend get() = SafBackend(appContext, safConfig)
+    private val delegate: SafBackend get() = SafBackend(appContext, safProperties)
 
     private val nullStream = object : OutputStream() {
         override fun write(b: Int) {

@@ -25,8 +25,8 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getAvailableBackups
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
@@ -62,13 +62,13 @@ internal class RestoreCoordinator(
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader,
 ) {
 
-    private val backend: Backend get() = pluginManager.backend
+    private val backend: Backend get() = backendManager.backend
     private var state: RestoreCoordinatorState? = null
     private var backupMetadata: BackupMetadata? = null
     private val failedPackages = ArrayList<String>()
@@ -176,7 +176,7 @@ internal class RestoreCoordinator(
                     // check if we even have a backup of that app
                     if (metadataManager.getPackageMetadata(pmPackageName) != null) {
                         // remind user to plug in storage device
-                        val storageName = pluginManager.storageProperties?.name
+                        val storageName = backendManager.backendProperties?.name
                             ?: context.getString(R.string.settings_backup_location_none)
                         notificationManager.onRemovableStorageNotAvailableForRestore(
                             pmPackageName,
@@ -359,7 +359,7 @@ internal class RestoreCoordinator(
     fun isFailedPackage(packageName: String) = packageName in failedPackages
 
     private fun isStorageRemovableAndNotAvailable(): Boolean {
-        val storage = pluginManager.storageProperties ?: return false
+        val storage = backendManager.backendProperties ?: return false
         return storage.isUnavailableUsb(context)
     }
 

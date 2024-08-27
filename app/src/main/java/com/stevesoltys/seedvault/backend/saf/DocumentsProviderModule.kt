@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.settings.SettingsManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val storagePluginModuleSaf = module {
-    single { SafFactory(androidContext()) }
     single { SafHandler(androidContext(), get(), get(), get()) }
 
     @Suppress("Deprecation")
@@ -19,8 +18,9 @@ val storagePluginModuleSaf = module {
         DocumentsProviderLegacyPlugin(
             context = androidContext(),
             storageGetter = {
-                val safStorage = get<SettingsManager>().getSafStorage() ?: error("No SAF storage")
-                DocumentsStorage(androidContext(), get(), safStorage)
+                val safProperties = get<SettingsManager>().getSafProperties()
+                    ?: error("No SAF storage")
+                DocumentsStorage(androidContext(), safProperties)
             },
         )
     }

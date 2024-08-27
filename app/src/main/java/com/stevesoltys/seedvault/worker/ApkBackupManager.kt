@@ -11,11 +11,9 @@ import android.util.Log
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getMetadataOutputStream
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getMetadataOutputStream
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isStopped
@@ -24,7 +22,6 @@ import com.stevesoltys.seedvault.ui.notification.getAppName
 import kotlinx.coroutines.delay
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
-import java.io.OutputStream
 
 internal class ApkBackupManager(
     private val context: Context,
@@ -33,7 +30,7 @@ internal class ApkBackupManager(
     private val packageService: PackageService,
     private val iconManager: IconManager,
     private val apkBackup: ApkBackup,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val nm: BackupNotificationManager,
 ) {
 
@@ -58,7 +55,7 @@ internal class ApkBackupManager(
                 // upload all local changes only at the end,
                 // so we don't have to re-upload the metadata
                 val token = settingsManager.getToken() ?: error("no token")
-                pluginManager.backend.getMetadataOutputStream(token).use { outputStream ->
+                backendManager.backend.getMetadataOutputStream(token).use { outputStream ->
                     metadataManager.uploadMetadata(outputStream)
                 }
             }
@@ -105,7 +102,7 @@ internal class ApkBackupManager(
         try {
             val token = settingsManager.getToken() ?: throw IOException("no current token")
             val handle = LegacyAppBackupFile.IconsFile(token)
-            pluginManager.backend.save(handle).use {
+            backendManager.backend.save(handle).use {
                 iconManager.uploadIcons(token, it)
             }
         } catch (e: IOException) {
@@ -123,7 +120,7 @@ internal class ApkBackupManager(
         return try {
             apkBackup.backupApkIfNecessary(packageInfo) { name ->
                 val token = settingsManager.getToken() ?: throw IOException("no current token")
-                pluginManager.backend.save(LegacyAppBackupFile.Blob(token, name))
+                backendManager.backend.save(LegacyAppBackupFile.Blob(token, name))
             }?.let { packageMetadata ->
                 metadataManager.onApkBackedUp(packageInfo, packageMetadata)
                 true
@@ -146,12 +143,5 @@ internal class ApkBackupManager(
                 delay(1000)
             }
         }
-    }
-
-    private suspend fun StoragePlugin<*>.getMetadataOutputStream(
-        token: Long? = null,
-    ): OutputStream {
-        val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
-        return getOutputStream(t, FILE_BACKUP_METADATA)
     }
 }

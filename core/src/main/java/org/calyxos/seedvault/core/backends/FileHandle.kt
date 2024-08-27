@@ -20,6 +20,12 @@ public sealed class FileHandle {
 
 public data class TopLevelFolder(override val name: String) : FileHandle() {
     override val relativePath: String = name
+
+    public companion object {
+        public fun fromAndroidId(androidId: String): TopLevelFolder {
+            return TopLevelFolder("$androidId.sv")
+        }
+    }
 }
 
 public sealed class LegacyAppBackupFile : FileHandle() {

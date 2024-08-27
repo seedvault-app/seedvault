@@ -17,7 +17,7 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -39,13 +39,13 @@ import kotlin.random.Random
 
 internal class KVBackupTest : BackupTest() {
 
-    private val pluginManager = mockk<StoragePluginManager>()
+    private val backendManager = mockk<BackendManager>()
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dataInput = mockk<BackupDataInput>()
     private val dbManager = mockk<KvDbManager>()
 
     private val backup = KVBackup(
-        pluginManager = pluginManager,
+        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
         inputFactory = inputFactory,
@@ -62,7 +62,7 @@ internal class KVBackupTest : BackupTest() {
     private val inputStream = ByteArrayInputStream(dbBytes)
 
     init {
-        every { pluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test
@@ -250,7 +250,7 @@ internal class KVBackupTest : BackupTest() {
         every { dbManager.existsDb(pmPackageInfo.packageName) } returns false
         every { crypto.getNameForPackage(salt, pmPackageInfo.packageName) } returns name
         every { dbManager.getDb(pmPackageInfo.packageName) } returns db
-        every { pluginManager.canDoBackupNow() } returns false
+        every { backendManager.canDoBackupNow() } returns false
         every { db.put(key, dataValue) } just Runs
         getDataInput(listOf(true, false))
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins
+package com.stevesoltys.seedvault.backend
 
 import android.content.pm.PackageInfo
 import java.io.IOException

@@ -22,8 +22,8 @@ import org.calyxos.backup.storage.db.FilesCache
 import org.calyxos.backup.storage.getRandomDocFile
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
-import org.calyxos.backup.storage.toHexString
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.ByteArrayInputStream

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
 import android.content.ContentResolver
 import android.content.Context
@@ -20,34 +20,29 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.documentfile.provider.DocumentFile
 import com.stevesoltys.seedvault.getStorageContext
-import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.calyxos.seedvault.core.backends.saf.getTreeDocumentFile
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.coroutines.resume
 
-const val DIRECTORY_ROOT = ".SeedVaultAndroidBackup"
-
 @Deprecated("")
 const val DIRECTORY_FULL_BACKUP = "full"
 
 @Deprecated("")
 const val DIRECTORY_KEY_VALUE_BACKUP = "kv"
-const val FILE_BACKUP_METADATA = ".backup.metadata"
-const val FILE_NO_MEDIA = ".nomedia"
-const val MIME_TYPE = "application/octet-stream"
 
 private val TAG = DocumentsStorage::class.java.simpleName
 
 internal class DocumentsStorage(
     private val appContext: Context,
-    private val settingsManager: SettingsManager,
-    internal val safStorage: SafStorage,
+    internal val safStorage: SafProperties,
 ) {
 
     /**

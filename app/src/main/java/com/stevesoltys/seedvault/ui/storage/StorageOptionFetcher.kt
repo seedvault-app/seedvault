@@ -18,8 +18,8 @@ import android.provider.DocumentsContract.PROVIDER_INTERFACE
 import android.provider.DocumentsContract.buildRootsUri
 import android.util.Log
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.saf.SafStorageOptions
-import com.stevesoltys.seedvault.plugins.saf.StorageRootResolver
+import com.stevesoltys.seedvault.backend.saf.SafStorageOptions
+import com.stevesoltys.seedvault.backend.saf.StorageRootResolver
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 
 private val TAG = StorageOptionFetcher::class.java.simpleName

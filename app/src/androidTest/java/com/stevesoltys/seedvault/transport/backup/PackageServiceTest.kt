@@ -9,7 +9,7 @@ import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.AppStatus
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.every
@@ -30,9 +30,9 @@ class PackageServiceTest : KoinComponent {
 
     private val settingsManager: SettingsManager by inject()
 
-    private val storagePluginManager: StoragePluginManager by inject()
+    private val backendManager: BackendManager by inject()
 
-    private val backend: Backend get() = storagePluginManager.backend
+    private val backend: Backend get() = backendManager.backend
 
     @Test
     fun testNotAllowedPackages() {

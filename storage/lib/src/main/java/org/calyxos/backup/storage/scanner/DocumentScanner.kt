@@ -14,8 +14,8 @@ import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.content.DocFile
-import org.calyxos.backup.storage.getDocumentPath
-import org.calyxos.backup.storage.getVolume
+import org.calyxos.seedvault.core.backends.saf.getDocumentPath
+import org.calyxos.seedvault.core.backends.saf.getVolume
 
 public class DocumentScanner(context: Context) {
 

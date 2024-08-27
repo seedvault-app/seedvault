@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.webdav
+package org.calyxos.seedvault.core.backends.webdav
 
 import android.content.Context
-import com.stevesoltys.seedvault.plugins.StorageProperties
-import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
+import org.calyxos.seedvault.core.backends.BackendProperties
 
-data class WebDavProperties(
+public data class WebDavProperties(
     override val config: WebDavConfig,
     override val name: String,
-) : StorageProperties<WebDavConfig>() {
+) : BackendProperties<WebDavConfig>() {
     override val isUsb: Boolean = false
     override val requiresNetwork: Boolean = true
     override fun isUnavailableUsb(context: Context): Boolean = false

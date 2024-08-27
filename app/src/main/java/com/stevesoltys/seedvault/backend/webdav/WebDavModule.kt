@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.webdav
+package com.stevesoltys.seedvault.backend.webdav
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val storagePluginModuleWebDav = module {
-    single { WebDavFactory(androidContext()) }
     single { WebDavHandler(androidContext(), get(), get(), get()) }
 }

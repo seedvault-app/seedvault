@@ -22,7 +22,7 @@ import androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NOTIFICATION_ID_OBSERVER
@@ -101,7 +101,7 @@ class AppBackupWorker(
     private val backupRequester: BackupRequester by inject()
     private val settingsManager: SettingsManager by inject()
     private val apkBackupManager: ApkBackupManager by inject()
-    private val storagePluginManager: StoragePluginManager by inject()
+    private val backendManager: BackendManager by inject()
     private val nm: BackupNotificationManager by inject()
 
     override suspend fun doWork(): Result {
@@ -111,7 +111,7 @@ class AppBackupWorker(
         } catch (e: Exception) {
             Log.e(TAG, "Error while running setForeground: ", e)
         }
-        val freeSpace = storagePluginManager.getFreeSpace()
+        val freeSpace = backendManager.getFreeSpace()
         if (freeSpace != null && freeSpace < MIN_FREE_SPACE) {
             nm.onInsufficientSpaceError()
             return Result.failure()

@@ -3,30 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins
+package com.stevesoltys.seedvault.backend
 
 import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.saf.SafFactory
-import com.stevesoltys.seedvault.plugins.webdav.WebDavFactory
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendFactory
+import org.calyxos.seedvault.core.backends.BackendProperties
 import org.calyxos.seedvault.core.backends.saf.SafBackend
 
-class StoragePluginManager(
+class BackendManager(
     private val context: Context,
     private val settingsManager: SettingsManager,
-    safFactory: SafFactory,
-    webDavFactory: WebDavFactory,
+    backendFactory: BackendFactory,
 ) {
 
     private var mBackend: Backend?
-    private var mFilesPlugin: org.calyxos.backup.storage.api.StoragePlugin?
-    private var mStorageProperties: StorageProperties<*>?
+    private var mBackendProperties: BackendProperties<*>?
 
     val backend: Backend
         @Synchronized
@@ -34,48 +32,39 @@ class StoragePluginManager(
             return mBackend ?: error("App plugin was loaded, but still null")
         }
 
-    val filesPlugin: org.calyxos.backup.storage.api.StoragePlugin
+    val backendProperties: BackendProperties<*>?
         @Synchronized
         get() {
-            return mFilesPlugin ?: error("Files plugin was loaded, but still null")
+            return mBackendProperties
         }
-
-    val storageProperties: StorageProperties<*>?
-        @Synchronized
-        get() {
-            return mStorageProperties
-        }
-    val isOnRemovableDrive: Boolean get() = storageProperties?.isUsb == true
+    val isOnRemovableDrive: Boolean get() = backendProperties?.isUsb == true
 
     init {
         when (settingsManager.storagePluginType) {
             StoragePluginType.SAF -> {
-                val safStorage = settingsManager.getSafStorage() ?: error("No SAF storage saved")
-                mBackend = safFactory.createBackend(safStorage)
-                mFilesPlugin = safFactory.createFilesStoragePlugin(safStorage)
-                mStorageProperties = safStorage
+                val safConfig = settingsManager.getSafProperties() ?: error("No SAF storage saved")
+                mBackend = backendFactory.createSafBackend(safConfig)
+                mBackendProperties = safConfig
             }
 
             StoragePluginType.WEB_DAV -> {
                 val webDavProperties =
                     settingsManager.webDavProperties ?: error("No WebDAV config saved")
-                mBackend = webDavFactory.createBackend(webDavProperties.config)
-                mFilesPlugin = webDavFactory.createFilesStoragePlugin(webDavProperties.config)
-                mStorageProperties = webDavProperties
+                mBackend = backendFactory.createWebDavBackend(webDavProperties.config)
+                mBackendProperties = webDavProperties
             }
 
             null -> {
                 mBackend = null
-                mFilesPlugin = null
-                mStorageProperties = null
+                mBackendProperties = null
             }
         }
     }
 
     fun isValidAppPluginSet(): Boolean {
-        if (mBackend == null || mFilesPlugin == null) return false
+        if (mBackend == null) return false
         if (mBackend is SafBackend) {
-            val storage = settingsManager.getSafStorage() ?: return false
+            val storage = settingsManager.getSafProperties() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
                 storage.getDocumentFile(context).isDirectory
@@ -85,20 +74,18 @@ class StoragePluginManager(
     }
 
     /**
-     * Changes the storage plugins and current [StorageProperties].
+     * Changes the storage plugins and current [BackendProperties].
      *
      * IMPORTANT: Do no call this while current plugins are being used,
      *            e.g. while backup/restore operation is still running.
      */
     fun <T> changePlugins(
-        storageProperties: StorageProperties<T>,
         backend: Backend,
-        filesPlugin: org.calyxos.backup.storage.api.StoragePlugin,
+        storageProperties: BackendProperties<T>,
     ) {
         settingsManager.setStorageBackend(backend)
-        mStorageProperties = storageProperties
         mBackend = backend
-        mFilesPlugin = filesPlugin
+        mBackendProperties = storageProperties
     }
 
     /**
@@ -111,7 +98,7 @@ class StoragePluginManager(
      */
     @WorkerThread
     fun canDoBackupNow(): Boolean {
-        val storage = storageProperties ?: return false
+        val storage = backendProperties ?: return false
         return !isOnUnavailableUsb() &&
             !storage.isUnavailableNetwork(context, settingsManager.useMeteredNetwork)
     }
@@ -126,7 +113,7 @@ class StoragePluginManager(
      */
     @WorkerThread
     fun isOnUnavailableUsb(): Boolean {
-        val storage = storageProperties ?: return false
+        val storage = backendProperties ?: return false
         val systemContext = context.getStorageContext { storage.isUsb }
         return storage.isUnavailableUsb(systemContext)
     }

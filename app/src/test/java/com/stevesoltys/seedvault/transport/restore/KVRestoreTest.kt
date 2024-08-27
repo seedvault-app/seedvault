@@ -15,8 +15,8 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import io.mockk.Runs
@@ -41,14 +41,14 @@ import kotlin.random.Random
 
 internal class KVRestoreTest : RestoreTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
     @Suppress("DEPRECATION")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
     private val restore = KVRestore(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,
@@ -74,7 +74,7 @@ internal class KVRestoreTest : RestoreTest() {
         // for InputStream#readBytes()
         mockkStatic("kotlin.io.ByteStreamsKt")
 
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test

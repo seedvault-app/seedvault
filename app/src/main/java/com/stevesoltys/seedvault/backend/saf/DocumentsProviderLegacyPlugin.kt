@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
 import android.content.Context
 import android.content.pm.PackageInfo
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream

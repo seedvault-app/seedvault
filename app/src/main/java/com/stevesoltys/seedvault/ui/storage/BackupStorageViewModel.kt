@@ -13,11 +13,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.SafHandler
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
-import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
-import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.saf.SafHandler
+import com.stevesoltys.seedvault.backend.webdav.WebDavHandler
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -27,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -40,15 +40,15 @@ internal class BackupStorageViewModel(
     safHandler: SafHandler,
     webDavHandler: WebDavHandler,
     settingsManager: SettingsManager,
-    storagePluginManager: StoragePluginManager,
-) : StorageViewModel(app, safHandler, webDavHandler, settingsManager, storagePluginManager) {
+    backendManager: BackendManager,
+) : StorageViewModel(app, safHandler, webDavHandler, settingsManager, backendManager) {
 
     override val isRestoreOperation = false
 
-    override fun onSafUriSet(safStorage: SafStorage) {
-        safHandler.save(safStorage)
-        safHandler.setPlugin(safStorage)
-        if (safStorage.isUsb) {
+    override fun onSafUriSet(safProperties: SafProperties) {
+        safHandler.save(safProperties)
+        safHandler.setPlugin(safProperties)
+        if (safProperties.isUsb) {
             // disable storage backup if new storage is on USB
             cancelBackupWorkers()
         } else {
@@ -56,7 +56,7 @@ internal class BackupStorageViewModel(
             // also to update the network requirement of the new storage
             scheduleBackupWorkers()
         }
-        onStorageLocationSet(safStorage.isUsb)
+        onStorageLocationSet(safProperties.isUsb)
     }
 
     override fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend) {
@@ -100,7 +100,7 @@ internal class BackupStorageViewModel(
     }
 
     private fun scheduleBackupWorkers() {
-        val storage = storagePluginManager.storageProperties ?: error("no storage available")
+        val storage = backendManager.backendProperties ?: error("no storage available")
         // disable framework scheduling, because another transport may have enabled it
         backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
         if (!storage.isUsb) {

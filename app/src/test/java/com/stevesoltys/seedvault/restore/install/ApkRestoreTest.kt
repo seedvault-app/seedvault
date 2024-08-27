@@ -24,8 +24,8 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -67,7 +67,7 @@ internal class ApkRestoreTest : TransportTest() {
     }
     private val backupManager: IBackupManager = mockk()
     private val backupStateManager: BackupStateManager = mockk()
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backend: Backend = mockk()
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
@@ -78,7 +78,7 @@ internal class ApkRestoreTest : TransportTest() {
         context = strictContext,
         backupManager = backupManager,
         backupStateManager = backupStateManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
@@ -109,7 +109,7 @@ internal class ApkRestoreTest : TransportTest() {
         // as we don't do strict signature checking, we can use a relaxed mock
         packageInfo.signingInfo = mockk(relaxed = true)
 
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
 
         // related to starting/stopping service
         every { strictContext.packageName } returns "org.foo.bar"

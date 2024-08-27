@@ -16,8 +16,8 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
@@ -47,14 +47,14 @@ private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
 ) {
 
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
     private var state: FullBackupState? = null
 
     fun hasState() = state != null

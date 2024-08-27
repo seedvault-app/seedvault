@@ -18,7 +18,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
@@ -65,19 +65,19 @@ internal class RestoreViewModel(
     private val apkRestore: ApkRestore,
     private val iconManager: IconManager,
     storageBackup: StorageBackup,
-    pluginManager: StoragePluginManager,
+    backendManager: BackendManager,
     override val fileSelectionManager: FileSelectionManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : RequireProvisioningViewModel(app, settingsManager, keyManager, pluginManager),
+) : RequireProvisioningViewModel(app, settingsManager, keyManager, backendManager),
     RestorableBackupClickListener, SnapshotViewModel {
 
     override val isRestoreOperation = true
     var isSetupWizard = false
 
     private val appSelectionManager =
-        AppSelectionManager(app, pluginManager, iconManager, viewModelScope)
+        AppSelectionManager(app, backendManager, iconManager, viewModelScope)
     private val appDataRestoreManager = AppDataRestoreManager(
-        app, backupManager, settingsManager, restoreCoordinator, pluginManager
+        app, backupManager, settingsManager, restoreCoordinator, backendManager
     )
 
     private val mDisplayFragment = MutableLiveEvent<DisplayFragment>()

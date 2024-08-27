@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
 import android.content.Context
 import android.content.Context.USB_SERVICE
@@ -14,34 +14,42 @@ import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.isMassStorage
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getAvailableBackups
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.storage.StorageOption
+import org.calyxos.seedvault.core.backends.BackendFactory
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import java.io.IOException
 
 private const val TAG = "SafHandler"
 
 internal class SafHandler(
     private val context: Context,
-    private val safFactory: SafFactory,
+    private val backendFactory: BackendFactory,
     private val settingsManager: SettingsManager,
-    private val storagePluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
 ) {
 
-    fun onConfigReceived(uri: Uri, safOption: StorageOption.SafOption): SafStorage {
+    fun onConfigReceived(uri: Uri, safOption: StorageOption.SafOption): SafProperties {
         // persist permission to access backup folder across reboots
         val takeFlags = FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
         context.contentResolver.takePersistableUriPermission(uri, takeFlags)
 
-        val name = if (safOption.isInternal()) {
-            "${safOption.title} (${context.getString(R.string.settings_backup_location_internal)})"
-        } else {
-            safOption.title
-        }
-        return SafStorage(uri, name, safOption.isUsb, safOption.requiresNetwork, safOption.rootId)
+        return SafProperties(
+            config = uri,
+            name = if (safOption.isInternal()) {
+                val brackets = context.getString(R.string.settings_backup_location_internal)
+                "${safOption.title} ($brackets)"
+            } else {
+                safOption.title
+            },
+            isUsb = safOption.isUsb,
+            requiresNetwork = safOption.requiresNetwork,
+            rootId = safOption.rootId,
+        )
     }
 
     /**
@@ -50,16 +58,16 @@ internal class SafHandler(
      */
     @WorkerThread
     @Throws(IOException::class)
-    suspend fun hasAppBackup(safStorage: SafStorage): Boolean {
-        val appPlugin = safFactory.createBackend(safStorage)
+    suspend fun hasAppBackup(safProperties: SafProperties): Boolean {
+        val appPlugin = backendFactory.createSafBackend(safProperties)
         val backups = appPlugin.getAvailableBackups()
         return backups != null && backups.iterator().hasNext()
     }
 
-    fun save(safStorage: SafStorage) {
-        settingsManager.setSafStorage(safStorage)
+    fun save(safProperties: SafProperties) {
+        settingsManager.setSafProperties(safProperties)
 
-        if (safStorage.isUsb) {
+        if (safProperties.isUsb) {
             Log.d(TAG, "Selected storage is a removable USB device.")
             val wasSaved = saveUsbDevice()
             // reset stored flash drive, if we did not update it
@@ -67,7 +75,7 @@ internal class SafHandler(
         } else {
             settingsManager.setFlashDrive(null)
         }
-        Log.d(TAG, "New storage location saved: ${safStorage.uri}")
+        Log.d(TAG, "New storage location saved: ${safProperties.uri}")
     }
 
     private fun saveUsbDevice(): Boolean {
@@ -84,11 +92,10 @@ internal class SafHandler(
         return false
     }
 
-    fun setPlugin(safStorage: SafStorage) {
-        storagePluginManager.changePlugins(
-            storageProperties = safStorage,
-            backend = safFactory.createBackend(safStorage),
-            filesPlugin = safFactory.createFilesStoragePlugin(safStorage),
+    fun setPlugin(safProperties: SafProperties) {
+        backendManager.changePlugins(
+            backend = backendFactory.createSafBackend(safProperties),
+            storageProperties = safProperties,
         )
     }
 }

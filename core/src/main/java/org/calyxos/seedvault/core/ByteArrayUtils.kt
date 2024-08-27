@@ -5,6 +5,7 @@
 
 package org.calyxos.seedvault.core
 
-internal fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
+public fun ByteArray.toHexString(): String = joinToString("") { "%02x".format(it) }
 
-internal fun String.toByteArrayFromHex() = chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+public fun String.toByteArrayFromHex(): ByteArray =
+    chunked(2).map { it.toInt(16).toByte() }.toByteArray()

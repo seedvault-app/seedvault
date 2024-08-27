@@ -29,15 +29,12 @@ import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getMetadataOutputStream
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
-import com.stevesoltys.seedvault.plugins.saf.FILE_BACKUP_METADATA
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getMetadataOutputStream
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
-import java.io.OutputStream
 import java.util.concurrent.TimeUnit.DAYS
 import java.util.concurrent.TimeUnit.HOURS
 
@@ -65,7 +62,7 @@ private class CoordinatorState(
 @WorkerThread
 internal class BackupCoordinator(
     private val context: Context,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val kv: KVBackup,
     private val full: FullBackup,
     private val clock: Clock,
@@ -75,7 +72,7 @@ internal class BackupCoordinator(
     private val nm: BackupNotificationManager,
 ) {
 
-    private val backend get() = pluginManager.backend
+    private val backend get() = backendManager.backend
     private val state = CoordinatorState(
         calledInitialize = false,
         calledClearBackupData = false,
@@ -132,7 +129,7 @@ internal class BackupCoordinator(
     } catch (e: Exception) {
         Log.e(TAG, "Error initializing device", e)
         // Show error notification if we needed init or were ready for backups
-        if (metadataManager.requiresInit || pluginManager.canDoBackupNow()) nm.onBackupError()
+        if (metadataManager.requiresInit || backendManager.canDoBackupNow()) nm.onBackupError()
         TRANSPORT_ERROR
     }
 
@@ -370,7 +367,7 @@ internal class BackupCoordinator(
             if (result == TRANSPORT_OK) {
                 val isNormalBackup = packageName != MAGIC_PACKAGE_MANAGER
                 // call onPackageBackedUp for @pm@ only if we can do backups right now
-                if (isNormalBackup || pluginManager.canDoBackupNow()) {
+                if (isNormalBackup || backendManager.canDoBackupNow()) {
                     try {
                         onPackageBackedUp(packageInfo, BackupType.KV, size)
                     } catch (e: Exception) {
@@ -431,7 +428,7 @@ internal class BackupCoordinator(
         val longBackoff = DAYS.toMillis(30)
 
         // back off if there's no storage set
-        val storage = pluginManager.storageProperties ?: return longBackoff
+        val storage = backendManager.backendProperties ?: return longBackoff
         return when {
             // back off if storage is removable and not available right now
             storage.isUnavailableUsb(context) -> longBackoff
@@ -444,12 +441,4 @@ internal class BackupCoordinator(
             else -> 0L
         }
     }
-
-    private suspend fun StoragePlugin<*>.getMetadataOutputStream(
-        token: Long? = null,
-    ): OutputStream {
-        val t = token ?: settingsManager.getToken() ?: throw IOException("no current token")
-        return getOutputStream(t, FILE_BACKUP_METADATA)
-    }
-
 }

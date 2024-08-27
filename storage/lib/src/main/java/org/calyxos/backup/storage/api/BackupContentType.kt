@@ -11,7 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.calyxos.backup.storage.R
 import org.calyxos.backup.storage.backup.BackupMediaFile
-import org.calyxos.backup.storage.getDocumentPath
+import org.calyxos.seedvault.core.backends.saf.getDocumentPath
 
 // hidden in DocumentsContract
 public const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY: String =
@@ -38,7 +38,7 @@ public sealed class BackupContentType(
     public object Custom : BackupContentType(R.drawable.ic_folder) {
         public fun getName(uri: Uri): String {
             val path = uri.getDocumentPath()!!
-            return if (path.isBlank()) "/" else path
+            return path.ifBlank { "/" }
         }
     }
 }

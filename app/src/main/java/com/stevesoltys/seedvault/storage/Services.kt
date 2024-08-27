@@ -6,7 +6,7 @@
 package com.stevesoltys.seedvault.storage
 
 import android.content.Intent
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +44,7 @@ internal class StorageBackupService : BackupService() {
     }
 
     override val storageBackup: StorageBackup by inject()
-    private val storagePluginManager: StoragePluginManager by inject()
+    private val backendManager: BackendManager by inject()
 
     // use lazy delegate because context isn't available during construction time
     override val backupObserver: BackupObserver by lazy {
@@ -63,7 +63,7 @@ internal class StorageBackupService : BackupService() {
 
     override fun onBackupFinished(intent: Intent, success: Boolean) {
         if (intent.getBooleanExtra(EXTRA_START_APP_BACKUP, false)) {
-            val isUsb = storagePluginManager.storageProperties?.isUsb ?: false
+            val isUsb = backendManager.backendProperties?.isUsb ?: false
             AppBackupWorker.scheduleNow(applicationContext, reschedule = !isUsb)
         }
     }

@@ -25,7 +25,6 @@ import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.backup.ChunksCacheRepopulater
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.getCurrentBackupSnapshots
-import org.calyxos.backup.storage.getDocumentPath
 import org.calyxos.backup.storage.getMediaType
 import org.calyxos.backup.storage.prune.Pruner
 import org.calyxos.backup.storage.prune.RetentionManager
@@ -37,6 +36,7 @@ import org.calyxos.backup.storage.scanner.MediaScanner
 import org.calyxos.backup.storage.toStoredUri
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileBackupFileType
+import org.calyxos.seedvault.core.backends.saf.getDocumentPath
 import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean

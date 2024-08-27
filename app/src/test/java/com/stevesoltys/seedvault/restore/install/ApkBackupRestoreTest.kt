@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
@@ -60,7 +60,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { packageManager } returns pm
     }
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backupManager: IBackupManager = mockk()
     private val backupStateManager: BackupStateManager = mockk()
 
@@ -76,7 +76,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         context = strictContext,
         backupManager = backupManager,
         backupStateManager = backupStateManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
@@ -112,7 +112,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
 
     init {
         mockkStatic(PackageUtils::class)
-        every { storagePluginManager.backend } returns backend
+        every { backendManager.backend } returns backend
     }
 
     @Test

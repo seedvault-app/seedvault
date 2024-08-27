@@ -40,8 +40,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
@@ -59,6 +58,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import java.io.IOException
 import java.lang.Runtime.getRuntime
 import java.util.concurrent.TimeUnit.HOURS
@@ -70,14 +70,14 @@ internal class SettingsViewModel(
     app: Application,
     settingsManager: SettingsManager,
     keyManager: KeyManager,
-    pluginManager: StoragePluginManager,
+    backendManager: BackendManager,
     private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
     private val backupInitializer: BackupInitializer,
     backupStateManager: BackupStateManager,
-) : RequireProvisioningViewModel(app, settingsManager, keyManager, pluginManager) {
+) : RequireProvisioningViewModel(app, settingsManager, keyManager, backendManager) {
 
     private val contentResolver = app.contentResolver
     private val connectivityManager: ConnectivityManager? =
@@ -158,7 +158,7 @@ internal class SettingsViewModel(
     }
 
     override fun onStorageLocationChanged() {
-        val storage = pluginManager.storageProperties ?: return
+        val storage = backendManager.backendProperties ?: return
 
         Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb})")
         if (storage.isUsb) {
@@ -177,33 +177,33 @@ internal class SettingsViewModel(
     private fun onBackupRunningStateChanged() {
         if (isBackupRunning.value) mBackupPossible.postValue(false)
         else viewModelScope.launch(Dispatchers.IO) {
-            val canDo = !isBackupRunning.value && !pluginManager.isOnUnavailableUsb()
+            val canDo = !isBackupRunning.value && !backendManager.isOnUnavailableUsb()
             mBackupPossible.postValue(canDo)
         }
     }
 
     private fun onStoragePropertiesChanged() {
-        val storage = pluginManager.storageProperties ?: return
+        val properties = backendManager.backendProperties ?: return
 
         Log.d(TAG, "onStoragePropertiesChanged")
-        if (storage is SafStorage) {
+        if (properties is SafProperties) {
             // register storage observer
             try {
                 contentResolver.unregisterContentObserver(storageObserver)
-                contentResolver.registerContentObserver(storage.uri, false, storageObserver)
+                contentResolver.registerContentObserver(properties.uri, false, storageObserver)
             } catch (e: SecurityException) {
                 // This can happen if the app providing the storage was uninstalled.
                 // validLocationIsSet() gets called elsewhere
                 // and prompts for a new storage location.
-                Log.e(TAG, "Error registering content observer for ${storage.uri}", e)
+                Log.e(TAG, "Error registering content observer for ${properties.uri}", e)
             }
         }
 
         // register network observer if needed
-        if (networkCallback.registered && !storage.requiresNetwork) {
+        if (networkCallback.registered && !properties.requiresNetwork) {
             connectivityManager?.unregisterNetworkCallback(networkCallback)
             networkCallback.registered = false
-        } else if (!networkCallback.registered && storage.requiresNetwork) {
+        } else if (!networkCallback.registered && properties.requiresNetwork) {
             // TODO we may want to warn the user when they start a backup on a metered connection
             val request = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -232,7 +232,7 @@ internal class SettingsViewModel(
                 i.putExtra(EXTRA_START_APP_BACKUP, isAppBackupEnabled)
                 startForegroundService(app, i)
             } else if (isAppBackupEnabled) {
-                AppBackupWorker.scheduleNow(app, reschedule = !pluginManager.isOnRemovableDrive)
+                AppBackupWorker.scheduleNow(app, reschedule = !backendManager.isOnRemovableDrive)
             }
         }
     }
@@ -313,14 +313,14 @@ internal class SettingsViewModel(
     fun scheduleAppBackup(existingWorkPolicy: ExistingPeriodicWorkPolicy) {
         // disable framework scheduling, because another transport may have enabled it
         backupManager.setFrameworkSchedulingEnabledForUser(UserHandle.myUserId(), false)
-        if (!pluginManager.isOnRemovableDrive && backupManager.isBackupEnabled) {
+        if (!backendManager.isOnRemovableDrive && backupManager.isBackupEnabled) {
             AppBackupWorker.schedule(app, settingsManager, existingWorkPolicy)
         }
     }
 
     fun scheduleFilesBackup() {
-        if (!pluginManager.isOnRemovableDrive && settingsManager.isStorageBackupEnabled()) {
-            val requiresNetwork = pluginManager.storageProperties?.requiresNetwork == true
+        if (!backendManager.isOnRemovableDrive && settingsManager.isStorageBackupEnabled()) {
+            val requiresNetwork = backendManager.backendProperties?.requiresNetwork == true
             BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,

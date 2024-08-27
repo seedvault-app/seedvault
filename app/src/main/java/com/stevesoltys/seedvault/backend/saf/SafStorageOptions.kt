@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package com.stevesoltys.seedvault.backend.saf
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.saf.StorageRootResolver.getIcon
+import com.stevesoltys.seedvault.backend.saf.StorageRootResolver.getIcon
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DAVX5
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_NEXTCLOUD
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_ROUND_SYNC

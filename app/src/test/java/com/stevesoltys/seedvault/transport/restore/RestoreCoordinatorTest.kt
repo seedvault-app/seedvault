@@ -13,16 +13,15 @@ import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.EncryptedMetadata
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.plugins.EncryptedMetadata
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.getAvailableBackups
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -34,6 +33,7 @@ import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -46,7 +46,7 @@ import kotlin.random.Random
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
@@ -58,14 +58,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
         settingsManager = settingsManager,
         metadataManager = metadataManager,
         notificationManager = notificationManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         kv = kv,
         full = full,
         metadataReader = metadataReader,
     )
 
     private val inputStream = mockk<InputStream>()
-    private val safStorage: SafStorage = mockk()
+    private val safStorage: SafProperties = mockk()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
@@ -80,8 +80,8 @@ internal class RestoreCoordinatorTest : TransportTest() {
         metadata.packageMetadataMap[packageInfo2.packageName] =
             PackageMetadata(backupType = BackupType.FULL)
 
-        mockkStatic("com.stevesoltys.seedvault.plugins.BackendExtKt")
-        every { storagePluginManager.backend } returns backend
+        mockkStatic("com.stevesoltys.seedvault.backend.BackendExtKt")
+        every { backendManager.backend } returns backend
     }
 
     @Test
@@ -175,7 +175,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() =
         runBlocking {
-            every { storagePluginManager.storageProperties } returns safStorage
+            every { backendManager.backendProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns true
             every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
             every { safStorage.name } returns storageName
@@ -199,7 +199,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() =
         runBlocking {
-            every { storagePluginManager.storageProperties } returns safStorage
+            every { backendManager.backendProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns false
 
             restore.beforeStartRestore(metadata)
@@ -215,7 +215,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
-        every { storagePluginManager.storageProperties } returns safStorage
+        every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
 

@@ -27,7 +27,7 @@ import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import org.calyxos.seedvault.core.backends.Backend
 
@@ -43,12 +43,12 @@ internal class PackageService(
     private val context: Context,
     private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
     private val myUserId = UserHandle.myUserId()
-    private val backend: Backend get() = pluginManager.backend
+    private val backend: Backend get() = backendManager.backend
 
     val eligiblePackages: List<String>
         @WorkerThread

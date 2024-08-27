@@ -3,17 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.plugins.saf
+package org.calyxos.seedvault.core.backends.saf
 
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import androidx.annotation.WorkerThread
 import androidx.documentfile.provider.DocumentFile
-import com.stevesoltys.seedvault.plugins.StorageProperties
-import org.calyxos.seedvault.core.backends.saf.SafConfig
+import org.calyxos.seedvault.core.backends.BackendProperties
 
-data class SafStorage(
+public data class SafProperties(
     override val config: Uri,
     override val name: String,
     override val isUsb: Boolean,
@@ -23,12 +22,13 @@ data class SafStorage(
      * This is only nullable for historic reasons, because we didn't always store it.
      */
     val rootId: String?,
-) : StorageProperties<Uri>() {
+) : BackendProperties<Uri>() {
 
-    val uri: Uri = config
+    public val uri: Uri = config
 
-    fun getDocumentFile(context: Context) = DocumentFile.fromTreeUri(context, config)
-        ?: throw AssertionError("Should only happen on API < 21.")
+    public fun getDocumentFile(context: Context): DocumentFile =
+        DocumentFile.fromTreeUri(context, config)
+            ?: throw AssertionError("Should only happen on API < 21.")
 
     /**
      * Returns true if this is USB storage that is not available, false otherwise.
@@ -39,12 +39,4 @@ data class SafStorage(
     override fun isUnavailableUsb(context: Context): Boolean {
         return isUsb && !getDocumentFile(context).isDirectory
     }
-
-    fun toSafConfig() = SafConfig(
-        config = config,
-        name = name,
-        isUsb = isUsb,
-        requiresNetwork = requiresNetwork,
-        rootId = rootId,
-    )
 }

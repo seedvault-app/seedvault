@@ -56,7 +56,7 @@ class KoinInstrumentationTestApp : App() {
                             apkRestore = get(),
                             iconManager = get(),
                             storageBackup = get(),
-                            pluginManager = get(),
+                            backendManager = get(),
                             fileSelectionManager = get(),
                         )
                     )

@@ -39,7 +39,7 @@ internal const val ROOT_ID_DEVICE = "primary"
 
 public class SafBackend(
     private val appContext: Context,
-    private val safConfig: SafConfig,
+    private val safProperties: SafProperties,
     root: String = DIRECTORY_ROOT,
 ) : Backend {
 
@@ -48,16 +48,16 @@ public class SafBackend(
     /**
      * Attention: This context might be from a different user. Use with care.
      */
-    private val context: Context get() = appContext.getBackendContext { safConfig.isUsb }
-    private val cache = DocumentFileCache(context, safConfig.getDocumentFile(context), root)
+    private val context: Context get() = appContext.getBackendContext { safProperties.isUsb }
+    private val cache = DocumentFileCache(context, safProperties.getDocumentFile(context), root)
 
     override suspend fun test(): Boolean {
         return cache.getRootFile().isDirectory
     }
 
     override suspend fun getFreeSpace(): Long? {
-        val rootId = safConfig.rootId ?: return null
-        val authority = safConfig.uri.authority
+        val rootId = safProperties.rootId ?: return null
+        val authority = safProperties.uri.authority
         // using DocumentsContract#buildRootUri(String, String) with rootId directly doesn't work
         val rootUri = DocumentsContract.buildRootsUri(authority)
         val projection = arrayOf(COLUMN_AVAILABLE_BYTES)
@@ -74,8 +74,8 @@ public class SafBackend(
         return if (bytesAvailable == null && authority == AUTHORITY_STORAGE) {
             if (rootId == ROOT_ID_DEVICE) {
                 StatFs(Environment.getDataDirectory().absolutePath).availableBytes
-            } else if (safConfig.isUsb) {
-                val documentId = safConfig.uri.lastPathSegment ?: return null
+            } else if (safProperties.isUsb) {
+                val documentId = safProperties.uri.lastPathSegment ?: return null
                 StatFs("/mnt/media_rw/${documentId.trimEnd(':')}").availableBytes
             } else null
         } else bytesAvailable
@@ -185,7 +185,7 @@ public class SafBackend(
     }
 
     override val providerPackageName: String? by lazy {
-        val authority = safConfig.uri.authority ?: return@lazy null
+        val authority = safProperties.uri.authority ?: return@lazy null
         val providerInfo = context.packageManager.resolveContentProvider(authority, 0)
             ?: return@lazy null
         providerInfo.packageName
