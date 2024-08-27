@@ -7,18 +7,18 @@ package org.calyxos.backup.storage.restore
 
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
+import org.calyxos.seedvault.core.backends.Backend
 
 private const val TAG = "SingleChunkRestore"
 
 internal class SingleChunkRestore(
-    storagePlugin: () -> StoragePlugin,
+    backendGetter: () -> Backend,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,
-) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
+) : AbstractChunkRestore(backendGetter, fileRestore, streamCrypto, streamKey) {
 
     suspend fun restore(
         version: Int,

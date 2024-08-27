@@ -11,5 +11,5 @@ import org.calyxos.backup.storage.api.StorageBackup
 import org.koin.dsl.module
 
 val storageModule = module {
-    single { StorageBackup(get(), { get<StoragePluginManager>().filesPlugin }, get<KeyManager>()) }
+    single { StorageBackup(get(), { get<StoragePluginManager>().backend }, get<KeyManager>()) }
 }

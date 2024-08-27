@@ -5,10 +5,13 @@
 
 package org.calyxos.backup.storage.api
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract.isTreeUri
 import android.provider.MediaStore
+import android.provider.Settings
+import android.provider.Settings.Secure.ANDROID_ID
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.room.Room
@@ -16,13 +19,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.calyxos.backup.storage.SnapshotRetriever
 import org.calyxos.backup.storage.backup.Backup
 import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.backup.ChunksCacheRepopulater
 import org.calyxos.backup.storage.db.Db
+import org.calyxos.backup.storage.getCurrentBackupSnapshots
 import org.calyxos.backup.storage.getDocumentPath
 import org.calyxos.backup.storage.getMediaType
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
 import org.calyxos.backup.storage.prune.Pruner
 import org.calyxos.backup.storage.prune.RetentionManager
 import org.calyxos.backup.storage.restore.FileRestore
@@ -31,6 +35,8 @@ import org.calyxos.backup.storage.scanner.DocumentScanner
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.MediaScanner
 import org.calyxos.backup.storage.toStoredUri
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,7 +45,7 @@ private const val TAG = "StorageBackup"
 
 public class StorageBackup(
     private val context: Context,
-    private val pluginGetter: () -> StoragePlugin,
+    private val pluginGetter: () -> Backend,
     private val keyManager: KeyManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
@@ -50,13 +56,29 @@ public class StorageBackup(
     }
     private val uriStore by lazy { db.getUriStore() }
 
+    @SuppressLint("HardwareIds")
+    private val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
+
     private val mediaScanner by lazy { MediaScanner(context) }
     private val snapshotRetriever = SnapshotRetriever(pluginGetter)
-    private val chunksCacheRepopulater = ChunksCacheRepopulater(db, pluginGetter, snapshotRetriever)
+    private val chunksCacheRepopulater = ChunksCacheRepopulater(
+        db = db,
+        storagePlugin = pluginGetter,
+        androidId = androidId,
+        snapshotRetriever = snapshotRetriever,
+    )
     private val backup by lazy {
         val documentScanner = DocumentScanner(context)
         val fileScanner = FileScanner(uriStore, mediaScanner, documentScanner)
-        Backup(context, db, fileScanner, pluginGetter, keyManager, chunksCacheRepopulater)
+        Backup(
+            context = context,
+            db = db,
+            fileScanner = fileScanner,
+            backendGetter = pluginGetter,
+            androidId = androidId,
+            keyManager = keyManager,
+            cacheRepopulater = chunksCacheRepopulater
+        )
     }
     private val restore by lazy {
         val fileRestore = FileRestore(context, mediaScanner)
@@ -64,7 +86,7 @@ public class StorageBackup(
     }
     private val retention = RetentionManager(context)
     private val pruner by lazy {
-        Pruner(db, retention, pluginGetter, keyManager, snapshotRetriever)
+        Pruner(db, retention, pluginGetter, androidId, keyManager, snapshotRetriever)
     }
 
     private val backupRunning = AtomicBoolean(false)
@@ -113,7 +135,6 @@ public class StorageBackup(
      * (see [deleteAllSnapshots]) as well as clears local cache (see [clearCache]).
      */
     public suspend fun init() {
-        pluginGetter().init()
         deleteAllSnapshots()
         clearCache()
     }
@@ -123,13 +144,14 @@ public class StorageBackup(
      * (potentially encrypted with an old key) laying around.
      * Using a storage location with existing data is not supported.
      * Using the same root folder for storage on different devices or user profiles is fine though
-     * as the [StoragePlugin] should isolate storage per [StoredSnapshot.userId].
+     * as the [Backend] should isolate storage per [StoredSnapshot.userId].
      */
     public suspend fun deleteAllSnapshots(): Unit = withContext(dispatcher) {
         try {
-            pluginGetter().getCurrentBackupSnapshots().forEach {
+            pluginGetter().getCurrentBackupSnapshots(androidId).forEach {
+                val handle = FileBackupFileType.Snapshot(androidId, it.timestamp)
                 try {
-                    pluginGetter().deleteBackupSnapshot(it)
+                    pluginGetter().remove(handle)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error deleting snapshot $it", e)
                 }

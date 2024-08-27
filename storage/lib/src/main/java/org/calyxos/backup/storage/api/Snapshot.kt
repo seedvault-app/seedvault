@@ -6,6 +6,8 @@
 package org.calyxos.backup.storage.api
 
 import org.calyxos.backup.storage.backup.BackupSnapshot
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType
 
 public data class SnapshotItem(
     public val storedSnapshot: StoredSnapshot,
@@ -21,7 +23,7 @@ public sealed class SnapshotResult {
 
 public data class StoredSnapshot(
     /**
-     * The unique ID of the current device/user combination chosen by the [StoragePlugin].
+     * The unique ID of the current device/user combination chosen by the [Backend].
      * It may include an '.sv' extension.
      */
     public val userId: String,
@@ -31,6 +33,11 @@ public data class StoredSnapshot(
     public val timestamp: Long,
 ) {
     public val androidId: String = userId.substringBefore(".sv")
+    public val snapshotHandle: FileBackupFileType.Snapshot
+        get() = FileBackupFileType.Snapshot(
+            androidId = androidId,
+            time = timestamp,
+        )
 }
 
 /**

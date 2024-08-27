@@ -12,13 +12,14 @@ import kotlinx.coroutines.flow.flow
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.api.SnapshotItem
 import org.calyxos.backup.storage.api.SnapshotResult
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.Backup
 import org.calyxos.backup.storage.backup.BackupSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.measure
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.backup.storage.SnapshotRetriever
+import org.calyxos.backup.storage.getBackupSnapshotsForRestore
+import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.io.InputStream
@@ -28,16 +29,16 @@ private const val TAG = "Restore"
 
 internal class Restore(
     context: Context,
-    private val storagePluginGetter: () -> StoragePlugin,
+    private val backendGetter: () -> Backend,
     private val keyManager: KeyManager,
     private val snapshotRetriever: SnapshotRetriever,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
-    private val storagePlugin get() = storagePluginGetter()
+    private val backend get() = backendGetter()
     private val streamKey by lazy {
-        // This class might get instantiated before the StoragePlugin had time to provide the key
+        // This class might get instantiated before the Backend had time to provide the key
         // so we need to get it lazily here to prevent crashes. We can still crash later,
         // if the plugin is not providing a key as it should when performing calls into this class.
         try {
@@ -49,13 +50,13 @@ internal class Restore(
 
     // lazily instantiate these, so they don't try to get the streamKey too early
     private val zipChunkRestore by lazy {
-        ZipChunkRestore(storagePluginGetter, fileRestore, streamCrypto, streamKey)
+        ZipChunkRestore(backendGetter, fileRestore, streamCrypto, streamKey)
     }
     private val singleChunkRestore by lazy {
-        SingleChunkRestore(storagePluginGetter, fileRestore, streamCrypto, streamKey)
+        SingleChunkRestore(backendGetter, fileRestore, streamCrypto, streamKey)
     }
     private val multiChunkRestore by lazy {
-        MultiChunkRestore(context, storagePluginGetter, fileRestore, streamCrypto, streamKey)
+        MultiChunkRestore(context, backendGetter, fileRestore, streamCrypto, streamKey)
     }
 
     fun getBackupSnapshots(): Flow<SnapshotResult> = flow {
@@ -63,7 +64,7 @@ internal class Restore(
         val time = measure {
             val list = try {
                 // get all available backups, they may not be usable
-                storagePlugin.getBackupSnapshotsForRestore().sortedByDescending { storedSnapshot ->
+                backend.getBackupSnapshotsForRestore().sortedByDescending { storedSnapshot ->
                     storedSnapshot.timestamp
                 }.map { storedSnapshot ->
                     // as long as snapshot is null, it can't be used for restore
