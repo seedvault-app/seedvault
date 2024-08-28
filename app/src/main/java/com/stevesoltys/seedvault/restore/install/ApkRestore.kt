@@ -153,6 +153,13 @@ internal class ApkRestore(
         packageName: String,
         metadata: PackageMetadata,
     ) {
+        // show that app is in progress, before we start downloading stuff
+        mInstallResult.update {
+            it.update(packageName) { result ->
+                result.copy(state = IN_PROGRESS)
+            }
+        }
+
         // cache the APK and get its hash
         val (cachedApk, sha256) = cacheApk(backup.version, backup.token, backup.salt, packageName)
 

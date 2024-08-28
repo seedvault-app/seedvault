@@ -198,6 +198,13 @@ internal class ApkBackupRestoreTest : TransportTest() {
                 assertFalse(it.hasFailed)
                 assertEquals(1, it.total)
                 assertEquals(1, it.list.size)
+                assertEquals(IN_PROGRESS, it.installResults[packageName]?.state)
+                assertFalse(it.isFinished)
+            }
+            awaitItem().also {
+                assertFalse(it.hasFailed)
+                assertEquals(1, it.total)
+                assertEquals(1, it.list.size)
                 assertEquals(SUCCEEDED, it.installResults[packageName]?.state)
                 assertFalse(it.isFinished)
             }
