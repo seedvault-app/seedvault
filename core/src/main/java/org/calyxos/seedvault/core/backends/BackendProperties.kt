@@ -5,10 +5,10 @@
 
 package org.calyxos.seedvault.core.backends
 
-import android.annotation.WorkerThread
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
+import androidx.annotation.WorkerThread
 import at.bitfire.dav4jvm.exception.HttpException
 import java.io.IOException
 

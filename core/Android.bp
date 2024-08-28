@@ -1,0 +1,35 @@
+//
+// SPDX-FileCopyrightText: 2021 The Calyx Institute
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_library {
+    name: "seedvault-lib-core",
+    sdk_version: "current",
+    srcs: [
+        "src/main/java/**/*.kt",
+        "src/main/java/**/*.java",
+    ],
+    exclude_srcs: [
+        "src/main/java/org/calyxos/seedvault/core/backends/BackendTest.kt",
+    ],
+    static_libs: [
+        "androidx.core_core-ktx",
+        "androidx.documentfile_documentfile",
+        "kotlinx-coroutines-android",
+        "kotlinx-coroutines-core",
+        "seedvault-lib-kotlin-logging-jvm",
+        "seedvault-lib-slf4j-api",
+        // WebDAV
+        "seedvault-lib-dav4jvm",
+        "seedvault-lib-okhttp",
+        "okio-lib",
+    ],
+    manifest: "src/main/AndroidManifest.xml",
+    optimize: {
+        enabled: false,
+    },
+    kotlincflags: [
+        "-opt-in=kotlin.RequiresOptIn",
+    ],
+}

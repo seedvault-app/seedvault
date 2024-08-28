@@ -36,17 +36,17 @@ android {
 dependencies {
     val aospLibs: FileTree by rootProject.extra
     compileOnly(aospLibs)
-    compileOnly("org.ogce:xpp3:1.1.6")
     compileOnly(kotlin("test"))
     implementation(libs.bundles.kotlin)
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.core.ktx)
-    // implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("okio-jvm-3.7.0.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
-    implementation("io.github.oshai:kotlin-logging-jvm:6.0.3")
-    implementation("org.slf4j:slf4j-simple:2.0.3")
+    implementation(libs.squareup.okio)
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
 
     testImplementation(kotlin("test"))
     testImplementation("org.ogce:xpp3:1.1.6")
+    testImplementation("org.slf4j:slf4j-simple:2.0.3")
 }

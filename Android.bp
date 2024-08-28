@@ -26,7 +26,8 @@ android_app {
         "com.google.android.material_material",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
-        // storage backup lib
+        // our own gradle module libs
+        "seedvault-lib-core",
         "seedvault-lib-storage",
         // koin
         "seedvault-lib-koin-core-jvm", // did not manage to add this as transitive dependency
@@ -36,7 +37,6 @@ android_app {
         // WebDAV
         "seedvault-lib-dav4jvm",
         "seedvault-lib-okhttp",
-        "seedvault-lib-okio",
     ],
     manifest: "app/src/main/AndroidManifest.xml",
 

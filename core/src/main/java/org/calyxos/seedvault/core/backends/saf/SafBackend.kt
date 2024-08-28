@@ -29,7 +29,6 @@ import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
-import org.calyxos.seedvault.core.getBackendContext
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -41,17 +40,13 @@ internal const val ROOT_ID_DEVICE = "primary"
 private const val DEBUG_LOG = true
 
 public class SafBackend(
-    private val appContext: Context,
+    private val context: Context,
     private val safProperties: SafProperties,
     root: String = DIRECTORY_ROOT,
 ) : Backend {
 
     private val log = KotlinLogging.logger {}
 
-    /**
-     * Attention: This context might be from a different user. Use with care.
-     */
-    private val context: Context get() = appContext.getBackendContext { safProperties.isUsb }
     private val cache = DocumentFileCache(context, safProperties.getDocumentFile(context), root)
 
     override suspend fun test(): Boolean {

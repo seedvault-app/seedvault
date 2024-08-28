@@ -14,9 +14,3 @@ java_import {
     jars: ["okhttp-4.12.0.jar"],
     sdk_version: "current",
 }
-
-java_import {
-    name: "seedvault-lib-okio",
-    jars: ["okio-jvm-3.7.0.jar"],
-    sdk_version: "current",
-}

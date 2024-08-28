@@ -94,9 +94,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.google.protobuf.javalite)
     implementation(libs.google.tink.android)
-    // TODO include via gradle and AOSP
-    //  https://android.googlesource.com/platform/external/okio/+/refs/tags/android-14.0.0_r53/CHANGELOG.md
-    implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("okio-jvm-3.7.0.jar"))
 
     ksp(group = "androidx.room", name = "room-compiler", version = libs.versions.room.get())
     lintChecks(libs.thirdegg.lint.rules)

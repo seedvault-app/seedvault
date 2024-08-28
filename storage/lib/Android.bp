@@ -19,6 +19,7 @@ android_library {
         local_include_dirs: ["src/main/proto"],
     },
     static_libs: [
+        "seedvault-lib-core",
         "seedvault-lib-tink-android",
         "libprotobuf-java-lite",
         "androidx.core_core-ktx",

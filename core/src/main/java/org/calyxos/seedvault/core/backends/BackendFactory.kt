@@ -12,8 +12,10 @@ import org.calyxos.seedvault.core.backends.webdav.WebDavBackend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 public class BackendFactory(
-    private val context: Context,
+    private val contextGetter: () -> Context,
 ) {
-    public fun createSafBackend(config: SafProperties): Backend = SafBackend(context, config)
+    public fun createSafBackend(config: SafProperties): Backend =
+        SafBackend(contextGetter(), config)
+
     public fun createWebDavBackend(config: WebDavConfig): Backend = WebDavBackend(config)
 }

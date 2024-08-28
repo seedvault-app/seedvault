@@ -40,6 +40,10 @@ dokka = "1.9.20" # Dokka has no releases after 1.9.20
 # Lint versions
 lint-rules = { strictly = "0.1.0" }
 
+# Logging libs (check versions at /libs)
+logging = { strictly = "6.0.3" }
+slf4j-api = { strictly = "2.0.16" }
+
 # Google versions
 # https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-15.0.0_r1/java/pom.xml#7
 protobuf = { strictly = "3.21.12" }
@@ -74,6 +78,9 @@ androidx-documentfile = { strictly = "1.1.0-alpha01" } # 1.1.0-alpha02 in AOSP b
 # https://android.googlesource.com/platform/prebuilts/sdk/+/android-15.0.0_r1/current/androidx/m2repository/androidx/work/work-runtime-ktx?autodive=0
 androidx-work-runtime = { strictly = "2.10.0-alpha02" }
 
+# https://android.googlesource.com/platform/external/okio/+/refs/tags/android-14.0.0_r53/CHANGELOG.md
+squareup-okio = { strictly = "3.7.0" }
+
 [libraries]
 # Kotlin standard dependencies
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -104,6 +111,10 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "androidx-documentfile" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work-runtime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+
+squareup-okio = { module= "com.squareup.okio:okio", version.ref = "squareup-okio" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlin-stdlib-common"]

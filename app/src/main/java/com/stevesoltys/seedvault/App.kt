@@ -20,13 +20,13 @@ import android.os.UserManager
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.WorkManager
 import com.google.android.material.color.DynamicColors
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.saf.storagePluginModuleSaf
+import com.stevesoltys.seedvault.backend.webdav.storagePluginModuleWebDav
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.metadataModule
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.saf.storagePluginModuleSaf
-import com.stevesoltys.seedvault.backend.webdav.storagePluginModuleWebDav
 import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.restore.restoreUiModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
@@ -63,7 +63,14 @@ open class App : Application() {
         single { SettingsManager(this@App) }
         single { BackupNotificationManager(this@App) }
         single { BackendManager(this@App, get(), get()) }
-        single { BackendFactory(this@App) }
+        single {
+            BackendFactory {
+                // uses context of the device's main user to be able to access USB storage
+                this@App.applicationContext.getStorageContext {
+                    get<SettingsManager>().getSafProperties()?.isUsb == true
+                }
+            }
+        }
         single { BackupStateManager(this@App) }
         single { Clock() }
         factory<IBackupManager> { IBackupManager.Stub.asInterface(getService(BACKUP_SERVICE)) }
@@ -215,6 +222,10 @@ fun <T> permitDiskReads(func: () -> T): T {
     }
 }
 
+/**
+ * Hack to allow other profiles access to USB backend.
+ * @return the context of the device's main user, so use with great care!
+ */
 @Suppress("MissingPermission")
 fun Context.getStorageContext(isUsbStorage: () -> Boolean): Context {
     if (checkSelfPermission(INTERACT_ACROSS_USERS_FULL) == PERMISSION_GRANTED && isUsbStorage()) {

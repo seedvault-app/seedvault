@@ -8,3 +8,15 @@ java_import {
     jars: ["kotlin-bip39-jvm-1.0.6.jar"],
     sdk_version: "current",
 }
+
+java_import {
+    name: "seedvault-lib-kotlin-logging-jvm",
+    jars: ["kotlin-logging-jvm-6.0.3.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-slf4j-api",
+    jars: ["slf4j-api-2.0.16.jar"],
+    sdk_version: "current",
+}
