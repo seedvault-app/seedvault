@@ -39,6 +39,7 @@ internal class SmallFileBackupIntegrationTest {
     private val filesCache: FilesCache = mockk()
     private val mac: Mac = mockk()
     private val chunksCache: ChunksCache = mockk()
+    private val backendGetter: () -> Backend = mockk()
     private val backend: Backend = mockk()
     private val androidId: String = getRandomString()
 
@@ -46,7 +47,7 @@ internal class SmallFileBackupIntegrationTest {
         streamCrypto = StreamCrypto,
         streamKey = Random.nextBytes(KEY_SIZE_BYTES),
         chunksCache = chunksCache,
-        backend = backend,
+        backendGetter = backendGetter,
         androidId = androidId,
     )
     private val zipChunker = ZipChunker(
@@ -58,6 +59,7 @@ internal class SmallFileBackupIntegrationTest {
 
     init {
         mockLog()
+        every { backendGetter() } returns backend
     }
 
     /**

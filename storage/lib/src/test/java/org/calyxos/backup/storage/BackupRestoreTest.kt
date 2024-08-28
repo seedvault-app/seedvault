@@ -14,6 +14,7 @@ import android.text.format.Formatter
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -472,6 +473,39 @@ internal class BackupRestoreTest {
                     name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
                 )
             )
+        }
+    }
+
+    @Test
+    fun testBackupUpdatesBackend(): Unit = runBlocking {
+        val backendGetterNew: () -> Backend = mockk()
+        val backend1: Backend = mockk()
+        val backend2: Backend = mockk()
+        val backup = Backup(
+            context = context,
+            db = db,
+            fileScanner = fileScanner,
+            backendGetter = backendGetterNew,
+            androidId = androidId,
+            keyManager = keyManager,
+            cacheRepopulater = cacheRepopulater,
+        )
+        every { backendGetterNew() } returnsMany listOf(backend1, backend2)
+
+        coEvery { backend1.list(any(), Blob::class, callback = any()) } just Runs
+        every { chunksCache.areAllAvailableChunksCached(db, emptySet()) } returns true
+        every { fileScanner.getFiles() } returns FileScannerResult(emptyList(), emptyList())
+        every { filesCache.getByUri(any()) } returns null // nothing is cached, all is new
+
+        backup.runBackup(null)
+
+        // second run uses new backend
+        coEvery { backend2.list(any(), Blob::class, callback = any()) } just Runs
+        backup.runBackup(null)
+
+        coVerifyOrder {
+            backend1.list(any(), Blob::class, callback = any())
+            backend2.list(any(), Blob::class, callback = any())
         }
     }
 

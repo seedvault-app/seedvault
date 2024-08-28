@@ -32,6 +32,7 @@ internal class ChunkWriterTest {
 
     private val streamCrypto: StreamCrypto = mockk()
     private val chunksCache: ChunksCache = mockk()
+    private val backendGetter: () -> Backend = mockk()
     private val backend: Backend = mockk()
     private val androidId: String = getRandomString()
     private val streamKey: ByteArray = Random.nextBytes(KEY_SIZE_BYTES)
@@ -42,7 +43,7 @@ internal class ChunkWriterTest {
         streamCrypto = streamCrypto,
         streamKey = streamKey,
         chunksCache = chunksCache,
-        backend = backend,
+        backendGetter = backendGetter,
         androidId = androidId,
         bufferSize = Random.nextInt(1, 42),
     )
@@ -53,6 +54,7 @@ internal class ChunkWriterTest {
 
     init {
         mockLog()
+        every { backendGetter() } returns backend
     }
 
     @Test

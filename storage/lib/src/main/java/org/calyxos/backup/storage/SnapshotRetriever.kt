@@ -17,7 +17,7 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 
 internal class SnapshotRetriever(
-    private val storagePlugin: () -> Backend,
+    private val backendGetter: () -> Backend,
     private val streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
@@ -27,7 +27,7 @@ internal class SnapshotRetriever(
         InvalidProtocolBufferException::class,
     )
     suspend fun getSnapshot(streamKey: ByteArray, storedSnapshot: StoredSnapshot): BackupSnapshot {
-        return storagePlugin().load(storedSnapshot.snapshotHandle).use { inputStream ->
+        return backendGetter().load(storedSnapshot.snapshotHandle).use { inputStream ->
             val version = inputStream.readVersion()
             val timestamp = storedSnapshot.timestamp
             val ad = streamCrypto.getAssociatedDataForSnapshot(timestamp, version.toByte())

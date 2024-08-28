@@ -74,7 +74,8 @@ internal class Backup(
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }
-    private val chunkWriter = ChunkWriter(streamCrypto, streamKey, chunksCache, backend, androidId)
+    private val chunkWriter =
+        ChunkWriter(streamCrypto, streamKey, chunksCache, backendGetter, androidId)
     private val hasMediaAccessPerm =
         context.checkSelfPermission(ACCESS_MEDIA_LOCATION) == PERMISSION_GRANTED
     private val fileBackup = FileBackup(
