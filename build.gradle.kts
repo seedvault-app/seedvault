@@ -17,7 +17,7 @@ plugins {
 }
 
 val aospLibs by extra {
-    fileTree("$rootDir/app/libs") { // TODO move libs to root
+    fileTree("$rootDir/libs/aosp") {
         // For more information about this module:
         // https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-11.0.0_r3/Android.bp#507
         // framework_intermediates/classes-header.jar works for gradle build as well,

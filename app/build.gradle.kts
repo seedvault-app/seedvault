@@ -187,7 +187,7 @@ dependencies {
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile::class) {
-        options.compilerArgs.add("-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar")
+        options.compilerArgs.add("-Xbootclasspath/p:libs/aosp/android.jar:libs/aosp/libcore.jar")
     }
 }
 
