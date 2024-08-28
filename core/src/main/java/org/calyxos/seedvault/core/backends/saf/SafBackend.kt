@@ -14,6 +14,7 @@ import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import android.provider.DocumentsContract.renameDocument
 import androidx.core.database.getIntOrNull
 import androidx.documentfile.provider.DocumentFile
+import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
@@ -37,6 +38,8 @@ import kotlin.reflect.KClass
 internal const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
 internal const val ROOT_ID_DEVICE = "primary"
 
+private const val DEBUG_LOG = true
+
 public class SafBackend(
     private val appContext: Context,
     private val safProperties: SafProperties,
@@ -52,10 +55,12 @@ public class SafBackend(
     private val cache = DocumentFileCache(context, safProperties.getDocumentFile(context), root)
 
     override suspend fun test(): Boolean {
+        log.debugLog { "test()" }
         return cache.getRootFile().isDirectory
     }
 
     override suspend fun getFreeSpace(): Long? {
+        log.debugLog { "getFreeSpace()" }
         val rootId = safProperties.rootId ?: return null
         val authority = safProperties.uri.authority
         // using DocumentsContract#buildRootUri(String, String) with rootId directly doesn't work
@@ -82,12 +87,14 @@ public class SafBackend(
     }
 
     override suspend fun save(handle: FileHandle): OutputStream {
-        val file = cache.getFile(handle)
+        log.debugLog { "save($handle)" }
+        val file = cache.getOrCreateFile(handle)
         return file.getOutputStream(context.contentResolver)
     }
 
     override suspend fun load(handle: FileHandle): InputStream {
-        val file = cache.getFile(handle)
+        log.debugLog { "load($handle)" }
+        val file = cache.getOrCreateFile(handle)
         return file.getInputStream(context.contentResolver)
     }
 
@@ -101,10 +108,12 @@ public class SafBackend(
         if (LegacyAppBackupFile.IconsFile::class in fileTypes) throw UnsupportedOperationException()
         if (LegacyAppBackupFile.Blob::class in fileTypes) throw UnsupportedOperationException()
 
+        log.debugLog { "list($topLevelFolder, $fileTypes)" }
+
         val folder = if (topLevelFolder == null) {
             cache.getRootFile()
         } else {
-            cache.getFile(topLevelFolder)
+            cache.getOrCreateFile(topLevelFolder)
         }
         // limit depth based on wanted types and if top-level folder is given
         var depth = if (FileBackupFileType.Blob::class in fileTypes) 3 else 2
@@ -161,12 +170,16 @@ public class SafBackend(
     }
 
     override suspend fun remove(handle: FileHandle) {
-        val file = cache.getFile(handle)
-        if (!file.delete()) throw IOException("could not delete ${handle.relativePath}")
+        log.debugLog { "remove($handle)" }
+        cache.getFile(handle)?.let { file ->
+            if (!file.delete()) throw IOException("could not delete ${handle.relativePath}")
+            cache.removeFromCache(handle)
+        }
     }
 
     override suspend fun rename(from: TopLevelFolder, to: TopLevelFolder) {
-        val fromFile = cache.getFile(from)
+        log.debugLog { "rename($from, ${to.name})" }
+        val fromFile = cache.getOrCreateFile(from)
         // don't use fromFile.renameTo(to.name) as that creates "${to.name} (1)"
         val newUri = renameDocument(context.contentResolver, fromFile.uri, to.name)
             ?: throw IOException("could not rename ${from.relativePath}")
@@ -179,16 +192,28 @@ public class SafBackend(
     }
 
     override suspend fun removeAll() {
-        cache.getRootFile().listFilesBlocking(context).forEach {
-            it.delete()
+        log.debugLog { "removeAll()" }
+        try {
+            cache.getRootFile().listFilesBlocking(context).forEach { file ->
+                log.debugLog { "  remove ${file.uri}" }
+                file.delete()
+            }
+        } finally {
+            cache.clearAll()
         }
     }
 
     override val providerPackageName: String? by lazy {
+        log.debugLog { "providerPackageName" }
         val authority = safProperties.uri.authority ?: return@lazy null
         val providerInfo = context.packageManager.resolveContentProvider(authority, 0)
             ?: return@lazy null
+        log.debugLog { "  ${providerInfo.packageName}" }
         providerInfo.packageName
     }
 
+}
+
+private inline fun KLogger.debugLog(crossinline block: () -> String) {
+    if (DEBUG_LOG) debug { block() }
 }

@@ -17,4 +17,9 @@ public class WebDavBackendTest : BackendTest() {
     public fun `test write, list, read, rename, delete`(): Unit = runBlocking {
         testWriteListReadRenameDelete()
     }
+
+    @Test
+    public fun `test remove, create, write file`(): Unit = runBlocking {
+        testRemoveCreateWriteFile()
+    }
 }

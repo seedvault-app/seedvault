@@ -11,6 +11,7 @@ import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
+import java.util.concurrent.ConcurrentHashMap
 
 internal class DocumentFileCache(
     private val context: Context,
@@ -18,7 +19,7 @@ internal class DocumentFileCache(
     private val root: String,
 ) {
 
-    private val cache = mutableMapOf<String, DocumentFile>()
+    private val cache = ConcurrentHashMap<String, DocumentFile>()
 
     internal suspend fun getRootFile(): DocumentFile {
         return cache.getOrPut(root) {
@@ -26,24 +27,53 @@ internal class DocumentFileCache(
         }
     }
 
-    internal suspend fun getFile(fh: FileHandle): DocumentFile = when (fh) {
+    internal suspend fun getOrCreateFile(fh: FileHandle): DocumentFile = when (fh) {
         is TopLevelFolder -> cache.getOrPut("$root/${fh.relativePath}") {
             getRootFile().getOrCreateDirectory(context, fh.name)
         }
 
         is LegacyAppBackupFile -> cache.getOrPut("$root/${fh.relativePath}") {
-            getFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
-        }
+                getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            }
 
         is FileBackupFileType.Blob -> {
             val subFolderName = fh.name.substring(0, 2)
             cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
-                getFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
+                getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
             }.getOrCreateFile(context, fh.name)
         }
 
         is FileBackupFileType.Snapshot -> {
-            getFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
         }
+    }
+
+    internal suspend fun getFile(fh: FileHandle): DocumentFile? = when (fh) {
+        is TopLevelFolder -> cache.getOrElse("$root/${fh.relativePath}") {
+            getRootFile().findFileBlocking(context, fh.name)
+        }
+
+        is LegacyAppBackupFile -> cache.getOrElse("$root/${fh.relativePath}") {
+            getFile(fh.topLevelFolder)?.findFileBlocking(context, fh.name)
+        }
+
+        is FileBackupFileType.Blob -> {
+            val subFolderName = fh.name.substring(0, 2)
+            cache.getOrElse("$root/${fh.topLevelFolder.name}/$subFolderName") {
+                getFile(fh.topLevelFolder)?.findFileBlocking(context, subFolderName)
+            }?.findFileBlocking(context, fh.name)
+        }
+
+        is FileBackupFileType.Snapshot -> {
+            getFile(fh.topLevelFolder)?.findFileBlocking(context, fh.name)
+        }
+    }
+
+    internal fun removeFromCache(fh: FileHandle) {
+        cache.remove("$root/${fh.relativePath}")
+    }
+
+    internal fun clearAll() {
+        cache.clear()
     }
 }

@@ -25,21 +25,23 @@ class SafBackendTest : BackendTest(), KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val settingsManager by inject<SettingsManager>()
-    override val plugin: Backend
-        get() {
-            val safStorage = settingsManager.getSafProperties() ?: error("No SAF storage")
-            val safProperties = SafProperties(
-                config = safStorage.config,
-                name = safStorage.name,
-                isUsb = safStorage.isUsb,
-                requiresNetwork = safStorage.requiresNetwork,
-                rootId = safStorage.rootId,
-            )
-            return SafBackend(context, safProperties, ".SeedvaultTest")
-        }
+    private val safStorage = settingsManager.getSafProperties() ?: error("No SAF storage")
+    private val safProperties = SafProperties(
+        config = safStorage.config,
+        name = safStorage.name,
+        isUsb = safStorage.isUsb,
+        requiresNetwork = safStorage.requiresNetwork,
+        rootId = safStorage.rootId,
+    )
+    override val plugin: Backend = SafBackend(context, safProperties, ".SeedvaultTest")
 
     @Test
-    fun test(): Unit = runBlocking {
+    fun `test write list read rename delete`(): Unit = runBlocking {
         testWriteListReadRenameDelete()
+    }
+
+    @Test
+    fun `test remove create write file`(): Unit = runBlocking {
+        testRemoveCreateWriteFile()
     }
 }
