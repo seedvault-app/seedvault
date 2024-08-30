@@ -112,11 +112,6 @@ android {
                         option("lite")
                     }
                 }
-                task.builtins {
-                    id("kotlin") {
-                        option("lite")
-                    }
-                }
             }
         }
     }
@@ -160,7 +155,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.google.material)
 
-    implementation(libs.google.protobuf.kotlin.lite)
+    implementation(libs.google.protobuf.javalite)
     implementation(libs.google.tink.android)
 
     /**

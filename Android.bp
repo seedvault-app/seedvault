@@ -19,7 +19,7 @@ android_app {
     },
     static_libs: [
         "kotlin-stdlib-jdk8",
-        "libprotobuf-kotlin-lite",
+        "libprotobuf-java-lite",
         "androidx.core_core-ktx",
         "androidx.fragment_fragment-ktx",
         "androidx.activity_activity-ktx",
