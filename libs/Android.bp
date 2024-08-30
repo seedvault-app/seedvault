@@ -3,6 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+android_library_import {
+    name: "seedvault-lib-zstd-jni",
+    aars: ["zstd-jni-1.5.6-5.aar"],
+    sdk_version: "current",
+    extract_jni: true,
+}
+
 java_import {
     name: "seedvault-lib-kotlin-bip39",
     jars: ["kotlin-bip39-jvm-1.0.6.jar"],

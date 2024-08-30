@@ -175,6 +175,7 @@ dependencies {
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
+    implementation(fileTree("${rootProject.rootDir}/libs").include("zstd-jni-1.5.6-5.aar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.6.jar"))
 
     implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))

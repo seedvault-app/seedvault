@@ -32,6 +32,7 @@ android_app {
         "com.google.android.material_material",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
+        "seedvault-lib-zstd-jni",
         // our own gradle module libs
         "seedvault-lib-core",
         "seedvault-lib-storage",
@@ -44,6 +45,7 @@ android_app {
         "seedvault-lib-dav4jvm",
         "seedvault-lib-okhttp",
     ],
+    use_embedded_native_libs: true,
     manifest: "app/src/main/AndroidManifest.xml",
 
     platform_apis: true,
