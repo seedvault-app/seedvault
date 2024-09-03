@@ -150,7 +150,7 @@ internal class FullBackupTest : BackupTest() {
         every { inputFactory.getInputStream(data) } returns inputStream
         expectInitializeOutputStream()
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
         expectClearState()
 
@@ -204,7 +204,7 @@ internal class FullBackupTest : BackupTest() {
             every { inputFactory.getInputStream(data) } returns inputStream
             expectInitializeOutputStream()
             every { settingsManager.isQuotaUnlimited() } returns false
-            every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+            every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
             every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
             every { encryptedOutputStream.write(any<ByteArray>()) } throws IOException()
             expectClearState()
@@ -345,7 +345,7 @@ internal class FullBackupTest : BackupTest() {
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {
         every { inputStream.read(any(), any(), numBytes) } returns readBytes
-        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
         every { encryptedOutputStream.write(any<ByteArray>()) } just Runs
     }
 

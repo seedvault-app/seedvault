@@ -25,7 +25,7 @@ internal class MetadataWriterImpl(private val crypto: Crypto) : MetadataWriter {
     @Throws(IOException::class)
     override fun write(metadata: BackupMetadata, outputStream: OutputStream) {
         outputStream.write(ByteArray(1).apply { this[0] = metadata.version })
-        crypto.newEncryptingStream(outputStream, getAD(metadata.version, metadata.token)).use {
+        crypto.newEncryptingStreamV1(outputStream, getAD(metadata.version, metadata.token)).use {
             it.write(encode(metadata))
         }
     }

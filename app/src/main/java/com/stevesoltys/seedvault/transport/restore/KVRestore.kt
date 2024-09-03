@@ -161,7 +161,7 @@ internal class KVRestore(
         backend.load(handle).use { inputStream ->
             headerReader.readVersion(inputStream, state.version)
             val ad = getADForKV(VERSION, packageName)
-            crypto.newDecryptingStream(inputStream, ad).use { decryptedStream ->
+            crypto.newDecryptingStreamV1(inputStream, ad).use { decryptedStream ->
                 GZIPInputStream(decryptedStream).use { gzipStream ->
                     dbManager.getDbOutputStream(packageName).use { outputStream ->
                         gzipStream.copyTo(outputStream)

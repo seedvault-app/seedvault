@@ -5,8 +5,10 @@
 
 package com.stevesoltys.seedvault.crypto
 
+import android.content.Context
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
+import io.mockk.mockk
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
@@ -19,13 +21,15 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import kotlin.random.Random
 
+@Suppress("DEPRECATION")
 @TestInstance(PER_METHOD)
 class CryptoIntegrationTest {
 
+    private val context = mockk<Context>()
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val crypto = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader)
 
     private val cleartext = Random.nextBytes(Random.nextInt(1, 422300))
 
@@ -38,7 +42,18 @@ class CryptoIntegrationTest {
     }
 
     @Test
-    fun `decrypting encrypted cleartext works`() {
+    fun `decrypting encrypted cleartext works v1`() {
+        val ad = Random.nextBytes(42)
+        val outputStream = ByteArrayOutputStream()
+        crypto.newEncryptingStreamV1(outputStream, ad).use { it.write(cleartext) }
+        val inputStream = ByteArrayInputStream(outputStream.toByteArray())
+        crypto.newDecryptingStreamV1(inputStream, ad).use {
+            assertReadEquals(cleartext, it)
+        }
+    }
+
+    @Test
+    fun `decrypting encrypted cleartext works v2`() {
         val ad = Random.nextBytes(42)
         val outputStream = ByteArrayOutputStream()
         crypto.newEncryptingStream(outputStream, ad).use { it.write(cleartext) }
@@ -49,7 +64,19 @@ class CryptoIntegrationTest {
     }
 
     @Test
-    fun `decrypting encrypted cleartext fails with different AD`() {
+    fun `decrypting encrypted cleartext fails with different AD v1`() {
+        val outputStream = ByteArrayOutputStream()
+        crypto.newEncryptingStreamV1(outputStream, Random.nextBytes(42)).use { it.write(cleartext) }
+        val inputStream = ByteArrayInputStream(outputStream.toByteArray())
+        assertThrows(IOException::class.java) {
+            crypto.newDecryptingStreamV1(inputStream, Random.nextBytes(41)).use {
+                it.read()
+            }
+        }
+    }
+
+    @Test
+    fun `decrypting encrypted cleartext fails with different AD v2`() {
         val outputStream = ByteArrayOutputStream()
         crypto.newEncryptingStream(outputStream, Random.nextBytes(42)).use { it.write(cleartext) }
         val inputStream = ByteArrayInputStream(outputStream.toByteArray())

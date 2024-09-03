@@ -14,6 +14,7 @@ android_library {
         "src/main/java/org/calyxos/seedvault/core/backends/BackendTest.kt",
     ],
     static_libs: [
+        "seedvault-lib-tink-android",
         "androidx.core_core-ktx",
         "androidx.documentfile_documentfile",
         "kotlinx-coroutines-android",

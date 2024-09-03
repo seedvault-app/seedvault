@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.google.tink.android)
     implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
     implementation(libs.squareup.okio)
     implementation(libs.kotlin.logging)

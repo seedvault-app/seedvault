@@ -11,6 +11,8 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
@@ -18,8 +20,6 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
@@ -50,7 +50,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val cryptoImpl = CryptoImpl(context, keyManager, cipherFactory, headerReader)
     private val dbManager = mockk<KvDbManager>()
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()

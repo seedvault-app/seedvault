@@ -56,7 +56,7 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         if (version == 0.toByte()) return readMetadataV0(inputStream, expectedToken)
 
         val metadataBytes = try {
-            crypto.newDecryptingStream(inputStream, getAD(version, expectedToken)).readBytes()
+            crypto.newDecryptingStreamV1(inputStream, getAD(version, expectedToken)).readBytes()
         } catch (e: GeneralSecurityException) {
             throw DecryptionFailedException(e)
         }

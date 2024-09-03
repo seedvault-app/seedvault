@@ -119,7 +119,7 @@ internal class FullRestore(
                     val inputStream = backend.load(handle)
                     val version = headerReader.readVersion(inputStream, state.version)
                     val ad = getADForFull(version, packageName)
-                    state.inputStream = crypto.newDecryptingStream(inputStream, ad)
+                    state.inputStream = crypto.newDecryptingStreamV1(inputStream, ad)
                 }
             } catch (e: IOException) {
                 Log.w(TAG, "Error getting input stream for $packageName", e)

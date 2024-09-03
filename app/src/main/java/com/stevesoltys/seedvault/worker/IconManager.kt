@@ -49,7 +49,7 @@ internal class IconManager(
     fun uploadIcons(token: Long, outputStream: OutputStream) {
         Log.d(TAG, "Start uploading icons")
         val packageManager = context.packageManager
-        crypto.newEncryptingStream(outputStream, getAD(VERSION, token)).use { cryptoStream ->
+        crypto.newEncryptingStreamV1(outputStream, getAD(VERSION, token)).use { cryptoStream ->
             ZipOutputStream(cryptoStream).use { zip ->
                 zip.setLevel(BEST_SPEED)
                 val entries = mutableSetOf<String>()
@@ -89,7 +89,7 @@ internal class IconManager(
         if (!folder.isDirectory && !folder.mkdirs())
             throw IOException("Can't create cache folder for icons")
         val set = mutableSetOf<String>()
-        crypto.newDecryptingStream(inputStream, getAD(version, token)).use { cryptoStream ->
+        crypto.newDecryptingStreamV1(inputStream, getAD(version, token)).use { cryptoStream ->
             ZipInputStream(cryptoStream).use { zip ->
                 var entry = zip.nextEntry
                 while (entry != null) {

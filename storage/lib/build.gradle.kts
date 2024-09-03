@@ -93,7 +93,6 @@ dependencies {
     implementation(libs.google.material)
     implementation(libs.androidx.room.runtime)
     implementation(libs.google.protobuf.javalite)
-    implementation(libs.google.tink.android)
 
     ksp(group = "androidx.room", name = "room-compiler", version = libs.versions.room.get())
     lintChecks(libs.thirdegg.lint.rules)

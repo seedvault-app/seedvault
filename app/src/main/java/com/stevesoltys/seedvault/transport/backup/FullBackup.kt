@@ -139,7 +139,7 @@ internal class FullBackup(
             // store version header
             val state = this.state ?: throw AssertionError()
             outputStream.write(ByteArray(1) { VERSION })
-            crypto.newEncryptingStream(outputStream, getADForFull(VERSION, state.packageName))
+            crypto.newEncryptingStreamV1(outputStream, getADForFull(VERSION, state.packageName))
         } // this lambda is only called before we actually write backup data the first time
         return TRANSPORT_OK
     }

@@ -12,6 +12,8 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.RestoreDescription
 import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
@@ -20,8 +22,6 @@ import com.stevesoltys.seedvault.header.MAX_SEGMENT_CLEARTEXT_LENGTH
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.backup.FullBackup
 import com.stevesoltys.seedvault.transport.backup.InputFactory
@@ -59,7 +59,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val cryptoImpl = CryptoImpl(context, keyManager, cipherFactory, headerReader)
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dbManager = TestKvDbManager()

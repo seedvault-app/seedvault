@@ -259,7 +259,7 @@ internal class KVBackup(
         backend.save(handle).use { outputStream ->
             outputStream.write(ByteArray(1) { VERSION })
             val ad = getADForKV(VERSION, packageName)
-            crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->
+            crypto.newEncryptingStreamV1(outputStream, ad).use { encryptedStream ->
                 GZIPOutputStream(encryptedStream).use { gZipStream ->
                     dbManager.getDbInputStream(packageName).use { inputStream ->
                         inputStream.copyTo(gZipStream)

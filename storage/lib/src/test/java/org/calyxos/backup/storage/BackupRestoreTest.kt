@@ -33,8 +33,6 @@ import org.calyxos.backup.storage.backup.ChunksCacheRepopulater
 import org.calyxos.backup.storage.content.ContentFile
 import org.calyxos.backup.storage.content.DocFile
 import org.calyxos.backup.storage.content.MediaFile
-import org.calyxos.backup.storage.crypto.Hkdf.ALGORITHM_HMAC
-import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
 import org.calyxos.backup.storage.db.CachedChunk
 import org.calyxos.backup.storage.db.CachedFile
 import org.calyxos.backup.storage.db.ChunksCache
@@ -48,6 +46,8 @@ import org.calyxos.backup.storage.scanner.FileScannerResult
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Snapshot
+import org.calyxos.seedvault.core.crypto.CoreCrypto.ALGORITHM_HMAC
+import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
 import org.calyxos.seedvault.core.crypto.KeyManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals

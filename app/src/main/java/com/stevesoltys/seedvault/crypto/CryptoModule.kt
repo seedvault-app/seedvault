@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.crypto
 
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import java.security.KeyStore
 
@@ -20,5 +21,5 @@ val cryptoModule = module {
         }
         KeyManagerImpl(keyStore)
     }
-    single<Crypto> { CryptoImpl(get(), get(), get()) }
+    single<Crypto> { CryptoImpl(androidContext(), get(), get(), get()) }
 }

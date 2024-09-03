@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.calyxos.backup.storage.crypto
+package org.calyxos.seedvault.core.crypto
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Test

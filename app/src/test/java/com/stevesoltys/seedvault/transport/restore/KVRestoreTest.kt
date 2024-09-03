@@ -105,7 +105,7 @@ internal class KVRestoreTest : RestoreTest() {
 
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } throws GeneralSecurityException()
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
         streamsGetClosed()
 
@@ -123,7 +123,7 @@ internal class KVRestoreTest : RestoreTest() {
 
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptInputStream
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()
@@ -148,7 +148,7 @@ internal class KVRestoreTest : RestoreTest() {
 
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptInputStream
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()

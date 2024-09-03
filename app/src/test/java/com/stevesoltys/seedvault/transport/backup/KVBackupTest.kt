@@ -233,7 +233,7 @@ internal class KVBackupTest : BackupTest() {
         coEvery { backend.save(handle) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
         val ad = getADForKV(VERSION, packageInfo.packageName)
-        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
         every { encryptedOutputStream.write(any<ByteArray>()) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.finishBackup())
@@ -304,7 +304,7 @@ internal class KVBackupTest : BackupTest() {
         coEvery { backend.save(handle) } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
         val ad = getADForKV(VERSION, packageInfo.packageName)
-        every { crypto.newEncryptingStream(outputStream, ad) } returns encryptedOutputStream
+        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
         every { encryptedOutputStream.write(any<ByteArray>()) } just Runs // gzip header
         every { encryptedOutputStream.write(any(), any(), any()) } just Runs // stream copy
         every { dbManager.getDbInputStream(packageName) } returns inputStream

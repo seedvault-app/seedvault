@@ -9,6 +9,8 @@ import android.app.backup.BackupTransport.NO_MORE_DATA
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
@@ -16,8 +18,6 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.BackendManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -135,7 +135,7 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } throws IOException()
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
@@ -151,7 +151,9 @@ internal class FullRestoreTest : RestoreTest() {
 
             coEvery { backend.load(handle) } returns inputStream
             every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-            every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
+            every {
+                crypto.newDecryptingStreamV1(inputStream, ad)
+            } throws GeneralSecurityException()
             every { fileDescriptor.close() } just Runs
 
             assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
@@ -217,7 +219,7 @@ internal class FullRestoreTest : RestoreTest() {
 
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptedInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         every { fileDescriptor.close() } just Runs
         every { inputStream.close() } just Runs
@@ -250,7 +252,7 @@ internal class FullRestoreTest : RestoreTest() {
     private fun initInputStream() {
         coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptedInputStream
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptedInputStream
     }
 
     private fun readAndEncryptInputStream(encryptedBytes: ByteArray) {
