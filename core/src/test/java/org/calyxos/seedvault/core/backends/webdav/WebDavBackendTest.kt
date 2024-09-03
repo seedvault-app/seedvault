@@ -11,7 +11,7 @@ import org.calyxos.seedvault.core.backends.BackendTest
 import kotlin.test.Test
 
 public class WebDavBackendTest : BackendTest() {
-    override val plugin: Backend = WebDavBackend(WebDavTestConfig.getConfig(), ".SeedvaultTest")
+    override val backend: Backend = WebDavBackend(WebDavTestConfig.getConfig(), ".SeedvaultTest")
 
     @Test
     public fun `test write, list, read, rename, delete`(): Unit = runBlocking {

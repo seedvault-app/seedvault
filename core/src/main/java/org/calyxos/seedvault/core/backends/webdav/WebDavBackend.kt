@@ -26,13 +26,17 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okio.BufferedSink
+import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
+import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.blobFolderRegex
 import org.calyxos.seedvault.core.backends.Constants.chunkFolderRegex
 import org.calyxos.seedvault.core.backends.Constants.chunkRegex
-import org.calyxos.seedvault.core.backends.Constants.folderRegex
-import org.calyxos.seedvault.core.backends.Constants.snapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.fileFolderRegex
+import org.calyxos.seedvault.core.backends.Constants.fileSnapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.repoIdRegex
 import org.calyxos.seedvault.core.backends.Constants.tokenRegex
 import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.backends.FileHandle
@@ -180,7 +184,9 @@ public class WebDavBackend(
         if (LegacyAppBackupFile.Blob::class in fileTypes) throw UnsupportedOperationException()
 
         // limit depth based on wanted types and if top-level folder is given
-        var depth = if (FileBackupFileType.Blob::class in fileTypes) 3 else 2
+        var depth = if (FileBackupFileType.Blob::class in fileTypes ||
+            AppBackupFileType.Blob::class in fileTypes
+        ) 3 else 2
         if (topLevelFolder != null) depth -= 1
 
         val location = if (topLevelFolder == null) {
@@ -204,19 +210,40 @@ public class WebDavBackend(
                     val name = response.hrefName()
                     val parentName = response.href.pathSegments[response.href.pathSegments.size - 2]
 
-                    if (LegacyAppBackupFile.Metadata::class in fileTypes) {
-                        if (name == FILE_BACKUP_METADATA && parentName.matches(tokenRegex)) {
-                            val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
+                    if (AppBackupFileType.Snapshot::class in fileTypes ||
+                        AppBackupFileType::class in fileTypes
+                    ) {
+                        val match = appSnapshotRegex.matchEntire(name)
+                        if (match != null && repoIdRegex.matches(parentName)) {
                             val size = response.properties.contentLength()
-                            callback(FileInfo(metadata, size))
-                            // we can find .backup.metadata files, so no need for nginx workaround
-                            tokenFolders.clear()
+                            val snapshot = AppBackupFileType.Snapshot(
+                                repoId = parentName,
+                                hash = match.groupValues[1],
+                            )
+                            callback(FileInfo(snapshot, size))
+                        }
+                    }
+                    if ((AppBackupFileType.Blob::class in fileTypes ||
+                            AppBackupFileType::class in fileTypes) && response.href.pathSize >= 3
+                    ) {
+                        val repoId = response.href.pathSegments[response.href.pathSegments.size - 3]
+                        if (repoIdRegex.matches(repoId) &&
+                            blobFolderRegex.matches(parentName)
+                        ) {
+                            if (chunkRegex.matches(name)) {
+                                val blob = AppBackupFileType.Blob(
+                                    repoId = repoId,
+                                    name = name,
+                                )
+                                val size = response.properties.contentLength()
+                                callback(FileInfo(blob, size))
+                            }
                         }
                     }
                     if (FileBackupFileType.Snapshot::class in fileTypes ||
                         FileBackupFileType::class in fileTypes
                     ) {
-                        val match = snapshotRegex.matchEntire(name)
+                        val match = fileSnapshotRegex.matchEntire(name)
                         if (match != null) {
                             val size = response.properties.contentLength()
                             val snapshot = FileBackupFileType.Snapshot(
@@ -231,7 +258,7 @@ public class WebDavBackend(
                     ) {
                         val androidIdSv =
                             response.href.pathSegments[response.href.pathSegments.size - 3]
-                        if (folderRegex.matches(androidIdSv) &&
+                        if (fileFolderRegex.matches(androidIdSv) &&
                             chunkFolderRegex.matches(parentName)
                         ) {
                             if (chunkRegex.matches(name)) {
@@ -242,6 +269,15 @@ public class WebDavBackend(
                                 val size = response.properties.contentLength()
                                 callback(FileInfo(blob, size))
                             }
+                        }
+                    }
+                    if (LegacyAppBackupFile.Metadata::class in fileTypes) {
+                        if (name == FILE_BACKUP_METADATA && parentName.matches(tokenRegex)) {
+                            val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
+                            val size = response.properties.contentLength()
+                            callback(FileInfo(metadata, size))
+                            // we can find .backup.metadata files, so no need for nginx workaround
+                            tokenFolders.clear()
                         }
                     }
                 }

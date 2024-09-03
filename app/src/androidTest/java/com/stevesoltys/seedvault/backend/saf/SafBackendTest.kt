@@ -33,7 +33,7 @@ class SafBackendTest : BackendTest(), KoinComponent {
         requiresNetwork = safStorage.requiresNetwork,
         rootId = safStorage.rootId,
     )
-    override val plugin: Backend = SafBackend(context, safProperties, ".SeedvaultTest")
+    override val backend: Backend = SafBackend(context, safProperties, ".SeedvaultTest")
 
     @Test
     fun `test write list read rename delete`(): Unit = runBlocking {

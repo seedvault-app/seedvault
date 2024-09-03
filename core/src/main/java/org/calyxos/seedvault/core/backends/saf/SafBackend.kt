@@ -16,13 +16,18 @@ import androidx.core.database.getIntOrNull
 import androidx.documentfile.provider.DocumentFile
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
+import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.blobFolderRegex
+import org.calyxos.seedvault.core.backends.Constants.blobRegex
 import org.calyxos.seedvault.core.backends.Constants.chunkFolderRegex
 import org.calyxos.seedvault.core.backends.Constants.chunkRegex
-import org.calyxos.seedvault.core.backends.Constants.folderRegex
-import org.calyxos.seedvault.core.backends.Constants.snapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.fileFolderRegex
+import org.calyxos.seedvault.core.backends.Constants.fileSnapshotRegex
+import org.calyxos.seedvault.core.backends.Constants.repoIdRegex
 import org.calyxos.seedvault.core.backends.Constants.tokenRegex
 import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.backends.FileHandle
@@ -103,7 +108,7 @@ public class SafBackend(
         if (LegacyAppBackupFile.IconsFile::class in fileTypes) throw UnsupportedOperationException()
         if (LegacyAppBackupFile.Blob::class in fileTypes) throw UnsupportedOperationException()
 
-        log.debugLog { "list($topLevelFolder, $fileTypes)" }
+        log.debugLog { "list($topLevelFolder, ${fileTypes.map { it.simpleName }})" }
 
         val folder = if (topLevelFolder == null) {
             cache.getRootFile()
@@ -111,23 +116,45 @@ public class SafBackend(
             cache.getOrCreateFile(topLevelFolder)
         }
         // limit depth based on wanted types and if top-level folder is given
-        var depth = if (FileBackupFileType.Blob::class in fileTypes) 3 else 2
+        var depth = if (FileBackupFileType.Blob::class in fileTypes ||
+            AppBackupFileType.Blob::class in fileTypes
+        ) 3 else 2
         if (topLevelFolder != null) depth -= 1
 
         folder.listFilesRecursive(depth) { file ->
             if (!file.isFile) return@listFilesRecursive
             val parentName = file.parentFile?.name ?: return@listFilesRecursive
             val name = file.name ?: return@listFilesRecursive
-            if (LegacyAppBackupFile.Metadata::class in fileTypes && name == FILE_BACKUP_METADATA &&
-                parentName.matches(tokenRegex)
+            if (AppBackupFileType.Snapshot::class in fileTypes ||
+                AppBackupFileType::class in fileTypes
             ) {
-                val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
-                callback(FileInfo(metadata, file.length()))
+                val match = appSnapshotRegex.matchEntire(name)
+                if (match != null && repoIdRegex.matches(parentName)) {
+                    val snapshot = AppBackupFileType.Snapshot(
+                        repoId = parentName,
+                        hash = match.groupValues[1],
+                    )
+                    callback(FileInfo(snapshot, file.length()))
+                }
+            }
+            if ((AppBackupFileType.Blob::class in fileTypes ||
+                    AppBackupFileType::class in fileTypes)
+            ) {
+                val repoId = file.parentFile?.parentFile?.name ?: ""
+                if (repoIdRegex.matches(repoId) && blobFolderRegex.matches(parentName)) {
+                    if (blobRegex.matches(name)) {
+                        val blob = AppBackupFileType.Blob(
+                            repoId = repoId,
+                            name = name,
+                        )
+                        callback(FileInfo(blob, file.length()))
+                    }
+                }
             }
             if (FileBackupFileType.Snapshot::class in fileTypes ||
                 FileBackupFileType::class in fileTypes
             ) {
-                val match = snapshotRegex.matchEntire(name)
+                val match = fileSnapshotRegex.matchEntire(name)
                 if (match != null) {
                     val snapshot = FileBackupFileType.Snapshot(
                         androidId = parentName.substringBefore('.'),
@@ -140,7 +167,7 @@ public class SafBackend(
                     FileBackupFileType::class in fileTypes)
             ) {
                 val androidIdSv = file.parentFile?.parentFile?.name ?: ""
-                if (folderRegex.matches(androidIdSv) && chunkFolderRegex.matches(parentName)) {
+                if (fileFolderRegex.matches(androidIdSv) && chunkFolderRegex.matches(parentName)) {
                     if (chunkRegex.matches(name)) {
                         val blob = FileBackupFileType.Blob(
                             androidId = androidIdSv.substringBefore('.'),
@@ -149,6 +176,12 @@ public class SafBackend(
                         callback(FileInfo(blob, file.length()))
                     }
                 }
+            }
+            if (LegacyAppBackupFile.Metadata::class in fileTypes && name == FILE_BACKUP_METADATA &&
+                parentName.matches(tokenRegex)
+            ) {
+                val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
+                callback(FileInfo(metadata, file.length()))
             }
         }
     }
@@ -173,16 +206,18 @@ public class SafBackend(
     }
 
     override suspend fun rename(from: TopLevelFolder, to: TopLevelFolder) {
-        log.debugLog { "rename($from, ${to.name})" }
+        val toName = to.name // querying name is expensive
+        log.debugLog { "rename($from, $toName)" }
         val fromFile = cache.getOrCreateFile(from)
         // don't use fromFile.renameTo(to.name) as that creates "${to.name} (1)"
-        val newUri = renameDocument(context.contentResolver, fromFile.uri, to.name)
+        val newUri = renameDocument(context.contentResolver, fromFile.uri, toName)
             ?: throw IOException("could not rename ${from.relativePath}")
+        cache.removeFromCache(from) // after renaming cached file isn't valid anymore
         val toFile = DocumentFile.fromTreeUri(context, newUri)
             ?: throw IOException("renamed URI invalid: $newUri")
-        if (toFile.name != to.name) {
+        if (toFile.name != toName) {
             toFile.delete()
-            throw IOException("renamed to ${toFile.name}, but expected ${to.name}")
+            throw IOException("renamed to ${toFile.name}, but expected $toName")
         }
     }
 

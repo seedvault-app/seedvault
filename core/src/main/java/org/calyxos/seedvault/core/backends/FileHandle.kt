@@ -5,9 +5,10 @@
 
 package org.calyxos.seedvault.core.backends
 
+import org.calyxos.seedvault.core.backends.Constants.APP_SNAPSHOT_EXT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_ICONS
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
-import org.calyxos.seedvault.core.backends.Constants.SNAPSHOT_EXT
+import org.calyxos.seedvault.core.backends.Constants.FILE_SNAPSHOT_EXT
 
 public sealed class FileHandle {
     public abstract val name: String
@@ -68,8 +69,29 @@ public sealed class FileBackupFileType : FileHandle() {
         override val androidId: String,
         val time: Long,
     ) : FileBackupFileType() {
-        override val name: String = "$time$SNAPSHOT_EXT"
+        override val name: String = "$time$FILE_SNAPSHOT_EXT"
         override val relativePath: String get() = "$androidId.sv/$name"
+    }
+}
+
+public sealed class AppBackupFileType : FileHandle() {
+    public abstract val repoId: String
+
+    public val topLevelFolder: TopLevelFolder get() = TopLevelFolder(repoId)
+
+    public data class Blob(
+        override val repoId: String,
+        override val name: String,
+    ) : AppBackupFileType() {
+        override val relativePath: String get() = "$repoId/${name.substring(0, 2)}/$name"
+    }
+
+    public data class Snapshot(
+        override val repoId: String,
+        val hash: String,
+    ) : AppBackupFileType() {
+        override val name: String = "$hash$APP_SNAPSHOT_EXT"
+        override val relativePath: String get() = "$repoId/$name"
     }
 }
 
