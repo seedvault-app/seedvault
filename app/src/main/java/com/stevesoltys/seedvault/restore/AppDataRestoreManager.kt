@@ -12,6 +12,7 @@ import android.app.backup.IRestoreObserver
 import android.app.backup.IRestoreSession
 import android.app.backup.RestoreSet
 import android.content.Context
+import android.content.Intent
 import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
@@ -60,6 +61,7 @@ internal class AppDataRestoreManager(
 
     private var session: IRestoreSession? = null
     private val monitor = BackupMonitor()
+    private val foregroundServiceIntent = Intent(context, RestoreService::class.java)
 
     private val mRestoreProgress = MutableLiveData(
         LinkedList<AppRestoreResult>().apply {
@@ -120,6 +122,9 @@ internal class AppDataRestoreManager(
             mRestoreBackupResult.postValue(
                 RestoreBackupResult(context.getString(R.string.restore_set_error))
             )
+        } else {
+            // don't use startForeground(), because we may stop it sooner than the system likes
+            context.startService(foregroundServiceIntent)
         }
     }
 
@@ -208,6 +213,8 @@ internal class AppDataRestoreManager(
         mRestoreProgress.postValue(list)
 
         mRestoreBackupResult.postValue(result)
+
+        context.stopService(foregroundServiceIntent)
     }
 
     fun closeSession() {

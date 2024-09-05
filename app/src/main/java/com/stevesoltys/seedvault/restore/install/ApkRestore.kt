@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.restore.install
 
 import android.app.backup.IBackupManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
@@ -20,6 +21,7 @@ import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePlugin
 import com.stevesoltys.seedvault.plugins.StoragePluginManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
+import com.stevesoltys.seedvault.restore.RestoreService
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
@@ -85,14 +87,18 @@ internal class ApkRestore(
             return
         }
         mInstallResult.value = InstallResult(packages)
+        val i = Intent(context, RestoreService::class.java)
         val autoRestore = backupStateManager.isAutoRestoreEnabled
         try {
+            // don't use startForeground(), because we may stop it sooner than the system likes
+            context.startService(i)
             // disable auto-restore before installing apps, if it was enabled before
             if (autoRestore) backupManager.setAutoRestore(false)
             reInstallApps(backup, packages.asIterable().reversed())
         } finally {
             // re-enable auto-restore, if it was enabled before
             if (autoRestore) backupManager.setAutoRestore(true)
+            context.stopService(i)
         }
         mInstallResult.update { it.copy(isFinished = true) }
     }

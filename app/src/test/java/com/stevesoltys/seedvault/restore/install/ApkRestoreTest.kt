@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.restore.install
 
 import android.app.backup.IBackupManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_INSTALLED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
@@ -108,6 +109,13 @@ internal class ApkRestoreTest : TransportTest() {
         packageInfo.signingInfo = mockk(relaxed = true)
 
         every { storagePluginManager.appPlugin } returns storagePlugin
+
+        // related to starting/stopping service
+        every { strictContext.packageName } returns "org.foo.bar"
+        every {
+            strictContext.startService(any())
+        } returns ComponentName(strictContext, "org.foo.bar.Class")
+        every { strictContext.stopService(any()) } returns true
     }
 
     @Test
