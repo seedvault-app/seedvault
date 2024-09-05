@@ -135,6 +135,7 @@ internal class ApkBackupManager(
         for (i in 1..n) {
             try {
                 block()
+                return
             } catch (e: Exception) {
                 if (i == n) throw e
                 Log.e(TAG, "Error (#$i), we'll keep trying", e)
