@@ -144,9 +144,6 @@ internal class AppSelectionAdapter(
 
         fun bind(item: SelectableAppItem) {
             v.background = clickableBackground
-            v.setOnClickListener {
-                checkBox.toggle()
-            }
 
             checkBox.setOnCheckedChangeListener(null)
             checkBox.isChecked = item.selected
@@ -155,6 +152,11 @@ internal class AppSelectionAdapter(
             }
             checkBox.visibility = if (item.hasIcon == null) INVISIBLE else VISIBLE
             progressBar.visibility = if (item.hasIcon == null) VISIBLE else INVISIBLE
+            if (item.hasIcon == null) {
+                v.setOnClickListener(null)
+            } else v.setOnClickListener {
+                checkBox.toggle()
+            }
 
             val isSpecial = item.metadata.isInternalSystem
             appIcon.scaleType = FIT_CENTER
