@@ -1,3 +1,18 @@
+## [14-4.1] - 2024-08-23
+* It is now possible to restore after setting up a profile
+* It is now possible to select what to restore (e.g. apps, files...)
+* Automatic backup scheduling can now be modified by the user
+* Native support for WebDAV
+* Support for RoundSync (if enabled by the OS)
+* Now in Material 3
+* Name of profile is now shown when selecting a backup to restore
+* Already installed apps are not reinstalled anymore
+* Already stored files do not create duplicates anymore
+* Respect policy when the installation of apps is disallowed
+* Storage backup is now beta instead of experimental
+* D2D is now alpha instead of experimental
+* Various corrections to the UI
+
 ## [14-4.0] - 2024-01-24
 * Add experimental support for forcing "D2D" transfer backups
 * Pretend to be a device-to-device transfer to allow backing up many apps which prevent backup
