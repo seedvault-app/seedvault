@@ -4,8 +4,6 @@
   SPDX-License-Identifier: Apache-2.0
   -->
 <resources>
-    <bool name="show_restore_in_settings">true</bool>
-
     <string-array name="storage_authority_whitelist">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
