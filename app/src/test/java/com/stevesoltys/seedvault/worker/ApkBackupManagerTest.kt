@@ -234,6 +234,10 @@ internal class ApkBackupManagerTest : TransportTest() {
             apkBackup.backupApkIfNecessary(notAllowedPackages[1], any())
             metadataOutputStream.close()
         }
+        // metadata should only get uploaded once
+        verify(exactly = 1) {
+            metadataManager.uploadMetadata(metadataOutputStream)
+        }
     }
 
     @Test
