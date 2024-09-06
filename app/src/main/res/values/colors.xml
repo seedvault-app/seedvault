@@ -14,6 +14,8 @@
     <color name="red">#ff7043</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#35 -->
     <color name="ic_launcher_background">@color/accent_primary</color>
+    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/color/text_color_primary_device_default_light.xml -->
+    <color name="text_color_primary">@android:color/system_neutral1_900</color>
 
     <!-- Custom colors -->
     <color name="divider">#20ffffff</color>
