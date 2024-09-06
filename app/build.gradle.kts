@@ -157,6 +157,8 @@ dependencies {
 
     implementation(libs.google.protobuf.javalite)
     implementation(libs.google.tink.android)
+    implementation(libs.kotlin.logging)
+    implementation(libs.squareup.okio)
 
     /**
      * Storage Dependencies
@@ -175,6 +177,7 @@ dependencies {
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
+    implementation(fileTree("${rootProject.rootDir}/libs").include("seedvault-chunker-0.1.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("zstd-jni-1.5.6-5.aar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.6.jar"))
 
@@ -188,6 +191,7 @@ dependencies {
     // anything less than 'implementation' fails tests run with gradlew
     testImplementation(aospLibs)
     testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("org.slf4j:slf4j-simple:2.0.3")
     testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junit5.get()}")
@@ -198,6 +202,7 @@ dependencies {
     )
     testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation("org.bitcoinj:bitcoinj-core:0.16.2")
+    testImplementation("com.github.luben:zstd-jni:1.5.6-5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${libs.versions.junit5.get()}")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${libs.versions.junit5.get()}")
 

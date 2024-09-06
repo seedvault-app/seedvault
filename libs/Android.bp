@@ -17,6 +17,12 @@ java_import {
 }
 
 java_import {
+    name: "seedvault-lib-chunker",
+    jars: ["seedvault-chunker-0.1.jar"],
+    sdk_version: "current",
+}
+
+java_import {
     name: "seedvault-lib-kotlin-logging-jvm",
     jars: ["kotlin-logging-jvm-6.0.3.jar"],
     sdk_version: "current",

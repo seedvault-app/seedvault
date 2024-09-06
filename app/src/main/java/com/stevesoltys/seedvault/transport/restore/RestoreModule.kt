@@ -10,6 +10,7 @@ import org.koin.dsl.module
 
 val restoreModule = module {
     single { OutputFactory() }
+    single { Loader(get(), get()) }
     single { KVRestore(get(), get(), get(), get(), get(), get()) }
     single { FullRestore(get(), get(), get(), get(), get()) }
     single {

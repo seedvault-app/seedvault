@@ -32,6 +32,9 @@ android_app {
         "com.google.android.material_material",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
+        // app backup related libs
+        "seedvault-lib-kotlin-logging-jvm",
+        "seedvault-lib-chunker",
         "seedvault-lib-zstd-jni",
         // our own gradle module libs
         "seedvault-lib-core",

@@ -7,8 +7,13 @@ package com.stevesoltys.seedvault.restore
 
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.proto.Snapshot
 
-data class RestorableBackup(val backupMetadata: BackupMetadata) {
+data class RestorableBackup(
+    val backupMetadata: BackupMetadata,
+    val repoId: String? = null,
+    val snapshot: Snapshot? = null,
+) {
 
     val name: String
         get() = backupMetadata.deviceName
