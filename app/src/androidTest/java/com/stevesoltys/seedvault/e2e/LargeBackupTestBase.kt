@@ -157,7 +157,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var dataIntercept = ByteArrayOutputStream()
 
         coEvery {
-            spyFullBackup.performFullBackup(any(), any(), any(), any(), any())
+            spyFullBackup.performFullBackup(any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()
@@ -172,7 +172,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
             )
         }
 
-        every {
+        coEvery {
             spyFullBackup.finishBackup()
         } answers {
             val result = callOriginal()

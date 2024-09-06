@@ -16,7 +16,9 @@ import java.io.InputStream
 data class BackupData(
     val chunks: List<String>,
     val chunkMap: Map<String, Blob>,
-)
+) {
+    val size get() = chunkMap.values.sumOf { it.uncompressedLength }.toLong()
+}
 
 internal class BackupReceiver(
     private val blobsCache: BlobsCache,
@@ -40,8 +42,10 @@ internal class BackupReceiver(
     }
     private val chunks = mutableListOf<String>()
     private val chunkMap = mutableMapOf<String, Blob>()
+    private var addedBytes = false
 
     suspend fun addBytes(bytes: ByteArray) {
+        addedBytes = true
         chunker.addBytes(bytes).forEach { chunk ->
             onNewChunk(chunk)
         }
@@ -73,7 +77,13 @@ internal class BackupReceiver(
         val backupData = BackupData(chunks.toList(), chunkMap.toMap())
         chunks.clear()
         chunkMap.clear()
+        addedBytes = false
         return backupData
+    }
+
+    fun assertFinalized() {
+        // TODO maybe even use a userTag and throw also above if that doesn't match
+        check(!addedBytes) { "Re-used non-finalized BackupReceiver" }
     }
 
     private suspend fun onNewChunk(chunk: Chunk) {

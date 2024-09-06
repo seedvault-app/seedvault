@@ -189,7 +189,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         clearMocks(spyFullRestore)
 
         coEvery {
-            spyFullRestore.initializeState(any(), any(), any(), any())
+            spyFullRestore.initializeState(any(), any(), any())
         } answers {
             packageName?.let {
                 restoreResult.full[it] = dataIntercept.toByteArray().sha256()

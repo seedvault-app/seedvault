@@ -38,17 +38,17 @@ val backupModule = module {
     }
     single {
         FullBackup(
-            backendManager = get(),
             settingsManager = get(),
             nm = get(),
+            backupReceiver = get(),
             inputFactory = get(),
-            crypto = get(),
         )
     }
     single {
         BackupCoordinator(
             context = androidContext(),
             backendManager = get(),
+            appBackupManager = get(),
             kv = get(),
             full = get(),
             clock = get(),

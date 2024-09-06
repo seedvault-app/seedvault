@@ -23,15 +23,15 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getMetadataOutputStream
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getMetadataOutputStream
-import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.IOException
@@ -63,6 +63,7 @@ private class CoordinatorState(
 internal class BackupCoordinator(
     private val context: Context,
     private val backendManager: BackendManager,
+    private val appBackupManager: AppBackupManager,
     private val kv: KVBackup,
     private val full: FullBackup,
     private val clock: Clock,
@@ -73,6 +74,8 @@ internal class BackupCoordinator(
 ) {
 
     private val backend get() = backendManager.backend
+    private val snapshotCreator
+        get() = appBackupManager.snapshotCreator ?: error("No SnapshotCreator")
     private val state = CoordinatorState(
         calledInitialize = false,
         calledClearBackupData = false,
@@ -154,7 +157,7 @@ internal class BackupCoordinator(
     fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         // report back quota
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")
-        val quota = if (isFullBackup) full.getQuota() else kv.getQuota()
+        val quota = if (isFullBackup) full.quota else kv.getQuota()
         Log.i(TAG, "Reported quota of $quota bytes.")
         return quota
     }
@@ -262,15 +265,13 @@ internal class BackupCoordinator(
         return result
     }
 
-    suspend fun performFullBackup(
+    fun performFullBackup(
         targetPackage: PackageInfo,
         fileDescriptor: ParcelFileDescriptor,
         flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
-        val token = settingsManager.getToken() ?: error("no token in performFullBackup")
-        val salt = metadataManager.salt
-        return full.performFullBackup(targetPackage, fileDescriptor, flags, token, salt)
+        return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 
     /**
@@ -299,8 +300,8 @@ internal class BackupCoordinator(
      * It needs to tear down any ongoing backup state here.
      */
     suspend fun cancelFullBackup() {
-        val packageInfo = full.getCurrentPackage()
-            ?: throw AssertionError("Cancelling full backup, but no current package")
+        val packageInfo = full.currentPackageInfo
+            ?: error("Cancelling full backup, but no current package")
         Log.i(
             TAG, "Cancel full backup of ${packageInfo.packageName}" +
                 " because of ${state.cancelReason}"
@@ -308,9 +309,7 @@ internal class BackupCoordinator(
         // don't bother with system apps that have no data
         val ignoreApp = state.cancelReason == NO_DATA && packageInfo.isSystemApp()
         if (!ignoreApp) onPackageBackupError(packageInfo, BackupType.FULL)
-        val token = settingsManager.getToken() ?: error("no token in cancelFullBackup")
-        val salt = metadataManager.salt
-        full.cancelFullBackup(token, salt, ignoreApp)
+        full.cancelFullBackup()
     }
 
     // Clear and Finish
@@ -335,12 +334,7 @@ internal class BackupCoordinator(
             Log.w(TAG, "Error clearing K/V backup data for $packageName", e)
             return TRANSPORT_ERROR
         }
-        try {
-            full.clearBackupData(packageInfo, token, salt)
-        } catch (e: IOException) {
-            Log.w(TAG, "Error clearing full backup data for $packageName", e)
-            return TRANSPORT_ERROR
-        }
+        // we don't clear backup data anymore, we have snapshots and those old ones stay valid
         state.calledClearBackupData = true
         return TRANSPORT_OK
     }
@@ -355,7 +349,7 @@ internal class BackupCoordinator(
      */
     suspend fun finishBackup(): Int = when {
         kv.hasState() -> {
-            check(!full.hasState()) {
+            check(!full.hasState) {
                 "K/V backup has state, but full backup has dangling state as well"
             }
             // getCurrentPackage() not-null because we have state, call before finishing
@@ -369,7 +363,7 @@ internal class BackupCoordinator(
                 // call onPackageBackedUp for @pm@ only if we can do backups right now
                 if (isNormalBackup || backendManager.canDoBackupNow()) {
                     try {
-                        onPackageBackedUp(packageInfo, BackupType.KV, size)
+                        metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, size)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
                         if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
@@ -379,37 +373,31 @@ internal class BackupCoordinator(
             }
             result
         }
-        full.hasState() -> {
+        full.hasState -> {
             check(!kv.hasState()) {
                 "Full backup has state, but K/V backup has dangling state as well"
             }
             // getCurrentPackage() not-null because we have state
-            val packageInfo = full.getCurrentPackage()!!
+            val packageInfo = full.currentPackageInfo!!
             val packageName = packageInfo.packageName
-            val size = full.getCurrentSize()
             // tell full backup to finish
-            var result = full.finishBackup()
             try {
-                onPackageBackedUp(packageInfo, BackupType.FULL, size)
+                val backupData = full.finishBackup()
+                snapshotCreator.onPackageBackedUp(packageInfo, BackupType.FULL, backupData)
+                // TODO unify both calls
+                metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, backupData.size)
+                TRANSPORT_OK
             } catch (e: Exception) {
                 Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
                 if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
-                result = TRANSPORT_PACKAGE_REJECTED
+                TRANSPORT_PACKAGE_REJECTED
             }
-            result
         }
         state.expectFinish -> {
             state.onFinish()
             TRANSPORT_OK
         }
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
-    }
-
-    private suspend fun onPackageBackedUp(packageInfo: PackageInfo, type: BackupType, size: Long?) {
-        val token = settingsManager.getToken() ?: error("no token")
-        backend.getMetadataOutputStream(token).use {
-            metadataManager.onPackageBackedUp(packageInfo, type, size, it)
-        }
     }
 
     private suspend fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {

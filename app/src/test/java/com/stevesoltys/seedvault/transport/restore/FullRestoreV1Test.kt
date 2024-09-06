@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 The Calyx Institute
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,14 +14,15 @@ import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
-import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.header.VersionHeader
+import com.stevesoltys.seedvault.header.getADForFull
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -35,15 +36,15 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 import kotlin.random.Random
 
-internal class FullRestoreTest : RestoreTest() {
+@Suppress("DEPRECATION")
+internal class FullRestoreV1Test : RestoreTest() {
 
     private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
-    private val loader = mockk<Loader>()
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val restore = FullRestore(
         backendManager = backendManager,
-        loader = loader,
+        loader = mockk(),
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,
@@ -52,7 +53,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     private val encrypted = getRandomByteArray()
     private val outputStream = ByteArrayOutputStream()
-    private val blobHandles = listOf(apkBlobHandle)
+    private val ad = getADForFull(1, packageInfo.packageName)
 
     init {
         every { backendManager.backend } returns backend
@@ -74,7 +75,7 @@ internal class FullRestoreTest : RestoreTest() {
     @Test
     fun `initializing state leaves a state`() {
         assertFalse(restore.hasState)
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+        restore.initializeStateV1(token, name, packageInfo)
         assertTrue(restore.hasState)
     }
 
@@ -88,37 +89,83 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `getting InputStream for package when getting first chunk throws`() = runBlocking {
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+        restore.initializeStateV1(token, name, packageInfo)
 
-        coEvery { loader.loadFiles(blobHandles) } throws IOException()
+        coEvery { backend.load(handle) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
         assertEquals(
             TRANSPORT_PACKAGE_REJECTED,
             restore.getNextFullRestoreDataChunk(fileDescriptor)
         )
-
-        verify { fileDescriptor.close() }
     }
 
     @Test
-    fun `reading from stream throws general security exception`() = runBlocking {
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+    fun `reading version header when getting first chunk throws`() = runBlocking {
+        restore.initializeStateV1(token, name, packageInfo)
 
-        coEvery { loader.loadFiles(blobHandles) } throws GeneralSecurityException()
+        coEvery { backend.load(handle) } returns inputStream
+        every { headerReader.readVersion(inputStream, 1) } throws IOException()
         every { fileDescriptor.close() } just Runs
 
-        assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
-
-        verify { fileDescriptor.close() }
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
     }
+
+    @Test
+    fun `reading unsupported version when getting first chunk`() = runBlocking {
+        restore.initializeStateV1(token, name, packageInfo)
+
+        coEvery { backend.load(handle) } returns inputStream
+        every {
+            headerReader.readVersion(inputStream, 1)
+        } throws UnsupportedVersionException(unsupportedVersion)
+        every { fileDescriptor.close() } just Runs
+
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
+    }
+
+    @Test
+    fun `getting decrypted stream when getting first chunk throws`() = runBlocking {
+        restore.initializeStateV1(token, name, packageInfo)
+
+        coEvery { backend.load(handle) } returns inputStream
+        every { headerReader.readVersion(inputStream, 1) } returns 1
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } throws IOException()
+        every { fileDescriptor.close() } just Runs
+
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            restore.getNextFullRestoreDataChunk(fileDescriptor)
+        )
+    }
+
+    @Test
+    fun `getting decrypted stream when getting first chunk throws general security exception`() =
+        runBlocking {
+            restore.initializeStateV1(token, name, packageInfo)
+
+            coEvery { backend.load(handle) } returns inputStream
+            every { headerReader.readVersion(inputStream, 1) } returns 1
+            every {
+                crypto.newDecryptingStreamV1(inputStream, ad)
+            } throws GeneralSecurityException()
+            every { fileDescriptor.close() } just Runs
+
+            assertEquals(TRANSPORT_ERROR, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        }
 
     @Test
     fun `full chunk gets decrypted`() = runBlocking {
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+        restore.initializeStateV1(token, name, packageInfo)
 
-        coEvery { loader.loadFiles(blobHandles) } returns inputStream
-        readInputStream(encrypted)
+        initInputStream()
+        readAndEncryptInputStream(encrypted)
         every { inputStream.close() } just Runs
 
         assertEquals(encrypted.size, restore.getNextFullRestoreDataChunk(fileDescriptor))
@@ -128,12 +175,36 @@ internal class FullRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `larger data gets decrypted and then return no more data`() = runBlocking {
+    @Suppress("deprecation")
+    fun `full chunk gets decrypted from version 0`() = runBlocking {
+        restore.initializeStateV0(token, packageInfo)
+
+        coEvery { legacyPlugin.getInputStreamForPackage(token, packageInfo) } returns inputStream
+        every { headerReader.readVersion(inputStream, 0.toByte()) } returns 0.toByte()
+        every {
+            crypto.decryptHeader(inputStream, 0.toByte(), packageInfo.packageName)
+        } returns VersionHeader(0.toByte(), packageInfo.packageName)
+        every { crypto.decryptSegment(inputStream) } returns encrypted
+
+        every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
+        every { fileDescriptor.close() } just Runs
+        every { inputStream.close() } just Runs
+
+        assertEquals(encrypted.size, restore.getNextFullRestoreDataChunk(fileDescriptor))
+        assertArrayEquals(encrypted, outputStream.toByteArray())
+        restore.finishRestore()
+        assertFalse(restore.hasState)
+    }
+
+    @Test
+    fun `three full chunk get decrypted and then return no more data`() = runBlocking {
         val encryptedBytes = Random.nextBytes(MAX_SEGMENT_LENGTH * 2 + 1)
         val decryptedInputStream = ByteArrayInputStream(encryptedBytes)
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+        restore.initializeStateV1(token, name, packageInfo)
 
-        coEvery { loader.loadFiles(blobHandles) } returns decryptedInputStream
+        coEvery { backend.load(handle) } returns inputStream
+        every { headerReader.readVersion(inputStream, 1) } returns 1
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptedInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         every { fileDescriptor.close() } just Runs
         every { inputStream.close() } just Runs
@@ -150,10 +221,10 @@ internal class FullRestoreTest : RestoreTest() {
 
     @Test
     fun `aborting full restore closes stream, resets state`() = runBlocking {
-        restore.initializeState(VERSION, packageInfo, blobHandles)
+        restore.initializeStateV1(token, name, packageInfo)
 
-        coEvery { loader.loadFiles(blobHandles) } returns inputStream
-        readInputStream(encrypted)
+        initInputStream()
+        readAndEncryptInputStream(encrypted)
 
         restore.getNextFullRestoreDataChunk(fileDescriptor)
 
@@ -163,14 +234,20 @@ internal class FullRestoreTest : RestoreTest() {
         assertFalse(restore.hasState)
     }
 
-    private fun readInputStream(encryptedBytes: ByteArray) {
+    private fun initInputStream() {
+        coEvery { backend.load(handle) } returns inputStream
+        every { headerReader.readVersion(inputStream, 1) } returns 1
+        every { crypto.newDecryptingStreamV1(inputStream, ad) } returns decryptedInputStream
+    }
+
+    private fun readAndEncryptInputStream(encryptedBytes: ByteArray) {
         every { outputFactory.getOutputStream(fileDescriptor) } returns outputStream
         val slot = CapturingSlot<ByteArray>()
-        every { inputStream.read(capture(slot)) } answers {
+        every { decryptedInputStream.read(capture(slot)) } answers {
             encryptedBytes.copyInto(slot.captured)
             encryptedBytes.size
         }
-        every { inputStream.close() } just Runs
+        every { decryptedInputStream.close() } just Runs
         every { fileDescriptor.close() } just Runs
     }
 

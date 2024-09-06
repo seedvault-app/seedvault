@@ -9,50 +9,41 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.io.FileInputStream
 import java.io.IOException
 import kotlin.random.Random
 
 internal class FullBackupTest : BackupTest() {
 
-    private val backendManager: BackendManager = mockk()
-    private val backend = mockk<Backend>()
+    private val backupReceiver = mockk<BackupReceiver>()
     private val notificationManager = mockk<BackupNotificationManager>()
     private val backup = FullBackup(
-        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
+        backupReceiver = backupReceiver,
         inputFactory = inputFactory,
-        crypto = crypto,
     )
 
     private val bytes = ByteArray(23).apply { Random.nextBytes(this) }
     private val inputStream = mockk<FileInputStream>()
-    private val ad = getADForFull(VERSION, packageInfo.packageName)
-
-    init {
-        every { backendManager.backend } returns backend
-    }
+    private val backupData = apkBackupData
 
     @Test
     fun `has no initial state`() {
-        assertFalse(backup.hasState())
+        assertFalse(backup.hasState)
     }
 
     @Test
@@ -99,254 +90,229 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `performFullBackup runs ok`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
     fun `sendBackupData first call over quota`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
         val numBytes = (quota + 1).toInt()
         expectSendData(numBytes)
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.sendBackupData(numBytes))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.sendBackupData(numBytes))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
-    fun `sendBackupData second call over quota`() = runBlocking {
+    fun `sendBackupData subsequent calls over quota`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
-        val numBytes1 = quota.toInt()
-        expectSendData(numBytes1)
-        val numBytes2 = 1
-        expectSendData(numBytes2)
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        // split up sending data in smaller chunks, so we don't run out of heap space
+        var sendResult: Int = TRANSPORT_ERROR
+        val numBytes = (quota / 1024).toInt()
+        for (i in 0..1024) {
+            expectSendData(numBytes)
+            sendResult = backup.sendBackupData(numBytes)
+            assertTrue(backup.hasState)
+            if (sendResult == TRANSPORT_QUOTA_EXCEEDED) break
+        }
+        assertEquals(TRANSPORT_QUOTA_EXCEEDED, sendResult)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes1))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.sendBackupData(numBytes2))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        // in reality, this may not call finishBackup(), but cancelBackup()
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
     fun `sendBackupData throws exception when reading from InputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
+
+        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
-    fun `sendBackupData throws exception when getting outputStream`() = runBlocking {
+    fun `sendBackupData throws exception when sending data`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
 
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backend.save(handle) } throws IOException()
+        every { inputStream.read(any(), 0, bytes.size) } returns bytes.size
+        coEvery { backupReceiver.addBytes(any()) } throws IOException()
+
+        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
-    fun `sendBackupData throws exception when writing header`() = runBlocking {
+    fun `sendBackupData throws exception when finalizing`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
 
         every { settingsManager.isQuotaUnlimited() } returns false
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backend.save(handle) } returns outputStream
-        every { inputFactory.getInputStream(data) } returns inputStream
-        every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
+        expectSendData(bytes.size)
+
+        assertEquals(TRANSPORT_OK, backup.sendBackupData(bytes.size))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } throws IOException()
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
-
-    @Test
-    fun `sendBackupData throws exception when writing encrypted data to OutputStream`() =
-        runBlocking {
-            every { inputFactory.getInputStream(data) } returns inputStream
-            expectInitializeOutputStream()
-            every { settingsManager.isQuotaUnlimited() } returns false
-            every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
-            every { inputStream.read(any(), any(), bytes.size) } returns bytes.size
-            every { encryptedOutputStream.write(any<ByteArray>()) } throws IOException()
-            expectClearState()
-
-            assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-            assertTrue(backup.hasState())
-            assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
-            assertTrue(backup.hasState())
-            assertEquals(TRANSPORT_OK, backup.finishBackup())
-            assertFalse(backup.hasState())
+        assertThrows<IOException> {
+            backup.finishBackup()
         }
+        assertFalse(backup.hasState)
+
+        verify { data.close() }
+    }
 
     @Test
     fun `sendBackupData runs ok`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
-        val numBytes1 = (quota / 2).toInt()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        val numBytes1 = 2342
         expectSendData(numBytes1)
-        val numBytes2 = (quota / 2).toInt()
+        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes1))
+        assertTrue(backup.hasState)
+
+        val numBytes2 = 4223
         expectSendData(numBytes2)
+        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes2))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes1))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes2))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
-
-    @Test
-    fun `clearBackupData delegates to plugin`() = runBlocking {
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backend.remove(handle) } just Runs
-
-        backup.clearBackupData(packageInfo, token, salt)
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
     fun `cancel full backup runs ok`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         expectClearState()
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backend.remove(handle) } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        backup.cancelFullBackup(token, salt, false)
-        assertFalse(backup.hasState())
+        backup.cancelFullBackup()
+        assertFalse(backup.hasState)
     }
 
     @Test
-    fun `cancel full backup ignores exception when calling plugin`() = runBlocking {
+    fun `cancel full backup throws exception when finalizing`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } throws IOException()
         expectClearState()
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { backend.remove(handle) } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        backup.cancelFullBackup(token, salt, false)
-        assertFalse(backup.hasState())
-    }
-
-    @Test
-    fun `clearState throws exception when flushing OutputStream`() = runBlocking {
-        every { settingsManager.isQuotaUnlimited() } returns false
-        every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
-        val numBytes = 42
-        expectSendData(numBytes)
-        every { encryptedOutputStream.flush() } throws IOException()
-
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes))
-        assertEquals(TRANSPORT_ERROR, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
-
-    @Test
-    fun `clearState ignores exception when closing OutputStream`() = runBlocking {
-        every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
-        every { outputStream.flush() } just Runs
-        every { outputStream.close() } throws IOException()
-        every { inputStream.close() } just Runs
-        every { data.close() } just Runs
-
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        backup.cancelFullBackup()
+        assertFalse(backup.hasState)
     }
 
     @Test
     fun `clearState ignores exception when closing InputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
         every { inputStream.close() } throws IOException()
         every { data.close() } just Runs
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     @Test
     fun `clearState ignores exception when closing ParcelFileDescriptor`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        expectInitializeOutputStream()
+        every { backupReceiver.assertFinalized() } just Runs
+
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
+        assertTrue(backup.hasState)
+
+        coEvery { backupReceiver.finalize() } returns backupData
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
         every { inputStream.close() } just Runs
         every { data.close() } throws IOException()
 
-        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
-        assertTrue(backup.hasState())
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-        assertFalse(backup.hasState())
-    }
-
-    private fun expectInitializeOutputStream() {
-        every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery {
-            backend.save(LegacyAppBackupFile.Blob(token, name))
-        } returns outputStream
-        every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
+        assertEquals(backupData, backup.finishBackup())
+        assertFalse(backup.hasState)
     }
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {
         every { inputStream.read(any(), any(), numBytes) } returns readBytes
-        every { crypto.newEncryptingStreamV1(outputStream, ad) } returns encryptedOutputStream
-        every { encryptedOutputStream.write(any<ByteArray>()) } just Runs
+        coEvery { backupReceiver.addBytes(any()) } just Runs
     }
 
     private fun expectClearState() {

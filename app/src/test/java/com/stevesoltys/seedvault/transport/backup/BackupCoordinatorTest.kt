@@ -42,6 +42,7 @@ import kotlin.random.Random
 internal class BackupCoordinatorTest : BackupTest() {
 
     private val backendManager = mockk<BackendManager>()
+    private val appBackupManager = mockk<AppBackupManager>()
     private val kv = mockk<KVBackup>()
     private val full = mockk<FullBackup>()
     private val apkBackup = mockk<ApkBackup>()
@@ -51,6 +52,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     private val backup = BackupCoordinator(
         context = context,
         backendManager = backendManager,
+        appBackupManager = appBackupManager,
         kv = kv,
         full = full,
         clock = clock,
@@ -80,7 +82,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
         expectStartNewRestoreSet()
         every { kv.hasState() } returns false
-        every { full.hasState() } returns false
+        every { full.hasState } returns false
 
         assertEquals(TRANSPORT_OK, backup.initializeDevice())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
@@ -107,7 +109,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
         // finish will only be called when TRANSPORT_OK is returned, so it should throw
         every { kv.hasState() } returns false
-        every { full.hasState() } returns false
+        every { full.hasState } returns false
         coAssertThrows(IllegalStateException::class.java) {
             backup.finishBackup()
         }
@@ -126,7 +128,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
             // finish will only be called when TRANSPORT_OK is returned, so it should throw
             every { kv.hasState() } returns false
-            every { full.hasState() } returns false
+            every { full.hasState } returns false
             coAssertThrows(IllegalStateException::class.java) {
                 backup.finishBackup()
             }
@@ -159,7 +161,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val quota = Random.nextLong()
 
         if (isFullBackup) {
-            every { full.getQuota() } returns quota
+            every { full.quota } returns quota
         } else {
             every { kv.getQuota() } returns quota
         }
@@ -176,60 +178,29 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `clearing full backup data throws`() = runBlocking {
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
-        coEvery { kv.clearBackupData(packageInfo, token, salt) } just Runs
-        coEvery { full.clearBackupData(packageInfo, token, salt) } throws IOException()
-
-        assertEquals(TRANSPORT_ERROR, backup.clearBackupData(packageInfo))
-    }
-
-    @Test
-    fun `clearing backup data succeeds`() = runBlocking {
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
-        coEvery { kv.clearBackupData(packageInfo, token, salt) } just Runs
-        coEvery { full.clearBackupData(packageInfo, token, salt) } just Runs
-
-        assertEquals(TRANSPORT_OK, backup.clearBackupData(packageInfo))
-
-        every { kv.hasState() } returns false
-        every { full.hasState() } returns false
-
-        assertEquals(TRANSPORT_OK, backup.finishBackup())
-    }
-
-    @Test
     fun `finish backup delegates to KV plugin if it has state`() = runBlocking {
         val size = 0L
 
         every { kv.hasState() } returns true
-        every { full.hasState() } returns false
+        every { full.hasState } returns false
         every { kv.getCurrentPackage() } returns packageInfo
         coEvery { kv.finishBackup() } returns TRANSPORT_OK
-        every { settingsManager.getToken() } returns token
-        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { kv.getCurrentSize() } returns size
         every {
             metadataManager.onPackageBackedUp(
                 packageInfo = packageInfo,
                 type = BackupType.KV,
                 size = size,
-                metadataOutputStream = metadataOutputStream,
             )
         } just Runs
-        every { metadataOutputStream.close() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
-
-        verify { metadataOutputStream.close() }
     }
 
     @Test
     fun `finish backup does not upload @pm@ metadata, if it can't do backups`() = runBlocking {
         every { kv.hasState() } returns true
-        every { full.hasState() } returns false
+        every { full.hasState } returns false
         every { kv.getCurrentPackage() } returns pmPackageInfo
         every { kv.getCurrentSize() } returns 42L
 
@@ -241,29 +212,26 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `finish backup delegates to full plugin if it has state`() = runBlocking {
-        val result = Random.nextInt()
-        val size: Long? = null
+        val snapshotCreator: SnapshotCreator = mockk()
+        val size: Long = 2345
 
         every { kv.hasState() } returns false
-        every { full.hasState() } returns true
-        every { full.getCurrentPackage() } returns packageInfo
-        every { full.finishBackup() } returns result
-        every { settingsManager.getToken() } returns token
-        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
-        every { full.getCurrentSize() } returns size
+        every { full.hasState } returns true
+        every { full.currentPackageInfo } returns packageInfo
+        coEvery { full.finishBackup() } returns apkBackupData
+        every { appBackupManager.snapshotCreator } returns snapshotCreator
+        every {
+            snapshotCreator.onPackageBackedUp(packageInfo, BackupType.FULL, apkBackupData)
+        } just Runs
         every {
             metadataManager.onPackageBackedUp(
                 packageInfo = packageInfo,
                 type = BackupType.FULL,
-                size = size,
-                metadataOutputStream = metadataOutputStream,
+                size = apkBackupData.size,
             )
         } just Runs
-        every { metadataOutputStream.close() } just Runs
 
-        assertEquals(result, backup.finishBackup())
-
-        verify { metadataOutputStream.close() }
+        assertEquals(TRANSPORT_OK, backup.finishBackup())
     }
 
     @Test
@@ -271,7 +239,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         coEvery {
-            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+            full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
         coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
 
@@ -283,14 +251,14 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         coEvery {
-            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+            full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
         expectApkBackupAndMetadataWrite()
-        every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
         every {
             full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
         } returns TRANSPORT_QUOTA_EXCEEDED
-        every { full.getCurrentPackage() } returns packageInfo
+        every { full.currentPackageInfo } returns packageInfo
         every {
             metadataManager.onPackageBackupError(
                 packageInfo,
@@ -299,7 +267,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
+        coEvery { full.cancelFullBackup() } just Runs
         every { backendManager.backendProperties } returns safProperties
         every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs
@@ -335,12 +303,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         coEvery {
-            full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
+            full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
         expectApkBackupAndMetadataWrite()
-        every { full.getQuota() } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
         every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
-        every { full.getCurrentPackage() } returns packageInfo
+        every { full.currentPackageInfo } returns packageInfo
         every {
             metadataManager.onPackageBackupError(
                 packageInfo,
@@ -349,7 +317,7 @@ internal class BackupCoordinatorTest : BackupTest() {
                 BackupType.FULL
             )
         } just Runs
-        coEvery { full.cancelFullBackup(token, metadata.salt, false) } just Runs
+        coEvery { full.cancelFullBackup() } just Runs
         every { backendManager.backendProperties } returns safProperties
         every { settingsManager.useMeteredNetwork } returns false
         every { metadataOutputStream.close() } just Runs

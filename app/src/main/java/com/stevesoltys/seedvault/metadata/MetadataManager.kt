@@ -145,10 +145,9 @@ internal class MetadataManager(
         packageInfo: PackageInfo,
         type: BackupType,
         size: Long?,
-        metadataOutputStream: OutputStream,
     ) {
         val packageName = packageInfo.packageName
-        modifyMetadata(metadataOutputStream) {
+        modifyCachedMetadata {
             val now = clock.time()
             metadata.time = now
             metadata.d2dBackup = settingsManager.d2dBackupsEnabled()

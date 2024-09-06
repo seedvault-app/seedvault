@@ -69,7 +69,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         dbManager = dbManager,
     )
     private val fullRestore =
-        FullRestore(backendManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backendManager, loader, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context = context,
         crypto = crypto,

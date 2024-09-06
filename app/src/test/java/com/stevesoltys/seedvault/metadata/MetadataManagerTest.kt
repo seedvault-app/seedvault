@@ -40,7 +40,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
@@ -358,7 +357,7 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(initialMetadata)
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, size, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, size)
 
         assertEquals(
             packageMetadata.copy(
@@ -388,42 +387,13 @@ class MetadataManagerTest {
         every { settingsManager.d2dBackupsEnabled() } returns true
         every { context.packageManager } returns packageManager
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L)
         assertTrue(initialMetadata.d2dBackup)
 
         verify {
             cacheInputStream.close()
             cacheOutputStream.close()
         }
-    }
-
-    @Test
-    fun `test onPackageBackedUp() fails to write to storage`() {
-        val updateTime = time + 1
-        val size = Random.nextLong()
-        val updatedMetadata = initialMetadata.copy(
-            time = updateTime,
-            packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
-        )
-        updatedMetadata.packageMetadataMap[packageName] =
-            PackageMetadata(updateTime, APK_AND_DATA, BackupType.KV, size)
-
-        every { context.packageManager } returns packageManager
-        expectReadFromCache()
-        every { clock.time() } returns updateTime
-        every { metadataWriter.write(updatedMetadata, storageOutputStream) } throws IOException()
-
-        try {
-            manager.onPackageBackedUp(packageInfo, BackupType.KV, size, storageOutputStream)
-            fail()
-        } catch (e: IOException) {
-            // expected
-        }
-
-        assertEquals(0L, manager.getLastBackupTime()) // time was reverted
-        assertNull(manager.getPackageMetadata(packageName)) // no package metadata got added
-
-        verify { cacheInputStream.close() }
     }
 
     @Test
@@ -445,7 +415,7 @@ class MetadataManagerTest {
         every { clock.time() } returns time
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L, storageOutputStream)
+        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L)
 
         assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))

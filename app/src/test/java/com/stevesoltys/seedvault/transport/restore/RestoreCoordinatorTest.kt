@@ -67,7 +67,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         metadataReader = metadataReader,
     )
 
-    private val restorableBackup = RestorableBackup(metadata)
+    private val restorableBackup = RestorableBackup(metadata, repoId, snapshot)
     private val inputStream = mockk<InputStream>()
     private val safStorage: SafProperties = mockk()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
@@ -80,8 +80,10 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val storageName = getRandomString()
 
     init {
-        metadata.packageMetadataMap[packageInfo2.packageName] =
-            PackageMetadata(backupType = BackupType.FULL)
+        metadata.packageMetadataMap[packageInfo2.packageName] = PackageMetadata(
+            backupType = BackupType.FULL,
+            chunkIds = listOf(apkChunkId),
+        )
 
         mockkStatic("com.stevesoltys.seedvault.backend.BackendExtKt")
         every { backendManager.backend } returns backend
@@ -200,7 +202,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, packageInfoArray))
 
-        every { full.hasState() } returns false
+        every { full.hasState } returns false
         restore.finishRestore()
 
         restore.beforeStartRestore(restorableBackup)
@@ -306,7 +308,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo) } returns true
-        every { full.initializeState(0x00, token, "", packageInfo) } just Runs
+        every { full.initializeStateV0(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_FULL_STREAM)
         assertEquals(expected, restore.nextRestorePackage())
@@ -319,8 +321,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
+        every { full.initializeState(VERSION, packageInfo2, listOf(apkBlobHandle)) } just Runs
 
         val expected = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
         assertEquals(expected, restore.nextRestorePackage())
@@ -339,8 +340,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
+        every { full.initializeState(VERSION, packageInfo2, listOf(apkBlobHandle)) } just Runs
 
         val expected2 =
             RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
@@ -364,7 +364,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
         coEvery { kv.hasDataForPackage(token, packageInfo2) } returns false
         coEvery { full.hasDataForPackage(token, packageInfo2) } returns true
-        every { full.initializeState(0.toByte(), token, "", packageInfo2) } just Runs
+        every { full.initializeStateV0(token, packageInfo2) } just Runs
 
         val expected2 = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
         assertEquals(expected2, restore.nextRestorePackage())
@@ -430,7 +430,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     fun `finishRestore() delegates to Full if it has state`() {
         val hasState = Random.nextBoolean()
 
-        every { full.hasState() } returns hasState
+        every { full.hasState } returns hasState
         if (hasState) {
             every { full.finishRestore() } just Runs
         }

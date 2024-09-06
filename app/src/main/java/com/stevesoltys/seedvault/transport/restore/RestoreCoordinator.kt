@@ -30,6 +30,7 @@ import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
+import com.stevesoltys.seedvault.transport.backup.getBlobHandles
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
@@ -261,8 +262,11 @@ internal class RestoreCoordinator(
         val packageInfo = state.packages.next()
         val version = state.backup.version
         if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
+        if (version == 1.toByte()) return nextRestorePackageV1(state, packageInfo)
 
         val packageName = packageInfo.packageName
+        val repoId = state.backup.repoId ?: error("No repoId in v2 backup")
+        val snapshot = state.backup.snapshot ?: error("No snapshot in v2 backup")
         val type = when (state.backup.packageMetadataMap[packageName]?.backupType) {
             BackupType.KV -> {
                 val name = crypto.getNameForPackage(state.backup.salt, packageName)
@@ -278,8 +282,57 @@ internal class RestoreCoordinator(
             }
 
             BackupType.FULL -> {
+                val chunkIds = state.backup.packageMetadataMap[packageName]?.chunkIds
+                    ?: error("no metadata or chunkIds")
+                val blobHandles = try {
+                    snapshot.getBlobHandles(repoId, chunkIds)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error getting blob handles: ", e)
+                    failedPackages.add(packageName)
+                    // abort here as this is close to an assertion error
+                    return null
+                }
+                full.initializeState(version, packageInfo, blobHandles)
+                state.currentPackage = packageName
+                TYPE_FULL_STREAM
+            }
+
+            null -> {
+                Log.i(TAG, "No backup type found for $packageName. Skipping...")
+                state.backup.packageMetadataMap[packageName]?.backupType?.let { s ->
+                    Log.w(TAG, "State was ${s.name}")
+                }
+                failedPackages.add(packageName)
+                // don't return null and cause abort here, but try next package
+                return nextRestorePackage()
+            }
+        }
+        return RestoreDescription(packageName, type)
+    }
+
+    @Suppress("deprecation")
+    private suspend fun nextRestorePackageV1(
+        state: RestoreCoordinatorState,
+        packageInfo: PackageInfo,
+    ): RestoreDescription? {
+        val packageName = packageInfo.packageName
+        val type = when (state.backup.packageMetadataMap[packageName]?.backupType) {
+            BackupType.KV -> {
                 val name = crypto.getNameForPackage(state.backup.salt, packageName)
-                full.initializeState(version, state.token, name, packageInfo)
+                kv.initializeState(
+                    version = 1,
+                    token = state.token,
+                    name = name,
+                    packageInfo = packageInfo,
+                    autoRestorePackageInfo = state.autoRestorePackageInfo
+                )
+                state.currentPackage = packageName
+                TYPE_KEY_VALUE
+            }
+
+            BackupType.FULL -> {
+                val name = crypto.getNameForPackage(state.backup.salt, packageName)
+                full.initializeStateV1(state.token, name, packageInfo)
                 state.currentPackage = packageName
                 TYPE_FULL_STREAM
             }
@@ -315,7 +368,7 @@ internal class RestoreCoordinator(
 
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
-                    full.initializeState(0x00, state.token, "", packageInfo)
+                    full.initializeStateV0(state.token, packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }
@@ -380,7 +433,7 @@ internal class RestoreCoordinator(
      */
     fun finishRestore() {
         Log.d(TAG, "finishRestore")
-        if (full.hasState()) full.finishRestore()
+        if (full.hasState) full.finishRestore()
         state = null
     }
 
