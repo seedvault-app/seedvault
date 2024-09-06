@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.settings.SettingsManager
+import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
 
 internal class SnapshotCreatorFactory(
@@ -130,3 +131,8 @@ internal class SnapshotCreator(
 fun Iterable<String>.forProto() = map { ByteString.fromHex(it) }
 fun Iterable<ByteString>.hexFromProto() = map { it.toByteArray().toHexString() }
 fun ByteString.hexFromProto() = toByteArray().toHexString()
+fun Snapshot.getBlobHandles(repoId: String, chunkIds: List<String>) = chunkIds.map { chunkId ->
+    val blobId = blobsMap[chunkId]?.id?.hexFromProto()
+        ?: error("Blob for $chunkId missing from snapshot $token")
+    AppBackupFileType.Blob(repoId, blobId)
+}

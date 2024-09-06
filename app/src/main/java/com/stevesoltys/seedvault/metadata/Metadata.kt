@@ -8,8 +8,12 @@ package com.stevesoltys.seedvault.metadata
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.os.Build
 import com.stevesoltys.seedvault.crypto.TYPE_METADATA
+import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
+import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.transport.backup.hexFromProto
+import com.stevesoltys.seedvault.worker.BASE_SPLIT
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
 import java.nio.ByteBuffer
 
@@ -91,12 +95,55 @@ data class PackageMetadata(
     internal val version: Long? = null,
     internal val installer: String? = null,
     internal val splits: List<ApkSplit>? = null,
+    internal val baseApkChunkIds: List<String>? = null, // used for v2
+    internal val chunkIds: List<String>? = null, // used for v2
     internal val sha256: String? = null,
     internal val signatures: List<String>? = null,
 ) {
+
+    companion object {
+        fun fromSnapshot(app: Snapshot.App) = PackageMetadata(
+            time = app.time,
+            state = if (app.state.isBlank()) UNKNOWN_ERROR else PackageState.valueOf(app.state),
+            backupType = when (app.type) {
+                Snapshot.BackupType.FULL -> BackupType.FULL
+                Snapshot.BackupType.KV -> BackupType.KV
+                else -> null
+            },
+            name = app.name,
+            chunkIds = app.chunkIdsList.hexFromProto(),
+            system = app.system,
+            isLaunchableSystemApp = app.launchableSystemApp,
+            version = app.apk.versionCode,
+            installer = app.apk.installer,
+            baseApkChunkIds = run {
+                val baseChunk = app.apk.splitsList.find { it.name == BASE_SPLIT }
+                if (baseChunk == null || baseChunk.chunkIdsCount == 0) {
+                    null
+                } else {
+                    baseChunk.chunkIdsList.hexFromProto()
+                }
+            },
+            splits = app.apk.splitsList.filter { it.name != BASE_SPLIT }.map {
+                ApkSplit(
+                    name = it.name,
+                    size = null,
+                    sha256 = "",
+                    chunkIds = if (it.chunkIdsCount == 0) null else it.chunkIdsList.hexFromProto()
+                )
+            }.takeIf { it.isNotEmpty() }, // expected null if there are no splits
+            sha256 = null,
+            signatures = app.apk.signaturesList.map { it.toByteArray().encodeBase64() }.takeIf {
+                it.isNotEmpty()
+            },
+        )
+    }
+
     val isInternalSystem: Boolean = system && !isLaunchableSystemApp
     fun hasApk(): Boolean {
-        return version != null && sha256 != null && signatures != null
+        return version != null && // v2 doesn't use sha256 here
+            (sha256 != null || baseApkChunkIds?.isNotEmpty() == true) &&
+            signatures != null
     }
 }
 
@@ -104,6 +151,7 @@ data class ApkSplit(
     val name: String,
     val size: Long?,
     val sha256: String,
+    val chunkIds: List<String>? = null, // used for v2
     // There's also a revisionCode, but it doesn't seem to be used just yet
 )
 

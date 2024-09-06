@@ -10,7 +10,7 @@ import com.stevesoltys.seedvault.crypto.TYPE_BACKUP_FULL
 import com.stevesoltys.seedvault.crypto.TYPE_BACKUP_KV
 import java.nio.ByteBuffer
 
-internal const val VERSION: Byte = 1
+internal const val VERSION: Byte = 2
 internal const val MAX_PACKAGE_LENGTH_SIZE = 255
 internal const val MAX_KEY_LENGTH_SIZE = MAX_PACKAGE_LENGTH_SIZE
 internal const val MAX_VERSION_HEADER_SIZE =

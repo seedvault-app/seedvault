@@ -416,10 +416,7 @@ internal class AppSelectionManagerTest : TransportTest() {
     }
 
     private fun getRestorableBackup(map: Map<String, PackageMetadata>) = RestorableBackup(
-        backupMetadata = backupMetadata.copy(
-            version = 2,
-            packageMetadataMap = map as PackageMetadataMap,
-        ),
+        backupMetadata = backupMetadata.copy(packageMetadataMap = map as PackageMetadataMap),
         repoId = repoId,
         snapshot = snapshot,
     )

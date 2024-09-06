@@ -8,19 +8,15 @@ package com.stevesoltys.seedvault.worker
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getMetadataOutputStream
-import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isStopped
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
-import kotlinx.coroutines.delay
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 
 internal class ApkBackupManager(
@@ -30,7 +26,6 @@ internal class ApkBackupManager(
     private val packageService: PackageService,
     private val iconManager: IconManager,
     private val apkBackup: ApkBackup,
-    private val backendManager: BackendManager,
     private val nm: BackupNotificationManager,
 ) {
 
@@ -51,14 +46,6 @@ internal class ApkBackupManager(
                 backUpApks()
             }
         } finally {
-            keepTrying {
-                // upload all local changes only at the end,
-                // so we don't have to re-upload the metadata
-                val token = settingsManager.getToken() ?: error("no token")
-                backendManager.backend.getMetadataOutputStream(token).use { outputStream ->
-                    metadataManager.uploadMetadata(outputStream)
-                }
-            }
             nm.onApkBackupDone()
         }
     }
@@ -107,37 +94,15 @@ internal class ApkBackupManager(
     }
 
     /**
-     * Backs up an APK for the given [PackageInfo].
-     *
-     * @return true if a backup was performed and false if no backup was needed or it failed.
+     * Backs up one (or more split) APK(s) for the given [PackageInfo], if needed.
      */
-    private suspend fun backUpApk(packageInfo: PackageInfo): Boolean {
+    private suspend fun backUpApk(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
-        return try {
-            apkBackup.backupApkIfNecessary(packageInfo) { name ->
-                val token = settingsManager.getToken() ?: throw IOException("no current token")
-                backendManager.backend.save(LegacyAppBackupFile.Blob(token, name))
-            }?.let { packageMetadata ->
-                metadataManager.onApkBackedUp(packageInfo, packageMetadata)
-                true
-            } ?: false
+        try {
+            apkBackup.backupApkIfNecessary(packageInfo)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK for $packageName", e)
             if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
-            false
-        }
-    }
-
-    private suspend fun keepTrying(n: Int = 3, block: suspend () -> Unit) {
-        for (i in 1..n) {
-            try {
-                block()
-                return
-            } catch (e: Exception) {
-                if (i == n) throw e
-                Log.e(TAG, "Error (#$i), we'll keep trying", e)
-                delay(1000)
-            }
         }
     }
 }

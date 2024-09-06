@@ -157,9 +157,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.copyInto(value2.captured) // write the app data into the passed ByteArray
             appData2.size
         }
-        coEvery {
-            apkBackup.backupApkIfNecessary(packageInfo, any())
-        } returns packageMetadata
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
         coEvery {
             backend.save(LegacyAppBackupFile.Metadata(token))
         } returns metadataOutputStream
@@ -238,7 +236,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.copyInto(value.captured) // write the app data into the passed ByteArray
             appData.size
         }
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns null
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
         every { settingsManager.getToken() } returns token
         coEvery {
             backend.save(LegacyAppBackupFile.Metadata(token))
@@ -307,7 +305,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         } returns bOutputStream
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
         every { settingsManager.isQuotaUnlimited() } returns false
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns packageMetadata
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
         every { settingsManager.getToken() } returns token
         every { metadataManager.salt } returns salt
         coEvery {

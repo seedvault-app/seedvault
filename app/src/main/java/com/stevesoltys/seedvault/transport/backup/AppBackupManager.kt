@@ -5,12 +5,14 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.SnapshotManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
 
 internal class AppBackupManager(
     private val blobsCache: BlobsCache,
+    private val settingsManager: SettingsManager,
     private val snapshotManager: SnapshotManager,
     private val snapshotCreatorFactory: SnapshotCreatorFactory,
 ) {
@@ -25,12 +27,15 @@ internal class AppBackupManager(
         blobsCache.populateCache()
     }
 
-    suspend fun afterBackupFinished() {
-        log.info { "After backup finished" }
+    suspend fun afterBackupFinished(success: Boolean) {
+        log.info { "After backup finished. Success: $success" }
         blobsCache.clear()
-        val snapshot = snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
-        keepTrying {
-            snapshotManager.saveSnapshot(snapshot)
+        if (success) {
+            val snapshot = snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
+            keepTrying {
+                snapshotManager.saveSnapshot(snapshot)
+            }
+            settingsManager.token = snapshot.token
         }
         snapshotCreator = null
     }

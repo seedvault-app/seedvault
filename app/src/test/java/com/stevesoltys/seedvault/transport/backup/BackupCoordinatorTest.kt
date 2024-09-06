@@ -14,13 +14,13 @@ import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.ApkBackup
 import io.mockk.Runs
@@ -273,7 +273,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0, token, salt)
         } returns TRANSPORT_OK
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo, any()) } returns null
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
     }
@@ -382,7 +382,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     private fun expectApkBackupAndMetadataWrite() {
-        coEvery { apkBackup.backupApkIfNecessary(any(), any()) } returns packageMetadata
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
         every { settingsManager.getToken() } returns token
         coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs

@@ -19,8 +19,10 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.worker.BackupRequester
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -36,6 +38,7 @@ internal class NotificationBackupObserver(
     private val metadataManager: MetadataManager by inject()
     private val packageService: PackageService by inject()
     private val settingsManager: SettingsManager by inject()
+    private val appBackupManager: AppBackupManager by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
     private var numPackagesToReport: Int = 0
@@ -140,6 +143,12 @@ internal class NotificationBackupObserver(
             } catch (e: Exception) {
                 Log.e(TAG, "Error getting number of all user packages: ", e)
                 requestedPackages
+            }
+            // TODO handle exceptions
+            runBlocking {
+                // TODO check if UI thread
+                Log.d("TAG", "Finalizing backup...")
+                appBackupManager.afterBackupFinished(success)
             }
             nm.onBackupFinished(success, numPackagesToReport, total, size)
         }
