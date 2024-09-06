@@ -1,3 +1,6 @@
+## [15-4.1] - 2024-09-06
+* Android 15
+
 ## [14-4.1] - 2024-08-23
 * It is now possible to restore after setting up a profile
 * It is now possible to select what to restore (e.g. apps, files...)
