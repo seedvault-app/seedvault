@@ -9,4 +9,6 @@
     <color name="accent_primary">@android:color/system_accent1_100</color>
     <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/values/colors_device_defaults.xml#51 -->
     <color name="background">@android:color/system_neutral1_900</color>
+    <!-- https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-14.0.0_r1/core/res/res/color/text_color_primary_device_default_dark.xml -->
+    <color name="text_color_primary">@android:color/system_neutral1_50</color>
 </resources>
