@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.provider.Settings.Secure.ANDROID_ID
 import com.google.protobuf.ByteString
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.proto.Snapshot
@@ -22,6 +23,7 @@ import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.settings.SettingsManager
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
 
@@ -41,8 +43,8 @@ internal class SnapshotCreator(
     private val settingsManager: SettingsManager,
 ) {
 
+    private val log = KotlinLogging.logger { }
     private val snapshotBuilder = Snapshot.newBuilder()
-        .setToken(clock.time())
     private val appBuilderMap = mutableMapOf<String, App.Builder>()
     private val blobsMap = mutableMapOf<String, Blob>()
 
@@ -51,37 +53,41 @@ internal class SnapshotCreator(
     }
 
     fun onApkBackedUp(
-        packageName: String,
+        packageInfo: PackageInfo,
         apk: Apk,
         chunkMap: Map<String, Blob>,
     ) {
-        val appBuilder = appBuilderMap.getOrPut(packageName) {
+        appBuilderMap.getOrPut(packageInfo.packageName) {
             App.newBuilder()
+        }.apply {
+            val label = packageInfo.applicationInfo?.loadLabel(context.packageManager)
+            if (label != null) name = label.toString()
+            setApk(apk)
         }
-        appBuilder.setApk(apk)
         blobsMap.putAll(chunkMap)
     }
 
     fun onPackageBackedUp(
         packageInfo: PackageInfo,
-        type: BackupType,
+        backupType: BackupType,
         backupData: BackupData,
     ) {
         val packageName = packageInfo.packageName
-        val builder = appBuilderMap.getOrPut(packageName) {
-            App.newBuilder()
-        }
         val isSystemApp = packageInfo.isSystemApp()
         val chunkIds = backupData.chunks.forProto()
+        appBuilderMap.getOrPut(packageName) {
+            App.newBuilder()
+        }.apply {
+            time = clock.time()
+            state = APK_AND_DATA.name // TODO review those states and their usefulness for snapshot
+            type = backupType.forSnapshot()
+            val label = packageInfo.applicationInfo?.loadLabel(context.packageManager)
+            if (label != null) name = label.toString()
+            system = isSystemApp
+            launchableSystemApp = isSystemApp && launchableSystemApps.contains(packageName)
+            addAllChunkIds(chunkIds)
+        }
         blobsMap.putAll(backupData.chunkMap)
-        builder
-            .setTime(clock.time())
-            .setState(APK_AND_DATA.name)
-            .setType(type.forSnapshot())
-            .setName(packageInfo.applicationInfo?.loadLabel(context.packageManager)?.toString())
-            .setSystem(isSystemApp)
-            .setLaunchableSystemApp(isSystemApp && launchableSystemApps.contains(packageName))
-            .addAllChunkIds(chunkIds)
     }
 
     fun onIconsBackedUp(backupData: BackupData) {
@@ -90,6 +96,7 @@ internal class SnapshotCreator(
     }
 
     fun finalizeSnapshot(): Snapshot {
+        log.info { "finalizeSnapshot()" }
         val userName = getUserName()
         val deviceName = if (userName == null) {
             "${Build.MANUFACTURER} ${Build.MODEL}"
@@ -98,16 +105,17 @@ internal class SnapshotCreator(
         }
 
         @SuppressLint("HardwareIds")
-        val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
-        val snapshot = snapshotBuilder
-            .setName(deviceName)
-            .setAndroidId(androidId)
-            .setSdkInt(Build.VERSION.SDK_INT)
-            .setAndroidIncremental(Build.VERSION.INCREMENTAL)
-            .setD2D(settingsManager.d2dBackupsEnabled())
-            .putAllApps(appBuilderMap.mapValues { it.value.build() })
-            .putAllBlobs(blobsMap)
-            .build()
+        val snapshot = snapshotBuilder.apply {
+            version = VERSION.toInt()
+            token = clock.time()
+            name = deviceName
+            androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
+            sdkInt = Build.VERSION.SDK_INT
+            androidIncremental = Build.VERSION.INCREMENTAL
+            d2D = settingsManager.d2dBackupsEnabled()
+            putAllApps(appBuilderMap.mapValues { it.value.build() })
+            putAllBlobs(this@SnapshotCreator.blobsMap)
+        }.build()
         appBuilderMap.clear()
         snapshotBuilder.clear()
         return snapshot

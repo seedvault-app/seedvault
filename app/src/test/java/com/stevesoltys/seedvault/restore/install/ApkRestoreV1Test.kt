@@ -41,7 +41,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verifyOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
@@ -57,7 +56,6 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.random.Random
 
-@ExperimentalCoroutinesApi
 @Suppress("DEPRECATION")
 internal class ApkRestoreV1Test : TransportTest() {
 
@@ -91,7 +89,6 @@ internal class ApkRestoreV1Test : TransportTest() {
     private val icon: Drawable = mockk()
 
     private val deviceName = metadata.deviceName
-    private val packageName = packageInfo.packageName
     private val packageMetadata = PackageMetadata(
         time = Random.nextLong(),
         version = packageInfo.longVersionCode - 1,

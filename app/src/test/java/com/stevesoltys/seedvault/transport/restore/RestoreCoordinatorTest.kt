@@ -73,7 +73,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
         PackageInfo().apply { packageName = "@pm@" },
         packageInfo
     )
-    private val packageName = packageInfo.packageName
     private val storageName = getRandomString()
 
     init {

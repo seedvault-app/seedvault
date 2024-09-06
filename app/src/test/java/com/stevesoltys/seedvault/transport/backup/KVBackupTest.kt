@@ -13,11 +13,11 @@ import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
@@ -55,7 +55,6 @@ internal class KVBackupTest : BackupTest() {
 
     private val db = mockk<KVDb>()
     private val backend = mockk<Backend>()
-    private val packageName = packageInfo.packageName
     private val key = getRandomString(MAX_KEY_LENGTH_SIZE)
     private val dataValue = Random.nextBytes(23)
     private val dbBytes = Random.nextBytes(42)

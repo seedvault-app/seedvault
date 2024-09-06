@@ -115,7 +115,7 @@ data class PackageMetadata(
             system = app.system,
             isLaunchableSystemApp = app.launchableSystemApp,
             version = app.apk.versionCode,
-            installer = app.apk.installer,
+            installer = app.apk.installer.takeIf { it.isNotEmpty() },
             baseApkChunkIds = run {
                 val baseChunk = app.apk.splitsList.find { it.name == BASE_SPLIT }
                 if (baseChunk == null || baseChunk.chunkIdsCount == 0) {

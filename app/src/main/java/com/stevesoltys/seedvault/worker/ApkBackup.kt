@@ -14,6 +14,7 @@ import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.proto.SnapshotKt.split
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
@@ -108,10 +109,14 @@ internal class ApkBackup(
         }
 
         // builder for Apk object
-        val apkBuilder = Snapshot.Apk.newBuilder()
-            .setVersionCode(version)
-            .setInstaller(pm.getInstallSourceInfo(packageName).installingPackageName)
-            .addAllSignatures(signatures.forProto())
+        val apkBuilder = Snapshot.Apk.newBuilder().apply {
+            versionCode = version
+            pm.getInstallSourceInfo(packageName).installingPackageName?.let {
+                // protobuf doesn't support null values
+                installer = it
+            }
+            addAllSignatures(signatures.forProto())
+        }
 
         // get an InputStream for the APK
         val sourceDir = packageInfo.applicationInfo?.sourceDir ?: return
@@ -121,9 +126,10 @@ internal class ApkBackup(
         }
         val backupData = backupReceiver.finalize()
         // store base split in builder
-        val baseSplit = Snapshot.Split.newBuilder()
-            .setName(BASE_SPLIT)
-            .addAllChunkIds(backupData.chunks.forProto())
+        val baseSplit = split {
+            name = BASE_SPLIT
+            chunkIds.addAll(backupData.chunks.forProto())
+        }
         apkBuilder
             .addSplits(baseSplit)
         val chunkMap = backupData.chunkMap.toMutableMap()
@@ -134,9 +140,8 @@ internal class ApkBackup(
         } else {
             backupSplitApks(packageInfo, chunkMap)
         }
-        apkBuilder.addAllSplits(splits)
-        val apk = apkBuilder.build()
-        snapshotCreator.onApkBackedUp(packageName, apk, chunkMap)
+        val apk = apkBuilder.addAllSplits(splits).build()
+        snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
 
         Log.d(TAG, "Backed up new APK of $packageName with version ${packageInfo.versionName}.")
     }

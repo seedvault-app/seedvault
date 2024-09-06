@@ -11,6 +11,7 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
+import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import okio.Buffer
 import okio.buffer
 import okio.sink
@@ -43,10 +44,10 @@ internal class BlobCreator(
             outputBuffer.flush()
             length
         }
-        return Blob.newBuilder()
-            .setId(ByteString.copyFrom(sha256ByteString.asByteBuffer()))
-            .setLength(size.toInt())
-            .setUncompressedLength(chunk.length)
-            .build()
+        return blob {
+            id = ByteString.copyFrom(sha256ByteString.asByteBuffer())
+            length = size.toInt()
+            uncompressedLength = chunk.length
+        }
     }
 }

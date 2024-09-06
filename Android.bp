@@ -9,6 +9,8 @@ android_app {
         "app/src/main/java/**/*.kt",
         "app/src/main/java/**/*.java",
         "app/src/main/proto/*.proto",
+        // as of Android 15, there is no way to pass --kotlin_out to aprotoc compiler
+        "app/build/generated/source/proto/debug/kotlin/com/stevesoltys/seedvault/proto/*.kt",
     ],
     resource_dirs: [
         "app/src/main/res",
@@ -33,6 +35,7 @@ android_app {
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
         // app backup related libs
+        "seedvault-lib-protobuf-kotlin-lite",
         "seedvault-lib-kotlin-logging-jvm",
         "seedvault-lib-chunker",
         "seedvault-lib-zstd-jni",

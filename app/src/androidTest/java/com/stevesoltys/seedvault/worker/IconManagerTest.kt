@@ -9,7 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.protobuf.ByteString
-import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.BackupData
 import com.stevesoltys.seedvault.transport.backup.BackupReceiver
@@ -66,7 +66,7 @@ class IconManagerTest : KoinComponent {
         val chunkId = Random.nextBytes(32).toHexString()
         val chunkList = listOf(chunkId)
         val blobId = Random.nextBytes(32).toHexString()
-        val blob = Snapshot.Blob.newBuilder().setId(ByteString.fromHex(blobId)).build()
+        val blob = blob { id = ByteString.fromHex(blobId) }
 
         // upload icons and capture plaintext bytes
         coEvery { backupReceiver.addBytes(capture(output)) } just Runs

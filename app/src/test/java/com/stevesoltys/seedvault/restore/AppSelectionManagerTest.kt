@@ -14,7 +14,6 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SETTINGS
@@ -29,7 +28,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
-import org.calyxos.seedvault.core.toHexString
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -61,12 +59,6 @@ internal class AppSelectionManagerTest : TransportTest() {
         token = Random.nextLong(),
         salt = getRandomString(),
     )
-    private val repoId = Random.nextBytes(32).toHexString()
-    private val snapshot = Snapshot.newBuilder()
-        .setToken(token)
-        .putApps(packageInfo.packageName, Snapshot.App.getDefaultInstance())
-        .putAllBlobs(emptyMap())
-        .build()
 
     private val appSelectionManager = AppSelectionManager(
         context = context,

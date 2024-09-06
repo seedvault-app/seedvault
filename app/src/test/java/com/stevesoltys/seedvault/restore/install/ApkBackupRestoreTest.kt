@@ -14,13 +14,10 @@ import android.content.pm.Signature
 import android.graphics.drawable.Drawable
 import android.util.PackageUtils
 import app.cash.turbine.test
-import com.google.protobuf.ByteString
-import com.google.protobuf.ByteString.copyFromUtf8
 import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.assertReadEquals
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.decodeBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
@@ -31,14 +28,12 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
-import com.stevesoltys.seedvault.transport.backup.BackupData
 import com.stevesoltys.seedvault.transport.backup.BackupReceiver
 import com.stevesoltys.seedvault.transport.backup.SnapshotCreator
 import com.stevesoltys.seedvault.transport.backup.hexFromProto
 import com.stevesoltys.seedvault.transport.restore.Loader
 import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.worker.ApkBackup
-import com.stevesoltys.seedvault.worker.BASE_SPLIT
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -46,11 +41,10 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -64,9 +58,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.Path
-import kotlin.random.Random
 
-@ExperimentalCoroutinesApi
 internal class ApkBackupRestoreTest : TransportTest() {
 
     private val pm: PackageManager = mockk()
@@ -108,37 +100,6 @@ internal class ApkBackupRestoreTest : TransportTest() {
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
     private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
     private val sigs = arrayOf(Signature(signatureBytes))
-    private val packageName: String = packageInfo.packageName
-    private val splitName = getRandomString()
-    private val splitBytes = byteArrayOf(0x07, 0x08, 0x09)
-    private val apkChunkId = Random.nextBytes(32).toHexString()
-    private val splitChunkId = Random.nextBytes(32).toHexString()
-    private val apkBlob =
-        Snapshot.Blob.newBuilder().setId(ByteString.copyFrom(Random.nextBytes(32))).build()
-    private val splitBlob =
-        Snapshot.Blob.newBuilder().setId(ByteString.copyFrom(Random.nextBytes(32))).build()
-    private val apkBackupData = BackupData(listOf(apkChunkId), mapOf(apkChunkId to apkBlob))
-    private val splitBackupData = BackupData(listOf(splitChunkId), mapOf(splitChunkId to splitBlob))
-    private val chunkMap = apkBackupData.chunkMap + splitBackupData.chunkMap
-    private val baseSplit = Snapshot.Split.newBuilder().setName(BASE_SPLIT)
-        .addAllChunkIds(listOf(ByteString.fromHex(apkChunkId))).build()
-    private val apkSplit = Snapshot.Split.newBuilder().setName(splitName)
-        .addAllChunkIds(listOf(ByteString.fromHex(splitChunkId))).build()
-    private val apk = Snapshot.Apk.newBuilder()
-        .setVersionCode(packageInfo.longVersionCode - 1)
-        .setInstaller(getRandomString())
-        .addAllSignatures(mutableListOf(copyFromUtf8("AwIB".decodeBase64())))
-        .addSplits(baseSplit)
-        .addSplits(apkSplit)
-        .build()
-    private val app = Snapshot.App.newBuilder()
-        .setApk(apk)
-        .build()
-    private val snapshot = Snapshot.newBuilder()
-        .setToken(token)
-        .putApps(packageName, app)
-        .putAllBlobs(chunkMap)
-        .build()
     private val packageMetadataMap: PackageMetadataMap =
         hashMapOf(packageName to PackageMetadata.fromSnapshot(app))
     private val installerName = apk.installer

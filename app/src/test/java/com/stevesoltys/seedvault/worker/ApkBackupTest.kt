@@ -13,10 +13,12 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.util.PackageUtils
-import com.google.protobuf.ByteString
+import com.google.protobuf.ByteString.copyFromUtf8
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.proto.SnapshotKt.app
+import com.stevesoltys.seedvault.proto.copy
 import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.BackupData
@@ -56,14 +58,6 @@ internal class ApkBackupTest : BackupTest() {
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
     private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
     private val sigs = arrayOf(Signature(signatureBytes))
-    private val apk = Snapshot.Apk.newBuilder()
-        .setVersionCode(packageInfo.longVersionCode - 1)
-        .addSignatures(ByteString.copyFrom(signatureHash))
-        .build()
-    private val snapshot = Snapshot.newBuilder()
-        .setToken(token)
-        .putApps(packageInfo.packageName, Snapshot.App.newBuilder().setApk(apk).build())
-        .build()
 
     init {
         mockkStatic(PackageUtils::class)
@@ -113,8 +107,8 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does not back up the same version`() = runBlocking {
         packageInfo.applicationInfo!!.flags = FLAG_UPDATED_SYSTEM_APP
-        val apk = apk.toBuilder().setVersionCode(packageInfo.longVersionCode).build()
-        val app = Snapshot.App.newBuilder().setApk(apk).build()
+        val apk = apk.copy { versionCode = packageInfo.longVersionCode }
+        val app = app { this.apk = apk }
         expectChecks(snapshot.toBuilder().putApps(packageInfo.packageName, app).build())
 
         apkBackup.backupApkIfNecessary(packageInfo)
@@ -123,12 +117,12 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does back up the same version when signatures changes`() {
         packageInfo.applicationInfo!!.sourceDir = "/tmp/doesNotExist"
-        val apk = apk.toBuilder()
-            .clearSignatures()
-            .addSignatures(ByteString.copyFromUtf8("foo"))
-            .setVersionCode(packageInfo.longVersionCode)
-            .build()
-        val app = Snapshot.App.newBuilder().setApk(apk).build()
+        val apk = apk.copy {
+            signatures.clear()
+            signatures.add(copyFromUtf8("foo"))
+            versionCode = packageInfo.longVersionCode
+        }
+        val app = app { this.apk = apk }
         expectChecks(snapshot.toBuilder().putApps(packageInfo.packageName, app).build())
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)

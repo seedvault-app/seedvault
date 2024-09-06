@@ -6,8 +6,6 @@
 package com.stevesoltys.seedvault.transport
 
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.transport.restore.Loader
 import io.mockk.coEvery
@@ -31,9 +29,8 @@ import java.io.OutputStream
 import java.security.MessageDigest
 import kotlin.random.Random
 
-class SnapshotManagerTest {
+internal class SnapshotManagerTest : TransportTest() {
 
-    private val crypto: Crypto = mockk()
     private val backendManager: BackendManager = mockk()
     private val backend: Backend = mockk()
 
@@ -43,14 +40,7 @@ class SnapshotManagerTest {
     private val ad = Random.nextBytes(1)
     private val passThroughOutputStream = slot<OutputStream>()
     private val passThroughInputStream = slot<InputStream>()
-    private val repoId = Random.nextBytes(32).toHexString()
     private val snapshotHandle = slot<AppBackupFileType.Snapshot>()
-    private val snapshot = Snapshot.newBuilder()
-        .setToken(Random.nextLong())
-        .setName(getRandomString())
-        .setSdkInt(Random.nextInt())
-        .putAllBlobs(mapOf(getRandomString() to Snapshot.Blob.getDefaultInstance()))
-        .build()
 
     @Test
     fun `test saving and loading`() = runBlocking {
