@@ -6,7 +6,7 @@
 package com.stevesoltys.seedvault.worker
 
 import android.content.Context
-import android.graphics.Bitmap.CompressFormat.WEBP_LOSSY
+import android.graphics.Bitmap.CompressFormat.JPEG
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -17,23 +17,29 @@ import androidx.core.graphics.drawable.toDrawable
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.crypto.TYPE_ICONS
-import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.transport.backup.AppBackupManager
+import com.stevesoltys.seedvault.transport.backup.BackupReceiver
 import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.transport.restore.Loader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
+import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.toHexString
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.nio.ByteBuffer
+import java.nio.file.attribute.FileTime
 import java.security.GeneralSecurityException
-import java.util.zip.Deflater.BEST_SPEED
+import java.util.zip.Deflater.NO_COMPRESSION
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-internal const val FILE_BACKUP_ICONS = ".backup.icons"
 private const val ICON_SIZE = 128
 private const val ICON_QUALITY = 75
 private const val CACHE_FOLDER = "restore-icons"
@@ -43,47 +49,100 @@ internal class IconManager(
     private val context: Context,
     private val packageService: PackageService,
     private val crypto: Crypto,
+    private val backupReceiver: BackupReceiver,
+    private val loader: Loader,
+    private val appBackupManager: AppBackupManager,
 ) {
 
+    private val snapshotCreator
+        get() = appBackupManager.snapshotCreator ?: error("No SnapshotCreator")
+
     @Throws(IOException::class, GeneralSecurityException::class)
-    fun uploadIcons(token: Long, outputStream: OutputStream) {
+    suspend fun uploadIcons() {
         Log.d(TAG, "Start uploading icons")
         val packageManager = context.packageManager
-        crypto.newEncryptingStreamV1(outputStream, getAD(VERSION, token)).use { cryptoStream ->
-            ZipOutputStream(cryptoStream).use { zip ->
-                zip.setLevel(BEST_SPEED)
-                val entries = mutableSetOf<String>()
-                packageService.allUserPackages.forEach {
-                    val applicationInfo = it.applicationInfo ?: return@forEach
-                    val drawable = packageManager.getApplicationIcon(applicationInfo)
-                    if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
-                    val entry = ZipEntry(it.packageName)
-                    zip.putNextEntry(entry)
-                    drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
-                    entries.add(it.packageName)
-                    zip.closeEntry()
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        ZipOutputStream(byteArrayOutputStream).use { zip ->
+            zip.setLevel(NO_COMPRESSION) // we compress with zstd after chunking the zip
+            val entries = mutableSetOf<String>()
+            // sort packages by package name to get deterministic ZIP
+            packageService.allUserPackages.sortedBy { it.packageName }.forEach {
+                val applicationInfo = it.applicationInfo ?: return@forEach
+                val drawable = packageManager.getApplicationIcon(applicationInfo)
+                if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
+                val entry = ZipEntry(it.packageName).apply {
+                    // needed to be deterministic
+                    setLastModifiedTime(FileTime.fromMillis(0))
                 }
-                packageService.launchableSystemApps.forEach {
-                    val drawable = it.loadIcon(packageManager)
-                    if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
-                    // check for duplicates (e.g. updated launchable system app)
-                    if (it.activityInfo.packageName in entries) return@forEach
-                    val entry = ZipEntry(it.activityInfo.packageName)
-                    zip.putNextEntry(entry)
-                    drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(WEBP_LOSSY, ICON_QUALITY, zip)
-                    zip.closeEntry()
+                zip.putNextEntry(entry)
+                // WEBP_LOSSY compression wasn't deterministic in our tests, so use JPEG
+                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(JPEG, ICON_QUALITY, zip)
+                entries.add(it.packageName)
+                zip.closeEntry()
+            }
+            // sort packages by package name to get deterministic ZIP
+            packageService.launchableSystemApps.sortedBy { it.activityInfo.packageName }.forEach {
+                val drawable = it.loadIcon(packageManager)
+                if (packageManager.isDefaultApplicationIcon(drawable)) return@forEach
+                // check for duplicates (e.g. updated launchable system app)
+                if (it.activityInfo.packageName in entries) return@forEach
+                val entry = ZipEntry(it.activityInfo.packageName).apply {
+                    // needed to be deterministic
+                    setLastModifiedTime(FileTime.fromMillis(0))
                 }
+                zip.putNextEntry(entry)
+                // WEBP_LOSSY compression wasn't deterministic in our tests, so use JPEG
+                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(JPEG, ICON_QUALITY, zip)
+                zip.closeEntry()
             }
         }
+        backupReceiver.addBytes(byteArrayOutputStream.toByteArray())
+        val backupData = backupReceiver.finalize()
+        snapshotCreator.onIconsBackedUp(backupData)
         Log.d(TAG, "Finished uploading icons")
+    }
+
+    /**
+     * Downloads icons file from given [snapshot] from the repository with [repoId].
+     * @return a set of package names for which icons were found
+     */
+    @Throws(IOException::class, SecurityException::class, GeneralSecurityException::class)
+    suspend fun downloadIcons(repoId: String, snapshot: Snapshot): Set<String> {
+        Log.d(TAG, "Start downloading icons")
+        val folder = File(context.cacheDir, CACHE_FOLDER)
+        if (!folder.isDirectory && !folder.mkdirs())
+            throw IOException("Can't create cache folder for icons")
+
+        val outputStream = ByteArrayOutputStream()
+        snapshot.iconChunkIdsList.forEach {
+            val blob = snapshot.getBlobsOrThrow(it.toByteArray().toHexString())
+            val handle = AppBackupFileType.Blob(repoId, blob.id.toByteArray().toHexString())
+            loader.loadFile(handle).use { inputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        val set = mutableSetOf<String>()
+        ZipInputStream(ByteArrayInputStream(outputStream.toByteArray())).use { zip ->
+            var entry = zip.nextEntry
+            while (entry != null) {
+                File(folder, entry.name).outputStream().use { outputStream ->
+                    zip.copyTo(outputStream)
+                }
+                set.add(entry.name)
+                entry = zip.nextEntry
+            }
+        }
+        Log.d(TAG, "Finished downloading icons")
+        return set
     }
 
     /**
      * Downloads icons file from given [inputStream].
      * @return a set of package names for which icons were found
      */
+    @Suppress("DEPRECATION")
     @Throws(IOException::class, SecurityException::class, GeneralSecurityException::class)
-    fun downloadIcons(version: Byte, token: Long, inputStream: InputStream): Set<String> {
+    fun downloadIconsV1(version: Byte, token: Long, inputStream: InputStream): Set<String> {
         Log.d(TAG, "Start downloading icons")
         val folder = File(context.cacheDir, CACHE_FOLDER)
         if (!folder.isDirectory && !folder.mkdirs())

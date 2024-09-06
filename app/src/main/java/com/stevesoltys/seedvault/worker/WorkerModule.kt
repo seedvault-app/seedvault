@@ -22,6 +22,9 @@ val workerModule = module {
             context = androidContext(),
             packageService = get(),
             crypto = get(),
+            backupReceiver = get(),
+            loader = get(),
+            appBackupManager = get(),
         )
     }
     single { AppBackupManager(get(), get(), get()) }

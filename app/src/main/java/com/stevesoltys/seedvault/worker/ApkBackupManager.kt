@@ -100,12 +100,8 @@ internal class ApkBackupManager(
 
     private suspend fun uploadIcons() {
         try {
-            val token = settingsManager.getToken() ?: throw IOException("no current token")
-            val handle = LegacyAppBackupFile.IconsFile(token)
-            backendManager.backend.save(handle).use {
-                iconManager.uploadIcons(token, it)
-            }
-        } catch (e: IOException) {
+            iconManager.uploadIcons()
+        } catch (e: Exception) {
             Log.e(TAG, "Error uploading icons: ", e)
         }
     }
