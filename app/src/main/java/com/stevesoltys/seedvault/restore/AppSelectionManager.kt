@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import com.stevesoltys.seedvault.ui.systemData
 import com.stevesoltys.seedvault.worker.IconManager
@@ -68,21 +69,23 @@ internal class AppSelectionManager(
             val name = context.getString(data.nameRes)
             SelectableAppItem(packageName, metadata.copy(name = name), true)
         }
-        val systemItem = SelectableAppItem(
-            packageName = PACKAGE_NAME_SYSTEM,
-            metadata = PackageMetadata(
-                time = restorableBackup.packageMetadataMap.values.maxOf {
-                    if (it.system) it.time else -1
-                },
-                size = restorableBackup.packageMetadataMap.values.sumOf {
-                    if (it.system) it.size ?: 0L else 0L
-                },
-                system = true,
-                name = context.getString(R.string.backup_system_apps),
-            ),
-            selected = isSetupWizard,
-        )
-        items.add(0, systemItem)
+        if (restorableBackup.packageMetadataMap.isNotEmpty()) {
+            val systemItem = SelectableAppItem(
+                packageName = PACKAGE_NAME_SYSTEM,
+                metadata = PackageMetadata(
+                    time = restorableBackup.packageMetadataMap.values.maxOf {
+                        if (it.system) it.time else -1
+                    },
+                    size = restorableBackup.packageMetadataMap.values.sumOf {
+                        if (it.system) it.size ?: 0L else 0L
+                    },
+                    system = true,
+                    name = context.getString(R.string.backup_system_apps),
+                ),
+                selected = isSetupWizard,
+            )
+            items.add(0, systemItem)
+        }
         items.addAll(0, systemDataItems)
         selectedApps.value =
             SelectedAppsState(apps = items, allSelected = isSetupWizard, iconsLoaded = false)

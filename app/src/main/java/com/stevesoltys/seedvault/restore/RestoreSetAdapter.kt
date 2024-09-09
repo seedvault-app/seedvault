@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreSetAdapter.RestoreSetViewHolder
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 
 internal class RestoreSetAdapter(
     private val listener: RestorableBackupClickListener,

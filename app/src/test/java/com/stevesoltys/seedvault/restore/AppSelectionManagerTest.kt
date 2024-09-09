@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SETTINGS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
@@ -27,7 +28,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -239,7 +239,7 @@ internal class AppSelectionManagerTest : TransportTest() {
         val backend: Backend = mockk()
         every { backendManager.backend } returns backend
         coEvery {
-            backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
+            iconManager.downloadIcons(repoId, snapshot)
         } throws IOException()
 
         appSelectionManager.selectedAppsFlow.test {

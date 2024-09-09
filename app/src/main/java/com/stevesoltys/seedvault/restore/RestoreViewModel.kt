@@ -9,7 +9,6 @@ import android.app.Application
 import android.app.backup.IBackupManager
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.annotation.UiThread
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.lifecycle.LiveData
@@ -17,8 +16,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
@@ -30,6 +29,9 @@ import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
 import com.stevesoltys.seedvault.restore.install.InstallResult
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageRestoreService
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
+import com.stevesoltys.seedvault.transport.restore.RestorableBackupResult.ErrorResult
+import com.stevesoltys.seedvault.transport.restore.RestorableBackupResult.SuccessResult
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
@@ -106,20 +108,11 @@ internal class RestoreViewModel(
     private var storedSnapshot: StoredSnapshot? = null
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
-        val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->
-            when (metadata.time) {
-                0L -> {
-                    Log.d(TAG, "Ignoring RestoreSet with no last backup time: $token.")
-                    null
-                }
-
-                else -> RestorableBackup(metadata)
-            }
-        }
-        val result = when {
-            backups == null -> RestoreSetResult(app.getString(R.string.restore_set_error))
-            backups.isEmpty() -> RestoreSetResult(app.getString(R.string.restore_set_empty_result))
-            else -> RestoreSetResult(backups)
+        val result = when (val backups = restoreCoordinator.getAvailableBackups()) {
+            is ErrorResult -> RestoreSetResult(
+                app.getString(R.string.restore_set_error) + "\n\n${backups.e}"
+            )
+            is SuccessResult -> RestoreSetResult(backups.backups)
         }
         mRestoreSetResults.postValue(result)
     }

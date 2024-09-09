@@ -30,7 +30,9 @@ import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.TestKvDbManager
 import com.stevesoltys.seedvault.transport.restore.FullRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestore
+import com.stevesoltys.seedvault.transport.restore.Loader
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.worker.ApkBackup
@@ -68,6 +70,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val backend = mockk<Backend>()
+    private val loader = mockk<Loader>()
     private val kvBackup = KVBackup(
         backendManager = backendManager,
         settingsManager = settingsManager,
@@ -114,11 +117,13 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         metadataManager,
         notificationManager,
         backendManager,
+        loader,
         kvRestore,
         fullRestore,
         metadataReader
     )
 
+    private val restorableBackup = RestorableBackup(metadata)
     private val backupDataInput = mockk<BackupDataInput>()
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
@@ -185,7 +190,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
-        restore.beforeStartRestore(metadata)
+        restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
@@ -262,7 +267,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
-        restore.beforeStartRestore(metadata)
+        restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // find data for K/V backup
@@ -328,7 +333,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
 
         // start restore
-        restore.beforeStartRestore(metadata)
+        restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
         // finds data for full backup

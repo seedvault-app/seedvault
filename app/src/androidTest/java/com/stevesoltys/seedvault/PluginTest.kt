@@ -10,7 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.getAvailableBackups
+import com.stevesoltys.seedvault.backend.getAvailableBackupFileHandles
 import com.stevesoltys.seedvault.backend.saf.DocumentsProviderLegacyPlugin
 import com.stevesoltys.seedvault.backend.saf.DocumentsStorage
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -92,7 +92,7 @@ class PluginTest : KoinComponent {
     @Test
     fun testInitializationAndRestoreSets() = runBlocking(Dispatchers.IO) {
         // no backups available initially
-        assertEquals(0, backend.getAvailableBackups()?.toList()?.size)
+        assertEquals(0, backend.getAvailableBackupFileHandles().toList().size)
 
         // prepare returned tokens requested when initializing device
         every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
@@ -102,17 +102,17 @@ class PluginTest : KoinComponent {
             .writeAndClose(getRandomByteArray())
 
         // one backup available now
-        assertEquals(1, backend.getAvailableBackups()?.toList()?.size)
+        assertEquals(1, backend.getAvailableBackupFileHandles().toList().size)
 
         // initializing again (with another restore set) does add a restore set
         backend.save(LegacyAppBackupFile.Metadata(token + 1))
             .writeAndClose(getRandomByteArray())
-        assertEquals(2, backend.getAvailableBackups()?.toList()?.size)
+        assertEquals(2, backend.getAvailableBackupFileHandles().toList().size)
 
         // initializing again (without new restore set) doesn't change number of restore sets
         backend.save(LegacyAppBackupFile.Metadata(token + 1))
             .writeAndClose(getRandomByteArray())
-        assertEquals(2, backend.getAvailableBackups()?.toList()?.size)
+        assertEquals(2, backend.getAvailableBackupFileHandles().toList().size)
     }
 
     @Test
@@ -124,27 +124,26 @@ class PluginTest : KoinComponent {
         backend.save(LegacyAppBackupFile.Metadata(token)).writeAndClose(metadata)
 
         // get available backups, expect only one with our token and no error
-        var availableBackups = backend.getAvailableBackups()?.toList()
-        check(availableBackups != null)
+        var availableBackups = backend.getAvailableBackupFileHandles().toList()
         assertEquals(1, availableBackups.size)
-        assertEquals(token, availableBackups[0].token)
+        var backupHandle = availableBackups[0] as LegacyAppBackupFile.Metadata
+        assertEquals(token, backupHandle.token)
 
         // read metadata matches what was written earlier
-        assertReadEquals(metadata, availableBackups[0].inputStreamRetriever())
+        assertReadEquals(metadata, backend.load(backupHandle))
 
         // initializing again (without changing storage) keeps restore set with same token
         backend.save(LegacyAppBackupFile.Metadata(token)).writeAndClose(metadata)
-        availableBackups = backend.getAvailableBackups()?.toList()
-        check(availableBackups != null)
+        availableBackups = backend.getAvailableBackupFileHandles().toList()
         assertEquals(1, availableBackups.size)
-        assertEquals(token, availableBackups[0].token)
+        backupHandle = availableBackups[0] as LegacyAppBackupFile.Metadata
+        assertEquals(token, backupHandle.token)
 
         // metadata hasn't changed
-        assertReadEquals(metadata, availableBackups[0].inputStreamRetriever())
+        assertReadEquals(metadata, backend.load(backupHandle))
     }
 
     @Test
-    @Suppress("Deprecation")
     fun v0testApkWriteRead() = runBlocking {
         // initialize storage with given token
         initStorage(token)

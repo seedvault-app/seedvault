@@ -1,19 +1,30 @@
 /*
- * SPDX-FileCopyrightText: 2020 The Calyx Institute
+ * SPDX-FileCopyrightText: 2024 The Calyx Institute
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.restore
+package com.stevesoltys.seedvault.transport.restore
 
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.proto.Snapshot
+
+sealed class RestorableBackupResult {
+    data class ErrorResult(val e: Exception?) : RestorableBackupResult()
+    data class SuccessResult(val backups: List<RestorableBackup>) : RestorableBackupResult()
+}
 
 data class RestorableBackup(
     val backupMetadata: BackupMetadata,
     val repoId: String? = null,
     val snapshot: Snapshot? = null,
 ) {
+
+    constructor(repoId: String, snapshot: Snapshot) : this(
+        backupMetadata = BackupMetadata.fromSnapshot(snapshot),
+        repoId = repoId,
+        snapshot = snapshot,
+    )
 
     val name: String
         get() = backupMetadata.deviceName
@@ -30,8 +41,9 @@ data class RestorableBackup(
     val time: Long
         get() = backupMetadata.time
 
-    val size: Long?
-        get() = backupMetadata.size
+    val size: Long
+        get() = snapshot?.blobsMap?.values?.sumOf { it.uncompressedLength.toLong() }
+            ?: backupMetadata.size
 
     val deviceName: String
         get() = backupMetadata.deviceName

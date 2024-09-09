@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getAvailableBackups
+import com.stevesoltys.seedvault.backend.getAvailableBackupFileHandles
 import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -81,8 +81,7 @@ internal class WebDavHandler(
     @WorkerThread
     @Throws(IOException::class)
     suspend fun hasAppBackup(backend: Backend): Boolean {
-        val backups = backend.getAvailableBackups()
-        return backups != null && backups.iterator().hasNext()
+        return backend.getAvailableBackupFileHandles().isNotEmpty()
     }
 
     fun save(properties: WebDavProperties) {

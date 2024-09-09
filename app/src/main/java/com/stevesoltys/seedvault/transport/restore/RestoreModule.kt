@@ -14,6 +14,17 @@ val restoreModule = module {
     single { KVRestore(get(), get(), get(), get(), get(), get()) }
     single { FullRestore(get(), get(), get(), get(), get()) }
     single {
-        RestoreCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get(), get())
+        RestoreCoordinator(
+            context = androidContext(),
+            crypto = get(),
+            settingsManager = get(),
+            metadataManager = get(),
+            notificationManager = get(),
+            backendManager = get(),
+            loader = get(),
+            kv = get(),
+            full = get(),
+            metadataReader = get(),
+        )
     }
 }

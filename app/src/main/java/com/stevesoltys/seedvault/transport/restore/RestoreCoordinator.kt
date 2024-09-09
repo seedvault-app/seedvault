@@ -18,20 +18,22 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getAvailableBackupFileHandles
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
-import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getAvailableBackups
+import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 
 /**
@@ -49,7 +51,7 @@ private data class RestoreCoordinatorState(
      * Optional [PackageInfo] for single package restore, to reduce data needed to read for @pm@
      */
     val autoRestorePackageInfo: PackageInfo?,
-    val backupMetadata: BackupMetadata,
+    val backup: RestorableBackup,
 ) {
     var currentPackage: String? = null
 }
@@ -63,6 +65,7 @@ internal class RestoreCoordinator(
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
     private val backendManager: BackendManager,
+    private val loader: Loader,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader,
@@ -70,34 +73,58 @@ internal class RestoreCoordinator(
 
     private val backend: Backend get() = backendManager.backend
     private var state: RestoreCoordinatorState? = null
-    private var backupMetadata: BackupMetadata? = null
+    private var restorableBackup: RestorableBackup? = null
     private val failedPackages = ArrayList<String>()
 
-    suspend fun getAvailableMetadata(): Map<Long, BackupMetadata>? {
-        val availableBackups = backend.getAvailableBackups() ?: return null
-        val metadataMap = HashMap<Long, BackupMetadata>()
-        for (encryptedMetadata in availableBackups) {
+    suspend fun getAvailableBackups(): RestorableBackupResult {
+        val fileHandles = try {
+            backend.getAvailableBackupFileHandles()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting available backups.", e)
+            return RestorableBackupResult.ErrorResult(e)
+        }
+        val backups = ArrayList<RestorableBackup>()
+        var lastException: Exception? = null
+        for (handle in fileHandles) {
             try {
-                val metadata = encryptedMetadata.inputStreamRetriever().use { inputStream ->
-                    metadataReader.readMetadata(inputStream, encryptedMetadata.token)
+                val backup = when (handle) {
+                    is AppBackupFileType.Snapshot -> {
+                        val snapshot = loader.loadFile(handle).use { inputStream ->
+                            Snapshot.parseFrom(inputStream)
+                        }
+                        RestorableBackup(
+                            repoId = handle.repoId,
+                            snapshot = snapshot,
+                        )
+                    }
+                    is LegacyAppBackupFile.Metadata -> {
+                        val metadata = backend.load(handle).use { inputStream ->
+                            metadataReader.readMetadata(inputStream, handle.token)
+                        }
+                        RestorableBackup(backupMetadata = metadata)
+                    }
+                    else -> error("Unexpected file handle: $handle")
                 }
-                metadataMap[encryptedMetadata.token] = metadata
+                backups.add(backup)
             } catch (e: IOException) {
-                Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
+                Log.e(TAG, "Error while getting restore set $handle", e)
+                lastException = e
                 continue
             } catch (e: SecurityException) {
-                Log.e(TAG, "Error while getting restore set ${encryptedMetadata.token}", e)
-                return null
+                Log.e(TAG, "Error while getting restore set $handle", e)
+                return RestorableBackupResult.ErrorResult(e)
             } catch (e: DecryptionFailedException) {
-                Log.e(TAG, "Error while decrypting restore set ${encryptedMetadata.token}", e)
+                Log.e(TAG, "Error while decrypting restore set $handle", e)
+                lastException = e
                 continue
             } catch (e: UnsupportedVersionException) {
                 Log.w(TAG, "Backup with unsupported version read", e)
+                lastException = e
                 continue
             }
         }
-        Log.i(TAG, "Got available metadata for tokens: ${metadataMap.keys}")
-        return metadataMap
+        if (backups.isEmpty()) return RestorableBackupResult.ErrorResult(lastException)
+        return RestorableBackupResult.SuccessResult(backups)
     }
 
     /**
@@ -107,22 +134,21 @@ internal class RestoreCoordinator(
      *   or null if an error occurred (the attempt should be rescheduled).
      **/
     suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
-        return getAvailableMetadata()?.map { (_, metadata) ->
-
-            val transportFlags = if (metadata.d2dBackup) {
+        val result = getAvailableBackups() as? RestorableBackupResult.SuccessResult ?: return null
+        val backups = result.backups
+        return backups.map { backup ->
+            val transportFlags = if (backup.d2dBackup) {
                 D2D_TRANSPORT_FLAGS
             } else {
                 DEFAULT_TRANSPORT_FLAGS
             }
-
-            val deviceName = if (metadata.d2dBackup) {
+            val deviceName = if (backup.d2dBackup) {
                 D2D_DEVICE_NAME
             } else {
-                metadata.deviceName
+                backup.deviceName
             }
-
-            RestoreSet(metadata.deviceName, deviceName, metadata.token, transportFlags)
-        }?.toTypedArray()
+            RestoreSet(backup.deviceName, deviceName, backup.token, transportFlags)
+        }.toTypedArray()
     }
 
     /**
@@ -141,10 +167,10 @@ internal class RestoreCoordinator(
     /**
      * Call this before starting the restore as an optimization to prevent re-fetching metadata.
      */
-    fun beforeStartRestore(backupMetadata: BackupMetadata) {
-        this.backupMetadata = backupMetadata
+    fun beforeStartRestore(restorableBackup: RestorableBackup) {
+        this.restorableBackup = restorableBackup
 
-        if (backupMetadata.d2dBackup) {
+        if (restorableBackup.d2dBackup) {
             settingsManager.setD2dBackupsEnabled(true)
         }
     }
@@ -188,13 +214,15 @@ internal class RestoreCoordinator(
                 packages[1]
             } else null
 
-        val metadata = if (backupMetadata?.token == token) {
-            backupMetadata!! // if token matches, backupMetadata is non-null
+        val backup = if (restorableBackup?.token == token) {
+            restorableBackup!! // if token matches, backupMetadata is non-null
         } else {
-            getAvailableMetadata()?.get(token) ?: return TRANSPORT_ERROR
+            val backup = getAvailableBackups() as? RestorableBackupResult.SuccessResult
+                ?: return TRANSPORT_ERROR
+            backup.backups.find { it.token == token } ?: return TRANSPORT_ERROR
         }
-        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo, metadata)
-        backupMetadata = null
+        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo, backup)
+        restorableBackup = null
         failedPackages.clear()
         return TRANSPORT_OK
     }
@@ -231,13 +259,13 @@ internal class RestoreCoordinator(
 
         if (!state.packages.hasNext()) return NO_MORE_PACKAGES
         val packageInfo = state.packages.next()
-        val version = state.backupMetadata.version
+        val version = state.backup.version
         if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
 
         val packageName = packageInfo.packageName
-        val type = when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
+        val type = when (state.backup.packageMetadataMap[packageName]?.backupType) {
             BackupType.KV -> {
-                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                val name = crypto.getNameForPackage(state.backup.salt, packageName)
                 kv.initializeState(
                     version = version,
                     token = state.token,
@@ -250,7 +278,7 @@ internal class RestoreCoordinator(
             }
 
             BackupType.FULL -> {
-                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                val name = crypto.getNameForPackage(state.backup.salt, packageName)
                 full.initializeState(version, state.token, name, packageInfo)
                 state.currentPackage = packageName
                 TYPE_FULL_STREAM
@@ -258,7 +286,7 @@ internal class RestoreCoordinator(
 
             null -> {
                 Log.i(TAG, "No backup type found for $packageName. Skipping...")
-                state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
+                state.backup.packageMetadataMap[packageName]?.backupType?.let { s ->
                     Log.w(TAG, "State was ${s.name}")
                 }
                 failedPackages.add(packageName)

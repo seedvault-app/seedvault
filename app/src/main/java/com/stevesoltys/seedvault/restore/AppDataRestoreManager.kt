@@ -23,12 +23,13 @@ import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.AppBackupState
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED
@@ -263,20 +264,19 @@ internal class AppDataRestoreManager(
         /**
          * Restore the next chunk of packages.
          *
-         * We need to restore in chunks, otherwise [BackupTransport.startRestore] in the
-         * framework's [PerformUnifiedRestoreTask] may fail due to an oversize Binder
-         * transaction, causing the entire restoration to fail.
+         * We need to restore packages in chunks, otherwise [BackupTransport.startRestore] in the
+         * framework's [PerformUnifiedRestoreTask] may fail due to an oversize Binder transaction,
+         * causing the entire restoration to fail due to too many package names.
          */
         private fun restoreNextPackages() {
             // Make sure metadata for selected backup is cached before starting each chunk.
-            val backupMetadata = restorableBackup.backupMetadata
-            restoreCoordinator.beforeStartRestore(backupMetadata)
+            restoreCoordinator.beforeStartRestore(restorableBackup)
 
             val nextChunkIndex = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
             val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
             packageIndex += packageChunk.size
 
-            val token = backupMetadata.token
+            val token = restorableBackup.token
             val result = session.restorePackages(token, this, packageChunk, monitor)
 
             @Suppress("UNRESOLVED_REFERENCE") // BackupManager.SUCCESS

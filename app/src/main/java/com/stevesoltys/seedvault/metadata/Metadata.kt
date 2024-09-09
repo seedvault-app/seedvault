@@ -30,6 +30,23 @@ data class BackupMetadata(
     internal var d2dBackup: Boolean = false,
     internal val packageMetadataMap: PackageMetadataMap = PackageMetadataMap(),
 ) {
+
+    companion object {
+        fun fromSnapshot(s: Snapshot) = BackupMetadata(
+            version = s.version.toByte(),
+            token = s.token,
+            salt = "",
+            time = s.token,
+            androidVersion = s.sdkInt,
+            androidIncremental = s.androidIncremental,
+            deviceName = s.name,
+            d2dBackup = s.d2D,
+            packageMetadataMap = s.appsMap.mapValues { (_, app) ->
+                PackageMetadata.fromSnapshot(app)
+            } as PackageMetadataMap
+        )
+    }
+
     val size: Long
         get() = packageMetadataMap.values.sumOf { m ->
             (m.size ?: 0L) + (m.splits?.sumOf { it.size ?: 0L } ?: 0L)

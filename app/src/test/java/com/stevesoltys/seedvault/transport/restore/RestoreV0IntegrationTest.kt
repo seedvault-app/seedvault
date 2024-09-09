@@ -55,6 +55,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
     private val backendManager: BackendManager = mockk()
+    private val loader = mockk<Loader>()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
@@ -76,10 +77,14 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         metadataManager = metadataManager,
         notificationManager = notificationManager,
         backendManager = backendManager,
+        loader = loader,
         kv = kvRestore,
         full = fullRestore,
         metadataReader = metadataReader,
-    ).apply { beforeStartRestore(metadata.copy(version = 0x00)) }
+    ).apply {
+        val backup = RestorableBackup(metadata.copy(version = 0x00))
+        beforeStartRestore(backup)
+    }
 
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
     private val appData = ("562AB665C3543120FC794D7CDA3AC18E5959235A4D" +

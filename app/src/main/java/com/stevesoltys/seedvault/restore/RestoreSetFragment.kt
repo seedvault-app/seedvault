@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RestoreSetFragment : Fragment() {
