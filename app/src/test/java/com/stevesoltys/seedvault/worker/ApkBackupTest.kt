@@ -82,7 +82,7 @@ internal class ApkBackupTest : BackupTest() {
 
     @Test
     fun `does not back up test-only apps`() = runBlocking {
-        packageInfo.applicationInfo.flags = FLAG_TEST_ONLY
+        packageInfo.applicationInfo!!.flags = FLAG_TEST_ONLY
 
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
@@ -91,7 +91,7 @@ internal class ApkBackupTest : BackupTest() {
 
     @Test
     fun `does not back up system apps`() = runBlocking {
-        packageInfo.applicationInfo.flags = FLAG_SYSTEM
+        packageInfo.applicationInfo!!.flags = FLAG_SYSTEM
 
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
@@ -100,7 +100,7 @@ internal class ApkBackupTest : BackupTest() {
 
     @Test
     fun `does not back up the same version`() = runBlocking {
-        packageInfo.applicationInfo.flags = FLAG_UPDATED_SYSTEM_APP
+        packageInfo.applicationInfo!!.flags = FLAG_UPDATED_SYSTEM_APP
         val packageMetadata = packageMetadata.copy(
             version = packageInfo.longVersionCode
         )
@@ -112,7 +112,7 @@ internal class ApkBackupTest : BackupTest() {
 
     @Test
     fun `does back up the same version when signatures changes`() {
-        packageInfo.applicationInfo.sourceDir = "/tmp/doesNotExist"
+        packageInfo.applicationInfo!!.sourceDir = "/tmp/doesNotExist"
 
         expectChecks()
 
@@ -140,7 +140,7 @@ internal class ApkBackupTest : BackupTest() {
     fun `test successful APK backup`(@TempDir tmpDir: Path) = runBlocking {
         val apkBytes = byteArrayOf(0x04, 0x05, 0x06)
         val tmpFile = File(tmpDir.toAbsolutePath().toString())
-        packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
+        packageInfo.applicationInfo!!.sourceDir = File(tmpFile, "test.apk").apply {
             assertTrue(createNewFile())
             writeBytes(apkBytes)
         }.absolutePath
@@ -174,7 +174,7 @@ internal class ApkBackupTest : BackupTest() {
         // create base APK
         val apkBytes = byteArrayOf(0x04, 0x05, 0x06) // not random because of hash
         val tmpFile = File(tmpDir.toAbsolutePath().toString())
-        packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
+        packageInfo.applicationInfo!!.sourceDir = File(tmpFile, "test.apk").apply {
             assertTrue(createNewFile())
             writeBytes(apkBytes)
         }.absolutePath
@@ -187,7 +187,7 @@ internal class ApkBackupTest : BackupTest() {
         val split1Sha256 = "ZqZ1cVH47lXbEncWx-Pc4L6AdLZOIO2lQuXB5GypxB4"
         val split2Bytes = byteArrayOf(0x01, 0x02, 0x03)
         val split2Sha256 = "A5BYxvLAy0ksUzsKTRTvd8wPeKvMztUofYShogEc-4E"
-        packageInfo.applicationInfo.splitSourceDirs = arrayOf(
+        packageInfo.applicationInfo!!.splitSourceDirs = arrayOf(
             File(tmpFile, "test-$split1Name.apk").apply {
                 assertTrue(createNewFile())
                 writeBytes(split1Bytes)

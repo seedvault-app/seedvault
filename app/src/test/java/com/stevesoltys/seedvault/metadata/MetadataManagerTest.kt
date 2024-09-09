@@ -342,7 +342,7 @@ class MetadataManagerTest {
 
     @Test
     fun `test onPackageBackedUp()`() {
-        packageInfo.applicationInfo.flags = FLAG_SYSTEM
+        packageInfo.applicationInfo!!.flags = FLAG_SYSTEM
         val updatedMetadata = initialMetadata.copy(
             time = time,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced

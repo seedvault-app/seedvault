@@ -118,12 +118,12 @@ internal class ApkBackupRestoreTest : TransportTest() {
     fun `test backup and restore with a split`(@TempDir tmpDir: Path) = runBlocking {
         val apkBytes = byteArrayOf(0x04, 0x05, 0x06)
         val tmpFile = File(tmpDir.toAbsolutePath().toString())
-        packageInfo.applicationInfo.sourceDir = File(tmpFile, "test.apk").apply {
+        packageInfo.applicationInfo!!.sourceDir = File(tmpFile, "test.apk").apply {
             assertTrue(createNewFile())
             writeBytes(apkBytes)
         }.absolutePath
         packageInfo.splitNames = arrayOf(splitName)
-        packageInfo.applicationInfo.splitSourceDirs = arrayOf(File(tmpFile, "split.apk").apply {
+        packageInfo.applicationInfo!!.splitSourceDirs = arrayOf(File(tmpFile, "split.apk").apply {
             assertTrue(createNewFile())
             writeBytes(splitBytes)
         }.absolutePath)
@@ -167,7 +167,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         coEvery { storagePlugin.getInputStream(token, name) } returns inputStream
         every { pm.getPackageArchiveInfo(capture(apkPath), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
-        every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
+        every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName
         every {
             splitCompatChecker.isCompatible(metadata.deviceName, listOf(splitName))
         } returns true
