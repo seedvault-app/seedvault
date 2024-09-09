@@ -10,9 +10,9 @@ protobufPlugin = "0.9.4"
 ktlint = "11.5.0"
 
 # Android SDK versions
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "34"
-targetSdk = "34"
+targetSdk = "35"
 
 # Test versions
 junit4 = "4.13.2"
