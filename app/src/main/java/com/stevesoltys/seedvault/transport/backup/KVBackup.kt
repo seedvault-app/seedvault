@@ -14,122 +14,87 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.isOutOfSpace
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.getADForKV
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
-import java.util.zip.GZIPOutputStream
 
 class KVBackupState(
     internal val packageInfo: PackageInfo,
-    val token: Long,
-    val name: String,
     val db: KVDb,
-) {
-    var needsUpload: Boolean = false
-}
+)
 
 const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 
 private val TAG = KVBackup::class.java.simpleName
 
 internal class KVBackup(
-    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
-    private val nm: BackupNotificationManager,
+    private val backupReceiver: BackupReceiver,
     private val inputFactory: InputFactory,
-    private val crypto: Crypto,
     private val dbManager: KvDbManager,
 ) {
 
-    private val backend get() = backendManager.backend
     private var state: KVBackupState? = null
 
-    fun hasState() = state != null
+    val hasState get() = state != null
+    val currentPackageInfo get() = state?.packageInfo
+    val quota: Long
+        get() = if (settingsManager.isQuotaUnlimited()) {
+            Long.MAX_VALUE
+        } else {
+            DEFAULT_QUOTA_KEY_VALUE_BACKUP
+        }
 
-    fun getCurrentPackage() = state?.packageInfo
-
-    fun getCurrentSize() = getCurrentPackage()?.let {
-        dbManager.getDbSize(it.packageName)
-    }
-
-    fun getQuota(): Long = if (settingsManager.isQuotaUnlimited()) {
-        Long.MAX_VALUE
-    } else {
-        DEFAULT_QUOTA_KEY_VALUE_BACKUP
-    }
-
-    suspend fun performBackup(
+    fun performBackup(
         packageInfo: PackageInfo,
         data: ParcelFileDescriptor,
         flags: Int,
-        token: Long,
-        salt: String,
     ): Int {
         val dataNotChanged = flags and FLAG_DATA_NOT_CHANGED != 0
         val isIncremental = flags and FLAG_INCREMENTAL != 0
         val isNonIncremental = flags and FLAG_NON_INCREMENTAL != 0
         val packageName = packageInfo.packageName
-
         when {
-            dataNotChanged -> {
-                Log.i(TAG, "No K/V backup data has changed for $packageName")
-            }
-            isIncremental -> {
-                Log.i(TAG, "Performing incremental K/V backup for $packageName")
-            }
-            isNonIncremental -> {
-                Log.i(TAG, "Performing non-incremental K/V backup for $packageName")
-            }
-            else -> {
-                Log.i(TAG, "Performing K/V backup for $packageName")
-            }
+            dataNotChanged -> Log.i(TAG, "No K/V backup data has changed for $packageName")
+            isIncremental -> Log.i(TAG, "Performing incremental K/V backup for $packageName")
+            isNonIncremental -> Log.i(TAG, "Performing non-incremental K/V backup for $packageName")
+            else -> Log.i(TAG, "Performing K/V backup for $packageName")
         }
+        check(state == null) { "Have unexpected state for ${state?.packageInfo?.packageName}" }
+        backupReceiver.assertFinalized()
 
         // initialize state
-        val state = this.state
-        if (state != null) {
-            throw AssertionError("Have state for ${state.packageInfo.packageName}")
-        }
-        val name = crypto.getNameForPackage(salt, packageName)
-        val db = dbManager.getDb(packageName)
-        this.state = KVBackupState(packageInfo, token, name, db)
+        state = KVBackupState(packageInfo = packageInfo, db = dbManager.getDb(packageName))
 
-        // no need for backup when no data has changed
+        // handle case where data hasn't changed since last backup
+        val hasDataForPackage = dbManager.existsDb(packageName)
         if (dataNotChanged) {
             data.close()
-            return TRANSPORT_OK
+            return if (hasDataForPackage) {
+                TRANSPORT_OK
+            } else {
+                Log.w(TAG, "No previous data for $packageName, requesting non-incremental backup!")
+                backupError(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED)
+            }
         }
-
         // check if we have existing data for the given package
-        val hasDataForPackage = dbManager.existsDb(packageName)
         if (isIncremental && !hasDataForPackage) {
             Log.w(
                 TAG, "Requested incremental, but transport currently stores no data" +
                     " for $packageName, requesting non-incremental retry."
             )
+            data.close()
             return backupError(TRANSPORT_NON_INCREMENTAL_BACKUP_REQUIRED)
         }
-
-        // TODO check if package is over-quota and respect unlimited setting
-
+        // check if we have existing data, but the system wants clean slate
         if (isNonIncremental && hasDataForPackage) {
-            Log.w(TAG, "Requested non-incremental, deleting existing data.")
-            try {
-                clearBackupData(packageInfo, token, salt)
-            } catch (e: IOException) {
-                Log.w(TAG, "Error clearing backup data for ${packageInfo.packageName}.", e)
-            }
+            Log.w(TAG, "Requested non-incremental, deleting existing data...")
+            dbManager.deleteDb(packageInfo.packageName)
+            // KvBackupInstrumentationTest tells us that the DB gets re-created automatically
         }
-
         // parse and store the K/V updates
-        return storeRecords(data)
+        return data.use {
+            storeRecords(it)
+        }
     }
 
     private fun storeRecords(data: ParcelFileDescriptor): Int {
@@ -139,18 +104,6 @@ internal class KVBackup(
             if (result is Result.Error) {
                 Log.e(TAG, "Exception reading backup input", result.exception)
                 return backupError(TRANSPORT_ERROR)
-            }
-            state.needsUpload = if (state.packageInfo.packageName == MAGIC_PACKAGE_MANAGER) {
-                // Don't upload, if we currently can't do backups.
-                // If we tried, we would fail @pm@ backup which causes the system to do a re-init.
-                // See: https://github.com/seedvault-app/seedvault/issues/102
-                // K/V backups (typically starting with package manager metadata - @pm@)
-                // are scheduled with JobInfo.Builder#setOverrideDeadline()
-                // and thus do not respect backoff.
-                backendManager.canDoBackupNow()
-            } else {
-                // all other packages always need upload
-                true
             }
             val op = (result as Result.Ok).result
             if (op.value == null) {
@@ -205,27 +158,21 @@ internal class KVBackup(
     }
 
     @Throws(IOException::class)
-    suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
-        Log.i(TAG, "Clearing K/V data of ${packageInfo.packageName}")
-        val name = state?.name ?: crypto.getNameForPackage(salt, packageInfo.packageName)
-        backend.remove(LegacyAppBackupFile.Blob(token, name))
-        if (!dbManager.deleteDb(packageInfo.packageName)) throw IOException()
-    }
-
-    suspend fun finishBackup(): Int {
+    suspend fun finishBackup(): BackupData {
         val state = this.state ?: error("No state in finishBackup")
         val packageName = state.packageInfo.packageName
-        Log.i(TAG, "Finish K/V Backup of $packageName - needs upload: ${state.needsUpload}")
+        Log.i(TAG, "Finish K/V Backup of $packageName")
 
-        return try {
-            if (state.needsUpload) uploadDb(state.token, state.name, packageName, state.db)
-            else state.db.close()
-            TRANSPORT_OK
-        } catch (e: IOException) {
-            Log.e(TAG, "Error uploading DB", e)
-            if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
-            TRANSPORT_ERROR
-        } finally {
+        try {
+            state.db.vacuum()
+            state.db.close()
+            dbManager.getDbInputStream(packageName).use { inputStream ->
+                backupReceiver.readFromStream(inputStream)
+            }
+            val backupData = backupReceiver.finalize()
+            Log.d(TAG, "Uploaded db file for $packageName.")
+            return backupData
+        } finally { // exceptions bubble up
             this.state = null
         }
     }
@@ -240,34 +187,8 @@ internal class KVBackup(
         Log.i(TAG, "Resetting state because of K/V Backup error of $packageName")
 
         state.db.close()
-
         this.state = null
         return result
-    }
-
-    @Throws(IOException::class)
-    private suspend fun uploadDb(
-        token: Long,
-        name: String,
-        packageName: String,
-        db: KVDb,
-    ) {
-        db.vacuum()
-        db.close()
-
-        val handle = LegacyAppBackupFile.Blob(token, name)
-        backend.save(handle).use { outputStream ->
-            outputStream.write(ByteArray(1) { VERSION })
-            val ad = getADForKV(VERSION, packageName)
-            crypto.newEncryptingStreamV1(outputStream, ad).use { encryptedStream ->
-                GZIPOutputStream(encryptedStream).use { gZipStream ->
-                    dbManager.getDbInputStream(packageName).use { inputStream ->
-                        inputStream.copyTo(gZipStream)
-                    }
-                }
-            }
-        }
-        Log.d(TAG, "Uploaded db file for $packageName.")
     }
 
     private class KVOperation(

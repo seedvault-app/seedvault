@@ -62,6 +62,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val backend = mockk<Backend>()
     private val kvRestore = KVRestore(
         backendManager = backendManager,
+        loader = loader,
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,

@@ -15,15 +15,18 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.coAssertThrows
+import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.proto.copy
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -35,11 +38,14 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.saf.SafProperties
+import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
@@ -82,7 +88,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     init {
         metadata.packageMetadataMap[packageInfo2.packageName] = PackageMetadata(
             backupType = BackupType.FULL,
-            chunkIds = listOf(apkChunkId),
+            chunkIds = listOf(chunkId2),
         )
 
         mockkStatic("com.stevesoltys.seedvault.backend.BackendExtKt")
@@ -251,6 +257,62 @@ internal class RestoreCoordinatorTest : TransportTest() {
         }
 
     @Test
+    fun `startRestore() loads snapshots for auto-restore`() = runBlocking {
+        val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
+        val info = FileInfo(handle, 1)
+        val snapshotBytes = ByteArrayOutputStream().apply {
+            snapshot.writeTo(this)
+        }.toByteArray()
+
+        every { backendManager.backendProperties } returns safStorage
+        every { safStorage.isUnavailableUsb(context) } returns false
+
+        coEvery {
+            backend.list(
+                topLevelFolder = null,
+                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
+                callback = captureLambda<(FileInfo) -> Unit>()
+            )
+        } answers {
+            val callback = lambda<(FileInfo) -> Unit>().captured
+            callback(info)
+        }
+        coEvery { loader.loadFile(handle) } returns ByteArrayInputStream(snapshotBytes)
+
+        assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
+    }
+
+    @Test
+    fun `startRestore() errors when it can't find snapshots`() = runBlocking {
+        val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
+        val info = FileInfo(handle, 1)
+        val snapshotBytes = ByteArrayOutputStream().apply { // snapshot has different token
+            snapshot.copy { token = this@RestoreCoordinatorTest.token - 1 }.writeTo(this)
+        }.toByteArray()
+
+        every { backendManager.backendProperties } returns safStorage
+        every { safStorage.isUnavailableUsb(context) } returns false
+
+        coEvery {
+            backend.list(
+                topLevelFolder = null,
+                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
+                callback = captureLambda<(FileInfo) -> Unit>()
+            )
+        } answers {
+            val callback = lambda<(FileInfo) -> Unit>().captured
+            callback(info)
+        }
+        coEvery { loader.loadFile(handle) } returns ByteArrayInputStream(snapshotBytes)
+
+        assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
+
+        coVerify {
+            loader.loadFile(handle) // really loaded snapshot
+        }
+    }
+
+    @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
         every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns true
@@ -274,12 +336,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `nextRestorePackage() returns KV description`() = runBlocking {
-        restore.beforeStartRestore(restorableBackup)
+    fun `nextRestorePackageV1() returns KV description`() = runBlocking {
+        restore.beforeStartRestore(restorableBackup.copy(metadata.copy(version = 1)))
         restore.startRestore(token, packageInfoArray)
 
         every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
+        every { kv.initializeStateV1(token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -293,7 +355,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(0x00, token, "", packageInfo) } just Runs
+        every { kv.initializeStateV0(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
@@ -321,7 +383,23 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         restore.startRestore(token, packageInfoArray2)
 
-        every { full.initializeState(VERSION, packageInfo2, listOf(apkBlobHandle)) } just Runs
+        every { full.initializeState(VERSION, packageInfo2, listOf(blobHandle2)) } just Runs
+
+        val expected = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
+        assertEquals(expected, restore.nextRestorePackage())
+
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `nextRestorePackageV1() tries next package if one has no backup type()`() = runBlocking {
+        metadata.packageMetadataMap[packageName] =
+            metadata.packageMetadataMap[packageName]!!.copy(backupType = null)
+        restore.beforeStartRestore(restorableBackup.copy(metadata.copy(version = 1)))
+        restore.startRestore(token, packageInfoArray2)
+
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every { full.initializeStateV1(token, name2, packageInfo2) } just Runs
 
         val expected = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
         assertEquals(expected, restore.nextRestorePackage())
@@ -334,13 +412,33 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         restore.startRestore(token, packageInfoArray2)
 
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
+        every { kv.initializeState(VERSION, packageInfo, listOf(blobHandle1)) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
-        every { full.initializeState(VERSION, packageInfo2, listOf(apkBlobHandle)) } just Runs
+        every { full.initializeState(VERSION, packageInfo2, listOf(blobHandle2)) } just Runs
+
+        val expected2 =
+            RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
+        assertEquals(expected2, restore.nextRestorePackage())
+
+        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
+    }
+
+    @Test
+    fun `nextRestorePackageV1() returns all packages from startRestore()`() = runBlocking {
+        restore.beforeStartRestore(restorableBackup.copy(metadata.copy(version = 1)))
+        restore.startRestore(token, packageInfoArray2)
+
+        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
+        every { kv.initializeStateV1(token, name, packageInfo) } just Runs
+
+        val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
+        assertEquals(expected, restore.nextRestorePackage())
+
+        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
+        every { full.initializeStateV1(token, name2, packageInfo2) } just Runs
 
         val expected2 =
             RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
@@ -357,7 +455,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray2)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } returns true
-        every { kv.initializeState(0.toByte(), token, "", packageInfo) } just Runs
+        every { kv.initializeStateV0(token, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())

@@ -111,7 +111,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var data = mutableMapOf<String, ByteArray>()
 
         coEvery {
-            spyKVBackup.performBackup(any(), any(), any(), any(), any())
+            spyKVBackup.performBackup(any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()

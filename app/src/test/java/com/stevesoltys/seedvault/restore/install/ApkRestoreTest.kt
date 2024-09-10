@@ -192,7 +192,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { backupStateManager.isAutoRestoreEnabled } returns false
         every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { loader.loadFiles(listOf(apkBlobHandle)) } returns apkInputStream
+        coEvery { loader.loadFiles(listOf(blobHandle1)) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { backend.providerPackageName } returns storageProviderPackageName
 
@@ -649,7 +649,7 @@ internal class ApkRestoreTest : TransportTest() {
 
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
-        coEvery { loader.loadFiles(listOf(apkBlobHandle)) } returns apkInputStream
+        coEvery { loader.loadFiles(listOf(blobHandle1)) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName

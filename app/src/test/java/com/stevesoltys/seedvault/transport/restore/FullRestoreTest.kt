@@ -52,7 +52,7 @@ internal class FullRestoreTest : RestoreTest() {
 
     private val encrypted = getRandomByteArray()
     private val outputStream = ByteArrayOutputStream()
-    private val blobHandles = listOf(apkBlobHandle)
+    private val blobHandles = listOf(blobHandle1)
 
     init {
         every { backendManager.backend } returns backend

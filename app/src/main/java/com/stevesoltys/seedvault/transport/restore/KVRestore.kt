@@ -14,17 +14,17 @@ import android.util.Log
 import com.stevesoltys.seedvault.ANCESTRAL_RECORD_KEY
 import com.stevesoltys.seedvault.GLOBAL_METADATA_KEY
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.decodeBase64
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
-import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
+import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 import java.security.GeneralSecurityException
@@ -33,19 +33,21 @@ import javax.crypto.AEADBadTagException
 
 private class KVRestoreState(
     val version: Byte,
-    val token: Long,
-    val name: String,
     val packageInfo: PackageInfo,
+    val blobHandles: List<Blob>? = null,
+    val token: Long? = null,
+    val name: String? = null,
     /**
      * Optional [PackageInfo] for single package restore, optimizes restore of @pm@
      */
-    val autoRestorePackageInfo: PackageInfo?,
+    val autoRestorePackageInfo: PackageInfo? = null,
 )
 
 private val TAG = KVRestore::class.java.simpleName
 
 internal class KVRestore(
     private val backendManager: BackendManager,
+    private val loader: Loader,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -78,12 +80,32 @@ internal class KVRestore(
      */
     fun initializeState(
         version: Byte,
+        packageInfo: PackageInfo,
+        blobHandles: List<Blob>,
+        autoRestorePackageInfo: PackageInfo? = null,
+    ) {
+        state = KVRestoreState(
+            version = version,
+            packageInfo = packageInfo,
+            blobHandles = blobHandles,
+            autoRestorePackageInfo = autoRestorePackageInfo,
+        )
+    }
+
+    fun initializeStateV1(
         token: Long,
         name: String,
         packageInfo: PackageInfo,
         autoRestorePackageInfo: PackageInfo? = null,
     ) {
-        state = KVRestoreState(version, token, name, packageInfo, autoRestorePackageInfo)
+        state = KVRestoreState(1, packageInfo, null, token, name, autoRestorePackageInfo)
+    }
+
+    fun initializeStateV0(
+        token: Long,
+        packageInfo: PackageInfo,
+    ) {
+        state = KVRestoreState(0x00, packageInfo, null, token)
     }
 
     /**
@@ -106,7 +128,8 @@ internal class KVRestore(
             val database = if (isAutoRestore) {
                 getCachedRestoreDb(state)
             } else {
-                downloadRestoreDb(state)
+                if (state.version == 1.toByte()) downloadRestoreDbV1(state)
+                else downloadRestoreDb(state)
             }
             database.use { db ->
                 val out = outputFactory.getBackupDataOutput(data)
@@ -150,17 +173,37 @@ internal class KVRestore(
         return if (dbManager.existsDb(packageName)) {
             dbManager.getDb(packageName)
         } else {
-            downloadRestoreDb(state)
+            if (state.version == 1.toByte()) downloadRestoreDbV1(state)
+            else downloadRestoreDb(state)
         }
     }
 
     @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
     private suspend fun downloadRestoreDb(state: KVRestoreState): KVDb {
         val packageName = state.packageInfo.packageName
-        val handle = LegacyAppBackupFile.Blob(state.token, state.name)
+        val handles = state.blobHandles ?: error("no blob handles for v2")
+        loader.loadFiles(handles).use { inputStream ->
+            dbManager.getDbOutputStream(packageName).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        return dbManager.getDb(packageName, true)
+    }
+
+    //
+    // v1 restore legacy code below
+    //
+
+    @Suppress("DEPRECATION")
+    @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
+    private suspend fun downloadRestoreDbV1(state: KVRestoreState): KVDb {
+        val token = state.token ?: error("No token for v1 restore")
+        val name = state.name ?: error("No name for v1 restore")
+        val packageName = state.packageInfo.packageName
+        val handle = LegacyAppBackupFile.Blob(token, name)
         backend.load(handle).use { inputStream ->
             headerReader.readVersion(inputStream, state.version)
-            val ad = getADForKV(VERSION, packageName)
+            val ad = getADForKV(state.version, packageName)
             crypto.newDecryptingStreamV1(inputStream, ad).use { decryptedStream ->
                 GZIPInputStream(decryptedStream).use { gzipStream ->
                     dbManager.getDbOutputStream(packageName).use { outputStream ->
@@ -182,7 +225,8 @@ internal class KVRestore(
         // We return the data in lexical order sorted by key,
         // so that apps which use synthetic keys like BLOB_1, BLOB_2, etc
         // will see the date in the most obvious order.
-        val sortedKeys = getSortedKeysV0(state.token, state.packageInfo)
+        val token = state.token ?: error("No token for v0 restore")
+        val sortedKeys = getSortedKeysV0(token, state.packageInfo)
         if (sortedKeys == null) {
             // nextRestorePackage() ensures the dir exists, so this is an error
             Log.e(TAG, "No keys for package: ${state.packageInfo.packageName}")
@@ -245,7 +289,7 @@ internal class KVRestore(
         state: KVRestoreState,
         dKey: DecodedKey,
         out: BackupDataOutput,
-    ) = legacyPlugin.getInputStreamForRecord(state.token, state.packageInfo, dKey.base64Key)
+    ) = legacyPlugin.getInputStreamForRecord(state.token!!, state.packageInfo, dKey.base64Key)
         .use { inputStream ->
             val version = headerReader.readVersion(inputStream, state.version)
             val packageName = state.packageInfo.packageName

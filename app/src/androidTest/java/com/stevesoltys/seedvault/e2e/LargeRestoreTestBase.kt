@@ -164,7 +164,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         clearMocks(spyKVRestore)
 
         coEvery {
-            spyKVRestore.initializeState(any(), any(), any(), any(), any())
+            spyKVRestore.initializeState(any(), any(), any(), any())
         } answers {
             packageName = arg<PackageInfo>(3).packageName
             restoreResult.kv[packageName!!] = mutableMapOf()

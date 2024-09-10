@@ -48,13 +48,13 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import kotlin.random.Random
 
 internal class CoordinatorIntegrationTest : TransportTest() {
@@ -78,11 +78,9 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val loader = mockk<Loader>()
     private val backupReceiver = mockk<BackupReceiver>()
     private val kvBackup = KVBackup(
-        backendManager = backendManager,
         settingsManager = settingsManager,
-        nm = notificationManager,
+        backupReceiver = backupReceiver,
         inputFactory = inputFactory,
-        crypto = cryptoImpl,
         dbManager = dbManager,
     )
     private val fullBackup = FullBackup(
@@ -107,6 +105,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
     private val kvRestore = KVRestore(
         backendManager,
+        loader,
         legacyPlugin,
         outputFactory,
         headerReader,
@@ -133,12 +132,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val fileDescriptor = mockk<ParcelFileDescriptor>(relaxed = true)
     private val appData = ByteArray(42).apply { Random.nextBytes(this) }
     private val appData2 = ByteArray(1337).apply { Random.nextBytes(this) }
-    private val metadataOutputStream = ByteArrayOutputStream()
     private val key = "RestoreKey"
     private val key2 = "RestoreKey2"
-
-    // as we use real crypto, we need a real name for packageInfo
-    private val realName = cryptoImpl.getNameForPackage(salt, packageName)
 
     init {
         every { backendManager.backend } returns backend
@@ -149,11 +144,11 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     fun `test key-value backup and restore with 2 records`() = runBlocking {
         val value = CapturingSlot<ByteArray>()
         val value2 = CapturingSlot<ByteArray>()
+        val inputStream = CapturingSlot<InputStream>()
         val bOutputStream = ByteArrayOutputStream()
 
         every { metadataManager.requiresInit } returns false
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
+        every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen true andThen false
@@ -167,21 +162,21 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData2.copyInto(value2.captured) // write the app data into the passed ByteArray
             appData2.size
         }
-        every {
-            metadataManager.onPackageBackedUp(
-                packageInfo = packageInfo,
-                type = BackupType.KV,
-                size = more((appData.size + appData2.size).toLong()), // more because DB overhead
-            )
-        } just Runs
 
         // start K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
 
         // upload DB
-        coEvery {
-            backend.save(LegacyAppBackupFile.Blob(token, realName))
-        } returns bOutputStream
+        coEvery { backupReceiver.readFromStream(capture(inputStream)) } answers {
+            inputStream.captured.copyTo(bOutputStream)
+        }
+        coEvery { backupReceiver.finalize() } returns apkBackupData
+        every {
+            snapshotCreator.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData)
+        } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData.size)
+        } just Runs
 
         // finish K/V backup
         assertEquals(TRANSPORT_OK, backup.finishBackup())
@@ -190,9 +185,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
-        // find data for K/V backup
-        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
-
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
         assertEquals(RestoreDescription.TYPE_KEY_VALUE, restoreDescription.dataType)
@@ -200,9 +192,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // restore finds the backed up key and writes the decrypted value
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
-        coEvery {
-            backend.load(LegacyAppBackupFile.Blob(token, name))
-        } returns rInputStream
+        coEvery { loader.loadFiles(listOf(blobHandle1)) } returns rInputStream
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
         every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
@@ -222,13 +212,13 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     @Test
     fun `test key-value backup with huge value`() = runBlocking {
         val value = CapturingSlot<ByteArray>()
+        val inputStream = CapturingSlot<InputStream>()
         val size = Random.nextInt(5) * MAX_SEGMENT_CLEARTEXT_LENGTH + Random.nextInt(0, 1337)
         val appData = ByteArray(size).apply { Random.nextBytes(this) }
         val bOutputStream = ByteArrayOutputStream()
 
         every { metadataManager.requiresInit } returns false
-        every { settingsManager.getToken() } returns token
-        every { metadataManager.salt } returns salt
+        every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen false
@@ -238,25 +228,21 @@ internal class CoordinatorIntegrationTest : TransportTest() {
             appData.copyInto(value.captured) // write the app data into the passed ByteArray
             appData.size
         }
-        every { settingsManager.getToken() } returns token
-        coEvery {
-            backend.save(LegacyAppBackupFile.Metadata(token))
-        } returns metadataOutputStream
-        every {
-            metadataManager.onPackageBackedUp(
-                packageInfo = packageInfo,
-                type = BackupType.KV,
-                size = more(size.toLong()), // more than $size, because DB overhead
-            )
-        } just Runs
 
         // start K/V backup
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
 
         // upload DB
-        coEvery {
-            backend.save(LegacyAppBackupFile.Blob(token, realName))
-        } returns bOutputStream
+        coEvery { backupReceiver.readFromStream(capture(inputStream)) } answers {
+            inputStream.captured.copyTo(bOutputStream)
+        }
+        coEvery { backupReceiver.finalize() } returns apkBackupData
+        every {
+            snapshotCreator.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData)
+        } just Runs
+        every {
+            metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData.size)
+        } just Runs
 
         // finish K/V backup
         assertEquals(TRANSPORT_OK, backup.finishBackup())
@@ -265,9 +251,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         restore.beforeStartRestore(restorableBackup)
         assertEquals(TRANSPORT_OK, restore.startRestore(token, arrayOf(packageInfo)))
 
-        // find data for K/V backup
-        every { crypto.getNameForPackage(metadata.salt, packageInfo.packageName) } returns name
-
         val restoreDescription = restore.nextRestorePackage() ?: fail()
         assertEquals(packageInfo.packageName, restoreDescription.packageName)
         assertEquals(RestoreDescription.TYPE_KEY_VALUE, restoreDescription.dataType)
@@ -275,9 +258,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // restore finds the backed up key and writes the decrypted value
         val backupDataOutput = mockk<BackupDataOutput>()
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
-        coEvery {
-            backend.load(LegacyAppBackupFile.Blob(token, name))
-        } returns rInputStream
+        coEvery { loader.loadFiles(listOf(blobHandle1)) } returns rInputStream
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns backupDataOutput
         every { backupDataOutput.writeEntityHeader(key, appData.size) } returns 1137
         every { backupDataOutput.writeEntityData(appData, appData.size) } returns appData.size
@@ -294,7 +275,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     fun `test full backup and restore with two chunks`() = runBlocking {
         metadata.packageMetadataMap[packageName] = PackageMetadata(
             backupType = BackupType.FULL,
-            chunkIds = listOf(apkChunkId),
+            chunkIds = listOf(chunkId1),
         )
 
         // package is of type FULL
@@ -342,7 +323,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // reverse the backup streams into restore input
         val rInputStream = ByteArrayInputStream(bOutputStream.toByteArray())
         val rOutputStream = ByteArrayOutputStream()
-        coEvery { loader.loadFiles(listOf(apkBlobHandle)) } returns rInputStream
+        coEvery { loader.loadFiles(listOf(blobHandle1)) } returns rInputStream
         every { outputFactory.getOutputStream(fileDescriptor) } returns rOutputStream
 
         // restore data

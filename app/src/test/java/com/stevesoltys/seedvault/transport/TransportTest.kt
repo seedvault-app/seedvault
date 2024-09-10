@@ -69,21 +69,7 @@ internal abstract class TransportTest {
     protected val pmPackageInfo = PackageInfo().apply {
         packageName = MAGIC_PACKAGE_MANAGER
     }
-    protected val metadata = BackupMetadata(
-        token = token,
-        salt = getRandomBase64(METADATA_SALT_SIZE),
-        androidVersion = Random.nextInt(),
-        androidIncremental = getRandomString(),
-        deviceName = getRandomString(),
-        packageMetadataMap = PackageMetadataMap().apply {
-            put(packageInfo.packageName, PackageMetadata(backupType = BackupType.KV))
-        }
-    )
-    protected val d2dMetadata = metadata.copy(
-        d2dBackup = true
-    )
 
-    protected val salt = metadata.salt
     protected val name = getRandomString(12)
     protected val name2 = getRandomString(23)
     protected val storageProviderPackageName = getRandomString(23)
@@ -92,26 +78,27 @@ internal abstract class TransportTest {
     protected val repoId = Random.nextBytes(32).toHexString()
     protected val splitName = getRandomString()
     protected val splitBytes = byteArrayOf(0x07, 0x08, 0x09)
-    protected val apkChunkId = Random.nextBytes(32).toHexString()
-    protected val splitChunkId = Random.nextBytes(32).toHexString()
+    protected val chunkId1 = Random.nextBytes(32).toHexString()
+    protected val chunkId2 = Random.nextBytes(32).toHexString()
     protected val apkBlob = blob {
         id = ByteString.copyFrom(Random.nextBytes(32))
     }
     protected val splitBlob = blob {
         id = ByteString.copyFrom(Random.nextBytes(32))
     }
-    protected val apkBlobHandle = AppBackupFileType.Blob(repoId, apkBlob.id.hexFromProto())
-    protected val apkBackupData = BackupData(listOf(apkChunkId), mapOf(apkChunkId to apkBlob))
+    protected val blobHandle1 = AppBackupFileType.Blob(repoId, apkBlob.id.hexFromProto())
+    protected val blobHandle2 = AppBackupFileType.Blob(repoId, splitBlob.id.hexFromProto())
+    protected val apkBackupData = BackupData(listOf(chunkId1), mapOf(chunkId1 to apkBlob))
     protected val splitBackupData =
-        BackupData(listOf(splitChunkId), mapOf(splitChunkId to splitBlob))
+        BackupData(listOf(chunkId2), mapOf(chunkId2 to splitBlob))
     protected val chunkMap = apkBackupData.chunkMap + splitBackupData.chunkMap
     protected val baseSplit = split {
         name = BASE_SPLIT
-        chunkIds.add(ByteString.fromHex(apkChunkId))
+        chunkIds.add(ByteString.fromHex(chunkId1))
     }
     protected val apkSplit = split {
         name = splitName
-        chunkIds.add(ByteString.fromHex(splitChunkId))
+        chunkIds.add(ByteString.fromHex(chunkId2))
     }
     protected val apk = SnapshotKt.apk {
         versionCode = packageInfo.longVersionCode - 1
@@ -128,6 +115,23 @@ internal abstract class TransportTest {
         apps[packageName] = app
         blobs.putAll(chunkMap)
     }
+    protected val metadata = BackupMetadata(
+        token = token,
+        salt = getRandomBase64(METADATA_SALT_SIZE),
+        androidVersion = Random.nextInt(),
+        androidIncremental = getRandomString(),
+        deviceName = getRandomString(),
+        packageMetadataMap = PackageMetadataMap().apply {
+            put(
+                packageInfo.packageName,
+                PackageMetadata(backupType = BackupType.KV, chunkIds = listOf(chunkId1)),
+            )
+        }
+    )
+    protected val d2dMetadata = metadata.copy(
+        d2dBackup = true
+    )
+    protected val salt = metadata.salt
 
     init {
         mockkStatic(Log::class)

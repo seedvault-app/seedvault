@@ -78,6 +78,7 @@ internal class RestoreCoordinator(
     private val failedPackages = ArrayList<String>()
 
     suspend fun getAvailableBackups(): RestorableBackupResult {
+        Log.i(TAG, "getAvailableBackups")
         val fileHandles = try {
             backend.getAvailableBackupFileHandles()
         } catch (e: Exception) {
@@ -135,6 +136,7 @@ internal class RestoreCoordinator(
      *   or null if an error occurred (the attempt should be rescheduled).
      **/
     suspend fun getAvailableRestoreSets(): Array<RestoreSet>? {
+        Log.d(TAG, "getAvailableRestoreSets")
         val result = getAvailableBackups() as? RestorableBackupResult.SuccessResult ?: return null
         val backups = result.backups
         return backups.map { backup ->
@@ -160,6 +162,7 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
+        Log.d(TAG, "getCurrentRestoreSet() = ") // TODO where to store current token?
         return (settingsManager.getToken() ?: 0L).apply {
             Log.i(TAG, "Got current restore set token: $this")
         }
@@ -191,10 +194,10 @@ internal class RestoreCoordinator(
      */
     suspend fun startRestore(token: Long, packages: Array<out PackageInfo>): Int {
         check(state == null) { "Started new restore with existing state: $state" }
-        Log.i(TAG, "Start restore with ${packages.map { info -> info.packageName }}")
+        Log.i(TAG, "Start restore $token with ${packages.map { info -> info.packageName }}")
 
         // If there's only one package to restore (Auto Restore feature), add it to the state
-        val pmPackageInfo =
+        val autoRestorePackageInfo =
             if (packages.size == 2 && packages[0].packageName == MAGIC_PACKAGE_MANAGER) {
                 val pmPackageName = packages[1].packageName
                 Log.d(TAG, "Optimize for single package restore of $pmPackageName")
@@ -218,11 +221,27 @@ internal class RestoreCoordinator(
         val backup = if (restorableBackup?.token == token) {
             restorableBackup!! // if token matches, backupMetadata is non-null
         } else {
-            val backup = getAvailableBackups() as? RestorableBackupResult.SuccessResult
-                ?: return TRANSPORT_ERROR
-            backup.backups.find { it.token == token } ?: return TRANSPORT_ERROR
+            if (autoRestorePackageInfo == null) { // no auto-restore
+                Log.e(TAG, "No cached backups, loading all and look for $token")
+                val backup = getAvailableBackups() as? RestorableBackupResult.SuccessResult
+                    ?: return TRANSPORT_ERROR
+                backup.backups.find { it.token == token } ?: return TRANSPORT_ERROR
+            } else {
+                // this is auto-restore, so we try harder to find a working restore set
+                Log.i(TAG, "No cached backups, loading all and look for $token")
+                // TODO may be cold start and need snapshot loading (ideally from cache only?)
+                val backup = getAvailableBackups() as? RestorableBackupResult.SuccessResult
+                    ?: return TRANSPORT_ERROR
+                val autoRestorePackageName = autoRestorePackageInfo.packageName
+                val sortedBackups = backup.backups.sortedByDescending { it.token }
+                sortedBackups.find { it.token == token } ?: sortedBackups.find {
+                    val chunkIds = it.packageMetadataMap[autoRestorePackageName]?.chunkIds
+                    // try a backup where our auto restore package has data
+                    !chunkIds.isNullOrEmpty()
+                } ?: return TRANSPORT_ERROR
+            }
         }
-        state = RestoreCoordinatorState(token, packages.iterator(), pmPackageInfo, backup)
+        state = RestoreCoordinatorState(token, packages.iterator(), autoRestorePackageInfo, backup)
         restorableBackup = null
         failedPackages.clear()
         return TRANSPORT_OK
@@ -269,22 +288,29 @@ internal class RestoreCoordinator(
         val snapshot = state.backup.snapshot ?: error("No snapshot in v2 backup")
         val type = when (state.backup.packageMetadataMap[packageName]?.backupType) {
             BackupType.KV -> {
-                val name = crypto.getNameForPackage(state.backup.salt, packageName)
+                val blobHandles = try {
+                    val chunkIds = state.backup.packageMetadataMap[packageName]?.chunkIds
+                        ?: error("no metadata or chunkIds")
+                    snapshot.getBlobHandles(repoId, chunkIds)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error getting blob handles: ", e)
+                    failedPackages.add(packageName)
+                    // abort here as this is close to an assertion error
+                    return null
+                }
                 kv.initializeState(
                     version = version,
-                    token = state.token,
-                    name = name,
                     packageInfo = packageInfo,
-                    autoRestorePackageInfo = state.autoRestorePackageInfo
+                    blobHandles = blobHandles,
+                    autoRestorePackageInfo = state.autoRestorePackageInfo,
                 )
                 state.currentPackage = packageName
                 TYPE_KEY_VALUE
             }
-
             BackupType.FULL -> {
-                val chunkIds = state.backup.packageMetadataMap[packageName]?.chunkIds
-                    ?: error("no metadata or chunkIds")
                 val blobHandles = try {
+                    val chunkIds = state.backup.packageMetadataMap[packageName]?.chunkIds
+                        ?: error("no metadata or chunkIds")
                     snapshot.getBlobHandles(repoId, chunkIds)
                 } catch (e: Exception) {
                     Log.e(TAG, "Error getting blob handles: ", e)
@@ -296,7 +322,6 @@ internal class RestoreCoordinator(
                 state.currentPackage = packageName
                 TYPE_FULL_STREAM
             }
-
             null -> {
                 Log.i(TAG, "No backup type found for $packageName. Skipping...")
                 state.backup.packageMetadataMap[packageName]?.backupType?.let { s ->
@@ -318,25 +343,21 @@ internal class RestoreCoordinator(
         val packageName = packageInfo.packageName
         val type = when (state.backup.packageMetadataMap[packageName]?.backupType) {
             BackupType.KV -> {
-                val name = crypto.getNameForPackage(state.backup.salt, packageName)
-                kv.initializeState(
-                    version = 1,
+                kv.initializeStateV1(
                     token = state.token,
-                    name = name,
+                    name = crypto.getNameForPackage(state.backup.salt, packageName),
                     packageInfo = packageInfo,
-                    autoRestorePackageInfo = state.autoRestorePackageInfo
+                    autoRestorePackageInfo = state.autoRestorePackageInfo,
                 )
                 state.currentPackage = packageName
                 TYPE_KEY_VALUE
             }
-
             BackupType.FULL -> {
                 val name = crypto.getNameForPackage(state.backup.salt, packageName)
                 full.initializeStateV1(state.token, name, packageInfo)
                 state.currentPackage = packageName
                 TYPE_FULL_STREAM
             }
-
             null -> {
                 Log.i(TAG, "No backup type found for $packageName. Skipping...")
                 state.backup.packageMetadataMap[packageName]?.backupType?.let { s ->
@@ -361,18 +382,16 @@ internal class RestoreCoordinator(
                 // check key/value data first and if available, don't even check for full data
                 kv.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found K/V data for $packageName.")
-                    kv.initializeState(0x00, state.token, "", packageInfo, null)
+                    kv.initializeStateV0(state.token, packageInfo)
                     state.currentPackage = packageName
                     TYPE_KEY_VALUE
                 }
-
                 full.hasDataForPackage(state.token, packageInfo) -> {
                     Log.i(TAG, "Found full backup data for $packageName.")
                     full.initializeStateV0(state.token, packageInfo)
                     state.currentPackage = packageName
                     TYPE_FULL_STREAM
                 }
-
                 else -> {
                     Log.i(TAG, "No data found for $packageName. Skipping.")
                     return nextRestorePackage()
@@ -396,6 +415,7 @@ internal class RestoreCoordinator(
      * @return the same error codes as [startRestore].
      */
     suspend fun getRestoreData(data: ParcelFileDescriptor): Int {
+        Log.d(TAG, "getRestoreData()")
         return kv.getRestoreData(data).apply {
             if (this != TRANSPORT_OK) {
                 // add current package to failed ones
