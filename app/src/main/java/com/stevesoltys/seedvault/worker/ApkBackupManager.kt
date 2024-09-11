@@ -13,6 +13,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isStopped
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -22,6 +23,7 @@ import java.io.IOException
 internal class ApkBackupManager(
     private val context: Context,
     private val settingsManager: SettingsManager,
+    private val snapshotManager: SnapshotManager,
     private val metadataManager: MetadataManager,
     private val packageService: PackageService,
     private val iconManager: IconManager,
@@ -99,7 +101,7 @@ internal class ApkBackupManager(
     private suspend fun backUpApk(packageInfo: PackageInfo) {
         val packageName = packageInfo.packageName
         try {
-            apkBackup.backupApkIfNecessary(packageInfo)
+            apkBackup.backupApkIfNecessary(packageInfo, snapshotManager.latestSnapshot)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing APK for $packageName", e)
             if (e.isOutOfSpace()) nm.onInsufficientSpaceError()

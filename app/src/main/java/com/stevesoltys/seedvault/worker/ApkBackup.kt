@@ -14,9 +14,10 @@ import android.util.PackageUtils.computeSha256DigestBytes
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.proto.Snapshot.Apk
+import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.proto.SnapshotKt.split
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.BackupReceiver
 import com.stevesoltys.seedvault.transport.backup.forProto
@@ -35,7 +36,6 @@ internal class ApkBackup(
     private val pm: PackageManager,
     private val backupReceiver: BackupReceiver,
     private val appBackupManager: AppBackupManager,
-    private val snapshotManager: SnapshotManager,
     private val settingsManager: SettingsManager,
 ) {
 
@@ -50,7 +50,7 @@ internal class ApkBackup(
      * @return new [PackageMetadata] if an APK backup was made or null if no backup was made.
      */
     @Throws(IOException::class)
-    suspend fun backupApkIfNecessary(packageInfo: PackageInfo) {
+    suspend fun backupApkIfNecessary(packageInfo: PackageInfo, latestSnapshot: Snapshot?) {
         // do not back up @pm@
         val packageName = packageInfo.packageName
         if (packageName == MAGIC_PACKAGE_MANAGER) return
@@ -93,23 +93,33 @@ internal class ApkBackup(
 
         // get info from latest snapshot
         val version = packageInfo.longVersionCode
-        val oldApk = snapshotManager.latestSnapshot?.appsMap?.get(packageName)?.apk
+        val oldApk = latestSnapshot?.appsMap?.get(packageName)?.apk
         val backedUpVersion = oldApk?.versionCode ?: 0L // no version will cause backup
 
         // do not backup if we have the version already and signatures did not change
-        if (version <= backedUpVersion && !signaturesChanged(oldApk, signatures)) {
+        val needsBackup = version > backedUpVersion || signaturesChanged(oldApk, signatures)
+        if (!needsBackup && oldApk != null) {
+            // We could also check if there are new feature module splits to back up,
+            // but we rely on the app themselves to re-download those, if needed after restore.
             Log.d(
                 TAG, "Package $packageName with version $version" +
                     " already has a backup ($backedUpVersion)" +
                     " with the same signature. Not backing it up."
             )
-            // We could also check if there are new feature module splits to back up,
-            // but we rely on the app themselves to re-download those, if needed after restore.
+            // build up chunkMap from old snapshot
+            val chunkIds = oldApk.splitsList.flatMap {
+                it.chunkIdsList.map { chunkId -> chunkId.hexFromProto() }
+            }
+            val chunkMap = chunkIds.associateWith { chunkId ->
+                latestSnapshot.blobsMap[chunkId] ?: error("Missing blob for $chunkId")
+            }
+            // important: add old APK to snapshot or it wouldn't be part of backup
+            snapshotCreator.onApkBackedUp(packageInfo, oldApk, chunkMap)
             return
         }
 
         // builder for Apk object
-        val apkBuilder = Snapshot.Apk.newBuilder().apply {
+        val apkBuilder = Apk.newBuilder().apply {
             versionCode = version
             pm.getInstallSourceInfo(packageName).installingPackageName?.let {
                 // protobuf doesn't support null values
@@ -142,12 +152,11 @@ internal class ApkBackup(
         }
         val apk = apkBuilder.addAllSplits(splits).build()
         snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
-
         Log.d(TAG, "Backed up new APK of $packageName with version ${packageInfo.versionName}.")
     }
 
     private fun signaturesChanged(
-        apk: Snapshot.Apk?,
+        apk: Apk?,
         signatures: List<String>,
     ): Boolean {
         // no signatures counts as them not having changed
@@ -172,7 +181,7 @@ internal class ApkBackup(
     @Throws(IOException::class)
     private suspend fun backupSplitApks(
         packageInfo: PackageInfo,
-        chunkMap: MutableMap<String, Snapshot.Blob>,
+        chunkMap: MutableMap<String, Blob>,
     ): List<Snapshot.Split> {
         check(packageInfo.splitNames != null)
         // attention: though not documented, splitSourceDirs can be null

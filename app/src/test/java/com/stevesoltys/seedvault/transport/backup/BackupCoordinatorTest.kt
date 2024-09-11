@@ -189,7 +189,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo, snapshot) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
     }
@@ -286,7 +286,7 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     private fun expectApkBackupAndMetadataWrite() {
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(packageInfo, snapshot) } just Runs
         every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs
     }
 

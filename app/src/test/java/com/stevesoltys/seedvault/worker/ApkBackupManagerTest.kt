@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Test
 
 internal class ApkBackupManagerTest : TransportTest() {
 
+    private val snapshotManager: SnapshotManager = mockk()
     private val packageService: PackageService = mockk()
     private val apkBackup: ApkBackup = mockk()
     private val iconManager: IconManager = mockk()
@@ -42,6 +44,7 @@ internal class ApkBackupManagerTest : TransportTest() {
     private val apkBackupManager = ApkBackupManager(
         context = context,
         settingsManager = settingsManager,
+        snapshotManager = snapshotManager,
         metadataManager = metadataManager,
         packageService = packageService,
         iconManager = iconManager,
@@ -195,14 +198,15 @@ internal class ApkBackupManagerTest : TransportTest() {
         every {
             nm.onApkBackup(notAllowedPackages[0].packageName, any(), 0, notAllowedPackages.size)
         } just Runs
+        every { snapshotManager.latestSnapshot } returns snapshot
         // no backup needed
-        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[0]) } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[0], snapshot) } just Runs
         // update notification for second package
         every {
             nm.onApkBackup(notAllowedPackages[1].packageName, any(), 1, notAllowedPackages.size)
         } just Runs
         // was backed up, get new packageMetadata
-        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[1]) } just Runs
+        coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[1], snapshot) } just Runs
         every { metadataManager.onApkBackedUp(notAllowedPackages[1], packageMetadata) } just Runs
 
         every { nm.onApkBackupDone() } just Runs
@@ -210,8 +214,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         apkBackupManager.backup()
 
         coVerify {
-            apkBackup.backupApkIfNecessary(notAllowedPackages[0])
-            apkBackup.backupApkIfNecessary(notAllowedPackages[1])
+            apkBackup.backupApkIfNecessary(notAllowedPackages[0], snapshot)
+            apkBackup.backupApkIfNecessary(notAllowedPackages[1], snapshot)
         }
     }
 

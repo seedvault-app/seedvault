@@ -33,7 +33,6 @@ val workerModule = module {
             pm = androidContext().packageManager,
             backupReceiver = get(),
             appBackupManager = get(),
-            snapshotManager = get(),
             settingsManager = get(),
         )
     }
@@ -41,6 +40,7 @@ val workerModule = module {
         ApkBackupManager(
             context = androidContext(),
             settingsManager = get(),
+            snapshotManager = get(),
             metadataManager = get(),
             packageService = get(),
             apkBackup = get(),

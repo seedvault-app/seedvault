@@ -82,8 +82,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
     private val apkInstaller: ApkInstaller = mockk()
     private val installRestriction: InstallRestriction = mockk()
 
-    private val apkBackup =
-        ApkBackup(pm, backupReceiver, appBackupManager, snapshotManager, settingsManager)
+    private val apkBackup = ApkBackup(pm, backupReceiver, appBackupManager, settingsManager)
     private val apkRestore: ApkRestore = ApkRestore(
         context = strictContext,
         backupManager = backupManager,
@@ -153,7 +152,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
             snapshotCreator.onApkBackedUp(packageInfo, any<Snapshot.Apk>(), chunkMap)
         } just Runs
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, snapshot)
 
         assertArrayEquals(apkBytes, outputStream.toByteArray())
         assertArrayEquals(splitBytes, splitOutputStream.toByteArray())

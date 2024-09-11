@@ -15,11 +15,11 @@ import android.content.pm.Signature
 import android.util.PackageUtils
 import com.google.protobuf.ByteString.copyFromUtf8
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.decodeBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.SnapshotKt.app
 import com.stevesoltys.seedvault.proto.copy
-import com.stevesoltys.seedvault.transport.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.BackupData
 import com.stevesoltys.seedvault.transport.backup.BackupReceiver
@@ -27,11 +27,13 @@ import com.stevesoltys.seedvault.transport.backup.BackupTest
 import com.stevesoltys.seedvault.transport.backup.SnapshotCreator
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -49,11 +51,9 @@ internal class ApkBackupTest : BackupTest() {
     private val pm: PackageManager = mockk()
     private val backupReceiver: BackupReceiver = mockk()
     private val appBackupManager: AppBackupManager = mockk()
-    private val snapshotManager: SnapshotManager = mockk()
     private val snapshotCreator: SnapshotCreator = mockk()
 
-    private val apkBackup =
-        ApkBackup(pm, backupReceiver, appBackupManager, snapshotManager, settingsManager)
+    private val apkBackup = ApkBackup(pm, backupReceiver, appBackupManager, settingsManager)
 
     private val signatureBytes = byteArrayOf(0x01, 0x02, 0x03)
     private val signatureHash = byteArrayOf(0x03, 0x02, 0x01)
@@ -67,7 +67,7 @@ internal class ApkBackupTest : BackupTest() {
     @Test
     fun `does not back up @pm@`() = runBlocking {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, null)
     }
 
     @Test
@@ -75,7 +75,7 @@ internal class ApkBackupTest : BackupTest() {
         every { settingsManager.backupApks() } returns false
         every { settingsManager.isBackupEnabled(any()) } returns true
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, null)
     }
 
     @Test
@@ -83,7 +83,7 @@ internal class ApkBackupTest : BackupTest() {
         every { settingsManager.backupApks() } returns true
         every { settingsManager.isBackupEnabled(any()) } returns false
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, null)
     }
 
     @Test
@@ -92,7 +92,7 @@ internal class ApkBackupTest : BackupTest() {
 
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, null)
     }
 
     @Test
@@ -101,7 +101,7 @@ internal class ApkBackupTest : BackupTest() {
 
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, null)
     }
 
     @Test
@@ -109,13 +109,61 @@ internal class ApkBackupTest : BackupTest() {
         packageInfo.applicationInfo!!.flags = FLAG_UPDATED_SYSTEM_APP
         val apk = apk.copy { versionCode = packageInfo.longVersionCode }
         val app = app { this.apk = apk }
-        expectChecks(snapshot.toBuilder().putApps(packageInfo.packageName, app).build())
+        val s = snapshot.copy { apps.put(packageName, app) }
+        expectChecks()
+        every {
+            snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
+        } just Runs
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, s)
+
+        // ensure we are still snapshotting this version
+        verify {
+            snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
+        }
     }
 
     @Test
-    fun `does back up the same version when signatures changes`() {
+    fun `does back up the same version when signatures changes`(@TempDir tmpDir: Path) =
+        runBlocking {
+            val tmpFile = File(tmpDir.toAbsolutePath().toString())
+            packageInfo.applicationInfo!!.sourceDir = File(tmpFile, "test.apk").apply {
+                assertTrue(createNewFile())
+            }.absolutePath
+            val apk = apk.copy {
+                versionCode = packageInfo.longVersionCode
+                signatures[0] = copyFromUtf8("AwIX".decodeBase64())
+                splits.clear()
+                splits.add(baseSplit)
+            }
+            val app = app { this.apk = apk }
+            val s = snapshot.copy { apps.put(packageName, app) }
+            expectChecks()
+            every {
+                pm.getInstallSourceInfo(packageInfo.packageName)
+            } returns InstallSourceInfo(null, null, null, apk.installer)
+            coEvery { backupReceiver.readFromStream(any()) } just Runs
+            coEvery { backupReceiver.finalize() } returns apkBackupData
+
+            every {
+                snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
+                    it.signaturesList != apk.signaturesList
+                }, apkBackupData.chunkMap)
+            } just Runs
+
+            apkBackup.backupApkIfNecessary(packageInfo, s)
+
+            coVerify {
+                backupReceiver.readFromStream(any())
+                backupReceiver.finalize()
+                snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
+                    it.signaturesList != apk.signaturesList
+                }, apkBackupData.chunkMap)
+            }
+        }
+
+    @Test
+    fun `throws exception when APK doesn't exist`() {
         packageInfo.applicationInfo!!.sourceDir = "/tmp/doesNotExist"
         val apk = apk.copy {
             signatures.clear()
@@ -123,14 +171,15 @@ internal class ApkBackupTest : BackupTest() {
             versionCode = packageInfo.longVersionCode
         }
         val app = app { this.apk = apk }
-        expectChecks(snapshot.toBuilder().putApps(packageInfo.packageName, app).build())
+        val s = snapshot.copy { apps.put(packageName, app) }
+        expectChecks()
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)
         } returns InstallSourceInfo(null, null, null, getRandomString())
 
         assertThrows(IOException::class.java) {
             runBlocking {
-                apkBackup.backupApkIfNecessary(packageInfo)
+                apkBackup.backupApkIfNecessary(packageInfo, s)
             }
         }
         Unit
@@ -140,11 +189,10 @@ internal class ApkBackupTest : BackupTest() {
     fun `do not accept empty signature`() = runBlocking {
         every { settingsManager.backupApks() } returns true
         every { settingsManager.isBackupEnabled(any()) } returns true
-        every { snapshotManager.latestSnapshot } returns snapshot
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns emptyArray()
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, snapshot)
     }
 
     @Test
@@ -173,8 +221,12 @@ internal class ApkBackupTest : BackupTest() {
             }, emptyMap())
         } just Runs
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, snapshot)
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
+
+        coVerify {
+            backupReceiver.finalize()
+        }
     }
 
     @Test
@@ -230,16 +282,19 @@ internal class ApkBackupTest : BackupTest() {
             }, emptyMap())
         } just Runs
 
-        apkBackup.backupApkIfNecessary(packageInfo)
+        apkBackup.backupApkIfNecessary(packageInfo, snapshot)
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
         assertArrayEquals(split1Bytes, split1OutputStream.toByteArray())
         assertArrayEquals(split2Bytes, split2OutputStream.toByteArray())
+
+        coVerify {
+            backupReceiver.finalize()
+        }
     }
 
-    private fun expectChecks(snapshot: Snapshot = this.snapshot) {
+    private fun expectChecks() {
         every { settingsManager.isBackupEnabled(any()) } returns true
         every { settingsManager.backupApks() } returns true
-        every { snapshotManager.latestSnapshot } returns snapshot
         every { PackageUtils.computeSha256DigestBytes(signatureBytes) } returns signatureHash
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns sigs
