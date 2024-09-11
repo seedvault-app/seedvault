@@ -8,9 +8,6 @@ package com.stevesoltys.seedvault.metadata
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageInfo
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
-import android.os.UserManager
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
@@ -18,8 +15,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -39,14 +34,13 @@ internal const val METADATA_SALT_SIZE = 32
 internal class MetadataManager(
     private val context: Context,
     private val clock: Clock,
-    private val crypto: Crypto,
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader,
     private val packageService: PackageService,
     private val settingsManager: SettingsManager,
 ) {
 
-    private val uninitializedMetadata = BackupMetadata(token = 0L, salt = "")
+    private val uninitializedMetadata = BackupMetadata(token = -42L, salt = "foo bar")
     private var metadata: BackupMetadata = uninitializedMetadata
         get() {
             if (field == uninitializedMetadata) {
@@ -65,35 +59,8 @@ internal class MetadataManager(
             return field
         }
 
-    val backupSize: Long get() = metadata.size
-
     private val launchableSystemApps by lazy {
         packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
-    }
-
-    /**
-     * Call this when initializing a new device.
-     *
-     * Existing [BackupMetadata] will be cleared
-     * and new metadata with the given [token] will be written to the internal cache
-     * with a fresh salt.
-     */
-    @Synchronized
-    @Throws(IOException::class)
-    fun onDeviceInitialization(token: Long) {
-        val salt = crypto.getRandomBytes(METADATA_SALT_SIZE).encodeBase64()
-        modifyCachedMetadata {
-            val userName = getUserName()
-            metadata = BackupMetadata(
-                token = token,
-                salt = salt,
-                deviceName = if (userName == null) {
-                    "${Build.MANUFACTURER} ${Build.MODEL}"
-                } else {
-                    "${Build.MANUFACTURER} ${Build.MODEL} - $userName"
-                },
-            )
-        }
     }
 
     /**
@@ -254,18 +221,6 @@ internal class MetadataManager(
     }
 
     /**
-     * Returns the current backup token.
-     *
-     * If the token is 0L, it is not yet initialized and must not be used for anything.
-     */
-    @Synchronized
-    @Deprecated(
-        "Responsibility for current token moved to SettingsManager",
-        ReplaceWith("settingsManager.getToken()")
-    )
-    fun getBackupToken(): Long = metadata.token
-
-    /**
      * Returns the last backup time in unix epoch milli seconds.
      *
      * Note that this might be a blocking I/O call.
@@ -315,14 +270,6 @@ internal class MetadataManager(
         context.openFileOutput(METADATA_CACHE_FILE, MODE_PRIVATE).use { stream ->
             stream.write(metadataWriter.encode(metadata))
         }
-    }
-
-    private fun getUserName(): String? {
-        val perm = "android.permission.QUERY_USERS"
-        return if (context.checkSelfPermission(perm) == PERMISSION_GRANTED) {
-            val userManager = context.getSystemService(UserManager::class.java) ?: return null
-            userManager.userName
-        } else null
     }
 
 }

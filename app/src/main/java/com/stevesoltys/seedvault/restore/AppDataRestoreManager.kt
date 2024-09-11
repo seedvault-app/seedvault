@@ -85,12 +85,6 @@ internal class AppDataRestoreManager(
 
         Log.d(TAG, "Starting new restore session to restore backup $token")
 
-        // if we had no token before (i.e. restore from setup wizard),
-        // use the token of the current restore set from now on
-        if (settingsManager.getToken() == null) {
-            settingsManager.setNewToken(token)
-        }
-
         // start a new restore session
         val session = try {
             getOrStartSession()

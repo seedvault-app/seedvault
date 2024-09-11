@@ -135,7 +135,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `getCurrentRestoreSet() delegates to plugin`() {
-        every { settingsManager.getToken() } returns token
+        every { settingsManager.token } returns token
         assertEquals(token, restore.getCurrentRestoreSet())
     }
 

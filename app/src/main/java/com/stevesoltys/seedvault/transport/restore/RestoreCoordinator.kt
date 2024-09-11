@@ -162,10 +162,9 @@ internal class RestoreCoordinator(
      * or 0 if there is no backup set available corresponding to the current device state.
      */
     fun getCurrentRestoreSet(): Long {
-        Log.d(TAG, "getCurrentRestoreSet() = ") // TODO where to store current token?
-        return (settingsManager.getToken() ?: 0L).apply {
-            Log.i(TAG, "Got current restore set token: $this")
-        }
+        val token = settingsManager.token ?: 0L
+        Log.d(TAG, "getCurrentRestoreSet() = $token")
+        return token
     }
 
     /**

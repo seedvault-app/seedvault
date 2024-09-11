@@ -14,7 +14,6 @@ import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.os.UserManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.TestApp
@@ -72,7 +71,6 @@ class MetadataManagerTest {
     private val manager = MetadataManager(
         context = context,
         clock = clock,
-        crypto = crypto,
         metadataWriter = metadataWriter,
         metadataReader = metadataReader,
         packageService = packageService,
@@ -104,59 +102,6 @@ class MetadataManagerTest {
     @After
     fun afterEachTest() {
         stopKoin()
-    }
-
-    @Test
-    fun `test onDeviceInitialization() without user permission`() {
-        every { clock.time() } returns time
-        every { crypto.getRandomBytes(METADATA_SALT_SIZE) } returns saltBytes
-        expectReadFromCache()
-        expectModifyMetadata(initialMetadata)
-
-        every {
-            context.checkSelfPermission("android.permission.QUERY_USERS")
-        } returns PackageManager.PERMISSION_DENIED
-
-        manager.onDeviceInitialization(token)
-
-        assertEquals(token, manager.getBackupToken())
-        assertEquals(0L, manager.getLastBackupTime())
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onDeviceInitialization() with user permission`() {
-        val userManager: UserManager = mockk()
-        val userName = getRandomString()
-        val newMetadata = initialMetadata.copy(
-            deviceName = initialMetadata.deviceName + " - $userName",
-        )
-
-        every { clock.time() } returns time
-        every { crypto.getRandomBytes(METADATA_SALT_SIZE) } returns saltBytes
-        expectReadFromCache()
-        expectModifyMetadata(newMetadata)
-
-        every {
-            context.checkSelfPermission("android.permission.QUERY_USERS")
-        } returns PackageManager.PERMISSION_GRANTED
-        every { context.getSystemService(UserManager::class.java) } returns userManager
-        every { userManager.userName } returns userName
-
-        manager.onDeviceInitialization(token)
-
-        assertEquals(token, manager.getBackupToken())
-        assertEquals(0L, manager.getLastBackupTime())
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-            userManager.userName
-        }
     }
 
     @Test
@@ -503,7 +448,6 @@ class MetadataManagerTest {
         expectReadFromCache()
 
         assertEquals(initialMetadata.time, manager.getLastBackupTime())
-        assertEquals(initialMetadata.token, manager.getBackupToken())
 
         verify { cacheInputStream.close() }
     }

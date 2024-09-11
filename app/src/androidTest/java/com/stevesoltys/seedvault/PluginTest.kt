@@ -95,7 +95,7 @@ class PluginTest : KoinComponent {
         assertEquals(0, backend.getAvailableBackupFileHandles().toList().size)
 
         // prepare returned tokens requested when initializing device
-        every { mockedSettingsManager.getToken() } returnsMany listOf(token, token + 1, token + 1)
+        every { mockedSettingsManager.token } returnsMany listOf(token, token + 1, token + 1)
 
         // write metadata (needed for backup to be recognized)
         backend.save(LegacyAppBackupFile.Metadata(token))
@@ -117,7 +117,7 @@ class PluginTest : KoinComponent {
 
     @Test
     fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
-        every { mockedSettingsManager.getToken() } returns token
+        every { mockedSettingsManager.token } returns token
 
         // write metadata
         val metadata = getRandomByteArray()
@@ -201,7 +201,7 @@ class PluginTest : KoinComponent {
     }
 
     private fun initStorage(token: Long) = runBlocking {
-        every { mockedSettingsManager.getToken() } returns token
+        every { mockedSettingsManager.token } returns token
     }
 
 }

@@ -125,9 +125,6 @@ open class App : Application() {
                     .build()
             )
         }
-        permitDiskReads {
-            migrateTokenFromMetadataToSettingsManager()
-        }
         if (!isTest) migrateToOwnScheduling()
     }
 
@@ -153,24 +150,9 @@ open class App : Application() {
     )
 
     private val settingsManager: SettingsManager by inject()
-    private val metadataManager: MetadataManager by inject()
     private val backupManager: IBackupManager by inject()
     private val backendManager: BackendManager by inject()
     private val backupStateManager: BackupStateManager by inject()
-
-    /**
-     * The responsibility for the current token was moved to the [SettingsManager]
-     * in the end of 2020.
-     * This method migrates the token for existing installs and can be removed
-     * after sufficient time has passed.
-     */
-    private fun migrateTokenFromMetadataToSettingsManager() {
-        @Suppress("DEPRECATION")
-        val token = metadataManager.getBackupToken()
-        if (token != 0L && settingsManager.getToken() == null) {
-            settingsManager.setNewToken(token)
-        }
-    }
 
     /**
      * Disables the framework scheduling in favor of our own.

@@ -15,7 +15,6 @@ import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
-import android.app.backup.RestoreSet
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
@@ -85,22 +84,6 @@ internal class BackupCoordinator(
     //
 
     /**
-     * Starts a new [RestoreSet] with a new token (the current unix epoch in milliseconds).
-     * Call this at least once before calling [initializeDevice]
-     * which must be called after this method to properly initialize the backup transport.
-     *
-     * @return the token of the new [RestoreSet].
-     */
-    @Throws(IOException::class)
-    private suspend fun startNewRestoreSet() {
-        val token = clock.time()
-        Log.i(TAG, "Starting new RestoreSet with token $token...")
-        settingsManager.setNewToken(token)
-        Log.d(TAG, "Resetting backup metadata...")
-        metadataManager.onDeviceInitialization(token)
-    }
-
-    /**
      * Initialize the storage for this device, erasing all stored data.
      * The transport may send the request immediately, or may buffer it.
      * After this is called,
@@ -118,20 +101,15 @@ internal class BackupCoordinator(
      * @return One of [TRANSPORT_OK] (OK so far) or
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
      */
-    suspend fun initializeDevice(): Int = try {
+    fun initializeDevice(): Int {
         // we don't respect the intended system behavior here by always starting a new [RestoreSet]
         // instead of simply deleting the current one
-        startNewRestoreSet()
         Log.i(TAG, "Initialize Device!")
+
         // [finishBackup] will only be called when we return [TRANSPORT_OK] here
         // so we remember that we initialized successfully
         state.calledInitialize = true
-        TRANSPORT_OK
-    } catch (e: Exception) {
-        Log.e(TAG, "Error initializing device", e)
-        // Show error notification if we needed init or were ready for backups
-        if (metadataManager.requiresInit || backendManager.canDoBackupNow()) nm.onBackupError()
-        TRANSPORT_ERROR
+        return TRANSPORT_OK
     }
 
     fun isAppEligibleForBackup(

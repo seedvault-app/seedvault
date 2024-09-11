@@ -5,7 +5,6 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
@@ -15,7 +14,6 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.PackageMetadata
@@ -78,7 +76,6 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `device initialization succeeds and delegates to plugin`() = runBlocking {
-        expectStartNewRestoreSet()
         every { kv.hasState } returns false
         every { full.hasState } returns false
 
@@ -86,63 +83,12 @@ internal class BackupCoordinatorTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.finishBackup())
     }
 
-    private fun expectStartNewRestoreSet() {
-        every { clock.time() } returns token
-        every { settingsManager.setNewToken(token) } just Runs
-        every { metadataManager.onDeviceInitialization(token) } just Runs
-    }
-
-    @Test
-    fun `error notification when device initialization fails`() = runBlocking {
-        val maybeTrue = Random.nextBoolean()
-
-        every { clock.time() } returns token
-        every { settingsManager.setNewToken(token) } just Runs
-        every { metadataManager.onDeviceInitialization(token) } throws IOException()
-        every { metadataManager.requiresInit } returns maybeTrue
-        every { backendManager.canDoBackupNow() } returns !maybeTrue
-        every { notificationManager.onBackupError() } just Runs
-
-        assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
-
-        // finish will only be called when TRANSPORT_OK is returned, so it should throw
-        every { kv.hasState } returns false
-        every { full.hasState } returns false
-        coAssertThrows(IllegalStateException::class.java) {
-            backup.finishBackup()
-        }
-    }
-
-    @Test
-    fun `no error notification when device initialization fails when no backup possible`() =
-        runBlocking {
-            every { clock.time() } returns token
-            every { settingsManager.setNewToken(token) } just Runs
-            every { metadataManager.onDeviceInitialization(token) } throws IOException()
-            every { metadataManager.requiresInit } returns false
-            every { backendManager.canDoBackupNow() } returns false
-
-            assertEquals(TRANSPORT_ERROR, backup.initializeDevice())
-
-            // finish will only be called when TRANSPORT_OK is returned, so it should throw
-            every { kv.hasState } returns false
-            every { full.hasState } returns false
-            coAssertThrows(IllegalStateException::class.java) {
-                backup.finishBackup()
-            }
-        }
-
     @Test
     fun `performIncrementalBackup of @pm@ causes re-init when legacy format`() = runBlocking {
         val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
 
         every { backendManager.canDoBackupNow() } returns true
         every { metadataManager.requiresInit } returns true
-
-        // start new restore set
-        every { clock.time() } returns token + 1
-        every { settingsManager.setNewToken(token + 1) } just Runs
-        every { metadataManager.onDeviceInitialization(token + 1) } just Runs
 
         every { data.close() } just Runs
 
@@ -203,7 +149,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { kv.currentPackageInfo } returns packageInfo
         coEvery { kv.finishBackup() } throws IOException()
 
-        every { settingsManager.getToken() } returns token
         every {
             metadataManager.onPackageBackupError(
                 packageInfo,
@@ -342,7 +287,6 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     private fun expectApkBackupAndMetadataWrite() {
         coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
-        every { settingsManager.getToken() } returns token
         every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs
     }
 

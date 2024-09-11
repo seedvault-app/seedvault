@@ -13,7 +13,6 @@ import androidx.annotation.UiThread
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.saf.SafBackend
 import org.calyxos.seedvault.core.backends.saf.SafProperties
@@ -63,9 +62,6 @@ class SettingsManager(private val context: Context) {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    @Volatile
-    private var token: Long? = null
-
     fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
     }
@@ -83,29 +79,26 @@ class SettingsManager(private val context: Context) {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
     }
 
-    fun getToken(): Long? = token ?: run {
-        val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
-        if (value == 0L) null else value
-    }
-
-    /**
-     * Sets a new RestoreSet token.
-     * Should only be called by the [BackupCoordinator]
-     * to ensure that related work is performed after moving to a new token.
-     */
-    fun setNewToken(newToken: Long?) {
-        if (newToken == null) {
-            prefs.edit()
-                .remove(PREF_KEY_TOKEN)
-                .apply()
-        } else {
-            prefs.edit()
-                .putLong(PREF_KEY_TOKEN, newToken)
-                .apply()
+    @Volatile
+    var token: Long? = null
+        set(newToken) {
+            if (newToken == null) {
+                prefs.edit()
+                    .remove(PREF_KEY_TOKEN)
+                    .apply()
+            } else {
+                prefs.edit()
+                    .putLong(PREF_KEY_TOKEN, newToken)
+                    .apply()
+            }
+            field = newToken
         }
-
-        token = newToken
-    }
+        // we may be able to get this from latest snapshot,
+        // but that is not always readily available
+        get() = field ?: run {
+            val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
+            if (value == 0L) null else value
+        }
 
     internal val storagePluginType: StoragePluginType?
         get() {
