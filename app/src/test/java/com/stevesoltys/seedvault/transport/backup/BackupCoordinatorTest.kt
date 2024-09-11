@@ -32,12 +32,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.IOException
-import java.io.OutputStream
 import kotlin.random.Random
 
 internal class BackupCoordinatorTest : BackupTest() {
@@ -64,7 +62,6 @@ internal class BackupCoordinatorTest : BackupTest() {
     )
 
     private val backend = mockk<Backend>()
-    private val metadataOutputStream = mockk<OutputStream>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
     private val packageMetadata: PackageMetadata = mockk()
     private val safProperties = SafProperties(
@@ -211,12 +208,9 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 UNKNOWN_ERROR,
-                metadataOutputStream,
                 BackupType.KV,
             )
         } just Runs
-        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
-        every { metadataOutputStream.close() } just Runs
 
         assertEquals(TRANSPORT_PACKAGE_REJECTED, backup.finishBackup())
     }
@@ -270,14 +264,12 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 QUOTA_EXCEEDED,
-                metadataOutputStream,
                 BackupType.FULL
             )
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
         every { backendManager.backendProperties } returns safProperties
         every { settingsManager.useMeteredNetwork } returns false
-        every { metadataOutputStream.close() } just Runs
 
         assertEquals(
             TRANSPORT_OK,
@@ -298,11 +290,9 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 QUOTA_EXCEEDED,
-                metadataOutputStream,
                 BackupType.FULL
             )
         }
-        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -318,14 +308,12 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 NO_DATA,
-                metadataOutputStream,
                 BackupType.FULL
             )
         } just Runs
         coEvery { full.cancelFullBackup() } just Runs
         every { backendManager.backendProperties } returns safProperties
         every { settingsManager.useMeteredNetwork } returns false
-        every { metadataOutputStream.close() } just Runs
 
         assertEquals(
             TRANSPORT_OK,
@@ -343,11 +331,9 @@ internal class BackupCoordinatorTest : BackupTest() {
             metadataManager.onPackageBackupError(
                 packageInfo,
                 NO_DATA,
-                metadataOutputStream,
                 BackupType.FULL
             )
         }
-        verify { metadataOutputStream.close() }
     }
 
     @Test
@@ -357,7 +343,6 @@ internal class BackupCoordinatorTest : BackupTest() {
     private fun expectApkBackupAndMetadataWrite() {
         coEvery { apkBackup.backupApkIfNecessary(packageInfo) } just Runs
         every { settingsManager.getToken() } returns token
-        coEvery { backend.save(LegacyAppBackupFile.Metadata(token)) } returns metadataOutputStream
         every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs
     }
 

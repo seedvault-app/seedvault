@@ -100,7 +100,6 @@ internal class MetadataManager(
      * Call this after a package's APK has been backed up successfully.
      *
      * It updates the packages' metadata to the internal cache.
-     * You still need to call [uploadMetadata] to persist all local modifications.
      */
     @Synchronized
     @Throws(IOException::class)
@@ -188,11 +187,10 @@ internal class MetadataManager(
     internal fun onPackageBackupError(
         packageInfo: PackageInfo,
         packageState: PackageState,
-        metadataOutputStream: OutputStream,
         backupType: BackupType? = null,
     ) {
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
-        modifyMetadata(metadataOutputStream) {
+        modifyCachedMetadata {
             metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
                 val isSystemApp = packageInfo.isSystemApp()
                 PackageMetadata(
@@ -212,7 +210,6 @@ internal class MetadataManager(
      * Call this for all packages we can not back up for some reason.
      *
      * It updates the packages' local metadata.
-     * You still need to call [uploadMetadata] to persist all local modifications.
      */
     @Synchronized
     @Throws(IOException::class)
@@ -239,15 +236,6 @@ internal class MetadataManager(
         }
     }
 
-    /**
-     * Uploads metadata to given [metadataOutputStream] after performing local modifications.
-     */
-    @Synchronized
-    @Throws(IOException::class)
-    fun uploadMetadata(metadataOutputStream: OutputStream) {
-        metadataWriter.write(metadata, metadataOutputStream)
-    }
-
     @Throws(IOException::class)
     private fun modifyCachedMetadata(modFun: () -> Unit) {
         val oldMetadata = metadata.copy( // copy map, otherwise it will re-use same reference
@@ -262,24 +250,7 @@ internal class MetadataManager(
             metadata = oldMetadata
             throw IOException(e)
         }
-    }
-
-    @Throws(IOException::class)
-    private fun modifyMetadata(metadataOutputStream: OutputStream, modFun: () -> Unit) {
-        val oldMetadata = metadata.copy( // copy map, otherwise it will re-use same reference
-            packageMetadataMap = PackageMetadataMap(metadata.packageMetadataMap),
-        )
-        try {
-            modFun.invoke()
-            metadataWriter.write(metadata, metadataOutputStream)
-            writeMetadataToCache()
-        } catch (e: IOException) {
-            Log.w(TAG, "Error writing metadata to storage", e)
-            // revert metadata and do not write it to cache
-            metadata = oldMetadata
-            throw IOException(e)
-        }
-        mLastBackupTime.postValue(metadata.time)
+        mLastBackupTime.postValue(metadata.time) // TODO only do after snapshot was written
     }
 
     /**

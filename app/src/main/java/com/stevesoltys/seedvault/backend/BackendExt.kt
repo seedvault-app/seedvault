@@ -11,11 +11,6 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
-import java.io.OutputStream
-
-suspend fun Backend.getMetadataOutputStream(token: Long): OutputStream {
-    return save(LegacyAppBackupFile.Metadata(token))
-}
 
 suspend fun Backend.getAvailableBackupFileHandles(): List<FileHandle> {
     // v1 get all restore set tokens in root folder that have a metadata file

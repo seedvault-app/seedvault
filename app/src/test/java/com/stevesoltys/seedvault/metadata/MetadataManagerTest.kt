@@ -473,7 +473,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackupError(packageInfo, NO_DATA, storageOutputStream, BackupType.KV)
+        manager.onPackageBackupError(packageInfo, NO_DATA, BackupType.KV)
     }
 
     @Test
@@ -486,22 +486,7 @@ class MetadataManagerTest {
         expectReadFromCache()
         expectModifyMetadata(updatedMetadata)
 
-        manager.onPackageBackupError(packageInfo, WAS_STOPPED, storageOutputStream)
-    }
-
-    @Test
-    fun `test uploadMetadata() uploads`() {
-        expectReadFromCache()
-        every { metadataWriter.write(initialMetadata, storageOutputStream) } just Runs
-
-        manager.uploadMetadata(storageOutputStream)
-    }
-
-    @Test
-    fun `test getBackupToken() on first run`() {
-        every { context.openFileInput(METADATA_CACHE_FILE) } throws FileNotFoundException()
-
-        assertEquals(0L, manager.getBackupToken())
+        manager.onPackageBackupError(packageInfo, WAS_STOPPED)
     }
 
     @Test

@@ -23,7 +23,6 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getMetadataOutputStream
 import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -386,13 +385,10 @@ internal class BackupCoordinator(
     }
 
     // TODO is this only nice to have info, or do we need to do more?
-    private suspend fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
+    private fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
         val packageName = packageInfo.packageName
         try {
-            val token = settingsManager.getToken() ?: error("no token")
-            backend.getMetadataOutputStream(token).use {
-                metadataManager.onPackageBackupError(packageInfo, state.cancelReason, it, type)
-            }
+            metadataManager.onPackageBackupError(packageInfo, state.cancelReason, type)
         } catch (e: IOException) {
             Log.e(TAG, "Error while writing metadata for $packageName", e)
         }
