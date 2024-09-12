@@ -27,6 +27,7 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(
+    sdk = [34], // TODO: Drop once robolectric supports 35
     application = TestApp::class
 )
 internal class DeviceInfoTest {

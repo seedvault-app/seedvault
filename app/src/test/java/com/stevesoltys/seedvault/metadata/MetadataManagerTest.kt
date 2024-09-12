@@ -57,6 +57,7 @@ import kotlin.random.Random
 @Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
 @Config(
+    sdk = [34], // TODO: Drop once robolectric supports 35
     application = TestApp::class
 )
 class MetadataManagerTest {
@@ -342,7 +343,7 @@ class MetadataManagerTest {
 
     @Test
     fun `test onPackageBackedUp()`() {
-        packageInfo.applicationInfo.flags = FLAG_SYSTEM
+        packageInfo.applicationInfo!!.flags = FLAG_SYSTEM
         val updatedMetadata = initialMetadata.copy(
             time = time,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced

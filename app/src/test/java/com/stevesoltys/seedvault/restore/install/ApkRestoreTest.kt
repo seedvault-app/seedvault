@@ -281,7 +281,7 @@ internal class ApkRestoreTest : TransportTest() {
         } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
-        every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
+        every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
@@ -706,7 +706,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
-        every { pm.getApplicationLabel(packageInfo.applicationInfo) } returns appName
+        every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName
     }
 
     private suspend fun TurbineTestContext<InstallResult>.assertQueuedFailFinished() {

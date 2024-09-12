@@ -35,12 +35,16 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @OptIn(ExperimentalCoroutinesApi::class)
+@Config(
+    sdk = [34] // TODO: Drop once robolectric supports 35
+)
 internal class AppSelectionManagerTest : TransportTest() {
 
     private val storagePluginManager: StoragePluginManager = mockk()
