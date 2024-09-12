@@ -22,6 +22,7 @@ import androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
@@ -168,7 +169,7 @@ class AppBackupWorker(
 
     private fun createForegroundInfo() = ForegroundInfo(
         NOTIFICATION_ID_OBSERVER,
-        nm.getBackupNotification(""),
+        nm.getBackupNotification(applicationContext.getString(R.string.notification_init_text)),
         FOREGROUND_SERVICE_TYPE_DATA_SYNC,
     )
 }

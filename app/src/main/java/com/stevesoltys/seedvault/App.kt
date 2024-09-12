@@ -62,7 +62,7 @@ open class App : Application() {
     private val appModule = module {
         single { SettingsManager(this@App) }
         single { BackupNotificationManager(this@App) }
-        single { BackendManager(this@App, get(), get()) }
+        single { BackendManager(this@App, get(), get(), get()) }
         single {
             BackendFactory {
                 // uses context of the device's main user to be able to access USB storage

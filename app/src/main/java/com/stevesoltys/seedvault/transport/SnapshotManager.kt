@@ -16,7 +16,6 @@ import okio.Buffer
 import okio.buffer
 import okio.sink
 import org.calyxos.seedvault.core.backends.AppBackupFileType
-import org.calyxos.seedvault.core.backends.TopLevelFolder
 
 internal class SnapshotManager(
     private val crypto: Crypto,
@@ -27,37 +26,23 @@ internal class SnapshotManager(
     private val log = KotlinLogging.logger {}
 
     /**
-     * The latest [Snapshot]. May be stale if [loadSnapshots] has not returned
+     * The latest [Snapshot]. May be stale if [onSnapshotsLoaded] has not returned
      * or wasn't called since new snapshots have been created.
      */
     var latestSnapshot: Snapshot? = null
         private set
 
-    suspend fun loadSnapshots(callback: (Snapshot) -> Unit) {
-        log.info { "Loading snapshots..." }
-        val handles = mutableListOf<AppBackupFileType.Snapshot>()
-        backendManager.backend.list(
-            topLevelFolder = TopLevelFolder(crypto.repoId),
-            AppBackupFileType.Snapshot::class,
-        ) { fileInfo ->
-            fileInfo.fileHandle as AppBackupFileType.Snapshot
-            handles.add(fileInfo.fileHandle as AppBackupFileType.Snapshot)
-        }
-        handles.forEach { fileHandle ->
+    suspend fun onSnapshotsLoaded(handles: List<AppBackupFileType.Snapshot>): List<Snapshot> {
+        return handles.map { snapshotHandle ->
+            // TODO set up local snapshot cache, so we don't need to download those all the time
             // TODO is it a fatal error when one snapshot is corrupted or couldn't get loaded?
-            val snapshot = onSnapshotFound(fileHandle)
-            callback(snapshot)
+            val snapshot = loader.loadFile(snapshotHandle).use { inputStream ->
+                Snapshot.parseFrom(inputStream)
+            }
+            // update latest snapshot if this one is more recent
+            if (snapshot.token > (latestSnapshot?.token ?: 0)) latestSnapshot = snapshot
+            snapshot
         }
-    }
-
-    private suspend fun onSnapshotFound(snapshotHandle: AppBackupFileType.Snapshot): Snapshot {
-        // TODO set up local snapshot cache, so we don't need to download those all the time
-        val snapshot = loader.loadFile(snapshotHandle).use { inputStream ->
-            Snapshot.parseFrom(inputStream)
-        }
-        // update latest snapshot if this one is more recent
-        if (snapshot.token > (latestSnapshot?.token ?: 0)) latestSnapshot = snapshot
-        return snapshot
     }
 
     suspend fun saveSnapshot(snapshot: Snapshot) {

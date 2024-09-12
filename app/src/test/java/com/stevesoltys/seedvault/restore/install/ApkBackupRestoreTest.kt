@@ -162,8 +162,8 @@ internal class ApkBackupRestoreTest : TransportTest() {
         val apkPath = slot<String>()
         val cacheFiles = slot<List<File>>()
         val repoId = getRandomString()
-        val apkHandle = AppBackupFileType.Blob(repoId, apkBlob.id.hexFromProto())
-        val splitHandle = AppBackupFileType.Blob(repoId, splitBlob.id.hexFromProto())
+        val apkHandle = AppBackupFileType.Blob(repoId, blob1.id.hexFromProto())
+        val splitHandle = AppBackupFileType.Blob(repoId, blob2.id.hexFromProto())
 
         every { backend.providerPackageName } returns storageProviderPackageName
         every { installRestriction.isAllowedToInstallApks() } returns true

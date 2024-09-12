@@ -39,6 +39,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.TestInstance
@@ -80,17 +81,29 @@ internal abstract class TransportTest {
     protected val splitBytes = byteArrayOf(0x07, 0x08, 0x09)
     protected val chunkId1 = Random.nextBytes(32).toHexString()
     protected val chunkId2 = Random.nextBytes(32).toHexString()
-    protected val apkBlob = blob {
+    protected val blob1 = blob {
         id = ByteString.copyFrom(Random.nextBytes(32))
+        length = Random.nextInt(0, Int.MAX_VALUE)
+        uncompressedLength = Random.nextInt(0, Int.MAX_VALUE)
     }
-    protected val splitBlob = blob {
+    protected val blob2 = blob {
         id = ByteString.copyFrom(Random.nextBytes(32))
+        length = Random.nextInt(0, Int.MAX_VALUE)
+        uncompressedLength = Random.nextInt(0, Int.MAX_VALUE)
     }
-    protected val blobHandle1 = AppBackupFileType.Blob(repoId, apkBlob.id.hexFromProto())
-    protected val blobHandle2 = AppBackupFileType.Blob(repoId, splitBlob.id.hexFromProto())
-    protected val apkBackupData = BackupData(listOf(chunkId1), mapOf(chunkId1 to apkBlob))
+    protected val blobHandle1 = AppBackupFileType.Blob(repoId, blob1.id.hexFromProto())
+    protected val blobHandle2 = AppBackupFileType.Blob(repoId, blob2.id.hexFromProto())
+    protected val fileInfo1 = FileInfo(
+        fileHandle = blobHandle1,
+        size = blob1.length.toLong(),
+    )
+    protected val fileInfo2 = FileInfo(
+        fileHandle = blobHandle2,
+        size = blob2.length.toLong(),
+    )
+    protected val apkBackupData = BackupData(listOf(chunkId1), mapOf(chunkId1 to blob1))
     protected val splitBackupData =
-        BackupData(listOf(chunkId2), mapOf(chunkId2 to splitBlob))
+        BackupData(listOf(chunkId2), mapOf(chunkId2 to blob2))
     protected val chunkMap = apkBackupData.chunkMap + splitBackupData.chunkMap
     protected val baseSplit = split {
         name = BASE_SPLIT

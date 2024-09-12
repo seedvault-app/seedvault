@@ -6,7 +6,6 @@
 package com.stevesoltys.seedvault.transport
 
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.transport.restore.Loader
 import io.mockk.coEvery
 import io.mockk.every
@@ -15,8 +14,6 @@ import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.FileInfo
-import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.toByteArrayFromHex
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -63,18 +60,8 @@ internal class SnapshotManagerTest : TransportTest() {
             snapshotHandle.captured.hash,
         )
 
-        val fileInfo = FileInfo(snapshotHandle.captured, Random.nextLong())
         assertTrue(outputStream.size() > 0)
         val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-        coEvery {
-            backend.list(
-                topLevelFolder = TopLevelFolder(repoId),
-                AppBackupFileType.Snapshot::class,
-                callback = captureLambda<(FileInfo) -> Unit>()
-            )
-        } answers {
-            lambda<(FileInfo) -> Unit>().captured.invoke(fileInfo)
-        }
         coEvery { backend.load(snapshotHandle.captured) } returns inputStream
         every {
             crypto.sha256(outputStream.toByteArray())
@@ -83,8 +70,9 @@ internal class SnapshotManagerTest : TransportTest() {
             passThroughInputStream.captured
         }
 
-        var loadedSnapshot: Snapshot? = null
-        snapshotManager.loadSnapshots { loadedSnapshot = it }
-        assertEquals(snapshot, loadedSnapshot)
+        snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle.captured)).let { snapshots ->
+            assertEquals(1, snapshots.size)
+            assertEquals(snapshot, snapshots[0])
+        }
     }
 }

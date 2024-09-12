@@ -21,7 +21,7 @@ data class BackupData(
 }
 
 internal class BackupReceiver(
-    private val blobsCache: BlobsCache,
+    private val blobCache: BlobCache,
     private val blobCreator: BlobCreator,
     private val crypto: Crypto,
     private val replaceableChunker: Chunker? = null,
@@ -89,11 +89,11 @@ internal class BackupReceiver(
     private suspend fun onNewChunk(chunk: Chunk) {
         chunks.add(chunk.hash)
 
-        val existingBlob = blobsCache.getBlob(chunk.hash)
+        val existingBlob = blobCache[chunk.hash]
         if (existingBlob == null) {
             val blob = blobCreator.createNewBlob(chunk)
             chunkMap[chunk.hash] = blob
-            blobsCache.saveNewBlob(chunk.hash, blob)
+            blobCache.saveNewBlob(chunk.hash, blob)
         } else {
             chunkMap[chunk.hash] = existingBlob
         }

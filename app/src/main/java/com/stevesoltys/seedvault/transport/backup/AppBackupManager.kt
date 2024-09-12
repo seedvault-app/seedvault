@@ -5,13 +5,21 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.SnapshotManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
+import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob
+import org.calyxos.seedvault.core.backends.AppBackupFileType.Snapshot
+import org.calyxos.seedvault.core.backends.FileInfo
+import org.calyxos.seedvault.core.backends.TopLevelFolder
 
 internal class AppBackupManager(
-    private val blobsCache: BlobsCache,
+    private val crypto: Crypto,
+    private val blobCache: BlobCache,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val snapshotManager: SnapshotManager,
     private val snapshotCreatorFactory: SnapshotCreatorFactory,
@@ -22,22 +30,42 @@ internal class AppBackupManager(
         private set
 
     suspend fun beforeBackup() {
-        log.info { "Before backup" }
+        log.info { "Loading existing snapshots and blobs..." }
+        val blobInfos = mutableListOf<FileInfo>()
+        val snapshotHandles = mutableListOf<Snapshot>()
+        backendManager.backend.list(
+            topLevelFolder = TopLevelFolder(crypto.repoId),
+            Blob::class, Snapshot::class,
+        ) { fileInfo ->
+            when (fileInfo.fileHandle) {
+                is Blob -> blobInfos.add(fileInfo)
+                is Snapshot -> snapshotHandles.add(fileInfo.fileHandle as Snapshot)
+                else -> error("Unexpected FileHandle: $fileInfo")
+            }
+        }
         snapshotCreator = snapshotCreatorFactory.createSnapshotCreator()
-        blobsCache.populateCache()
+        val snapshots = snapshotManager.onSnapshotsLoaded(snapshotHandles)
+        blobCache.populateCache(blobInfos, snapshots)
     }
 
     suspend fun afterBackupFinished(success: Boolean) {
         log.info { "After backup finished. Success: $success" }
-        blobsCache.clear()
-        if (success) {
-            val snapshot = snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
-            keepTrying {
-                snapshotManager.saveSnapshot(snapshot)
+        // free up memory by clearing blobs cache
+        blobCache.clear()
+        try {
+            if (success) {
+                val snapshot =
+                    snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
+                keepTrying {
+                    snapshotManager.saveSnapshot(snapshot)
+                }
+                settingsManager.token = snapshot.token
+                // after snapshot was written, we can clear local cache as its info is in snapshot
+                blobCache.clearLocalCache()
             }
-            settingsManager.token = snapshot.token
+        } finally {
+            snapshotCreator = null
         }
-        snapshotCreator = null
     }
 
     private suspend fun keepTrying(n: Int = 3, block: suspend () -> Unit) {

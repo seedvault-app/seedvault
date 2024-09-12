@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val backupModule = module {
     single { BackupInitializer(get()) }
     single { BackupReceiver(get(), get(), get()) }
-    single { BlobsCache(get(), get(), get()) }
+    single { BlobCache(androidContext()) }
     single { BlobCreator(get(), get()) }
     single { SnapshotManager(get(), get(), get()) }
     single { SnapshotCreatorFactory(androidContext(), get(), get(), get()) }
