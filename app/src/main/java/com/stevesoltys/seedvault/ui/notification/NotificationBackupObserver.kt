@@ -11,6 +11,7 @@ import android.app.backup.IBackupObserver
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageManager.NameNotFoundException
+import android.os.Looper
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
@@ -136,7 +137,7 @@ internal class NotificationBackupObserver(
             if (isLoggable(TAG, INFO)) {
                 Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
             }
-            val success = status == 0
+            var success = status == 0
             val size = if (success) metadataManager.getPackagesBackupSize() else 0L
             val total = try {
                 packageService.allUserPackages.size
@@ -144,11 +145,10 @@ internal class NotificationBackupObserver(
                 Log.e(TAG, "Error getting number of all user packages: ", e)
                 requestedPackages
             }
-            // TODO handle exceptions
             runBlocking {
-                // TODO check if UI thread
-                Log.d("TAG", "Finalizing backup...")
-                appBackupManager.afterBackupFinished(success)
+                check(!Looper.getMainLooper().isCurrentThread)
+                Log.d(TAG, "Finalizing backup...")
+                success = appBackupManager.afterBackupFinished(success)
             }
             nm.onBackupFinished(success, numPackagesToReport, total, size)
         }

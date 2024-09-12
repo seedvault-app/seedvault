@@ -48,21 +48,25 @@ internal class AppBackupManager(
         blobCache.populateCache(blobInfos, snapshots)
     }
 
-    suspend fun afterBackupFinished(success: Boolean) {
+    suspend fun afterBackupFinished(success: Boolean): Boolean {
         log.info { "After backup finished. Success: $success" }
         // free up memory by clearing blobs cache
         blobCache.clear()
+        var result = false
         try {
             if (success) {
                 val snapshot =
                     snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
-                keepTrying {
+                keepTrying { // saving this is so important, we even keep trying
                     snapshotManager.saveSnapshot(snapshot)
                 }
                 settingsManager.token = snapshot.token
                 // after snapshot was written, we can clear local cache as its info is in snapshot
                 blobCache.clearLocalCache()
             }
+            result = true
+        } catch (e: Exception) {
+            log.error(e) { "Error finishing backup" }
         } finally {
             snapshotCreator = null
         }

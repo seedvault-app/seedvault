@@ -12,12 +12,18 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.transport.restore.Loader
 import io.github.oshai.kotlinlogging.KotlinLogging
-import okio.Buffer
-import okio.buffer
-import okio.sink
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.toHexString
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
 
+/**
+ * Manages interactions with snapshots, such as loading, saving and removing them.
+ * Also keeps a reference to the [latestSnapshot] that holds important re-usable data.
+ */
 internal class SnapshotManager(
+    private val snapshotFolder: File,
     private val crypto: Crypto,
     private val loader: Loader,
     private val backendManager: BackendManager,
@@ -32,12 +38,20 @@ internal class SnapshotManager(
     var latestSnapshot: Snapshot? = null
         private set
 
+    /**
+     * Call this before starting a backup run with the [handles] of snapshots
+     * currently available on the backend.
+     */
     suspend fun onSnapshotsLoaded(handles: List<AppBackupFileType.Snapshot>): List<Snapshot> {
-        return handles.map { snapshotHandle ->
-            // TODO set up local snapshot cache, so we don't need to download those all the time
-            // TODO is it a fatal error when one snapshot is corrupted or couldn't get loaded?
-            val snapshot = loader.loadFile(snapshotHandle).use { inputStream ->
-                Snapshot.parseFrom(inputStream)
+        return handles.mapNotNull { snapshotHandle ->
+            val snapshot = try {
+                loadSnapshot(snapshotHandle)
+            } catch (e: Exception) {
+                // This isn't ideal, but the show must go on and we take the snapshots we can get.
+                // After the first load, a snapshot will get cached, so we are not hitting backend.
+                // TODO use a re-trying backend for snapshot loading
+                log.error(e) { "Error loading snapshot: $snapshotHandle" }
+                return@mapNotNull null
             }
             // update latest snapshot if this one is more recent
             if (snapshot.token > (latestSnapshot?.token ?: 0)) latestSnapshot = snapshot
@@ -45,24 +59,61 @@ internal class SnapshotManager(
         }
     }
 
+    /**
+     * Saves the given [snapshot] to the backend and local cache.
+     *
+     * @throws IOException or others if saving fails.
+     */
+    @Throws(IOException::class)
     suspend fun saveSnapshot(snapshot: Snapshot) {
-        val buffer = Buffer()
-        val bufferStream = buffer.outputStream()
-        bufferStream.write(VERSION.toInt())
-        crypto.newEncryptingStream(bufferStream, crypto.getAdForVersion()).use { cryptoStream ->
+        val byteStream = ByteArrayOutputStream()
+        byteStream.write(VERSION.toInt())
+        crypto.newEncryptingStream(byteStream, crypto.getAdForVersion()).use { cryptoStream ->
             ZstdOutputStream(cryptoStream).use { zstdOutputStream ->
                 snapshot.writeTo(zstdOutputStream)
             }
         }
-        val sha256ByteString = buffer.sha256()
-        val handle = AppBackupFileType.Snapshot(crypto.repoId, sha256ByteString.hex())
-        // TODO exception handling
-        backendManager.backend.save(handle).use { outputStream ->
-            outputStream.sink().buffer().apply {
-                writeAll(buffer)
-                flush() // needs flushing
-            }
+        val bytes = byteStream.toByteArray()
+        val sha256 = crypto.sha256(bytes).toHexString()
+        val snapshotHandle = AppBackupFileType.Snapshot(crypto.repoId, sha256)
+        backendManager.backend.save(snapshotHandle).use { outputStream ->
+            outputStream.write(bytes)
         }
+        // save to local cache while at it
+        try {
+            if (!snapshotFolder.isDirectory) snapshotFolder.mkdirs()
+            File(snapshotFolder, snapshotHandle.name).outputStream().use { outputStream ->
+                outputStream.write(bytes)
+            }
+        } catch (e: Exception) { // we'll let this one pass
+            log.error(e) { "Error saving snapshot ${snapshotHandle.hash} to cache: " }
+        }
+    }
+
+    /**
+     * Removes the snapshot referenced by the given [snapshotHandle] from the backend
+     * and local cache.
+     */
+    @Throws(IOException::class)
+    suspend fun removeSnapshot(snapshotHandle: AppBackupFileType.Snapshot) {
+        backendManager.backend.remove(snapshotHandle)
+        // remove from cache as well
+        File(snapshotFolder, snapshotHandle.name).delete()
+    }
+
+    /**
+     * Loads and parses the snapshot referenced by the given [snapshotHandle].
+     * If a locally cached version exists, the backend will not be hit.
+     */
+    @Throws(IOException::class)
+    suspend fun loadSnapshot(snapshotHandle: AppBackupFileType.Snapshot): Snapshot {
+        val file = File(snapshotFolder, snapshotHandle.name)
+        val inputStream = if (file.isFile) {
+            loader.loadFile(file, snapshotHandle.hash)
+        } else {
+            loader.loadFile(snapshotHandle, file)
+        }
+        return inputStream.use { Snapshot.parseFrom(it) }
     }
 
 }
