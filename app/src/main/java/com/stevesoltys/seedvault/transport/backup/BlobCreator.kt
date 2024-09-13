@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
+import androidx.annotation.WorkerThread
 import com.github.luben.zstd.ZstdOutputStream
 import com.google.protobuf.ByteString
 import com.stevesoltys.seedvault.backend.BackendManager
@@ -17,7 +18,11 @@ import okio.buffer
 import okio.sink
 import org.calyxos.seedvault.chunker.Chunk
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import java.io.IOException
 
+/**
+ * Creates and uploads new blobs to the current backend.
+ */
 internal class BlobCreator(
     private val crypto: Crypto,
     private val backendManager: BackendManager,
@@ -25,6 +30,11 @@ internal class BlobCreator(
 
     private val buffer = Buffer()
 
+    /**
+     * Creates and returns a new [Blob] from the given [chunk] and uploads it to the backend.
+     */
+    @WorkerThread
+    @Throws(IOException::class)
     suspend fun createNewBlob(chunk: Chunk): Blob {
         buffer.clear()
         val bufferStream = buffer.outputStream()
@@ -36,7 +46,7 @@ internal class BlobCreator(
         }
         val sha256ByteString = buffer.sha256()
         val handle = AppBackupFileType.Blob(crypto.repoId, sha256ByteString.hex())
-        // TODO exception handling and retries
+        // TODO for later: implement a backend wrapper that handles retries for transient errors
         val size = backendManager.backend.save(handle).use { outputStream ->
             val outputBuffer = outputStream.sink().buffer()
             val length = outputBuffer.writeAll(buffer)
