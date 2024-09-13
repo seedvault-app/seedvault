@@ -63,7 +63,6 @@ class KvBackupInstrumentationTest : KoinComponent {
             this.packageName = packageName
         }
 
-        every { backupReceiver.assertFinalized() } just Runs
         every { inputFactory.getBackupDataInput(data) } returns dataInput
         every { dataInput.readNextHeader() } returnsMany listOf(true, false)
         every { dataInput.key } returns key
@@ -77,8 +76,7 @@ class KvBackupInstrumentationTest : KoinComponent {
 
         backup.performBackup(packageInfo, data, FLAG_NON_INCREMENTAL)
 
-        coEvery { backupReceiver.readFromStream(any()) } just Runs
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.readFromStream(any(), any()) } returns backupData
 
         runBlocking {
             assertEquals(backupData, backup.finishBackup())

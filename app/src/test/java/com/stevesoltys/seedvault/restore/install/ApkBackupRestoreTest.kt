@@ -142,14 +142,15 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { PackageUtils.computeSha256DigestBytes(signatureBytes) } returns signatureHash
         every { snapshotManager.latestSnapshot } returns snapshot
         every { pm.getInstallSourceInfo(packageInfo.packageName) } returns mockk(relaxed = true)
-        coEvery { backupReceiver.readFromStream(capture(capturedApkStream)) } answers {
+        coEvery { backupReceiver.readFromStream(any(), capture(capturedApkStream)) } answers {
             capturedApkStream.captured.copyTo(outputStream)
+            apkBackupData
         } andThenAnswer {
             capturedApkStream.captured.copyTo(splitOutputStream)
+            splitBackupData
         }
-        coEvery { backupReceiver.finalize() } returns apkBackupData andThen splitBackupData
         every {
-            snapshotCreator.onApkBackedUp(packageInfo, any<Snapshot.Apk>(), chunkMap)
+            snapshotCreator.onApkBackedUp(packageInfo, any<Snapshot.Apk>(), blobMap)
         } just Runs
 
         apkBackup.backupApkIfNecessary(packageInfo, snapshot)

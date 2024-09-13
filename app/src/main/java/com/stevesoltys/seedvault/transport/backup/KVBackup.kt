@@ -60,7 +60,6 @@ internal class KVBackup(
             else -> Log.i(TAG, "Performing K/V backup for $packageName")
         }
         check(state == null) { "Have unexpected state for ${state?.packageInfo?.packageName}" }
-        backupReceiver.assertFinalized()
 
         // initialize state
         state = KVBackupState(packageInfo = packageInfo, db = dbManager.getDb(packageName))
@@ -161,15 +160,15 @@ internal class KVBackup(
     suspend fun finishBackup(): BackupData {
         val state = this.state ?: error("No state in finishBackup")
         val packageName = state.packageInfo.packageName
+        val owner = "KV $packageName"
         Log.i(TAG, "Finish K/V Backup of $packageName")
 
         try {
             state.db.vacuum()
             state.db.close()
-            dbManager.getDbInputStream(packageName).use { inputStream ->
-                backupReceiver.readFromStream(inputStream)
+            val backupData = dbManager.getDbInputStream(packageName).use { inputStream ->
+                backupReceiver.readFromStream(owner, inputStream)
             }
-            val backupData = backupReceiver.finalize()
             Log.d(TAG, "Uploaded db file for $packageName.")
             return backupData
         } finally { // exceptions bubble up

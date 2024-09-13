@@ -107,7 +107,6 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `package with no new data comes back ok right away (if we have data)`() = runBlocking {
-        every { backupReceiver.assertFinalized() } just Runs
         every { dbManager.existsDb(packageName) } returns true
         every { dbManager.getDb(packageName) } returns db
         every { data.close() } just Runs
@@ -128,7 +127,6 @@ internal class KVBackupTest : BackupTest() {
 
     @Test
     fun `request non-incremental backup when no data has changed, but we lost it`() = runBlocking {
-        every { backupReceiver.assertFinalized() } just Runs
         every { dbManager.existsDb(packageName) } returns false
         every { dbManager.getDb(packageName) } returns db
         every { db.close() } just Runs
@@ -225,33 +223,6 @@ internal class KVBackupTest : BackupTest() {
     }
 
     @Test
-    fun `exception while finalizing`() = runBlocking {
-        initPlugin(false)
-        getDataInput(listOf(true, false))
-        every { db.put(key, dataValue) } just Runs
-        every { data.close() } just Runs
-
-        assertEquals(TRANSPORT_OK, backup.performBackup(packageInfo, data, 0))
-        assertTrue(backup.hasState)
-
-        every { db.vacuum() } just Runs
-        every { db.close() } just Runs
-        every { dbManager.getDbInputStream(packageName) } returns inputStream
-        coEvery { backupReceiver.readFromStream(inputStream) } just Runs
-        coEvery { backupReceiver.finalize() } throws IOException()
-
-        assertThrows<IOException> { // we let exceptions bubble up to coordinators
-            backup.finishBackup()
-        }
-        assertFalse(backup.hasState)
-
-        verify {
-            db.close()
-            data.close()
-        }
-    }
-
-    @Test
     fun `exception while uploading data`() = runBlocking {
         initPlugin(false)
         getDataInput(listOf(true, false))
@@ -264,7 +235,9 @@ internal class KVBackupTest : BackupTest() {
         every { db.vacuum() } just Runs
         every { db.close() } just Runs
         every { dbManager.getDbInputStream(packageName) } returns inputStream
-        coEvery { backupReceiver.readFromStream(inputStream) } throws IOException()
+        coEvery {
+            backupReceiver.readFromStream("KV $packageName", inputStream)
+        } throws IOException()
 
         assertThrows<IOException> { // we let exceptions bubble up to coordinators
             backup.finishBackup()
@@ -285,7 +258,6 @@ internal class KVBackupTest : BackupTest() {
     }
 
     private fun initPlugin(hasDataForPackage: Boolean = false, pi: PackageInfo = packageInfo) {
-        every { backupReceiver.assertFinalized() } just Runs
         every { dbManager.existsDb(pi.packageName) } returns hasDataForPackage
         every { dbManager.getDb(pi.packageName) } returns db
     }
@@ -310,8 +282,9 @@ internal class KVBackupTest : BackupTest() {
         every { db.vacuum() } just Runs
         every { db.close() } just Runs
         every { dbManager.getDbInputStream(packageName) } returns inputStream
-        coEvery { backupReceiver.readFromStream(inputStream) } just Runs
-        coEvery { backupReceiver.finalize() } returns apkBackupData
+        coEvery {
+            backupReceiver.readFromStream("KV $packageName", inputStream)
+        } returns apkBackupData
     }
 
 }

@@ -488,7 +488,7 @@ internal class ApkRestoreTest : TransportTest() {
         }
         val splitBlob1 = blob { id = copyFrom(Random.nextBytes(32)) }
         val splitBlob2 = blob { id = copyFrom(Random.nextBytes(32)) }
-        val blobMap = apkBackupData.chunkMap +
+        val blobMap = apkBackupData.blobMap +
             mapOf(splitChunkId1 to splitBlob1) +
             mapOf(splitChunkId2 to splitBlob2)
         val app = appNoSplit.copy {

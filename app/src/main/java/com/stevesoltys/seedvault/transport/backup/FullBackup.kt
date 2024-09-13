@@ -109,7 +109,6 @@ internal class FullBackup(
         // create new state
         val inputStream = inputFactory.getInputStream(socket)
         state = FullBackupState(targetPackage, socket, inputStream)
-        backupReceiver.assertFinalized()
         return TRANSPORT_OK
     }
 
@@ -131,7 +130,7 @@ internal class FullBackup(
             val payload = ByteArray(numBytes)
             val read = state.inputStream.read(payload, 0, numBytes)
             if (read != numBytes) throw EOFException("Read $read bytes instead of $numBytes.")
-            backupReceiver.addBytes(payload)
+            backupReceiver.addBytes(getOwner(state.packageName), payload)
             state.size += numBytes
             TRANSPORT_OK
         } catch (e: IOException) {
@@ -147,7 +146,7 @@ internal class FullBackup(
         // TODO check if worth keeping the blobs. they've been uploaded already and may be re-usable
         //  so we could add them to the snapshot's blobMap or just let prune remove them at the end
         try {
-            backupReceiver.finalize()
+            backupReceiver.finalize(getOwner(state.packageName))
         } catch (e: Exception) {
             // as the backup was cancelled anyway, we don't care if finalizing had an error
             Log.e(TAG, "Error finalizing backup in cancelFullBackup().", e)
@@ -163,7 +162,7 @@ internal class FullBackup(
         val state = this.state ?: error("No state when finishing")
         Log.i(TAG, "Finish full backup of ${state.packageName}. Wrote ${state.size} bytes")
         val result = try {
-            backupReceiver.finalize()
+            backupReceiver.finalize(getOwner(state.packageName))
         } finally {
             clearState()
         }
@@ -176,6 +175,8 @@ internal class FullBackup(
         closeLogging(state.inputFileDescriptor)
         this.state = null
     }
+
+    private fun getOwner(packageName: String) = "FullBackup $packageName"
 
     private fun closeLogging(closable: Closeable?) = try {
         closable?.close()

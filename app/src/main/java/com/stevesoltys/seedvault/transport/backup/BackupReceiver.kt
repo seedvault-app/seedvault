@@ -5,21 +5,43 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
+import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import org.calyxos.seedvault.chunker.Chunk
 import org.calyxos.seedvault.chunker.Chunker
 import org.calyxos.seedvault.chunker.GearTableCreator
 import org.calyxos.seedvault.core.toHexString
+import java.io.IOException
 import java.io.InputStream
 
+/**
+ * Essential metadata returned when storing backup data.
+ *
+ * @param chunkIds an ordered(!) list of the chunk IDs required to re-assemble the backup data.
+ * @param blobMap a mapping from chunk ID to [Blob] on the backend.
+ * Needed for fetching blobs from the backend for re-assembly.
+ */
 data class BackupData(
-    val chunks: List<String>,
-    val chunkMap: Map<String, Blob>,
+    val chunkIds: List<String>,
+    val blobMap: Map<String, Blob>,
 ) {
-    val size get() = chunkMap.values.sumOf { it.uncompressedLength }.toLong()
+    /**
+     * The uncompressed plaintext size of all blobs.
+     */
+    val size get() = blobMap.values.sumOf { it.uncompressedLength }.toLong()
 }
 
+/**
+ * The single point for receiving data for backup.
+ * Data received will get split into smaller chunks, if needed.
+ * [Chunk]s that don't have a corresponding [Blob] in the [blobCache]
+ * will be passed to the [blobCreator] and have the new blob saved to the backend.
+ *
+ * Data can be received either via [addBytes] (requires matching call to [finalize])
+ * or via [readFromStream].
+ * This call is *not* thread-safe.
+ */
 internal class BackupReceiver(
     private val blobCache: BlobCache,
     private val blobCreator: BlobCreator,
@@ -36,54 +58,74 @@ internal class BackupReceiver(
             normalization = 1,
             gearTable = GearTableCreator.create(crypto.gearTableKey),
             hashFunction = { bytes ->
+                // this calculates the chunkId
                 crypto.sha256(bytes).toHexString()
             },
         )
     }
     private val chunks = mutableListOf<String>()
-    private val chunkMap = mutableMapOf<String, Blob>()
-    private var addedBytes = false
+    private val blobMap = mutableMapOf<String, Blob>()
+    private var owner: String? = null
 
-    suspend fun addBytes(bytes: ByteArray) {
-        addedBytes = true
+    /**
+     * Adds more [bytes] to be chunked and saved.
+     * Must call [finalize] when done, even when an exception was thrown
+     * to free up this re-usable instance of [BackupReceiver].
+     */
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun addBytes(owner: String, bytes: ByteArray) {
+        checkOwner(owner)
         chunker.addBytes(bytes).forEach { chunk ->
             onNewChunk(chunk)
         }
     }
 
-    suspend fun readFromStream(inputStream: InputStream) {
+    /**
+     * Reads backup data from the given [inputStream] and returns [BackupData],
+     * so a call to [finalize] isn't required.
+     * The caller must close the [inputStream] when done.
+     */
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun readFromStream(owner: String, inputStream: InputStream): BackupData {
+        checkOwner(owner)
         try {
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
             var bytes = inputStream.read(buffer)
             while (bytes >= 0) {
                 if (bytes == buffer.size) {
-                    addBytes(buffer)
+                    addBytes(owner, buffer)
                 } else {
-                    addBytes(buffer.copyOfRange(0, bytes))
+                    addBytes(owner, buffer.copyOfRange(0, bytes))
                 }
                 bytes = inputStream.read(buffer)
             }
+            return finalize(owner)
         } catch (e: Exception) {
-            finalize()
+            finalize(owner)
             throw e
         }
     }
 
-    suspend fun finalize(): BackupData {
-        chunker.finalize().forEach { chunk ->
-            onNewChunk(chunk)
+    /**
+     * Must be called after one or more calls to [addBytes] to finalize usage of this instance
+     * and receive the [BackupData] for snapshotting.
+     */
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun finalize(owner: String): BackupData {
+        checkOwner(owner)
+        try {
+            chunker.finalize().forEach { chunk ->
+                onNewChunk(chunk)
+            }
+            return BackupData(chunks.toList(), blobMap.toMap())
+        } finally {
+            chunks.clear()
+            blobMap.clear()
+            this.owner = null
         }
-        // copy chunks and chunkMap before clearing
-        val backupData = BackupData(chunks.toList(), chunkMap.toMap())
-        chunks.clear()
-        chunkMap.clear()
-        addedBytes = false
-        return backupData
-    }
-
-    fun assertFinalized() {
-        // TODO maybe even use a userTag and throw also above if that doesn't match
-        check(!addedBytes) { "Re-used non-finalized BackupReceiver" }
     }
 
     private suspend fun onNewChunk(chunk: Chunk) {
@@ -92,11 +134,16 @@ internal class BackupReceiver(
         val existingBlob = blobCache[chunk.hash]
         if (existingBlob == null) {
             val blob = blobCreator.createNewBlob(chunk)
-            chunkMap[chunk.hash] = blob
+            blobMap[chunk.hash] = blob
             blobCache.saveNewBlob(chunk.hash, blob)
         } else {
-            chunkMap[chunk.hash] = existingBlob
+            blobMap[chunk.hash] = existingBlob
         }
+    }
+
+    private fun checkOwner(owner: String) {
+        if (this.owner == null) this.owner = owner
+        else check(this.owner == owner) { "Owned by ${this.owner}, but called from $owner" }
     }
 
 }

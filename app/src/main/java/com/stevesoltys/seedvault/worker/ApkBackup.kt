@@ -106,15 +106,15 @@ internal class ApkBackup(
                     " already has a backup ($backedUpVersion)" +
                     " with the same signature. Not backing it up."
             )
-            // build up chunkMap from old snapshot
+            // build up blobMap from old snapshot
             val chunkIds = oldApk.splitsList.flatMap {
                 it.chunkIdsList.map { chunkId -> chunkId.hexFromProto() }
             }
-            val chunkMap = chunkIds.associateWith { chunkId ->
+            val blobMap = chunkIds.associateWith { chunkId ->
                 latestSnapshot.blobsMap[chunkId] ?: error("Missing blob for $chunkId")
             }
             // important: add old APK to snapshot or it wouldn't be part of backup
-            snapshotCreator.onApkBackedUp(packageInfo, oldApk, chunkMap)
+            snapshotCreator.onApkBackedUp(packageInfo, oldApk, blobMap)
             return
         }
 
@@ -131,27 +131,22 @@ internal class ApkBackup(
         // get an InputStream for the APK
         val sourceDir = packageInfo.applicationInfo?.sourceDir ?: return
         // upload the APK to the backend
-        getApkInputStream(sourceDir).use { inputStream ->
-            backupReceiver.readFromStream(inputStream)
+        val owner = getOwner(packageName, "")
+        val backupData = getApkInputStream(sourceDir).use { inputStream ->
+            backupReceiver.readFromStream(owner, inputStream)
         }
-        val backupData = backupReceiver.finalize()
         // store base split in builder
         val baseSplit = split {
             name = BASE_SPLIT
-            chunkIds.addAll(backupData.chunks.forProto())
+            chunkIds.addAll(backupData.chunkIds.forProto())
         }
-        apkBuilder
-            .addSplits(baseSplit)
-        val chunkMap = backupData.chunkMap.toMutableMap()
+        apkBuilder.addSplits(baseSplit)
+        val blobMap = backupData.blobMap.toMutableMap()
 
         // back up splits if they exist
-        val splits = if (packageInfo.splitNames == null) {
-            emptyList()
-        } else {
-            backupSplitApks(packageInfo, chunkMap)
-        }
+        val splits = backupSplitApks(packageInfo, blobMap)
         val apk = apkBuilder.addAllSplits(splits).build()
-        snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
+        snapshotCreator.onApkBackedUp(packageInfo, apk, blobMap)
         Log.d(TAG, "Backed up new APK of $packageName with version ${packageInfo.versionName}.")
     }
 
@@ -181,9 +176,8 @@ internal class ApkBackup(
     @Throws(IOException::class)
     private suspend fun backupSplitApks(
         packageInfo: PackageInfo,
-        chunkMap: MutableMap<String, Blob>,
+        blobMap: MutableMap<String, Blob>,
     ): List<Snapshot.Split> {
-        check(packageInfo.splitNames != null)
         // attention: though not documented, splitSourceDirs can be null
         val splitSourceDirs = packageInfo.applicationInfo?.splitSourceDirs ?: emptyArray()
         check(packageInfo.splitNames.size == splitSourceDirs.size) {
@@ -193,20 +187,23 @@ internal class ApkBackup(
         }
         val splits = ArrayList<Snapshot.Split>(packageInfo.splitNames.size)
         for (i in packageInfo.splitNames.indices) {
+            val splitName = packageInfo.splitNames[i]
+            val owner = getOwner(packageInfo.packageName, splitName)
             // copy the split APK to the storage stream
-            getApkInputStream(splitSourceDirs[i]).use { inputStream ->
-                backupReceiver.readFromStream(inputStream)
+            val backupData = getApkInputStream(splitSourceDirs[i]).use { inputStream ->
+                backupReceiver.readFromStream(owner, inputStream)
             }
-            val backupData = backupReceiver.finalize()
             val split = Snapshot.Split.newBuilder()
-                .setName(packageInfo.splitNames[i])
-                .addAllChunkIds(backupData.chunks.forProto())
+                .setName(splitName)
+                .addAllChunkIds(backupData.chunkIds.forProto())
                 .build()
             splits.add(split)
-            chunkMap.putAll(backupData.chunkMap)
+            blobMap.putAll(backupData.blobMap)
         }
         return splits
     }
+
+    private fun getOwner(packageName: String, split: String) = "APK backup $packageName $split"
 
 }
 

@@ -96,8 +96,16 @@ internal class IconManager(
                 zip.closeEntry()
             }
         }
-        backupReceiver.addBytes(byteArrayOutputStream.toByteArray())
-        val backupData = backupReceiver.finalize()
+        val owner = "IconManager"
+        try {
+            backupReceiver.addBytes(owner, byteArrayOutputStream.toByteArray())
+        } catch (e: Exception) {
+            // ensure to call finalize, even if an exception gets thrown while adding bytes
+            backupReceiver.finalize(owner)
+            throw e
+        }
+        // call finalize and add to snapshot only when we got here without exception
+        val backupData = backupReceiver.finalize(owner)
         snapshotCreator.onIconsBackedUp(backupData)
         Log.d(TAG, "Finished uploading icons")
     }

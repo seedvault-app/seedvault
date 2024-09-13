@@ -147,7 +147,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val inputStream = CapturingSlot<InputStream>()
         val bOutputStream = ByteArrayOutputStream()
 
-        every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen true andThen false
@@ -166,10 +165,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
 
         // upload DB
-        coEvery { backupReceiver.readFromStream(capture(inputStream)) } answers {
+        coEvery { backupReceiver.readFromStream(any(), capture(inputStream)) } answers {
             inputStream.captured.copyTo(bOutputStream)
+            apkBackupData
         }
-        coEvery { backupReceiver.finalize() } returns apkBackupData
         every {
             snapshotCreator.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData)
         } just Runs
@@ -216,7 +215,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val appData = ByteArray(size).apply { Random.nextBytes(this) }
         val bOutputStream = ByteArrayOutputStream()
 
-        every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
         every { backupDataInput.readNextHeader() } returns true andThen false
@@ -231,10 +229,10 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         assertEquals(TRANSPORT_OK, backup.performIncrementalBackup(packageInfo, fileDescriptor, 0))
 
         // upload DB
-        coEvery { backupReceiver.readFromStream(capture(inputStream)) } answers {
+        coEvery { backupReceiver.readFromStream(any(), capture(inputStream)) } answers {
             inputStream.captured.copyTo(bOutputStream)
+            apkBackupData
         }
-        coEvery { backupReceiver.finalize() } returns apkBackupData
         every {
             snapshotCreator.onPackageBackedUp(packageInfo, BackupType.KV, apkBackupData)
         } just Runs
@@ -287,9 +285,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val bInputStream = ByteArrayInputStream(appData)
 
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
-        every { backupReceiver.assertFinalized() } just Runs
         every { settingsManager.isQuotaUnlimited() } returns false
-        coEvery { backupReceiver.addBytes(capture(byteSlot)) } answers {
+        coEvery { backupReceiver.addBytes(any(), capture(byteSlot)) } answers {
             bOutputStream.writeBytes(byteSlot.captured)
         }
         every {
@@ -302,7 +299,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
                 size = apkBackupData.size,
             )
         } just Runs
-        coEvery { backupReceiver.finalize() } returns apkBackupData // just some backupData
+        coEvery { backupReceiver.finalize(any()) } returns apkBackupData // just some backupData
 
         // perform backup to output stream
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))

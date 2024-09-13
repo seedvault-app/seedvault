@@ -65,6 +65,7 @@ internal abstract class TransportTest {
         longVersionCode = Random.nextLong()
         applicationInfo = this@TransportTest.applicationInfo
         signingInfo = sigInfo
+        splitNames = emptyArray()
     }
     protected val packageName: String = packageInfo.packageName
     protected val pmPackageInfo = PackageInfo().apply {
@@ -104,7 +105,7 @@ internal abstract class TransportTest {
     protected val apkBackupData = BackupData(listOf(chunkId1), mapOf(chunkId1 to blob1))
     protected val splitBackupData =
         BackupData(listOf(chunkId2), mapOf(chunkId2 to blob2))
-    protected val chunkMap = apkBackupData.chunkMap + splitBackupData.chunkMap
+    protected val blobMap = apkBackupData.blobMap + splitBackupData.blobMap
     protected val baseSplit = split {
         name = BASE_SPLIT
         chunkIds.add(ByteString.fromHex(chunkId1))
@@ -126,7 +127,7 @@ internal abstract class TransportTest {
     protected val snapshot = snapshot {
         token = this@TransportTest.token
         apps[packageName] = app
-        blobs.putAll(chunkMap)
+        blobs.putAll(blobMap)
     }
     protected val metadata = BackupMetadata(
         token = token,

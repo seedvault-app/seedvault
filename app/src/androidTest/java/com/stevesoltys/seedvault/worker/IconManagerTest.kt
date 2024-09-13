@@ -69,8 +69,10 @@ class IconManagerTest : KoinComponent {
         val blob = blob { id = ByteString.fromHex(blobId) }
 
         // upload icons and capture plaintext bytes
-        coEvery { backupReceiver.addBytes(capture(output)) } just Runs
-        coEvery { backupReceiver.finalize() } returns BackupData(chunkList, mapOf(chunkId to blob))
+        coEvery { backupReceiver.addBytes(any(), capture(output)) } just Runs
+        coEvery {
+            backupReceiver.finalize(any())
+        } returns BackupData(chunkList, mapOf(chunkId to blob))
         iconManager.uploadIcons()
         assertTrue(output.captured.isNotEmpty())
 
@@ -93,13 +95,13 @@ class IconManagerTest : KoinComponent {
         val output1 = slot<ByteArray>()
         val output2 = slot<ByteArray>()
 
-        coEvery { backupReceiver.addBytes(capture(output1)) } just Runs
-        coEvery { backupReceiver.finalize() } returns BackupData(emptyList(), emptyMap())
+        coEvery { backupReceiver.addBytes(any(), capture(output1)) } just Runs
+        coEvery { backupReceiver.finalize(any()) } returns BackupData(emptyList(), emptyMap())
         iconManager.uploadIcons()
         assertTrue(output1.captured.isNotEmpty())
 
-        coEvery { backupReceiver.addBytes(capture(output2)) } just Runs
-        coEvery { backupReceiver.finalize() } returns BackupData(emptyList(), emptyMap())
+        coEvery { backupReceiver.addBytes(any(), capture(output2)) } just Runs
+        coEvery { backupReceiver.finalize(any()) } returns BackupData(emptyList(), emptyMap())
         iconManager.uploadIcons()
         assertTrue(output2.captured.isNotEmpty())
 

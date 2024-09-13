@@ -90,12 +90,11 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `performFullBackup runs ok`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         assertEquals(backupData, backup.finishBackup())
@@ -106,7 +105,6 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData first call over quota`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
         val numBytes = (quota + 1).toInt()
         expectSendData(numBytes)
 
@@ -115,7 +113,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.sendBackupData(numBytes))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         assertEquals(backupData, backup.finishBackup())
@@ -126,7 +124,6 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData subsequent calls over quota`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
@@ -142,7 +139,7 @@ internal class FullBackupTest : BackupTest() {
         }
         assertEquals(TRANSPORT_QUOTA_EXCEEDED, sendResult)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         // in reality, this may not call finishBackup(), but cancelBackup()
@@ -153,7 +150,6 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `sendBackupData throws exception when reading from InputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
@@ -164,7 +160,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         assertEquals(backupData, backup.finishBackup())
@@ -174,19 +170,18 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `sendBackupData throws exception when sending data`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputStream.read(any(), 0, bytes.size) } returns bytes.size
-        coEvery { backupReceiver.addBytes(any()) } throws IOException()
+        coEvery { backupReceiver.addBytes("FullBackup $packageName", any()) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         assertEquals(backupData, backup.finishBackup())
@@ -196,7 +191,6 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `sendBackupData throws exception when finalizing`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
@@ -207,7 +201,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.sendBackupData(bytes.size))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } throws IOException()
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } throws IOException()
         expectClearState()
 
         assertThrows<IOException> {
@@ -222,7 +216,6 @@ internal class FullBackupTest : BackupTest() {
     fun `sendBackupData runs ok`() = runBlocking {
         every { settingsManager.isQuotaUnlimited() } returns false
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
@@ -237,7 +230,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.sendBackupData(numBytes2))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         assertEquals(backupData, backup.finishBackup())
@@ -247,12 +240,11 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `cancel full backup runs ok`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         expectClearState()
 
         backup.cancelFullBackup()
@@ -262,12 +254,11 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `cancel full backup throws exception when finalizing`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } throws IOException()
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } throws IOException()
         expectClearState()
 
         backup.cancelFullBackup()
@@ -277,12 +268,11 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `clearState ignores exception when closing InputStream`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
         every { inputStream.close() } throws IOException()
@@ -295,12 +285,11 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `clearState ignores exception when closing ParcelFileDescriptor`() = runBlocking {
         every { inputFactory.getInputStream(data) } returns inputStream
-        every { backupReceiver.assertFinalized() } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        coEvery { backupReceiver.finalize() } returns backupData
+        coEvery { backupReceiver.finalize("FullBackup $packageName") } returns backupData
         every { outputStream.flush() } just Runs
         every { outputStream.close() } just Runs
         every { inputStream.close() } just Runs
@@ -312,7 +301,7 @@ internal class FullBackupTest : BackupTest() {
 
     private fun expectSendData(numBytes: Int, readBytes: Int = numBytes) {
         every { inputStream.read(any(), any(), numBytes) } returns readBytes
-        coEvery { backupReceiver.addBytes(any()) } just Runs
+        coEvery { backupReceiver.addBytes("FullBackup $packageName", any()) } just Runs
     }
 
     private fun expectClearState() {

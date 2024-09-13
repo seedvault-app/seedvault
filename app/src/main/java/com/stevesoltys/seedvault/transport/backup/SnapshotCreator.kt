@@ -59,7 +59,7 @@ internal class SnapshotCreator(
     fun onApkBackedUp(
         packageInfo: PackageInfo,
         apk: Apk,
-        chunkMap: Map<String, Blob>,
+        blobMap: Map<String, Blob>,
     ) {
         appBuilderMap.getOrPut(packageInfo.packageName) {
             App.newBuilder()
@@ -68,7 +68,7 @@ internal class SnapshotCreator(
             if (label != null) name = label.toString()
             setApk(apk)
         }
-        blobsMap.putAll(chunkMap)
+        blobsMap.putAll(blobMap)
     }
 
     fun onPackageBackedUp(
@@ -78,7 +78,7 @@ internal class SnapshotCreator(
     ) {
         val packageName = packageInfo.packageName
         val isSystemApp = packageInfo.isSystemApp()
-        val chunkIds = backupData.chunks.forProto()
+        val chunkIds = backupData.chunkIds.forProto()
         appBuilderMap.getOrPut(packageName) {
             App.newBuilder()
         }.apply {
@@ -91,13 +91,13 @@ internal class SnapshotCreator(
             launchableSystemApp = isSystemApp && launchableSystemApps.contains(packageName)
             addAllChunkIds(chunkIds)
         }
-        blobsMap.putAll(backupData.chunkMap)
+        blobsMap.putAll(backupData.blobMap)
         metadataManager.onPackageBackedUp(packageInfo, backupType, backupData.size)
     }
 
     fun onIconsBackedUp(backupData: BackupData) {
-        snapshotBuilder.addAllIconChunkIds(backupData.chunks.forProto())
-        blobsMap.putAll(backupData.chunkMap)
+        snapshotBuilder.addAllIconChunkIds(backupData.chunkIds.forProto())
+        blobsMap.putAll(backupData.blobMap)
     }
 
     fun finalizeSnapshot(): Snapshot {

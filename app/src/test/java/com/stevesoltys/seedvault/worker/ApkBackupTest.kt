@@ -112,14 +112,14 @@ internal class ApkBackupTest : BackupTest() {
         val s = snapshot.copy { apps.put(packageName, app) }
         expectChecks()
         every {
-            snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
+            snapshotCreator.onApkBackedUp(packageInfo, apk, blobMap)
         } just Runs
 
         apkBackup.backupApkIfNecessary(packageInfo, s)
 
         // ensure we are still snapshotting this version
         verify {
-            snapshotCreator.onApkBackedUp(packageInfo, apk, chunkMap)
+            snapshotCreator.onApkBackedUp(packageInfo, apk, blobMap)
         }
     }
 
@@ -142,23 +142,23 @@ internal class ApkBackupTest : BackupTest() {
             every {
                 pm.getInstallSourceInfo(packageInfo.packageName)
             } returns InstallSourceInfo(null, null, null, apk.installer)
-            coEvery { backupReceiver.readFromStream(any()) } just Runs
-            coEvery { backupReceiver.finalize() } returns apkBackupData
+            coEvery {
+                backupReceiver.readFromStream("APK backup $packageName ", any())
+            } returns apkBackupData
 
             every {
                 snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
                     it.signaturesList != apk.signaturesList
-                }, apkBackupData.chunkMap)
+                }, apkBackupData.blobMap)
             } just Runs
 
             apkBackup.backupApkIfNecessary(packageInfo, s)
 
             coVerify {
-                backupReceiver.readFromStream(any())
-                backupReceiver.finalize()
+                backupReceiver.readFromStream("APK backup $packageName ", any())
                 snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
                     it.signaturesList != apk.signaturesList
-                }, apkBackupData.chunkMap)
+                }, apkBackupData.blobMap)
             }
         }
 
@@ -211,10 +211,12 @@ internal class ApkBackupTest : BackupTest() {
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)
         } returns InstallSourceInfo(null, null, null, installer)
-        coEvery { backupReceiver.readFromStream(capture(capturedStream)) } answers {
+        coEvery {
+            backupReceiver.readFromStream("APK backup $packageName ", capture(capturedStream))
+        } answers {
             capturedStream.captured.copyTo(apkOutputStream)
+            BackupData(emptyList(), emptyMap())
         }
-        coEvery { backupReceiver.finalize() } returns BackupData(emptyList(), emptyMap())
         every {
             snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
                 it.installer == installer
@@ -223,10 +225,6 @@ internal class ApkBackupTest : BackupTest() {
 
         apkBackup.backupApkIfNecessary(packageInfo, snapshot)
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
-
-        coVerify {
-            backupReceiver.finalize()
-        }
     }
 
     @Test
@@ -266,14 +264,28 @@ internal class ApkBackupTest : BackupTest() {
         every {
             pm.getInstallSourceInfo(packageInfo.packageName)
         } returns InstallSourceInfo(null, null, null, installer)
-        coEvery { backupReceiver.readFromStream(capture(capturedStream)) } answers {
+        coEvery {
+            backupReceiver.readFromStream("APK backup $packageName ", capture(capturedStream))
+        } answers {
             capturedStream.captured.copyTo(apkOutputStream)
-        } andThenAnswer {
-            capturedStream.captured.copyTo(split1OutputStream)
-        } andThenAnswer {
-            capturedStream.captured.copyTo(split2OutputStream)
+            BackupData(emptyList(), emptyMap())
         }
-        coEvery { backupReceiver.finalize() } returns BackupData(emptyList(), emptyMap())
+        coEvery {
+            backupReceiver.readFromStream(
+                "APK backup $packageName $split1Name", capture(capturedStream)
+            )
+        } answers {
+            capturedStream.captured.copyTo(split1OutputStream)
+            BackupData(emptyList(), emptyMap())
+        }
+        coEvery {
+            backupReceiver.readFromStream(
+                "APK backup $packageName $split2Name", capture(capturedStream)
+            )
+        } answers {
+            capturedStream.captured.copyTo(split2OutputStream)
+            BackupData(emptyList(), emptyMap())
+        }
         every {
             snapshotCreator.onApkBackedUp(packageInfo, match<Snapshot.Apk> {
                 it.installer == installer &&
@@ -286,10 +298,6 @@ internal class ApkBackupTest : BackupTest() {
         assertArrayEquals(apkBytes, apkOutputStream.toByteArray())
         assertArrayEquals(split1Bytes, split1OutputStream.toByteArray())
         assertArrayEquals(split2Bytes, split2OutputStream.toByteArray())
-
-        coVerify {
-            backupReceiver.finalize()
-        }
     }
 
     private fun expectChecks() {
