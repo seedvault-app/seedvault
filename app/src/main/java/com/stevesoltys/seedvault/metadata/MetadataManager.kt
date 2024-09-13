@@ -11,13 +11,8 @@ import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.distinctUntilChanged
 import com.stevesoltys.seedvault.Clock
-import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
@@ -37,7 +32,6 @@ internal class MetadataManager(
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader,
     private val packageService: PackageService,
-    private val settingsManager: SettingsManager,
 ) {
 
     private val uninitializedMetadata = BackupMetadata(token = -42L, salt = "foo bar")
@@ -54,47 +48,12 @@ internal class MetadataManager(
                     // This should cause requiresInit() return true
                     uninitializedMetadata.copy(version = (-1).toByte())
                 }
-                mLastBackupTime.postValue(field.time)
             }
             return field
         }
 
     private val launchableSystemApps by lazy {
         packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
-    }
-
-    /**
-     * Call this after a package's APK has been backed up successfully.
-     *
-     * It updates the packages' metadata to the internal cache.
-     */
-    @Synchronized
-    @Throws(IOException::class)
-    fun onApkBackedUp(
-        packageInfo: PackageInfo,
-        packageMetadata: PackageMetadata,
-    ) {
-        val packageName = packageInfo.packageName
-        metadata.packageMetadataMap[packageName]?.let {
-            check(packageMetadata.version != null) {
-                "APK backup returned version null"
-            }
-        }
-        val oldPackageMetadata = metadata.packageMetadataMap[packageName]
-            ?: PackageMetadata()
-        modifyCachedMetadata {
-            val isSystemApp = packageInfo.isSystemApp()
-            metadata.packageMetadataMap[packageName] = oldPackageMetadata.copy(
-                name = packageInfo.applicationInfo?.loadLabel(context.packageManager),
-                system = isSystemApp,
-                isLaunchableSystemApp = isSystemApp && launchableSystemApps.contains(packageName),
-                version = packageMetadata.version,
-                installer = packageMetadata.installer,
-                splits = packageMetadata.splits,
-                sha256 = packageMetadata.sha256,
-                signatures = packageMetadata.signatures
-            )
-        }
     }
 
     /**
@@ -115,8 +74,6 @@ internal class MetadataManager(
         val packageName = packageInfo.packageName
         modifyCachedMetadata {
             val now = clock.time()
-            metadata.time = now
-            metadata.d2dBackup = settingsManager.d2dBackupsEnabled()
             metadata.packageMetadataMap.getOrPut(packageName) {
                 val isSystemApp = packageInfo.isSystemApp()
                 PackageMetadata(
@@ -124,7 +81,6 @@ internal class MetadataManager(
                     state = APK_AND_DATA,
                     backupType = type,
                     size = size,
-                    name = packageInfo.applicationInfo?.loadLabel(context.packageManager),
                     system = isSystemApp,
                     isLaunchableSystemApp = isSystemApp &&
                         launchableSystemApps.contains(packageName),
@@ -135,10 +91,6 @@ internal class MetadataManager(
                 backupType = type
                 // don't override a previous K/V size, if there were no K/V changes
                 if (size != null) this.size = size
-                // update name, if none was set, yet (can happen while migrating to storing names)
-                if (this.name == null) {
-                    this.name = packageInfo.applicationInfo?.loadLabel(context.packageManager)
-                }
             }
         }
     }
@@ -203,9 +155,15 @@ internal class MetadataManager(
         }
     }
 
+    @Synchronized
+    fun getPackageMetadata(packageName: String): PackageMetadata? {
+        return metadata.packageMetadataMap[packageName]?.copy()
+    }
+
     @Throws(IOException::class)
     private fun modifyCachedMetadata(modFun: () -> Unit) {
-        val oldMetadata = metadata.copy( // copy map, otherwise it will re-use same reference
+        val oldMetadata = metadata.copy(
+            // copy map, otherwise it will re-use same reference
             packageMetadataMap = PackageMetadataMap(metadata.packageMetadataMap),
         )
         try {
@@ -217,34 +175,6 @@ internal class MetadataManager(
             metadata = oldMetadata
             throw IOException(e)
         }
-        mLastBackupTime.postValue(metadata.time) // TODO only do after snapshot was written
-    }
-
-    /**
-     * Returns the last backup time in unix epoch milli seconds.
-     *
-     * Note that this might be a blocking I/O call.
-     */
-    @Synchronized
-    fun getLastBackupTime(): Long = mLastBackupTime.value ?: metadata.time
-
-    private val mLastBackupTime = MutableLiveData<Long>()
-    internal val lastBackupTime: LiveData<Long> = mLastBackupTime.distinctUntilChanged()
-
-    internal val salt: String
-        @Synchronized get() = metadata.salt
-
-    internal val requiresInit: Boolean
-        @Synchronized get() = metadata == uninitializedMetadata || metadata.version < VERSION
-
-    @Synchronized
-    fun getPackageMetadata(packageName: String): PackageMetadata? {
-        return metadata.packageMetadataMap[packageName]?.copy()
-    }
-
-    @Synchronized
-    fun getPackagesBackupSize(): Long {
-        return metadata.packageMetadataMap.values.sumOf { it.size ?: 0L }
     }
 
     @Synchronized

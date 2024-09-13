@@ -199,15 +199,6 @@ internal class BackupCoordinator(
         flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
-        if (metadataManager.requiresInit) {
-            Log.w(TAG, "Metadata requires re-init!")
-            // Tell the system that we are not initialized, it will initialize us afterwards.
-            // This will start a new restore set to upgrade from legacy format
-            // by starting a clean backup with all files using the new version.
-            //
-            // This causes a backup error, but things should go back to normal afterwards.
-            return TRANSPORT_NOT_INITIALIZED
-        }
         return kv.performBackup(packageInfo, data, flags)
     }
 
@@ -324,8 +315,6 @@ internal class BackupCoordinator(
                 // tell K/V backup to finish
                 val backupData = kv.finishBackup()
                 snapshotCreator.onPackageBackedUp(packageInfo, BackupType.KV, backupData)
-                // TODO unify both calls
-                metadataManager.onPackageBackedUp(packageInfo, BackupType.KV, backupData.size)
                 TRANSPORT_OK
             } catch (e: Exception) {
                 Log.e(TAG, "Error finishing K/V backup for $packageName", e)
@@ -345,8 +334,6 @@ internal class BackupCoordinator(
             try {
                 val backupData = full.finishBackup()
                 snapshotCreator.onPackageBackedUp(packageInfo, BackupType.FULL, backupData)
-                // TODO unify both calls
-                metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, backupData.size)
                 TRANSPORT_OK
             } catch (e: Exception) {
                 Log.e(TAG, "Error calling onPackageBackedUp for $packageName", e)
@@ -362,7 +349,6 @@ internal class BackupCoordinator(
         else -> throw IllegalStateException("Unexpected state in finishBackup()")
     }
 
-    // TODO is this only nice to have info, or do we need to do more?
     private fun onPackageBackupError(packageInfo: PackageInfo, type: BackupType) {
         val packageName = packageInfo.packageName
         try {

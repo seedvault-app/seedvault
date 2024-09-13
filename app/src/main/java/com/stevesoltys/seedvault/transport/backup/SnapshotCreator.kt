@@ -17,6 +17,7 @@ import com.google.protobuf.ByteString
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
+import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Apk
@@ -32,8 +33,10 @@ internal class SnapshotCreatorFactory(
     private val clock: Clock,
     private val packageService: PackageService,
     private val settingsManager: SettingsManager,
+    private val metadataManager: MetadataManager,
 ) {
-    fun createSnapshotCreator() = SnapshotCreator(context, clock, packageService, settingsManager)
+    fun createSnapshotCreator() =
+        SnapshotCreator(context, clock, packageService, settingsManager, metadataManager)
 }
 
 internal class SnapshotCreator(
@@ -41,6 +44,7 @@ internal class SnapshotCreator(
     private val clock: Clock,
     private val packageService: PackageService,
     private val settingsManager: SettingsManager,
+    private val metadataManager: MetadataManager,
 ) {
 
     private val log = KotlinLogging.logger { }
@@ -88,6 +92,7 @@ internal class SnapshotCreator(
             addAllChunkIds(chunkIds)
         }
         blobsMap.putAll(backupData.chunkMap)
+        metadataManager.onPackageBackedUp(packageInfo, backupType, backupData.size)
     }
 
     fun onIconsBackedUp(backupData: BackupData) {

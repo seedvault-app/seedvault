@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
+import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -29,6 +30,7 @@ internal class AppBackupManager(
     var snapshotCreator: SnapshotCreator? = null
         private set
 
+    @WorkerThread
     suspend fun beforeBackup() {
         log.info { "Loading existing snapshots and blobs..." }
         val blobInfos = mutableListOf<FileInfo>()
@@ -48,25 +50,26 @@ internal class AppBackupManager(
         blobCache.populateCache(blobInfos, snapshots)
     }
 
-    suspend fun afterBackupFinished(success: Boolean): Boolean {
+    @WorkerThread
+    suspend fun afterBackupFinished(success: Boolean): com.stevesoltys.seedvault.proto.Snapshot? {
         log.info { "After backup finished. Success: $success" }
         // free up memory by clearing blobs cache
         blobCache.clear()
-        var result = false
-        try {
+        return try {
             if (success) {
                 val snapshot =
                     snapshotCreator?.finalizeSnapshot() ?: error("Had no snapshotCreator")
                 keepTrying { // saving this is so important, we even keep trying
                     snapshotManager.saveSnapshot(snapshot)
                 }
-                settingsManager.token = snapshot.token
+                settingsManager.onSuccessfulBackupCompleted(snapshot.token)
                 // after snapshot was written, we can clear local cache as its info is in snapshot
                 blobCache.clearLocalCache()
-            }
-            result = true
+                snapshot
+            } else null
         } catch (e: Exception) {
             log.error(e) { "Error finishing backup" }
+            null
         } finally {
             snapshotCreator = null
         }

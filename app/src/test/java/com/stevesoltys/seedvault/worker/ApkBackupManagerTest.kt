@@ -207,7 +207,6 @@ internal class ApkBackupManagerTest : TransportTest() {
         } just Runs
         // was backed up, get new packageMetadata
         coEvery { apkBackup.backupApkIfNecessary(notAllowedPackages[1], snapshot) } just Runs
-        every { metadataManager.onApkBackedUp(notAllowedPackages[1], packageMetadata) } just Runs
 
         every { nm.onApkBackupDone() } just Runs
 

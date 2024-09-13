@@ -22,6 +22,7 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.transport.backup.hexFromProto
 import com.stevesoltys.seedvault.worker.BackupRequester
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -138,18 +139,25 @@ internal class NotificationBackupObserver(
                 Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
             }
             var success = status == 0
-            val size = if (success) metadataManager.getPackagesBackupSize() else 0L
             val total = try {
                 packageService.allUserPackages.size
             } catch (e: Exception) {
                 Log.e(TAG, "Error getting number of all user packages: ", e)
                 requestedPackages
             }
-            runBlocking {
+            val snapshot = runBlocking {
                 check(!Looper.getMainLooper().isCurrentThread)
                 Log.d(TAG, "Finalizing backup...")
-                success = appBackupManager.afterBackupFinished(success)
+                val snapshot = appBackupManager.afterBackupFinished(success)
+                success = snapshot != null
+                snapshot
             }
+            val size = if (snapshot != null) { // TODO count size of APKs separately
+                val chunkIds = snapshot.appsMap.values.flatMap { it.chunkIdsList }
+                chunkIds.sumOf {
+                    snapshot.blobsMap[it.hexFromProto()]?.uncompressedLength?.toLong() ?: 0L
+                }
+            } else 0L
             nm.onBackupFinished(success, numPackagesToReport, total, size)
         }
     }

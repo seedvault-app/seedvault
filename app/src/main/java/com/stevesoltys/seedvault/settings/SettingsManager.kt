@@ -10,6 +10,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.permitDiskReads
@@ -55,20 +57,19 @@ private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
 internal const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
 internal const val PREF_KEY_D2D_BACKUPS = "d2d_backups"
+internal const val PREF_KEY_LAST_BACKUP = "lastBackup"
 
 class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+    private val mLastBackupTime = MutableLiveData(prefs.getLong(PREF_KEY_LAST_BACKUP, -1))
 
-    fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-    }
-
-    fun unregisterOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
-        prefs.unregisterOnSharedPreferenceChangeListener(listener)
-    }
+    /**
+     * Returns a LiveData of the last backup time in unix epoch milli seconds.
+     */
+    internal val lastBackupTime: LiveData<Long> = mLastBackupTime
 
     /**
      * This gets accessed by non-UI threads when saving with [PreferenceManager]
@@ -81,7 +82,7 @@ class SettingsManager(private val context: Context) {
 
     @Volatile
     var token: Long? = null
-        set(newToken) {
+        private set(newToken) {
             if (newToken == null) {
                 prefs.edit()
                     .remove(PREF_KEY_TOKEN)
@@ -120,6 +121,21 @@ class SettingsManager(private val context: Context) {
                 }
             }
         }
+
+    fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun onSuccessfulBackupCompleted(token: Long) {
+        this.token = token
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(PREF_KEY_LAST_BACKUP, now).apply()
+        mLastBackupTime.postValue(now)
+    }
 
     fun setStorageBackend(plugin: Backend) {
         val value = when (plugin) {

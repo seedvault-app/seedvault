@@ -11,7 +11,7 @@ import android.text.format.DateUtils.getRelativeTimeSpanString
 import com.stevesoltys.seedvault.R
 
 fun Long.toRelativeTime(context: Context): CharSequence {
-    return if (this == 0L) {
+    return if (this == 0L || this == -1L) {
         context.getString(R.string.settings_backup_last_backup_never)
     } else {
         val now = System.currentTimeMillis()

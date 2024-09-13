@@ -5,14 +5,11 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.BackupTransport.TRANSPORT_NOT_INITIALIZED
 import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
-import android.content.pm.PackageInfo
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupType
@@ -81,22 +78,6 @@ internal class BackupCoordinatorTest : BackupTest() {
 
         assertEquals(TRANSPORT_OK, backup.initializeDevice())
         assertEquals(TRANSPORT_OK, backup.finishBackup())
-    }
-
-    @Test
-    fun `performIncrementalBackup of @pm@ causes re-init when legacy format`() = runBlocking {
-        val packageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
-
-        every { backendManager.canDoBackupNow() } returns true
-        every { metadataManager.requiresInit } returns true
-
-        every { data.close() } just Runs
-
-        // returns TRANSPORT_NOT_INITIALIZED to re-init next time
-        assertEquals(
-            TRANSPORT_NOT_INITIALIZED,
-            backup.performIncrementalBackup(packageInfo, data, 0)
-        )
     }
 
     @Test
@@ -199,7 +180,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
-        expectApkBackupAndMetadataWrite()
         every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
         every {
             full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
@@ -245,7 +225,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
-        expectApkBackupAndMetadataWrite()
         every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
         every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
         every { full.currentPackageInfo } returns packageInfo
@@ -283,11 +262,6 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `not allowed apps get their APKs backed up after @pm@ backup`() = runBlocking {
-    }
-
-    private fun expectApkBackupAndMetadataWrite() {
-        coEvery { apkBackup.backupApkIfNecessary(packageInfo, snapshot) } just Runs
-        every { metadataManager.onApkBackedUp(any(), packageMetadata) } just Runs
     }
 
 }

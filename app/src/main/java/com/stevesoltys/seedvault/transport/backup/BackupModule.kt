@@ -19,7 +19,7 @@ val backupModule = module {
         val snapshotFolder = File(androidContext().filesDir, "snapshots")
         SnapshotManager(snapshotFolder, get(), get(), get())
     }
-    single { SnapshotCreatorFactory(androidContext(), get(), get(), get()) }
+    single { SnapshotCreatorFactory(androidContext(), get(), get(), get(), get()) }
     single { InputFactory() }
     single {
         PackageService(

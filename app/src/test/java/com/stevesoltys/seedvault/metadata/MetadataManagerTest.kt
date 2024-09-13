@@ -7,25 +7,20 @@ package com.stevesoltys.seedvault.metadata
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.TestApp
-import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
-import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -37,22 +32,16 @@ import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.IOException
 import kotlin.random.Random
 
-@Suppress("DEPRECATION")
 @RunWith(AndroidJUnit4::class)
 @Config(
     sdk = [34], // TODO: Drop once robolectric supports 35
@@ -62,7 +51,6 @@ class MetadataManagerTest {
 
     private val context: Context = mockk()
     private val clock: Clock = mockk()
-    private val crypto: Crypto = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
     private val packageService: PackageService = mockk()
@@ -74,7 +62,6 @@ class MetadataManagerTest {
         metadataWriter = metadataWriter,
         metadataReader = metadataReader,
         packageService = packageService,
-        settingsManager = settingsManager,
     )
 
     private val packageManager: PackageManager = mockk()
@@ -105,187 +92,6 @@ class MetadataManagerTest {
     }
 
     @Test
-    fun `test onApkBackedUp() with no prior package metadata`() {
-        val packageMetadata = PackageMetadata(
-            time = 0L,
-            version = Random.nextLong(Long.MAX_VALUE),
-            installer = getRandomString(),
-            signatures = listOf("sig")
-        )
-
-        every { context.packageManager } returns packageManager
-        expectReadFromCache()
-        expectModifyMetadata(initialMetadata)
-
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-
-        assertEquals(packageMetadata, manager.getPackageMetadata(packageName))
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onApkBackedUp() sets system metadata`() {
-        packageInfo.applicationInfo = ApplicationInfo().apply { flags = FLAG_SYSTEM }
-        val packageMetadata = PackageMetadata(
-            time = 0L,
-            version = Random.nextLong(Long.MAX_VALUE),
-            installer = getRandomString(),
-            signatures = listOf("sig")
-        )
-
-        every { context.packageManager } returns packageManager
-        every { packageService.launchableSystemApps } returns listOf(
-            ResolveInfo().apply {
-                activityInfo = ActivityInfo().apply {
-                    packageName = this@MetadataManagerTest.packageName
-                }
-            }
-        )
-        expectReadFromCache()
-        expectModifyMetadata(initialMetadata)
-
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-
-        assertEquals(
-            packageMetadata.copy(system = true, isLaunchableSystemApp = true),
-            manager.getPackageMetadata(packageName),
-        )
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onApkBackedUp() with existing package metadata`() {
-        val packageMetadata = PackageMetadata(
-            time = time,
-            version = Random.nextLong(Long.MAX_VALUE),
-            installer = getRandomString(),
-            signatures = listOf("sig")
-        )
-        initialMetadata.packageMetadataMap[packageName] = packageMetadata
-        val updatedPackageMetadata = PackageMetadata(
-            time = time,
-            version = packageMetadata.version!! + 1,
-            installer = getRandomString(),
-            signatures = listOf("sig foo")
-        )
-
-        every { context.packageManager } returns packageManager
-        expectReadFromCache()
-        expectWriteToCache(initialMetadata)
-
-        manager.onApkBackedUp(packageInfo, updatedPackageMetadata)
-
-        assertEquals(updatedPackageMetadata, manager.getPackageMetadata(packageName))
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onApkBackedUp() does not change package state`() {
-        var version = Random.nextLong(Long.MAX_VALUE)
-        var packageMetadata = PackageMetadata(
-            version = version,
-            installer = getRandomString(),
-            signatures = listOf("sig")
-        )
-
-        every { context.packageManager } returns packageManager
-        expectReadFromCache()
-        expectWriteToCache(initialMetadata)
-        val oldState = UNKNOWN_ERROR
-
-        // state doesn't change for APK_AND_DATA
-        packageMetadata = packageMetadata.copy(version = ++version, state = APK_AND_DATA)
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-        assertEquals(
-            packageMetadata.copy(state = oldState),
-            manager.getPackageMetadata(packageName)
-        )
-
-        // state doesn't change for QUOTA_EXCEEDED
-        packageMetadata = packageMetadata.copy(version = ++version, state = QUOTA_EXCEEDED)
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-        assertEquals(
-            packageMetadata.copy(state = oldState),
-            manager.getPackageMetadata(packageName)
-        )
-
-        // state doesn't change for NO_DATA
-        packageMetadata = packageMetadata.copy(version = ++version, state = NO_DATA)
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-        assertEquals(
-            packageMetadata.copy(state = oldState),
-            manager.getPackageMetadata(packageName)
-        )
-
-        // state doesn't change for NOT_ALLOWED
-        packageMetadata = packageMetadata.copy(version = ++version, state = NOT_ALLOWED)
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-        assertEquals(
-            packageMetadata.copy(state = oldState),
-            manager.getPackageMetadata(packageName)
-        )
-
-        // state doesn't change for WAS_STOPPED
-        packageMetadata = packageMetadata.copy(version = ++version, state = WAS_STOPPED)
-        manager.onApkBackedUp(packageInfo, packageMetadata)
-        assertEquals(
-            packageMetadata.copy(state = oldState),
-            manager.getPackageMetadata(packageName)
-        )
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onApkBackedUp() throws while writing local cache`() {
-        val packageMetadata = PackageMetadata(
-            time = 0L,
-            version = Random.nextLong(Long.MAX_VALUE),
-            installer = getRandomString(),
-            signatures = listOf("sig")
-        )
-
-        every { context.packageManager } returns packageManager
-        expectReadFromCache()
-
-        assertNull(manager.getPackageMetadata(packageName))
-
-        every { metadataWriter.encode(initialMetadata) } returns encodedMetadata
-        every {
-            context.openFileOutput(
-                METADATA_CACHE_FILE,
-                MODE_PRIVATE
-            )
-        } throws FileNotFoundException()
-
-        assertThrows<IOException> {
-            manager.onApkBackedUp(packageInfo, packageMetadata)
-        }
-
-        // metadata change got reverted
-        assertNull(manager.getPackageMetadata(packageName))
-
-        verify {
-            cacheInputStream.close()
-        }
-    }
-
-    @Test
     fun `test onPackageBackedUp()`() {
         packageInfo.applicationInfo!!.flags = FLAG_SYSTEM
         val updatedMetadata = initialMetadata.copy(
@@ -300,7 +106,7 @@ class MetadataManagerTest {
         every { packageService.launchableSystemApps } returns emptyList()
         expectReadFromCache()
         every { clock.time() } returns time
-        expectModifyMetadata(initialMetadata)
+        expectWriteToCache(initialMetadata)
 
         manager.onPackageBackedUp(packageInfo, BackupType.FULL, size)
 
@@ -314,26 +120,7 @@ class MetadataManagerTest {
             ),
             manager.getPackageMetadata(packageName)
         )
-        assertEquals(time, manager.getLastBackupTime())
         assertFalse(updatedMetadata.d2dBackup)
-
-        verify {
-            cacheInputStream.close()
-            cacheOutputStream.close()
-        }
-    }
-
-    @Test
-    fun `test onPackageBackedUp() with D2D enabled`() {
-        expectReadFromCache()
-        every { clock.time() } returns time
-        expectModifyMetadata(initialMetadata)
-
-        every { settingsManager.d2dBackupsEnabled() } returns true
-        every { context.packageManager } returns packageManager
-
-        manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L)
-        assertTrue(initialMetadata.d2dBackup)
 
         verify {
             cacheInputStream.close()
@@ -346,11 +133,11 @@ class MetadataManagerTest {
         val cachedPackageName = getRandomString()
 
         val cacheTime = time - 1
-        val cachedMetadata = initialMetadata.copy(time = cacheTime)
+        val cachedMetadata = initialMetadata.copy()
         cachedMetadata.packageMetadataMap[cachedPackageName] = PackageMetadata(cacheTime)
         cachedMetadata.packageMetadataMap[packageName] = PackageMetadata(cacheTime)
 
-        val updatedMetadata = cachedMetadata.copy(time = time)
+        val updatedMetadata = cachedMetadata.copy()
         updatedMetadata.packageMetadataMap[cachedPackageName] = PackageMetadata(time)
         updatedMetadata.packageMetadataMap[packageName] =
             PackageMetadata(time, state = APK_AND_DATA)
@@ -358,11 +145,10 @@ class MetadataManagerTest {
         expectReadFromCache()
         every { context.packageManager } returns packageManager
         every { clock.time() } returns time
-        expectModifyMetadata(updatedMetadata)
+        expectWriteToCache(updatedMetadata)
 
         manager.onPackageBackedUp(packageInfo, BackupType.FULL, 0L)
 
-        assertEquals(time, manager.getLastBackupTime())
         assertEquals(PackageMetadata(time), manager.getPackageMetadata(cachedPackageName))
         assertEquals(
             updatedMetadata.packageMetadataMap[packageName],
@@ -416,7 +202,7 @@ class MetadataManagerTest {
         updatedMetadata.packageMetadataMap[packageName] = PackageMetadata(state = NO_DATA)
 
         expectReadFromCache()
-        expectModifyMetadata(updatedMetadata)
+        expectWriteToCache(updatedMetadata)
 
         manager.onPackageBackupError(packageInfo, NO_DATA, BackupType.KV)
     }
@@ -429,32 +215,9 @@ class MetadataManagerTest {
 
         every { context.packageManager } returns packageManager
         expectReadFromCache()
-        expectModifyMetadata(updatedMetadata)
+        expectWriteToCache(updatedMetadata)
 
         manager.onPackageBackupError(packageInfo, WAS_STOPPED)
-    }
-
-    @Test
-    fun `test getLastBackupTime() on first run`() {
-        every { context.openFileInput(METADATA_CACHE_FILE) } throws FileNotFoundException()
-
-        assertEquals(0L, manager.getLastBackupTime())
-    }
-
-    @Test
-    fun `test getLastBackupTime() and getBackupToken() with cached metadata`() {
-        initialMetadata.time = Random.nextLong()
-
-        expectReadFromCache()
-
-        assertEquals(initialMetadata.time, manager.getLastBackupTime())
-
-        verify { cacheInputStream.close() }
-    }
-
-    private fun expectModifyMetadata(metadata: BackupMetadata) {
-        every { metadataWriter.write(metadata, storageOutputStream) } just Runs
-        expectWriteToCache(metadata)
     }
 
     private fun expectReadFromCache() {

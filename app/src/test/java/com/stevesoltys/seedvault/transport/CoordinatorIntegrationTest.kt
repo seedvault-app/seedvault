@@ -147,7 +147,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val inputStream = CapturingSlot<InputStream>()
         val bOutputStream = ByteArrayOutputStream()
 
-        every { metadataManager.requiresInit } returns false
         every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
@@ -217,7 +216,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val appData = ByteArray(size).apply { Random.nextBytes(this) }
         val bOutputStream = ByteArrayOutputStream()
 
-        every { metadataManager.requiresInit } returns false
         every { backupReceiver.assertFinalized() } just Runs
         // read one key/value record and write it to output stream
         every { inputFactory.getBackupDataInput(fileDescriptor) } returns backupDataInput
