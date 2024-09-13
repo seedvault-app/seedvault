@@ -20,7 +20,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocumentTree
@@ -47,8 +46,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
 
     private lateinit var viewModel: StorageViewModel
     private lateinit var titleView: TextView
-    private lateinit var warningIcon: ImageView
-    private lateinit var warningText: TextView
     private lateinit var listView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var skipView: TextView
@@ -63,8 +60,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
         val v: View = inflater.inflate(R.layout.fragment_storage_options, container, false)
 
         titleView = v.requireViewById(R.id.titleView)
-        warningIcon = v.requireViewById(R.id.warningIcon)
-        warningText = v.requireViewById(R.id.warningText)
         listView = v.requireViewById(R.id.listView)
         progressBar = v.requireViewById(R.id.progressBar)
         skipView = v.requireViewById(R.id.skipView)
@@ -90,12 +85,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
                 requireActivity().setResult(RESULT_FIRST_USER)
                 requireActivity().finishAfterTransition()
             }
-        } else {
-            warningIcon.visibility = VISIBLE
-            if (viewModel.hasStorageSet) {
-                warningText.setText(R.string.storage_fragment_warning_delete)
-            }
-            warningText.visibility = VISIBLE
         }
 
         listView.adapter = adapter
