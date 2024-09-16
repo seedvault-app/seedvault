@@ -145,7 +145,7 @@ class AppBackupWorker(
             try {
                 appBackupManager.beforeBackup()
             } catch (e: Exception) {
-                Log.e(TAG, "Error populating blobs cache: ", e)
+                Log.e(TAG, "Error during 'beforeBackup': ", e)
                 return Result.retry()
             }
         }
