@@ -105,15 +105,23 @@ followed by an encrypted and authenticated payload (see also [Cryptography](#cry
 The version (currently `0x02`) is used to be able to modify aspects of the design in the future
 and to provide backwards compatibility.
 
-Blob payloads include the raw bytes of the compressed chunks
-and snapshot payloads their compressed protobuf encoding.
+The first four bytes of the decrypted payload encode the compressed plaintext size
+as a signed 32-bit integer.
+So the maximum chunk size is 2147483647 bytes.
+This size specifies where the compressed plaintext ends and the (to be discarded) padding starts.
+
+Blob payloads include the raw bytes of the compressed chunks and always get padded.
+Snapshot payloads include their compressed protobuf encoding and do not get padded.
 Compression is using the [zstd](http://www.zstd.net/) algorithm in its default configuration.
 
 ```console
-┏━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Version ┃ encrypted tink payload ┃
-┃   0x02  ┃ (with 40 bytes header) ┃
-┗━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━┛
+┏━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃         ┃ encrypted tink payload (with 40 bytes header) ┃
+┃ version ┃ ┏━ plaintext ━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┓     ┃
+┃ 1 byte  ┃ ┃ size uint32 ┃ compressed ┃  padding   ┃     ┃
+┃  (0x02) ┃ ┃   4 bytes   ┃ plaintext  ┃ (optional) ┃     ┃
+┃         ┃ ┗━━━━━━━━━━━━━┻━━━━━━━━━━━━┻━━━━━━━━━━━━┛     ┃
+┗━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
 The structure of the encrypted tink payload is explored further
@@ -301,7 +309,8 @@ All types of files written to the repository have the following format:
 
 ```console
     ┏━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-    ┃ version ┃ tink payload (with 40 bytes header)                          ┃
+    ┃         ┃ tink payload (with 40 bytes header)                          ┃
+    ┃ version ┃ ciphertext structure:                                        ┃
     ┃  byte   ┃ ┏━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓ ┃
     ┃         ┃ ┃ header length ┃ salt ┃ nonce prefix ┃ encrypted segments ┃ ┃
     ┃ (0x02)  ┃ ┗━━━━━━━━━━━━━━━┻━━━━━━┻━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━┛ ┃
@@ -335,10 +344,11 @@ they know how we chunk larger files, but they should be unable to retrieve our m
 Since a random gear table computed like this may not be sufficient for attackers
 able to control (part of the) plaintext, e.g. sending a file in a messaging app,
 and due to the presence of lots of data consisting of only a single chunk,
-we apply additional random padding to all chunks.
+we apply padding according to the [Padmé algorithm](https://lbarman.ch/blog/padme/)
+([PETS 2019 paper [PDF]](https://www.petsymposium.org/2019/files/papers/issue4/popets-2019-0056.pdf))
+to all chunks.
 The plaintext gets padded with random bytes after compression and before encryption.
-
-**TODO** determine the details of the padding.
+We could also pad with 0 bytes, but for defense in depth random bytes are used instead.
 
 ## Operations
 

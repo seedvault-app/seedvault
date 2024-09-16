@@ -17,6 +17,7 @@ import org.calyxos.seedvault.core.toHexString
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.nio.ByteBuffer
 
 /**
  * Manages interactions with snapshots, such as loading, saving and removing them.
@@ -66,14 +67,27 @@ internal class SnapshotManager(
      */
     @Throws(IOException::class)
     suspend fun saveSnapshot(snapshot: Snapshot) {
+        // compress payload and get size
+        val payloadStream = ByteArrayOutputStream()
+        ZstdOutputStream(payloadStream).use { zstdOutputStream ->
+            snapshot.writeTo(zstdOutputStream)
+        }
+        val payloadSize = payloadStream.size()
+        val payloadSizeBytes = ByteBuffer.allocate(4).putInt(payloadSize).array()
+
+        // encrypt compressed payload and assemble entire blob
         val byteStream = ByteArrayOutputStream()
         byteStream.write(VERSION.toInt())
         crypto.newEncryptingStream(byteStream, crypto.getAdForVersion()).use { cryptoStream ->
-            ZstdOutputStream(cryptoStream).use { zstdOutputStream ->
-                snapshot.writeTo(zstdOutputStream)
-            }
+            cryptoStream.write(payloadSizeBytes)
+            cryptoStream.write(payloadStream.toByteArray())
+            // not adding any padding here, because it doesn't matter for snapshots
         }
+        payloadStream.reset()
         val bytes = byteStream.toByteArray()
+        byteStream.reset()
+
+        // compute hash and save blob
         val sha256 = crypto.sha256(bytes).toHexString()
         val snapshotHandle = AppBackupFileType.Snapshot(crypto.repoId, sha256)
         backendManager.backend.save(snapshotHandle).use { outputStream ->

@@ -17,8 +17,11 @@ import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.FilterInputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.SequenceInputStream
+import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 import java.util.Enumeration
 
@@ -97,8 +100,49 @@ internal class Loader(
         val ad = crypto.getAdForVersion(version)
         // skip first version byte when creating cipherText stream
         val byteStream = ByteArrayInputStream(cipherText, 1, cipherText.size - 1)
-        // decrypt and decompress cipherText stream and parse snapshot
-        return ZstdInputStream(crypto.newDecryptingStream(byteStream, ad))
+        // decrypt, de-pad and decompress cipherText stream
+        val decryptingStream = crypto.newDecryptingStream(byteStream, ad)
+        val paddedStream = PaddedInputStream(decryptingStream)
+        return ZstdInputStream(paddedStream)
     }
 
+}
+
+private class PaddedInputStream(inputStream: InputStream) : FilterInputStream(inputStream) {
+
+    val size: Int
+    var bytesRead: Int = 0
+
+    init {
+        val sizeBytes = ByteArray(4)
+        val bytesRead = inputStream.read(sizeBytes)
+        if (bytesRead != 4) {
+            throw IOException("Could not read padding size: ${sizeBytes.toHexString()}")
+        }
+        size = ByteBuffer.wrap(sizeBytes).getInt()
+    }
+
+    override fun read(): Int {
+        if (bytesRead >= size) return -1
+        return getReadBytes(super.read())
+    }
+
+    override fun read(b: ByteArray, off: Int, len: Int): Int {
+        if (bytesRead >= size) return -1
+        if (bytesRead + len >= size) {
+            return getReadBytes(super.read(b, off, size - bytesRead))
+        }
+        return getReadBytes(super.read(b, off, len))
+    }
+
+    override fun available(): Int {
+        return size - bytesRead
+    }
+
+    private fun getReadBytes(read: Int): Int {
+        if (read == -1) return -1
+        bytesRead += read
+        if (bytesRead > size) return -1
+        return read
+    }
 }
