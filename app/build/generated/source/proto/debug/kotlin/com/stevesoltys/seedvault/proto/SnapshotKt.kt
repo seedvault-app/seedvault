@@ -74,7 +74,24 @@ public object SnapshotKt {
     }
 
     /**
-     * <code>string androidId = 4;</code>
+     * <code>string user = 4;</code>
+     */
+    public var user: kotlin.String
+      @JvmName("getUser")
+      get() = _builder.getUser()
+      @JvmName("setUser")
+      set(value) {
+        _builder.setUser(value)
+      }
+    /**
+     * <code>string user = 4;</code>
+     */
+    public fun clearUser() {
+      _builder.clearUser()
+    }
+
+    /**
+     * <code>string androidId = 5;</code>
      */
     public var androidId: kotlin.String
       @JvmName("getAndroidId")
@@ -84,14 +101,14 @@ public object SnapshotKt {
         _builder.setAndroidId(value)
       }
     /**
-     * <code>string androidId = 4;</code>
+     * <code>string androidId = 5;</code>
      */
     public fun clearAndroidId() {
       _builder.clearAndroidId()
     }
 
     /**
-     * <code>uint32 sdkInt = 5;</code>
+     * <code>uint32 sdkInt = 6;</code>
      */
     public var sdkInt: kotlin.Int
       @JvmName("getSdkInt")
@@ -101,14 +118,14 @@ public object SnapshotKt {
         _builder.setSdkInt(value)
       }
     /**
-     * <code>uint32 sdkInt = 5;</code>
+     * <code>uint32 sdkInt = 6;</code>
      */
     public fun clearSdkInt() {
       _builder.clearSdkInt()
     }
 
     /**
-     * <code>string androidIncremental = 6;</code>
+     * <code>string androidIncremental = 7;</code>
      */
     public var androidIncremental: kotlin.String
       @JvmName("getAndroidIncremental")
@@ -118,14 +135,14 @@ public object SnapshotKt {
         _builder.setAndroidIncremental(value)
       }
     /**
-     * <code>string androidIncremental = 6;</code>
+     * <code>string androidIncremental = 7;</code>
      */
     public fun clearAndroidIncremental() {
       _builder.clearAndroidIncremental()
     }
 
     /**
-     * <code>bool d2d = 7;</code>
+     * <code>bool d2d = 8;</code>
      */
     public var d2D: kotlin.Boolean
       @JvmName("getD2D")
@@ -135,7 +152,7 @@ public object SnapshotKt {
         _builder.setD2D(value)
       }
     /**
-     * <code>bool d2d = 7;</code>
+     * <code>bool d2d = 8;</code>
      */
     public fun clearD2D() {
       _builder.clearD2D()
@@ -148,7 +165,7 @@ public object SnapshotKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     public class AppsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
      public val apps: com.google.protobuf.kotlin.DslMap<kotlin.String, com.stevesoltys.seedvault.proto.Snapshot.App, AppsProxy>
       @kotlin.jvm.JvmSynthetic
@@ -157,7 +174,7 @@ public object SnapshotKt {
         _builder.getAppsMap()
       )
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
     @JvmName("putApps")
     public fun com.google.protobuf.kotlin.DslMap<kotlin.String, com.stevesoltys.seedvault.proto.Snapshot.App, AppsProxy>
@@ -165,7 +182,7 @@ public object SnapshotKt {
          _builder.putApps(key, value)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("setApps")
@@ -175,7 +192,7 @@ public object SnapshotKt {
          put(key, value)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("removeApps")
@@ -184,7 +201,7 @@ public object SnapshotKt {
          _builder.removeApps(key)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("putAllApps")
@@ -193,7 +210,7 @@ public object SnapshotKt {
          _builder.putAllApps(map)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 8;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.App&gt; apps = 9;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("clearApps")
@@ -209,7 +226,7 @@ public object SnapshotKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     public class IconChunkIdsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
     /**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      */
      public val iconChunkIds: com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>
       @kotlin.jvm.JvmSynthetic
@@ -217,7 +234,7 @@ public object SnapshotKt {
         _builder.getIconChunkIdsList()
       )
     /**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      * @param value The iconChunkIds to add.
      */
     @kotlin.jvm.JvmSynthetic
@@ -225,7 +242,7 @@ public object SnapshotKt {
     public fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>.add(value: com.google.protobuf.ByteString) {
       _builder.addIconChunkIds(value)
     }/**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      * @param value The iconChunkIds to add.
      */
     @kotlin.jvm.JvmSynthetic
@@ -234,7 +251,7 @@ public object SnapshotKt {
     public inline operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>.plusAssign(value: com.google.protobuf.ByteString) {
       add(value)
     }/**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      * @param values The iconChunkIds to add.
      */
     @kotlin.jvm.JvmSynthetic
@@ -242,7 +259,7 @@ public object SnapshotKt {
     public fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>.addAll(values: kotlin.collections.Iterable<com.google.protobuf.ByteString>) {
       _builder.addAllIconChunkIds(values)
     }/**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      * @param values The iconChunkIds to add.
      */
     @kotlin.jvm.JvmSynthetic
@@ -251,7 +268,7 @@ public object SnapshotKt {
     public inline operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>.plusAssign(values: kotlin.collections.Iterable<com.google.protobuf.ByteString>) {
       addAll(values)
     }/**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      * @param index The index to set the value at.
      * @param value The iconChunkIds to set.
      */
@@ -260,7 +277,7 @@ public object SnapshotKt {
     public operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, IconChunkIdsProxy>.set(index: kotlin.Int, value: com.google.protobuf.ByteString) {
       _builder.setIconChunkIds(index, value)
     }/**
-     * <code>repeated bytes iconChunkIds = 9;</code>
+     * <code>repeated bytes iconChunkIds = 10;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @kotlin.jvm.JvmName("clearIconChunkIds")
@@ -274,7 +291,7 @@ public object SnapshotKt {
     @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
     public class BlobsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
      public val blobs: com.google.protobuf.kotlin.DslMap<kotlin.String, com.stevesoltys.seedvault.proto.Snapshot.Blob, BlobsProxy>
       @kotlin.jvm.JvmSynthetic
@@ -283,7 +300,7 @@ public object SnapshotKt {
         _builder.getBlobsMap()
       )
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
     @JvmName("putBlobs")
     public fun com.google.protobuf.kotlin.DslMap<kotlin.String, com.stevesoltys.seedvault.proto.Snapshot.Blob, BlobsProxy>
@@ -291,7 +308,7 @@ public object SnapshotKt {
          _builder.putBlobs(key, value)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("setBlobs")
@@ -301,7 +318,7 @@ public object SnapshotKt {
          put(key, value)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("removeBlobs")
@@ -310,7 +327,7 @@ public object SnapshotKt {
          _builder.removeBlobs(key)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("putAllBlobs")
@@ -319,7 +336,7 @@ public object SnapshotKt {
          _builder.putAllBlobs(map)
        }
     /**
-     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 10;</code>
+     * <code>map&lt;string, .com.stevesoltys.seedvault.proto.Snapshot.Blob&gt; blobs = 11;</code>
      */
     @kotlin.jvm.JvmSynthetic
     @JvmName("clearBlobs")
@@ -365,24 +382,7 @@ public object SnapshotKt {
       }
 
       /**
-       * <code>string state = 2;</code>
-       */
-      public var state: kotlin.String
-        @JvmName("getState")
-        get() = _builder.getState()
-        @JvmName("setState")
-        set(value) {
-          _builder.setState(value)
-        }
-      /**
-       * <code>string state = 2;</code>
-       */
-      public fun clearState() {
-        _builder.clearState()
-      }
-
-      /**
-       * <code>.com.stevesoltys.seedvault.proto.Snapshot.BackupType type = 3;</code>
+       * <code>.com.stevesoltys.seedvault.proto.Snapshot.BackupType type = 2;</code>
        */
       public var type: com.stevesoltys.seedvault.proto.Snapshot.BackupType
         @JvmName("getType")
@@ -392,14 +392,14 @@ public object SnapshotKt {
           _builder.setType(value)
         }
       /**
-       * <code>.com.stevesoltys.seedvault.proto.Snapshot.BackupType type = 3;</code>
+       * <code>.com.stevesoltys.seedvault.proto.Snapshot.BackupType type = 2;</code>
        */
       public fun clearType() {
         _builder.clearType()
       }
 
       /**
-       * <code>string name = 4;</code>
+       * <code>string name = 3;</code>
        */
       public var name: kotlin.String
         @JvmName("getName")
@@ -409,14 +409,14 @@ public object SnapshotKt {
           _builder.setName(value)
         }
       /**
-       * <code>string name = 4;</code>
+       * <code>string name = 3;</code>
        */
       public fun clearName() {
         _builder.clearName()
       }
 
       /**
-       * <code>bool system = 5;</code>
+       * <code>bool system = 4;</code>
        */
       public var system: kotlin.Boolean
         @JvmName("getSystem")
@@ -426,14 +426,14 @@ public object SnapshotKt {
           _builder.setSystem(value)
         }
       /**
-       * <code>bool system = 5;</code>
+       * <code>bool system = 4;</code>
        */
       public fun clearSystem() {
         _builder.clearSystem()
       }
 
       /**
-       * <code>bool launchableSystemApp = 6;</code>
+       * <code>bool launchableSystemApp = 5;</code>
        */
       public var launchableSystemApp: kotlin.Boolean
         @JvmName("getLaunchableSystemApp")
@@ -443,7 +443,7 @@ public object SnapshotKt {
           _builder.setLaunchableSystemApp(value)
         }
       /**
-       * <code>bool launchableSystemApp = 6;</code>
+       * <code>bool launchableSystemApp = 5;</code>
        */
       public fun clearLaunchableSystemApp() {
         _builder.clearLaunchableSystemApp()
@@ -456,7 +456,7 @@ public object SnapshotKt {
       @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
       public class ChunkIdsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
       /**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        */
        public val chunkIds: com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>
         @kotlin.jvm.JvmSynthetic
@@ -464,7 +464,7 @@ public object SnapshotKt {
           _builder.getChunkIdsList()
         )
       /**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        * @param value The chunkIds to add.
        */
       @kotlin.jvm.JvmSynthetic
@@ -472,7 +472,7 @@ public object SnapshotKt {
       public fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>.add(value: com.google.protobuf.ByteString) {
         _builder.addChunkIds(value)
       }/**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        * @param value The chunkIds to add.
        */
       @kotlin.jvm.JvmSynthetic
@@ -481,7 +481,7 @@ public object SnapshotKt {
       public inline operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>.plusAssign(value: com.google.protobuf.ByteString) {
         add(value)
       }/**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        * @param values The chunkIds to add.
        */
       @kotlin.jvm.JvmSynthetic
@@ -489,7 +489,7 @@ public object SnapshotKt {
       public fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>.addAll(values: kotlin.collections.Iterable<com.google.protobuf.ByteString>) {
         _builder.addAllChunkIds(values)
       }/**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        * @param values The chunkIds to add.
        */
       @kotlin.jvm.JvmSynthetic
@@ -498,7 +498,7 @@ public object SnapshotKt {
       public inline operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>.plusAssign(values: kotlin.collections.Iterable<com.google.protobuf.ByteString>) {
         addAll(values)
       }/**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        * @param index The index to set the value at.
        * @param value The chunkIds to set.
        */
@@ -507,7 +507,7 @@ public object SnapshotKt {
       public operator fun com.google.protobuf.kotlin.DslList<com.google.protobuf.ByteString, ChunkIdsProxy>.set(index: kotlin.Int, value: com.google.protobuf.ByteString) {
         _builder.setChunkIds(index, value)
       }/**
-       * <code>repeated bytes chunkIds = 7;</code>
+       * <code>repeated bytes chunkIds = 6;</code>
        */
       @kotlin.jvm.JvmSynthetic
       @kotlin.jvm.JvmName("clearChunkIds")
@@ -515,7 +515,7 @@ public object SnapshotKt {
         _builder.clearChunkIds()
       }
       /**
-       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 8;</code>
+       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 7;</code>
        */
       public var apk: com.stevesoltys.seedvault.proto.Snapshot.Apk
         @JvmName("getApk")
@@ -525,13 +525,13 @@ public object SnapshotKt {
           _builder.setApk(value)
         }
       /**
-       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 8;</code>
+       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 7;</code>
        */
       public fun clearApk() {
         _builder.clearApk()
       }
       /**
-       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 8;</code>
+       * <code>.com.stevesoltys.seedvault.proto.Snapshot.Apk apk = 7;</code>
        * @return Whether the apk field is set.
        */
       public fun hasApk(): kotlin.Boolean {

@@ -13,8 +13,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
-import com.stevesoltys.seedvault.transport.backup.PackageService
-import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.OutputStream
@@ -31,7 +29,6 @@ internal class MetadataManager(
     private val clock: Clock,
     private val metadataWriter: MetadataWriter,
     private val metadataReader: MetadataReader,
-    private val packageService: PackageService,
 ) {
 
     private val uninitializedMetadata = BackupMetadata(token = -42L, salt = "foo bar")
@@ -52,10 +49,6 @@ internal class MetadataManager(
             return field
         }
 
-    private val launchableSystemApps by lazy {
-        packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
-    }
-
     /**
      * Call this after a package has been backed up successfully.
      *
@@ -75,15 +68,11 @@ internal class MetadataManager(
         modifyCachedMetadata {
             val now = clock.time()
             metadata.packageMetadataMap.getOrPut(packageName) {
-                val isSystemApp = packageInfo.isSystemApp()
                 PackageMetadata(
                     time = now,
                     state = APK_AND_DATA,
                     backupType = type,
                     size = size,
-                    system = isSystemApp,
-                    isLaunchableSystemApp = isSystemApp &&
-                        launchableSystemApps.contains(packageName),
                 )
             }.apply {
                 time = now
@@ -111,15 +100,11 @@ internal class MetadataManager(
         check(packageState != APK_AND_DATA) { "Backup Error with non-error package state." }
         modifyCachedMetadata {
             metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
-                val isSystemApp = packageInfo.isSystemApp()
                 PackageMetadata(
                     time = 0L,
                     state = packageState,
                     backupType = backupType,
                     name = packageInfo.applicationInfo?.loadLabel(context.packageManager),
-                    system = isSystemApp,
-                    isLaunchableSystemApp = isSystemApp &&
-                        launchableSystemApps.contains(packageInfo.packageName),
                 )
             }.state = packageState
         }
@@ -137,14 +122,10 @@ internal class MetadataManager(
         packageState: PackageState,
     ) = modifyCachedMetadata {
         metadata.packageMetadataMap.getOrPut(packageInfo.packageName) {
-            val isSystemApp = packageInfo.isSystemApp()
             PackageMetadata(
                 time = 0L,
                 state = packageState,
                 name = packageInfo.applicationInfo?.loadLabel(context.packageManager),
-                system = isSystemApp,
-                isLaunchableSystemApp = isSystemApp &&
-                    launchableSystemApps.contains(packageInfo.packageName),
             )
         }.apply {
             state = packageState

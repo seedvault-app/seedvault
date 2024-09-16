@@ -39,7 +39,7 @@ data class BackupMetadata(
             time = s.token,
             androidVersion = s.sdkInt,
             androidIncremental = s.androidIncremental,
-            deviceName = s.name,
+            deviceName = "${s.name} - ${s.user}",
             d2dBackup = s.d2D,
             packageMetadataMap = s.appsMap.mapValues { (_, app) ->
                 PackageMetadata.fromSnapshot(app)
@@ -121,7 +121,6 @@ data class PackageMetadata(
     companion object {
         fun fromSnapshot(app: Snapshot.App) = PackageMetadata(
             time = app.time,
-            state = if (app.state.isBlank()) UNKNOWN_ERROR else PackageState.valueOf(app.state),
             backupType = when (app.type) {
                 Snapshot.BackupType.FULL -> BackupType.FULL
                 Snapshot.BackupType.KV -> BackupType.KV

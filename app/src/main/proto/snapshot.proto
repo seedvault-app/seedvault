@@ -8,23 +8,23 @@ message Snapshot {
   uint32 version = 1;
   uint64 token = 2;
   string name = 3;
-  string androidId = 4;
-  uint32 sdkInt = 5;
-  string androidIncremental = 6;
-  bool d2d = 7;
-  map<string, App> apps = 8;
-  repeated bytes iconChunkIds = 9;
-  map<string, Blob> blobs = 10;
+  string user = 4;
+  string androidId = 5;
+  uint32 sdkInt = 6;
+  string androidIncremental = 7;
+  bool d2d = 8;
+  map<string, App> apps = 9;
+  repeated bytes iconChunkIds = 10;
+  map<string, Blob> blobs = 11;
 
   message App {
     uint64 time = 1;
-    string state = 2;
-    BackupType type = 3;
-    string name = 4;
-    bool system = 5;
-    bool launchableSystemApp = 6;
-    repeated bytes chunkIds = 7;
-    Apk apk = 8;
+    BackupType type = 2;
+    string name = 3;
+    bool system = 4;
+    bool launchableSystemApp = 5;
+    repeated bytes chunkIds = 6;
+    Apk apk = 7;
   }
 
   enum BackupType {

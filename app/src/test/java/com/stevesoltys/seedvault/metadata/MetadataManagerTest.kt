@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
-import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,7 +22,6 @@ import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.PackageService
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -37,7 +35,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
-import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import kotlin.random.Random
@@ -53,7 +50,6 @@ class MetadataManagerTest {
     private val clock: Clock = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
-    private val packageService: PackageService = mockk()
     private val settingsManager: SettingsManager = mockk()
 
     private val manager = MetadataManager(
@@ -61,7 +57,6 @@ class MetadataManagerTest {
         clock = clock,
         metadataWriter = metadataWriter,
         metadataReader = metadataReader,
-        packageService = packageService,
     )
 
     private val packageManager: PackageManager = mockk()
@@ -76,7 +71,6 @@ class MetadataManagerTest {
     private val saltBytes = Random.nextBytes(METADATA_SALT_SIZE)
     private val salt = saltBytes.encodeBase64()
     private val initialMetadata = BackupMetadata(token = token, salt = salt)
-    private val storageOutputStream = ByteArrayOutputStream()
     private val cacheOutputStream: FileOutputStream = mockk()
     private val cacheInputStream: FileInputStream = mockk()
     private val encodedMetadata = getRandomByteArray()
@@ -93,7 +87,6 @@ class MetadataManagerTest {
 
     @Test
     fun `test onPackageBackedUp()`() {
-        packageInfo.applicationInfo!!.flags = FLAG_SYSTEM
         val updatedMetadata = initialMetadata.copy(
             time = time,
             packageMetadataMap = PackageMetadataMap() // otherwise this isn't copied, but referenced
@@ -103,7 +96,6 @@ class MetadataManagerTest {
         updatedMetadata.packageMetadataMap[packageName] = packageMetadata
 
         every { context.packageManager } returns packageManager
-        every { packageService.launchableSystemApps } returns emptyList()
         expectReadFromCache()
         every { clock.time() } returns time
         expectWriteToCache(initialMetadata)
@@ -115,8 +107,6 @@ class MetadataManagerTest {
                 state = APK_AND_DATA,
                 backupType = BackupType.FULL,
                 size = size,
-                system = true,
-                isLaunchableSystemApp = false,
             ),
             manager.getPackageMetadata(packageName)
         )
