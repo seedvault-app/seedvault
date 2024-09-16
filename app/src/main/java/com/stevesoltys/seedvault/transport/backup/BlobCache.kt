@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.transport.backup
 
 import android.content.Context
 import android.content.Context.MODE_APPEND
+import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -41,6 +42,7 @@ class BlobCache(
     fun populateCache(blobs: List<FileInfo>, snapshots: List<Snapshot>) {
         log.info { "Getting all blobs from backend..." }
         blobMap.clear()
+        MemoryLogger.log()
         // create map of blobId to size of blob on backend
         val blobIds = blobs.associate {
             Pair(it.fileHandle.name, it.size.toInt())
@@ -51,6 +53,7 @@ class BlobCache(
         snapshots.forEach { snapshot ->
             onSnapshotLoaded(snapshot, blobIds)
         }
+        MemoryLogger.log()
     }
 
     /**

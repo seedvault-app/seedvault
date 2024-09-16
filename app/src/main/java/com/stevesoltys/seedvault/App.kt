@@ -6,6 +6,8 @@
 package com.stevesoltys.seedvault
 
 import android.Manifest.permission.INTERACT_ACROSS_USERS_FULL
+import android.app.ActivityManager
+import android.app.ActivityManager.RunningAppProcessInfo
 import android.app.Application
 import android.app.backup.BackupManager
 import android.app.backup.BackupManager.PACKAGE_MANAGER_SENTINEL
@@ -17,15 +19,16 @@ import android.os.ServiceManager.getService
 import android.os.StrictMode
 import android.os.UserHandle
 import android.os.UserManager
+import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.WorkManager
 import com.google.android.material.color.DynamicColors
+import com.stevesoltys.seedvault.MemoryLogger.getMemStr
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.saf.storagePluginModuleSaf
 import com.stevesoltys.seedvault.backend.webdav.storagePluginModuleWebDav
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
-import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.metadataModule
 import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.restore.restoreUiModule
@@ -153,6 +156,15 @@ open class App : Application() {
     private val backupManager: IBackupManager by inject()
     private val backendManager: BackendManager by inject()
     private val backupStateManager: BackupStateManager by inject()
+
+    override fun onTrimMemory(level: Int) {
+        Log.w("Seedvault", "onTrimMemory($level) ${getMemStr()}")
+        val processInfo = RunningAppProcessInfo()
+        ActivityManager.getMyMemoryState(processInfo)
+        Log.w("Seedvault", "  lastTrimLevel: ${processInfo.lastTrimLevel}")
+        Log.w("Seedvault", "  importance: ${processInfo.importance}")
+        super.onTrimMemory(level)
+    }
 
     /**
      * Disables the framework scheduling in favor of our own.

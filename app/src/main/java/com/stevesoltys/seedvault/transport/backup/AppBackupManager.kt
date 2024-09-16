@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.transport.backup
 
 import androidx.annotation.WorkerThread
+import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -52,6 +53,7 @@ internal class AppBackupManager(
 
     @WorkerThread
     suspend fun afterBackupFinished(success: Boolean): com.stevesoltys.seedvault.proto.Snapshot? {
+        MemoryLogger.log()
         log.info { "After backup finished. Success: $success" }
         // free up memory by clearing blobs cache
         blobCache.clear()
@@ -72,6 +74,7 @@ internal class AppBackupManager(
             null
         } finally {
             snapshotCreator = null
+            MemoryLogger.log()
         }
     }
 

@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.transport.backup
 import androidx.annotation.WorkerThread
 import com.github.luben.zstd.ZstdOutputStream
 import com.google.protobuf.ByteString
+import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
@@ -61,6 +62,7 @@ internal class BlobCreator(
             // we could just write 0s, but because of defense in depth, we use random bytes
             cryptoStream.write(crypto.getRandomBytes(paddingSize))
         }
+        MemoryLogger.log()
         payloadBuffer.clear()
 
         // compute hash and save blob
