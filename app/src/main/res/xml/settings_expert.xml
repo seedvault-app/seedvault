@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   SPDX-FileCopyrightText: 2020 The Calyx Institute
   SPDX-License-Identifier: Apache-2.0
   -->
@@ -9,6 +8,14 @@
         android:key="unlimited_quota"
         android:summary="@string/settings_expert_quota_summary"
         android:title="@string/settings_expert_quota_title" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:icon="@drawable/ic_apps"
+        android:key="backup_apk"
+        android:summary="@string/settings_backup_apk_summary"
+        android:title="@string/settings_backup_apk_title" />
+
     <Preference
         android:icon="@drawable/ic_bug_report"
         android:key="logcat"

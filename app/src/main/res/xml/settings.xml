@@ -43,13 +43,6 @@
             app:title="@string/settings_auto_restore_title"
             tools:defaultValue="true" />
 
-        <androidx.preference.SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:dependency="backup"
-            app:key="backup_apk"
-            app:summary="@string/settings_backup_apk_summary"
-            app:title="@string/settings_backup_apk_title" />
-
         <androidx.preference.Preference
             app:fragment="com.stevesoltys.seedvault.settings.SchedulingFragment"
             app:icon="@drawable/ic_access_time"

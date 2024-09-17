@@ -7,8 +7,9 @@ package com.stevesoltys.seedvault.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.settings.SettingsManager
 
 abstract class RequireProvisioningViewModel(
@@ -26,7 +27,7 @@ abstract class RequireProvisioningViewModel(
 
     internal fun validLocationIsSet() = backendManager.isValidAppPluginSet()
 
-    internal fun recoveryCodeIsSet() = keyManager.hasBackupKey()
+    internal fun recoveryCodeIsSet() = permitDiskReads { keyManager.hasBackupKey() }
 
     open fun onStorageLocationChanged() {
         // noop can be overwritten by sub-classes
