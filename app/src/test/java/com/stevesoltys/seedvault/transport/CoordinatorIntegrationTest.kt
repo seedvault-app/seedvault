@@ -26,6 +26,7 @@ import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.repo.SnapshotCreator
+import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.backup.FullBackup
 import com.stevesoltys.seedvault.transport.backup.InputFactory
@@ -76,6 +77,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val backend = mockk<Backend>()
     private val loader = mockk<Loader>()
+    private val snapshotManager = mockk<SnapshotManager>()
     private val backupReceiver = mockk<BackupReceiver>()
     private val kvBackup = KVBackup(
         settingsManager = settingsManager,
@@ -121,7 +123,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         metadataManager,
         notificationManager,
         backendManager,
-        loader,
+        snapshotManager,
         kvRestore,
         fullRestore,
         metadataReader

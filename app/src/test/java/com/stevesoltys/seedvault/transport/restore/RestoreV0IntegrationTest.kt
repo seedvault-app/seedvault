@@ -21,6 +21,7 @@ import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
 import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
@@ -57,6 +58,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val notificationManager = mockk<BackupNotificationManager>()
     private val backendManager: BackendManager = mockk()
     private val loader = mockk<Loader>()
+    private val snapshotManager = mockk<SnapshotManager>()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
@@ -79,7 +81,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         metadataManager = metadataManager,
         notificationManager = notificationManager,
         backendManager = backendManager,
-        loader = loader,
+        snapshotManager = snapshotManager,
         kv = kvRestore,
         full = fullRestore,
         metadataReader = metadataReader,

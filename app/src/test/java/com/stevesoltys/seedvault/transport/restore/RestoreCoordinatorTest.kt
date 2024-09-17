@@ -22,7 +22,7 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.proto.copy
-import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -45,8 +45,6 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
@@ -56,7 +54,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     private val notificationManager: BackupNotificationManager = mockk()
     private val backendManager: BackendManager = mockk()
     private val backend = mockk<Backend>()
-    private val loader = mockk<Loader>()
+    private val snapshotManager = mockk<SnapshotManager>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
@@ -68,7 +66,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
         metadataManager = metadataManager,
         notificationManager = notificationManager,
         backendManager = backendManager,
-        loader = loader,
+        snapshotManager = snapshotManager,
         kv = kv,
         full = full,
         metadataReader = metadataReader,
@@ -261,9 +259,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
     fun `startRestore() loads snapshots for auto-restore`() = runBlocking {
         val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
         val info = FileInfo(handle, 1)
-        val snapshotBytes = ByteArrayOutputStream().apply {
-            snapshot.writeTo(this)
-        }.toByteArray()
 
         every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns false
@@ -278,7 +273,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
             val callback = lambda<(FileInfo) -> Unit>().captured
             callback(info)
         }
-        coEvery { loader.loadFile(handle) } returns ByteArrayInputStream(snapshotBytes)
+        coEvery { snapshotManager.loadSnapshot(handle) } returns snapshot
 
         assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
     }
@@ -287,9 +282,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
     fun `startRestore() errors when it can't find snapshots`() = runBlocking {
         val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
         val info = FileInfo(handle, 1)
-        val snapshotBytes = ByteArrayOutputStream().apply { // snapshot has different token
-            snapshot.copy { token = this@RestoreCoordinatorTest.token - 1 }.writeTo(this)
-        }.toByteArray()
 
         every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns false
@@ -304,12 +296,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
             val callback = lambda<(FileInfo) -> Unit>().captured
             callback(info)
         }
-        coEvery { loader.loadFile(handle) } returns ByteArrayInputStream(snapshotBytes)
+        coEvery { snapshotManager.loadSnapshot(handle) } returns snapshot.copy {
+            token = this@RestoreCoordinatorTest.token - 1 // unexpected token
+        }
 
         assertEquals(TRANSPORT_ERROR, restore.startRestore(token, pmPackageInfoArray))
 
         coVerify {
-            loader.loadFile(handle) // really loaded snapshot
+            snapshotManager.loadSnapshot(handle) // really loaded snapshot
         }
     }
 

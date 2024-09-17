@@ -26,12 +26,11 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.proto.Snapshot
-import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.SnapshotManager
+import com.stevesoltys.seedvault.repo.getBlobHandles
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
-import com.stevesoltys.seedvault.repo.getBlobHandles
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
@@ -67,7 +66,7 @@ internal class RestoreCoordinator(
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
     private val backendManager: BackendManager,
-    private val loader: Loader,
+    private val snapshotManager: SnapshotManager,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader,
@@ -91,15 +90,10 @@ internal class RestoreCoordinator(
         for (handle in fileHandles) {
             try {
                 val backup = when (handle) {
-                    is AppBackupFileType.Snapshot -> {
-                        val snapshot = loader.loadFile(handle).use { inputStream ->
-                            Snapshot.parseFrom(inputStream)
-                        }
-                        RestorableBackup(
-                            repoId = handle.repoId,
-                            snapshot = snapshot,
-                        )
-                    }
+                    is AppBackupFileType.Snapshot -> RestorableBackup(
+                        repoId = handle.repoId,
+                        snapshot = snapshotManager.loadSnapshot(handle),
+                    )
                     is LegacyAppBackupFile.Metadata -> {
                         val metadata = backend.load(handle).use { inputStream ->
                             metadataReader.readMetadata(inputStream, handle.token)
