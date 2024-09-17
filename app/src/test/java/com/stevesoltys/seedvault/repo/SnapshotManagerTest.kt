@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport
+package com.stevesoltys.seedvault.repo
 
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.proto.snapshot
-import com.stevesoltys.seedvault.transport.restore.Loader
+import com.stevesoltys.seedvault.transport.TransportTest
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

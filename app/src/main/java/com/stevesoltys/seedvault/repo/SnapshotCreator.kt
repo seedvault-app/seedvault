@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -24,23 +24,11 @@ import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
-
-/**
- * Creates a new [SnapshotCreator], because one is only valid for a single backup run.
- */
-internal class SnapshotCreatorFactory(
-    private val context: Context,
-    private val clock: Clock,
-    private val packageService: PackageService,
-    private val settingsManager: SettingsManager,
-    private val metadataManager: MetadataManager,
-) {
-    fun createSnapshotCreator() =
-        SnapshotCreator(context, clock, packageService, settingsManager, metadataManager)
-}
 
 /**
  * Assembles snapshot information over the course of a single backup run

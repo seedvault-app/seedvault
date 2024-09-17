@@ -12,7 +12,7 @@ import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.proto.Snapshot
-import com.stevesoltys.seedvault.transport.backup.hexFromProto
+import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.worker.BASE_SPLIT
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
 import java.nio.ByteBuffer

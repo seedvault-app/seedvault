@@ -5,21 +5,11 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
-import com.stevesoltys.seedvault.transport.SnapshotManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import java.io.File
 
 val backupModule = module {
     single { BackupInitializer(get()) }
-    single { BackupReceiver(get(), get(), get()) }
-    single { BlobCache(androidContext()) }
-    single { BlobCreator(get(), get()) }
-    single {
-        val snapshotFolder = File(androidContext().filesDir, "snapshots")
-        SnapshotManager(snapshotFolder, get(), get(), get())
-    }
-    single { SnapshotCreatorFactory(androidContext(), get(), get(), get(), get()) }
     single { InputFactory() }
     single {
         PackageService(

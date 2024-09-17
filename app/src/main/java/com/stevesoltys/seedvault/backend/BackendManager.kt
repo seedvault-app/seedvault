@@ -12,7 +12,7 @@ import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginType
-import com.stevesoltys.seedvault.transport.backup.BlobCache
+import com.stevesoltys.seedvault.repo.BlobCache
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.BackendFactory
 import org.calyxos.seedvault.core.backends.BackendProperties

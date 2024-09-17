@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
 import androidx.annotation.WorkerThread
 import com.github.luben.zstd.ZstdOutputStream
@@ -14,7 +14,7 @@ import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.proto.SnapshotKt.blob
-import com.stevesoltys.seedvault.transport.backup.Padding.getPadTo
+import com.stevesoltys.seedvault.repo.Padding.getPadTo
 import okio.Buffer
 import okio.buffer
 import okio.sink

@@ -20,9 +20,9 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.AppBackupManager
+import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
-import com.stevesoltys.seedvault.transport.backup.hexFromProto
+import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.worker.BackupRequester
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent

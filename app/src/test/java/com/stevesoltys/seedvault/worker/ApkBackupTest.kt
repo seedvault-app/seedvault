@@ -20,11 +20,11 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.SnapshotKt.app
 import com.stevesoltys.seedvault.proto.copy
-import com.stevesoltys.seedvault.transport.backup.AppBackupManager
-import com.stevesoltys.seedvault.transport.backup.BackupData
-import com.stevesoltys.seedvault.transport.backup.BackupReceiver
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.transport.backup.BackupTest
-import com.stevesoltys.seedvault.transport.backup.SnapshotCreator
+import com.stevesoltys.seedvault.repo.SnapshotCreator
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

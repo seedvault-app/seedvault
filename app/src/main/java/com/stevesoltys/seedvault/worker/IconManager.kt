@@ -18,10 +18,10 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.crypto.TYPE_ICONS
 import com.stevesoltys.seedvault.proto.Snapshot
-import com.stevesoltys.seedvault.transport.backup.AppBackupManager
-import com.stevesoltys.seedvault.transport.backup.BackupReceiver
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.transport.backup.PackageService
-import com.stevesoltys.seedvault.transport.restore.Loader
+import com.stevesoltys.seedvault.repo.Loader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray

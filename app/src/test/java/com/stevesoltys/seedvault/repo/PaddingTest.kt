@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
-import com.stevesoltys.seedvault.transport.backup.Padding.getPadTo
+import com.stevesoltys.seedvault.repo.Padding.getPadTo
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -19,6 +19,7 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
+import com.stevesoltys.seedvault.repo.Loader
 import libcore.io.IoUtils.closeQuietly
 import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile

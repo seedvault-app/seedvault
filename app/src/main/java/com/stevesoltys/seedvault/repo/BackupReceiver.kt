@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.crypto.Crypto
@@ -14,23 +14,6 @@ import org.calyxos.seedvault.chunker.GearTableCreator
 import org.calyxos.seedvault.core.toHexString
 import java.io.IOException
 import java.io.InputStream
-
-/**
- * Essential metadata returned when storing backup data.
- *
- * @param chunkIds an ordered(!) list of the chunk IDs required to re-assemble the backup data.
- * @param blobMap a mapping from chunk ID to [Blob] on the backend.
- * Needed for fetching blobs from the backend for re-assembly.
- */
-data class BackupData(
-    val chunkIds: List<String>,
-    val blobMap: Map<String, Blob>,
-) {
-    /**
-     * The uncompressed plaintext size of all blobs.
-     */
-    val size get() = blobMap.values.sumOf { it.uncompressedLength }.toLong()
-}
 
 /**
  * The single point for receiving data for backup.

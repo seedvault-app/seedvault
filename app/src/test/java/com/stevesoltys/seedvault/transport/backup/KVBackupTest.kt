@@ -15,6 +15,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.MAX_KEY_LENGTH_SIZE
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery

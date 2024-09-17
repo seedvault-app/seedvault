@@ -20,6 +20,7 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
+import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.KvDbManager

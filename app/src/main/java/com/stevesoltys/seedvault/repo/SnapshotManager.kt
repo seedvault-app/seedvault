@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport
+package com.stevesoltys.seedvault.repo
 
 import com.github.luben.zstd.ZstdOutputStream
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot
-import com.stevesoltys.seedvault.transport.restore.Loader
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
@@ -18,6 +17,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
+
+internal const val FOLDER_SNAPSHOTS = "snapshots"
 
 /**
  * Manages interactions with snapshots, such as loading, saving and removing them.

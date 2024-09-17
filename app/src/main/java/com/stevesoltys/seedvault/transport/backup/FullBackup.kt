@@ -14,6 +14,8 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.backend.isOutOfSpace
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import java.io.Closeable

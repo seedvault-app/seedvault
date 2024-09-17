@@ -27,9 +27,9 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_A
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
-import com.stevesoltys.seedvault.transport.backup.getBlobHandles
+import com.stevesoltys.seedvault.repo.getBlobHandles
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
-import com.stevesoltys.seedvault.transport.restore.Loader
+import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.worker.hashSignature
 import kotlinx.coroutines.TimeoutCancellationException

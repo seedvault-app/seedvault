@@ -11,6 +11,8 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs

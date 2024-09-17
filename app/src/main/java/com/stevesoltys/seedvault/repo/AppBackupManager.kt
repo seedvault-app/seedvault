@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.SnapshotManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
 import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob

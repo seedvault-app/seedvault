@@ -30,9 +30,9 @@ import com.stevesoltys.seedvault.proto.SnapshotKt
 import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import com.stevesoltys.seedvault.proto.SnapshotKt.split
 import com.stevesoltys.seedvault.proto.snapshot
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.transport.backup.BackupData
-import com.stevesoltys.seedvault.transport.backup.hexFromProto
 import com.stevesoltys.seedvault.worker.BASE_SPLIT
 import io.mockk.every
 import io.mockk.mockk

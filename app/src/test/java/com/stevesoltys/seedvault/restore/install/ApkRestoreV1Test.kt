@@ -33,7 +33,7 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.transport.restore.Loader
+import com.stevesoltys.seedvault.repo.Loader
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every

@@ -5,7 +5,7 @@
 
 package com.stevesoltys.seedvault.worker
 
-import com.stevesoltys.seedvault.transport.backup.AppBackupManager
+import com.stevesoltys.seedvault.repo.AppBackupManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

@@ -15,6 +15,7 @@ import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.repo.Loader
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery

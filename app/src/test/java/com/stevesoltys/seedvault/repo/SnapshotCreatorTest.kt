@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault.transport.backup
+package com.stevesoltys.seedvault.repo
 
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -17,6 +17,7 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

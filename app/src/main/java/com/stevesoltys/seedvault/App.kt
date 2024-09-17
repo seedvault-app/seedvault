@@ -30,6 +30,7 @@ import com.stevesoltys.seedvault.backend.webdav.storagePluginModuleWebDav
 import com.stevesoltys.seedvault.crypto.cryptoModule
 import com.stevesoltys.seedvault.header.headerModule
 import com.stevesoltys.seedvault.metadata.metadataModule
+import com.stevesoltys.seedvault.repo.repoModule
 import com.stevesoltys.seedvault.restore.install.installModule
 import com.stevesoltys.seedvault.restore.restoreUiModule
 import com.stevesoltys.seedvault.settings.AppListRetriever
@@ -147,6 +148,7 @@ open class App : Application() {
         restoreModule,
         installModule,
         storageModule,
+        repoModule,
         workerModule,
         restoreUiModule,
         appModule

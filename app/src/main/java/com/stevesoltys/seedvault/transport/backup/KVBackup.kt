@@ -14,6 +14,8 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 

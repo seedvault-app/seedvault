@@ -16,6 +16,7 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import io.mockk.Runs
