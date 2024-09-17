@@ -40,13 +40,14 @@ private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
 private const val CHANNEL_ID_RESTORE = "NotificationRestore"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
+private const val CHANNEL_ID_PRUNING = "NotificationPruning"
 internal const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_SUCCESS = 2
 private const val NOTIFICATION_ID_ERROR = 3
 private const val NOTIFICATION_ID_SPACE_ERROR = 4
 internal const val NOTIFICATION_ID_RESTORE = 5
 private const val NOTIFICATION_ID_RESTORE_ERROR = 6
-private const val NOTIFICATION_ID_BACKGROUND = 7
+internal const val NOTIFICATION_ID_PRUNING = 7
 private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 8
 
 private val TAG = BackupNotificationManager::class.java.simpleName
@@ -59,6 +60,7 @@ internal class BackupNotificationManager(private val context: Context) {
         createNotificationChannel(getErrorChannel())
         createNotificationChannel(getRestoreChannel())
         createNotificationChannel(getRestoreErrorChannel())
+        createNotificationChannel(getPruningChannel())
     }
 
     private fun getObserverChannel(): NotificationChannel {
@@ -88,6 +90,11 @@ internal class BackupNotificationManager(private val context: Context) {
     private fun getRestoreErrorChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_restore_error_channel_title)
         return NotificationChannel(CHANNEL_ID_RESTORE_ERROR, title, IMPORTANCE_HIGH)
+    }
+
+    private fun getPruningChannel(): NotificationChannel {
+        val title = context.getString(R.string.notification_pruning_channel_title)
+        return NotificationChannel(CHANNEL_ID_PRUNING, title, IMPORTANCE_LOW)
     }
 
     /**
@@ -158,7 +165,6 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     fun onServiceDestroyed() {
-        nm.cancel(NOTIFICATION_ID_BACKGROUND)
         // Cancel left-over notifications that are still ongoing.
         //
         // We have seen a race condition where the service was taken down at the same time
@@ -286,6 +292,17 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun onRestoreErrorSeen() {
         nm.cancel(NOTIFICATION_ID_RESTORE_ERROR)
+    }
+
+    fun getPruningNotification(): Notification {
+        return Builder(context, CHANNEL_ID_OBSERVER).apply {
+            setSmallIcon(R.drawable.ic_auto_delete)
+            setContentTitle(context.getString(R.string.notification_pruning_title))
+            setOngoing(true)
+            setShowWhen(false)
+            priority = PRIORITY_LOW
+            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
+        }.build()
     }
 
     @SuppressLint("RestrictedApi")

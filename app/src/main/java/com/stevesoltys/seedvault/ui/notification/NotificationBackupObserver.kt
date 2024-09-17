@@ -23,6 +23,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.repo.hexFromProto
+import com.stevesoltys.seedvault.worker.AppBackupPruneWorker
 import com.stevesoltys.seedvault.worker.BackupRequester
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -159,6 +160,10 @@ internal class NotificationBackupObserver(
                 }
             } else 0L
             nm.onBackupFinished(success, numPackagesToReport, total, size)
+            if (success) {
+                // prune old backups
+                AppBackupPruneWorker.scheduleNow(context)
+            }
         }
     }
 
