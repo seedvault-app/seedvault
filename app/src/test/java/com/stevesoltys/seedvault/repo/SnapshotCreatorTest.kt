@@ -23,6 +23,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -44,7 +45,6 @@ internal class SnapshotCreatorTest : TransportTest() {
     fun `test onApkBackedUp`() {
         every { applicationInfo.loadLabel(any()) } returns name
         every { clock.time() } returns token
-        every { settingsManager.d2dBackupsEnabled() } returns Random.nextBoolean()
 
         snapshotCreator.onApkBackedUp(packageInfo, apk, blobMap)
         val s = snapshotCreator.finalizeSnapshot()
@@ -70,7 +70,6 @@ internal class SnapshotCreatorTest : TransportTest() {
         every { appInfo.loadLabel(any()) } returns name
         every { metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, size) } just Runs
         every { clock.time() } returns token andThen token + 1
-        every { settingsManager.d2dBackupsEnabled() } returns Random.nextBoolean()
         every { packageService.launchableSystemApps } returns listOf(resolveInfo)
 
         snapshotCreator.onPackageBackedUp(packageInfo, BackupType.FULL, apkBackupData)
@@ -92,7 +91,6 @@ internal class SnapshotCreatorTest : TransportTest() {
         val size = apkBackupData.size
         every { metadataManager.onPackageBackedUp(packageInfo, BackupType.FULL, size) } just Runs
         every { clock.time() } returns token andThen token + 1
-        every { settingsManager.d2dBackupsEnabled() } returns Random.nextBoolean()
         every { packageService.launchableSystemApps } returns emptyList()
 
         snapshotCreator.onPackageBackedUp(packageInfo, BackupType.FULL, apkBackupData)
@@ -102,7 +100,6 @@ internal class SnapshotCreatorTest : TransportTest() {
     @Test
     fun `test onIconsBackedUp`() {
         every { clock.time() } returns token andThen token + 1
-        every { settingsManager.d2dBackupsEnabled() } returns Random.nextBoolean()
 
         snapshotCreator.onIconsBackedUp(apkBackupData)
         val s = snapshotCreator.finalizeSnapshot()
@@ -113,9 +110,7 @@ internal class SnapshotCreatorTest : TransportTest() {
 
     @Test
     fun `test finalize`() {
-        val d2d = Random.nextBoolean()
         every { clock.time() } returns token
-        every { settingsManager.d2dBackupsEnabled() } returns d2d
 
         val s = snapshotCreator.finalizeSnapshot()
 
@@ -126,7 +121,7 @@ internal class SnapshotCreatorTest : TransportTest() {
         assertEquals("", s.androidId) // not mocked
         assertEquals(34, s.sdkInt) // as per config above, needs bump once possible
         assertEquals("unknown", s.androidIncremental)
-        assertEquals(d2d, s.d2D)
+        assertTrue(s.d2D)
         assertEquals(0, s.appsCount)
         assertEquals(0, s.iconChunkIdsCount)
         assertEquals(emptyMap<String, Snapshot.Blob>(), s.blobsMap)

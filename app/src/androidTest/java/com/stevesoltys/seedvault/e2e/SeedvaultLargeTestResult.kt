@@ -24,7 +24,6 @@ internal data class SeedvaultLargeTestResult(
     val full: MutableMap<String, String>,
     val kv: MutableMap<String, MutableMap<String, String>>,
     val userApps: List<PackageInfo>,
-    val userNotAllowedApps: List<PackageInfo>,
 ) {
-    fun allUserApps() = userApps + userNotAllowedApps
+    fun allUserApps() = userApps
 }

@@ -46,18 +46,6 @@ class ExpertSettingsFragment : PreferenceFragmentCompat() {
             quotaPreference.isChecked = newValue as Boolean
             true
         }
-
-        val d2dPreference = findPreference<SwitchPreferenceCompat>(PREF_KEY_D2D_BACKUPS)
-
-        d2dPreference?.setOnPreferenceChangeListener { _, newValue ->
-            d2dPreference.isChecked = newValue as Boolean
-
-            // automatically enable unlimited quota when enabling D2D backups
-            if (d2dPreference.isChecked) {
-                quotaPreference?.isChecked = true
-            }
-            true
-        }
     }
 
     override fun onStart() {

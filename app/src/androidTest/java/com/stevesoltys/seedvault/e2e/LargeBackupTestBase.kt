@@ -74,7 +74,6 @@ internal interface LargeBackupTestBase : LargeTestBase {
             full = mutableMapOf(),
             kv = mutableMapOf(),
             userApps = packageService.userApps,
-            userNotAllowedApps = packageService.userNotAllowedApps
         )
 
         val completed = spyOnBackup(backupResult)

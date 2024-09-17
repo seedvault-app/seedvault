@@ -30,7 +30,6 @@ import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
@@ -74,11 +73,6 @@ class MetadataManagerTest {
     private val cacheOutputStream: FileOutputStream = mockk()
     private val cacheInputStream: FileInputStream = mockk()
     private val encodedMetadata = getRandomByteArray()
-
-    @Before
-    fun beforeEachTest() {
-        every { settingsManager.d2dBackupsEnabled() } returns false
-    }
 
     @After
     fun afterEachTest() {

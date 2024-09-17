@@ -131,7 +131,7 @@ internal class SnapshotCreator(
             androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID) ?: ""
             sdkInt = Build.VERSION.SDK_INT
             androidIncremental = Build.VERSION.INCREMENTAL
-            d2D = settingsManager.d2dBackupsEnabled()
+            d2D = true
             putAllApps(appBuilderMap.mapValues { it.value.build() })
             putAllBlobs(this@SnapshotCreator.blobsMap)
         }.build()

@@ -56,7 +56,6 @@ private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
 private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
 internal const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
-internal const val PREF_KEY_D2D_BACKUPS = "d2d_backups"
 internal const val PREF_KEY_LAST_BACKUP = "lastBackup"
 
 class SettingsManager(private val context: Context) {
@@ -248,14 +247,6 @@ class SettingsManager(private val context: Context) {
     }
 
     fun isQuotaUnlimited() = prefs.getBoolean(PREF_KEY_UNLIMITED_QUOTA, false)
-
-    fun d2dBackupsEnabled() = prefs.getBoolean(PREF_KEY_D2D_BACKUPS, false)
-
-    fun setD2dBackupsEnabled(enabled: Boolean) {
-        prefs.edit()
-            .putBoolean(PREF_KEY_D2D_BACKUPS, enabled)
-            .apply()
-    }
 
     /**
      * This assumes that if there's no storage plugin set, it is the first start.

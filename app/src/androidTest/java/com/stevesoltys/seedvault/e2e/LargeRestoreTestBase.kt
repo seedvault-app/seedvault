@@ -63,7 +63,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
             full = mutableMapOf(),
             kv = mutableMapOf(),
             userApps = emptyList(), // will update everything below this after restore
-            userNotAllowedApps = emptyList()
         )
 
         spyOnRestoreData(result)
@@ -97,7 +96,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         return result.copy(
             userApps = packageService.userApps,
-            userNotAllowedApps = packageService.userNotAllowedApps
         )
     }
 

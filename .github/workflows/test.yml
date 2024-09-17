@@ -20,7 +20,6 @@ jobs:
       matrix:
         android_target: [ 34 ]
         emulator_type: [ aosp_atd ]
-        d2d_backup_test: [ true, false ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -53,7 +52,7 @@ jobs:
             disable-animations: true
             script: |
               ./app/development/scripts/provision_emulator.sh "test" "system-images;android-${{ matrix.android_target }};${{ matrix.emulator_type }};x86_64"
-              ./.github/scripts/run_tests.sh ${{ matrix.d2d_backup_test }}
+              ./.github/scripts/run_tests.sh
 
       - name: Upload test results
         if: always()

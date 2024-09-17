@@ -62,7 +62,6 @@ internal class AppListRetriever(
         val appListSections = linkedMapOf(
             AppSectionTitle(R.string.backup_section_system) to getSpecialApps(),
             AppSectionTitle(R.string.backup_section_user) to getApps(),
-            AppSectionTitle(R.string.backup_section_not_allowed) to getNotAllowedApps()
         ).filter { it.value.isNotEmpty() }
 
         return appListSections.flatMap { (sectionTitle, appList) ->
@@ -127,21 +126,6 @@ internal class AppListRetriever(
                 status = metadata?.state.toAppBackupState(),
             )
         }).sortedBy { it.name.lowercase(locale) }
-    }
-
-    private fun getNotAllowedApps(): List<AppStatus> {
-        val locale = Locale.getDefault()
-        return packageService.userNotAllowedApps.map {
-            AppStatus(
-                packageName = it.packageName,
-                enabled = settingsManager.isBackupEnabled(it.packageName),
-                icon = getIconFromPackageManager(it.packageName),
-                name = getAppName(context, it.packageName).toString(),
-                time = 0,
-                size = null,
-                status = FAILED_NOT_ALLOWED,
-            )
-        }.sortedBy { it.name.lowercase(locale) }
     }
 
     private fun getIconFromPackageManager(packageName: String): Drawable = try {

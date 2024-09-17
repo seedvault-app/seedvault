@@ -69,8 +69,6 @@
     <string name="settings_expert_title">Expert settings</string>
     <string name="settings_expert_quota_title">Unlimited app quota</string>
     <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
-    <string name="settings_expert_d2d_title">Device-to-device backups</string>
-    <string name="settings_expert_d2d_summary">This forces backups for most apps, even when they disallow them. This is alpha, use at your own risk.</string>
     <string name="settings_expert_logcat_title">Save app log</string>
     <string name="settings_expert_logcat_summary">Developers can diagnose bugs with these logs.\n\nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
     <string name="settings_expert_logcat_error">Error: Could not save app log</string>
@@ -204,7 +202,6 @@
     <string name="backup_app_quota_exceeded">Backup quota exceeded</string>
     <string name="restore_app_quota_exceeded">Backup quota was exceeded</string>
     <string name="restore_app_not_installed">App not installed</string>
-    <string name="backup_section_not_allowed">Apps that do not allow data backup</string>
 
     <!-- Restore -->
     <string name="restore_title">Restore from backup</string>

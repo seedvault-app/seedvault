@@ -167,10 +167,6 @@ internal class RestoreCoordinator(
      */
     fun beforeStartRestore(restorableBackup: RestorableBackup) {
         this.restorableBackup = restorableBackup
-
-        if (restorableBackup.d2dBackup) {
-            settingsManager.setD2dBackupsEnabled(true)
-        }
     }
 
     /**

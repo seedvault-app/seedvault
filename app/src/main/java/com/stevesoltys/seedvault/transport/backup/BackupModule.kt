@@ -14,7 +14,6 @@ val backupModule = module {
     single {
         PackageService(
             context = androidContext(),
-            backupManager = get(),
             settingsManager = get(),
             backendManager = get(),
         )

@@ -62,13 +62,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
      * which is accessible to the BackupAgent.
      * This allows the agent to decide what to do based on properties of the transport.
      */
-    override fun getTransportFlags(): Int {
-        return if (settingsManager.d2dBackupsEnabled()) {
-            D2D_TRANSPORT_FLAGS
-        } else {
-            DEFAULT_TRANSPORT_FLAGS
-        }
-    }
+    override fun getTransportFlags(): Int = D2D_TRANSPORT_FLAGS
 
     /**
      * Ask the transport for an [Intent] that can be used to launch

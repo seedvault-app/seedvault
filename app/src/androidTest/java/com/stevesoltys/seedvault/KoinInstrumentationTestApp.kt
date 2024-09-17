@@ -32,7 +32,7 @@ class KoinInstrumentationTestApp : App() {
         val testModule = module {
             val context = this@KoinInstrumentationTestApp
 
-            single { spyk(PackageService(context, get(), get(), get())) }
+            single { spyk(PackageService(context, get(), get())) }
             single { spyk(SettingsManager(context)) }
 
             single { spyk(BackupNotificationManager(context)) }

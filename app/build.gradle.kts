@@ -39,9 +39,6 @@ android {
 
             testInstrumentationRunnerArguments["size"] = testSize
         }
-
-        val d2dBackupTest = project.findProperty("d2d_backup_test")?.toString() ?: "true"
-        testInstrumentationRunnerArguments["d2d_backup_test"] = d2dBackupTest
     }
 
     signingConfigs {
