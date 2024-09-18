@@ -67,8 +67,6 @@
     <string name="settings_scheduling_charging_title">Back up only when charging</string>
 
     <string name="settings_expert_title">Expert settings</string>
-    <string name="settings_expert_quota_title">Unlimited app quota</string>
-    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
     <string name="settings_expert_logcat_title">Save app log</string>
     <string name="settings_expert_logcat_summary">Developers can diagnose bugs with these logs.\n\nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
     <string name="settings_expert_logcat_error">Error: Could not save app log</string>

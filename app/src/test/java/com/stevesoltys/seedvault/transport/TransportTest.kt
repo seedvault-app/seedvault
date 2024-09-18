@@ -57,6 +57,7 @@ internal abstract class TransportTest {
 
     protected val sigInfo: SigningInfo = mockk()
     protected val token = Random.nextLong()
+    protected val quota = Random.nextLong(1, Long.MAX_VALUE)
     protected val applicationInfo = mockk<ApplicationInfo> {
         flags = FLAG_ALLOW_BACKUP or FLAG_INSTALLED
     }

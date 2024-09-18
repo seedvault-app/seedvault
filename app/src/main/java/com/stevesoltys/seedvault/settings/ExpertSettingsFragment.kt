@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreferenceCompat
 import androidx.preference.TwoStatePreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.mms.ContentType.TEXT_PLAIN
@@ -63,13 +62,6 @@ class ExpertSettingsFragment : PreferenceFragmentCompat() {
             val timestamp = System.currentTimeMillis()
             val name = "seedvault-$versionName-$timestamp.txt"
             createFileLauncher.launch(name)
-            true
-        }
-
-        val quotaPreference = findPreference<SwitchPreferenceCompat>(PREF_KEY_UNLIMITED_QUOTA)
-
-        quotaPreference?.setOnPreferenceChangeListener { _, newValue ->
-            quotaPreference.isChecked = newValue as Boolean
             true
         }
     }

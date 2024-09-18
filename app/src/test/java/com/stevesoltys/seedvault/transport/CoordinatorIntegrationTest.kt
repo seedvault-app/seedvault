@@ -80,7 +80,6 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val snapshotManager = mockk<SnapshotManager>()
     private val backupReceiver = mockk<BackupReceiver>()
     private val kvBackup = KVBackup(
-        settingsManager = settingsManager,
         backupReceiver = backupReceiver,
         inputFactory = inputFactory,
         dbManager = dbManager,
@@ -287,7 +286,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         val bInputStream = ByteArrayInputStream(appData)
 
         every { inputFactory.getInputStream(fileDescriptor) } returns bInputStream
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
         coEvery { backupReceiver.addBytes(any(), capture(byteSlot)) } answers {
             bOutputStream.writeBytes(byteSlot.captured)
         }

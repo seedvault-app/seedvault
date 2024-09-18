@@ -55,7 +55,6 @@ private const val PREF_KEY_WEBDAV_PASS = "webDavPass"
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
 private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
-internal const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
 internal const val PREF_KEY_LAST_BACKUP = "lastBackup"
 
 class SettingsManager(private val context: Context) {
@@ -246,7 +245,7 @@ class SettingsManager(private val context: Context) {
         prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
     }
 
-    fun isQuotaUnlimited() = prefs.getBoolean(PREF_KEY_UNLIMITED_QUOTA, false)
+    val quota: Long = 1024 * 1024 * 1024 // 1 GiB for now
 
     /**
      * This assumes that if there's no storage plugin set, it is the first start.

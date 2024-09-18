@@ -134,7 +134,7 @@ internal class BackupCoordinator(
     fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         // report back quota
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")
-        val quota = if (isFullBackup) full.quota else kv.quota
+        val quota = settingsManager.quota
         Log.i(TAG, "Reported quota of $quota bytes.")
         return quota
     }

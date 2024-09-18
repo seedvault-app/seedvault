@@ -32,8 +32,6 @@ private class FullBackupState(
     var size: Long = 0
 }
 
-const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()
-
 private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -48,12 +46,7 @@ internal class FullBackup(
 
     val hasState: Boolean get() = state != null
     val currentPackageInfo get() = state?.packageInfo
-    val quota
-        get() = if (settingsManager.isQuotaUnlimited()) {
-            Long.MAX_VALUE
-        } else {
-            DEFAULT_QUOTA_FULL_BACKUP
-        }
+    val quota get() = settingsManager.quota
 
     fun checkFullBackupSize(size: Long): Int {
         Log.i(TAG, "Check full backup size of $size bytes.")

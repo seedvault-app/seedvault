@@ -21,7 +21,6 @@ val backupModule = module {
     single<KvDbManager> { KvDbManagerImpl(androidContext()) }
     single {
         KVBackup(
-            settingsManager = get(),
             backupReceiver = get(),
             inputFactory = get(),
             dbManager = get(),

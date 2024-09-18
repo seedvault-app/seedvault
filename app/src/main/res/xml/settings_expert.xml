@@ -4,12 +4,6 @@
   -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="unlimited_quota"
-        android:summary="@string/settings_expert_quota_summary"
-        android:title="@string/settings_expert_quota_title" />
-
-    <SwitchPreferenceCompat
         android:defaultValue="true"
         android:icon="@drawable/ic_apps"
         android:key="backup_apk"

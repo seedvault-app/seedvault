@@ -40,7 +40,6 @@ internal class KVBackupTest : BackupTest() {
     private val dbManager = mockk<KvDbManager>()
 
     private val backup = KVBackup(
-        settingsManager = settingsManager,
         backupReceiver = backupReceiver,
         inputFactory = inputFactory,
         dbManager = dbManager,

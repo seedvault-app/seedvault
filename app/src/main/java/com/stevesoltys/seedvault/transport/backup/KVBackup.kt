@@ -16,7 +16,6 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.settings.SettingsManager
 import java.io.IOException
 
 class KVBackupState(
@@ -24,12 +23,9 @@ class KVBackupState(
     val db: KVDb,
 )
 
-const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
-
 private val TAG = KVBackup::class.java.simpleName
 
 internal class KVBackup(
-    private val settingsManager: SettingsManager,
     private val backupReceiver: BackupReceiver,
     private val inputFactory: InputFactory,
     private val dbManager: KvDbManager,
@@ -39,12 +35,6 @@ internal class KVBackup(
 
     val hasState get() = state != null
     val currentPackageInfo get() = state?.packageInfo
-    val quota: Long
-        get() = if (settingsManager.isQuotaUnlimited()) {
-            Long.MAX_VALUE
-        } else {
-            DEFAULT_QUOTA_KEY_VALUE_BACKUP
-        }
 
     fun performBackup(
         packageInfo: PackageInfo,

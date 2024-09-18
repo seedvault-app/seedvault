@@ -40,7 +40,6 @@ class KvBackupInstrumentationTest : KoinComponent {
     private val dbManager: KvDbManager by inject()
 
     private val backup = KVBackup(
-        settingsManager = settingsManager,
         backupReceiver = backupReceiver,
         inputFactory = inputFactory,
         dbManager = dbManager,

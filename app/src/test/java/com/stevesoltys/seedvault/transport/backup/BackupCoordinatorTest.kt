@@ -87,11 +87,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         val isFullBackup = Random.nextBoolean()
         val quota = Random.nextLong()
 
-        if (isFullBackup) {
-            every { full.quota } returns quota
-        } else {
-            every { kv.quota } returns quota
-        }
+        every { settingsManager.quota } returns quota
         assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, isFullBackup))
     }
 
@@ -182,9 +178,9 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
-        every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { settingsManager.quota } returns quota
         every {
-            full.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
+            full.checkFullBackupSize(quota + 1)
         } returns TRANSPORT_QUOTA_EXCEEDED
         every { full.currentPackageInfo } returns packageInfo
         every {
@@ -202,14 +198,8 @@ internal class BackupCoordinatorTest : BackupTest() {
             TRANSPORT_OK,
             backup.performFullBackup(packageInfo, fileDescriptor, 0)
         )
-        assertEquals(
-            DEFAULT_QUOTA_FULL_BACKUP,
-            backup.getBackupQuota(packageInfo.packageName, true)
-        )
-        assertEquals(
-            TRANSPORT_QUOTA_EXCEEDED,
-            backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
-        )
+        assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, true))
+        assertEquals(TRANSPORT_QUOTA_EXCEEDED, backup.checkFullBackupSize(quota + 1))
         backup.cancelFullBackup()
         assertEquals(0L, backup.requestFullBackupTime())
 
@@ -227,7 +217,7 @@ internal class BackupCoordinatorTest : BackupTest() {
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
-        every { full.quota } returns DEFAULT_QUOTA_FULL_BACKUP
+        every { settingsManager.quota } returns quota
         every { full.checkFullBackupSize(0) } returns TRANSPORT_PACKAGE_REJECTED
         every { full.currentPackageInfo } returns packageInfo
         every {
@@ -241,14 +231,8 @@ internal class BackupCoordinatorTest : BackupTest() {
         every { backendManager.backendProperties } returns safProperties
         every { settingsManager.useMeteredNetwork } returns false
 
-        assertEquals(
-            TRANSPORT_OK,
-            backup.performFullBackup(packageInfo, fileDescriptor, 0)
-        )
-        assertEquals(
-            DEFAULT_QUOTA_FULL_BACKUP,
-            backup.getBackupQuota(packageInfo.packageName, true)
-        )
+        assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, fileDescriptor, 0))
+        assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, true))
         assertEquals(TRANSPORT_PACKAGE_REJECTED, backup.checkFullBackupSize(0))
         backup.cancelFullBackup()
         assertEquals(0L, backup.requestFullBackupTime())

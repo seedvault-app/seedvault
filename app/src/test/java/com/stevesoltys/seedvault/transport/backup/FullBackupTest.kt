@@ -49,19 +49,12 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `checkFullBackupSize exceeds quota`() {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
 
         assertEquals(
             TRANSPORT_QUOTA_EXCEEDED,
-            backup.checkFullBackupSize(DEFAULT_QUOTA_FULL_BACKUP + 1)
+            backup.checkFullBackupSize(quota + 1)
         )
-    }
-
-    @Test
-    fun `checkFullBackupSize does not exceed quota when unlimited`() {
-        every { settingsManager.isQuotaUnlimited() } returns true
-
-        assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(quota + 1))
     }
 
     @Test
@@ -76,14 +69,14 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `checkFullBackupSize accepts min data`() {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(1))
     }
 
     @Test
     fun `checkFullBackupSize accepts max data`() {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
 
         assertEquals(TRANSPORT_OK, backup.checkFullBackupSize(quota))
     }
@@ -104,7 +97,8 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData first call over quota`() = runBlocking {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        val quota = Random.nextInt(1, Int.MAX_VALUE).toLong()
+        every { settingsManager.quota } returns quota
         every { inputFactory.getInputStream(data) } returns inputStream
         val numBytes = (quota + 1).toInt()
         expectSendData(numBytes)
@@ -123,7 +117,8 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData subsequent calls over quota`() = runBlocking {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        val quota = (50 * 1024 * 1024).toLong()
+        every { settingsManager.quota } returns quota
         every { inputFactory.getInputStream(data) } returns inputStream
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
@@ -155,7 +150,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
         every { inputStream.read(any(), any(), bytes.size) } throws IOException()
 
         assertEquals(TRANSPORT_ERROR, backup.sendBackupData(bytes.size))
@@ -175,7 +170,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
         every { inputStream.read(any(), 0, bytes.size) } returns bytes.size
         coEvery { backupReceiver.addBytes("FullBackup $packageName", any()) } throws IOException()
 
@@ -196,7 +191,7 @@ internal class FullBackupTest : BackupTest() {
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))
         assertTrue(backup.hasState)
 
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
         expectSendData(bytes.size)
 
         assertEquals(TRANSPORT_OK, backup.sendBackupData(bytes.size))
@@ -215,7 +210,7 @@ internal class FullBackupTest : BackupTest() {
 
     @Test
     fun `sendBackupData runs ok`() = runBlocking {
-        every { settingsManager.isQuotaUnlimited() } returns false
+        every { settingsManager.quota } returns quota
         every { inputFactory.getInputStream(data) } returns inputStream
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0))

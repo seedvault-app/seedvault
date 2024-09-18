@@ -17,6 +17,4 @@ internal abstract class BackupTest : TransportTest() {
     protected val outputStream = mockk<OutputStream>()
     protected val encryptedOutputStream = mockk<OutputStream>()
 
-    protected val quota = DEFAULT_QUOTA_FULL_BACKUP
-
 }
