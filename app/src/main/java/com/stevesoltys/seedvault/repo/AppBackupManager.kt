@@ -9,6 +9,7 @@ import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
@@ -110,6 +111,29 @@ internal class AppBackupManager(
             snapshotCreator = null
             MemoryLogger.log()
         }
+    }
+
+    /**
+     * Returns true if the repo identified by [repoId] can be transferred to this device.
+     * This is the case when it isn't the same as the current repoId and the version is latest.
+     */
+    fun canRecycleBackupRepo(repoId: String?, version: Byte?): Boolean {
+        if (repoId == null || version == null) return false
+        return repoId != crypto.repoId && version == VERSION
+    }
+
+    /**
+     * Transfers the ownership of the backup repository identified by the [oldRepoId]
+     * to the current user and device
+     * by renaming the [TopLevelFolder] of the repo to the current repoId.
+     */
+    @Throws(IOException::class)
+    suspend fun recycleBackupRepo(oldRepoId: String) {
+        val newRepoId = crypto.repoId
+        if (oldRepoId == newRepoId) return
+        val oldFolder = TopLevelFolder(oldRepoId)
+        val newFolder = TopLevelFolder(newRepoId)
+        backendManager.backend.rename(oldFolder, newFolder)
     }
 
     /**

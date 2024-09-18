@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.repo
 
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.transport.TransportTest
 import io.mockk.Runs
 import io.mockk.andThenJust
@@ -20,6 +21,7 @@ import org.calyxos.seedvault.core.backends.AppBackupFileType.Snapshot
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.TopLevelFolder
+import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -121,6 +123,27 @@ internal class AppBackupManagerTest : TransportTest() {
         every { blobCache.clearLocalCache() } just Runs
 
         assertEquals(snapshot, appBackupManager.afterBackupFinished(true))
+    }
+
+    @Test
+    fun `recycleBackupRepo doesn't do anything if repoId is current`() = runBlocking {
+        every { crypto.repoId } returns repoId
+        appBackupManager.recycleBackupRepo(repoId)
+    }
+
+    @Test
+    fun `recycleBackupRepo renames different repo`() = runBlocking {
+        val oldRepoId = getRandomByteArray(32).toHexString()
+
+        every { crypto.repoId } returns repoId
+        every { backendManager.backend } returns backend
+        coEvery { backend.rename(TopLevelFolder(oldRepoId), TopLevelFolder(repoId)) } just Runs
+
+        appBackupManager.recycleBackupRepo(oldRepoId)
+
+        coVerify {
+            backend.rename(TopLevelFolder(oldRepoId), TopLevelFolder(repoId))
+        }
     }
 
     @Test
