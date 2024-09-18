@@ -10,6 +10,12 @@ android_library_import {
     extract_jni: true,
 }
 
+android_library_import {
+    name: "seedvault-logback-android",
+    aars: ["logback-android-3.0.0.aar"],
+    sdk_version: "current",
+}
+
 java_import {
     name: "seedvault-lib-protobuf-kotlin-lite",
     jars: ["protobuf-kotlin-lite-3.21.12.jar"],
@@ -18,7 +24,7 @@ java_import {
 
 java_import {
     name: "seedvault-lib-kotlin-bip39",
-    jars: ["kotlin-bip39-jvm-1.0.6.jar"],
+    jars: ["kotlin-bip39-jvm-1.0.8.jar"],
     sdk_version: "current",
 }
 

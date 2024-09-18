@@ -5,12 +5,12 @@
 
 android_library_import {
     name: "seedvault-lib-koin-android",
-    aars: ["koin-android-3.2.0.aar"],
+    aars: ["koin-android-3.5.6.aar"],
     sdk_version: "current",
 }
 
 java_import {
     name: "seedvault-lib-koin-core-jvm",
-    jars: ["koin-core-jvm-3.2.0.jar"],
+    jars: ["koin-core-jvm-3.5.6.jar"],
     sdk_version: "current",
 }

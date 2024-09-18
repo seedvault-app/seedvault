@@ -15,6 +15,9 @@ android_app {
     resource_dirs: [
         "app/src/main/res",
     ],
+    asset_dirs: [
+        "app/src/main/assets"
+    ],
     proto: {
         type: "lite",
         local_include_dirs: ["app/src/main/proto"],
@@ -37,6 +40,7 @@ android_app {
         // app backup related libs
         "seedvault-lib-protobuf-kotlin-lite",
         "seedvault-lib-kotlin-logging-jvm",
+        "seedvault-logback-android",
         "seedvault-lib-chunker",
         "seedvault-lib-zstd-jni",
         // our own gradle module libs

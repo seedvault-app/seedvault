@@ -43,9 +43,3 @@ android_library {
         "-opt-in=kotlin.RequiresOptIn",
     ],
 }
-
-java_import {
-    name: "seedvault-lib-tink-android",
-    jars: ["libs/tink-android-1.10.0.jar"],
-    sdk_version: "current",
-}

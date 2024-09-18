@@ -7,7 +7,6 @@ package org.calyxos.seedvault.core.backends.webdav
 
 import at.bitfire.dav4jvm.BasicDigestAuthHandler
 import at.bitfire.dav4jvm.DavCollection
-import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response.HrefRelation.SELF
 import at.bitfire.dav4jvm.exception.HttpException
 import at.bitfire.dav4jvm.exception.NotFoundException
@@ -82,10 +81,6 @@ public class WebDavBackend(
     private val baseUrl = webDavConfig.url.trimEnd('/')
     private val url = "$baseUrl/$root"
     private val folders = mutableSetOf<HttpUrl>() // cache for existing/created folders
-
-    init {
-        PropertyRegistry.register(GetLastModified.Factory)
-    }
 
     override suspend fun test(): Boolean {
         val location = "$baseUrl/".toHttpUrl()
