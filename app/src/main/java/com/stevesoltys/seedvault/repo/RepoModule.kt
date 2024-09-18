@@ -10,6 +10,7 @@ import org.koin.dsl.module
 import java.io.File
 
 val repoModule = module {
+    single { AppBackupManager(get(), get(), get(), get(), get(), get()) }
     single { BackupReceiver(get(), get(), get()) }
     single { BlobCache(androidContext()) }
     single { BlobCreator(get(), get()) }

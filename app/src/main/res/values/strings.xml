@@ -139,8 +139,8 @@
     <string name="recovery_code_verification_try_again">Try again</string>
     <string name="recovery_code_verification_generate_new">Generate new code</string>
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
-    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.\n\nAre you sure you want to do this?</string>
-    <string name="recovery_code_recreated">New recovery code has been created successfully</string>
+    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible. This app will close when done.\n\nAre you sure you want to do this?</string>
+    <string name="recovery_code_recreated">New recovery code has been created successfully. Exiting…</string>
     <string name="recovery_code_auth_title">Re-enter your screen lock</string>
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
 

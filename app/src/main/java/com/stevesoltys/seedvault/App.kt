@@ -94,7 +94,9 @@ open class App : Application() {
                 backupStateManager = get(),
             )
         }
-        viewModel { RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get()) }
+        viewModel {
+            RecoveryCodeViewModel(this@App, get(), get(), get(), get(), get(), get(), get())
+        }
         viewModel {
             BackupStorageViewModel(
                 app = this@App,

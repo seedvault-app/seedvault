@@ -5,7 +5,6 @@
 
 package com.stevesoltys.seedvault.worker
 
-import com.stevesoltys.seedvault.repo.AppBackupManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -27,7 +26,6 @@ val workerModule = module {
             appBackupManager = get(),
         )
     }
-    single { AppBackupManager(get(), get(), get(), get(), get(), get()) }
     single {
         ApkBackup(
             pm = androidContext().packageManager,
@@ -45,7 +43,7 @@ val workerModule = module {
             packageService = get(),
             apkBackup = get(),
             iconManager = get(),
-            nm = get()
+            nm = get(),
         )
     }
 }

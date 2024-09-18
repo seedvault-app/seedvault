@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,7 +46,7 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
 
     override fun onBind(intent: Intent): IBinder? {
         // refuse to work until we have the main key
-        val noMainKey = keyManager.hasBackupKey() && !keyManager.hasMainKey()
+        val noMainKey = permitDiskReads { keyManager.hasBackupKey() && !keyManager.hasMainKey() }
         if (noMainKey && backupManager.currentTransport == TRANSPORT_ID) {
             notificationManager.onNoMainKeyError()
             backupManager.isBackupEnabled = false

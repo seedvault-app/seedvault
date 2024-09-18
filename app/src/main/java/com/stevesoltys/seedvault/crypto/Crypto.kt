@@ -190,17 +190,23 @@ internal class CryptoImpl(
         secureRandom.nextBytes(this)
     }
 
-    override val repoId: String
-        get() { // TODO maybe cache this, but what if main key changes during run-time?
-            @SuppressLint("HardwareIds")
-            val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
-            val repoIdKey =
-                deriveKey(keyManager.getMainKey(), "app backup repoId key".toByteArray())
-            val hmacHasher: Mac = Mac.getInstance(ALGORITHM_HMAC).apply {
-                init(SecretKeySpec(repoIdKey, ALGORITHM_HMAC))
-            }
-            return hmacHasher.doFinal(androidId.toByteArrayFromHex()).toHexString()
+    /**
+     * The ID of the backup repository tied to this user/device via [ANDROID_ID]
+     * and the current [KeyManager.getMainKey].
+     *
+     * Attention: If the main key ever changes, we need to kill our process,
+     * so all lazy values that depend on that key or the [gearTableKey] get reinitialized.
+     */
+    override val repoId: String by lazy {
+        @SuppressLint("HardwareIds")
+        val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
+        val repoIdKey =
+            deriveKey(keyManager.getMainKey(), "app backup repoId key".toByteArray())
+        val hmacHasher: Mac = Mac.getInstance(ALGORITHM_HMAC).apply {
+            init(SecretKeySpec(repoIdKey, ALGORITHM_HMAC))
         }
+        hmacHasher.doFinal(androidId.toByteArrayFromHex()).toHexString()
+    }
 
     override val gearTableKey: ByteArray
         get() = deriveKey(keyManager.getMainKey(), "app backup gear table key".toByteArray())

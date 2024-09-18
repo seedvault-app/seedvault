@@ -112,6 +112,17 @@ internal class AppBackupManager(
         }
     }
 
+    /**
+     * Careful, this removes the entire backup repository from the backend
+     * and clears local blob cache.
+     */
+    @WorkerThread
+    @Throws(IOException::class)
+    suspend fun removeBackupRepo() {
+        blobCache.clearLocalCache()
+        backendManager.backend.remove(TopLevelFolder(crypto.repoId))
+    }
+
     private suspend fun keepTrying(n: Int = 3, block: suspend () -> Unit) {
         for (i in 1..n) {
             try {
