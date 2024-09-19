@@ -29,7 +29,7 @@ class CryptoIntegrationTest {
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader)
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
 
     private val cleartext = Random.nextBytes(Random.nextInt(1, 422300))
 

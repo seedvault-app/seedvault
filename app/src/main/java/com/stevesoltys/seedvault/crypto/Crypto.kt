@@ -171,11 +171,13 @@ internal const val TYPE_BACKUP_KV: Byte = 0x01
 internal const val TYPE_BACKUP_FULL: Byte = 0x02
 internal const val TYPE_ICONS: Byte = 0x03
 
+@SuppressLint("HardwareIds")
 internal class CryptoImpl(
-    private val context: Context,
+    context: Context,
     private val keyManager: KeyManager,
     private val cipherFactory: CipherFactory,
     private val headerReader: HeaderReader,
+    private val androidId: String = Settings.Secure.getString(context.contentResolver, ANDROID_ID),
 ) : Crypto {
 
     private val keyV1: ByteArray by lazy {
@@ -198,8 +200,6 @@ internal class CryptoImpl(
      * so all lazy values that depend on that key or the [gearTableKey] get reinitialized.
      */
     override val repoId: String by lazy {
-        @SuppressLint("HardwareIds")
-        val androidId = Settings.Secure.getString(context.contentResolver, ANDROID_ID)
         val repoIdKey =
             deriveKey(keyManager.getMainKey(), "app backup repoId key".toByteArray())
         val hmacHasher: Mac = Mac.getInstance(ALGORITHM_HMAC).apply {

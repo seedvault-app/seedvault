@@ -65,7 +65,8 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     private val keyManager = KeyManagerTestImpl()
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(context, keyManager, cipherFactory, headerReader)
+    private val cryptoImpl =
+        CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
     private val dbManager = TestKvDbManager()

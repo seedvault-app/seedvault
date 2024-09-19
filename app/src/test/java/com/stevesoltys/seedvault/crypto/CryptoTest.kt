@@ -42,7 +42,7 @@ class CryptoTest {
     private val cipherFactory = mockk<CipherFactory>()
     private val headerReader = mockk<HeaderReader>()
 
-    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader)
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
 
     private val cipher = mockk<Cipher>()
 

@@ -35,7 +35,8 @@ internal class MetadataV0ReadTest {
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(context, keyManager, cipherFactory, headerReader)
+    private val cryptoImpl =
+        CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
 
     private val reader = MetadataReaderImpl(cryptoImpl)
 

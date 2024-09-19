@@ -29,8 +29,7 @@ class CryptoImplTest {
     private val cipherFactory = mockk<CipherFactory>()
     private val headerReader = HeaderReaderImpl()
 
-    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader)
-
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
     @Test
     fun `decrypting multiple segments on empty stream throws`() {
         val inputStream = ByteArrayInputStream(ByteArray(0))
