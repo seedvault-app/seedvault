@@ -12,13 +12,15 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.ChunksCache
+import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
-import org.calyxos.backup.storage.toHexString
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
+import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -30,13 +32,21 @@ internal class ChunkWriterTest {
 
     private val streamCrypto: StreamCrypto = mockk()
     private val chunksCache: ChunksCache = mockk()
-    private val storagePlugin: StoragePlugin = mockk()
+    private val backendGetter: () -> Backend = mockk()
+    private val backend: Backend = mockk()
+    private val androidId: String = getRandomString()
     private val streamKey: ByteArray = Random.nextBytes(KEY_SIZE_BYTES)
     private val ad1: ByteArray = Random.nextBytes(34)
     private val ad2: ByteArray = Random.nextBytes(34)
     private val ad3: ByteArray = Random.nextBytes(34)
-    private val chunkWriter =
-        ChunkWriter(streamCrypto, streamKey, chunksCache, storagePlugin, Random.nextInt(1, 42))
+    private val chunkWriter = ChunkWriter(
+        streamCrypto = streamCrypto,
+        streamKey = streamKey,
+        chunksCache = chunksCache,
+        backendGetter = backendGetter,
+        androidId = androidId,
+        bufferSize = Random.nextInt(1, 42),
+    )
 
     private val chunkId1 = Random.nextBytes(KEY_SIZE_BYTES).toHexString()
     private val chunkId2 = Random.nextBytes(KEY_SIZE_BYTES).toHexString()
@@ -44,6 +54,7 @@ internal class ChunkWriterTest {
 
     init {
         mockLog()
+        every { backendGetter() } returns backend
     }
 
     @Test
@@ -66,9 +77,9 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get the output streams for the chunks
-        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
-        coEvery { storagePlugin.getChunkOutputStream(chunkId2) } returns chunk2Output
-        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
+        coEvery { backend.save(Blob(androidId, chunkId2)) } returns chunk2Output
+        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
 
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
@@ -122,7 +133,7 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get and wrap the output stream for chunk that is missing
-        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
+        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
         every {
             streamCrypto.newEncryptingStream(streamKey, chunk1Output, bytes(34))
@@ -132,7 +143,7 @@ internal class ChunkWriterTest {
         every { chunksCache.insert(chunks[0].toCachedChunk()) } just Runs
 
         // get and wrap the output stream for chunk that isn't cached
-        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
         every { streamCrypto.getAssociatedDataForChunk(chunkId3) } returns ad3
         every {
             streamCrypto.newEncryptingStream(streamKey, chunk3Output, bytes(34))
@@ -175,8 +186,8 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId3) } returns null
 
         // get the output streams for the chunks
-        coEvery { storagePlugin.getChunkOutputStream(chunkId1) } returns chunk1Output
-        coEvery { storagePlugin.getChunkOutputStream(chunkId3) } returns chunk3Output
+        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
+        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
 
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1

@@ -6,10 +6,11 @@
 package org.calyxos.backup.storage.backup
 
 import android.util.Log
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.ChunksCache
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -30,10 +31,12 @@ internal class ChunkWriter(
     private val streamCrypto: StreamCrypto,
     private val streamKey: ByteArray,
     private val chunksCache: ChunksCache,
-    private val storagePlugin: StoragePlugin,
+    private val backendGetter: () -> Backend,
+    private val androidId: String,
     private val bufferSize: Int = DEFAULT_BUFFER_SIZE,
 ) {
 
+    private val backend get() = backendGetter()
     private val buffer = ByteArray(bufferSize)
 
     @Throws(IOException::class, GeneralSecurityException::class)
@@ -68,7 +71,8 @@ internal class ChunkWriter(
 
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun writeChunkData(chunkId: String, writer: (OutputStream) -> Unit) {
-        storagePlugin.getChunkOutputStream(chunkId).use { chunkStream ->
+        val handle = FileBackupFileType.Blob(androidId, chunkId)
+        backend.save(handle).use { chunkStream ->
             chunkStream.write(VERSION.toInt())
             val ad = streamCrypto.getAssociatedDataForChunk(chunkId)
             streamCrypto.newEncryptingStream(streamKey, chunkStream, ad).use { encryptingStream ->

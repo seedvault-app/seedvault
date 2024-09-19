@@ -14,6 +14,7 @@ import android.text.format.Formatter
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -22,7 +23,6 @@ import io.mockk.slot
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.SnapshotResult
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.Backup
 import org.calyxos.backup.storage.backup.Backup.Companion.CHUNK_SIZE_MAX
@@ -40,12 +40,15 @@ import org.calyxos.backup.storage.db.CachedFile
 import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.db.FilesCache
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
 import org.calyxos.backup.storage.restore.FileRestore
 import org.calyxos.backup.storage.restore.RestorableFile
 import org.calyxos.backup.storage.restore.Restore
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
+import org.calyxos.seedvault.core.backends.FileBackupFileType.Snapshot
+import org.calyxos.seedvault.core.crypto.KeyManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -70,24 +73,26 @@ internal class BackupRestoreTest {
     private val contentResolver: ContentResolver = mockk()
 
     private val fileScanner: FileScanner = mockk()
-    private val pluginGetter: () -> StoragePlugin = mockk()
-    private val plugin: StoragePlugin = mockk()
+    private val backendGetter: () -> Backend = mockk()
+    private val androidId: String = getRandomString()
+    private val keyManager: KeyManager = mockk()
+    private val backend: Backend = mockk()
     private val fileRestore: FileRestore = mockk()
-    private val snapshotRetriever = SnapshotRetriever(pluginGetter)
+    private val snapshotRetriever = SnapshotRetriever(backendGetter)
     private val cacheRepopulater: ChunksCacheRepopulater = mockk()
 
     init {
         mockLog()
-
+        mockkStatic("org.calyxos.backup.storage.SnapshotRetrieverKt")
         mockkStatic(Formatter::class)
         every { Formatter.formatShortFileSize(any(), any()) } returns ""
 
         mockkStatic("org.calyxos.backup.storage.UriUtilsKt")
 
-        every { pluginGetter() } returns plugin
+        every { backendGetter() } returns backend
         every { db.getFilesCache() } returns filesCache
         every { db.getChunksCache() } returns chunksCache
-        every { plugin.getMasterKey() } returns SecretKeySpec(
+        every { keyManager.getMainKey() } returns SecretKeySpec(
             "This is a backup key for testing".toByteArray(),
             0, KEY_SIZE_BYTES, ALGORITHM_HMAC
         )
@@ -95,11 +100,13 @@ internal class BackupRestoreTest {
         every { context.contentResolver } returns contentResolver
     }
 
-    private val restore = Restore(context, pluginGetter, snapshotRetriever, fileRestore)
+    private val restore =
+        Restore(context, backendGetter, keyManager, snapshotRetriever, fileRestore)
 
     @Test
     fun testZipAndSingleRandom(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater)
+        val backup =
+            Backup(context, db, fileScanner, backendGetter, androidId, keyManager, cacheRepopulater)
 
         val smallFileMBytes = Random.nextBytes(Random.nextInt(SMALL_FILE_SIZE_MAX))
         val smallFileM = getRandomMediaFile(smallFileMBytes.size)
@@ -117,12 +124,12 @@ internal class BackupRestoreTest {
         val zipChunkOutputStream = ByteArrayOutputStream()
         val mOutputStream = ByteArrayOutputStream()
         val dOutputStream = ByteArrayOutputStream()
-        val snapshotTimestamp = slot<Long>()
+        val snapshotHandle = slot<Snapshot>()
         val snapshotOutputStream = ByteArrayOutputStream()
 
         // provide files and empty cache
         val availableChunks = emptyList<String>()
-        coEvery { plugin.getAvailableChunkIds() } returns availableChunks
+        coEvery { backend.list(any(), Blob::class, callback = any()) } just Runs
         every {
             chunksCache.areAllAvailableChunksCached(db, availableChunks.toHashSet())
         } returns true
@@ -150,16 +157,14 @@ internal class BackupRestoreTest {
         } returns ByteArrayInputStream(fileDBytes) andThen ByteArrayInputStream(fileDBytes)
 
         // output streams and caching
-        coEvery { plugin.getChunkOutputStream(any()) } returnsMany listOf(
+        coEvery { backend.save(any<Blob>()) } returnsMany listOf(
             zipChunkOutputStream, mOutputStream, dOutputStream
         )
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        coEvery {
-            plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
-        } returns snapshotOutputStream
+        coEvery { backend.save(capture(snapshotHandle)) } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
 
         backup.runBackup(null)
@@ -179,16 +184,16 @@ internal class BackupRestoreTest {
 
         // RESTORE
 
-        val storedSnapshot = StoredSnapshot("test", snapshotTimestamp.captured)
+        val storedSnapshot = StoredSnapshot("$androidId.sv", snapshotHandle.captured.time)
 
         val smallFileMOutputStream = ByteArrayOutputStream()
         val smallFileDOutputStream = ByteArrayOutputStream()
         val fileMOutputStream = ByteArrayOutputStream()
         val fileDOutputStream = ByteArrayOutputStream()
 
-        coEvery { plugin.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
+        coEvery { backend.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
         coEvery {
-            plugin.getBackupSnapshotInputStream(storedSnapshot)
+            backend.load(storedSnapshot.snapshotHandle)
         } returns ByteArrayInputStream(snapshotOutputStream.toByteArray())
 
         // retrieve snapshots
@@ -198,21 +203,21 @@ internal class BackupRestoreTest {
         assertEquals(2, snapshotResultList.size)
         val snapshots = (snapshotResultList[1] as SnapshotResult.Success).snapshots
         assertEquals(1, snapshots.size)
-        assertEquals(snapshotTimestamp.captured, snapshots[0].time)
+        assertEquals(snapshotHandle.captured.time, snapshots[0].time)
         val snapshot = snapshots[0].snapshot ?: error("snapshot was null")
         assertEquals(2, snapshot.mediaFilesList.size)
         assertEquals(2, snapshot.documentFilesList.size)
 
         // pipe chunks back in
         coEvery {
-            plugin.getChunkInputStream(storedSnapshot, cachedFiles[0].chunks[0])
+            backend.load(Blob(androidId, cachedFiles[0].chunks[0]))
         } returns ByteArrayInputStream(zipChunkOutputStream.toByteArray())
         // cachedFiles[0].chunks[1] is in previous zipChunk
         coEvery {
-            plugin.getChunkInputStream(storedSnapshot, cachedFiles[2].chunks[0])
+            backend.load(Blob(androidId, cachedFiles[2].chunks[0]))
         } returns ByteArrayInputStream(mOutputStream.toByteArray())
         coEvery {
-            plugin.getChunkInputStream(storedSnapshot, cachedFiles[3].chunks[0])
+            backend.load(Blob(androidId, cachedFiles[3].chunks[0]))
         } returns ByteArrayInputStream(dOutputStream.toByteArray())
 
         // provide file output streams for restore
@@ -236,7 +241,16 @@ internal class BackupRestoreTest {
 
     @Test
     fun testMultiChunks(): Unit = runBlocking {
-        val backup = Backup(context, db, fileScanner, pluginGetter, cacheRepopulater, 4)
+        val backup = Backup(
+            context = context,
+            db = db,
+            fileScanner = fileScanner,
+            backendGetter = backendGetter,
+            androidId = androidId,
+            keyManager = keyManager,
+            cacheRepopulater = cacheRepopulater,
+            chunkSizeMax = 4,
+        )
 
         val chunk1 = byteArrayOf(0x00, 0x01, 0x02, 0x03)
         val chunk2 = byteArrayOf(0x04, 0x05, 0x06, 0x07)
@@ -248,7 +262,7 @@ internal class BackupRestoreTest {
         val file2 = getRandomDocFile(file2Bytes.size)
         val file1OutputStream = ByteArrayOutputStream()
         val file2OutputStream = ByteArrayOutputStream()
-        val snapshotTimestamp = slot<Long>()
+        val snapshotHandle = slot<Snapshot>()
         val snapshotOutputStream = ByteArrayOutputStream()
 
         val scannedFiles = FileScannerResult(
@@ -259,7 +273,7 @@ internal class BackupRestoreTest {
 
         // provide files and empty cache
         val availableChunks = emptyList<String>()
-        coEvery { plugin.getAvailableChunkIds() } returns availableChunks
+        coEvery { backend.list(any(), Blob::class, callback = any()) } just Runs
         every {
             chunksCache.areAllAvailableChunksCached(db, availableChunks.toHashSet())
         } returns true
@@ -297,26 +311,38 @@ internal class BackupRestoreTest {
         // output streams for deterministic chunks
         val id040f32 = ByteArrayOutputStream()
         coEvery {
-            plugin.getChunkOutputStream(
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
+                )
             )
         } returns id040f32
         val id901fbc = ByteArrayOutputStream()
         coEvery {
-            plugin.getChunkOutputStream(
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
+                )
             )
         } returns id901fbc
         val id5adea3 = ByteArrayOutputStream()
         coEvery {
-            plugin.getChunkOutputStream(
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
+                )
             )
         } returns id5adea3
         val id40d00c = ByteArrayOutputStream()
         coEvery {
-            plugin.getChunkOutputStream(
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
+                )
             )
         } returns id40d00c
 
@@ -324,32 +350,46 @@ internal class BackupRestoreTest {
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        coEvery {
-            plugin.getBackupSnapshotOutputStream(capture(snapshotTimestamp))
-        } returns snapshotOutputStream
+        coEvery { backend.save(capture(snapshotHandle)) } returns snapshotOutputStream
         every { db.applyInParts<String>(any(), any()) } just Runs
 
         backup.runBackup(null)
 
         // chunks were only written to storage once
         coVerify(exactly = 1) {
-            plugin.getChunkOutputStream(
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3")
-            plugin.getChunkOutputStream(
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29")
-            plugin.getChunkOutputStream(
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d")
-            plugin.getChunkOutputStream(
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67")
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
+                )
+            )
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
+                )
+            )
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
+                )
+            )
+            backend.save(
+                Blob(
+                    androidId = androidId,
+                    name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
+                )
+            )
         }
 
         // RESTORE
 
-        val storedSnapshot = StoredSnapshot("test", snapshotTimestamp.captured)
+        val storedSnapshot = StoredSnapshot("$androidId.sv", snapshotHandle.captured.time)
 
-        coEvery { plugin.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
+        coEvery { backend.getBackupSnapshotsForRestore() } returns listOf(storedSnapshot)
         coEvery {
-            plugin.getBackupSnapshotInputStream(storedSnapshot)
+            backend.load(storedSnapshot.snapshotHandle)
         } returns ByteArrayInputStream(snapshotOutputStream.toByteArray())
 
         // retrieve snapshots
@@ -363,27 +403,35 @@ internal class BackupRestoreTest {
 
         // pipe chunks back in
         coEvery {
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
+                )
             )
         } returns ByteArrayInputStream(id040f32.toByteArray())
         coEvery {
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
+                )
             )
         } returns ByteArrayInputStream(id901fbc.toByteArray())
         coEvery {
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
+                )
             )
         } returns ByteArrayInputStream(id5adea3.toByteArray())
         coEvery {
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
+                )
             )
         } returns ByteArrayInputStream(id40d00c.toByteArray())
 
@@ -401,22 +449,63 @@ internal class BackupRestoreTest {
 
         // chunks were only read from storage once
         coVerify(exactly = 1) {
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
+                )
             )
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
+                )
             )
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
+                )
             )
-            plugin.getChunkInputStream(
-                storedSnapshot,
-                "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67"
+            backend.load(
+                Blob(
+                    androidId = androidId,
+                    name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
+                )
             )
+        }
+    }
+
+    @Test
+    fun testBackupUpdatesBackend(): Unit = runBlocking {
+        val backendGetterNew: () -> Backend = mockk()
+        val backend1: Backend = mockk()
+        val backend2: Backend = mockk()
+        val backup = Backup(
+            context = context,
+            db = db,
+            fileScanner = fileScanner,
+            backendGetter = backendGetterNew,
+            androidId = androidId,
+            keyManager = keyManager,
+            cacheRepopulater = cacheRepopulater,
+        )
+        every { backendGetterNew() } returnsMany listOf(backend1, backend2)
+
+        coEvery { backend1.list(any(), Blob::class, callback = any()) } just Runs
+        every { chunksCache.areAllAvailableChunksCached(db, emptySet()) } returns true
+        every { fileScanner.getFiles() } returns FileScannerResult(emptyList(), emptyList())
+        every { filesCache.getByUri(any()) } returns null // nothing is cached, all is new
+
+        backup.runBackup(null)
+
+        // second run uses new backend
+        coEvery { backend2.list(any(), Blob::class, callback = any()) } just Runs
+        backup.runBackup(null)
+
+        coVerifyOrder {
+            backend1.list(any(), Blob::class, callback = any())
+            backend2.list(any(), Blob::class, callback = any())
         }
     }
 

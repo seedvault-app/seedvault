@@ -24,9 +24,8 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -44,6 +43,8 @@ import io.mockk.mockkStatic
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -66,8 +67,8 @@ internal class ApkRestoreTest : TransportTest() {
     }
     private val backupManager: IBackupManager = mockk()
     private val backupStateManager: BackupStateManager = mockk()
-    private val storagePluginManager: StoragePluginManager = mockk()
-    private val storagePlugin: StoragePlugin<*> = mockk()
+    private val backendManager: BackendManager = mockk()
+    private val backend: Backend = mockk()
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
@@ -77,7 +78,7 @@ internal class ApkRestoreTest : TransportTest() {
         context = strictContext,
         backupManager = backupManager,
         backupStateManager = backupStateManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
@@ -108,7 +109,7 @@ internal class ApkRestoreTest : TransportTest() {
         // as we don't do strict signature checking, we can use a relaxed mock
         packageInfo.signingInfo = mockk(relaxed = true)
 
-        every { storagePluginManager.appPlugin } returns storagePlugin
+        every { backendManager.backend } returns backend
 
         // related to starting/stopping service
         every { strictContext.packageName } returns "org.foo.bar"
@@ -128,8 +129,8 @@ internal class ApkRestoreTest : TransportTest() {
         every { backupStateManager.isAutoRestoreEnabled } returns false
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        coEvery { backend.load(handle) } returns apkInputStream
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -151,7 +152,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
         every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
 
         apkRestore.installResult.test {
@@ -177,7 +178,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         val packageInfo: PackageInfo = mockk()
         every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
@@ -202,9 +203,9 @@ internal class ApkRestoreTest : TransportTest() {
         every { backupStateManager.isAutoRestoreEnabled } returns false
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
+        coEvery { backend.load(handle) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -222,7 +223,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } throws SecurityException()
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -249,7 +250,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -285,7 +286,7 @@ internal class ApkRestoreTest : TransportTest() {
         coEvery {
             apkInstaller.install(match { it.size == 1 }, packageName, installerName, any())
         } returns installResult
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -300,7 +301,7 @@ internal class ApkRestoreTest : TransportTest() {
         mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
         every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
         every { packageInfo.signingInfo.getSignatures() } returns packageMetadata.signatures!!
         every {
@@ -329,7 +330,7 @@ internal class ApkRestoreTest : TransportTest() {
             mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
             every { installRestriction.isAllowedToInstallApks() } returns true
             every { backupStateManager.isAutoRestoreEnabled } returns false
-            every { storagePlugin.providerPackageName } returns storageProviderPackageName
+            every { backend.providerPackageName } returns storageProviderPackageName
             every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
             every { packageInfo.signingInfo.getSignatures() } returns packageMetadata.signatures!!
             every { packageInfo.longVersionCode } returns packageMetadata.version!! - 1
@@ -369,7 +370,7 @@ internal class ApkRestoreTest : TransportTest() {
         mockkStatic("com.stevesoltys.seedvault.worker.ApkBackupKt")
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
         every { pm.getPackageInfo(packageName, any<Int>()) } returns packageInfo
         every { packageInfo.signingInfo.getSignatures() } returns listOf("foobar")
 
@@ -401,7 +402,7 @@ internal class ApkRestoreTest : TransportTest() {
             every { backupStateManager.isAutoRestoreEnabled } returns false
             every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
             cacheBaseApkAndGetInfo(tmpDir)
-            every { storagePlugin.providerPackageName } returns storageProviderPackageName
+            every { backend.providerPackageName } returns storageProviderPackageName
 
             if (willFail) {
                 every {
@@ -476,7 +477,7 @@ internal class ApkRestoreTest : TransportTest() {
         every {
             splitCompatChecker.isCompatible(deviceName, listOf(split1Name, split2Name))
         } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -502,9 +503,9 @@ internal class ApkRestoreTest : TransportTest() {
         every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
         coEvery {
-            storagePlugin.getInputStream(token, suffixName)
+            backend.load(LegacyAppBackupFile.Blob(token, suffixName))
         } returns ByteArrayInputStream(getRandomByteArray())
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -531,8 +532,10 @@ internal class ApkRestoreTest : TransportTest() {
 
             every { splitCompatChecker.isCompatible(deviceName, listOf(splitName)) } returns true
             every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
-            coEvery { storagePlugin.getInputStream(token, suffixName) } throws IOException()
-            every { storagePlugin.providerPackageName } returns storageProviderPackageName
+            coEvery {
+                backend.load(LegacyAppBackupFile.Blob(token, suffixName))
+            } throws IOException()
+            every { backend.providerPackageName } returns storageProviderPackageName
 
             apkRestore.installResult.test {
                 awaitItem() // initial empty state
@@ -573,10 +576,14 @@ internal class ApkRestoreTest : TransportTest() {
         val suffixName1 = getRandomString()
         val suffixName2 = getRandomString()
         every { crypto.getNameForApk(salt, packageName, split1Name) } returns suffixName1
-        coEvery { storagePlugin.getInputStream(token, suffixName1) } returns split1InputStream
+        coEvery {
+            backend.load(LegacyAppBackupFile.Blob(token, suffixName1))
+        } returns split1InputStream
         every { crypto.getNameForApk(salt, packageName, split2Name) } returns suffixName2
-        coEvery { storagePlugin.getInputStream(token, suffixName2) } returns split2InputStream
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        coEvery {
+            backend.load(LegacyAppBackupFile.Blob(token, suffixName2))
+        } returns split2InputStream
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         val resultMap = mapOf(
             packageName to ApkInstallResult(
@@ -602,7 +609,7 @@ internal class ApkRestoreTest : TransportTest() {
         every { backupStateManager.isAutoRestoreEnabled } returns false
         // set the storage provider package name to match our current package name,
         // and ensure that the current package is therefore skipped.
-        every { storagePlugin.providerPackageName } returns packageName
+        every { backend.providerPackageName } returns packageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -627,7 +634,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -656,7 +663,7 @@ internal class ApkRestoreTest : TransportTest() {
 
         every { installRestriction.isAllowedToInstallApks() } returns true
         every { backupStateManager.isAutoRestoreEnabled } returns true
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
         every { backupManager.setAutoRestore(false) } just Runs
         every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         // cache APK and get icon as well as app name
@@ -680,7 +687,7 @@ internal class ApkRestoreTest : TransportTest() {
     @Test
     fun `no apks get installed when blocked by policy`() = runBlocking {
         every { installRestriction.isAllowedToInstallApks() } returns false
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkRestore.installResult.test {
             awaitItem() // initial empty state
@@ -703,7 +710,7 @@ internal class ApkRestoreTest : TransportTest() {
     private fun cacheBaseApkAndGetInfo(tmpDir: Path) {
         every { strictContext.cacheDir } returns File(tmpDir.toString())
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { storagePlugin.getInputStream(token, name) } returns apkInputStream
+        coEvery { backend.load(handle) } returns apkInputStream
         every { pm.getPackageArchiveInfo(any(), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName

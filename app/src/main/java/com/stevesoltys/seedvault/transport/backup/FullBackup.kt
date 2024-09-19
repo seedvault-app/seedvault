@@ -16,10 +16,11 @@ import android.util.Log
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.Closeable
 import java.io.EOFException
 import java.io.IOException
@@ -46,14 +47,14 @@ private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
     private val crypto: Crypto,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = backendManager.backend
     private var state: FullBackupState? = null
 
     fun hasState() = state != null
@@ -128,7 +129,7 @@ internal class FullBackup(
             val name = crypto.getNameForPackage(salt, packageName)
             // get OutputStream to write backup data into
             val outputStream = try {
-                plugin.getOutputStream(token, name)
+                backend.save(LegacyAppBackupFile.Blob(token, name))
             } catch (e: IOException) {
                 "Error getting OutputStream for full backup of $packageName".let {
                     Log.e(TAG, it, e)
@@ -186,7 +187,7 @@ internal class FullBackup(
     @Throws(IOException::class)
     suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
         val name = crypto.getNameForPackage(salt, packageInfo.packageName)
-        plugin.removeData(token, name)
+        backend.remove(LegacyAppBackupFile.Blob(token, name))
     }
 
     suspend fun cancelFullBackup(token: Long, salt: String, ignoreApp: Boolean) {

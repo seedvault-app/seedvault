@@ -106,19 +106,7 @@ android {
 }
 
 dependencies {
-
-    val aospLibs = fileTree("$projectDir/libs") {
-        // For more information about this module:
-        // https://android.googlesource.com/platform/frameworks/base/+/refs/tags/android-11.0.0_r3/Android.bp#507
-        // framework_intermediates/classes-header.jar works for gradle build as well,
-        // but not unit tests, so we use the actual classes (without updatable modules).
-        //
-        // out/target/common/obj/JAVA_LIBRARIES/framework-minus-apex_intermediates/classes.jar
-        include("android.jar")
-        // out/target/common/obj/JAVA_LIBRARIES/core-libart.com.android.art_intermediates/classes.jar
-        include("libcore.jar")
-    }
-
+    val aospLibs: FileTree by rootProject.extra
     compileOnly(aospLibs)
 
     /**
@@ -149,6 +137,7 @@ dependencies {
     /**
      * Storage Dependencies
      */
+    implementation(project(":core"))
     implementation(project(":storage:lib"))
 
     /**
@@ -188,6 +177,7 @@ dependencies {
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${libs.versions.junit5.get()}")
 
     androidTestImplementation(aospLibs)
+    androidTestImplementation(kotlin("test"))
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test:rules:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
@@ -197,7 +187,7 @@ dependencies {
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile::class) {
-        options.compilerArgs.add("-Xbootclasspath/p:app/libs/android.jar:app/libs/libcore.jar")
+        options.compilerArgs.add("-Xbootclasspath/p:libs/aosp/android.jar:libs/aosp/libcore.jar")
     }
 }
 

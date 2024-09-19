@@ -13,26 +13,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.SafHandler
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
-import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
-import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler
-import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.saf.SafHandler
+import com.stevesoltys.seedvault.backend.webdav.WebDavHandler
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafProperties
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 
 internal abstract class StorageViewModel(
     private val app: Application,
     protected val safHandler: SafHandler,
     protected val webdavHandler: WebDavHandler,
     protected val settingsManager: SettingsManager,
-    protected val storagePluginManager: StoragePluginManager,
+    protected val backendManager: BackendManager,
 ) : AndroidViewModel(app), RemovableStorageListener {
 
     private val mStorageOptions = MutableLiveData<List<StorageOption>>()
@@ -49,7 +49,7 @@ internal abstract class StorageViewModel(
 
     internal var isSetupWizard: Boolean = false
     internal val hasStorageSet: Boolean
-        get() = storagePluginManager.storageProperties != null
+        get() = backendManager.backendProperties != null
     abstract val isRestoreOperation: Boolean
 
     internal fun loadStorageRoots() {
@@ -88,8 +88,8 @@ internal abstract class StorageViewModel(
         onSafUriSet(safStorage)
     }
 
-    abstract fun onSafUriSet(safStorage: SafStorage)
-    abstract fun onWebDavConfigSet(properties: WebDavProperties, plugin: WebDavStoragePlugin)
+    abstract fun onSafUriSet(safProperties: SafProperties)
+    abstract fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend)
 
     override fun onCleared() {
         storageOptionFetcher.setRemovableStorageListener(null)
@@ -107,9 +107,9 @@ internal abstract class StorageViewModel(
     fun resetWebDavConfig() = webdavHandler.resetConfigState()
 
     @UiThread
-    fun onWebDavConfigSuccess(properties: WebDavProperties, plugin: WebDavStoragePlugin) {
+    fun onWebDavConfigSuccess(properties: WebDavProperties, backend: Backend) {
         mLocationSet.setEvent(true)
-        onWebDavConfigSet(properties, plugin)
+        onWebDavConfigSet(properties, backend)
     }
 
 }

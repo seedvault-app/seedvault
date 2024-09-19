@@ -15,8 +15,8 @@ import android.util.Log
 import org.calyxos.backup.storage.api.MediaType
 import org.calyxos.backup.storage.api.RestoreObserver
 import org.calyxos.backup.storage.backup.BackupMediaFile
-import org.calyxos.backup.storage.openOutputStream
 import org.calyxos.backup.storage.scanner.MediaScanner
+import org.calyxos.seedvault.core.backends.saf.openOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream

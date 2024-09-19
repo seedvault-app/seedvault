@@ -7,39 +7,42 @@ package org.calyxos.backup.storage.prune
 
 import android.util.Log
 import org.calyxos.backup.storage.api.BackupObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.measure
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.backup.storage.SnapshotRetriever
+import org.calyxos.backup.storage.getCurrentBackupSnapshots
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.security.GeneralSecurityException
-import kotlin.time.ExperimentalTime
 
 private val TAG = Pruner::class.java.simpleName
 
 internal class Pruner(
     private val db: Db,
     private val retentionManager: RetentionManager,
-    private val storagePluginGetter: () -> StoragePlugin,
+    private val storagePluginGetter: () -> Backend,
+    private val androidId: String,
+    keyManager: KeyManager,
     private val snapshotRetriever: SnapshotRetriever,
     streamCrypto: StreamCrypto = StreamCrypto,
 ) {
 
-    private val storagePlugin get() = storagePluginGetter()
+    private val backend get() = storagePluginGetter()
     private val chunksCache = db.getChunksCache()
     private val streamKey = try {
-        streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+        streamCrypto.deriveStreamKey(keyManager.getMainKey())
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }
 
-    @OptIn(ExperimentalTime::class)
     @Throws(IOException::class)
     suspend fun prune(backupObserver: BackupObserver?) {
         val duration = measure {
-            val storedSnapshots = storagePlugin.getCurrentBackupSnapshots()
+            val storedSnapshots = backend.getCurrentBackupSnapshots(androidId)
             val toDelete = retentionManager.getSnapshotsToDelete(storedSnapshots)
             backupObserver?.onPruneStart(toDelete.map { it.timestamp })
             for (snapshot in toDelete) {
@@ -64,7 +67,7 @@ internal class Pruner(
         val chunks = HashSet<String>()
         snapshot.mediaFilesList.forEach { chunks.addAll(it.chunkIdsList) }
         snapshot.documentFilesList.forEach { chunks.addAll(it.chunkIdsList) }
-        storagePlugin.deleteBackupSnapshot(storedSnapshot)
+        backend.remove(storedSnapshot.snapshotHandle)
         db.applyInParts(chunks) {
             chunksCache.decrementRefCount(it)
         }
@@ -78,7 +81,9 @@ internal class Pruner(
             it.id
         }
         backupObserver?.onPruneSnapshot(storedSnapshot.timestamp, chunkIdsToDelete.size, size)
-        storagePlugin.deleteChunks(chunkIdsToDelete)
+        chunkIdsToDelete.forEach { chunkId ->
+            backend.remove(FileBackupFileType.Blob(androidId, chunkId))
+        }
         chunksCache.deleteChunks(cachedChunksToDelete)
     }
 

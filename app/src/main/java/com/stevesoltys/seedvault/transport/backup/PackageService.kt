@@ -27,9 +27,9 @@ import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.SettingsManager
+import org.calyxos.seedvault.core.backends.Backend
 
 private val TAG = PackageService::class.java.simpleName
 
@@ -43,12 +43,12 @@ internal class PackageService(
     private val context: Context,
     private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
     private val myUserId = UserHandle.myUserId()
-    private val plugin: StoragePlugin<*> get() = pluginManager.appPlugin
+    private val backend: Backend get() = backendManager.backend
 
     val eligiblePackages: List<String>
         @WorkerThread
@@ -182,7 +182,7 @@ internal class PackageService(
         // We need to explicitly exclude DocumentsProvider and Seedvault.
         // Otherwise, they get killed while backing them up, terminating our backup.
         val excludedPackages = setOf(
-            plugin.providerPackageName,
+            backend.providerPackageName,
             context.packageName
         )
 
@@ -225,7 +225,7 @@ internal class PackageService(
      */
     private fun PackageInfo.doesNotGetBackedUp(): Boolean {
         if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return true
-        if (packageName == plugin.providerPackageName) return true
+        if (packageName == backend.providerPackageName) return true
         return !allowsBackup() || isStopped()
     }
 }

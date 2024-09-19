@@ -15,13 +15,14 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.isOutOfSpace
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 import java.util.zip.GZIPOutputStream
 
@@ -39,7 +40,7 @@ const val DEFAULT_QUOTA_KEY_VALUE_BACKUP = (2 * (5 * 1024 * 1024)).toLong()
 private val TAG = KVBackup::class.java.simpleName
 
 internal class KVBackup(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
     private val inputFactory: InputFactory,
@@ -47,7 +48,7 @@ internal class KVBackup(
     private val dbManager: KvDbManager,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = backendManager.backend
     private var state: KVBackupState? = null
 
     fun hasState() = state != null
@@ -146,7 +147,7 @@ internal class KVBackup(
                 // K/V backups (typically starting with package manager metadata - @pm@)
                 // are scheduled with JobInfo.Builder#setOverrideDeadline()
                 // and thus do not respect backoff.
-                pluginManager.canDoBackupNow()
+                backendManager.canDoBackupNow()
             } else {
                 // all other packages always need upload
                 true
@@ -207,7 +208,7 @@ internal class KVBackup(
     suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
         Log.i(TAG, "Clearing K/V data of ${packageInfo.packageName}")
         val name = state?.name ?: crypto.getNameForPackage(salt, packageInfo.packageName)
-        plugin.removeData(token, name)
+        backend.remove(LegacyAppBackupFile.Blob(token, name))
         if (!dbManager.deleteDb(packageInfo.packageName)) throw IOException()
     }
 
@@ -254,7 +255,8 @@ internal class KVBackup(
         db.vacuum()
         db.close()
 
-        plugin.getOutputStream(token, name).use { outputStream ->
+        val handle = LegacyAppBackupFile.Blob(token, name)
+        backend.save(handle).use { outputStream ->
             outputStream.write(ByteArray(1) { VERSION })
             val ad = getADForKV(VERSION, packageName)
             crypto.newEncryptingStream(outputStream, ad).use { encryptedStream ->

@@ -11,8 +11,7 @@ import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -20,6 +19,8 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -30,11 +31,11 @@ import kotlin.random.Random
 
 internal class FullBackupTest : BackupTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backendManager: BackendManager = mockk()
+    private val backend = mockk<Backend>()
     private val notificationManager = mockk<BackupNotificationManager>()
     private val backup = FullBackup(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         settingsManager = settingsManager,
         nm = notificationManager,
         inputFactory = inputFactory,
@@ -46,7 +47,7 @@ internal class FullBackupTest : BackupTest() {
     private val ad = getADForFull(VERSION, packageInfo.packageName)
 
     init {
-        every { storagePluginManager.appPlugin } returns plugin
+        every { backendManager.backend } returns backend
     }
 
     @Test
@@ -167,7 +168,7 @@ internal class FullBackupTest : BackupTest() {
 
         every { settingsManager.isQuotaUnlimited() } returns false
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.getOutputStream(token, name) } throws IOException()
+        coEvery { backend.save(handle) } throws IOException()
         expectClearState()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
@@ -184,7 +185,7 @@ internal class FullBackupTest : BackupTest() {
 
         every { settingsManager.isQuotaUnlimited() } returns false
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.getOutputStream(token, name) } returns outputStream
+        coEvery { backend.save(handle) } returns outputStream
         every { inputFactory.getInputStream(data) } returns inputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } throws IOException()
         expectClearState()
@@ -240,7 +241,7 @@ internal class FullBackupTest : BackupTest() {
     @Test
     fun `clearBackupData delegates to plugin`() = runBlocking {
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.removeData(token, name) } just Runs
+        coEvery { backend.remove(handle) } just Runs
 
         backup.clearBackupData(packageInfo, token, salt)
     }
@@ -251,7 +252,7 @@ internal class FullBackupTest : BackupTest() {
         expectInitializeOutputStream()
         expectClearState()
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.removeData(token, name) } just Runs
+        coEvery { backend.remove(handle) } just Runs
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
@@ -265,7 +266,7 @@ internal class FullBackupTest : BackupTest() {
         expectInitializeOutputStream()
         expectClearState()
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.removeData(token, name) } throws IOException()
+        coEvery { backend.remove(handle) } throws IOException()
 
         assertEquals(TRANSPORT_OK, backup.performFullBackup(packageInfo, data, 0, token, salt))
         assertTrue(backup.hasState())
@@ -336,7 +337,9 @@ internal class FullBackupTest : BackupTest() {
 
     private fun expectInitializeOutputStream() {
         every { crypto.getNameForPackage(salt, packageInfo.packageName) } returns name
-        coEvery { plugin.getOutputStream(token, name) } returns outputStream
+        coEvery {
+            backend.save(LegacyAppBackupFile.Blob(token, name))
+        } returns outputStream
         every { outputStream.write(ByteArray(1) { VERSION }) } just Runs
     }
 

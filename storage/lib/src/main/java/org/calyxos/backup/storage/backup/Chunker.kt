@@ -6,7 +6,7 @@
 package org.calyxos.backup.storage.backup
 
 import org.calyxos.backup.storage.db.CachedChunk
-import org.calyxos.backup.storage.toHexString
+import org.calyxos.seedvault.core.toHexString
 import java.io.IOException
 import java.io.InputStream
 import javax.crypto.Mac

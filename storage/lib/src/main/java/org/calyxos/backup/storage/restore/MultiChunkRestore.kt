@@ -8,9 +8,9 @@ package org.calyxos.backup.storage.restore
 import android.content.Context
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -24,11 +24,11 @@ private const val TAG = "MultiChunkRestore"
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class MultiChunkRestore(
     private val context: Context,
-    storagePlugin: () -> StoragePlugin,
+    backendGetter: () -> Backend,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,
-) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
+) : AbstractChunkRestore(backendGetter, fileRestore, streamCrypto, streamKey) {
 
     suspend fun restore(
         version: Int,

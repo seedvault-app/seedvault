@@ -11,16 +11,19 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.db.CachedChunk
 import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.backup.storage.SnapshotRetriever
+import org.calyxos.backup.storage.getCurrentBackupSnapshots
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,15 +33,22 @@ internal class ChunksCacheRepopulaterTest {
 
     private val db: Db = mockk()
     private val chunksCache: ChunksCache = mockk()
-    private val pluginGetter: () -> StoragePlugin = mockk()
-    private val plugin: StoragePlugin = mockk()
+    private val backendGetter: () -> Backend = mockk()
+    private val androidId: String = getRandomString()
+    private val backend: Backend = mockk()
     private val snapshotRetriever: SnapshotRetriever = mockk()
     private val streamKey = "This is a backup key for testing".toByteArray()
-    private val cacheRepopulater = ChunksCacheRepopulater(db, pluginGetter, snapshotRetriever)
+    private val cacheRepopulater = ChunksCacheRepopulater(
+        db = db,
+        storagePlugin = backendGetter,
+        androidId = androidId,
+        snapshotRetriever = snapshotRetriever,
+    )
 
     init {
         mockLog()
-        every { pluginGetter() } returns plugin
+        mockkStatic("org.calyxos.backup.storage.SnapshotRetrieverKt")
+        every { backendGetter() } returns backend
         every { db.getChunksCache() } returns chunksCache
     }
 
@@ -73,7 +83,7 @@ internal class ChunksCacheRepopulaterTest {
         ) // chunk3 is not referenced and should get deleted
         val cachedChunksSlot = slot<Collection<CachedChunk>>()
 
-        coEvery { plugin.getCurrentBackupSnapshots() } returns storedSnapshots
+        coEvery { backend.getCurrentBackupSnapshots(androidId) } returns storedSnapshots
         coEvery {
             snapshotRetriever.getSnapshot(streamKey, storedSnapshot1)
         } returns snapshot1
@@ -81,14 +91,14 @@ internal class ChunksCacheRepopulaterTest {
             snapshotRetriever.getSnapshot(streamKey, storedSnapshot2)
         } returns snapshot2
         every { chunksCache.clearAndRepopulate(db, capture(cachedChunksSlot)) } just Runs
-        coEvery { plugin.deleteChunks(listOf(chunk3)) } just Runs
+        coEvery { backend.remove(Blob(androidId, chunk3)) } just Runs
 
         cacheRepopulater.repopulate(streamKey, availableChunkIds)
 
         assertTrue(cachedChunksSlot.isCaptured)
         assertEquals(cachedChunks.toSet(), cachedChunksSlot.captured.toSet())
 
-        coVerify { plugin.deleteChunks(listOf(chunk3)) }
+        coVerify { backend.remove(Blob(androidId, chunk3)) }
     }
 
 }

@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         KeyManager.storeMasterKey()
 
-        if (!KeyManager.hasMasterKey()) {
+        if (!KeyManager.hasMainKey()) {
             Log.e("TEST", "storing new key")
             KeyManager.storeMasterKey()
         } else {

@@ -9,7 +9,7 @@ import com.google.crypto.tink.subtle.AesGcmHkdfStreaming
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.Hkdf.ALGORITHM_HMAC
 import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
-import org.calyxos.backup.storage.toByteArrayFromHex
+import org.calyxos.seedvault.core.toByteArrayFromHex
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream

@@ -25,12 +25,13 @@ import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.DecryptionFailedException
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.MetadataReader
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.D2D_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.transport.DEFAULT_TRANSPORT_FLAGS
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.IOException
 
 /**
@@ -61,19 +62,19 @@ internal class RestoreCoordinator(
     private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
     private val notificationManager: BackupNotificationManager,
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     private val kv: KVRestore,
     private val full: FullRestore,
     private val metadataReader: MetadataReader,
 ) {
 
-    private val plugin: StoragePlugin<*> get() = pluginManager.appPlugin
+    private val backend: Backend get() = backendManager.backend
     private var state: RestoreCoordinatorState? = null
     private var backupMetadata: BackupMetadata? = null
     private val failedPackages = ArrayList<String>()
 
     suspend fun getAvailableMetadata(): Map<Long, BackupMetadata>? {
-        val availableBackups = plugin.getAvailableBackups() ?: return null
+        val availableBackups = backend.getAvailableBackups() ?: return null
         val metadataMap = HashMap<Long, BackupMetadata>()
         for (encryptedMetadata in availableBackups) {
             try {
@@ -175,7 +176,7 @@ internal class RestoreCoordinator(
                     // check if we even have a backup of that app
                     if (metadataManager.getPackageMetadata(pmPackageName) != null) {
                         // remind user to plug in storage device
-                        val storageName = pluginManager.storageProperties?.name
+                        val storageName = backendManager.backendProperties?.name
                             ?: context.getString(R.string.settings_backup_location_none)
                         notificationManager.onRemovableStorageNotAvailableForRestore(
                             pmPackageName,
@@ -234,48 +235,36 @@ internal class RestoreCoordinator(
         if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
 
         val packageName = packageInfo.packageName
-        val type = try {
-            when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
-                BackupType.KV -> {
-                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
-                    if (plugin.hasData(state.token, name)) {
-                        Log.i(TAG, "Found K/V data for $packageName.")
-                        kv.initializeState(
-                            version = version,
-                            token = state.token,
-                            name = name,
-                            packageInfo = packageInfo,
-                            autoRestorePackageInfo = state.autoRestorePackageInfo
-                        )
-                        state.currentPackage = packageName
-                        TYPE_KEY_VALUE
-                    } else throw IOException("No data found for $packageName. Skipping.")
-                }
-
-                BackupType.FULL -> {
-                    val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
-                    if (plugin.hasData(state.token, name)) {
-                        Log.i(TAG, "Found full backup data for $packageName.")
-                        full.initializeState(version, state.token, name, packageInfo)
-                        state.currentPackage = packageName
-                        TYPE_FULL_STREAM
-                    } else throw IOException("No data found for $packageName. Skipping...")
-                }
-
-                null -> {
-                    Log.i(TAG, "No backup type found for $packageName. Skipping...")
-                    state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
-                        Log.w(TAG, "State was ${s.name}")
-                    }
-                    failedPackages.add(packageName)
-                    return nextRestorePackage()
-                }
+        val type = when (state.backupMetadata.packageMetadataMap[packageName]?.backupType) {
+            BackupType.KV -> {
+                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                kv.initializeState(
+                    version = version,
+                    token = state.token,
+                    name = name,
+                    packageInfo = packageInfo,
+                    autoRestorePackageInfo = state.autoRestorePackageInfo
+                )
+                state.currentPackage = packageName
+                TYPE_KEY_VALUE
             }
-        } catch (e: IOException) {
-            Log.e(TAG, "Error finding restore data for $packageName.", e)
-            failedPackages.add(packageName)
-            // don't return null and cause abort here, but try next package
-            return nextRestorePackage()
+
+            BackupType.FULL -> {
+                val name = crypto.getNameForPackage(state.backupMetadata.salt, packageName)
+                full.initializeState(version, state.token, name, packageInfo)
+                state.currentPackage = packageName
+                TYPE_FULL_STREAM
+            }
+
+            null -> {
+                Log.i(TAG, "No backup type found for $packageName. Skipping...")
+                state.backupMetadata.packageMetadataMap[packageName]?.backupType?.let { s ->
+                    Log.w(TAG, "State was ${s.name}")
+                }
+                failedPackages.add(packageName)
+                // don't return null and cause abort here, but try next package
+                return nextRestorePackage()
+            }
         }
         return RestoreDescription(packageName, type)
     }
@@ -370,7 +359,7 @@ internal class RestoreCoordinator(
     fun isFailedPackage(packageName: String) = packageName in failedPackages
 
     private fun isStorageRemovableAndNotAvailable(): Boolean {
-        val storage = pluginManager.storageProperties ?: return false
+        val storage = backendManager.backendProperties ?: return false
         return storage.isUnavailableUsb(context)
     }
 

@@ -25,7 +25,7 @@ import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.install.isInstalled
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
@@ -56,7 +56,7 @@ internal class AppDataRestoreManager(
     private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
     private val restoreCoordinator: RestoreCoordinator,
-    private val storagePluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
 ) {
 
     private var session: IRestoreSession? = null
@@ -101,7 +101,7 @@ internal class AppDataRestoreManager(
             return
         }
 
-        val providerPackageName = storagePluginManager.appPlugin.providerPackageName
+        val providerPackageName = backendManager.backend.providerPackageName
         val observer = RestoreObserver(
             restoreCoordinator = restoreCoordinator,
             restorableBackup = restorableBackup,

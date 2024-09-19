@@ -20,9 +20,8 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.restore.RestorableBackup
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
@@ -36,6 +35,8 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -59,13 +60,13 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { packageManager } returns pm
     }
 
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
     private val backupManager: IBackupManager = mockk()
     private val backupStateManager: BackupStateManager = mockk()
 
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = mockk()
-    private val storagePlugin: StoragePlugin<*> = mockk()
+    private val backend: Backend = mockk()
     private val splitCompatChecker: ApkSplitCompatibilityChecker = mockk()
     private val apkInstaller: ApkInstaller = mockk()
     private val installRestriction: InstallRestriction = mockk()
@@ -75,7 +76,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         context = strictContext,
         backupManager = backupManager,
         backupStateManager = backupStateManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyStoragePlugin = legacyStoragePlugin,
         crypto = crypto,
         splitCompatChecker = splitCompatChecker,
@@ -111,7 +112,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
 
     init {
         mockkStatic(PackageUtils::class)
-        every { storagePluginManager.appPlugin } returns storagePlugin
+        every { backendManager.backend } returns backend
     }
 
     @Test
@@ -147,7 +148,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { metadataManager.salt } returns salt
         every { crypto.getNameForApk(salt, packageName) } returns name
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
-        every { storagePlugin.providerPackageName } returns storageProviderPackageName
+        every { backend.providerPackageName } returns storageProviderPackageName
 
         apkBackup.backupApkIfNecessary(packageInfo, outputStreamGetter)
 
@@ -164,7 +165,7 @@ internal class ApkBackupRestoreTest : TransportTest() {
         every { pm.getPackageInfo(packageName, any<Int>()) } throws NameNotFoundException()
         every { strictContext.cacheDir } returns tmpFile
         every { crypto.getNameForApk(salt, packageName, "") } returns name
-        coEvery { storagePlugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(LegacyAppBackupFile.Blob(token, name)) } returns inputStream
         every { pm.getPackageArchiveInfo(capture(apkPath), any<Int>()) } returns packageInfo
         every { applicationInfo.loadIcon(pm) } returns icon
         every { pm.getApplicationLabel(packageInfo.applicationInfo!!) } returns appName
@@ -172,7 +173,9 @@ internal class ApkBackupRestoreTest : TransportTest() {
             splitCompatChecker.isCompatible(metadata.deviceName, listOf(splitName))
         } returns true
         every { crypto.getNameForApk(salt, packageName, splitName) } returns suffixName
-        coEvery { storagePlugin.getInputStream(token, suffixName) } returns splitInputStream
+        coEvery {
+            backend.load(LegacyAppBackupFile.Blob(token, suffixName))
+        } returns splitInputStream
         val resultMap = mapOf(
             packageName to ApkInstallResult(
                 packageName,

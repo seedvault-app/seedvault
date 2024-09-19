@@ -10,9 +10,9 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.backup.BackupDocumentFile
 import org.calyxos.backup.storage.backup.BackupMediaFile
@@ -25,7 +25,11 @@ import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
-import org.calyxos.backup.storage.plugin.SnapshotRetriever
+import org.calyxos.backup.storage.SnapshotRetriever
+import org.calyxos.backup.storage.getCurrentBackupSnapshots
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
+import org.calyxos.seedvault.core.crypto.KeyManager
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -36,8 +40,10 @@ internal class PrunerTest {
 
     private val db: Db = mockk()
     private val chunksCache: ChunksCache = mockk()
-    private val pluginGetter: () -> StoragePlugin = mockk()
-    private val plugin: StoragePlugin = mockk()
+    private val backendGetter: () -> Backend = mockk()
+    private val androidId: String = getRandomString()
+    private val keyManager: KeyManager = mockk()
+    private val backend: Backend = mockk()
     private val snapshotRetriever: SnapshotRetriever = mockk()
     private val retentionManager: RetentionManager = mockk()
     private val streamCrypto: StreamCrypto = mockk()
@@ -46,13 +52,22 @@ internal class PrunerTest {
 
     init {
         mockLog(false)
-        every { pluginGetter() } returns plugin
+        mockkStatic("org.calyxos.backup.storage.SnapshotRetrieverKt")
+        every { backendGetter() } returns backend
         every { db.getChunksCache() } returns chunksCache
-        every { plugin.getMasterKey() } returns masterKey
+        every { keyManager.getMainKey() } returns masterKey
         every { streamCrypto.deriveStreamKey(masterKey) } returns streamKey
     }
 
-    private val pruner = Pruner(db, retentionManager, pluginGetter, snapshotRetriever, streamCrypto)
+    private val pruner = Pruner(
+        db = db,
+        retentionManager = retentionManager,
+        storagePluginGetter = backendGetter,
+        androidId = androidId,
+        keyManager = keyManager,
+        snapshotRetriever = snapshotRetriever,
+        streamCrypto = streamCrypto,
+    )
 
     @Test
     fun test() = runBlocking {
@@ -81,12 +96,12 @@ internal class PrunerTest {
         val actualChunks2 = slot<Collection<String>>()
         val cachedChunk3 = CachedChunk(chunk3, 0, 0)
 
-        coEvery { plugin.getCurrentBackupSnapshots() } returns storedSnapshots
+        coEvery { backend.getCurrentBackupSnapshots(androidId) } returns storedSnapshots
         every {
             retentionManager.getSnapshotsToDelete(storedSnapshots)
         } returns listOf(storedSnapshot1)
         coEvery { snapshotRetriever.getSnapshot(streamKey, storedSnapshot1) } returns snapshot1
-        coEvery { plugin.deleteBackupSnapshot(storedSnapshot1) } just Runs
+        coEvery { backend.remove(storedSnapshot1.snapshotHandle) } just Runs
         every {
             db.applyInParts(capture(actualChunks), captureLambda())
         } answers {
@@ -94,7 +109,7 @@ internal class PrunerTest {
         }
         every { chunksCache.decrementRefCount(capture(actualChunks2)) } just Runs
         every { chunksCache.getUnreferencedChunks() } returns listOf(cachedChunk3)
-        coEvery { plugin.deleteChunks(listOf(chunk3)) } just Runs
+        coEvery { backend.remove(Blob(androidId, chunk3)) } just Runs
         every { chunksCache.deleteChunks(listOf(cachedChunk3)) } just Runs
 
         pruner.prune(null)

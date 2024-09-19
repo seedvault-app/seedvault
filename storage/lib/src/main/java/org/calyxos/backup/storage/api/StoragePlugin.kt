@@ -8,8 +8,6 @@ package org.calyxos.backup.storage.api
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.security.KeyStore
-import javax.crypto.SecretKey
 
 public interface StoragePlugin {
 
@@ -28,16 +26,6 @@ public interface StoragePlugin {
     @Throws(IOException::class)
     public suspend fun getAvailableChunkIds(): List<String>
 
-    /**
-     * Returns a [SecretKey] for HmacSHA256, ideally stored in the [KeyStore].
-     */
-    public fun getMasterKey(): SecretKey
-
-    /**
-     * Returns true if the key for [getMasterKey] exists, false otherwise.
-     */
-    public fun hasMasterKey(): Boolean
-
     @Throws(IOException::class)
     public suspend fun getChunkOutputStream(chunkId: String): OutputStream
 
@@ -48,8 +36,7 @@ public interface StoragePlugin {
 
     /**
      * Returns *all* [StoredSnapshot]s that are available on storage
-     * independent of user ID and whether they can be decrypted
-     * with the key returned by [getMasterKey].
+     * independent of user ID and whether they can be decrypted with the main key.
      */
     @Throws(IOException::class)
     public suspend fun getBackupSnapshotsForRestore(): List<StoredSnapshot>

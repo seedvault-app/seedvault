@@ -20,11 +20,12 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import libcore.io.IoUtils.closeQuietly
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.zip.GZIPInputStream
@@ -44,7 +45,7 @@ private class KVRestoreState(
 private val TAG = KVRestore::class.java.simpleName
 
 internal class KVRestore(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -53,7 +54,7 @@ internal class KVRestore(
     private val dbManager: KvDbManager,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = backendManager.backend
     private var state: KVRestoreState? = null
 
     /**
@@ -156,7 +157,8 @@ internal class KVRestore(
     @Throws(IOException::class, GeneralSecurityException::class, UnsupportedVersionException::class)
     private suspend fun downloadRestoreDb(state: KVRestoreState): KVDb {
         val packageName = state.packageInfo.packageName
-        plugin.getInputStream(state.token, state.name).use { inputStream ->
+        val handle = LegacyAppBackupFile.Blob(state.token, state.name)
+        backend.load(handle).use { inputStream ->
             headerReader.readVersion(inputStream, state.version)
             val ad = getADForKV(VERSION, packageName)
             crypto.newDecryptingStream(inputStream, ad).use { decryptedStream ->

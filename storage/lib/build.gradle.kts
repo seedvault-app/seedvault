@@ -81,6 +81,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(libs.bundles.kotlin)
     implementation(libs.androidx.core)
     implementation(libs.androidx.fragment)

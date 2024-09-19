@@ -22,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.google.android.material.textfield.TextInputEditText
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.plugins.webdav.WebDavConfigState
+import com.stevesoltys.seedvault.backend.webdav.WebDavConfigState
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
@@ -111,7 +111,7 @@ class WebDavConfigFragment : Fragment(), View.OnClickListener {
             }
 
             is WebDavConfigState.Success -> {
-                viewModel.onWebDavConfigSuccess(state.properties, state.plugin)
+                viewModel.onWebDavConfigSuccess(state.properties, state.backend)
             }
 
             is WebDavConfigState.Error -> {

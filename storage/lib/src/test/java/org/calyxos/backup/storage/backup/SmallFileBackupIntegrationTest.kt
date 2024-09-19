@@ -14,7 +14,6 @@ import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.BackupObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.CachedChunk
@@ -23,7 +22,8 @@ import org.calyxos.backup.storage.db.FilesCache
 import org.calyxos.backup.storage.getRandomDocFile
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
-import org.calyxos.backup.storage.toHexString
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -39,13 +39,16 @@ internal class SmallFileBackupIntegrationTest {
     private val filesCache: FilesCache = mockk()
     private val mac: Mac = mockk()
     private val chunksCache: ChunksCache = mockk()
-    private val storagePlugin: StoragePlugin = mockk()
+    private val backendGetter: () -> Backend = mockk()
+    private val backend: Backend = mockk()
+    private val androidId: String = getRandomString()
 
     private val chunkWriter = ChunkWriter(
         streamCrypto = StreamCrypto,
         streamKey = Random.nextBytes(KEY_SIZE_BYTES),
         chunksCache = chunksCache,
-        storagePlugin = storagePlugin,
+        backendGetter = backendGetter,
+        androidId = androidId,
     )
     private val zipChunker = ZipChunker(
         mac = mac,
@@ -56,6 +59,7 @@ internal class SmallFileBackupIntegrationTest {
 
     init {
         mockLog()
+        every { backendGetter() } returns backend
     }
 
     /**
@@ -91,7 +95,7 @@ internal class SmallFileBackupIntegrationTest {
 
         every { mac.doFinal(any<ByteArray>()) } returns chunkId
         every { chunksCache.get(any()) } returns null
-        coEvery { storagePlugin.getChunkOutputStream(any()) } returns outputStream2
+        coEvery { backend.save(any()) } returns outputStream2
         every {
             chunksCache.insert(match<CachedChunk> { cachedChunk ->
                 cachedChunk.id == chunkId.toHexString() &&

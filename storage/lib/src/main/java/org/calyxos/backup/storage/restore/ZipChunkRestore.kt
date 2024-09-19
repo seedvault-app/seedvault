@@ -7,9 +7,9 @@ package org.calyxos.backup.storage.restore
 
 import android.util.Log
 import org.calyxos.backup.storage.api.RestoreObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.api.StoredSnapshot
 import org.calyxos.backup.storage.crypto.StreamCrypto
+import org.calyxos.seedvault.core.backends.Backend
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -18,11 +18,11 @@ import java.util.zip.ZipInputStream
 private const val TAG = "ZipChunkRestore"
 
 internal class ZipChunkRestore(
-    storagePlugin: () -> StoragePlugin,
+    backendGetter: () -> Backend,
     fileRestore: FileRestore,
     streamCrypto: StreamCrypto,
     streamKey: ByteArray,
-) : AbstractChunkRestore(storagePlugin, fileRestore, streamCrypto, streamKey) {
+) : AbstractChunkRestore(backendGetter, fileRestore, streamCrypto, streamKey) {
 
     /**
      * Assumes that files in [zipChunks] are sorted by zipIndex with no duplicate indices.

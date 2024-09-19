@@ -13,16 +13,15 @@ import android.app.backup.RestoreDescription.TYPE_FULL_STREAM
 import android.app.backup.RestoreDescription.TYPE_KEY_VALUE
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.EncryptedMetadata
+import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.coAssertThrows
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataReader
 import com.stevesoltys.seedvault.metadata.PackageMetadata
-import com.stevesoltys.seedvault.plugins.EncryptedMetadata
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import io.mockk.Runs
@@ -30,8 +29,11 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -44,8 +46,8 @@ import kotlin.random.Random
 internal class RestoreCoordinatorTest : TransportTest() {
 
     private val notificationManager: BackupNotificationManager = mockk()
-    private val storagePluginManager: StoragePluginManager = mockk()
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backendManager: BackendManager = mockk()
+    private val backend = mockk<Backend>()
     private val kv = mockk<KVRestore>()
     private val full = mockk<FullRestore>()
     private val metadataReader = mockk<MetadataReader>()
@@ -56,14 +58,14 @@ internal class RestoreCoordinatorTest : TransportTest() {
         settingsManager = settingsManager,
         metadataManager = metadataManager,
         notificationManager = notificationManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         kv = kv,
         full = full,
         metadataReader = metadataReader,
     )
 
     private val inputStream = mockk<InputStream>()
-    private val safStorage: SafStorage = mockk()
+    private val safStorage: SafProperties = mockk()
     private val packageInfo2 = PackageInfo().apply { packageName = "org.example2" }
     private val packageInfoArray = arrayOf(packageInfo)
     private val packageInfoArray2 = arrayOf(packageInfo, packageInfo2)
@@ -78,14 +80,15 @@ internal class RestoreCoordinatorTest : TransportTest() {
         metadata.packageMetadataMap[packageInfo2.packageName] =
             PackageMetadata(backupType = BackupType.FULL)
 
-        every { storagePluginManager.appPlugin } returns plugin
+        mockkStatic("com.stevesoltys.seedvault.backend.BackendExtKt")
+        every { backendManager.backend } returns backend
     }
 
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
         val encryptedMetadata = EncryptedMetadata(token) { inputStream }
 
-        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+        coEvery { backend.getAvailableBackups() } returns sequenceOf(
             encryptedMetadata,
             EncryptedMetadata(token + 1) { inputStream }
         )
@@ -123,7 +126,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() fetches metadata if missing`() = runBlocking {
-        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+        coEvery { backend.getAvailableBackups() } returns sequenceOf(
             EncryptedMetadata(token) { inputStream },
             EncryptedMetadata(token + 1) { inputStream }
         )
@@ -136,7 +139,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() errors if metadata is not matching token`() = runBlocking {
-        coEvery { plugin.getAvailableBackups() } returns sequenceOf(
+        coEvery { backend.getAvailableBackups() } returns sequenceOf(
             EncryptedMetadata(token + 42) { inputStream }
         )
         every { metadataReader.readMetadata(inputStream, token + 42) } returns metadata
@@ -172,7 +175,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with removed storage shows notification`() =
         runBlocking {
-            every { storagePluginManager.storageProperties } returns safStorage
+            every { backendManager.backendProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns true
             every { metadataManager.getPackageMetadata(packageName) } returns PackageMetadata(42L)
             every { safStorage.name } returns storageName
@@ -196,7 +199,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() optimized auto-restore with available storage shows no notification`() =
         runBlocking {
-            every { storagePluginManager.storageProperties } returns safStorage
+            every { backendManager.backendProperties } returns safStorage
             every { safStorage.isUnavailableUsb(context) } returns false
 
             restore.beforeStartRestore(metadata)
@@ -212,7 +215,7 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() with removed storage shows no notification`() = runBlocking {
-        every { storagePluginManager.storageProperties } returns safStorage
+        every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns true
         every { metadataManager.getPackageMetadata(packageName) } returns null
 
@@ -239,7 +242,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray)
 
         every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageName, TYPE_KEY_VALUE)
@@ -274,19 +276,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
     }
 
     @Test
-    fun `nextRestorePackage() returns NO_MORE_PACKAGES if data not found`() = runBlocking {
-        restore.beforeStartRestore(metadata)
-        restore.startRestore(token, packageInfoArray2)
-
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        coEvery { plugin.hasData(token, name) } returns false
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        coEvery { plugin.hasData(token, name2) } returns false
-
-        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
-    }
-
-    @Test
     fun `nextRestorePackage() tries next package if one has no backup type()`() = runBlocking {
         metadata.packageMetadataMap[packageName] =
             metadata.packageMetadataMap[packageName]!!.copy(backupType = null)
@@ -294,7 +283,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray2)
 
         every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        coEvery { plugin.hasData(token, name2) } returns true
         every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
 
         val expected = RestoreDescription(packageInfo2.packageName, TYPE_FULL_STREAM)
@@ -309,14 +297,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray2)
 
         every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        coEvery { plugin.hasData(token, name) } returns true
         every { kv.initializeState(VERSION, token, name, packageInfo) } just Runs
 
         val expected = RestoreDescription(packageInfo.packageName, TYPE_KEY_VALUE)
         assertEquals(expected, restore.nextRestorePackage())
 
         every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        coEvery { plugin.hasData(token, name2) } returns true
         every { full.initializeState(VERSION, token, name2, packageInfo2) } just Runs
 
         val expected2 =
@@ -355,19 +341,6 @@ internal class RestoreCoordinatorTest : TransportTest() {
         restore.startRestore(token, packageInfoArray)
 
         coEvery { kv.hasDataForPackage(token, packageInfo) } throws IOException()
-
-        assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
-    }
-
-    @Test
-    fun `when plugin#hasData() throws, it tries next package`() = runBlocking {
-        restore.beforeStartRestore(metadata)
-        restore.startRestore(token, packageInfoArray2)
-
-        every { crypto.getNameForPackage(metadata.salt, packageName) } returns name
-        coEvery { plugin.hasData(token, name) } returns false
-        every { crypto.getNameForPackage(metadata.salt, packageInfo2.packageName) } returns name2
-        coEvery { plugin.hasData(token, name2) } throws IOException()
 
         assertEquals(NO_MORE_PACKAGES, restore.nextRestorePackage())
     }

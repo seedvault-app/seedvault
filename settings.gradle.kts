@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Seedvault"
+include(":core")
 include(":app")
 include(":contactsbackup")
 include(":storage:lib")

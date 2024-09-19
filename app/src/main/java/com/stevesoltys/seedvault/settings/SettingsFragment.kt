@@ -25,12 +25,12 @@ import androidx.work.WorkInfo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
-import com.stevesoltys.seedvault.plugins.StorageProperties
 import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.toRelativeTime
+import org.calyxos.seedvault.core.backends.BackendProperties
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.concurrent.TimeUnit
@@ -40,7 +40,7 @@ private val TAG = SettingsFragment::class.java.name
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private val viewModel: SettingsViewModel by sharedViewModel()
-    private val storagePluginManager: StoragePluginManager by inject()
+    private val backendManager: BackendManager by inject()
     private val backupStateManager: BackupStateManager by inject()
     private val backupManager: IBackupManager by inject()
     private val notificationManager: BackupNotificationManager by inject()
@@ -57,8 +57,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var menuBackupNow: MenuItem? = null
     private var menuRestore: MenuItem? = null
 
-    private val storageProperties: StorageProperties<*>?
-        get() = storagePluginManager.storageProperties
+    private val backendProperties: BackendProperties<*>?
+        get() = backendManager.backendProperties
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         permitDiskReads {
@@ -270,7 +270,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         activity?.contentResolver?.let {
             autoRestore.isChecked = backupStateManager.isAutoRestoreEnabled
         }
-        val storage = this.storageProperties
+        val storage = this.backendProperties
         if (storage?.isUsb == true) {
             autoRestore.summary = getString(R.string.settings_auto_restore_summary) + "\n\n" +
                 getString(R.string.settings_auto_restore_summary_usb, storage.name)
@@ -282,7 +282,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setBackupLocationSummary() {
         // get name of storage location
         backupLocation.summary =
-            storageProperties?.name ?: getString(R.string.settings_backup_location_none)
+            backendProperties?.name ?: getString(R.string.settings_backup_location_none)
     }
 
     private fun setAppBackupStatusSummary(lastBackupInMillis: Long?) {
@@ -301,7 +301,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      * says that nothing is scheduled which can happen when backup destination is on flash drive.
      */
     private fun setAppBackupSchedulingSummary(workInfo: WorkInfo?) {
-        if (storageProperties?.isUsb == true) {
+        if (backendProperties?.isUsb == true) {
             backupScheduling.summary = getString(R.string.settings_backup_status_next_backup_usb)
             return
         }

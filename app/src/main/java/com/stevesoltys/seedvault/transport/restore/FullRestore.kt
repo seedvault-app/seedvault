@@ -17,9 +17,10 @@ import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import libcore.io.IoUtils.closeQuietly
+import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
@@ -38,7 +39,7 @@ private class FullRestoreState(
 private val TAG = FullRestore::class.java.simpleName
 
 internal class FullRestore(
-    private val pluginManager: StoragePluginManager,
+    private val backendManager: BackendManager,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -46,7 +47,7 @@ internal class FullRestore(
     private val crypto: Crypto,
 ) {
 
-    private val plugin get() = pluginManager.appPlugin
+    private val backend get() = backendManager.backend
     private var state: FullRestoreState? = null
 
     fun hasState() = state != null
@@ -114,7 +115,8 @@ internal class FullRestore(
                     crypto.decryptHeader(inputStream, version, packageName)
                     state.inputStream = inputStream
                 } else {
-                    val inputStream = plugin.getInputStream(state.token, state.name)
+                    val handle = LegacyAppBackupFile.Blob(state.token, state.name)
+                    val inputStream = backend.load(handle)
                     val version = headerReader.readVersion(inputStream, state.version)
                     val ad = getADForFull(version, packageName)
                     state.inputStream = crypto.newDecryptingStream(inputStream, ad)

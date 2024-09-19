@@ -15,9 +15,8 @@ import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
 import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import io.mockk.Runs
@@ -29,6 +28,7 @@ import io.mockk.mockkStatic
 import io.mockk.verify
 import io.mockk.verifyAll
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
@@ -41,14 +41,14 @@ import kotlin.random.Random
 
 internal class KVRestoreTest : RestoreTest() {
 
-    private val storagePluginManager: StoragePluginManager = mockk()
-    private val plugin = mockk<StoragePlugin<*>>()
+    private val backendManager: BackendManager = mockk()
+    private val backend = mockk<Backend>()
     @Suppress("DEPRECATION")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
     private val restore = KVRestore(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,
@@ -74,7 +74,7 @@ internal class KVRestoreTest : RestoreTest() {
         // for InputStream#readBytes()
         mockkStatic("kotlin.io.ByteStreamsKt")
 
-        every { storagePluginManager.appPlugin } returns plugin
+        every { backendManager.backend } returns backend
     }
 
     @Test
@@ -88,7 +88,7 @@ internal class KVRestoreTest : RestoreTest() {
     fun `unexpected version aborts with error`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every {
             headerReader.readVersion(inputStream, VERSION)
         } throws UnsupportedVersionException(Byte.MAX_VALUE)
@@ -103,7 +103,7 @@ internal class KVRestoreTest : RestoreTest() {
     fun `newDecryptingStream throws`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
@@ -121,7 +121,7 @@ internal class KVRestoreTest : RestoreTest() {
     fun `writeEntityHeader throws`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
         every {
@@ -146,7 +146,7 @@ internal class KVRestoreTest : RestoreTest() {
     fun `two records get restored`() = runBlocking {
         restore.initializeState(VERSION, token, name, packageInfo)
 
-        coEvery { plugin.getInputStream(token, name) } returns inputStream
+        coEvery { backend.load(handle) } returns inputStream
         every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
         every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
         every {

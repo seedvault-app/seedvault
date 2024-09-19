@@ -18,9 +18,8 @@ import com.stevesoltys.seedvault.crypto.KeyManagerTestImpl
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.MetadataReaderImpl
-import com.stevesoltys.seedvault.plugins.LegacyStoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.StoragePluginManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.toByteArrayFromHex
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
@@ -30,6 +29,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
@@ -54,13 +54,13 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val dbManager = mockk<KvDbManager>()
     private val metadataReader = MetadataReaderImpl(cryptoImpl)
     private val notificationManager = mockk<BackupNotificationManager>()
-    private val storagePluginManager: StoragePluginManager = mockk()
+    private val backendManager: BackendManager = mockk()
 
     @Suppress("Deprecation")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
-    private val backupPlugin = mockk<StoragePlugin<*>>()
+    private val backend = mockk<Backend>()
     private val kvRestore = KVRestore(
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         legacyPlugin = legacyPlugin,
         outputFactory = outputFactory,
         headerReader = headerReader,
@@ -68,14 +68,14 @@ internal class RestoreV0IntegrationTest : TransportTest() {
         dbManager = dbManager,
     )
     private val fullRestore =
-        FullRestore(storagePluginManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
+        FullRestore(backendManager, legacyPlugin, outputFactory, headerReader, cryptoImpl)
     private val restore = RestoreCoordinator(
         context = context,
         crypto = crypto,
         settingsManager = settingsManager,
         metadataManager = metadataManager,
         notificationManager = notificationManager,
-        pluginManager = storagePluginManager,
+        backendManager = backendManager,
         kv = kvRestore,
         full = fullRestore,
         metadataReader = metadataReader,
@@ -123,7 +123,7 @@ internal class RestoreV0IntegrationTest : TransportTest() {
     private val key264 = key2.encodeBase64()
 
     init {
-        every { storagePluginManager.appPlugin } returns backupPlugin
+        every { backendManager.backend } returns backend
     }
 
     @Test

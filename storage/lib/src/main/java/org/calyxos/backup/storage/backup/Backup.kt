@@ -12,13 +12,16 @@ import android.os.Build
 import android.text.format.Formatter
 import android.util.Log
 import org.calyxos.backup.storage.api.BackupObserver
-import org.calyxos.backup.storage.api.StoragePlugin
 import org.calyxos.backup.storage.crypto.ChunkCrypto
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.FileBackupFileType
+import org.calyxos.seedvault.core.backends.TopLevelFolder
+import org.calyxos.seedvault.core.crypto.KeyManager
 import java.io.IOException
 import java.security.GeneralSecurityException
 import kotlin.time.Duration
@@ -41,7 +44,9 @@ internal class Backup(
     private val context: Context,
     private val db: Db,
     private val fileScanner: FileScanner,
-    private val storagePluginGetter: () -> StoragePlugin,
+    private val backendGetter: () -> Backend,
+    private val androidId: String,
+    keyManager: KeyManager,
     private val cacheRepopulater: ChunksCacheRepopulater,
     chunkSizeMax: Int = CHUNK_SIZE_MAX,
     private val streamCrypto: StreamCrypto = StreamCrypto,
@@ -55,21 +60,22 @@ internal class Backup(
     }
 
     private val contentResolver = context.contentResolver
-    private val storagePlugin get() = storagePluginGetter()
+    private val backend get() = backendGetter()
     private val filesCache = db.getFilesCache()
     private val chunksCache = db.getChunksCache()
 
     private val mac = try {
-        ChunkCrypto.getMac(ChunkCrypto.deriveChunkIdKey(storagePlugin.getMasterKey()))
+        ChunkCrypto.getMac(ChunkCrypto.deriveChunkIdKey(keyManager.getMainKey()))
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }
     private val streamKey = try {
-        streamCrypto.deriveStreamKey(storagePlugin.getMasterKey())
+        streamCrypto.deriveStreamKey(keyManager.getMainKey())
     } catch (e: GeneralSecurityException) {
         throw AssertionError(e)
     }
-    private val chunkWriter = ChunkWriter(streamCrypto, streamKey, chunksCache, storagePlugin)
+    private val chunkWriter =
+        ChunkWriter(streamCrypto, streamKey, chunksCache, backendGetter, androidId)
     private val hasMediaAccessPerm =
         context.checkSelfPermission(ACCESS_MEDIA_LOCATION) == PERMISSION_GRANTED
     private val fileBackup = FileBackup(
@@ -93,7 +99,12 @@ internal class Backup(
         try {
             // get available chunks, so we do not need to rely solely on local cache
             // for checking if a chunk already exists on storage
-            val availableChunkIds = storagePlugin.getAvailableChunkIds().toHashSet()
+            val chunkIds = ArrayList<String>()
+            val topLevelFolder = TopLevelFolder.fromAndroidId(androidId)
+            backend.list(topLevelFolder, FileBackupFileType.Blob::class) { fileInfo ->
+                chunkIds.add(fileInfo.fileHandle.name)
+            }
+            val availableChunkIds = chunkIds.toHashSet()
             if (!chunksCache.areAllAvailableChunksCached(db, availableChunkIds)) {
                 cacheRepopulater.repopulate(streamKey, availableChunkIds)
             }
@@ -152,7 +163,8 @@ internal class Backup(
                 .setTimeStart(startTime)
                 .setTimeEnd(endTime)
                 .build()
-            storagePlugin.getBackupSnapshotOutputStream(startTime).use { outputStream ->
+            val fileHandle = FileBackupFileType.Snapshot(androidId, startTime)
+            backend.save(fileHandle).use { outputStream ->
                 outputStream.write(VERSION.toInt())
                 val ad = streamCrypto.getAssociatedDataForSnapshot(startTime)
                 streamCrypto.newEncryptingStream(streamKey, outputStream, ad)

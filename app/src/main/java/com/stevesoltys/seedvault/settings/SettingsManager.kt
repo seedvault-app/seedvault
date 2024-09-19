@@ -11,15 +11,15 @@ import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
 import androidx.preference.PreferenceManager
+import com.stevesoltys.seedvault.backend.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.plugins.StoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.DocumentsProviderStoragePlugin
-import com.stevesoltys.seedvault.plugins.saf.SafStorage
-import com.stevesoltys.seedvault.plugins.webdav.WebDavConfig
-import com.stevesoltys.seedvault.plugins.webdav.WebDavHandler.Companion.createWebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavProperties
-import com.stevesoltys.seedvault.plugins.webdav.WebDavStoragePlugin
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
+import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.saf.SafBackend
+import org.calyxos.seedvault.core.backends.saf.SafProperties
+import org.calyxos.seedvault.core.backends.webdav.WebDavBackend
+import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import java.util.concurrent.ConcurrentSkipListSet
 
 internal const val PREF_KEY_TOKEN = "token"
@@ -128,10 +128,10 @@ class SettingsManager(private val context: Context) {
             }
         }
 
-    fun setStoragePlugin(plugin: StoragePlugin<*>) {
+    fun setStorageBackend(plugin: Backend) {
         val value = when (plugin) {
-            is DocumentsProviderStoragePlugin -> StoragePluginType.SAF
-            is WebDavStoragePlugin -> StoragePluginType.WEB_DAV
+            is SafBackend -> StoragePluginType.SAF
+            is WebDavBackend -> StoragePluginType.WEB_DAV
             else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
         }.name
         prefs.edit()
@@ -139,17 +139,17 @@ class SettingsManager(private val context: Context) {
             .apply()
     }
 
-    fun setSafStorage(safStorage: SafStorage) {
+    fun setSafProperties(safProperties: SafProperties) {
         prefs.edit()
-            .putString(PREF_KEY_STORAGE_URI, safStorage.uri.toString())
-            .putString(PREF_KEY_STORAGE_ROOT_ID, safStorage.rootId)
-            .putString(PREF_KEY_STORAGE_NAME, safStorage.name)
-            .putBoolean(PREF_KEY_STORAGE_IS_USB, safStorage.isUsb)
-            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, safStorage.requiresNetwork)
+            .putString(PREF_KEY_STORAGE_URI, safProperties.uri.toString())
+            .putString(PREF_KEY_STORAGE_ROOT_ID, safProperties.rootId)
+            .putString(PREF_KEY_STORAGE_NAME, safProperties.name)
+            .putBoolean(PREF_KEY_STORAGE_IS_USB, safProperties.isUsb)
+            .putBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, safProperties.requiresNetwork)
             .apply()
     }
 
-    fun getSafStorage(): SafStorage? {
+    fun getSafProperties(): SafProperties? {
         val uriStr = prefs.getString(PREF_KEY_STORAGE_URI, null) ?: return null
         val uri = Uri.parse(uriStr)
         val name = prefs.getString(PREF_KEY_STORAGE_NAME, null)
@@ -157,7 +157,7 @@ class SettingsManager(private val context: Context) {
         val isUsb = prefs.getBoolean(PREF_KEY_STORAGE_IS_USB, false)
         val requiresNetwork = prefs.getBoolean(PREF_KEY_STORAGE_REQUIRES_NETWORK, false)
         val rootId = prefs.getString(PREF_KEY_STORAGE_ROOT_ID, null)
-        return SafStorage(uri, name, isUsb, requiresNetwork, rootId)
+        return SafProperties(uri, name, isUsb, requiresNetwork, rootId)
     }
 
     fun setFlashDrive(usb: FlashDrive?) {

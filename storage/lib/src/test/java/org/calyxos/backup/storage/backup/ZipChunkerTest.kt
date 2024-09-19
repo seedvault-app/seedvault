@@ -13,7 +13,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.getRandomDocFile
 import org.calyxos.backup.storage.getRandomString
-import org.calyxos.backup.storage.toHexString
+import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
