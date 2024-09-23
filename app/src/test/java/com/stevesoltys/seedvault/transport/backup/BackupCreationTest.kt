@@ -66,7 +66,7 @@ internal class BackupCreationTest : BackupTest() {
     private val appBackupManager = mockk<AppBackupManager>()
     private val packageService = mockk<PackageService>()
     private val snapshotCreator =
-        SnapshotCreator(context, clock, packageService, settingsManager, mockk(relaxed = true))
+        SnapshotCreator(context, clock, packageService, mockk(relaxed = true))
     private val notificationManager = mockk<BackupNotificationManager>()
     private val db = TestKvDbManager()
 
@@ -80,7 +80,6 @@ internal class BackupCreationTest : BackupTest() {
         appBackupManager = appBackupManager,
         kv = kvBackup,
         full = fullBackup,
-        clock = clock,
         packageService = packageService,
         metadataManager = metadataManager,
         settingsManager = settingsManager,

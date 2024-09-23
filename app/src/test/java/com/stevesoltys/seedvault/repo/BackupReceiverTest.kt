@@ -86,7 +86,7 @@ internal class BackupReceiverTest : TransportTest() {
     }
 
     @Test
-    fun `readFromStream`() = runBlocking {
+    fun readFromStream() = runBlocking {
         val bytes = getRandomByteArray()
         val chunkBytes1 = getRandomByteArray()
         val chunkBytes2 = getRandomByteArray()

@@ -38,8 +38,7 @@ internal class SnapshotCreatorTest : TransportTest() {
 
     private val ctx: Context = ApplicationProvider.getApplicationContext()
     private val packageService: PackageService = mockk()
-    private val snapshotCreator =
-        SnapshotCreator(ctx, clock, packageService, settingsManager, metadataManager)
+    private val snapshotCreator = SnapshotCreator(ctx, clock, packageService, metadataManager)
 
     @Test
     fun `test onApkBackedUp`() {

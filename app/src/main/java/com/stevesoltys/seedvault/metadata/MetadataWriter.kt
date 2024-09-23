@@ -33,12 +33,6 @@ internal class MetadataWriterImpl : MetadataWriter {
                 if (packageMetadata.size != null) {
                     put(JSON_PACKAGE_SIZE, packageMetadata.size)
                 }
-                if (packageMetadata.system) {
-                    put(JSON_PACKAGE_SYSTEM, true)
-                }
-                if (packageMetadata.isLaunchableSystemApp) {
-                    put(JSON_PACKAGE_SYSTEM_LAUNCHER, true)
-                }
             })
         }
         return json.toString().toByteArray(Utf8)

@@ -93,16 +93,15 @@ internal class CoordinatorIntegrationTest : TransportTest() {
     )
     private val packageService: PackageService = mockk()
     private val backup = BackupCoordinator(
-        context,
-        backendManager,
-        appBackupManager,
-        kvBackup,
-        fullBackup,
-        clock,
-        packageService,
-        metadataManager,
-        settingsManager,
-        notificationManager
+        context = context,
+        backendManager = backendManager,
+        appBackupManager = appBackupManager,
+        kv = kvBackup,
+        full = fullBackup,
+        packageService = packageService,
+        metadataManager = metadataManager,
+        settingsManager = settingsManager,
+        nm = notificationManager,
     )
 
     private val kvRestore = KVRestore(

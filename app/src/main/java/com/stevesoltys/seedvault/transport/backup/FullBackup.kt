@@ -138,14 +138,15 @@ internal class FullBackup(
     suspend fun cancelFullBackup() {
         val state = this.state ?: error("No state when canceling")
         Log.i(TAG, "Cancel full backup for ${state.packageName}")
-        // TODO check if worth keeping the blobs. they've been uploaded already and may be re-usable
-        //  so we could add them to the snapshot's blobMap or just let prune remove them at the end
+        // finalize the receiver
         try {
             backupReceiver.finalize(getOwner(state.packageName))
         } catch (e: Exception) {
             // as the backup was cancelled anyway, we don't care if finalizing had an error
             Log.e(TAG, "Error finalizing backup in cancelFullBackup().", e)
         }
+        // If the transport receives this callback, it will *not* receive a call to [finishBackup].
+        // It needs to tear down any ongoing backup state here.
         clearState()
     }
 

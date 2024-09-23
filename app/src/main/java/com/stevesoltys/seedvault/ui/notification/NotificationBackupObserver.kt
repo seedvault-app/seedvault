@@ -18,11 +18,10 @@ import android.util.Log.isLoggable
 import com.stevesoltys.seedvault.ERROR_BACKUP_CANCELLED
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.repo.AppBackupManager
-import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.repo.hexFromProto
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.worker.AppBackupPruneWorker
 import com.stevesoltys.seedvault.worker.BackupRequester
 import kotlinx.coroutines.runBlocking
@@ -38,7 +37,6 @@ internal class NotificationBackupObserver(
 ) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
-    private val metadataManager: MetadataManager by inject()
     private val packageService: PackageService by inject()
     private val settingsManager: SettingsManager by inject()
     private val appBackupManager: AppBackupManager by inject()
@@ -153,7 +151,7 @@ internal class NotificationBackupObserver(
                 success = snapshot != null
                 snapshot
             }
-            val size = if (snapshot != null) { // TODO count size of APKs separately
+            val size = if (snapshot != null) { // TODO for later: count size of APKs separately
                 val chunkIds = snapshot.appsMap.values.flatMap { it.chunkIdsList }
                 chunkIds.sumOf {
                     snapshot.blobsMap[it.hexFromProto()]?.uncompressedLength?.toLong() ?: 0L

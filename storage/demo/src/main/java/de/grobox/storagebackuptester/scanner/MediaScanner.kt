@@ -13,7 +13,6 @@ import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.scanner.MediaScanner
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.time.ExperimentalTime
 import kotlin.time.TimedValue
 import kotlin.time.measureTimedValue
 
@@ -27,7 +26,6 @@ data class ScanResult(
     }
 }
 
-@OptIn(ExperimentalTime::class)
 fun scanUri(context: Context, mediaScanner: MediaScanner, uri: Uri): String {
     val sb = StringBuilder()
     val timedResult = measureTimedValue {
@@ -57,7 +55,6 @@ fun dump(context: Context, mediaFiles: List<BackupFile>, sb: StringBuilder? = nu
     return ScanResult(itemsFound, totalSize)
 }
 
-@OptIn(ExperimentalTime::class)
 fun appendStats(
     context: Context,
     sb: StringBuilder,

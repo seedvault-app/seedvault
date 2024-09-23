@@ -21,7 +21,6 @@ import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -49,7 +48,6 @@ class MetadataManagerTest {
     private val clock: Clock = mockk()
     private val metadataWriter: MetadataWriter = mockk()
     private val metadataReader: MetadataReader = mockk()
-    private val settingsManager: SettingsManager = mockk()
 
     private val manager = MetadataManager(
         context = context,

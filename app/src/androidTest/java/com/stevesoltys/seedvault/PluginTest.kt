@@ -10,7 +10,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.backend.getAvailableBackupFileHandles
 import com.stevesoltys.seedvault.backend.saf.DocumentsProviderLegacyPlugin
 import com.stevesoltys.seedvault.backend.saf.DocumentsStorage
 import com.stevesoltys.seedvault.settings.SettingsManager

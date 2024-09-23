@@ -13,7 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.settings.SettingsManager
 import io.mockk.CapturingSlot
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -34,7 +33,6 @@ import kotlin.test.assertEquals
 @MediumTest
 class KvBackupInstrumentationTest : KoinComponent {
 
-    private val settingsManager: SettingsManager by inject()
     private val backupReceiver: BackupReceiver = mockk()
     private val inputFactory: InputFactory = mockk()
     private val dbManager: KvDbManager by inject()

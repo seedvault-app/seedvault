@@ -24,8 +24,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NOTIFICATION_ID_OBSERVER
 import org.koin.core.component.KoinComponent

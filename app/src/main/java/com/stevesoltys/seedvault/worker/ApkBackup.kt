@@ -17,11 +17,11 @@ import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.proto.SnapshotKt.split
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.repo.forProto
 import com.stevesoltys.seedvault.repo.hexFromProto
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.isNotUpdatedSystemApp
 import com.stevesoltys.seedvault.transport.backup.isTestOnly
 import org.calyxos.seedvault.core.toHexString

@@ -20,8 +20,8 @@ import com.stevesoltys.seedvault.crypto.TYPE_ICONS
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
@@ -150,13 +150,13 @@ internal class IconManager(
      */
     @Suppress("DEPRECATION")
     @Throws(IOException::class, SecurityException::class, GeneralSecurityException::class)
-    fun downloadIconsV1(version: Byte, token: Long, inputStream: InputStream): Set<String> {
+    fun downloadIconsV1(token: Long, inputStream: InputStream): Set<String> {
         Log.d(TAG, "Start downloading icons")
         val folder = File(context.cacheDir, CACHE_FOLDER)
         if (!folder.isDirectory && !folder.mkdirs())
             throw IOException("Can't create cache folder for icons")
         val set = mutableSetOf<String>()
-        crypto.newDecryptingStreamV1(inputStream, getAD(version, token)).use { cryptoStream ->
+        crypto.newDecryptingStreamV1(inputStream, getAD(1.toByte(), token)).use { cryptoStream ->
             ZipInputStream(cryptoStream).use { zip ->
                 var entry = zip.nextEntry
                 while (entry != null) {

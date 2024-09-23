@@ -144,6 +144,7 @@ internal class AppBackupManager(
     @Throws(IOException::class)
     suspend fun removeBackupRepo() {
         blobCache.clearLocalCache()
+        // TODO not critical, but nice to have: clear also local snapshot cache
         backendManager.backend.remove(TopLevelFolder(crypto.repoId))
     }
 

@@ -83,7 +83,7 @@ internal class RestoreViewModel(
     private val appSelectionManager =
         AppSelectionManager(app, backendManager, iconManager, viewModelScope)
     private val appDataRestoreManager = AppDataRestoreManager(
-        app, backupManager, settingsManager, restoreCoordinator, backendManager
+        app, backupManager, restoreCoordinator, backendManager
     )
 
     private val mDisplayFragment = MutableLiveEvent<DisplayFragment>()

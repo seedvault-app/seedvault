@@ -20,7 +20,6 @@ import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
@@ -64,14 +63,12 @@ internal class BackupCoordinator(
     private val appBackupManager: AppBackupManager,
     private val kv: KVBackup,
     private val full: FullBackup,
-    private val clock: Clock,
     private val packageService: PackageService,
     private val metadataManager: MetadataManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
 ) {
 
-    private val backend get() = backendManager.backend
     private val snapshotCreator
         get() = appBackupManager.snapshotCreator ?: error("No SnapshotCreator")
     private val state = CoordinatorState(
@@ -92,6 +89,8 @@ internal class BackupCoordinator(
      *
      * If the transport returns anything other than [TRANSPORT_OK] from this method,
      * the OS will halt the current initialize operation and schedule a retry in the near future.
+     * Attention: [finishBackup] will not be called in this case.
+     *
      * Even if the transport is in a state
      * such that attempting to "initialize" the backend storage is meaningless -
      * for example, if there is no current live data-set at all,
@@ -103,12 +102,8 @@ internal class BackupCoordinator(
      * [TRANSPORT_ERROR] (to retry following network error or other failure).
      */
     fun initializeDevice(): Int {
-        // we don't respect the intended system behavior here by always starting a new [RestoreSet]
-        // instead of simply deleting the current one
         Log.i(TAG, "Initialize Device!")
-
-        // [finishBackup] will only be called when we return [TRANSPORT_OK] here
-        // so we remember that we initialized successfully
+        // we don't respect the intended system behavior of erasing all stored data
         state.calledInitialize = true
         return TRANSPORT_OK
     }

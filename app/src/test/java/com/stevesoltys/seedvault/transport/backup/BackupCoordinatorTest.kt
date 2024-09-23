@@ -13,7 +13,6 @@ import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupType
-import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NO_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
@@ -51,7 +50,6 @@ internal class BackupCoordinatorTest : BackupTest() {
         appBackupManager = appBackupManager,
         kv = kv,
         full = full,
-        clock = clock,
         packageService = packageService,
         metadataManager = metadataManager,
         settingsManager = settingsManager,
@@ -60,7 +58,6 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     private val backend = mockk<Backend>()
     private val fileDescriptor: ParcelFileDescriptor = mockk()
-    private val packageMetadata: PackageMetadata = mockk()
     private val safProperties = SafProperties(
         config = Uri.EMPTY,
         name = getRandomString(),

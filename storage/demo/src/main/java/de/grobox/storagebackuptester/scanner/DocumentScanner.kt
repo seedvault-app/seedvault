@@ -14,10 +14,8 @@ import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.scanner.DocumentScanner
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-@OptIn(ExperimentalTime::class)
 fun scanTree(context: Context, documentScanner: DocumentScanner, treeUri: Uri): String {
     val sb = StringBuilder()
     val timedResult = measureTimedValue {

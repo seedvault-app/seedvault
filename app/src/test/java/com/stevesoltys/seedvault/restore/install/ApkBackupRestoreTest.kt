@@ -22,16 +22,16 @@ import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.proto.Snapshot
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.repo.BackupReceiver
+import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.SnapshotCreator
+import com.stevesoltys.seedvault.repo.SnapshotManager
+import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
-import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.transport.TransportTest
-import com.stevesoltys.seedvault.repo.AppBackupManager
-import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.repo.SnapshotCreator
-import com.stevesoltys.seedvault.repo.hexFromProto
-import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.worker.ApkBackup
 import io.mockk.Runs
@@ -41,7 +41,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
-
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend

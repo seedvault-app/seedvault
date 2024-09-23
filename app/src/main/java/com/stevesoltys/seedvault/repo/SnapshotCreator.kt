@@ -23,7 +23,6 @@ import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -38,7 +37,6 @@ internal class SnapshotCreator(
     private val context: Context,
     private val clock: Clock,
     private val packageService: PackageService,
-    private val settingsManager: SettingsManager,
     private val metadataManager: MetadataManager,
 ) {
 

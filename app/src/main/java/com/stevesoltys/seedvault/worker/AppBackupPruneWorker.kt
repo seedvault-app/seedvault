@@ -8,7 +8,7 @@ package com.stevesoltys.seedvault.worker
 import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.util.Log
-import androidx.work.BackoffPolicy
+import androidx.work.BackoffPolicy.EXPONENTIAL
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.ForegroundInfo
@@ -36,7 +36,7 @@ class AppBackupPruneWorker(
         fun scheduleNow(context: Context) {
             val workRequest = OneTimeWorkRequestBuilder<AppBackupPruneWorker>()
                 .setExpedited(RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofSeconds(10))
+                .setBackoffCriteria(EXPONENTIAL, Duration.ofSeconds(10))
                 .build()
             val workManager = WorkManager.getInstance(context)
             Log.i(TAG, "Asking to prune app backups now...")

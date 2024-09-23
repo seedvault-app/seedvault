@@ -41,7 +41,6 @@ val backupModule = module {
             appBackupManager = get(),
             kv = get(),
             full = get(),
-            clock = get(),
             packageService = get(),
             metadataManager = get(),
             settingsManager = get(),

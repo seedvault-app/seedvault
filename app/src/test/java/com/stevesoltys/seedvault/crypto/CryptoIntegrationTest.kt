@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import kotlin.random.Random
 
-@Suppress("DEPRECATION")
 @TestInstance(PER_METHOD)
 class CryptoIntegrationTest {
 
@@ -42,17 +41,6 @@ class CryptoIntegrationTest {
     }
 
     @Test
-    fun `decrypting encrypted cleartext works v1`() {
-        val ad = Random.nextBytes(42)
-        val outputStream = ByteArrayOutputStream()
-        crypto.newEncryptingStreamV1(outputStream, ad).use { it.write(cleartext) }
-        val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-        crypto.newDecryptingStreamV1(inputStream, ad).use {
-            assertReadEquals(cleartext, it)
-        }
-    }
-
-    @Test
     fun `decrypting encrypted cleartext works v2`() {
         val ad = Random.nextBytes(42)
         val outputStream = ByteArrayOutputStream()
@@ -60,18 +48,6 @@ class CryptoIntegrationTest {
         val inputStream = ByteArrayInputStream(outputStream.toByteArray())
         crypto.newDecryptingStream(inputStream, ad).use {
             assertReadEquals(cleartext, it)
-        }
-    }
-
-    @Test
-    fun `decrypting encrypted cleartext fails with different AD v1`() {
-        val outputStream = ByteArrayOutputStream()
-        crypto.newEncryptingStreamV1(outputStream, Random.nextBytes(42)).use { it.write(cleartext) }
-        val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-        assertThrows(IOException::class.java) {
-            crypto.newDecryptingStreamV1(inputStream, Random.nextBytes(41)).use {
-                it.read()
-            }
         }
     }
 

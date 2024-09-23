@@ -86,11 +86,9 @@ open class App : Application() {
                 settingsManager = get(),
                 keyManager = get(),
                 backendManager = get(),
-                metadataManager = get(),
                 appListRetriever = get(),
                 storageBackup = get(),
                 backupManager = get(),
-                backupInitializer = get(),
                 backupStateManager = get(),
             )
         }

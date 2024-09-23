@@ -80,8 +80,7 @@ internal class AppListRetriever(
             AppStatus(
                 packageName = packageName,
                 enabled = settingsManager.isBackupEnabled(packageName),
-                icon = data.iconRes?.let { getDrawable(context, it) }
-                    ?: getIconFromPackageManager(packageName),
+                icon = getDrawable(context, data.iconRes) ?: getIconFromPackageManager(packageName),
                 name = context.getString(data.nameRes),
                 time = metadata?.time ?: 0,
                 size = metadata?.size,

@@ -13,9 +13,9 @@ import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.transport.backup.PackageService
-import com.stevesoltys.seedvault.repo.SnapshotCreatorFactory
 import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.SnapshotCreatorFactory
+import com.stevesoltys.seedvault.transport.backup.PackageService
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every

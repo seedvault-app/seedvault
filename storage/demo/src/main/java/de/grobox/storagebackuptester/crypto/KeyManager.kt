@@ -10,17 +10,17 @@ import android.security.keystore.KeyProperties.PURPOSE_ENCRYPT
 import android.security.keystore.KeyProperties.PURPOSE_SIGN
 import android.security.keystore.KeyProperties.PURPOSE_VERIFY
 import android.security.keystore.KeyProtection
+import org.calyxos.seedvault.core.crypto.CoreCrypto.ALGORITHM_HMAC
 import java.security.KeyStore
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
-object KeyManager: org.calyxos.seedvault.core.crypto.KeyManager {
+object KeyManager : org.calyxos.seedvault.core.crypto.KeyManager {
 
     private const val KEY_SIZE = 256
-    internal const val KEY_SIZE_BYTES = KEY_SIZE / 8
+    private const val KEY_SIZE_BYTES = KEY_SIZE / 8
     private const val KEY_ALIAS_MASTER = "com.stevesoltys.seedvault.master"
     private const val ANDROID_KEY_STORE = "AndroidKeyStore"
-    private const val ALGORITHM_HMAC = "HmacSHA256"
 
     private const val FAKE_SEED = "This is a legacy backup key 1234"
 

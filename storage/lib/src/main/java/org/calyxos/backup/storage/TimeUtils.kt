@@ -11,7 +11,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 /**
@@ -20,7 +19,7 @@ import kotlin.time.toDuration
  * So when building with AOSP 11, things will blow up.
  */
 
-@OptIn(ExperimentalContracts::class, ExperimentalTime::class)
+@OptIn(ExperimentalContracts::class)
 internal inline fun measure(block: () -> Unit): Duration {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -30,7 +29,7 @@ internal inline fun measure(block: () -> Unit): Duration {
     return (System.currentTimeMillis() - start).toDuration(DurationUnit.MILLISECONDS)
 }
 
-@OptIn(ExperimentalContracts::class, ExperimentalTime::class)
+@OptIn(ExperimentalContracts::class)
 internal inline fun <T> measure(text: String, block: () -> T): T {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)

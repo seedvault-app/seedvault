@@ -17,7 +17,6 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsActivity
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import kotlinx.coroutines.runBlocking
@@ -43,7 +42,6 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     private val backupCoordinator by inject<BackupCoordinator>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
-    private val settingsManager by inject<SettingsManager>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME

@@ -103,17 +103,6 @@ internal interface Crypto {
     fun getNameForApk(salt: String, packageName: String, suffix: String = ""): String
 
     /**
-     * Returns a [AesGcmHkdfStreaming] encrypting stream
-     * that gets encrypted and authenticated the given associated data.
-     */
-    @Deprecated("only for v1")
-    @Throws(IOException::class, GeneralSecurityException::class)
-    fun newEncryptingStreamV1(
-        outputStream: OutputStream,
-        associatedData: ByteArray,
-    ): OutputStream
-
-    /**
      * Returns a [AesGcmHkdfStreaming] decrypting stream
      * that gets decrypted and authenticated the given associated data.
      */
@@ -244,13 +233,6 @@ internal class CryptoImpl(
         messageDigest.update(bytes)
         return messageDigest.digest()
     }
-
-    @Deprecated("only for v1")
-    @Throws(IOException::class, GeneralSecurityException::class)
-    override fun newEncryptingStreamV1(
-        outputStream: OutputStream,
-        associatedData: ByteArray,
-    ): OutputStream = CoreCrypto.newEncryptingStream(keyV1, outputStream, associatedData)
 
     @Deprecated("only for v1")
     @Throws(IOException::class, GeneralSecurityException::class)

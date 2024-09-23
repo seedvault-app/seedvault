@@ -125,11 +125,6 @@ internal class PackageService(
                 packageInfo.allowsBackup()
         }
 
-    /**
-     * A list of apps that do not allow backup.
-     */
-    val userNotAllowedApps: List<PackageInfo> = emptyList()
-
     val launchableSystemApps: List<ResolveInfo>
         @WorkerThread
         get() {

@@ -96,7 +96,7 @@ internal class AppSelectionManager(
                     val backend = backendManager.backend
                     val token = restorableBackup.token
                     backend.load(LegacyAppBackupFile.IconsFile(token)).use {
-                        iconManager.downloadIconsV1(restorableBackup.version, token, it)
+                        iconManager.downloadIconsV1(token, it)
                     }
                 } else if (restorableBackup.version >= 2) {
                     val repoId = restorableBackup.repoId ?: error("No repoId in v2 backup")

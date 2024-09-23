@@ -23,8 +23,8 @@ import com.stevesoltys.seedvault.proto.copy
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
-import com.stevesoltys.seedvault.transport.backup.BackupTest
 import com.stevesoltys.seedvault.repo.SnapshotCreator
+import com.stevesoltys.seedvault.transport.backup.BackupTest
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

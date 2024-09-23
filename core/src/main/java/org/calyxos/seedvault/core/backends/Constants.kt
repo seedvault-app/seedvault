@@ -23,6 +23,5 @@ public object Constants {
     public val appSnapshotRegex: Regex = Regex("(^[a-f0-9]{64})\\.snapshot$")
     public val fileSnapshotRegex: Regex = Regex("(^[0-9]{13})\\.SeedSnap$") // good until year 2286
     public const val MIME_TYPE: String = "application/octet-stream"
-    public const val CHUNK_FOLDER_COUNT: Int = 256
 
 }

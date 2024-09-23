@@ -27,7 +27,6 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
 import com.stevesoltys.seedvault.metadata.PackageState
 import com.stevesoltys.seedvault.restore.install.isInstalled
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
@@ -55,7 +54,6 @@ internal data class AppRestoreResult(
 internal class AppDataRestoreManager(
     private val context: Context,
     private val backupManager: IBackupManager,
-    private val settingsManager: SettingsManager,
     private val restoreCoordinator: RestoreCoordinator,
     private val backendManager: BackendManager,
 ) {

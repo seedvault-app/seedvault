@@ -31,7 +31,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
@@ -90,28 +89,17 @@ internal class RestoreCoordinatorTest : TransportTest() {
             chunkIds = listOf(chunkId2),
         )
 
-        mockkStatic("com.stevesoltys.seedvault.backend.BackendExtKt")
         every { backendManager.backend } returns backend
     }
 
     @Test
     fun `getAvailableRestoreSets() builds set from plugin response`() = runBlocking {
-        val info1 = FileInfo(LegacyAppBackupFile.Metadata(token), 1)
-        val info2 = FileInfo(LegacyAppBackupFile.Metadata(token + 1), 2)
+        val handle1 = LegacyAppBackupFile.Metadata(token)
+        val handle2 = LegacyAppBackupFile.Metadata(token + 1)
 
-        coEvery {
-            backend.list(
-                topLevelFolder = null,
-                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
-                callback = captureLambda<(FileInfo) -> Unit>()
-            )
-        } answers {
-            val callback = lambda<(FileInfo) -> Unit>().captured
-            callback(info1)
-            callback(info2)
-        }
-        coEvery { backend.load(info1.fileHandle) } returns inputStream
-        coEvery { backend.load(info2.fileHandle) } returns inputStream
+        coEvery { backend.getAvailableBackupFileHandles() } returns listOf(handle1, handle2)
+        coEvery { backend.load(handle1) } returns inputStream
+        coEvery { backend.load(handle2) } returns inputStream
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
         every { inputStream.close() } just Runs
@@ -146,22 +134,12 @@ internal class RestoreCoordinatorTest : TransportTest() {
 
     @Test
     fun `startRestore() fetches metadata if missing`() = runBlocking {
-        val info1 = FileInfo(LegacyAppBackupFile.Metadata(token), 1)
-        val info2 = FileInfo(LegacyAppBackupFile.Metadata(token + 1), 2)
+        val handle1 = LegacyAppBackupFile.Metadata(token)
+        val handle2 = LegacyAppBackupFile.Metadata(token + 1)
 
-        coEvery {
-            backend.list(
-                topLevelFolder = null,
-                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
-                callback = captureLambda<(FileInfo) -> Unit>()
-            )
-        } answers {
-            val callback = lambda<(FileInfo) -> Unit>().captured
-            callback(info1)
-            callback(info2)
-        }
-        coEvery { backend.load(info1.fileHandle) } returns inputStream
-        coEvery { backend.load(info2.fileHandle) } returns inputStream
+        coEvery { backend.getAvailableBackupFileHandles() } returns listOf(handle1, handle2)
+        coEvery { backend.load(handle1) } returns inputStream
+        coEvery { backend.load(handle2) } returns inputStream
         every { metadataReader.readMetadata(inputStream, token) } returns metadata
         every { metadataReader.readMetadata(inputStream, token + 1) } returns metadata
         every { inputStream.close() } just Runs
@@ -273,21 +251,10 @@ internal class RestoreCoordinatorTest : TransportTest() {
     @Test
     fun `startRestore() errors when it can't find snapshots`() = runBlocking {
         val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
-        val info = FileInfo(handle, 1)
 
         every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns false
-
-        coEvery {
-            backend.list(
-                topLevelFolder = null,
-                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
-                callback = captureLambda<(FileInfo) -> Unit>()
-            )
-        } answers {
-            val callback = lambda<(FileInfo) -> Unit>().captured
-            callback(info)
-        }
+        coEvery { backend.getAvailableBackupFileHandles() } returns listOf(handle)
         coEvery { snapshotManager.loadSnapshot(handle) } returns snapshot.copy {
             token = this@RestoreCoordinatorTest.token - 1 // unexpected token
         }
