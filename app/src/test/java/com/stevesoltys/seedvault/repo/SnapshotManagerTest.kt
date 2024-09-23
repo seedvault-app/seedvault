@@ -52,6 +52,11 @@ internal class SnapshotManagerTest : TransportTest() {
         every { backendManager.backend } returns backend
     }
 
+    private fun getSnapshotFolder(tmpDir: Path, hash: String): File {
+        val repoFolder = File(tmpDir.toString(), repoId)
+        return File(repoFolder, hash)
+    }
+
     @Test
     fun `test onSnapshotsLoaded sets latestSnapshot`(@TempDir tmpDir: Path) = runBlocking {
         val snapshotManager = getSnapshotManager(File(tmpDir.toString()))
@@ -63,6 +68,7 @@ internal class SnapshotManagerTest : TransportTest() {
         val snapshotHandle1 = AppBackupFileType.Snapshot(repoId, chunkId1)
         val snapshotHandle2 = AppBackupFileType.Snapshot(repoId, chunkId2)
 
+        every { crypto.repoId } returns repoId
         coEvery { loader.loadFile(snapshotHandle1, any()) } returns inputStream1
         coEvery { loader.loadFile(snapshotHandle2, any()) } returns inputStream2
         snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle1, snapshotHandle2))
@@ -87,7 +93,7 @@ internal class SnapshotManagerTest : TransportTest() {
 
         snapshotManager.saveSnapshot(snapshot)
 
-        val snapshotFile = File(tmpDir.toString(), snapshotHandle.name)
+        val snapshotFile = getSnapshotFolder(tmpDir, snapshotHandle.name)
         assertTrue(snapshotFile.isFile)
         assertTrue(outputStream.size() > 0)
         val cachedBytes = snapshotFile.inputStream().use { it.readAllBytes() }
@@ -97,21 +103,28 @@ internal class SnapshotManagerTest : TransportTest() {
     @Test
     fun `snapshot loads from cache without backend`(@TempDir tmpDir: Path) = runBlocking {
         val snapshotManager = getSnapshotManager(File(tmpDir.toString()))
-        val snapshotData = snapshot { token = 1337 }.toByteArray()
+        val snapshot = snapshot { token = 1337 }
+        val snapshotData = snapshot.toByteArray()
         val inputStream = ByteArrayInputStream(snapshotData)
         val snapshotHandle = AppBackupFileType.Snapshot(repoId, chunkId1)
 
         // create cached file
-        val file = File(tmpDir.toString(), snapshotHandle.name)
+        val file = getSnapshotFolder(tmpDir, snapshotHandle.name)
+        file.parentFile?.mkdirs()
         file.outputStream().use { it.write(snapshotData) }
 
+        every { crypto.repoId } returns repoId
         coEvery { loader.loadFile(file, snapshotHandle.hash) } returns inputStream
 
-        snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle))
+        assertEquals(listOf(snapshot), snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle)))
 
         coVerify(exactly = 0) { // did not load from backend
             loader.loadFile(snapshotHandle, any())
         }
+
+        // now load all snapshots from cache
+        inputStream.reset()
+        assertEquals(listOf(snapshot), snapshotManager.loadCachedSnapshots())
     }
 
     @Test
@@ -124,6 +137,7 @@ internal class SnapshotManagerTest : TransportTest() {
         val snapshotHandle1 = AppBackupFileType.Snapshot(repoId, chunkId1)
         val snapshotHandle2 = AppBackupFileType.Snapshot(repoId, chunkId2)
 
+        every { crypto.repoId } returns repoId
         coEvery { loader.loadFile(snapshotHandle1, any()) } returns inputStream
         coEvery { loader.loadFile(snapshotHandle2, any()) } throws IOException()
         snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle1, snapshotHandle2))
@@ -179,10 +193,12 @@ internal class SnapshotManagerTest : TransportTest() {
         val snapshotManager = getSnapshotManager(File(tmpDir.toString()))
 
         val snapshotHandle = AppBackupFileType.Snapshot(repoId, chunkId1)
-        val file = File(tmpDir.toString(), snapshotHandle.name)
+        val file = getSnapshotFolder(tmpDir, snapshotHandle.name)
+        file.parentFile?.mkdirs()
         file.createNewFile()
         assertTrue(file.isFile)
 
+        every { crypto.repoId } returns repoId
         coEvery { backend.remove(snapshotHandle) } just Runs
 
         snapshotManager.removeSnapshot(snapshotHandle)

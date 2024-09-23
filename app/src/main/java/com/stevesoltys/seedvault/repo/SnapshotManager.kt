@@ -12,6 +12,7 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
 import org.calyxos.seedvault.core.toHexString
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -25,13 +26,14 @@ internal const val FOLDER_SNAPSHOTS = "snapshots"
  * Also keeps a reference to the [latestSnapshot] that holds important re-usable data.
  */
 internal class SnapshotManager(
-    private val snapshotFolder: File,
+    private val snapshotFolderRoot: File,
     private val crypto: Crypto,
     private val loader: Loader,
     private val backendManager: BackendManager,
 ) {
 
     private val log = KotlinLogging.logger {}
+    private val snapshotFolder: File get() = File(snapshotFolderRoot, crypto.repoId)
 
     /**
      * The latest [Snapshot]. May be stale if [onSnapshotsLoaded] has not returned
@@ -123,12 +125,27 @@ internal class SnapshotManager(
     @Throws(IOException::class)
     suspend fun loadSnapshot(snapshotHandle: AppBackupFileType.Snapshot): Snapshot {
         val file = File(snapshotFolder, snapshotHandle.name)
+        snapshotFolder.mkdirs()
         val inputStream = if (file.isFile) {
             loader.loadFile(file, snapshotHandle.hash)
         } else {
             loader.loadFile(snapshotHandle, file)
         }
         return inputStream.use { Snapshot.parseFrom(it) }
+    }
+
+    @Throws(IOException::class)
+    fun loadCachedSnapshots(): List<Snapshot> {
+        if (!snapshotFolder.isDirectory) return emptyList()
+        return snapshotFolder.listFiles()?.mapNotNull { file ->
+            val match = appSnapshotRegex.matchEntire(file.name)
+            if (match == null) {
+                log.error { "Unexpected file found: $file" }
+                null
+            } else {
+                loader.loadFile(file, match.groupValues[1]).use { Snapshot.parseFrom(it) }
+            }
+        } ?: throw IOException("Could not access snapshotFolder")
     }
 
 }

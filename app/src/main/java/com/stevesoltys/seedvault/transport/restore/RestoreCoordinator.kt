@@ -216,13 +216,20 @@ internal class RestoreCoordinator(
                     ?: return TRANSPORT_ERROR
                 backup.backups.find { it.token == token } ?: return TRANSPORT_ERROR
             } else {
-                // this is auto-restore, so we try harder to find a working restore set
+                // this is auto-restore, so we use cache and try hard to find a working restore set
                 Log.i(TAG, "No cached backups, loading all and look for $token")
-                // TODO may be cold start and need snapshot loading (ideally from cache only?)
-                val backup = getAvailableBackups() as? RestorableBackupResult.SuccessResult
-                    ?: return TRANSPORT_ERROR
+                val backups = try {
+                    snapshotManager.loadCachedSnapshots().map { snapshot ->
+                        RestorableBackup(crypto.repoId, snapshot)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error loading cached snapshots: ", e)
+                    (getAvailableBackups() as? RestorableBackupResult.SuccessResult)?.backups
+                        ?: return TRANSPORT_ERROR
+                }
+                Log.i(TAG, "Found ${backups.size} snapshots.")
                 val autoRestorePackageName = autoRestorePackageInfo.packageName
-                val sortedBackups = backup.backups.sortedByDescending { it.token }
+                val sortedBackups = backups.sortedByDescending { it.token } // latest first
                 sortedBackups.find { it.token == token } ?: sortedBackups.find {
                     val chunkIds = it.packageMetadataMap[autoRestorePackageName]?.chunkIds
                     // try a backup where our auto restore package has data

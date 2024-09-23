@@ -20,6 +20,7 @@ data class RestorableBackup(
     val snapshot: Snapshot? = null,
 ) {
 
+    // FIXME creating this mapping is expensive, a single call can take several seconds to complete
     constructor(repoId: String, snapshot: Snapshot) : this(
         backupMetadata = BackupMetadata.fromSnapshot(snapshot),
         repoId = repoId,

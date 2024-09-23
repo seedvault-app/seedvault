@@ -256,26 +256,18 @@ internal class RestoreCoordinatorTest : TransportTest() {
         }
 
     @Test
-    fun `startRestore() loads snapshots for auto-restore`() = runBlocking {
-        val handle = AppBackupFileType.Snapshot(repoId, getRandomByteArray(32).toHexString())
-        val info = FileInfo(handle, 1)
-
+    fun `startRestore() loads snapshots for auto-restore from local cache`() = runBlocking {
         every { backendManager.backendProperties } returns safStorage
         every { safStorage.isUnavailableUsb(context) } returns false
 
-        coEvery {
-            backend.list(
-                topLevelFolder = null,
-                AppBackupFileType.Snapshot::class, LegacyAppBackupFile.Metadata::class,
-                callback = captureLambda<(FileInfo) -> Unit>()
-            )
-        } answers {
-            val callback = lambda<(FileInfo) -> Unit>().captured
-            callback(info)
-        }
-        coEvery { snapshotManager.loadSnapshot(handle) } returns snapshot
+        every { crypto.repoId } returns repoId
+        every { snapshotManager.loadCachedSnapshots() } returns listOf(snapshot)
 
         assertEquals(TRANSPORT_OK, restore.startRestore(token, pmPackageInfoArray))
+
+        verify {
+            snapshotManager.loadCachedSnapshots()
+        }
     }
 
     @Test
