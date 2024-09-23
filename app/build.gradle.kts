@@ -185,8 +185,6 @@ dependencies {
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.8.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("logback-android-3.0.0.aar"))
 
-    implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
-
     /**
      * Test Dependencies (do not concern the AOSP build)
      */

@@ -8,16 +8,16 @@ package com.stevesoltys.seedvault.worker
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
-import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.repo.SnapshotManager
+import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isStopped
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.getAppName
+import org.calyxos.seedvault.core.backends.isOutOfSpace
 import java.io.IOException
 
 internal class ApkBackupManager(

@@ -13,11 +13,11 @@ import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.stevesoltys.seedvault.backend.isOutOfSpace
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import org.calyxos.seedvault.core.backends.isOutOfSpace
 import java.io.Closeable
 import java.io.EOFException
 import java.io.IOException

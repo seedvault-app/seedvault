@@ -6,15 +6,14 @@
 package com.stevesoltys.seedvault.backend.webdav
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getAvailableBackupFileHandles
 import com.stevesoltys.seedvault.settings.SettingsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.BackendFactory
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
@@ -43,7 +42,7 @@ internal class WebDavHandler(
 
     companion object {
         fun createWebDavProperties(context: Context, config: WebDavConfig): WebDavProperties {
-            val host = config.url.toHttpUrl().host
+            val host = Uri.parse(config.url).host
             return WebDavProperties(
                 config = config,
                 name = context.getString(R.string.storage_webdav_name, host),

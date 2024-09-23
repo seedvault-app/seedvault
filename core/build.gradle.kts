@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.core.ktx)
     implementation(libs.google.tink.android)
-    implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
+    implementation(fileTree("$projectDir/libs/dav4jvm").include("*.jar"))
     implementation(libs.squareup.okio)
     implementation(libs.kotlin.logging)
     implementation(libs.slf4j.api)
