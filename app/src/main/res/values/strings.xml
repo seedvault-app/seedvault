@@ -146,7 +146,7 @@
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_success_channel_title">Success notification</string>
     <string name="notification_title">Backup running</string>
-    <string name="notification_init_text">Preparing existing backup data for re-use…</string>
+    <string name="notification_init_text">Preparing existing backup data for reuse…</string>
     <string name="notification_apk_text">Backing up APK of %s</string>
     <string name="notification_apk_not_backed_up">Saving list of apps we can not back up.</string>
     <string name="notification_backup_already_running">Backup already in progress</string>
@@ -214,10 +214,10 @@
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
     <string name="restore_select_packages">Select apps to restore</string>
     <string name="restore_select_packages_all">All of the following apps</string>
-    <string name="restore_recycle_backup_title">Re-use old backup?</string>
-    <string name="restore_recycle_backup_text">The ownership of the backup \'%s\' you just restored can be transferred to this device. This will make new backups faster and use less data.\n\nHowever, it will make the backup inaccessible for your old device. If you don\'t use your old device anymore, it is usually fine to re-use the backup.</string>
-    <string name="restore_recycle_backup_button_no">Don\'t re-use</string>
-    <string name="restore_recycle_backup_button_yes">Re-use backup</string>
+    <string name="restore_recycle_backup_title">Reuse this backup?</string>
+    <string name="restore_recycle_backup_text">You can reuse the backup \'%s\' you just restored on this device. This will make new backups faster and use less data.\n\nHowever, your old device will lose access to this backup. If you would like to keep the access for your old device, you can create a new backup instead. This will use more data than reusing the existing backup.</string>
+    <string name="restore_recycle_backup_button_no">Create new backup</string>
+    <string name="restore_recycle_backup_button_yes">Reuse backup</string>
     <string name="restore_installing_packages">Re-installing apps</string>
     <string name="restore_app_status_installing">Re-installing</string>
     <string name="restore_app_status_installed">Re-installed</string>
