@@ -49,14 +49,14 @@ internal interface LargeTestBase : KoinComponent {
 
     companion object {
         private const val TEST_STORAGE_FOLDER = "seedvault_test"
-        private const val TEST_VIDEO_FOLDER = "seedvault_test_results"
+        private const val TEST_RESULT_FOLDER = "seedvault_test_results"
     }
 
     val externalStorageDir: String get() = Environment.getExternalStorageDirectory().absolutePath
 
     val testStoragePath get() = "$externalStorageDir/$TEST_STORAGE_FOLDER"
 
-    val testVideoPath get() = "$externalStorageDir/$TEST_VIDEO_FOLDER"
+    val testResultPath get() = "$externalStorageDir/$TEST_RESULT_FOLDER"
 
     val targetContext: Context
         get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -123,7 +123,7 @@ internal interface LargeTestBase : KoinComponent {
         keepRecordingScreen: AtomicBoolean,
         testName: String,
     ) {
-        val folder = testVideoPath
+        val folder = testResultPath
         runCommand("mkdir -p $folder")
 
         val fileName = testResultFilename(testName)
@@ -149,7 +149,7 @@ internal interface LargeTestBase : KoinComponent {
 
         // write logcat to file
         val fileName = testResultFilename(testName)
-        runCommand("logcat -d -f $testVideoPath/$fileName.log")
+        runCommand("logcat -d -f $testResultPath/$fileName.log")
     }
 
     fun uninstallPackages(packages: Collection<PackageInfo>) {
@@ -162,7 +162,7 @@ internal interface LargeTestBase : KoinComponent {
 
     fun clearTestBackups() {
         File(testStoragePath).deleteRecursively()
-        File(testVideoPath).deleteRecursively()
+        File(testResultPath).deleteRecursively()
     }
 
     fun changeBackupLocation(
@@ -225,6 +225,7 @@ internal interface LargeTestBase : KoinComponent {
 
     fun confirmCode() {
         RecoveryCodeScreen {
+            startNewBackupButton.click()
             confirmCodeButton.click()
 
             verifyCodeButton.scrollTo().click()
