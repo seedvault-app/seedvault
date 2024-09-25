@@ -30,6 +30,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
+import com.stevesoltys.seedvault.ui.systemData
 import org.calyxos.seedvault.core.backends.isOutOfSpace
 import java.io.IOException
 import java.util.concurrent.TimeUnit.DAYS
@@ -76,6 +77,9 @@ internal class BackupCoordinator(
         calledClearBackupData = false,
         cancelReason = UNKNOWN_ERROR
     )
+    private val launchableSystemApps by lazy {
+        packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
+    }
 
     // ------------------------------------------------------------------------------------
     // Transport initialization and quota
@@ -268,12 +272,13 @@ internal class BackupCoordinator(
     suspend fun cancelFullBackup() {
         val packageInfo = full.currentPackageInfo
             ?: error("Cancelling full backup, but no current package")
-        Log.i(
-            TAG, "Cancel full backup of ${packageInfo.packageName}" +
-                " because of ${state.cancelReason}"
-        )
-        // don't bother with system apps that have no data
-        val ignoreApp = state.cancelReason == NO_DATA && packageInfo.isSystemApp()
+        val packageName = packageInfo.packageName
+        Log.i(TAG, "Cancel full backup of $packageName because of ${state.cancelReason}")
+        // don't bother with remembering state for boring system apps that have no data
+        val ignoreApp = state.cancelReason == NO_DATA &&
+            packageInfo.isSystemApp() &&
+            packageName !in systemData.keys && // don't ignore our special system apps
+            packageName !in launchableSystemApps // don't ignore launchable system apps
         if (!ignoreApp) onPackageBackupError(packageInfo, BackupType.FULL)
         full.cancelFullBackup()
     }
