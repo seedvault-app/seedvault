@@ -14,6 +14,8 @@ import com.stevesoltys.seedvault.e2e.screen.impl.RestoreScreen
 import com.stevesoltys.seedvault.transport.restore.FullRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestore
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import io.mockk.Call
+import io.mockk.MockKAnswerScope
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -161,13 +163,25 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         clearMocks(spyKVRestore)
 
-        coEvery {
-            spyKVRestore.initializeState(any(), any(), any(), any())
-        } answers {
-            packageName = arg<PackageInfo>(3).packageName
+        fun initializeStateBlock(
+            packageInfoIndex: Int
+        ): MockKAnswerScope<Unit, Unit>.(Call) -> Unit = {
+            packageName = arg<PackageInfo>(packageInfoIndex).packageName
             restoreResult.kv[packageName!!] = mutableMapOf()
             callOriginal()
         }
+
+        coEvery {
+            spyKVRestore.initializeState(any(), any(), any(), any())
+        } answers initializeStateBlock(1)
+
+        coEvery {
+            spyKVRestore.initializeStateV1(any(), any(), any(), any())
+        } answers initializeStateBlock(2)
+
+        coEvery {
+            spyKVRestore.initializeStateV0(any(), any())
+        } answers initializeStateBlock(1)
 
         every {
             spyOutputFactory.getBackupDataOutput(any())
@@ -186,18 +200,30 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         clearMocks(spyFullRestore)
 
-        coEvery {
-            spyFullRestore.initializeState(any(), any(), any())
-        } answers {
+        fun initializeStateBlock(
+            packageInfoIndex: Int
+        ): MockKAnswerScope<Unit, Unit>.(Call) -> Unit = {
             packageName?.let {
                 restoreResult.full[it] = dataIntercept.toByteArray().sha256()
             }
 
-            packageName = arg<PackageInfo>(3).packageName
+            packageName = arg<PackageInfo>(packageInfoIndex).packageName
             dataIntercept = ByteArrayOutputStream()
 
             callOriginal()
         }
+
+        coEvery {
+            spyFullRestore.initializeState(any(), any(), any())
+        } answers initializeStateBlock(1)
+
+        coEvery {
+            spyFullRestore.initializeStateV1(any(), any(), any())
+        } answers initializeStateBlock(2)
+
+        coEvery {
+            spyFullRestore.initializeStateV0(any(), any())
+        } answers initializeStateBlock(1)
 
         every {
             spyOutputFactory.getOutputStream(any())
