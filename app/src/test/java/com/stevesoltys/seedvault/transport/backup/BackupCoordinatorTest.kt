@@ -85,6 +85,10 @@ internal class BackupCoordinatorTest : BackupTest() {
         val quota = Random.nextLong()
 
         every { settingsManager.quota } returns quota
+        if (!isFullBackup) { // hack for `adb shell bmgr` which starts with a K/V backup
+            coEvery { appBackupManager.ensureBackupPrepared() } just Runs
+        }
+
         assertEquals(quota, backup.getBackupQuota(packageInfo.packageName, isFullBackup))
     }
 

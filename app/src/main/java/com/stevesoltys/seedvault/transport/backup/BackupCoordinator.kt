@@ -126,9 +126,14 @@ internal class BackupCoordinator(
      *                      otherwise for key-value backup.
      * @return Current limit on backup size in bytes.
      */
-    fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
-        // report back quota
+    suspend fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
         Log.i(TAG, "Get backup quota for $packageName. Is full backup: $isFullBackup.")
+
+        if (!isFullBackup) {
+            // hack for `adb shell bmgr backupnow`
+            // which starts with a K/V backup calling this method, so we hook in here
+            appBackupManager.ensureBackupPrepared()
+        }
         val quota = settingsManager.quota
         Log.i(TAG, "Reported quota of $quota bytes.")
         return quota

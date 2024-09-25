@@ -38,8 +38,12 @@ internal class AppBackupManager(
     /**
      * A temporary [SnapshotCreator] that has a lifetime only valid during the backup run.
      */
+    @Volatile
     var snapshotCreator: SnapshotCreator? = null
         private set
+
+    @Volatile
+    private var startedViaAdb = false
 
     /**
      * Call this method before doing any kind of backup work.
@@ -110,6 +114,29 @@ internal class AppBackupManager(
         } finally {
             snapshotCreator = null
             MemoryLogger.log()
+        }
+    }
+
+    /**
+     * When doing backups with `adb shell bmgr backupnow`,
+     * we don't get a chance to do our initialization in [beforeBackup],
+     * so we use this opportunity to do it now.
+     */
+    suspend fun ensureBackupPrepared() = if (snapshotCreator == null) {
+        log.warn { "Backup not prepared. If not started via `adb shell bmgr` that's a bug" }
+        startedViaAdb = true
+        beforeBackup()
+    } else Unit
+
+    /**
+     * We don't get notified when backups ran from `adb shell bmgr backupnow` end,
+     * so [afterBackupFinished] will not run, so we need to find a place
+     */
+    suspend fun finalizeBackupIfNeeded() {
+        if (startedViaAdb) {
+            log.warn { "Backup not finalized. If not started via `adb shell bmgr` that's a bug" }
+            startedViaAdb = false
+            afterBackupFinished(true) // is there a way to know if success or not?
         }
     }
 
