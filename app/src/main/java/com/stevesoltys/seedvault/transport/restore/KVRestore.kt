@@ -161,6 +161,9 @@ internal class KVRestore(
         } catch (e: AEADBadTagException) {
             Log.e(TAG, "Decryption failed", e)
             TRANSPORT_ERROR
+        } catch (e: Exception) {
+            Log.e(TAG, "Unknown error", e)
+            TRANSPORT_ERROR
         } finally {
             dbManager.deleteDb(state.packageInfo.packageName, true)
             this.state = null
