@@ -44,6 +44,7 @@ instrumentation_tests_task:
     adb push app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk;
     adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml;
     adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml;
+    adb push contactsbackup/default-permissions_org.calyxos.backup.contacts.xml /system/etc/default-permissions/default-permissions_org.calyxos.backup.contacts.xml;
     adb shell bmgr enable true;
     adb reboot;
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
