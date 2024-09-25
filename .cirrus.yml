@@ -51,8 +51,8 @@ instrumentation_tests_task:
     adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport;
     adb reboot;
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
-  run_large_tests_script: ./gradlew -Pinstrumented_test_size=large :app:connectedAndroidTest
-  run_medium_tests_script: ./gradlew -Pinstrumented_test_size=medium :app:connectedAndroidTest
+  run_large_tests_script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.size=large :app:connectedAndroidTest
+  run_other_tests_script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.notAnnotation=androidx.test.filters.LargeTest connectedAndroidTest
   always:
     pull_screenshots_script:
       adb pull /sdcard/seedvault_test_results
