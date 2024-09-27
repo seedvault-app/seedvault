@@ -8,7 +8,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.content.Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.stevesoltys.seedvault.extensions.setupEdgeToEdge
+import com.stevesoltys.seedvault.ui.setupEdgeToEdge
 
 class PermissionGrantActivity : AppCompatActivity() {
 

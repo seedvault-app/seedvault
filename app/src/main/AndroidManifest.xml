@@ -101,7 +101,8 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="true"
-            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS" />
+            android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.storage.StorageActivity"
@@ -114,7 +115,8 @@
 
         <activity
             android:name=".ui.recoverycode.RecoveryCodeActivity"
-            android:label="@string/recovery_code_title" />
+            android:label="@string/recovery_code_title"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".restore.RestoreActivity"
