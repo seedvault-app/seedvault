@@ -31,7 +31,7 @@ instrumentation_tests_task:
     adb remount;
     sleep 5;
   assemble_script:
-    ./gradlew :app:assembleRelease :app:assembleAndroidTest
+    ./gradlew :app:assembleRelease :contacts:assembleRelease assembleAndroidTest
   install_app_script:
     timeout 180s bash -c 'while [[ -z $(adb shell mount | grep "/system " | grep "(rw,") ]]; do sleep 1; done;';
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
@@ -44,7 +44,11 @@ instrumentation_tests_task:
     adb push app/build/outputs/apk/release/app-release.apk /system/priv-app/Seedvault/Seedvault.apk;
     adb push permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml;
     adb push allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml;
+
+    adb shell mkdir -p /system/priv-app/ContactsBackup;
+    adb push contactsbackup/build/outputs/apk/release/contactsbackup-release.apk /system/priv-app/ContactsBackup/contactsbackup.apk;
     adb push contactsbackup/default-permissions_org.calyxos.backup.contacts.xml /system/etc/default-permissions/default-permissions_org.calyxos.backup.contacts.xml;
+
     adb shell bmgr enable true;
     adb reboot;
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
