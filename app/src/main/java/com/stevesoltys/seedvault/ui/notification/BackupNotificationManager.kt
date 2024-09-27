@@ -185,21 +185,17 @@ internal class BackupNotificationManager(private val context: Context) {
         // }
     }
 
-    fun onBackupFinished(success: Boolean, numBackedUp: Int?, total: Int, size: Long) {
-        val titleRes =
-            if (success) R.string.notification_success_title else R.string.notification_failed_title
-        val contentText = if (numBackedUp == null) null else {
-            val sizeStr = Formatter.formatShortFileSize(context, size)
+    fun onBackupSuccess(numBackedUp: Int, total: Int, size: Long) {
+        val sizeStr = Formatter.formatShortFileSize(context, size)
+        val contentText =
             context.getString(R.string.notification_success_text, numBackedUp, total, sizeStr)
-        }
-        val iconRes = if (success) R.drawable.ic_cloud_done else R.drawable.ic_cloud_error
         val intent = Intent(context, SettingsActivity::class.java).apply {
-            if (success) action = ACTION_APP_STATUS_LIST
+            action = ACTION_APP_STATUS_LIST
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
         val notification = Builder(context, CHANNEL_ID_SUCCESS).apply {
-            setSmallIcon(iconRes)
-            setContentTitle(context.getString(titleRes))
+            setSmallIcon(R.drawable.ic_cloud_done)
+            setContentTitle(context.getString(R.string.notification_success_title))
             setContentText(contentText)
             setOngoing(false)
             setShowWhen(true)
@@ -213,8 +209,27 @@ internal class BackupNotificationManager(private val context: Context) {
         nm.notify(NOTIFICATION_ID_SUCCESS, notification)
     }
 
-    @SuppressLint("RestrictedApi")
     fun onBackupError() {
+        val intent = Intent(context, SettingsActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
+        val notification = Builder(context, CHANNEL_ID_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
+            setContentTitle(context.getString(R.string.notification_failed_title))
+            setContentText(context.getString(R.string.notification_failed_text))
+            setOngoing(false)
+            setShowWhen(true)
+            setAutoCancel(true)
+            setContentIntent(pendingIntent)
+            setWhen(System.currentTimeMillis())
+            setProgress(0, 0, false)
+            priority = PRIORITY_LOW
+        }.build()
+        nm.cancel(NOTIFICATION_ID_OBSERVER)
+        nm.notify(NOTIFICATION_ID_ERROR, notification)
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun onFixableBackupError() {
         val intent = Intent(context, SettingsActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
         val actionText = context.getString(R.string.notification_error_action)

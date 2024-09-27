@@ -115,7 +115,7 @@ internal class BackupRequester(
         } catch (e: RemoteException) {
             Log.e(TAG, "Error during backup: ", e)
             val nm: BackupNotificationManager = GlobalContext.get().get()
-            nm.onBackupError()
+            nm.onFixableBackupError()
         }
         return if (result == BackupManager.SUCCESS) {
             Log.i(TAG, "Backup request succeeded")

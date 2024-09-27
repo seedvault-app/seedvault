@@ -101,6 +101,7 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:permission="com.stevesoltys.seedvault.OPEN_SETTINGS"
             android:windowSoftInputMode="adjustResize" />
 

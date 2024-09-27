@@ -155,6 +155,7 @@
     <string name="notification_success_title">Backup finished</string>
     <string name="notification_success_text">%1$d of %2$d apps backed up (%3$s). Tap to learn more.</string>
     <string name="notification_failed_title">Backup failed</string>
+    <string name="notification_failed_text">An error occurred while running the backup.</string>
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>

@@ -172,10 +172,12 @@ internal class NotificationBackupObserver(
                     snapshot.blobsMap[it.hexFromProto()]?.uncompressedLength?.toLong() ?: 0L
                 }
             } else 0L
-            nm.onBackupFinished(success, numPackagesToReport, total, size)
             if (success) {
+                nm.onBackupSuccess(numPackagesToReport, total, size)
                 // prune old backups
                 AppBackupPruneWorker.scheduleNow(context)
+            } else {
+                nm.onBackupError()
             }
         }
     }
