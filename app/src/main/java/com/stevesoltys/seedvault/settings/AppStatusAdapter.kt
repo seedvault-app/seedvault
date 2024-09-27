@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import com.stevesoltys.seedvault.ui.toRelativeTime
@@ -114,13 +113,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                     startActivity(context, intent, null)
                     true
                 }
-                if (item.status == FAILED_NOT_ALLOWED) {
-                    appStatus.visibility = INVISIBLE
-                    progressBar.visibility = INVISIBLE
-                    appInfo.visibility = GONE
-                } else {
-                    setState(item.status, false)
-                }
+                setState(item.status, false)
                 if (item.status == SUCCEEDED) {
                     appInfo.text = if (item.size == null) {
                         item.time.toRelativeTime(context)

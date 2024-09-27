@@ -196,6 +196,7 @@ const val ANCESTRAL_RECORD_KEY = "@ancestral_record@"
 const val NO_DATA_END_SENTINEL = "@end@"
 const val GLOBAL_METADATA_KEY = "@meta@"
 const val ERROR_BACKUP_CANCELLED: Int = BackupManager.ERROR_BACKUP_CANCELLED
+const val ERROR_BACKUP_NOT_ALLOWED: Int = BackupManager.ERROR_BACKUP_NOT_ALLOWED
 
 // TODO this doesn't work for LineageOS as they do public debug builds
 fun isDebugBuild() = Build.TYPE == "userdebug"

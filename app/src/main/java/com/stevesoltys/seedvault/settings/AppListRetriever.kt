@@ -98,7 +98,7 @@ internal class AppListRetriever(
                 packageName = it.packageName,
                 enabled = settingsManager.isBackupEnabled(it.packageName),
                 icon = getIconFromPackageManager(it.packageName),
-                name = getAppName(context, it.packageName).toString(),
+                name = metadata?.name?.toString() ?: getAppName(context, it.packageName).toString(),
                 time = time,
                 size = metadata?.size,
                 status = status,
@@ -113,7 +113,8 @@ internal class AppListRetriever(
                 packageName = packageName,
                 enabled = settingsManager.isBackupEnabled(packageName),
                 icon = getIconFromPackageManager(packageName),
-                name = it.loadLabel(context.packageManager).toString(),
+                name = metadata?.name?.toString()
+                    ?: it.loadLabel(context.packageManager).toString(),
                 time = metadata?.time ?: 0,
                 size = metadata?.size,
                 status = metadata?.state.toAppBackupState(),
