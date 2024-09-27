@@ -9,7 +9,6 @@ import android.annotation.StringRes
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.stevesoltys.seedvault.R
@@ -29,8 +28,6 @@ import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.notification.getAppName
 import com.stevesoltys.seedvault.ui.systemData
 import java.util.Locale
-
-private const val TAG = "AppListRetriever"
 
 sealed class AppListItem
 
@@ -97,9 +94,6 @@ internal class AppListRetriever(
             val metadata = metadataManager.getPackageMetadata(it.packageName)
             val time = metadata?.time ?: 0
             val status = metadata?.state.toAppBackupState()
-            if (status == NOT_YET_BACKED_UP) {
-                Log.w(TAG, "No metadata available for: ${it.packageName}")
-            }
             AppStatus(
                 packageName = it.packageName,
                 enabled = settingsManager.isBackupEnabled(it.packageName),

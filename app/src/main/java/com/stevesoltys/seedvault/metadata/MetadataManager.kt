@@ -36,14 +36,15 @@ internal class MetadataManager(
         get() {
             if (field == uninitializedMetadata) {
                 field = try {
-                    getMetadataFromCache() ?: throw IOException()
+                    val m = getMetadataFromCache() ?: throw IOException()
+                    if (m == uninitializedMetadata) m.copy(salt = "initialized")
+                    else m
                 } catch (e: IOException) {
                     // This can happen if the storage location ran out of space
                     // or the app process got killed while writing the file.
                     // It is hard to recover from this, so we try as best as we can here:
                     Log.e(TAG, "ERROR getting metadata cache, creating new file ", e)
-                    // This should cause requiresInit() return true
-                    uninitializedMetadata.copy(version = (-1).toByte())
+                    uninitializedMetadata.copy(salt = "initialized")
                 }
             }
             return field
