@@ -77,6 +77,7 @@ internal class SnapshotCreatorTest : TransportTest() {
         assertEquals(name, s.appsMap[packageName]?.name)
         assertEquals(token, s.appsMap[packageName]?.time)
         assertEquals(Snapshot.BackupType.FULL, s.appsMap[packageName]?.type)
+        assertEquals(size, s.appsMap[packageName]?.size)
         assertEquals(isSystem, s.appsMap[packageName]?.system)
         assertEquals(isSystem, s.appsMap[packageName]?.launchableSystemApp)
         assertEquals(apkBackupData.chunkIds.forProto(), s.appsMap[packageName]?.chunkIdsList)

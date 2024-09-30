@@ -205,8 +205,10 @@
     <!-- Restore -->
     <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
-    <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
-    <string name="restore_restore_set_size">Size: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_restore_set_apps">Has user data for <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apps_no_size">Has user data for <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
+    <string name="restore_restore_set_apks">Contains <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size">Contains <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
     <string name="restore_skip">Don\'t restore</string>
     <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>

@@ -537,6 +537,23 @@ public object SnapshotKt {
       public fun hasApk(): kotlin.Boolean {
         return _builder.hasApk()
       }
+
+      /**
+       * <code>uint64 size = 8;</code>
+       */
+      public var size: kotlin.Long
+        @JvmName("getSize")
+        get() = _builder.getSize()
+        @JvmName("setSize")
+        set(value) {
+          _builder.setSize(value)
+        }
+      /**
+       * <code>uint64 size = 8;</code>
+       */
+      public fun clearSize() {
+        _builder.clearSize()
+      }
     }
   }
   @kotlin.jvm.JvmName("-initializeapk")

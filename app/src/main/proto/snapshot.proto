@@ -25,6 +25,7 @@ message Snapshot {
     bool launchableSystemApp = 5;
     repeated bytes chunkIds = 6;
     Apk apk = 7;
+    uint64 size = 8;
   }
 
   enum BackupType {

@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.transport.restore
 
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
+import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.proto.Snapshot
 
 sealed class RestorableBackupResult {
@@ -20,7 +21,6 @@ data class RestorableBackup(
     val snapshot: Snapshot? = null,
 ) {
 
-    // FIXME creating this mapping is expensive, a single call can take several seconds to complete
     constructor(repoId: String, snapshot: Snapshot) : this(
         backupMetadata = BackupMetadata.fromSnapshot(snapshot),
         repoId = repoId,
@@ -40,17 +40,32 @@ data class RestorableBackup(
         get() = backupMetadata.salt
 
     val time: Long
-        get() = backupMetadata.time
+        get() = snapshot?.token ?: backupMetadata.time
 
-    val size: Long
-        get() = snapshot?.blobsMap?.values?.sumOf { it.uncompressedLength.toLong() }
-            ?: backupMetadata.size
+    val size: Long = snapshot?.blobsMap?.values?.sumOf { it.uncompressedLength.toLong() }
+        ?: backupMetadata.size
 
     val deviceName: String
         get() = backupMetadata.deviceName
 
+    val user: String?
+        get() = snapshot?.user?.takeIf { it.isNotBlank() }
+
     val d2dBackup: Boolean
         get() = backupMetadata.d2dBackup
+
+    val numAppData: Int = snapshot?.appsMap?.values?.count { it.chunkIdsCount > 0 }
+        ?: packageMetadataMap.values.count { packageMetadata ->
+            packageMetadata.backupType != null && packageMetadata.state == APK_AND_DATA
+        }
+
+    val sizeAppData: Long = snapshot?.appsMap?.values?.sumOf { it.size }
+        ?: packageMetadataMap.values.sumOf { it.size ?: 0L }
+
+    val numApks: Int = snapshot?.appsMap?.values?.count { it.apk.splitsCount > 0 }
+        ?: packageMetadataMap.values.count { it.hasApk() }
+
+    val sizeApks: Long = size - sizeAppData
 
     val packageMetadataMap: PackageMetadataMap
         get() = backupMetadata.packageMetadataMap

@@ -97,6 +97,7 @@ internal class SnapshotCreator(
             system = isSystemApp
             launchableSystemApp = isSystemApp && launchableSystemApps.contains(packageName)
             addAllChunkIds(chunkIds)
+            size = backupData.size
         }
         blobsMap.putAll(backupData.blobMap)
         metadataManager.onPackageBackedUp(packageInfo, backupType, backupData.size)
