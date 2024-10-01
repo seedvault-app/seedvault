@@ -59,18 +59,17 @@ internal class PackageService(
                 logPackages(packages)
             }
 
-            val eligibleApps = packages.filter(::shouldIncludeAppInBackup).toTypedArray()
+            val eligibleApps = packages.filter(::shouldIncludeAppInBackup).toMutableList()
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
                 Log.i(TAG, "Filtering left ${eligibleApps.size} eligible packages:")
-                logPackages(eligibleApps.toList())
+                logPackages(eligibleApps)
             }
 
             // add magic @pm@ package (PACKAGE_MANAGER_SENTINEL) which holds package manager data
-            val packageArray = eligibleApps.toMutableList()
-            packageArray.add(MAGIC_PACKAGE_MANAGER)
+            eligibleApps.add(0, MAGIC_PACKAGE_MANAGER)
 
-            return packageArray
+            return eligibleApps
         }
 
     /**

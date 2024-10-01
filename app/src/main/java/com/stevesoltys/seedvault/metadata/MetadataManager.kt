@@ -53,16 +53,13 @@ internal class MetadataManager(
     /**
      * Call this after a package has been backed up successfully.
      *
-     * It updates the packages' metadata
-     * and writes it encrypted to the given [OutputStream] as well as the internal cache.
-     *
-     * Closing the [OutputStream] is the responsibility of the caller.
+     * It updates the packages' metadata.
      */
     @Synchronized
     @Throws(IOException::class)
     fun onPackageBackedUp(
         packageInfo: PackageInfo,
-        type: BackupType,
+        type: BackupType?,
         size: Long?,
     ) {
         val packageName = packageInfo.packageName

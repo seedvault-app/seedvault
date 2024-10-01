@@ -14,6 +14,7 @@ import android.app.backup.BackupTransport.TRANSPORT_OK
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.repo.BackupData
 import com.stevesoltys.seedvault.repo.BackupReceiver
 import java.io.IOException
@@ -52,6 +53,8 @@ internal class KVBackup(
             else -> Log.i(TAG, "Performing K/V backup for $packageName")
         }
         check(state == null) { "Have unexpected state for ${state?.packageInfo?.packageName}" }
+        // This fake package name just signals that we've seen all packages without new data
+        if (packageName == NO_DATA_END_SENTINEL) return TRANSPORT_OK
 
         // initialize state
         state = KVBackupState(packageInfo = packageInfo, db = dbManager.getDb(packageName))

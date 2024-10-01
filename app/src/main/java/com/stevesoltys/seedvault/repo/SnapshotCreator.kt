@@ -16,9 +16,11 @@ import android.provider.Settings
 import android.provider.Settings.Secure.ANDROID_ID
 import com.google.protobuf.ByteString
 import com.stevesoltys.seedvault.Clock
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.metadata.PackageMetadata.Companion.toBackupType
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
@@ -28,6 +30,7 @@ import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Assembles snapshot information over the course of a single backup run
@@ -43,8 +46,8 @@ internal class SnapshotCreator(
     private val log = KotlinLogging.logger { }
 
     private val snapshotBuilder = Snapshot.newBuilder()
-    private val appBuilderMap = mutableMapOf<String, App.Builder>()
-    private val blobsMap = mutableMapOf<String, Blob>()
+    private val appBuilderMap = ConcurrentHashMap<String, App.Builder>()
+    private val blobsMap = ConcurrentHashMap<String, Blob>()
 
     private val launchableSystemApps by lazy {
         // as we can't ask [PackageInfo] for this, we keep a set of packages around
@@ -104,6 +107,50 @@ internal class SnapshotCreator(
     }
 
     /**
+     * Call this when the given [packageName] may not call our transport at all in this run,
+     * but we need to include data for the package in the current snapshot.
+     * This may happen for K/V apps like @pm@ that don't call us when their data didn't change.
+     *
+     * If we do *not* have data for the given [packageName],
+     * we try to extract data from the given [snapshot] (ideally we latest we have) and
+     * add it to the current snapshot under construction.
+     */
+    fun onNoDataInCurrentRun(snapshot: Snapshot, packageName: String) {
+        log.info { "onKvPackageNotChanged(${snapshot.token}, $packageName)" }
+
+        if (appBuilderMap.containsKey(packageName)) {
+            // the system backs up K/V apps repeatedly, e.g. @pm@
+            log.info { "  Already have data for $packageName in current snapshot, not touching it" }
+            return
+        }
+        val app = snapshot.appsMap[packageName]
+        if (app == null) {
+            log.error { "  No changed data for $packageName, but we had no data for it" }
+            return
+        }
+
+        // get chunkIds from last snapshot
+        val chunkIds = app.chunkIdsList.hexFromProto() +
+            app.apk.splitsList.flatMap { it.chunkIdsList }.hexFromProto()
+
+        // get blobs for chunkIds
+        val blobMap = mutableMapOf<String, Blob>()
+        chunkIds.forEach { chunkId ->
+            val blob = snapshot.blobsMap[chunkId]
+            if (blob == null) log.error { "  No blob for $packageName chunk $chunkId" }
+            else blobMap[chunkId] = blob
+        }
+
+        // add info to current snapshot
+        appBuilderMap[packageName] = app.toBuilder()
+        blobsMap.putAll(blobMap)
+
+        // record local metadata
+        val packageInfo = PackageInfo().apply { this.packageName = packageName }
+        metadataManager.onPackageBackedUp(packageInfo, app.type.toBackupType(), app.size)
+    }
+
+    /**
      * Call this after all blobs for the app icons have been saved to the backend.
      */
     fun onIconsBackedUp(backupData: BackupData) {
@@ -134,6 +181,8 @@ internal class SnapshotCreator(
             putAllApps(appBuilderMap.mapValues { it.value.build() })
             putAllBlobs(this@SnapshotCreator.blobsMap)
         }.build()
+        // may as well fail the backup, if @pm@ isn't in it
+        check(MAGIC_PACKAGE_MANAGER in snapshot.appsMap) { "No metadata for @pm@" }
         appBuilderMap.clear()
         snapshotBuilder.clear()
         blobsMap.clear()

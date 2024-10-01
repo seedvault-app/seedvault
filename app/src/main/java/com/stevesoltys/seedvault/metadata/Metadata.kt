@@ -121,11 +121,7 @@ data class PackageMetadata(
     companion object {
         fun fromSnapshot(app: Snapshot.App) = PackageMetadata(
             time = app.time,
-            backupType = when (app.type) {
-                Snapshot.BackupType.FULL -> BackupType.FULL
-                Snapshot.BackupType.KV -> BackupType.KV
-                else -> null
-            },
+            backupType = app.type.toBackupType(),
             name = app.name,
             chunkIds = app.chunkIdsList.hexFromProto(),
             system = app.system,
@@ -153,6 +149,12 @@ data class PackageMetadata(
                 it.isNotEmpty()
             },
         )
+
+        fun Snapshot.BackupType.toBackupType() = when (this) {
+            Snapshot.BackupType.FULL -> BackupType.FULL
+            Snapshot.BackupType.KV -> BackupType.KV
+            else -> null
+        }
     }
 
     val isInternalSystem: Boolean = system && !isLaunchableSystemApp

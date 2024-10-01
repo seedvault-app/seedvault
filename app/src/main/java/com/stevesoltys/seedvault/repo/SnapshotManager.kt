@@ -39,6 +39,7 @@ internal class SnapshotManager(
      * The latest [Snapshot]. May be stale if [onSnapshotsLoaded] has not returned
      * or wasn't called since new snapshots have been created.
      */
+    @Volatile
     var latestSnapshot: Snapshot? = null
         private set
 
