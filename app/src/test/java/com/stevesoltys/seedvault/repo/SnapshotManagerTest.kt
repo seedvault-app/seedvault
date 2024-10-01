@@ -23,6 +23,7 @@ import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -75,6 +76,10 @@ internal class SnapshotManagerTest : TransportTest() {
 
         // snapshot with largest token is latest
         assertEquals(20, snapshotManager.latestSnapshot?.token)
+
+        // when switching storage and now not having any snapshots, we must clear latestSnapshot
+        snapshotManager.onSnapshotsLoaded(emptyList())
+        assertNull(snapshotManager.latestSnapshot)
     }
 
     @Test

@@ -47,6 +47,9 @@ internal class SnapshotManager(
      * currently available on the backend.
      */
     suspend fun onSnapshotsLoaded(handles: List<AppBackupFileType.Snapshot>): List<Snapshot> {
+        // first reset latest snapshot, otherwise we'd hang on to a stale one
+        // e.g. when switching to new storage without any snapshots
+        latestSnapshot = null
         return handles.mapNotNull { snapshotHandle ->
             val snapshot = try {
                 loadSnapshot(snapshotHandle)
