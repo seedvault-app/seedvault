@@ -173,7 +173,6 @@ internal class RestoreViewModel(
         super.onCleared()
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch(ioDispatcher) { iconManager.removeIcons() }
-        appDataRestoreManager.closeSession()
     }
 
     @UiThread

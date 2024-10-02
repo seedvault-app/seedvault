@@ -31,6 +31,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.ACTION_RESTORE_ERROR_UNINSTALL
 import com.stevesoltys.seedvault.restore.EXTRA_PACKAGE_NAME
 import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
+import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
 import kotlin.math.min
@@ -265,6 +266,9 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     fun getRestoreNotification() = Notification.Builder(context, CHANNEL_ID_RESTORE).apply {
+        val intent = Intent(context, RestoreActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
+        setContentIntent(pendingIntent)
         setSmallIcon(R.drawable.ic_cloud_restore)
         setContentTitle(context.getString(R.string.notification_restore_title))
         setOngoing(true)

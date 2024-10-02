@@ -270,11 +270,11 @@ internal class RestoreCoordinator(
      * or null to indicate a transport-level error.
      */
     suspend fun nextRestorePackage(): RestoreDescription? {
-        Log.i(TAG, "Next restore package!")
         val state = this.state ?: throw IllegalStateException("no state")
 
         if (!state.packages.hasNext()) return NO_MORE_PACKAGES
         val packageInfo = state.packages.next()
+        Log.i(TAG, "nextRestorePackage() => ${packageInfo.packageName}")
         val version = state.backup.version
         if (version == 0.toByte()) return nextRestorePackageV0(state, packageInfo)
         if (version == 1.toByte()) return nextRestorePackageV1(state, packageInfo)

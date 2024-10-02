@@ -123,6 +123,7 @@
             android:name=".restore.RestoreActivity"
             android:exported="true"
             android:label="@string/restore_title"
+            android:launchMode="singleTask"
             android:permission="com.stevesoltys.seedvault.RESTORE_BACKUP">
             <intent-filter>
                 <action android:name="com.stevesoltys.seedvault.RESTORE_BACKUP" />

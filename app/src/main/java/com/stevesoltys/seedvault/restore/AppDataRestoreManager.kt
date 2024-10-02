@@ -210,7 +210,7 @@ internal class AppDataRestoreManager(
         context.stopService(foregroundServiceIntent)
     }
 
-    fun closeSession() {
+    private fun closeSession() {
         session?.endRestoreSession()
         session = null
     }
@@ -267,6 +267,7 @@ internal class AppDataRestoreManager(
             val nextChunkIndex = (packageIndex + PACKAGES_PER_CHUNK).coerceAtMost(packages.size)
             val packageChunk = packages.subList(packageIndex, nextChunkIndex).toTypedArray()
             packageIndex += packageChunk.size
+            Log.d(TAG, "restoreNextPackages() with packageIndex=$packageIndex")
 
             val token = restorableBackup.token
             val result = session.restorePackages(token, this, packageChunk, monitor)
@@ -309,6 +310,7 @@ internal class AppDataRestoreManager(
          */
         override fun restoreFinished(result: Int) {
             val chunkIndex = packageIndex / PACKAGES_PER_CHUNK
+            Log.d(TAG, "restoreFinished($result) with chunkIndex=$chunkIndex")
             chunkResults[chunkIndex] = result
 
             // Restore next chunk if successful and there are more packages to restore.
@@ -317,6 +319,7 @@ internal class AppDataRestoreManager(
                 return
             }
 
+            Log.d(TAG, "onRestoreComplete()")
             // Restore finished, time to get the result.
             onRestoreComplete(getRestoreResult(), restorableBackup)
             closeSession()
