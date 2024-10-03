@@ -5,10 +5,14 @@
 
 package com.stevesoltys.seedvault.worker
 
+import android.content.pm.PackageInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.luben.zstd.ZstdOutputStream
 import com.google.protobuf.ByteString
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.metadata.BackupType
 import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.BackupData
@@ -32,6 +36,7 @@ import org.junit.runner.RunWith
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
@@ -76,6 +81,11 @@ class IconManagerTest : KoinComponent {
         iconManager.uploadIcons()
         assertTrue(output.captured.isNotEmpty())
 
+        // @pm@ is needed
+        val pmPackageInfo = PackageInfo().apply { packageName = MAGIC_PACKAGE_MANAGER }
+        val backupData = BackupData(emptyList(), emptyMap())
+        snapshotCreator.onPackageBackedUp(pmPackageInfo, BackupType.KV, backupData)
+
         // get snapshot and assert it has icon chunks
         val snapshot = snapshotCreator.finalizeSnapshot()
         assertTrue(snapshot.iconChunkIdsCount > 0)
@@ -106,6 +116,13 @@ class IconManagerTest : KoinComponent {
         assertTrue(output2.captured.isNotEmpty())
 
         assertArrayEquals(output1.captured, output2.captured)
+
+        // print compressed and uncompressed size
+        val size = output1.captured.size.toFloat() / 1024 / 1024
+        val outputStream = ByteArrayOutputStream()
+        ZstdOutputStream(outputStream).use { it.write(output1.captured) }
+        val compressedSize = outputStream.size().toFloat() / 1024 / 1024
+        println("Icon size: $size MB, compressed $compressedSize MB")
     }
 
 }

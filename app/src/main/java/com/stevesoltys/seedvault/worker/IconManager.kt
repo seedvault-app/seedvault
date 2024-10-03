@@ -6,7 +6,7 @@
 package com.stevesoltys.seedvault.worker
 
 import android.content.Context
-import android.graphics.Bitmap.CompressFormat.JPEG
+import android.graphics.Bitmap.CompressFormat.PNG
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -40,8 +40,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
-private const val ICON_SIZE = 128
-private const val ICON_QUALITY = 75
+private const val ICON_SIZE = 64
 private const val CACHE_FOLDER = "restore-icons"
 private val TAG = IconManager::class.simpleName
 
@@ -75,8 +74,10 @@ internal class IconManager(
                     setLastModifiedTime(FileTime.fromMillis(0))
                 }
                 zip.putNextEntry(entry)
-                // WEBP_LOSSY compression wasn't deterministic in our tests, so use JPEG
-                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(JPEG, ICON_QUALITY, zip)
+                // WEBP_LOSSY compression wasn't deterministic in our tests,
+                // and JPEG doesn't support transparency (causing black squares),
+                // so use PNG
+                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(PNG, 0, zip)
                 entries.add(it.packageName)
                 zip.closeEntry()
             }
@@ -91,8 +92,8 @@ internal class IconManager(
                     setLastModifiedTime(FileTime.fromMillis(0))
                 }
                 zip.putNextEntry(entry)
-                // WEBP_LOSSY compression wasn't deterministic in our tests, so use JPEG
-                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(JPEG, ICON_QUALITY, zip)
+                // For PNG choice see comment above
+                drawable.toBitmap(ICON_SIZE, ICON_SIZE).compress(PNG, 0, zip)
                 zip.closeEntry()
             }
         }
