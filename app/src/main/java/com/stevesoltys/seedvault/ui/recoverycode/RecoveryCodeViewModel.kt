@@ -61,7 +61,9 @@ internal class RecoveryCodeViewModel(
 
     @Throws(InvalidWordException::class, ChecksumException::class)
     fun validateCode(input: List<CharSequence>): Mnemonics.MnemonicCode {
-        val code = Mnemonics.MnemonicCode(input.toMnemonicChars())
+        check(input.size == WORD_NUM) { "Got ${input.size} words instead of $WORD_NUM" }
+        val trimmedInput = input.map { it.trim() } // white-spaces have a meaning in next line
+        val code = Mnemonics.MnemonicCode(trimmedInput.toMnemonicChars())
         try {
             code.validate()
         } catch (e: WordCountException) {
