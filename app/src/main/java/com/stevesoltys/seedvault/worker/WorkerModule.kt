@@ -38,6 +38,7 @@ val workerModule = module {
     single {
         ApkBackupManager(
             context = androidContext(),
+            appBackupManager = get(),
             settingsManager = get(),
             snapshotManager = get(),
             metadataManager = get(),

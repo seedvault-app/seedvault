@@ -15,6 +15,8 @@ import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.repo.SnapshotCreator
 import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.transport.TransportTest
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Test
 
 internal class ApkBackupManagerTest : TransportTest() {
 
+    private val appBackupManager: AppBackupManager = mockk()
     private val snapshotManager: SnapshotManager = mockk()
     private val packageService: PackageService = mockk()
     private val apkBackup: ApkBackup = mockk()
@@ -43,6 +46,7 @@ internal class ApkBackupManagerTest : TransportTest() {
 
     private val apkBackupManager = ApkBackupManager(
         context = context,
+        appBackupManager = appBackupManager,
         settingsManager = settingsManager,
         snapshotManager = snapshotManager,
         metadataManager = metadataManager,
@@ -53,9 +57,11 @@ internal class ApkBackupManagerTest : TransportTest() {
     )
 
     private val packageMetadata: PackageMetadata = mockk()
+    private val snapshotCreator: SnapshotCreator = mockk()
 
     init {
         every { backendManager.backend } returns backend
+        every { appBackupManager.snapshotCreator } returns snapshotCreator
     }
 
     @Test
@@ -63,6 +69,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
+        every { snapshotManager.latestSnapshot } returns snapshot
+        every { snapshotCreator.onNoDataInCurrentRun(snapshot, packageName, true) } just Runs
 
         expectUploadIcons()
 
@@ -87,6 +95,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
+        every { snapshotManager.latestSnapshot } returns snapshot
+        every { snapshotCreator.onNoDataInCurrentRun(snapshot, packageName, true) } just Runs
 
         expectUploadIcons()
 
@@ -117,6 +127,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
+        every { snapshotManager.latestSnapshot } returns snapshot
+        every { snapshotCreator.onNoDataInCurrentRun(snapshot, packageName, true) } just Runs
 
         expectUploadIcons()
 
@@ -141,6 +153,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
+        every { snapshotManager.latestSnapshot } returns snapshot
+        every { snapshotCreator.onNoDataInCurrentRun(snapshot, packageName, true) } just Runs
 
         expectUploadIcons()
 
@@ -223,6 +237,8 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns listOf(packageInfo)
         every { settingsManager.isBackupEnabled(packageInfo.packageName) } returns true
+        every { snapshotManager.latestSnapshot } returns snapshot
+        every { snapshotCreator.onNoDataInCurrentRun(snapshot, packageName, true) } just Runs
 
         expectUploadIcons()
 

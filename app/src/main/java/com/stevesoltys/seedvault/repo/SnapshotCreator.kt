@@ -114,8 +114,10 @@ internal class SnapshotCreator(
      * If we do *not* have data for the given [packageName],
      * we try to extract data from the given [snapshot] (ideally we latest we have) and
      * add it to the current snapshot under construction.
+     *
+     * @param warnNoData log a warning, if [snapshot] had no data for the given [packageName].
      */
-    fun onNoDataInCurrentRun(snapshot: Snapshot, packageName: String) {
+    fun onNoDataInCurrentRun(snapshot: Snapshot, packageName: String, isStopped: Boolean = false) {
         log.info { "onKvPackageNotChanged(${snapshot.token}, $packageName)" }
 
         if (appBuilderMap.containsKey(packageName)) {
@@ -125,7 +127,9 @@ internal class SnapshotCreator(
         }
         val app = snapshot.appsMap[packageName]
         if (app == null) {
-            log.error { "  No changed data for $packageName, but we had no data for it" }
+            if (!isStopped) log.error {
+                "  No changed data for $packageName, but we had no data for it"
+            }
             return
         }
 
@@ -145,9 +149,11 @@ internal class SnapshotCreator(
         appBuilderMap[packageName] = app.toBuilder()
         blobsMap.putAll(blobMap)
 
-        // record local metadata
-        val packageInfo = PackageInfo().apply { this.packageName = packageName }
-        metadataManager.onPackageBackedUp(packageInfo, app.type.toBackupType(), app.size)
+        // record local metadata if this is not a stopped app
+        if (!isStopped) {
+            val packageInfo = PackageInfo().apply { this.packageName = packageName }
+            metadataManager.onPackageBackedUp(packageInfo, app.type.toBackupType(), app.size)
+        }
     }
 
     /**

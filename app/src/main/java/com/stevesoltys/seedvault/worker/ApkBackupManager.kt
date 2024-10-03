@@ -11,6 +11,7 @@ import android.util.Log
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
+import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.repo.SnapshotManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -22,6 +23,7 @@ import java.io.IOException
 
 internal class ApkBackupManager(
     private val context: Context,
+    private val appBackupManager: AppBackupManager,
     private val settingsManager: SettingsManager,
     private val snapshotManager: SnapshotManager,
     private val metadataManager: MetadataManager,
@@ -83,6 +85,15 @@ internal class ApkBackupManager(
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Error storing new metadata for $packageName: ", e)
+            }
+            // see if there's data in latest snapshot for this app and re-use it
+            // this can be helpful for backing up recently STOPPED apps
+            snapshotManager.latestSnapshot?.let { snapshot ->
+                appBackupManager.snapshotCreator?.onNoDataInCurrentRun(
+                    snapshot = snapshot,
+                    packageName = packageName,
+                    isStopped = true,
+                )
             }
         }
     }
