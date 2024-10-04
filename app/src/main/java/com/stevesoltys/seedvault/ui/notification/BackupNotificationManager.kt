@@ -81,7 +81,7 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     private fun getRestoreChannel(): NotificationChannel {
-        val title = context.getString(R.string.notification_restore_error_channel_title)
+        val title = context.getString(R.string.notification_restore_channel_title)
         return NotificationChannel(CHANNEL_ID_RESTORE, title, IMPORTANCE_LOW)
     }
 
