@@ -19,6 +19,7 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.encodeBase64
+import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.metadata.ApkSplit
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.repo.Loader
@@ -42,6 +43,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.security.GeneralSecurityException
 import java.security.MessageDigest
 import java.util.Locale
 
@@ -162,7 +164,12 @@ internal class ApkRestore(
     }
 
     @Suppress("ThrowsCount")
-    @Throws(IOException::class, SecurityException::class)
+    @Throws(
+        GeneralSecurityException::class,
+        UnsupportedVersionException::class,
+        IOException::class,
+        SecurityException::class,
+    )
     private suspend fun restore(
         backup: RestorableBackup,
         packageName: String,
@@ -287,7 +294,7 @@ internal class ApkRestore(
      *
      * @return a [Pair] of the cached [File] and SHA-256 hash.
      */
-    @Throws(IOException::class)
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     private suspend fun cacheApk(
         backup: RestorableBackup,
         packageName: String,

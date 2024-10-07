@@ -35,6 +35,7 @@ import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.IOException
+import java.security.GeneralSecurityException
 
 /**
  * Device name used in AOSP to indicate that a restore set is part of a device-to-device migration.
@@ -109,6 +110,10 @@ internal class RestoreCoordinator(
             } catch (e: SecurityException) {
                 Log.e(TAG, "Error while getting restore set $handle", e)
                 return RestorableBackupResult.ErrorResult(e)
+            } catch (e: GeneralSecurityException) {
+                Log.e(TAG, "General security error while decrypting restore set $handle", e)
+                lastException = e
+                continue
             } catch (e: DecryptionFailedException) {
                 Log.e(TAG, "Error while decrypting restore set $handle", e)
                 lastException = e

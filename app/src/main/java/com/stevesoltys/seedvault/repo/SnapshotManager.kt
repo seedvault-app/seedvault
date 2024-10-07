@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.repo
 import com.github.luben.zstd.ZstdOutputStream
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -18,6 +19,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.nio.ByteBuffer
+import java.security.GeneralSecurityException
 
 internal const val FOLDER_SNAPSHOTS = "snapshots"
 
@@ -126,7 +128,7 @@ internal class SnapshotManager(
      * Loads and parses the snapshot referenced by the given [snapshotHandle].
      * If a locally cached version exists, the backend will not be hit.
      */
-    @Throws(IOException::class)
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     suspend fun loadSnapshot(snapshotHandle: AppBackupFileType.Snapshot): Snapshot {
         val file = File(snapshotFolder, snapshotHandle.name)
         snapshotFolder.mkdirs()
@@ -138,7 +140,7 @@ internal class SnapshotManager(
         return inputStream.use { Snapshot.parseFrom(it) }
     }
 
-    @Throws(IOException::class)
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     fun loadCachedSnapshots(): List<Snapshot> {
         if (!snapshotFolder.isDirectory) return emptyList()
         return snapshotFolder.listFiles()?.mapNotNull { file ->

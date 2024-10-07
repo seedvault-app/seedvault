@@ -5,7 +5,6 @@
 
 package com.stevesoltys.seedvault.repo
 
-import com.android.internal.R.attr.handle
 import com.github.luben.zstd.ZstdInputStream
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
@@ -17,6 +16,7 @@ import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.toHexString
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.io.SequenceInputStream
 import java.security.GeneralSecurityException
@@ -38,6 +38,7 @@ internal class Loader(
      * @param cacheFile if non-null, the ciphertext of the loaded file will be cached there
      * for later loading with [loadFile].
      */
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     suspend fun loadFile(fileHandle: AppBackupFileType, cacheFile: File? = null): InputStream {
         val expectedHash = when (fileHandle) {
             is AppBackupFileType.Snapshot -> fileHandle.hash
@@ -49,10 +50,12 @@ internal class Loader(
     /**
      * The responsibility with closing the returned stream lies with the caller.
      */
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     fun loadFile(file: File, expectedHash: String): InputStream {
         return loadFromStream(file.inputStream(), expectedHash)
     }
 
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     suspend fun loadFiles(handles: List<AppBackupFileType>): InputStream {
         val enumeration: Enumeration<InputStream> = object : Enumeration<InputStream> {
             val iterator = handles.iterator()
@@ -68,6 +71,7 @@ internal class Loader(
         return SequenceInputStream(enumeration)
     }
 
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     private fun loadFromStream(
         inputStream: InputStream,
         expectedHash: String,
@@ -79,7 +83,7 @@ internal class Loader(
         // check SHA-256 hash first thing
         val sha256 = crypto.sha256(cipherText).toHexString()
         if (sha256 != expectedHash) {
-            throw GeneralSecurityException("File had wrong SHA-256 hash: $handle")
+            throw GeneralSecurityException("File had wrong SHA-256 hash: $expectedHash")
         }
         // check that we can handle the version of that snapshot
         val version = cipherText[0]
