@@ -232,7 +232,11 @@ internal class PackageService(
 
 internal fun PackageInfo.isUserVisible(context: Context): Boolean {
     if (packageName == MAGIC_PACKAGE_MANAGER || applicationInfo == null) return false
-    return !isNotUpdatedSystemApp() && instrumentation == null && packageName != context.packageName
+    val isInstrumentationApp = instrumentation.let { i ->
+        // TikTok for example ships instrumentation, so do more checks. See #769
+        !i.isNullOrEmpty() && packageName.endsWith(".test") && i[0].splitNames.isEmpty()
+    }
+    return !isNotUpdatedSystemApp() && !isInstrumentationApp && packageName != context.packageName
 }
 
 internal fun PackageInfo.isSystemApp(): Boolean {
