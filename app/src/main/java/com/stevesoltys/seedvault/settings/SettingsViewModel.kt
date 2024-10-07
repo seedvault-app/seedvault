@@ -9,7 +9,6 @@ import android.app.Application
 import android.app.backup.IBackupManager
 import android.app.job.JobInfo.NETWORK_TYPE_NONE
 import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
-import android.content.Intent
 import android.database.ContentObserver
 import android.net.ConnectivityManager
 import android.net.Network
@@ -24,7 +23,6 @@ import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.UiThread
-import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -42,14 +40,13 @@ import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
-import com.stevesoltys.seedvault.storage.StorageBackupService
-import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
+import com.stevesoltys.seedvault.worker.BackupRequester.Companion.requestFilesAndAppBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -224,17 +221,8 @@ internal class SettingsViewModel(
     }
 
     internal fun backupNow() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isAppBackupEnabled = backupManager.isBackupEnabled
-            if (settingsManager.isStorageBackupEnabled()) {
-                val i = Intent(app, StorageBackupService::class.java)
-                // this starts an app backup afterwards (if enabled)
-                i.putExtra(EXTRA_START_APP_BACKUP, isAppBackupEnabled)
-                startForegroundService(app, i)
-            } else if (isAppBackupEnabled) {
-                AppBackupWorker.scheduleNow(app, reschedule = !backendManager.isOnRemovableDrive)
-            }
-        }
+        val reschedule = !backendManager.isOnRemovableDrive
+        requestFilesAndAppBackup(app, settingsManager, backupManager, reschedule)
     }
 
     private fun getAppStatusResult(): LiveData<AppStatusResult> = liveData(Dispatchers.Default) {

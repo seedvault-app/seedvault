@@ -8,9 +8,15 @@ package com.stevesoltys.seedvault.worker
 import android.app.backup.BackupManager
 import android.app.backup.IBackupManager
 import android.content.Context
+import android.content.Intent
 import android.os.RemoteException
 import android.util.Log
+import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
+import androidx.core.content.ContextCompat.startForegroundService
+import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.storage.StorageBackupService
+import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.BackupMonitor
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
@@ -34,6 +40,29 @@ internal class BackupRequester(
     private val backupManager: IBackupManager,
     val packageService: PackageService,
 ) : KoinComponent {
+
+    companion object {
+        @UiThread
+        fun requestFilesAndAppBackup(
+            context: Context,
+            settingsManager: SettingsManager,
+            backupManager: IBackupManager,
+            reschedule: Boolean = false,
+        ) {
+            val appBackupEnabled = backupManager.isBackupEnabled
+            // TODO eventually, we could think about running files and app backup simultaneously
+            if (settingsManager.isStorageBackupEnabled()) {
+                val i = Intent(context, StorageBackupService::class.java)
+                // this starts an app backup afterwards
+                i.putExtra(EXTRA_START_APP_BACKUP, appBackupEnabled)
+                startForegroundService(context, i)
+            } else if (appBackupEnabled) {
+                AppBackupWorker.scheduleNow(context, reschedule)
+            } else {
+                Log.d(TAG, "Neither files nor app backup enabled, do nothing.")
+            }
+        }
+    }
 
     val isBackupEnabled: Boolean get() = backupManager.isBackupEnabled
 
