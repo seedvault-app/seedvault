@@ -21,6 +21,7 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.worker.AppBackupWorker
+import com.stevesoltys.seedvault.worker.BackupRequester.Companion.requestFilesAndAppBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.calyxos.backup.storage.api.StorageBackup
@@ -70,8 +71,6 @@ internal class BackupStorageViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // remove old storage snapshots and clear cache
-                // TODO For SAF, this also does create all 255 chunk folders which takes time
-                //  pass a flag to getCurrentBackupSnapshots() to not create missing folders?
                 storageBackup.init()
                 // initialize the new location (if backups are enabled)
                 if (backupManager.isBackupEnabled) {
@@ -83,7 +82,7 @@ internal class BackupStorageViewModel(
                         val requestBackup = isUsb && !isSetupWizard
                         if (requestBackup) {
                             Log.i(TAG, "Requesting a backup now, because we use USB storage")
-                            AppBackupWorker.scheduleNow(app, reschedule = false)
+                            requestFilesAndAppBackup(app, settingsManager, backupManager)
                         }
                         // notify the UI that the location has been set
                         mLocationChecked.postEvent(LocationResult())

@@ -20,14 +20,11 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.DocumentsContract
 import android.util.Log
-import androidx.core.content.ContextCompat.startForegroundService
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
-import com.stevesoltys.seedvault.storage.StorageBackupService
-import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
-import com.stevesoltys.seedvault.worker.AppBackupWorker
+import com.stevesoltys.seedvault.worker.BackupRequester.Companion.requestFilesAndAppBackup
 import org.koin.core.context.GlobalContext.get
 import java.util.Date
 
@@ -64,16 +61,7 @@ class UsbIntentReceiver : UsbMonitor() {
     }
 
     override fun onStatusChanged(context: Context, action: String, device: UsbDevice) {
-        if (settingsManager.isStorageBackupEnabled()) {
-            val i = Intent(context, StorageBackupService::class.java)
-            // this starts an app backup afterwards
-            i.putExtra(EXTRA_START_APP_BACKUP, true)
-            startForegroundService(context, i)
-        } else if (backupManager.isBackupEnabled) {
-            AppBackupWorker.scheduleNow(context, reschedule = false)
-        } else {
-            Log.d(TAG, "Neither files nor app backup enabled, do nothing.")
-        }
+        requestFilesAndAppBackup(context, settingsManager, backupManager)
     }
 
 }
