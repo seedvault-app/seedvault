@@ -120,12 +120,12 @@
     <string name="backup_app_quota_exceeded">Yedekleme kotası aşıldı</string>
     <string name="backup_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmedi</string>
     <string name="backup_app_not_yet_backed_up">Yedekleme bekleniyor…</string>
-    <string name="backup_section_user">Kurulu uygulamalar</string>
+    <string name="backup_section_user">Uygulamalar</string>
     <string name="backup_contacts">Yerel kişiler</string>
     <string name="backup_call_log">Arama geçmişi</string>
     <string name="backup_settings">Aygıt ayarları</string>
     <string name="backup_sms">SMS metin mesajları</string>
-    <string name="backup_section_system">Sistem uygulamaları</string>
+    <string name="backup_section_system">Sistem verileri</string>
     <string name="settings_backup_status_title">Yedekleme durumu</string>
     <string name="recovery_code_recreated">Yeni kurtarma kodu başarıyla oluşturuldu</string>
     <string name="recovery_code_verification_new_dialog_message">Yeni bir kod oluşturmak, var olan yedeklemelerinizi erişilemez hale getirecektir. Mümkünse onları silmeye çalışacağız.
@@ -234,4 +234,12 @@
     <string name="notification_space_error_title">Yetersiz yedekleme alanı</string>
     <string name="restore_restore_set_size">Boyut: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="notification_space_error_text">Yedekleme konumunuzun alanı tükeniyor. Yedeklemelerin çalışabilmesi için alan boşaltın.</string>
+    <string name="backup_system_apps">Sistem uygulamaları</string>
+    <string name="restore_select_packages">Geri yüklenecek uygulamaları seçin</string>
+    <string name="restore_select_packages_all">Aşağıdaki uygulamaların tümü</string>
+    <string name="restore_storage_selection_description">Seçilen dosyalar geri yüklenecek. İçlerindeki dosyaları görmek için klasörlere dokunun.</string>
+    <string name="first_start_text">Aygıtınızı var olan bir yedekten geri yüklemek mi yoksa yeni bir yedekleme mi başlatmak istiyorsunuz?</string>
+    <string name="setup_button">Yeni başlat</string>
+    <string name="notification_restore_channel_title">Geri yükleme bildirimi</string>
+    <string name="notification_restore_title">Yeniden yükleme devam ediyor</string>
 </resources>

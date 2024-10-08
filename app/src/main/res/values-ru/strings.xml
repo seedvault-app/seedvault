@@ -5,7 +5,7 @@
     <string name="settings_backup_apk_dialog_cancel">Отмена</string>
     <string name="settings_backup_last_backup_never">Никогда</string>
     <string name="backup">Резервная копия</string>
-    <string name="settings_backup_location">Расположение Резервной Копии</string>
+    <string name="settings_backup_location">Расположение резервной копии</string>
     <string name="about_summary">Приложение для резервного копирования, использующее API резервного копирования Android. Это свободное ПО, выпущенное под лицензией Apache 2.
 \n
 \nКак и любое другое ПО, Seedvault может иметь баги или уязвимости.</string>
@@ -198,8 +198,41 @@
     <string name="storage_user_selected_location_title">Расположение, выбранное пользователем</string>
     <string name="settings_backup_dialog_disable">Всё равно выключить</string>
     <string name="settings_backup_dialog_message">Когда резервные копии будут включены заново, создание резервной копии займёт дольше, чем обычно, и она займёт больше места.</string>
-    <string name="settings_backup_dialog_title">Точно выключить резервные копии приложений\?</string>
+    <string name="settings_backup_dialog_title">Точно выключить резервное копирование приложений?</string>
     <string name="about_contributing_organizations_title">Участвующие организации</string>
     <string name="about_contributor_headline">Участники</string>
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Спискок участников</a> доступен на GitHub.</string>
+    <string name="notification_space_error_text">В вашем хранилище резервных копий не хватает места. Освободите место, чтобы можно было выполнять резервное копирование.</string>
+    <string name="notification_space_error_title">Недостаточно места для резервного копирования</string>
+    <string name="backup_system_apps">Системные приложения</string>
+    <string name="restore_restore_set_size">Размер: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_select_packages">Выберите приложения для восстановления</string>
+    <string name="restore_select_packages_all">Все следующие приложения</string>
+    <string name="storage_webdav_option_title">WebDAV Облако (бета)</string>
+    <string name="storage_webdav_option_summary">Интегрированный прямой доступ к WebDAV</string>
+    <string name="storage_webdav_config_url">URL-адрес WebDAV</string>
+    <string name="settings_backup_status_next_backup">Следующая резервная копия: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Следующая резервная копия (приблизительно): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">как только условия будут выполнены</string>
+    <string name="settings_backup_status_next_backup_usb">Резервное копирование произойдет автоматически, когда вы подключите свой USB-накопитель</string>
+    <string name="settings_backup_scheduling_title">Планирование резервного копирования</string>
+    <string name="settings_scheduling_frequency_title">Частота резервного копирования</string>
+    <string name="settings_scheduling_frequency_12_hours">Каждые 12 часов</string>
+    <string name="settings_scheduling_frequency_daily">Ежедневно</string>
+    <string name="settings_scheduling_frequency_3_days">Каждые 3 дня</string>
+    <string name="settings_scheduling_frequency_weekly">Еженедельно</string>
+    <string name="settings_scheduling_category_conditions_title">Условия</string>
+    <string name="settings_scheduling_charging_title">Резервное копирование только во время зарядки</string>
+    <string name="settings_scheduling_metered_title">Резервное копирование при использовании мобильных данных</string>
+    <string name="settings_expert_d2d_summary">Это принудительно создает резервные копии для большинства приложений, даже если они запрещены. Это альфа-версия, используйте на свой страх и риск.</string>
+    <string name="notification_success_channel_title">Уведомление об успешном завершении</string>
+    <string name="notification_apk_text">Резервное копирование APK %s</string>
+    <string name="settings_expert_d2d_title">Резервное копирование с устройства на устройство</string>
+    <string name="storage_webdav_config_url_helper">Обязательно введите здесь полный URL. Например, для Next cloud он имеет следующий вид https://yourserver.com/remote.php/webdav</string>
+    <string name="storage_webdav_config_user">Имя пользователя</string>
+    <string name="storage_webdav_config_pass">Пароль</string>
+    <string name="storage_webdav_config_button">Использовать облако WebDAV</string>
+    <string name="storage_webdav_config_malformed_url">Неверный URL-адрес WebDAV</string>
+    <string name="notification_apk_not_backed_up">Сохраняем список приложений, резервное копирование которых невозможно.</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
 </resources>

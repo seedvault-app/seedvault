@@ -19,4 +19,9 @@
 \nPrzepraszamy, ale nie ma nic, co można przywrócić.</string>
     <string name="snapshots_error">Błąd ładowania kopii zapasowych</string>
     <string name="content_options">Opcje</string>
+    <string name="select_files_title">Przejrzyj pliki do przywrócenia</string>
+    <string name="select_files_button_restore">Przywróć wybrane pliki</string>
+    <string name="select_files_number_of_files">%1$d plik(ów)</string>
+    <string name="notification_restore_complete_errors">%1$d plików miało błędy.</string>
+    <string name="notification_restore_complete_dups">%1$d plików było zduplikowanych.</string>
 </resources>

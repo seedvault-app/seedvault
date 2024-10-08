@@ -120,12 +120,12 @@
     <string name="backup_app_quota_exceeded">Sicherungskontingent überschritten</string>
     <string name="backup_app_was_stopped">Nicht gesichert, da es in letzter Zeit nicht verwendet wurde</string>
     <string name="backup_app_not_yet_backed_up">Warten auf die Sicherung…</string>
-    <string name="backup_section_user">Installierte Apps</string>
+    <string name="backup_section_user">Apps</string>
     <string name="backup_contacts">Lokale Kontakte</string>
     <string name="backup_call_log">Anrufhistorie</string>
     <string name="backup_settings">Geräteeinstellungen</string>
     <string name="backup_sms">SMS-Textnachrichten</string>
-    <string name="backup_section_system">System-Apps</string>
+    <string name="backup_section_system">Systemdaten</string>
     <string name="settings_backup_status_title">Sicherungsstatus</string>
     <string name="recovery_code_recreated">Neuer Wiederherstellungscode wurde erfolgreich erstellt</string>
     <string name="recovery_code_verification_new_dialog_message">Durch das Generieren eines neuen Codes kannst du nicht mehr auf deine vorhandenen Sicherungen zugreifen. Wir werden versuchen, sie nach Möglichkeit zu löschen.
@@ -147,7 +147,7 @@
 \n
 \nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien abgeschlossen ist.</string>
     <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
-    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (experimentell)</string>
+    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (beta)</string>
     <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
     <string name="restore_skip_apps">Wiederherstellen von Apps überspringen</string>
     <string name="recovery_code_auth_description">Eingabe deiner Geräteanmeldedaten zum Fortfahren</string>
@@ -161,7 +161,7 @@
     <string name="settings_expert_quota_title">Unbegrenztes App-Kontingent</string>
     <string name="settings_expert_title">Experteneinstellungen</string>
     <string name="settings_backup_storage_dialog_ok">Trotzdem aktivieren</string>
-    <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist noch experimentell und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
+    <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist beta und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
     <string name="settings_backup_storage_dialog_title">Beta-Funktion</string>
     <string name="settings_backup_files_summary">Keine</string>
     <string name="settings_backup_files_title">Enthaltene Dateien und Ordner</string>
@@ -206,7 +206,7 @@
     <string name="storage_user_selected_location_title">Benutzerdefinierter Speicherort</string>
     <string name="notification_success_channel_title">Erfolgsbenachrichtigung</string>
     <string name="settings_expert_d2d_title">Gerät-zu-Gerät-Sicherungen</string>
-    <string name="settings_expert_d2d_summary">Dies erzwingt Sicherungen für die meisten Apps, auch wenn diese dies nicht zulassen. Dies ist experimentell, die Verwendung erfolgt auf eigene Gefahr.</string>
+    <string name="settings_expert_d2d_summary">Dies erzwingt Sicherungen für die meisten Apps, auch wenn diese dies nicht zulassen. Dies ist alpha, die Verwendung erfolgt auf eigene Gefahr.</string>
     <string name="storage_webdav_option_title">WebDAV-Cloud (Beta)</string>
     <string name="storage_webdav_option_summary">Integrierter direkter WebDAV-Zugang</string>
     <string name="storage_webdav_config_url">WebDAV-URL</string>
@@ -233,4 +233,9 @@
     <string name="storage_webdav_config_malformed_url">Ungültige WebDAV-URL</string>
     <string name="storage_webdav_name">WebDAV %s</string>
     <string name="notification_apk_text">APK von %s wird gesichert</string>
+    <string name="notification_space_error_text">Der Speicherplatz für deine Sicherungen wird knapp. Gib Speicherplatz frei, damit die Sicherungen durchgeführt werden können.</string>
+    <string name="backup_system_apps">System-Apps</string>
+    <string name="restore_select_packages">Wiederherzustellende Apps auswählen</string>
+    <string name="restore_select_packages_all">Alle der folgenden Apps</string>
+    <string name="first_start_text">Möchtest du dein Gerät von einer vorhandenen Sicherung wiederherstellen oder eine neue Sicherung erstellen?</string>
 </resources>

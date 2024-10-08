@@ -145,7 +145,7 @@
     <string name="recovery_code_recreated">קוד שחזור חדש נוצר בהצלחה</string>
     <string name="restore_storage_choose_snapshot">נא לבחור גיבוי אחסון לשחזור (ניסיוני)</string>
     <string name="restore_storage_got_it">הבנתי</string>
-    <string name="backup_section_system">יישומוני מערכת</string>
+    <string name="backup_section_system">נתוני מערכת</string>
     <string name="backup_sms">מסרוני טקסט SMS</string>
     <string name="backup_app_not_yet_backed_up">בהמתנה לגיבוי…</string>
     <string name="backup_app_was_stopped">לא גובה כיוון שלא היה בשימוש לאחרונה</string>
@@ -154,7 +154,7 @@
     <string name="backup_settings">הגדרות מכשיר</string>
     <string name="backup_call_log">היסטוריית שיחות</string>
     <string name="backup_contacts">אנשי קשר מקומיים</string>
-    <string name="backup_section_user">יישומונים מותקנים</string>
+    <string name="backup_section_user">יישומונים</string>
     <string name="settings_backup_new_code_dialog_message">כדי להמשיך להשתמש בגיבויי היישומון, עליך לייצר קוד שחזור חדש.
 \n
 \nאנו מתנצלים על חוסר הנעימות.</string>
@@ -207,4 +207,34 @@
     <string name="settings_expert_d2d_summary">כופה את גיבוי רוב היישומונים, אפילו אם הם מסרבים לזה. יכולת ניסיונית ראשית, נא להשתמש במשנה זהירות.</string>
     <string name="notification_success_channel_title">התראה על הצלחה</string>
     <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו (%3$s). למידע נוסף נא לגעת.</string>
+    <string name="restore_restore_set_size">גודל: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_select_packages">בחירת יישומונים לשחזור</string>
+    <string name="backup_system_apps">יישומוני מערכת</string>
+    <string name="settings_backup_status_next_backup_usb">גיבויים יתרחשו אוטומטית בעת חיבור כונן ה־USB שלך</string>
+    <string name="settings_scheduling_frequency_3_days">כל 3 ימים</string>
+    <string name="settings_scheduling_frequency_title">תדירות גיבוי</string>
+    <string name="settings_scheduling_category_conditions_title">תנאים</string>
+    <string name="settings_scheduling_frequency_daily">יומית</string>
+    <string name="restore_select_packages_all">כל היישומונים הבאים</string>
+    <string name="notification_space_error_title">אין מספיק מקום לגיבוי</string>
+    <string name="notification_space_error_text">הנפח הפנוי במקור הגיבוי שלך אוזל. נא לפנות מקום כדי שאפשר יהיה להמשיך לגבות.</string>
+    <string name="notification_apk_not_backed_up">שמירת רשימת היישומונים שאין לנו איך לגבות.</string>
+    <string name="storage_webdav_option_title">ענן WebDAV (ניסיוני)</string>
+    <string name="storage_webdav_option_summary">גישה ישירה מובנית ל־WebDAV</string>
+    <string name="storage_webdav_config_url">כתובת WebDAV</string>
+    <string name="settings_backup_status_next_backup">הגיבוי הבא: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">הגיבוי הבא (משוערך): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">אם תנאי מולא</string>
+    <string name="settings_backup_scheduling_title">תזמון גיבוי</string>
+    <string name="settings_scheduling_frequency_12_hours">כל 12 שעות</string>
+    <string name="settings_scheduling_frequency_weekly">שבועית</string>
+    <string name="settings_scheduling_metered_title">לגבות בעת שימוש בתקשורת נתונים סלולרית</string>
+    <string name="settings_scheduling_charging_title">לגבות רק בזמן טעינה</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_config_malformed_url">כתובת WebDAV שגויה</string>
+    <string name="storage_webdav_config_button">להשתמש בענן של WebDAV</string>
+    <string name="storage_webdav_config_pass">סיסמה</string>
+    <string name="storage_webdav_config_user">שם משתמש</string>
+    <string name="storage_webdav_config_url_helper">נא למלא כאן את הכתובת המלאה. למשל: ל־Nextcloud היא צריכה להיות בצורה https://yourserver.com/remote.php/webdav</string>
+    <string name="notification_apk_text">מתבצע גיבוי ה־APK של %s</string>
 </resources>

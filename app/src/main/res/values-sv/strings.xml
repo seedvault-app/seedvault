@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="settings_category_apps">Applikationsbackup</string>
     <string name="backup">Säkerhetskopia</string>
     <string name="restore_backup_button">Återställ säkerhetskopia</string>
@@ -25,4 +25,204 @@
     <string name="settings_backup_apk_summary">Säkerhetskopiera själva apparna. Annars kommer endast apparnas data att säkerhetskopieras.</string>
     <string name="data_management_label">Seedvault Säkerhetskopiering</string>
     <string name="current_destination_string">Status och inställningar för säkerhetskopiering</string>
+    <string name="settings_backup_exclude_apps">Exkludera appar</string>
+    <string name="settings_backup_now">Säkerhetskopiera nu</string>
+    <string name="settings_backup_files_summary">Ingen</string>
+    <string name="settings_backup_recovery_code_summary">Verifiera existerande kod eller generera en ny</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Ny kod</string>
+    <string name="settings_backup_storage_battery_optimization">Varning! Ingen automatisk säkerhetskopiering på grund av att batterioptimering är aktiv.</string>
+    <string name="settings_backup_new_code_dialog_title">Ny återställningskod krävs</string>
+    <string name="settings_backup_status_title">Status för säkerhetskopiering</string>
+    <string name="settings_backup_apk_dialog_disable">Inaktivera säkerhetskopiering av app</string>
+    <string name="settings_backup_status_next_backup_past">när villkoren är uppfyllda</string>
+    <string name="settings_backup_status_next_backup_usb">Säkerhetskopiering kommer göras automatiskt när du kopplar in din USB-lagring</string>
+    <string name="settings_backup_scheduling_title">Schemalägg säkerhetskopiering</string>
+    <string name="settings_backup_storage_title">Säkerhetskopiera mina filer</string>
+    <string name="settings_backup_files_title">Inkluderade filer och mappar</string>
+    <string name="settings_backup_recovery_code">Återställningskod</string>
+    <string name="settings_backup_storage_dialog_title">Experimentell funktion</string>
+    <string name="settings_backup_storage_dialog_message">Säkerhetskopiering av filer är experimentell och kanske inte fungerar. Lita inte på detta för viktig data.</string>
+    <string name="settings_backup_storage_dialog_ok">Aktivera ändå</string>
+    <string name="settings_scheduling_frequency_title">Frekvens för säkerhetskopiering</string>
+    <string name="settings_scheduling_frequency_12_hours">Var 12 timme</string>
+    <string name="settings_scheduling_frequency_daily">Dagligen</string>
+    <string name="settings_scheduling_frequency_3_days">Var 3:e dag</string>
+    <string name="settings_scheduling_frequency_weekly">Veckovis</string>
+    <string name="settings_scheduling_category_conditions_title">Villkor</string>
+    <string name="settings_scheduling_metered_title">Säkerhetskopiera när mobildata används</string>
+    <string name="settings_scheduling_charging_title">Säkerhetskopiera endast vid laddning</string>
+    <string name="settings_expert_title">Avancerade inställningar</string>
+    <string name="settings_category_storage">Säkerhetskopiering av lagring (beta)</string>
+    <string name="about_version">Version: %s</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Inte installerad</string>
+    <string name="notification_backup_already_running">Säkerhetskopiering pågår redan</string>
+    <string name="backup_app_quota_exceeded">Kvot för säkerhetskopiering överskriden</string>
+    <string name="storage_check_fragment_error_button">Tillbaka</string>
+    <string name="recovery_code_12_word_intro">Du behöver din återställningskod på 12-ord för att återställa säkerhetskopierade data.</string>
+    <string name="recovery_code_write_it_down">Skriv ner det på papper nu!</string>
+    <string name="recovery_code_input_hint_8">Ord 8</string>
+    <string name="recovery_code_input_hint_9">Ord 9</string>
+    <string name="recovery_code_input_hint_10">Ord 10</string>
+    <string name="recovery_code_input_hint_11">Ord 11</string>
+    <string name="recovery_code_verification_ok_title">Återställningskod verifierad</string>
+    <string name="recovery_code_error_checksum_word">Din kod är ogiltig. Kontrollera alla ord samt deras position och försök igen!</string>
+    <string name="recovery_code_verification_ok_message">Din kod är korrekt och kommer att fungera för att återställa din säkerhetskopia.</string>
+    <string name="backup_settings">Enhetsinställningar</string>
+    <string name="backup_contacts">Lokala kontakter</string>
+    <string name="backup_app_no_data">Appen rapporterade ingen data för säkerhetskopiering</string>
+    <string name="backup_section_not_allowed">Appar som inte tillåter säkerhetskopiering av data</string>
+    <string name="storage_check_fragment_patience">Detta kan ta en stund …</string>
+    <string name="storage_check_fragment_backup_title">Initialiserar plats för säkerhetskopiering …</string>
+    <string name="recovery_code_input_hint_2">Ord 2</string>
+    <string name="recovery_code_error_empty_word">Du glömde ange detta ord.</string>
+    <string name="recovery_code_error_invalid_word">Fel ord.</string>
+    <string name="backup_section_user">Appar</string>
+    <string name="storage_fake_nextcloud_summary">Tryck för att installera</string>
+    <string name="storage_fake_nextcloud_summary_installed">Tryck för att ställa in konto</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">Konto inte tillgängligt. Ställ in ett (eller inaktivera lösenkod).</string>
+    <string name="storage_check_fragment_restore_title">Letar efter säkerhetskopieringar …</string>
+    <string name="storage_check_fragment_backup_error">Ett fel inträffade vid åtkomst till plats för säkerhetskopieringar.</string>
+    <string name="storage_check_fragment_permission_error">Kan inte få behörigheten för att skriva till platsen för säkerhetskopiering.</string>
+    <string name="recovery_code_confirm_button">Bekräfta kod</string>
+    <string name="recovery_code_title">Återställningskod</string>
+    <string name="recovery_code_confirm_intro">Ange din återställningskod på 12 ord för att säkerställa att den fungerar när du behöver den.</string>
+    <string name="recovery_code_input_hint_5">Ord 5</string>
+    <string name="recovery_code_input_hint_6">Ord 6</string>
+    <string name="recovery_code_input_hint_7">Ord 7</string>
+    <string name="recovery_code_verification_error_title">Felaktig återställningskod</string>
+    <string name="recovery_code_verification_error_message">Du har angett en ogiltig återställningskod. Försök igen!
+\n
+\nOm du har förlorat din kod, tryck på \"Generera ny kod\" nedan.</string>
+    <string name="recovery_code_verification_try_again">Försök igen</string>
+    <string name="recovery_code_verification_generate_new">Generera ny kod</string>
+    <string name="recovery_code_verification_new_dialog_title">Vänta en sekund …</string>
+    <string name="backup_section_system">Systemdata</string>
+    <string name="backup_sms">SMS textmeddelanden</string>
+    <string name="backup_call_log">Samtalshistorik</string>
+    <string name="backup_app_not_yet_backed_up">Väntar på att börja säkerhetskopiera …</string>
+    <string name="restore_app_not_yet_backed_up">Inte ännu säkerhetskopieraded</string>
+    <string name="backup_app_was_stopped">Säkerhetskopierades inte då den inte använts nyligen</string>
+    <string name="restore_app_was_stopped">Säkerhetskopierades inte då den inte har använts nyligen</string>
+    <string name="about_summary">Ett program för säkerhetskopiering som använder Androids interna API för säkerhetskopiering. Det är fri programvara, släppt under Apache 2 licens.
+\n
+\nLiksom all programvara kan Seedvault innehålla buggar eller sårbarheter.</string>
+    <string name="restore_installing_error_title">Några appar är inte installerade</string>
+    <string name="restore_installing_error_message">Data kan bara återställas om en app är installerad.
+\n
+\nTryck på misslyckade appar för att försöka installera dom manuellt innan du fortsätter.</string>
+    <string name="restore_installing_tap_to_install">Tryck för att installera</string>
+    <string name="restore_restoring_error_title">Kan inte återställa vissa appar</string>
+    <string name="restore_restoring_error_message">Du kan ominstallera dessa appar manuellt och Automatisk återställning kommer försöka återställa deras data (när det är aktiverat).</string>
+    <string name="recovery_code_input_intro">Ange din återställningskod på 12 ord som du skrev ner när du ställde in säkerhetskopiering.</string>
+    <string name="recovery_code_done_button">Verifiera</string>
+    <string name="recovery_code_input_hint_1">Ord 1</string>
+    <string name="storage_webdav_config_user">Användarnamn</string>
+    <string name="storage_webdav_config_pass">Lösenord</string>
+    <string name="recovery_code_input_hint_3">Ord 3</string>
+    <string name="recovery_code_input_hint_4">Ord 4</string>
+    <string name="recovery_code_input_hint_12">Ord 12</string>
+    <string name="restore_app_status_install_error">Kunde inte installera</string>
+    <string name="storage_internal_warning_title">Varning</string>
+    <string name="storage_internal_warning_use_anyway">Använd ändå</string>
+    <string name="about_title">Om</string>
+    <string name="recovery_code_auth_title">Ange din skärmlåskod igen</string>
+    <string name="restore_finished_button">Klar</string>
+    <string name="notification_restore_error_action">Avinstallera app</string>
+    <string name="restore_title">Återställ från säkerhetskopia</string>
+    <string name="restore_restore_set_size">Storlek: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_invalid_location_title">Inga säkerhetskopior hittades</string>
+    <string name="restore_invalid_location_message">Vi kunde inte hitta någon säkerhetskopia på denna plats.
+\n
+\nVälj en annan plats som innehåller mappen %s.</string>
+    <string name="restore_app_status_installing">Ominstallerar</string>
+    <string name="restore_app_status_installed">Ominstallerad</string>
+    <string name="recovery_code_verification_new_dialog_message">Att generera en ny kod kommer göra dina existerande säkerhetskopior oåtkomliga. Vi kommer att försöka radera dom om möjligt.
+\n
+\nÄr du säker på att du vill göra detta?</string>
+    <string name="notification_success_text">%1$d av %2$d appar har säkerhetskopierats (%3$s). Tryck för att lära dig mer.</string>
+    <string name="notification_error_no_main_key_title">Säkerhetskopiering inaktiverad</string>
+    <string name="restore_app_status_failed">Återställning misslyckades</string>
+    <string name="storage_fragment_restore_title">Var kan du hitta dina säkerhetskopior?</string>
+    <string name="storage_fake_drive_summary">Måste var inkopplad</string>
+    <string name="about_contributor_headline">Bidragsgivare</string>
+    <string name="notification_title">Säkerhetskopiering utförs</string>
+    <string name="recovery_code_recreated">Ny återställningskod skapades utan problem</string>
+    <string name="notification_error_text">Säkerhetskopiering av en enhet misslyckades att köras.</string>
+    <string name="backup_app_in_progress">Säkerhetskopierar</string>
+    <string name="backup_app_success">Säkerhetskopierad</string>
+    <string name="restore_app_not_allowed">App tillät inte säkerhetskopiering</string>
+    <string name="restore_app_not_installed">Appen är inte installerad</string>
+    <string name="restore_skip_apps">Hoppa över återställning av appar</string>
+    <string name="restore_choose_restore_set">Välj en säkerhetskopia att återställa</string>
+    <string name="restore_restore_set_times">Senaste säkerhetskopia %1$s · Första %2$s.</string>
+    <string name="restore_skip">Återställ inte</string>
+    <string name="restore_set_error">Ett fel uppstod medan säkerhetskopiorna lästes in.</string>
+    <string name="restore_installing_packages">Ominstallerar appar</string>
+    <string name="restore_next">Nästa</string>
+    <string name="restore_restoring">Återställer säkerhetskopia</string>
+    <string name="restore_finished_success">Återställning är färdig</string>
+    <string name="restore_finished_error">Ett fel uppstod vid återställning av säkerhetskopian.</string>
+    <string name="restore_storage_skip">Hoppa över återställning av filer</string>
+    <string name="restore_storage_in_progress_title">Filer återställs …</string>
+    <string name="notification_success_title">Säkerhetskopiering avslutad</string>
+    <string name="notification_error_title">Fel vid säkerhetskopiering</string>
+    <string name="restore_app_status_restored">Data återställd</string>
+    <string name="settings_expert_logcat_title">Spara applogg</string>
+    <string name="settings_expert_logcat_summary">Utvecklare kan diagnosticera fel med dessa loggar.
+\n
+\nVarning: Loggfilen kan innehålla personligt identifierbar information. Granska innan och radera efter delning!</string>
+    <string name="settings_expert_logcat_error">Fel: Kunde inte spara applogg</string>
+    <string name="storage_fragment_warning_delete">Existerande säkerhetskopior på denna plats kommer att raderas.</string>
+    <string name="storage_user_selected_location_title">Plats vald av användaren</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ledigt</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Rekommenderas inte)</string>
+    <string name="storage_fragment_backup_title">Välj plats för att spara säkerhetskopior</string>
+    <string name="notification_backup_disabled">Säkerhetskopiering är inte aktiverad</string>
+    <string name="notification_failed_title">Säkerhetskopiering misslyckades</string>
+    <string name="settings_expert_quota_summary">Inför ingen begränsning för storleken på appars säkerhetskopior.
+\n
+\nVarning: Detta kan fylla din lagringsplats snabbt. Behövs inte för de flesta apparna.</string>
+    <string name="settings_expert_quota_title">Obegränsad appkvot</string>
+    <string name="settings_expert_d2d_summary">Detta tvingar säkerhetskopiering för de flesta appar även när de inte tillåter dem. Detta är en alfafunktion, använd på egen risk.</string>
+    <string name="storage_fragment_warning">Personer med åtkomst till din lagringsplats kan lära sig vilka appar du använder men inte komma åt dess data.</string>
+    <string name="settings_expert_d2d_title">Säkerhetskopior mellan enheter</string>
+    <string name="settings_backup_new_code_dialog_message">För att fortsätta använda säkerhetskopiering av appar behöver du generera en ny återställningskod.
+\n
+\nVi ber om ursäkta för besväret.</string>
+    <string name="backup_system_apps">Systemappar</string>
+    <string name="storage_webdav_config_url">WebDAV URL</string>
+    <string name="storage_webdav_config_url_helper">Säkerställ att du anger hela URLen här. T.ex. för Nextcloud har det formen https://dinserver.se/remote.php/webdav</string>
+    <string name="storage_webdav_config_button">Använd WebDAV-moln</string>
+    <string name="storage_webdav_config_malformed_url">Ogiltig WebDAV URL</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_internal_warning_message">Du har valt intern lagring för dina säkerhetskopior. Detta kommer inte vara tillgängligt om din telefon är försvunnen eller trasig.</string>
+    <string name="storage_internal_warning_choose_other">Välj annan</string>
+    <string name="restore_app_status_warning">Återställningsvarning</string>
+    <string name="error_no_store">Fel: Ingen appstore installerad</string>
+    <string name="restore_set_empty_result">Inga lämpliga säkerhetskopior hittades på den angivna platsen.
+\n
+\nDetta beror troligtvis på en felaktig återställningskod eller lagringsfel.</string>
+    <string name="restore_select_packages">Välj appar att återställa</string>
+    <string name="restore_select_packages_all">Tillåt följande appar</string>
+    <string name="about_contributing_organizations_title">Bidragande organisationer</string>
+    <string name="about_contributor_content">Vänligen se GitHub för en <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista med bidragsgivare</a>.</string>
+    <string name="restore_app_quota_exceeded">Överskred kvot för säkerhetskopiering</string>
+    <string name="restore_magic_package">Systemets pakethanterare</string>
+    <string name="restore_storage_choose_snapshot">Välj en lagringssäkerhetskopia att återställa (beta)</string>
+    <string name="restore_storage_in_progress_info">Dina filer återställs i bakgrunden. Du kan börja använda din telefon medan detta körs.
+\n
+\nVissa appar (t.ex) Signal eller WhatsApp) kan kräva att filerna är fullt återställda för att importera en säkerhetskopia. Försök undvika att använda dessa appar innan filåterställningen är klar.</string>
+    <string name="restore_storage_got_it">Jag förstår</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> för användning i <a href="https://calyxos.org">CalyxOS</a>
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund av NLnet</a></string>
+    <string name="notification_restore_error_text">Anslut din %1$s innan installation av appen för att återställa dess data från en säkerhetskopiering.</string>
+    <string name="notification_space_error_title">Otillräckligt med lagring för säkerhetskopiering</string>
+    <string name="notification_space_error_text">Din plats för säkerhetskopieringar är på väg att få slut på utrymme. Frigör utrymme så att säkerhetskopieringar kan göras.</string>
+    <string name="notification_error_no_main_key_text">Generera en ny återställningskod för att färdigställa uppgraderingen och fortsätta att använda säkerhetskopieringar.</string>
+    <string name="backup_app_warning">Varning vid säkerhetskopiering</string>
+    <string name="notification_apk_text">Säkerhetskopierar APK för %s</string>
+    <string name="notification_apk_not_backed_up">Sparar lista med appar vi inte kan säkerhetskopiera.</string>
+    <string name="notification_restore_error_title">Kunde inte återställa data för %1$s</string>
+    <string name="notification_error_action">Fix</string>
+    <string name="notification_error_channel_title">Felmeddelande</string>
 </resources>

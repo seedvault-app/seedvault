@@ -120,12 +120,12 @@
     <string name="backup_section_not_allowed">Aplicaciones que no permiten la copia de seguridad de los datos</string>
     <string name="backup_app_quota_exceeded">Se ha superado la cuota de copias de seguridad</string>
     <string name="backup_app_was_stopped">No se ha hecho una copia de seguridad porque no se ha utilizado recientemente</string>
-    <string name="backup_section_user">Aplicaciones instaladas</string>
+    <string name="backup_section_user">Aplicaciones</string>
     <string name="backup_contacts">Contactos locales</string>
     <string name="backup_call_log">Historial de llamadas</string>
     <string name="backup_settings">Ajustes del dispositivo</string>
     <string name="backup_sms">Mensajes de texto SMS</string>
-    <string name="backup_section_system">Aplicaciones del sistema</string>
+    <string name="backup_section_system">Datos del sistema</string>
     <string name="settings_backup_status_title">Estado de la copia de seguridad</string>
     <string name="settings_backup_recovery_code_summary">Verifique el código existente o genere uno nuevo</string>
     <string name="settings_backup_recovery_code">Código de recuperación</string>
@@ -234,4 +234,12 @@
     <string name="notification_space_error_title">No hay espacio suficiente para la copia de seguridad</string>
     <string name="notification_space_error_text">La ubicación de la copia de seguridad se está quedando sin espacio. Libere espacio para que se puedan realizar las copias de seguridad.</string>
     <string name="restore_restore_set_size">Tamaño: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_select_packages_all">Las siguientes aplicaciones</string>
+    <string name="backup_system_apps">Aplicaciones del sistema</string>
+    <string name="restore_select_packages">Seleccionar aplicaciones para restaurar</string>
+    <string name="restore_storage_selection_description">Se restaurarán los(el) archivo(s) seleccionado(s). Toca las carpetas para ver los(el) archivo(s) que contienen.</string>
+    <string name="first_start_text">¿Quieres restaurar tu dispositivo desde una copia de seguridad existente o iniciar una nueva copia de seguridad?</string>
+    <string name="setup_button">Iniciar una nueva</string>
+    <string name="notification_restore_channel_title">Notificación de restauración</string>
+    <string name="notification_restore_title">Restauración esta en ejecución</string>
 </resources>

@@ -19,4 +19,9 @@
     <string name="snapshots_error">Fehler beim Laden von Snapshots</string>
     <string name="notification_restore_channel_title">Speicherwiederherstellung</string>
     <string name="content_options">Optionen</string>
+    <string name="notification_restore_complete_errors">%1$d Dateien enthielten Fehler.</string>
+    <string name="select_files_title">Dateien zur Wiederherstellung überprüfen</string>
+    <string name="select_files_button_restore">Ausgewählte Dateien wiederherstellen</string>
+    <string name="notification_restore_complete_dups">%1$d Dateien waren doppelt.</string>
+    <string name="select_files_number_of_files">%1$d Datei(en)</string>
 </resources>
