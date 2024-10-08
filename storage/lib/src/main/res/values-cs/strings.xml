@@ -19,4 +19,9 @@
     <string name="snapshots_title">Dostupné zálohy úložiště</string>
     <string name="notification_restore_channel_title">Obnova úložiště</string>
     <string name="content_options">Možnosti</string>
+    <string name="select_files_title">Kontrola souborů k obnovení</string>
+    <string name="select_files_number_of_files">%1$d soubor(ů)</string>
+    <string name="select_files_button_restore">Obnovit vybrané soubory</string>
+    <string name="notification_restore_complete_errors">%1$d souborů obsahovalo chyby.</string>
+    <string name="notification_restore_complete_dups">%1$d souborů bylo duplicitních.</string>
 </resources>

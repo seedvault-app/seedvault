@@ -93,12 +93,12 @@
     <string name="backup_app_was_stopped">Nie utworzono kopii zapasowej, ponieważ ostatnio nie używano</string>
     <string name="restore_app_not_yet_backed_up">Nie utworzono jeszcze kopii zapasowej</string>
     <string name="backup_app_not_yet_backed_up">Oczekiwanie na kopię zapasową…</string>
-    <string name="backup_section_user">Zainstalowane aplikacje</string>
+    <string name="backup_section_user">Aplikacje</string>
     <string name="backup_contacts">Lokalne kontakty</string>
     <string name="backup_call_log">Historia połączeń</string>
     <string name="backup_settings">Ustawienia urządzenia</string>
     <string name="backup_sms">Wiadomości tekstowe SMS</string>
-    <string name="backup_section_system">Aplikacje systemowe</string>
+    <string name="backup_section_system">Dane systemowe</string>
     <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji (%3$s). Naciśnij, aby dowiedzieć się więcej.</string>
     <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
@@ -234,4 +234,12 @@
     <string name="notification_space_error_text">W lokalizacji kopii zapasowej brakuje miejsca. Zwolnij miejsce, aby umożliwić tworzenie kopii zapasowych.</string>
     <string name="restore_restore_set_size">Rozmiar: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="notification_space_error_title">Niewystarczająca ilość miejsca na kopię zapasową</string>
+    <string name="backup_system_apps">Aplikacje systemowe</string>
+    <string name="restore_select_packages_all">Wszystkie poniższe aplikacje</string>
+    <string name="restore_select_packages">Zaznacz aplikacje do przywrócenia</string>
+    <string name="restore_storage_selection_description">Wybrane pliki zostaną przywrócone. Dotknij folderów, aby wyświetlić znajdujące się w nich pliki.</string>
+    <string name="setup_button">Zacznij nową</string>
+    <string name="first_start_text">Czy chcesz przywrócić urządzenie z istniejącej kopii zapasowej albo rozpocząć tworzenie nowej kopii zapasowej?</string>
+    <string name="notification_restore_channel_title">Przywróć powiadomienia</string>
+    <string name="notification_restore_title">Przywróć działanie</string>
 </resources>

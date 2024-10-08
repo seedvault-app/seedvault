@@ -19,4 +19,9 @@
 \nLo sentimos, pero no hay nada que se pueda restaurar.</string>
     <string name="snapshots_error">Error al cargar snapshots</string>
     <string name="content_options">Opciones</string>
+    <string name="select_files_button_restore">Restaurar archivo(s) seleccionado(s)</string>
+    <string name="select_files_title">Revisar los archivos para restaurarlos</string>
+    <string name="select_files_number_of_files">%1$d archivo(s)</string>
+    <string name="notification_restore_complete_dups">%1$d archivos eran duplicados.</string>
+    <string name="notification_restore_complete_errors">%1$d archivos tenían errores.</string>
 </resources>

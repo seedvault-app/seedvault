@@ -191,7 +191,7 @@
     <string name="settings_expert_logcat_title">Sauvegarde des logs de l\'application</string>
     <string name="settings_backup_dialog_message">A la prochaine activation ,
 \nLe processus de sauvegarde peux durer plus longtemps et utilisera du stockage additionnel.</string>
-    <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App\?</string>
+    <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App ?</string>
     <string name="about_contributing_organizations_title">Organisations participantes</string>
     <string name="settings_backup_scheduling_title">Planification des sauvegardes</string>
     <string name="settings_backup_status_next_backup_estimate">Prochaine sauvegarde (estimée) : %1$s</string>

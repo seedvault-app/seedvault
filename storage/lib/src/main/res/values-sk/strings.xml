@@ -1,2 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Možnosti</string>
+    <string name="snapshots_title">Dostupné zálohy úložiska</string>
+    <string name="snapshots_empty">Neboli nájdené žiadne zálohy úložiska
+\n
+\nJe nám to ľúto, ale nie je nič, čo by mohlo byť obnovené.</string>
+    <string name="snapshots_error">Chyba pri načítaní snapshotov</string>
+    <string name="content_images">Fotky a obrázky</string>
+    <string name="content_videos">Videá</string>
+    <string name="content_audio">Zvukové súbory</string>
+    <string name="content_downloads">Stiahnuté súbory</string>
+    <string name="content_add">Pridať</string>
+    <string name="notification_backup_title">Záloha úložiska</string>
+    <string name="notification_backup_scanning">Skenovanie súborov…</string>
+    <string name="notification_backup_backup_files">Zálohovanie súborov…</string>
+    <string name="notification_prune">Mazanie starých záloh…</string>
+    <string name="notification_restore_channel_title">Obnova úložiska</string>
+    <string name="notification_restore_title">Obnova súborov…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d z %2$d súborov obnovené</string>
+</resources>

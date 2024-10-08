@@ -187,7 +187,7 @@
     <string name="about_version">Versiune: %s</string>
     <string name="restore_installing_tap_to_install">Atinge pentru a instala</string>
     <string name="notification_backup_already_running">Backup deja în desfășurare</string>
-    <string name="backup_section_user">Aplicații instalate</string>
+    <string name="backup_section_user">Aplicații</string>
     <string name="backup_sms">Mesaje text SMS</string>
     <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
     <string name="storage_webdav_option_summary">Acces direct WebDAV integrat</string>
@@ -226,7 +226,7 @@
     <string name="restore_restoring_error_title">Imposibil de restabilit unele aplicații</string>
     <string name="storage_webdav_config_url_helper">Asigură-te că introduci adresa URL completă aici. De exemplu. pentru Nextcloud, are forma https://serverultau.com/remote.php/webdav</string>
     <string name="storage_webdav_config_user">Nume de utilizator</string>
-    <string name="backup_section_system">Aplicații de sistem</string>
+    <string name="backup_section_system">Date de sistem</string>
     <string name="backup_app_was_stopped">Copia de rezervă nu a fost salvată deoarece aplicația nu a fost folosită de mult timp</string>
     <string name="backup_app_no_data">Aplicația a raportat că nu există date pentru a face copii de rezervă</string>
     <string name="backup_section_not_allowed">Aplicații care nu permit backup de date</string>
@@ -234,4 +234,12 @@
     <string name="notification_space_error_title">Spațiu insuficient</string>
     <string name="notification_space_error_text">Locația copiilor de rezervă rămâne fără spațiu. Eliberează spațiu, astfel încât să poată rula copiile de rezervă.</string>
     <string name="restore_restore_set_size">Dimensiune: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="backup_system_apps">Aplicații de sistem</string>
+    <string name="restore_select_packages">Selectează aplicațiile de restaurat</string>
+    <string name="restore_select_packages_all">Toate aplicatiile urmatoare</string>
+    <string name="restore_storage_selection_description">Fișierele selectate vor fi restaurate. Atingeți dosare pentru a vedea fișierele din ele.</string>
+    <string name="notification_restore_channel_title">Notificare de restabilire</string>
+    <string name="notification_restore_title">Rulează restabilirea</string>
+    <string name="setup_button">Pornește una nouă</string>
+    <string name="first_start_text">Dorești să restaurezi dispozitivul dintr-o copie de rezervă existentă sau să începi o nouă copie de rezervă?</string>
 </resources>

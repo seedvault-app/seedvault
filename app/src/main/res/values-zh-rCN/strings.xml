@@ -120,9 +120,9 @@
     <string name="restore_installing_tap_to_install">点击安装</string>
     <string name="restore_installing_error_title">某些应用未安装</string>
     <string name="backup_sms">短信</string>
-    <string name="backup_section_system">系统应用</string>
+    <string name="backup_section_system">系统数据</string>
     <string name="about_version">版本：%s</string>
-    <string name="backup_section_user">已安装应用</string>
+    <string name="backup_section_user">应用程序</string>
     <string name="backup_contacts">本地联系人</string>
     <string name="backup_call_log">通话记录</string>
     <string name="backup_settings">设备设置</string>
@@ -138,7 +138,7 @@
 \n
 \n如果你丢失了代码，请轻按下面的“生成新代码”。</string>
     <string name="recovery_code_verification_error_title">不正确的恢复代码</string>
-    <string name="recovery_code_verification_ok_message">你的代码正确无误，可用于还原你的备份。</string>
+    <string name="recovery_code_verification_ok_message">你的代码正确无误，可用于恢复你的备份。</string>
     <string name="recovery_code_verification_ok_title">已验证恢复代码</string>
     <string name="settings_backup_recovery_code_summary">验证现有代码或生成新代码</string>
     <string name="settings_backup_recovery_code">恢复代码</string>
@@ -234,4 +234,12 @@
     <string name="notification_space_error_title">备份空间不够</string>
     <string name="notification_space_error_text">你选择的备份位置剩余空间不足。要能运行备份，请腾出空间。</string>
     <string name="restore_restore_set_size">大小: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="backup_system_apps">系统应用</string>
+    <string name="restore_select_packages">选择要恢复的应用</string>
+    <string name="restore_select_packages_all">下面的所有应用</string>
+    <string name="restore_storage_selection_description">选中的文件将被恢复。轻按文件夹检视其中的文件。</string>
+    <string name="first_start_text">你想从现有备份恢复你的设备还是开始新备份？</string>
+    <string name="setup_button">开始新的</string>
+    <string name="notification_restore_channel_title">恢复通知</string>
+    <string name="notification_restore_title">恢复运行中</string>
 </resources>
