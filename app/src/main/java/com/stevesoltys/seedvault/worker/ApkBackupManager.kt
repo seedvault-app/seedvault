@@ -67,6 +67,7 @@ internal class ApkBackupManager(
         }
     }
 
+    // TODO we could use BackupMonitor for this. It emits LOG_EVENT_ID_PACKAGE_STOPPED
     private fun recordNotBackedUpPackages() {
         nm.onAppsNotBackedUp()
         packageService.notBackedUpPackages.forEach { packageInfo ->
