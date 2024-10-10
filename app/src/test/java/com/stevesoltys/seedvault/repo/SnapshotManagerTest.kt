@@ -34,6 +34,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
+import java.security.GeneralSecurityException
 import java.security.MessageDigest
 import kotlin.random.Random
 
@@ -130,6 +131,26 @@ internal class SnapshotManagerTest : TransportTest() {
         // now load all snapshots from cache
         inputStream.reset()
         assertEquals(listOf(snapshot), snapshotManager.loadCachedSnapshots())
+    }
+
+    @Test
+    fun `snapshot corrupted on cache falls back to backend`(@TempDir tmpDir: Path) = runBlocking {
+        val snapshotManager = getSnapshotManager(File(tmpDir.toString()))
+        val snapshot = snapshot { token = 1337 }
+        val snapshotData = snapshot.toByteArray()
+        val inputStream = ByteArrayInputStream(snapshotData)
+        val snapshotHandle = AppBackupFileType.Snapshot(repoId, chunkId1)
+        val file = getSnapshotFolder(tmpDir, snapshotHandle.name)
+
+        every { crypto.repoId } returns repoId
+        coEvery { loader.loadFile(file, snapshotHandle.hash) } throws GeneralSecurityException()
+        coEvery { loader.loadFile(snapshotHandle, file) } returns inputStream
+
+        assertEquals(listOf(snapshot), snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle)))
+
+        coVerify { // did load from backend
+            loader.loadFile(snapshotHandle, file)
+        }
     }
 
     @Test

@@ -133,7 +133,12 @@ internal class SnapshotManager(
         val file = File(snapshotFolder, snapshotHandle.name)
         snapshotFolder.mkdirs()
         val inputStream = if (file.isFile) {
-            loader.loadFile(file, snapshotHandle.hash)
+            try {
+                loader.loadFile(file, snapshotHandle.hash)
+            } catch (e: Exception) {
+                log.error(e) { "Error loading $snapshotHandle from local cache. Trying backend..." }
+                loader.loadFile(snapshotHandle, file)
+            }
         } else {
             loader.loadFile(snapshotHandle, file)
         }
