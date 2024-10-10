@@ -23,6 +23,7 @@ import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Test
+import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.concurrent.TimeUnit
@@ -57,6 +58,32 @@ internal class PrunerTest : TransportTest() {
 
         // we only find blobs that are in snapshots
         expectLoadingBlobs(snapshot.blobsMap.values.map { it.id.hexFromProto() })
+
+        pruner.removeOldSnapshotsAndPruneUnusedBlobs()
+    }
+
+    @Test
+    fun `corrupted snapshot gets removed`() = runBlocking {
+        val snapshot = snapshot.copy { token = System.currentTimeMillis() }
+        every { crypto.repoId } returns repoId
+        every { backendManager.backend } returns backend
+        coEvery {
+            backend.list(folder, AppBackupFileType.Snapshot::class, callback = captureLambda())
+        } answers {
+            val fileInfo = FileInfo(snapshotHandle1, Random.nextLong(Long.MAX_VALUE))
+            lambda<(FileInfo) -> Unit>().captured.invoke(fileInfo)
+        }
+        coEvery { snapshotManager.loadSnapshot(snapshotHandle1) } throws GeneralSecurityException()
+        coEvery { snapshotManager.removeSnapshot(snapshotHandle1) } just Runs
+
+        // we only find blobs that are in snapshots
+        val blobIds = snapshot.blobsMap.values.map { it.id.hexFromProto() }
+        expectLoadingBlobs(blobIds)
+
+        // but since all snapshots got removed, we remove all blobs :(
+        blobIds.forEach {
+            coEvery { backend.remove(AppBackupFileType.Blob(repoId, it)) } just Runs
+        }
 
         pruner.removeOldSnapshotsAndPruneUnusedBlobs()
     }

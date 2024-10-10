@@ -96,6 +96,7 @@ internal class Loader(
             }
         } catch (e: Exception) {
             log.error(e) { "Error writing cache file $cacheFile: " }
+            cacheFile?.delete()
         }
         // get associated data for version, used for authenticated decryption
         val ad = crypto.getAdForVersion(version)

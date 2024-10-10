@@ -11,6 +11,7 @@ import com.stevesoltys.seedvault.proto.Snapshot
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.TopLevelFolder
+import java.security.GeneralSecurityException
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 import java.time.temporal.TemporalAdjuster
@@ -42,9 +43,14 @@ internal class Pruner(
         val snapshotMap = mutableMapOf<Long, AppBackupFileType.Snapshot>()
         val snapshots = mutableListOf<Snapshot>()
         snapshotHandles.forEach { handle ->
-            val snapshot = snapshotManager.loadSnapshot(handle) // exception is allowed to bubble up
-            snapshotMap[snapshot.token] = handle
-            snapshots.add(snapshot)
+            try {
+                val snapshot = snapshotManager.loadSnapshot(handle)
+                snapshotMap[snapshot.token] = handle
+                snapshots.add(snapshot)
+            } catch (e: GeneralSecurityException) {
+                log.error(e) { "Error loading snapshot $handle, will remove: " }
+                snapshotManager.removeSnapshot(handle)
+            } // other exceptions (like IOException) are allowed to bubble up, so we try again
         }
         // find out which snapshots to keep
         val toKeep = getTokenToKeep(snapshotMap.keys)

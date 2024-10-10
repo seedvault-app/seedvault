@@ -113,6 +113,7 @@ internal class ApkBackup(
             val blobMap = chunkIds.associateWith { chunkId ->
                 latestSnapshot.blobsMap[chunkId] ?: error("Missing blob for $chunkId")
             }
+            // TODO could also check if all blobs are (still) available in BlobCache
             // important: add old APK to snapshot or it wouldn't be part of backup
             snapshotCreator.onApkBackedUp(packageInfo, oldApk, blobMap)
             return
