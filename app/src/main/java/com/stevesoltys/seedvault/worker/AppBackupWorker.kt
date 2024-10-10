@@ -22,7 +22,9 @@ import androidx.work.OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.repo.AppBackupManager
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NOTIFICATION_ID_OBSERVER
@@ -101,6 +103,7 @@ class AppBackupWorker(
     private val backupRequester: BackupRequester by inject()
     private val settingsManager: SettingsManager by inject()
     private val apkBackupManager: ApkBackupManager by inject()
+    private val appBackupManager: AppBackupManager by inject()
     private val backendManager: BackendManager by inject()
     private val nm: BackupNotificationManager by inject()
 
@@ -137,6 +140,15 @@ class AppBackupWorker(
 
     private suspend fun doBackup(): Result {
         var result: Result = Result.success()
+        if (!isStopped) {
+            Log.i(TAG, "Initializing backup info...")
+            try {
+                appBackupManager.beforeBackup()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error during 'beforeBackup': ", e)
+                return Result.retry()
+            }
+        }
         try {
             Log.i(TAG, "Starting APK backup... (stopped: $isStopped)")
             if (!isStopped) apkBackupManager.backup()
@@ -157,7 +169,7 @@ class AppBackupWorker(
 
     private fun createForegroundInfo() = ForegroundInfo(
         NOTIFICATION_ID_OBSERVER,
-        nm.getBackupNotification(""),
+        nm.getBackupNotification(applicationContext.getString(R.string.notification_init_text)),
         FOREGROUND_SERVICE_TYPE_DATA_SYNC,
     )
 }

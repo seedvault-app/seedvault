@@ -11,16 +11,23 @@ import android.app.backup.IBackupObserver
 import android.content.Context
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.PackageManager.NameNotFoundException
+import android.os.Looper
 import android.util.Log
 import android.util.Log.INFO
 import android.util.Log.isLoggable
 import com.stevesoltys.seedvault.ERROR_BACKUP_CANCELLED
+import com.stevesoltys.seedvault.ERROR_BACKUP_NOT_ALLOWED
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.PackageService
+import com.stevesoltys.seedvault.worker.AppBackupPruneWorker
 import com.stevesoltys.seedvault.worker.BackupRequester
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -33,15 +40,19 @@ internal class NotificationBackupObserver(
 ) : IBackupObserver.Stub(), KoinComponent {
 
     private val nm: BackupNotificationManager by inject()
-    private val metadataManager: MetadataManager by inject()
     private val packageService: PackageService by inject()
     private val settingsManager: SettingsManager by inject()
+    private val metadataManager: MetadataManager by inject()
+    private val appBackupManager: AppBackupManager by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
     private var numPackagesToReport: Int = 0
     private var pmCounted: Boolean = false
 
     private var errorPackageName: String? = null
+    private val launchableSystemApps by lazy {
+        packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
+    }
 
     init {
         // Inform the notification manager that a backup has started
@@ -73,7 +84,7 @@ internal class NotificationBackupObserver(
      *                  that was initialized
      * @param status Zero on success; a nonzero error code if the backup operation failed.
      */
-    override fun onResult(target: String?, status: Int) {
+    override fun onResult(target: String, status: Int) {
         if (isLoggable(TAG, INFO)) {
             Log.i(TAG, "Completed. Target: $target, status: $status")
         }
@@ -87,7 +98,7 @@ internal class NotificationBackupObserver(
             numPackages += 1
         }
         // count package if success and not a system app
-        if (status == 0 && target != null && target != MAGIC_PACKAGE_MANAGER) try {
+        if (status == 0 && target != MAGIC_PACKAGE_MANAGER) try {
             val appInfo = context.packageManager.getApplicationInfo(target, 0)
             // exclude system apps from final count for now
             if (appInfo.flags and FLAG_SYSTEM == 0) {
@@ -96,6 +107,14 @@ internal class NotificationBackupObserver(
         } catch (e: Exception) {
             // should only happen for MAGIC_PACKAGE_MANAGER, but better save than sorry
             Log.e(TAG, "Error getting ApplicationInfo: ", e)
+        }
+        // record status for not-allowed apps visible in UI
+        if (status == ERROR_BACKUP_NOT_ALLOWED) {
+            // this should only ever happen for system apps, as we use only d2d now
+            if (target in launchableSystemApps) {
+                val packageInfo = context.packageManager.getPackageInfo(target, 0)
+                 metadataManager.onPackageBackupError(packageInfo, NOT_ALLOWED)
+            }
         }
 
         // Apps that get killed while interacting with their [BackupAgent] cancel the entire backup.
@@ -133,15 +152,33 @@ internal class NotificationBackupObserver(
             if (isLoggable(TAG, INFO)) {
                 Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
             }
-            val success = status == 0
-            val size = if (success) metadataManager.getPackagesBackupSize() else 0L
+            var success = status == 0
             val total = try {
                 packageService.allUserPackages.size
             } catch (e: Exception) {
                 Log.e(TAG, "Error getting number of all user packages: ", e)
                 requestedPackages
             }
-            nm.onBackupFinished(success, numPackagesToReport, total, size)
+            val snapshot = runBlocking {
+                check(!Looper.getMainLooper().isCurrentThread)
+                Log.d(TAG, "Finalizing backup...")
+                val snapshot = appBackupManager.afterBackupFinished(success)
+                success = snapshot != null
+                snapshot
+            }
+            val size = if (snapshot != null) { // TODO for later: count size of APKs separately
+                val chunkIds = snapshot.appsMap.values.flatMap { it.chunkIdsList }
+                chunkIds.sumOf {
+                    snapshot.blobsMap[it.hexFromProto()]?.uncompressedLength?.toLong() ?: 0L
+                }
+            } else 0L
+            if (success) {
+                nm.onBackupSuccess(numPackagesToReport, total, size)
+                // prune old backups
+                AppBackupPruneWorker.scheduleNow(context)
+            } else {
+                nm.onBackupError()
+            }
         }
     }
 

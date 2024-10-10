@@ -16,8 +16,8 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.settings.preference.M3ListPreference
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

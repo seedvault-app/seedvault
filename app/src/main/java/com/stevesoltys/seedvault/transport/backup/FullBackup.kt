@@ -13,65 +13,46 @@ import android.app.backup.BackupTransport.TRANSPORT_QUOTA_EXCEEDED
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.isOutOfSpace
+import com.stevesoltys.seedvault.repo.BackupData
+import com.stevesoltys.seedvault.repo.BackupReceiver
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
+import org.calyxos.seedvault.core.backends.isOutOfSpace
 import java.io.Closeable
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 
 private class FullBackupState(
     val packageInfo: PackageInfo,
     val inputFileDescriptor: ParcelFileDescriptor,
     val inputStream: InputStream,
-    var outputStreamInit: (suspend () -> OutputStream)?,
 ) {
-    /**
-     * This is an encrypted stream that can be written to directly.
-     */
-    var outputStream: OutputStream? = null
     val packageName: String = packageInfo.packageName
     var size: Long = 0
 }
-
-const val DEFAULT_QUOTA_FULL_BACKUP = (2 * (25 * 1024 * 1024)).toLong()
 
 private val TAG = FullBackup::class.java.simpleName
 
 @Suppress("BlockingMethodInNonBlockingContext")
 internal class FullBackup(
-    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val nm: BackupNotificationManager,
+    private val backupReceiver: BackupReceiver,
     private val inputFactory: InputFactory,
-    private val crypto: Crypto,
 ) {
 
-    private val backend get() = backendManager.backend
     private var state: FullBackupState? = null
 
-    fun hasState() = state != null
-
-    fun getCurrentPackage() = state?.packageInfo
-
-    fun getCurrentSize() = state?.size
-
-    fun getQuota(): Long {
-        return if (settingsManager.isQuotaUnlimited()) Long.MAX_VALUE else DEFAULT_QUOTA_FULL_BACKUP
-    }
+    val hasState: Boolean get() = state != null
+    val currentPackageInfo get() = state?.packageInfo
+    val quota get() = settingsManager.quota
 
     fun checkFullBackupSize(size: Long): Int {
         Log.i(TAG, "Check full backup size of $size bytes.")
         return when {
             size <= 0 -> TRANSPORT_PACKAGE_REJECTED
-            size > getQuota() -> TRANSPORT_QUOTA_EXCEEDED
+            size > quota -> TRANSPORT_QUOTA_EXCEEDED
             else -> TRANSPORT_OK
         }
     }
@@ -111,71 +92,41 @@ internal class FullBackup(
      * [TRANSPORT_OK] to indicate that the OS may proceed with delivering backup data;
      * [TRANSPORT_ERROR] to indicate an error that precludes performing a backup at this time.
      */
-    suspend fun performFullBackup(
+    fun performFullBackup(
         targetPackage: PackageInfo,
         socket: ParcelFileDescriptor,
         @Suppress("UNUSED_PARAMETER") flags: Int = 0,
-        token: Long,
-        salt: String,
     ): Int {
-        if (state != null) throw AssertionError()
+        if (state != null) error("state wasn't initialized for $targetPackage")
         val packageName = targetPackage.packageName
         Log.i(TAG, "Perform full backup for $packageName.")
 
         // create new state
         val inputStream = inputFactory.getInputStream(socket)
-        state = FullBackupState(targetPackage, socket, inputStream) {
-            Log.d(TAG, "Initializing OutputStream for $packageName.")
-            val name = crypto.getNameForPackage(salt, packageName)
-            // get OutputStream to write backup data into
-            val outputStream = try {
-                backend.save(LegacyAppBackupFile.Blob(token, name))
-            } catch (e: IOException) {
-                "Error getting OutputStream for full backup of $packageName".let {
-                    Log.e(TAG, it, e)
-                }
-                throw(e)
-            }
-            // store version header
-            val state = this.state ?: throw AssertionError()
-            outputStream.write(ByteArray(1) { VERSION })
-            crypto.newEncryptingStream(outputStream, getADForFull(VERSION, state.packageName))
-        } // this lambda is only called before we actually write backup data the first time
+        state = FullBackupState(targetPackage, socket, inputStream)
         return TRANSPORT_OK
     }
 
     suspend fun sendBackupData(numBytes: Int): Int {
-        val state = this.state
-            ?: throw AssertionError("Attempted sendBackupData before performFullBackup")
+        val state = this.state ?: error("Attempted sendBackupData before performFullBackup")
 
         // check if size fits quota
-        state.size += numBytes
-        val quota = getQuota()
-        if (state.size > quota) {
+        val newSize = state.size + numBytes
+        if (newSize > quota) {
             Log.w(
                 TAG,
-                "Full backup of additional $numBytes exceeds quota of $quota with ${state.size}."
+                "Full backup of additional $numBytes exceeds quota of $quota with $newSize."
             )
             return TRANSPORT_QUOTA_EXCEEDED
         }
 
         return try {
-            // get output stream or initialize it, if it does not yet exist
-            check((state.outputStream != null) xor (state.outputStreamInit != null)) {
-                "No OutputStream xor no StreamGetter"
-            }
-            val outputStream = state.outputStream ?: suspend {
-                val stream = state.outputStreamInit!!() // not-null due to check above
-                state.outputStream = stream
-                stream
-            }()
-            state.outputStreamInit = null // the stream init lambda is not needed beyond that point
-
             // read backup data and write it to encrypted output stream
             val payload = ByteArray(numBytes)
             val read = state.inputStream.read(payload, 0, numBytes)
             if (read != numBytes) throw EOFException("Read $read bytes instead of $numBytes.")
-            outputStream.write(payload)
+            backupReceiver.addBytes(getOwner(state.packageName), payload)
+            state.size += numBytes
             TRANSPORT_OK
         } catch (e: IOException) {
             Log.e(TAG, "Error handling backup data for ${state.packageName}: ", e)
@@ -184,44 +135,44 @@ internal class FullBackup(
         }
     }
 
-    @Throws(IOException::class)
-    suspend fun clearBackupData(packageInfo: PackageInfo, token: Long, salt: String) {
-        val name = crypto.getNameForPackage(salt, packageInfo.packageName)
-        backend.remove(LegacyAppBackupFile.Blob(token, name))
-    }
-
-    suspend fun cancelFullBackup(token: Long, salt: String, ignoreApp: Boolean) {
-        Log.i(TAG, "Cancel full backup")
-        val state = this.state ?: throw AssertionError("No state when canceling")
+    suspend fun cancelFullBackup() {
+        val state = this.state ?: error("No state when canceling")
+        Log.i(TAG, "Cancel full backup for ${state.packageName}")
+        // finalize the receiver
         try {
-            if (!ignoreApp) clearBackupData(state.packageInfo, token, salt)
-        } catch (e: IOException) {
-            Log.w(TAG, "Error cancelling full backup for ${state.packageName}", e)
+            backupReceiver.finalize(getOwner(state.packageName))
+        } catch (e: Exception) {
+            // as the backup was cancelled anyway, we don't care if finalizing had an error
+            Log.e(TAG, "Error finalizing backup in cancelFullBackup().", e)
         }
+        // If the transport receives this callback, it will *not* receive a call to [finishBackup].
+        // It needs to tear down any ongoing backup state here.
         clearState()
-        // TODO roll back to the previous known-good archive
     }
 
-    fun finishBackup(): Int {
-        Log.i(TAG, "Finish full backup of ${state!!.packageName}. Wrote ${state!!.size} bytes")
-        return clearState()
-    }
-
-    private fun clearState(): Int {
-        val state = this.state ?: throw AssertionError("Trying to clear empty state.")
-        return try {
-            state.outputStream?.flush()
-            closeLogging(state.outputStream)
-            closeLogging(state.inputStream)
-            closeLogging(state.inputFileDescriptor)
-            TRANSPORT_OK
-        } catch (e: IOException) {
-            Log.w(TAG, "Error when clearing state", e)
-            TRANSPORT_ERROR
+    /**
+     * Returns a pair of the [BackupData] after finalizing last chunks and the total backup size.
+     */
+    @Throws(IOException::class)
+    suspend fun finishBackup(): BackupData {
+        val state = this.state ?: error("No state when finishing")
+        Log.i(TAG, "Finish full backup of ${state.packageName}. Wrote ${state.size} bytes")
+        val result = try {
+            backupReceiver.finalize(getOwner(state.packageName))
         } finally {
-            this.state = null
+            clearState()
         }
+        return result
     }
+
+    private fun clearState() {
+        val state = this.state ?: error("Trying to clear empty state.")
+        closeLogging(state.inputStream)
+        closeLogging(state.inputFileDescriptor)
+        this.state = null
+    }
+
+    private fun getOwner(packageName: String) = "FullBackup $packageName"
 
     private fun closeLogging(closable: Closeable?) = try {
         closable?.close()

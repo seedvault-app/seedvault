@@ -9,12 +9,12 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val backupModule = module {
+    factory { BackupTransportMonitor(get(), get()) }
     single { BackupInitializer(get()) }
     single { InputFactory() }
     single {
         PackageService(
             context = androidContext(),
-            backupManager = get(),
             settingsManager = get(),
             backendManager = get(),
         )
@@ -22,30 +22,26 @@ val backupModule = module {
     single<KvDbManager> { KvDbManagerImpl(androidContext()) }
     single {
         KVBackup(
-            backendManager = get(),
-            settingsManager = get(),
-            nm = get(),
+            backupReceiver = get(),
             inputFactory = get(),
-            crypto = get(),
             dbManager = get(),
         )
     }
     single {
         FullBackup(
-            backendManager = get(),
             settingsManager = get(),
             nm = get(),
+            backupReceiver = get(),
             inputFactory = get(),
-            crypto = get(),
         )
     }
     single {
         BackupCoordinator(
             context = androidContext(),
             backendManager = get(),
+            appBackupManager = get(),
             kv = get(),
             full = get(),
-            clock = get(),
             packageService = get(),
             metadataManager = get(),
             settingsManager = get(),

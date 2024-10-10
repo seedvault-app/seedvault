@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.crypto
 
+import android.content.Context
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.header.HeaderReaderImpl
@@ -19,15 +20,16 @@ import org.junit.jupiter.api.TestInstance.Lifecycle.PER_METHOD
 import java.io.ByteArrayInputStream
 import java.io.IOException
 
+@Suppress("DEPRECATION")
 @TestInstance(PER_METHOD)
 class CryptoImplTest {
 
+    private val context = mockk<Context>()
     private val keyManager = mockk<KeyManager>()
     private val cipherFactory = mockk<CipherFactory>()
     private val headerReader = HeaderReaderImpl()
 
-    private val crypto = CryptoImpl(keyManager, cipherFactory, headerReader)
-
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
     @Test
     fun `decrypting multiple segments on empty stream throws`() {
         val inputStream = ByteArrayInputStream(ByteArray(0))

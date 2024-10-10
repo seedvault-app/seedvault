@@ -51,7 +51,7 @@ protobuf = { strictly = "3.21.12" }
 material = { strictly = "1.11.0" }
 # careful with upgrading tink, so old backups continue to be decryptable
 # https://github.com/tink-crypto/tink-java/releases
-tink = { strictly = "1.10.0" }
+tink = { strictly = "1.15.0" }
 
 # Coroutines versions
 # https://android.googlesource.com/platform/external/kotlinx.coroutines/+/refs/tags/android-15.0.0_r1/CHANGES.md
@@ -93,6 +93,7 @@ thirdegg-lint-rules = { module = "com.github.thirdegg:lint-rules", version.ref =
 # Google dependencies
 google-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 google-protobuf-javalite = { module = 'com.google.protobuf:protobuf-javalite', version.ref = 'protobuf' }
+google-protobuf-kotlin-lite = { module = 'com.google.protobuf:protobuf-kotlin-lite', version.ref = 'protobuf' }
 google-material = { module = 'com.google.android.material:material', version.ref = 'material' }
 
 # Coroutines dependencies

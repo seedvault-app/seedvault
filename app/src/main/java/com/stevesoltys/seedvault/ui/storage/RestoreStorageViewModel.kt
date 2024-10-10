@@ -19,7 +19,6 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
-import java.io.IOException
 
 private val TAG = RestoreStorageViewModel::class.java.simpleName
 
@@ -37,9 +36,11 @@ internal class RestoreStorageViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val hasBackup = try {
                 safHandler.hasAppBackup(safProperties)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Error reading URI: ${safProperties.uri}", e)
-                false
+                val errorMsg = app.getString(R.string.restore_set_error) + "\n\n$e"
+                mLocationChecked.postEvent(LocationResult(errorMsg))
+                return@launch
             }
             if (hasBackup) {
                 safHandler.save(safProperties)
@@ -60,9 +61,11 @@ internal class RestoreStorageViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val hasBackup = try {
                 webdavHandler.hasAppBackup(backend)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Log.e(TAG, "Error reading: ${properties.config.url}", e)
-                false
+                val errorMsg = app.getString(R.string.restore_set_error) + "\n\n$e"
+                mLocationChecked.postEvent(LocationResult(errorMsg))
+                return@launch
             }
             if (hasBackup) {
                 webdavHandler.save(properties)

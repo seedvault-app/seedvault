@@ -9,12 +9,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.getRandomString
 import com.stevesoltys.seedvault.metadata.BackupMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_CONTACTS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SETTINGS
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
@@ -27,7 +28,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.io.ByteArrayInputStream
 import java.io.IOException
 import kotlin.random.Random
 
@@ -70,7 +69,8 @@ internal class AppSelectionManagerTest : TransportTest() {
     )
 
     @Test
-    fun `apps without backup and APK, as well as system apps are filtered out`() = runTest {
+    fun `apps without backup and APK, as well as system apps are filtered out`() = scope.runTest {
+        coEvery { iconManager.downloadIcons(repoId, snapshot) } returns emptySet()
         appSelectionManager.selectedAppsFlow.test {
             val initialState = awaitItem()
             assertEquals(emptyList<SelectableAppItem>(), initialState.apps)
@@ -95,11 +95,15 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
             assertTrue(initialApps.allSelected)
             assertFalse(initialApps.iconsLoaded)
+
+            // now icons have loaded and apps were updated
+            awaitItem()
         }
     }
 
     @Test
-    fun `apps get sorted by name, special items on top`() = runTest {
+    fun `apps get sorted by name, special items on top`() = scope.runTest {
+        coEvery { iconManager.downloadIcons(repoId, snapshot) } returns emptySet()
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
 
@@ -128,11 +132,17 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[1].packageName)
             assertEquals(packageName2, initialApps.apps[2].packageName)
             assertEquals(packageName1, initialApps.apps[3].packageName)
+
+            // now icons have loaded and apps were updated
+            awaitItem()
         }
     }
 
     @Test
-    fun `test app selection`() = runTest {
+    fun `test app selection`() = scope.runTest {
+        coEvery {
+            iconManager.downloadIcons(repoId, snapshot)
+        } returns setOf(packageName1, packageName2)
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
 
@@ -149,6 +159,9 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(3, initialApps.apps.size)
             initialApps.apps.forEach { assertTrue(it.selected) }
             assertTrue(initialApps.allSelected)
+
+            // now icons have loaded and apps were updated
+            awaitItem()
 
             // deselect last app in list
             appSelectionManager.onAppSelected(initialApps.apps[2])
@@ -184,7 +197,9 @@ internal class AppSelectionManagerTest : TransportTest() {
 
     @Test
     fun `test icon loading`() = scope.runTest {
-        expectIconLoading(setOf(packageName1)) // only icons found for packageName1
+        coEvery {
+            iconManager.downloadIcons(repoId, snapshot)
+        } returns setOf(packageName1) // only icons found for packageName1
 
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
@@ -224,7 +239,7 @@ internal class AppSelectionManagerTest : TransportTest() {
         val backend: Backend = mockk()
         every { backendManager.backend } returns backend
         coEvery {
-            backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
+            iconManager.downloadIcons(repoId, snapshot)
         } throws IOException()
 
         appSelectionManager.selectedAppsFlow.test {
@@ -252,7 +267,7 @@ internal class AppSelectionManagerTest : TransportTest() {
     }
 
     @Test
-    fun `finishing selection filters unselected apps, leaves system apps`() = runTest {
+    fun `finishing selection filters unselected apps, leaves system apps`() = scope.runTest {
         testFiltering { backup ->
             val itemsWithIcons = awaitItem()
 
@@ -287,48 +302,50 @@ internal class AppSelectionManagerTest : TransportTest() {
     }
 
     @Test
-    fun `finishing selection without system apps only removes non-special system apps`() = runTest {
-        testFiltering { backup ->
-            val itemsWithIcons = awaitItem()
+    fun `finishing selection without system apps only removes non-special system apps`() =
+        scope.runTest {
+            testFiltering { backup ->
+                val itemsWithIcons = awaitItem()
 
-            // unselect all system apps and settings, contacts should stay
-            val systemMeta = itemsWithIcons.apps.find { it.packageName == PACKAGE_NAME_SYSTEM }
-                ?: fail()
-            val settings = itemsWithIcons.apps.find { it.packageName == PACKAGE_NAME_SETTINGS }
-                ?: fail()
-            appSelectionManager.onAppSelected(systemMeta)
-            awaitItem()
-            appSelectionManager.onAppSelected(settings)
+                // unselect all system apps and settings, contacts should stay
+                val systemMeta = itemsWithIcons.apps.find { it.packageName == PACKAGE_NAME_SYSTEM }
+                    ?: fail()
+                val settings = itemsWithIcons.apps.find { it.packageName == PACKAGE_NAME_SETTINGS }
+                    ?: fail()
+                appSelectionManager.onAppSelected(systemMeta)
+                awaitItem()
+                appSelectionManager.onAppSelected(settings)
 
-            // assert that both apps are unselected
-            val finalSelection = awaitItem()
-            // we have 6 real apps (two are hidden) plus system meta item, makes 5
-            assertEquals(5, finalSelection.apps.size)
-            finalSelection.apps.forEach {
-                if (it.packageName in listOf(PACKAGE_NAME_SYSTEM, PACKAGE_NAME_SETTINGS)) {
-                    assertFalse(it.selected)
-                } else {
-                    assertTrue(it.selected)
+                // assert that both apps are unselected
+                val finalSelection = awaitItem()
+                // we have 6 real apps (two are hidden) plus system meta item, makes 5
+                assertEquals(5, finalSelection.apps.size)
+                finalSelection.apps.forEach {
+                    if (it.packageName in listOf(PACKAGE_NAME_SYSTEM, PACKAGE_NAME_SETTINGS)) {
+                        assertFalse(it.selected)
+                    } else {
+                        assertTrue(it.selected)
+                    }
                 }
-            }
 
-            // 4 apps should survive: app1, app2, app4 (hidden) and contacts
-            val filteredBackup = appSelectionManager.onAppSelectionFinished(backup)
-            assertEquals(4, filteredBackup.packageMetadataMap.size)
-            assertEquals(
-                setOf(packageName1, packageName2, packageName4, PACKAGE_NAME_CONTACTS),
-                filteredBackup.packageMetadataMap.keys,
-            )
+                // 4 apps should survive: app1, app2, app4 (hidden) and contacts
+                val filteredBackup = appSelectionManager.onAppSelectionFinished(backup)
+                assertEquals(4, filteredBackup.packageMetadataMap.size)
+                assertEquals(
+                    setOf(packageName1, packageName2, packageName4, PACKAGE_NAME_CONTACTS),
+                    filteredBackup.packageMetadataMap.keys,
+                )
+            }
         }
-    }
 
     @Test
-    fun `system apps only pre-selected in setup wizard`() = runTest {
+    fun `system apps only pre-selected in setup wizard`() = scope.runTest {
         val backup = getRestorableBackup(
             mutableMapOf(
                 packageName1 to PackageMetadata(system = true, isLaunchableSystemApp = false),
             )
         )
+        coEvery { iconManager.downloadIcons(repoId, snapshot) } returns (emptySet())
         // choose restore set in setup wizard
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
@@ -338,6 +355,9 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(1, initialApps.apps.size)
             assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
             assertTrue(initialApps.apps[0].selected) // system settings is selected
+
+            // now icons have loaded and apps were updated
+            awaitItem()
         }
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
@@ -347,11 +367,15 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(1, initialApps.apps.size)
             assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
             assertFalse(initialApps.apps[0].selected) // system settings is NOT selected
+
+            // now icons have loaded and apps were updated
+            awaitItem()
         }
     }
 
     @Test
-    fun `@pm@ doesn't get filtered out`() = runTest {
+    fun `@pm@ doesn't get filtered out`() = scope.runTest {
+        coEvery { iconManager.downloadIcons(repoId, snapshot) } returns emptySet()
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
 
@@ -370,6 +394,9 @@ internal class AppSelectionManagerTest : TransportTest() {
             assertEquals(1, initialApps.apps.size)
             assertEquals(PACKAGE_NAME_SYSTEM, initialApps.apps[0].packageName)
 
+            // now icons have loaded and apps were updated
+            awaitItem()
+
             // actual filtered backup includes @pm@ only
             val filteredBackup = appSelectionManager.onAppSelectionFinished(backup)
             assertEquals(1, filteredBackup.packageMetadataMap.size)
@@ -380,14 +407,18 @@ internal class AppSelectionManagerTest : TransportTest() {
         }
     }
 
-    private fun getRestorableBackup(map: Map<String, PackageMetadata>): RestorableBackup {
-        return RestorableBackup(backupMetadata.copy(packageMetadataMap = map as PackageMetadataMap))
-    }
+    private fun getRestorableBackup(map: Map<String, PackageMetadata>) = RestorableBackup(
+        backupMetadata = backupMetadata.copy(packageMetadataMap = map as PackageMetadataMap),
+        repoId = repoId,
+        snapshot = snapshot,
+    )
 
     private suspend fun testFiltering(
         block: suspend TurbineTestContext<SelectedAppsState>.(RestorableBackup) -> Unit,
     ) {
-        expectIconLoading()
+        coEvery {
+            iconManager.downloadIcons(repoId, snapshot)
+        } returns setOf(packageName1, packageName2)
         appSelectionManager.selectedAppsFlow.test {
             awaitItem()
 
@@ -425,17 +456,4 @@ internal class AppSelectionManagerTest : TransportTest() {
             block(backup)
         }
     }
-
-    private fun expectIconLoading(icons: Set<String> = setOf(packageName1, packageName2)) {
-        val backend: Backend = mockk()
-        val inputStream = ByteArrayInputStream(Random.nextBytes(42))
-        every { backendManager.backend } returns backend
-        coEvery {
-            backend.load(LegacyAppBackupFile.IconsFile(backupMetadata.token))
-        } returns inputStream
-        every {
-            iconManager.downloadIcons(backupMetadata.version, backupMetadata.token, inputStream)
-        } returns icons
-    }
-
 }

@@ -39,8 +39,8 @@ class RestoreService : Service() {
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
-        super.onDestroy()
         nm.cancelRestoreNotification()
+        super.onDestroy()
     }
 
 }

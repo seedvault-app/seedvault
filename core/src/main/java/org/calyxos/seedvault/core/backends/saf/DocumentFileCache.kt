@@ -7,6 +7,7 @@ package org.calyxos.seedvault.core.backends.saf
 
 import android.content.Context
 import androidx.documentfile.provider.DocumentFile
+import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
@@ -32,9 +33,16 @@ internal class DocumentFileCache(
             getRootFile().getOrCreateDirectory(context, fh.name)
         }
 
-        is LegacyAppBackupFile -> cache.getOrPut("$root/${fh.relativePath}") {
-                getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
-            }
+        is AppBackupFileType.Blob -> {
+            val subFolderName = fh.name.substring(0, 2)
+            cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
+                getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
+            }.getOrCreateFile(context, fh.name)
+        }
+
+        is AppBackupFileType.Snapshot -> {
+            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+        }
 
         is FileBackupFileType.Blob -> {
             val subFolderName = fh.name.substring(0, 2)
@@ -46,6 +54,10 @@ internal class DocumentFileCache(
         is FileBackupFileType.Snapshot -> {
             getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
         }
+
+        is LegacyAppBackupFile -> cache.getOrPut("$root/${fh.relativePath}") {
+            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+        }
     }
 
     internal suspend fun getFile(fh: FileHandle): DocumentFile? = when (fh) {
@@ -53,7 +65,14 @@ internal class DocumentFileCache(
             getRootFile().findFileBlocking(context, fh.name)
         }
 
-        is LegacyAppBackupFile -> cache.getOrElse("$root/${fh.relativePath}") {
+        is AppBackupFileType.Blob -> {
+            val subFolderName = fh.name.substring(0, 2)
+            cache.getOrElse("$root/${fh.topLevelFolder.name}/$subFolderName") {
+                getFile(fh.topLevelFolder)?.findFileBlocking(context, subFolderName)
+            }?.findFileBlocking(context, fh.name)
+        }
+
+        is AppBackupFileType.Snapshot -> {
             getFile(fh.topLevelFolder)?.findFileBlocking(context, fh.name)
         }
 
@@ -65,6 +84,10 @@ internal class DocumentFileCache(
         }
 
         is FileBackupFileType.Snapshot -> {
+            getFile(fh.topLevelFolder)?.findFileBlocking(context, fh.name)
+        }
+
+        is LegacyAppBackupFile -> cache.getOrElse("$root/${fh.relativePath}") {
             getFile(fh.topLevelFolder)?.findFileBlocking(context, fh.name)
         }
     }

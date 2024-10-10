@@ -31,6 +31,7 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.ACTION_RESTORE_ERROR_UNINSTALL
 import com.stevesoltys.seedvault.restore.EXTRA_PACKAGE_NAME
 import com.stevesoltys.seedvault.restore.REQUEST_CODE_UNINSTALL
+import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.settings.ACTION_APP_STATUS_LIST
 import com.stevesoltys.seedvault.settings.SettingsActivity
 import kotlin.math.min
@@ -40,13 +41,14 @@ private const val CHANNEL_ID_SUCCESS = "NotificationBackupSuccess"
 private const val CHANNEL_ID_ERROR = "NotificationError"
 private const val CHANNEL_ID_RESTORE = "NotificationRestore"
 private const val CHANNEL_ID_RESTORE_ERROR = "NotificationRestoreError"
+private const val CHANNEL_ID_PRUNING = "NotificationPruning"
 internal const val NOTIFICATION_ID_OBSERVER = 1
 private const val NOTIFICATION_ID_SUCCESS = 2
 private const val NOTIFICATION_ID_ERROR = 3
 private const val NOTIFICATION_ID_SPACE_ERROR = 4
 internal const val NOTIFICATION_ID_RESTORE = 5
 private const val NOTIFICATION_ID_RESTORE_ERROR = 6
-private const val NOTIFICATION_ID_BACKGROUND = 7
+internal const val NOTIFICATION_ID_PRUNING = 7
 private const val NOTIFICATION_ID_NO_MAIN_KEY_ERROR = 8
 
 private val TAG = BackupNotificationManager::class.java.simpleName
@@ -59,6 +61,7 @@ internal class BackupNotificationManager(private val context: Context) {
         createNotificationChannel(getErrorChannel())
         createNotificationChannel(getRestoreChannel())
         createNotificationChannel(getRestoreErrorChannel())
+        createNotificationChannel(getPruningChannel())
     }
 
     private fun getObserverChannel(): NotificationChannel {
@@ -88,6 +91,11 @@ internal class BackupNotificationManager(private val context: Context) {
     private fun getRestoreErrorChannel(): NotificationChannel {
         val title = context.getString(R.string.notification_restore_error_channel_title)
         return NotificationChannel(CHANNEL_ID_RESTORE_ERROR, title, IMPORTANCE_HIGH)
+    }
+
+    private fun getPruningChannel(): NotificationChannel {
+        val title = context.getString(R.string.notification_pruning_channel_title)
+        return NotificationChannel(CHANNEL_ID_PRUNING, title, IMPORTANCE_LOW)
     }
 
     /**
@@ -158,7 +166,6 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     fun onServiceDestroyed() {
-        nm.cancel(NOTIFICATION_ID_BACKGROUND)
         // Cancel left-over notifications that are still ongoing.
         //
         // We have seen a race condition where the service was taken down at the same time
@@ -179,21 +186,17 @@ internal class BackupNotificationManager(private val context: Context) {
         // }
     }
 
-    fun onBackupFinished(success: Boolean, numBackedUp: Int?, total: Int, size: Long) {
-        val titleRes =
-            if (success) R.string.notification_success_title else R.string.notification_failed_title
-        val contentText = if (numBackedUp == null) null else {
-            val sizeStr = Formatter.formatShortFileSize(context, size)
+    fun onBackupSuccess(numBackedUp: Int, total: Int, size: Long) {
+        val sizeStr = Formatter.formatShortFileSize(context, size)
+        val contentText =
             context.getString(R.string.notification_success_text, numBackedUp, total, sizeStr)
-        }
-        val iconRes = if (success) R.drawable.ic_cloud_done else R.drawable.ic_cloud_error
         val intent = Intent(context, SettingsActivity::class.java).apply {
-            if (success) action = ACTION_APP_STATUS_LIST
+            action = ACTION_APP_STATUS_LIST
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
         val notification = Builder(context, CHANNEL_ID_SUCCESS).apply {
-            setSmallIcon(iconRes)
-            setContentTitle(context.getString(titleRes))
+            setSmallIcon(R.drawable.ic_cloud_done)
+            setContentTitle(context.getString(R.string.notification_success_title))
             setContentText(contentText)
             setOngoing(false)
             setShowWhen(true)
@@ -207,8 +210,27 @@ internal class BackupNotificationManager(private val context: Context) {
         nm.notify(NOTIFICATION_ID_SUCCESS, notification)
     }
 
-    @SuppressLint("RestrictedApi")
     fun onBackupError() {
+        val intent = Intent(context, SettingsActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
+        val notification = Builder(context, CHANNEL_ID_ERROR).apply {
+            setSmallIcon(R.drawable.ic_cloud_error)
+            setContentTitle(context.getString(R.string.notification_failed_title))
+            setContentText(context.getString(R.string.notification_failed_text))
+            setOngoing(false)
+            setShowWhen(true)
+            setAutoCancel(true)
+            setContentIntent(pendingIntent)
+            setWhen(System.currentTimeMillis())
+            setProgress(0, 0, false)
+            priority = PRIORITY_LOW
+        }.build()
+        nm.cancel(NOTIFICATION_ID_OBSERVER)
+        nm.notify(NOTIFICATION_ID_ERROR, notification)
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun onFixableBackupError() {
         val intent = Intent(context, SettingsActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
         val actionText = context.getString(R.string.notification_error_action)
@@ -244,6 +266,9 @@ internal class BackupNotificationManager(private val context: Context) {
     }
 
     fun getRestoreNotification() = Notification.Builder(context, CHANNEL_ID_RESTORE).apply {
+        val intent = Intent(context, RestoreActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE)
+        setContentIntent(pendingIntent)
         setSmallIcon(R.drawable.ic_cloud_restore)
         setContentTitle(context.getString(R.string.notification_restore_title))
         setOngoing(true)
@@ -286,6 +311,17 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun onRestoreErrorSeen() {
         nm.cancel(NOTIFICATION_ID_RESTORE_ERROR)
+    }
+
+    fun getPruningNotification(): Notification {
+        return Builder(context, CHANNEL_ID_OBSERVER).apply {
+            setSmallIcon(R.drawable.ic_auto_delete)
+            setContentTitle(context.getString(R.string.notification_pruning_title))
+            setOngoing(true)
+            setShowWhen(false)
+            priority = PRIORITY_LOW
+            foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
+        }.build()
     }
 
     @SuppressLint("RestrictedApi")

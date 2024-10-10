@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import com.google.protobuf.gradle.id
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.protobuf)
 }
 
 val gitDescribe = {
@@ -37,9 +39,6 @@ android {
 
             testInstrumentationRunnerArguments["size"] = testSize
         }
-
-        val d2dBackupTest = project.findProperty("d2d_backup_test")?.toString() ?: "true"
-        testInstrumentationRunnerArguments["d2d_backup_test"] = d2dBackupTest
     }
 
     signingConfigs {
@@ -93,6 +92,30 @@ android {
         }
     }
 
+    protobuf {
+        protoc {
+            artifact = if ("aarch64" == System.getProperty("os.arch")) {
+                // mac m1
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}:osx-x86_64"
+            } else {
+                // other
+                "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+            }
+        }
+        generateProtoTasks {
+            all().forEach { task ->
+                task.plugins {
+                    id("java") {
+                        option("lite")
+                    }
+                    id("kotlin") {
+                        option("lite")
+                    }
+                }
+            }
+        }
+    }
+
     lint {
         abortOnError = true
 
@@ -132,7 +155,10 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.google.material)
 
+    implementation(libs.google.protobuf.javalite)
     implementation(libs.google.tink.android)
+    implementation(libs.kotlin.logging)
+    implementation(libs.squareup.okio)
 
     /**
      * Storage Dependencies
@@ -151,9 +177,13 @@ dependencies {
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
-    implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.6.jar"))
-
-    implementation(fileTree("${rootProject.rootDir}/libs/dav4jvm").include("*.jar"))
+    implementation(
+        fileTree("${rootProject.rootDir}/libs").include("protobuf-kotlin-lite-3.21.12.jar")
+    )
+    implementation(fileTree("${rootProject.rootDir}/libs").include("seedvault-chunker-0.1.jar"))
+    implementation(fileTree("${rootProject.rootDir}/libs").include("zstd-jni-1.5.6-5.aar"))
+    implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-1.0.8.jar"))
+    implementation(fileTree("${rootProject.rootDir}/libs").include("logback-android-3.0.0.aar"))
 
     /**
      * Test Dependencies (do not concern the AOSP build)
@@ -163,6 +193,7 @@ dependencies {
     // anything less than 'implementation' fails tests run with gradlew
     testImplementation(aospLibs)
     testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("org.slf4j:slf4j-simple:2.0.3")
     testImplementation("org.robolectric:robolectric:4.12.2")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junit5.get()}")
@@ -173,6 +204,7 @@ dependencies {
     )
     testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation("org.bitcoinj:bitcoinj-core:0.16.2")
+    testImplementation("com.github.luben:zstd-jni:1.5.6-5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${libs.versions.junit5.get()}")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:${libs.versions.junit5.get()}")
 

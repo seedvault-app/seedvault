@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.restore
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.restore.DisplayFragment.RECYCLE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
@@ -35,6 +36,7 @@ class RestoreActivity : RequireProvisioningActivity() {
                 SELECT_APPS -> showFragment(AppSelectionFragment())
                 RESTORE_APPS -> showFragment(InstallProgressFragment())
                 RESTORE_BACKUP -> showFragment(RestoreProgressFragment())
+                RECYCLE_BACKUP -> showFragment(RecycleBackupFragment())
                 RESTORE_FILES -> showFragment(RestoreFilesFragment())
                 RESTORE_SELECT_FILES -> showFragment(FilesSelectionFragment(), true)
                 RESTORE_FILES_STARTED -> {

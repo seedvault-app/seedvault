@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.metadata
 
+import android.content.Context
 import com.stevesoltys.seedvault.crypto.CipherFactoryImpl
 import com.stevesoltys.seedvault.crypto.CryptoImpl
 import com.stevesoltys.seedvault.crypto.KEY_SIZE_BYTES
@@ -13,6 +14,7 @@ import com.stevesoltys.seedvault.header.HeaderReaderImpl
 import com.stevesoltys.seedvault.metadata.PackageState.APK_AND_DATA
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
 import com.stevesoltys.seedvault.toByteArrayFromHex
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -29,10 +31,12 @@ internal class MetadataV0ReadTest {
     private val secretKey = SecretKeySpec(
         "This is a legacy backup key 1234".toByteArray(), 0, KEY_SIZE_BYTES, "AES"
     )
+    private val context = mockk<Context>()
     private val keyManager = KeyManagerTestImpl(secretKey)
     private val cipherFactory = CipherFactoryImpl(keyManager)
     private val headerReader = HeaderReaderImpl()
-    private val cryptoImpl = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val cryptoImpl =
+        CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
 
     private val reader = MetadataReaderImpl(cryptoImpl)
 

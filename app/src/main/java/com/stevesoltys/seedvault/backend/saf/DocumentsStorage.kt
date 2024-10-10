@@ -29,7 +29,6 @@ import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.calyxos.seedvault.core.backends.saf.getTreeDocumentFile
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import kotlin.coroutines.resume
 
 @Deprecated("")
@@ -51,7 +50,7 @@ internal class DocumentsStorage(
     private val context: Context get() = appContext.getStorageContext { safStorage.isUsb }
     private val contentResolver: ContentResolver get() = context.contentResolver
 
-    internal var rootBackupDir: DocumentFile? = null
+    private var rootBackupDir: DocumentFile? = null
         get() = runBlocking {
             if (field == null) {
                 val parent = safStorage.getDocumentFile(context)
@@ -88,16 +87,6 @@ internal class DocumentsStorage(
     fun getInputStream(file: DocumentFile): InputStream {
         return try {
             contentResolver.openInputStream(file.uri) ?: throw IOException()
-        } catch (e: Exception) {
-            // SAF can throw all sorts of exceptions, so wrap it in IOException
-            throw IOException(e)
-        }
-    }
-
-    @Throws(IOException::class)
-    fun getOutputStream(file: DocumentFile): OutputStream {
-        return try {
-            contentResolver.openOutputStream(file.uri, "wt") ?: throw IOException()
         } catch (e: Exception) {
             // SAF can throw all sorts of exceptions, so wrap it in IOException
             throw IOException(e)
@@ -192,7 +181,7 @@ suspend fun DocumentFile.findFileBlocking(context: Context, displayName: String)
 @Throws(IOException::class, TimeoutCancellationException::class)
 internal suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?) =
     withTimeout(timeout) {
-        suspendCancellableCoroutine<Cursor> { cont ->
+        suspendCancellableCoroutine { cont ->
             val cursor = query() ?: throw IOException()
             cont.invokeOnCancellation { cursor.close() }
             val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)

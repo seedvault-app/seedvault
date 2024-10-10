@@ -24,8 +24,6 @@ import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_RESTORE
 import com.stevesoltys.seedvault.ui.INTENT_EXTRA_IS_SETUP_WIZARD
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-private val TAG = StorageActivity::class.java.name
-
 class StorageActivity : BackupActivity() {
 
     private lateinit var viewModel: StorageViewModel

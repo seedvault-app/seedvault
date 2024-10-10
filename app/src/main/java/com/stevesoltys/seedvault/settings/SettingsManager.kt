@@ -10,10 +10,11 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.hardware.usb.UsbDevice
 import android.net.Uri
 import androidx.annotation.UiThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.permitDiskReads
-import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.saf.SafBackend
 import org.calyxos.seedvault.core.backends.saf.SafProperties
@@ -54,25 +55,19 @@ private const val PREF_KEY_WEBDAV_PASS = "webDavPass"
 private const val PREF_KEY_BACKUP_APP_BLACKLIST = "backupAppBlacklist"
 
 private const val PREF_KEY_BACKUP_STORAGE = "backup_storage"
-internal const val PREF_KEY_UNLIMITED_QUOTA = "unlimited_quota"
-internal const val PREF_KEY_D2D_BACKUPS = "d2d_backups"
+internal const val PREF_KEY_LAST_BACKUP = "lastBackup"
 
 class SettingsManager(private val context: Context) {
 
     private val prefs = permitDiskReads {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
+    private val mLastBackupTime = MutableLiveData(prefs.getLong(PREF_KEY_LAST_BACKUP, -1))
 
-    @Volatile
-    private var token: Long? = null
-
-    fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-    }
-
-    fun unregisterOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
-        prefs.unregisterOnSharedPreferenceChangeListener(listener)
-    }
+    /**
+     * Returns a LiveData of the last backup time in unix epoch milli seconds.
+     */
+    internal val lastBackupTime: LiveData<Long> = mLastBackupTime
 
     /**
      * This gets accessed by non-UI threads when saving with [PreferenceManager]
@@ -83,29 +78,26 @@ class SettingsManager(private val context: Context) {
         ConcurrentSkipListSet(prefs.getStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, emptySet()))
     }
 
-    fun getToken(): Long? = token ?: run {
-        val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
-        if (value == 0L) null else value
-    }
-
-    /**
-     * Sets a new RestoreSet token.
-     * Should only be called by the [BackupCoordinator]
-     * to ensure that related work is performed after moving to a new token.
-     */
-    fun setNewToken(newToken: Long?) {
-        if (newToken == null) {
-            prefs.edit()
-                .remove(PREF_KEY_TOKEN)
-                .apply()
-        } else {
-            prefs.edit()
-                .putLong(PREF_KEY_TOKEN, newToken)
-                .apply()
+    @Volatile
+    var token: Long? = null
+        private set(newToken) {
+            if (newToken == null) {
+                prefs.edit()
+                    .remove(PREF_KEY_TOKEN)
+                    .apply()
+            } else {
+                prefs.edit()
+                    .putLong(PREF_KEY_TOKEN, newToken)
+                    .apply()
+            }
+            field = newToken
         }
-
-        token = newToken
-    }
+        // we may be able to get this from latest snapshot,
+        // but that is not always readily available
+        get() = field ?: run {
+            val value = prefs.getLong(PREF_KEY_TOKEN, 0L)
+            if (value == 0L) null else value
+        }
 
     internal val storagePluginType: StoragePluginType?
         get() {
@@ -127,6 +119,21 @@ class SettingsManager(private val context: Context) {
                 }
             }
         }
+
+    fun registerOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(listener: OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun onSuccessfulBackupCompleted(token: Long) {
+        this.token = token
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(PREF_KEY_LAST_BACKUP, now).apply()
+        mLastBackupTime.postValue(now)
+    }
 
     fun setStorageBackend(plugin: Backend) {
         val value = when (plugin) {
@@ -238,15 +245,7 @@ class SettingsManager(private val context: Context) {
         prefs.edit().putStringSet(PREF_KEY_BACKUP_APP_BLACKLIST, blacklistedApps).apply()
     }
 
-    fun isQuotaUnlimited() = prefs.getBoolean(PREF_KEY_UNLIMITED_QUOTA, false)
-
-    fun d2dBackupsEnabled() = prefs.getBoolean(PREF_KEY_D2D_BACKUPS, false)
-
-    fun setD2dBackupsEnabled(enabled: Boolean) {
-        prefs.edit()
-            .putBoolean(PREF_KEY_D2D_BACKUPS, enabled)
-            .apply()
-    }
+    val quota: Long = 1024 * 1024 * 1024 // 1 GiB for now
 
     /**
      * This assumes that if there's no storage plugin set, it is the first start.

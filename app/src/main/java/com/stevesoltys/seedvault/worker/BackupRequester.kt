@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat.startForegroundService
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.storage.StorageBackupService.Companion.EXTRA_START_APP_BACKUP
-import com.stevesoltys.seedvault.BackupMonitor
+import com.stevesoltys.seedvault.transport.backup.BackupTransportMonitor
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.notification.NotificationBackupObserver
@@ -38,6 +38,7 @@ internal const val NUM_PACKAGES_PER_TRANSACTION = 100
 internal class BackupRequester(
     context: Context,
     private val backupManager: IBackupManager,
+    private val monitor: BackupTransportMonitor,
     val packageService: PackageService,
 ) : KoinComponent {
 
@@ -72,7 +73,6 @@ internal class BackupRequester(
         backupRequester = this,
         requestedPackages = packages.size,
     )
-    private val monitor = BackupMonitor()
 
     /**
      * The current package index.
@@ -115,7 +115,7 @@ internal class BackupRequester(
         } catch (e: RemoteException) {
             Log.e(TAG, "Error during backup: ", e)
             val nm: BackupNotificationManager = GlobalContext.get().get()
-            nm.onBackupError()
+            nm.onFixableBackupError()
         }
         return if (result == BackupManager.SUCCESS) {
             Log.i(TAG, "Backup request succeeded")

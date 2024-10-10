@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.crypto
 
+import android.content.Context
 import com.stevesoltys.seedvault.assertContains
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.getRandomString
@@ -36,11 +37,12 @@ import kotlin.random.Random
 @TestInstance(PER_METHOD)
 class CryptoTest {
 
+    private val context = mockk<Context>()
     private val keyManager = mockk<KeyManager>()
     private val cipherFactory = mockk<CipherFactory>()
     private val headerReader = mockk<HeaderReader>()
 
-    private val crypto = CryptoImpl(keyManager, cipherFactory, headerReader)
+    private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
 
     private val cipher = mockk<Cipher>()
 

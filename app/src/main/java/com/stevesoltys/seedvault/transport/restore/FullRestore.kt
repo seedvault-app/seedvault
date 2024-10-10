@@ -12,14 +12,16 @@ import android.app.backup.BackupTransport.TRANSPORT_PACKAGE_REJECTED
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.UnsupportedVersionException
 import com.stevesoltys.seedvault.header.getADForFull
-import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import com.stevesoltys.seedvault.repo.Loader
 import libcore.io.IoUtils.closeQuietly
+import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.EOFException
 import java.io.IOException
@@ -29,9 +31,10 @@ import java.security.GeneralSecurityException
 
 private class FullRestoreState(
     val version: Byte,
-    val token: Long,
-    val name: String,
     val packageInfo: PackageInfo,
+    val blobHandles: List<Blob>? = null,
+    val token: Long? = null,
+    val name: String? = null,
 ) {
     var inputStream: InputStream? = null
 }
@@ -40,6 +43,7 @@ private val TAG = FullRestore::class.java.simpleName
 
 internal class FullRestore(
     private val backendManager: BackendManager,
+    private val loader: Loader,
     @Suppress("Deprecation")
     private val legacyPlugin: LegacyStoragePlugin,
     private val outputFactory: OutputFactory,
@@ -50,7 +54,7 @@ internal class FullRestore(
     private val backend get() = backendManager.backend
     private var state: FullRestoreState? = null
 
-    fun hasState() = state != null
+    val hasState get() = state != null
 
     /**
      * Return true if there is data stored for the given package.
@@ -69,8 +73,16 @@ internal class FullRestore(
      * It is possible that the system decides to not restore the package.
      * Then a new state will be initialized right away without calling other methods.
      */
-    fun initializeState(version: Byte, token: Long, name: String, packageInfo: PackageInfo) {
-        state = FullRestoreState(version, token, name, packageInfo)
+    fun initializeState(version: Byte, packageInfo: PackageInfo, blobHandles: List<Blob>) {
+        state = FullRestoreState(version, packageInfo, blobHandles)
+    }
+
+    fun initializeStateV1(token: Long, name: String, packageInfo: PackageInfo) {
+        state = FullRestoreState(1, packageInfo, null, token, name)
+    }
+
+    fun initializeStateV0(token: Long, packageInfo: PackageInfo) {
+        state = FullRestoreState(0x00, packageInfo, null, token)
     }
 
     /**
@@ -107,19 +119,29 @@ internal class FullRestore(
         if (state.inputStream == null) {
             Log.i(TAG, "First Chunk, initializing package input stream.")
             try {
-                if (state.version == 0.toByte()) {
-                    val inputStream =
-                        legacyPlugin.getInputStreamForPackage(state.token, state.packageInfo)
-                    val version = headerReader.readVersion(inputStream, state.version)
-                    @Suppress("deprecation")
-                    crypto.decryptHeader(inputStream, version, packageName)
-                    state.inputStream = inputStream
-                } else {
-                    val handle = LegacyAppBackupFile.Blob(state.token, state.name)
-                    val inputStream = backend.load(handle)
-                    val version = headerReader.readVersion(inputStream, state.version)
-                    val ad = getADForFull(version, packageName)
-                    state.inputStream = crypto.newDecryptingStream(inputStream, ad)
+                when (state.version) {
+                    0.toByte() -> {
+                        val token = state.token ?: error("no token for v0 backup")
+                        val inputStream =
+                            legacyPlugin.getInputStreamForPackage(token, state.packageInfo)
+                        val version = headerReader.readVersion(inputStream, state.version)
+                        @Suppress("deprecation")
+                        crypto.decryptHeader(inputStream, version, packageName)
+                        state.inputStream = inputStream
+                    }
+                    1.toByte() -> {
+                        val token = state.token ?: error("no token for v1 backup")
+                        val name = state.name ?: error("no name for v1 backup")
+                        val handle = LegacyAppBackupFile.Blob(token, name)
+                        val inputStream = backend.load(handle)
+                        val version = headerReader.readVersion(inputStream, state.version)
+                        val ad = getADForFull(version, packageName)
+                        state.inputStream = crypto.newDecryptingStreamV1(inputStream, ad)
+                    }
+                    else -> {
+                        val handles = state.blobHandles ?: error("no blob handles for v2")
+                        state.inputStream = loader.loadFiles(handles)
+                    }
                 }
             } catch (e: IOException) {
                 Log.w(TAG, "Error getting input stream for $packageName", e)

@@ -5,12 +5,10 @@
 
 package com.stevesoltys.seedvault.transport.backup
 
-import android.app.backup.IBackupManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_LAUNCHER
-import android.content.pm.ApplicationInfo.FLAG_ALLOW_BACKUP
 import android.content.pm.ApplicationInfo.FLAG_STOPPED
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.content.pm.ApplicationInfo.FLAG_TEST_ONLY
@@ -22,7 +20,6 @@ import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.content.pm.PackageManager.MATCH_SYSTEM_ONLY
 import android.content.pm.ResolveInfo
 import android.os.RemoteException
-import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
@@ -41,13 +38,11 @@ private const val LOG_MAX_PACKAGES = 100
  */
 internal class PackageService(
     private val context: Context,
-    private val backupManager: IBackupManager,
     private val settingsManager: SettingsManager,
     private val backendManager: BackendManager,
 ) {
 
     private val packageManager: PackageManager = context.packageManager
-    private val myUserId = UserHandle.myUserId()
     private val backend: Backend get() = backendManager.backend
 
     val eligiblePackages: List<String>
@@ -64,25 +59,17 @@ internal class PackageService(
                 logPackages(packages)
             }
 
-            val eligibleApps = if (settingsManager.d2dBackupsEnabled()) {
-                // if D2D is enabled, use the "new method" for filtering packages
-                packages.filter(::shouldIncludeAppInBackup).toTypedArray()
-            } else {
-                // otherwise, use the BackupManager call.
-                backupManager.filterAppsEligibleForBackupForUser(myUserId, packages.toTypedArray())
-            }
-
+            val eligibleApps = packages.filter(::shouldIncludeAppInBackup).toMutableList()
             // log eligible packages
             if (Log.isLoggable(TAG, INFO)) {
                 Log.i(TAG, "Filtering left ${eligibleApps.size} eligible packages:")
-                logPackages(eligibleApps.toList())
+                logPackages(eligibleApps)
             }
 
             // add magic @pm@ package (PACKAGE_MANAGER_SENTINEL) which holds package manager data
-            val packageArray = eligibleApps.toMutableList()
-            packageArray.add(MAGIC_PACKAGE_MANAGER)
+            eligibleApps.add(0, MAGIC_PACKAGE_MANAGER)
 
-            return packageArray
+            return eligibleApps
         }
 
     /**
@@ -137,21 +124,6 @@ internal class PackageService(
                 packageInfo.allowsBackup()
         }
 
-    /**
-     * A list of apps that do not allow backup.
-     */
-    val userNotAllowedApps: List<PackageInfo>
-        @WorkerThread
-        get() {
-            // if D2D backups are enabled, all apps are allowed
-            if (settingsManager.d2dBackupsEnabled()) return emptyList()
-
-            return packageManager.getInstalledPackages(0).filter { packageInfo ->
-                !packageInfo.allowsBackup() &&
-                    !packageInfo.isSystemApp()
-            }
-        }
-
     val launchableSystemApps: List<ResolveInfo>
         @WorkerThread
         get() {
@@ -196,26 +168,20 @@ internal class PackageService(
     }
 
     private fun PackageInfo.allowsBackup(): Boolean {
+        /**
+         * TODO: Consider ways of replicating the system's logic so that the user can have
+         * advance knowledge of apps that the system will exclude, particularly apps targeting
+         * SDK 30 or below.
+         *
+         * At backup time, the system will filter out any apps that *it* does not want to be
+         * backed up. If the user has enabled D2D, *we* generally want to back up as much as
+         * possible; part of the point of D2D is to ignore FLAG_ALLOW_BACKUP (allowsBackup).
+         * So, we return true.
+         * See frameworks/base/services/backup/java/com/android/server/backup/utils/
+         * BackupEligibilityRules.java lines 74-81 and 163-167 (tag: android-13.0.0_r8).
+         */
         val appInfo = applicationInfo
-        if (packageName == MAGIC_PACKAGE_MANAGER || appInfo == null) return false
-
-        return if (settingsManager.d2dBackupsEnabled()) {
-            /**
-             * TODO: Consider ways of replicating the system's logic so that the user can have
-             * advance knowledge of apps that the system will exclude, particularly apps targeting
-             * SDK 30 or below.
-             *
-             * At backup time, the system will filter out any apps that *it* does not want to be
-             * backed up. If the user has enabled D2D, *we* generally want to back up as much as
-             * possible; part of the point of D2D is to ignore FLAG_ALLOW_BACKUP (allowsBackup).
-             * So, we return true.
-             * See frameworks/base/services/backup/java/com/android/server/backup/utils/
-             * BackupEligibilityRules.java lines 74-81 and 163-167 (tag: android-13.0.0_r8).
-             */
-            true
-        } else {
-            appInfo.flags and FLAG_ALLOW_BACKUP != 0
-        }
+        return !(packageName == MAGIC_PACKAGE_MANAGER || appInfo == null)
     }
 
     /**

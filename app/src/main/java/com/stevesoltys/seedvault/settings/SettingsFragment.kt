@@ -47,7 +47,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var backup: TwoStatePreference
     private lateinit var autoRestore: TwoStatePreference
-    private lateinit var apkBackup: TwoStatePreference
     private lateinit var backupLocation: Preference
     private lateinit var backupStatus: Preference
     private lateinit var backupScheduling: Preference
@@ -121,24 +120,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        apkBackup = findPreference(PREF_KEY_BACKUP_APK)!!
-        apkBackup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
-            val enable = newValue as Boolean
-            if (enable) return@OnPreferenceChangeListener true
-            MaterialAlertDialogBuilder(requireContext())
-                .setIcon(R.drawable.ic_warning)
-                .setTitle(R.string.settings_backup_apk_dialog_title)
-                .setMessage(R.string.settings_backup_apk_dialog_message)
-                .setPositiveButton(R.string.settings_backup_apk_dialog_cancel) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setNegativeButton(R.string.settings_backup_apk_dialog_disable) { dialog, _ ->
-                    apkBackup.isChecked = false
-                    dialog.dismiss()
-                }
-                .show()
-            return@OnPreferenceChangeListener false
-        }
         backupStatus = findPreference("backup_status")!!
         backupScheduling = findPreference("backup_scheduling")!!
 

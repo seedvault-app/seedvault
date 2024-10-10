@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   SPDX-FileCopyrightText: 2020 The Calyx Institute
   SPDX-License-Identifier: Apache-2.0
   -->
@@ -25,37 +24,56 @@
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="18sp"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/appView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Pixel 2 XL backup" />
 
     <TextView
-        android:id="@+id/subtitleView"
+        android:id="@+id/appView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textColor="?android:attr/textColorTertiary"
+        android:layout_marginTop="4dp"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/titleView"
         app:layout_constraintTop_toBottomOf="@+id/titleView"
-        tools:text="@string/restore_restore_set_times" />
+        tools:text="@string/restore_restore_set_apps" />
 
     <TextView
-        android:id="@+id/sizeView"
+        android:id="@+id/apkView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="4dp"
+        android:textColor="?android:textColorTertiary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/timeView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/titleView"
-        app:layout_constraintTop_toBottomOf="@+id/subtitleView"
-        tools:text="Size: 5 GB" />
+        app:layout_constraintTop_toBottomOf="@+id/appView"
+        tools:text="@string/restore_restore_set_apks" />
+
+    <TextView
+        android:id="@+id/timeView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        android:textColor="?android:textColorSecondary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/titleView"
+        app:layout_constraintTop_toBottomOf="@+id/apkView"
+        tools:text="5 days ago" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

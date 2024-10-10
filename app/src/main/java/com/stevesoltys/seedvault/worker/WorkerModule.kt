@@ -13,6 +13,7 @@ val workerModule = module {
         BackupRequester(
             context = androidContext(),
             backupManager = get(),
+            monitor = get(),
             packageService = get(),
         )
     }
@@ -21,26 +22,30 @@ val workerModule = module {
             context = androidContext(),
             packageService = get(),
             crypto = get(),
+            backupReceiver = get(),
+            loader = get(),
+            appBackupManager = get(),
         )
     }
     single {
         ApkBackup(
             pm = androidContext().packageManager,
-            crypto = get(),
+            backupReceiver = get(),
+            appBackupManager = get(),
             settingsManager = get(),
-            metadataManager = get()
         )
     }
     single {
         ApkBackupManager(
             context = androidContext(),
+            appBackupManager = get(),
             settingsManager = get(),
+            snapshotManager = get(),
             metadataManager = get(),
             packageService = get(),
             apkBackup = get(),
             iconManager = get(),
-            backendManager = get(),
-            nm = get()
+            nm = get(),
         )
     }
 }

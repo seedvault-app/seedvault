@@ -13,13 +13,13 @@ import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
-import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
 import org.calyxos.backup.storage.crypto.StreamCrypto
 import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
+import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
 import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals

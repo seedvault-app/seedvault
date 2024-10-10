@@ -24,6 +24,7 @@ import kotlinx.coroutines.withTimeout
 import org.koin.core.component.get
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.test.fail
 
 internal interface LargeBackupTestBase : LargeTestBase {
 
@@ -74,7 +75,6 @@ internal interface LargeBackupTestBase : LargeTestBase {
             full = mutableMapOf(),
             kv = mutableMapOf(),
             userApps = packageService.userApps,
-            userNotAllowedApps = packageService.userNotAllowedApps
         )
 
         val completed = spyOnBackup(backupResult)
@@ -111,7 +111,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var data = mutableMapOf<String, ByteArray>()
 
         coEvery {
-            spyKVBackup.performBackup(any(), any(), any(), any(), any())
+            spyKVBackup.performBackup(any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()
@@ -157,7 +157,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
         var dataIntercept = ByteArrayOutputStream()
 
         coEvery {
-            spyFullBackup.performFullBackup(any(), any(), any(), any(), any())
+            spyFullBackup.performFullBackup(any(), any(), any())
         } answers {
             packageName = firstArg<PackageInfo>().packageName
             callOriginal()
@@ -172,7 +172,7 @@ internal interface LargeBackupTestBase : LargeTestBase {
             )
         }
 
-        every {
+        coEvery {
             spyFullBackup.finishBackup()
         } answers {
             val result = callOriginal()
@@ -190,13 +190,20 @@ internal interface LargeBackupTestBase : LargeTestBase {
         clearMocks(spyBackupNotificationManager)
 
         every {
-            spyBackupNotificationManager.onBackupFinished(any(), any(), any(), any())
+            spyBackupNotificationManager.onBackupSuccess(any(), any(), any())
         } answers {
             val success = firstArg<Boolean>()
             assert(success) { "Backup failed." }
 
             callOriginal()
             completed.set(true)
+        }
+        every {
+            spyBackupNotificationManager.onBackupError()
+        } answers {
+            callOriginal()
+            completed.set(true)
+            fail("Backup failed.")
         }
 
         return completed

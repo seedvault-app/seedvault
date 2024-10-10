@@ -19,6 +19,7 @@ val restoreUiModule = module {
             settingsManager = get(),
             keyManager = get(),
             backupManager = get(),
+            appBackupManager = get(),
             restoreCoordinator = get(),
             apkRestore = get(),
             iconManager = get(),

@@ -18,7 +18,10 @@ import at.bitfire.dav4jvm.property.webdav.DisplayName
 import at.bitfire.dav4jvm.property.webdav.GetContentLength
 import at.bitfire.dav4jvm.property.webdav.ResourceType
 import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import okhttp3.HttpUrl
+
+private val log = KotlinLogging.logger {}
 
 /**
  * Tries to do [DavCollection.propfind] with a depth of `-1`.
@@ -65,7 +68,7 @@ internal fun DavCollection.mkColCreateMissing(callback: ResponseCallback) {
             callback.onResponse(response)
         }
     } catch (e: ConflictException) {
-        log.warning { "Error creating $location: $e" }
+        log.warn { "Error creating $location: $e" }
         if (location.pathSize <= 1) throw e
         val newLocation = location.newBuilder()
             .removePathSegment(location.pathSize - 1)
@@ -106,7 +109,7 @@ private fun HttpException.isUnsupportedPropfind(): Boolean {
 
 internal fun List<Property>.contentLength(): Long {
     // crash intentionally, if this isn't in the list
-    return filterIsInstance<GetContentLength>()[0].contentLength
+    return filterIsInstance<GetContentLength>()[0].contentLength ?: error("No contentLength")
 }
 
 internal fun Response.isFolder(): Boolean {

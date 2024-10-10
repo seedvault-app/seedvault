@@ -11,15 +11,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.GET_SIGNATURES
 import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+import android.content.pm.SigningInfo
 import android.util.Log
 import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
-import com.stevesoltys.seedvault.crypto.Crypto
-import com.stevesoltys.seedvault.metadata.ApkSplit
-import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
-import com.stevesoltys.seedvault.restore.RestorableBackup
+import com.stevesoltys.seedvault.crypto.Crypto
+import com.stevesoltys.seedvault.encodeBase64
+import com.stevesoltys.seedvault.header.UnsupportedVersionException
+import com.stevesoltys.seedvault.metadata.ApkSplit
+import com.stevesoltys.seedvault.metadata.PackageMetadata
+import com.stevesoltys.seedvault.repo.Loader
+import com.stevesoltys.seedvault.repo.getBlobHandles
 import com.stevesoltys.seedvault.restore.RestoreService
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.FAILED_SYSTEM_APP
@@ -27,8 +31,8 @@ import com.stevesoltys.seedvault.restore.install.ApkInstallState.IN_PROGRESS
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.QUEUED
 import com.stevesoltys.seedvault.restore.install.ApkInstallState.SUCCEEDED
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
-import com.stevesoltys.seedvault.worker.copyStreamsAndGetHash
-import com.stevesoltys.seedvault.worker.getSignatures
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
+import com.stevesoltys.seedvault.worker.hashSignature
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +41,10 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.security.GeneralSecurityException
+import java.security.MessageDigest
 import java.util.Locale
 
 private val TAG = ApkRestore::class.java.simpleName
@@ -46,6 +54,7 @@ internal class ApkRestore(
     private val backupManager: IBackupManager,
     private val backupStateManager: BackupStateManager,
     private val backendManager: BackendManager,
+    private val loader: Loader,
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin,
     private val crypto: Crypto,
@@ -130,6 +139,7 @@ internal class ApkRestore(
                 Log.e(TAG, "Timeout while re-installing APK for $packageName.", e)
                 mInstallResult.update { it.fail(packageName) }
             } catch (e: Exception) {
+                if (e::class.simpleName == "MockKException") throw e
                 Log.e(TAG, "Unexpected exception while re-installing APK for $packageName.", e)
                 mInstallResult.update { it.fail(packageName) }
             }
@@ -154,7 +164,12 @@ internal class ApkRestore(
     }
 
     @Suppress("ThrowsCount")
-    @Throws(IOException::class, SecurityException::class)
+    @Throws(
+        GeneralSecurityException::class,
+        UnsupportedVersionException::class,
+        IOException::class,
+        SecurityException::class,
+    )
     private suspend fun restore(
         backup: RestorableBackup,
         packageName: String,
@@ -168,10 +183,10 @@ internal class ApkRestore(
         }
 
         // cache the APK and get its hash
-        val (cachedApk, sha256) = cacheApk(backup.version, backup.token, backup.salt, packageName)
+        val (cachedApk, sha256) = cacheApk(backup, packageName, metadata.baseApkChunkIds)
 
-        // check APK's SHA-256 hash
-        if (metadata.sha256 != sha256) throw SecurityException(
+        // check APK's SHA-256 hash for backup versions before 2
+        if (backup.version < 2 && metadata.sha256 != sha256) throw SecurityException(
             "Package $packageName has sha256 '$sha256', but '${metadata.sha256}' expected."
         )
 
@@ -262,10 +277,9 @@ internal class ApkRestore(
         }
         splits.forEach { apkSplit -> // cache and check all splits
             val suffix = if (backup.version == 0.toByte()) "_${apkSplit.sha256}" else apkSplit.name
-            val salt = backup.salt
-            val (file, sha256) = cacheApk(backup.version, backup.token, salt, packageName, suffix)
-            // check APK split's SHA-256 hash
-            if (apkSplit.sha256 != sha256) throw SecurityException(
+            val (file, sha256) = cacheApk(backup, packageName, apkSplit.chunkIds, suffix)
+            // check APK split's SHA-256 hash for backup versions before 2
+            if (backup.version < 2 && apkSplit.sha256 != sha256) throw SecurityException(
                 "$packageName:${apkSplit.name} has sha256 '$sha256'," +
                     " but '${apkSplit.sha256}' expected."
             )
@@ -280,22 +294,32 @@ internal class ApkRestore(
      *
      * @return a [Pair] of the cached [File] and SHA-256 hash.
      */
-    @Throws(IOException::class)
+    @Throws(GeneralSecurityException::class, UnsupportedVersionException::class, IOException::class)
     private suspend fun cacheApk(
-        version: Byte,
-        token: Long,
-        salt: String,
+        backup: RestorableBackup,
         packageName: String,
+        chunkIds: List<String>?,
         suffix: String = "",
     ): Pair<File, String> {
         // create a cache file to write the APK into
         val cachedApk = File.createTempFile(packageName + suffix, ".apk", context.cacheDir)
         // copy APK to cache file and calculate SHA-256 hash while we are at it
-        val inputStream = if (version == 0.toByte()) {
-            legacyStoragePlugin.getApkInputStream(token, packageName, suffix)
-        } else {
-            val name = crypto.getNameForApk(salt, packageName, suffix)
-            backend.load(LegacyAppBackupFile.Blob(token, name))
+        val inputStream = when (backup.version) {
+            0.toByte() -> {
+                legacyStoragePlugin.getApkInputStream(backup.token, packageName, suffix)
+            }
+            1.toByte() -> {
+                val name = crypto.getNameForApk(backup.salt, packageName, suffix)
+                backend.load(LegacyAppBackupFile.Blob(backup.token, name))
+            }
+            else -> {
+                val repoId = backup.repoId ?: error("No repoId for v2 backup")
+                val snapshot = backup.snapshot ?: error("No snapshot for v2 backup")
+                val handles = chunkIds?.let {
+                    snapshot.getBlobHandles(repoId, it)
+                } ?: error("No chunkIds for $packageName-$suffix")
+                loader.loadFiles(handles)
+            }
         }
         val sha256 = copyStreamsAndGetHash(inputStream, cachedApk.outputStream())
         return Pair(cachedApk, sha256)
@@ -340,6 +364,48 @@ internal class ApkRestore(
         }
         if (context.packageManager.isInstalled(packageName)) mInstallResult.update { result ->
             result.update(packageName) { it.copy(state = SUCCEEDED) }
+        }
+    }
+}
+
+/**
+ * Copy the APK from the given [InputStream] to the given [OutputStream]
+ * and calculate the SHA-256 hash while at it.
+ *
+ * Both streams will be closed when the method returns.
+ *
+ * @return the APK's SHA-256 hash in Base64 format.
+ */
+@Throws(IOException::class)
+fun copyStreamsAndGetHash(inputStream: InputStream, outputStream: OutputStream): String {
+    val messageDigest = MessageDigest.getInstance("SHA-256")
+    outputStream.use { oStream ->
+        inputStream.use { inputStream ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var bytes = inputStream.read(buffer)
+            while (bytes >= 0) {
+                oStream.write(buffer, 0, bytes)
+                messageDigest.update(buffer, 0, bytes)
+                bytes = inputStream.read(buffer)
+            }
+        }
+    }
+    return messageDigest.digest().encodeBase64()
+}
+
+/**
+ * Returns a list of Base64 encoded SHA-256 signature hashes.
+ */
+fun SigningInfo?.getSignatures(): List<String> {
+    return if (this == null) {
+        emptyList()
+    } else if (hasMultipleSigners()) {
+        apkContentsSigners.map { signature ->
+            hashSignature(signature).encodeBase64()
+        }
+    } else {
+        signingCertificateHistory.map { signature ->
+            hashSignature(signature).encodeBase64()
         }
     }
 }

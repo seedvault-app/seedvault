@@ -6,8 +6,9 @@
 package org.calyxos.backup.storage.crypto
 
 import org.calyxos.backup.storage.backup.Chunker
-import org.calyxos.backup.storage.crypto.Hkdf.ALGORITHM_HMAC
-import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
+import org.calyxos.seedvault.core.crypto.CoreCrypto
+import org.calyxos.seedvault.core.crypto.CoreCrypto.ALGORITHM_HMAC
+import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
 import java.security.GeneralSecurityException
 import java.security.KeyStore
 import javax.crypto.Mac
@@ -25,12 +26,11 @@ internal object ChunkCrypto {
      */
     @Throws(GeneralSecurityException::class)
     fun deriveChunkIdKey(
-        masterKey: SecretKey,
+        mainKey: SecretKey,
         info: ByteArray = INFO_CHUNK_ID.toByteArray(),
-    ): ByteArray = Hkdf.expand(
-        secretKey = masterKey,
+    ): ByteArray = CoreCrypto.deriveKey(
+        mainKey = mainKey,
         info = info,
-        outLengthBytes = KEY_SIZE_BYTES
     )
 
     /**

@@ -10,10 +10,8 @@ echo "Installing Seedvault app..."
 ./gradlew --stacktrace :app:installDebugAndroidTest
 sleep 60
 
-D2D_BACKUP_TEST=$1
-
 large_test_exit_code=0
-./gradlew --stacktrace -Pinstrumented_test_size=large -Pd2d_backup_test="$D2D_BACKUP_TEST" :app:connectedAndroidTest || large_test_exit_code=$?
+./gradlew --stacktrace -Pinstrumented_test_size=large :app:connectedAndroidTest || large_test_exit_code=$?
 
 adb pull /sdcard/seedvault_test_results
 

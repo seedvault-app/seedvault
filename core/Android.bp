@@ -18,6 +18,9 @@ android_library {
         "androidx.documentfile_documentfile",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
+        // Crypto
+        "seedvault-lib-tink-android",
+        // Logging
         "seedvault-lib-kotlin-logging-jvm",
         "seedvault-lib-slf4j-api",
         // WebDAV

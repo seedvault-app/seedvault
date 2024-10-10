@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.getStorageContext
 import com.stevesoltys.seedvault.permitDiskReads
+import com.stevesoltys.seedvault.repo.BlobCache
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginType
 import org.calyxos.seedvault.core.backends.Backend
@@ -20,6 +21,7 @@ import org.calyxos.seedvault.core.backends.saf.SafBackend
 class BackendManager(
     private val context: Context,
     private val settingsManager: SettingsManager,
+    private val blobCache: BlobCache,
     backendFactory: BackendFactory,
 ) {
 
@@ -86,6 +88,8 @@ class BackendManager(
         settingsManager.setStorageBackend(backend)
         mBackend = backend
         mBackendProperties = storageProperties
+        blobCache.clearLocalCache()
+        // TODO not critical, but nice to have: clear also local snapshot cache
     }
 
     /**

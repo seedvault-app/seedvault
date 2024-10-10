@@ -139,17 +139,6 @@ internal object StorageRootResolver {
         return if (index != -1) getInt(index) else 0
     }
 
-    private fun Cursor.getLong(columnName: String): Long? {
-        val index = getColumnIndex(columnName)
-        if (index == -1) return null
-        val value = getString(index) ?: return null
-        return try {
-            java.lang.Long.parseLong(value)
-        } catch (e: NumberFormatException) {
-            null
-        }
-    }
-
     fun getIcon(context: Context, authority: String, rootId: String, icon: Int): Drawable? {
         return getPackageIcon(context, authority, icon) ?: when {
             authority == AUTHORITY_STORAGE && rootId == ROOT_ID_DEVICE -> {

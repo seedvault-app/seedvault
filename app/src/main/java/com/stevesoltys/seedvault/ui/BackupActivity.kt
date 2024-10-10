@@ -11,7 +11,6 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.extensions.setupEdgeToEdge
 
 abstract class BackupActivity : AppCompatActivity() {
 

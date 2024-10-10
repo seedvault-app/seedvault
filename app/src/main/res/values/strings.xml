@@ -67,10 +67,6 @@
     <string name="settings_scheduling_charging_title">Back up only when charging</string>
 
     <string name="settings_expert_title">Expert settings</string>
-    <string name="settings_expert_quota_title">Unlimited app quota</string>
-    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.\n\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
-    <string name="settings_expert_d2d_title">Device-to-device backups</string>
-    <string name="settings_expert_d2d_summary">This forces backups for most apps, even when they disallow them. This is alpha, use at your own risk.</string>
     <string name="settings_expert_logcat_title">Save app log</string>
     <string name="settings_expert_logcat_summary">Developers can diagnose bugs with these logs.\n\nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
     <string name="settings_expert_logcat_error">Error: Could not save app log</string>
@@ -78,8 +74,6 @@
     <!-- Storage Location -->
     <string name="storage_fragment_backup_title">Choose where to store backups</string>
     <string name="storage_fragment_restore_title">Where to find your backups?</string>
-    <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
-    <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
     <string name="storage_user_selected_location_title">User-chosen location</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
@@ -143,8 +137,8 @@
     <string name="recovery_code_verification_try_again">Try again</string>
     <string name="recovery_code_verification_generate_new">Generate new code</string>
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
-    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible.\n\nAre you sure you want to do this?</string>
-    <string name="recovery_code_recreated">New recovery code has been created successfully</string>
+    <string name="recovery_code_verification_new_dialog_message">Generating a new code will make your existing backups inaccessible. We\'ll try to delete them if possible. This app will close when done.\n\nAre you sure you want to do this?</string>
+    <string name="recovery_code_recreated">New recovery code has been created successfully. Exiting…</string>
     <string name="recovery_code_auth_title">Re-enter your screen lock</string>
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
 
@@ -152,6 +146,7 @@
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_success_channel_title">Success notification</string>
     <string name="notification_title">Backup running</string>
+    <string name="notification_init_text">Preparing existing backup data for reuse…</string>
     <string name="notification_apk_text">Backing up APK of %s</string>
     <string name="notification_apk_not_backed_up">Saving list of apps we can not back up.</string>
     <string name="notification_backup_already_running">Backup already in progress</string>
@@ -160,6 +155,7 @@
     <string name="notification_success_title">Backup finished</string>
     <string name="notification_success_text">%1$d of %2$d apps backed up (%3$s). Tap to learn more.</string>
     <string name="notification_failed_title">Backup failed</string>
+    <string name="notification_failed_text">An error occurred while running the backup.</string>
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>
@@ -179,6 +175,9 @@
 
     <string name="notification_error_no_main_key_title">Backups disabled</string>
     <string name="notification_error_no_main_key_text">Generate a new recovery code to complete upgrade and continue to use backups.</string>
+
+    <string name="notification_pruning_channel_title">Removing old backups notification</string>
+    <string name="notification_pruning_title">Removing old backups…</string>
 
     <!-- App Backup and Restore State -->
 
@@ -202,13 +201,14 @@
     <string name="backup_app_quota_exceeded">Backup quota exceeded</string>
     <string name="restore_app_quota_exceeded">Backup quota was exceeded</string>
     <string name="restore_app_not_installed">App not installed</string>
-    <string name="backup_section_not_allowed">Apps that do not allow data backup</string>
 
     <!-- Restore -->
     <string name="restore_title">Restore from backup</string>
     <string name="restore_choose_restore_set">Choose a backup to restore</string>
-    <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
-    <string name="restore_restore_set_size">Size: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_restore_set_apps">Has user data for <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apps_no_size">Has user data for <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
+    <string name="restore_restore_set_apks">Contains <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size">Contains <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
     <string name="restore_skip">Don\'t restore</string>
     <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_invalid_location_title">No backups found</string>
@@ -217,6 +217,10 @@
     <string name="restore_set_empty_result">No suitable backups found at given location.\n\nThis is most likely due to a wrong recovery code or a storage error.</string>
     <string name="restore_select_packages">Select apps to restore</string>
     <string name="restore_select_packages_all">All of the following apps</string>
+    <string name="restore_recycle_backup_title">Reuse this backup?</string>
+    <string name="restore_recycle_backup_text">You can reuse the backup \'%s\' you just restored on this device. This will make new backups faster and use less data.\n\nHowever, your old device will lose access to this backup. If you would like to keep the access for your old device, you can create a new backup instead. This will use more data than reusing the existing backup.</string>
+    <string name="restore_recycle_backup_button_no">Create new backup</string>
+    <string name="restore_recycle_backup_button_yes">Reuse backup</string>
     <string name="restore_installing_packages">Re-installing apps</string>
     <string name="restore_app_status_installing">Re-installing</string>
     <string name="restore_app_status_installed">Re-installed</string>

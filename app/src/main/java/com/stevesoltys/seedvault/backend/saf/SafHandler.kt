@@ -15,7 +15,6 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
-import com.stevesoltys.seedvault.backend.getAvailableBackups
 import com.stevesoltys.seedvault.isMassStorage
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
@@ -59,9 +58,8 @@ internal class SafHandler(
     @WorkerThread
     @Throws(IOException::class)
     suspend fun hasAppBackup(safProperties: SafProperties): Boolean {
-        val appPlugin = backendFactory.createSafBackend(safProperties)
-        val backups = appPlugin.getAvailableBackups()
-        return backups != null && backups.iterator().hasNext()
+        val backend = backendFactory.createSafBackend(safProperties)
+        return backend.getAvailableBackupFileHandles().isNotEmpty()
     }
 
     fun save(safProperties: SafProperties) {

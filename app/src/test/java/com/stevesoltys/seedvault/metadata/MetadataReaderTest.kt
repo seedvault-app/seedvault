@@ -9,16 +9,10 @@ import com.stevesoltys.seedvault.Utf8
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.getRandomBase64
 import com.stevesoltys.seedvault.getRandomString
-import com.stevesoltys.seedvault.metadata.PackageState.QUOTA_EXCEEDED
-import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import io.mockk.mockk
 import org.json.JSONArray
 import org.json.JSONObject
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -29,7 +23,7 @@ class MetadataReaderTest {
 
     private val crypto = mockk<Crypto>()
 
-    private val encoder = MetadataWriterImpl(crypto)
+    private val encoder = MetadataWriterImpl()
     private val decoder = MetadataReaderImpl(crypto)
 
     private val metadata = getMetadata()
@@ -50,30 +44,9 @@ class MetadataReaderTest {
     }
 
     @Test
-    fun `expected version and token do not throw SecurityException`() {
-        decoder.decode(metadataByteArray, metadata.version, metadata.token)
-    }
-
-    @Test
     fun `malformed JSON throws SecurityException`() {
         assertThrows(SecurityException::class.java) {
             decoder.decode("{".toByteArray(Utf8), metadata.version, metadata.token)
-        }
-    }
-
-    @Test
-    fun `missing fields throws SecurityException`() {
-        val json = JSONObject().apply {
-            put(JSON_METADATA, JSONObject().apply {
-                put(JSON_METADATA_VERSION, metadata.version.toInt())
-                put(JSON_METADATA_TOKEN, metadata.token)
-                put(JSON_METADATA_SDK_INT, metadata.androidVersion)
-            })
-        }
-        val jsonBytes = json.toString().toByteArray(Utf8)
-
-        assertThrows(SecurityException::class.java) {
-            decoder.decode(jsonBytes, metadata.version, metadata.token)
         }
     }
 
@@ -90,26 +63,6 @@ class MetadataReaderTest {
     }
 
     @Test
-    fun `package metadata gets read`() {
-        val packageMetadata = HashMap<String, PackageMetadata>().apply {
-            put(
-                "org.example", PackageMetadata(
-                    time = Random.nextLong(),
-                    state = QUOTA_EXCEEDED,
-                    backupType = BackupType.FULL,
-                    version = Random.nextLong(),
-                    installer = getRandomString(),
-                    sha256 = getRandomString(),
-                    signatures = listOf(getRandomString(), getRandomString())
-                )
-            )
-        }
-        val metadata = getMetadata(packageMetadata)
-        val metadataByteArray = encoder.encode(metadata)
-        decoder.decode(metadataByteArray, metadata.version, metadata.token)
-    }
-
-    @Test
     fun `package metadata with missing time throws`() {
         val json = JSONObject(metadataByteArray.toString(Utf8))
         json.put("org.example", JSONObject().apply {
@@ -122,55 +75,6 @@ class MetadataReaderTest {
         assertThrows(SecurityException::class.java) {
             decoder.decode(jsonBytes, metadata.version, metadata.token)
         }
-    }
-
-    @Test
-    fun `package metadata unknown state gets mapped to error`() {
-        val json = JSONObject(metadataByteArray.toString(Utf8))
-        json.put("org.example", JSONObject().apply {
-            put(JSON_PACKAGE_TIME, Random.nextLong())
-            put(JSON_PACKAGE_STATE, getRandomString())
-            put(JSON_PACKAGE_BACKUP_TYPE, BackupType.FULL.name)
-            put(JSON_PACKAGE_VERSION, Random.nextLong())
-            put(JSON_PACKAGE_INSTALLER, getRandomString())
-            put(JSON_PACKAGE_SHA256, getRandomString())
-            put(JSON_PACKAGE_SIGNATURES, JSONArray(listOf(getRandomString(), getRandomString())))
-        })
-        val jsonBytes = json.toString().toByteArray(Utf8)
-        val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
-        assertEquals(this.metadata.salt, metadata.salt)
-        assertEquals(UNKNOWN_ERROR, metadata.packageMetadataMap["org.example"]!!.state)
-        assertEquals(BackupType.FULL, metadata.packageMetadataMap["org.example"]!!.backupType)
-    }
-
-    @Test
-    fun `package metadata missing system gets mapped to false`() {
-        val json = JSONObject(metadataByteArray.toString(Utf8))
-        json.put("org.example", JSONObject().apply {
-            put(JSON_PACKAGE_TIME, Random.nextLong())
-        })
-        val jsonBytes = json.toString().toByteArray(Utf8)
-        val metadata = decoder.decode(jsonBytes, metadata.version, metadata.token)
-        assertFalse(metadata.packageMetadataMap["org.example"]!!.system)
-        assertNull(metadata.packageMetadataMap["org.example"]!!.backupType)
-    }
-
-    @Test
-    fun `package metadata can only include time`() {
-        val json = JSONObject(metadataByteArray.toString(Utf8))
-        json.put("org.example", JSONObject().apply {
-            put(JSON_PACKAGE_TIME, Random.nextLong())
-            put(JSON_PACKAGE_BACKUP_TYPE, BackupType.KV.name)
-        })
-        val jsonBytes = json.toString().toByteArray(Utf8)
-        val result = decoder.decode(jsonBytes, metadata.version, metadata.token)
-
-        assertEquals(1, result.packageMetadataMap.size)
-        val packageMetadata = result.packageMetadataMap.getOrElse("org.example") { fail() }
-        assertEquals(BackupType.KV, packageMetadata.backupType)
-        assertNull(packageMetadata.version)
-        assertNull(packageMetadata.installer)
-        assertNull(packageMetadata.signatures)
     }
 
     private fun getMetadata(

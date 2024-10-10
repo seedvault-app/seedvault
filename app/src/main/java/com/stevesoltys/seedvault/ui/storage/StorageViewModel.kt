@@ -16,7 +16,6 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.saf.SafHandler
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler
-import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
@@ -26,6 +25,7 @@ import kotlinx.coroutines.launch
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 
 internal abstract class StorageViewModel(
     private val app: Application,
@@ -48,8 +48,6 @@ internal abstract class StorageViewModel(
     private var safOption: SafOption? = null
 
     internal var isSetupWizard: Boolean = false
-    internal val hasStorageSet: Boolean
-        get() = backendManager.backendProperties != null
     abstract val isRestoreOperation: Boolean
 
     internal fun loadStorageRoots() {

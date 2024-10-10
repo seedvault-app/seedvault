@@ -26,15 +26,15 @@ class RecoveryCodeActivity : BackupActivity() {
         setContentView(R.layout.activity_recovery_code)
 
         viewModel.isRestore = isRestore()
-        viewModel.confirmButtonClicked.observeEvent(this, { clicked ->
+        viewModel.confirmButtonClicked.observeEvent(this) { clicked ->
             if (clicked) showInput(true)
-        })
-        viewModel.recoveryCodeSaved.observeEvent(this, { saved ->
+        }
+        viewModel.recoveryCodeSaved.observeEvent(this) { saved ->
             if (saved) {
                 setResult(RESULT_OK)
                 finishAfterTransition()
             }
-        })
+        }
 
         if (savedInstanceState == null) {
             if (viewModel.isRestore) showInput(false)

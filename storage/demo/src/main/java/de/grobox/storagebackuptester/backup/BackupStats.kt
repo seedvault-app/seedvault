@@ -16,7 +16,6 @@ import org.calyxos.backup.storage.api.BackupFile
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.NotificationBackupObserver
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 data class BackupProgress(
@@ -91,7 +90,6 @@ internal class BackupStats(
         liveData.postValue(BackupProgress(filesProcessed, totalFiles, null))
     }
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun onBackupComplete(backupDuration: Long?) {
         super.onBackupComplete(backupDuration)
 
@@ -162,7 +160,6 @@ internal class BackupStats(
         liveData.postValue(BackupProgress(filesProcessed, totalFiles, text))
     }
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun onPruneComplete(pruneDuration: Long) {
         super.onPruneComplete(pruneDuration)
 

@@ -10,9 +10,20 @@ import org.koin.dsl.module
 
 val restoreModule = module {
     single { OutputFactory() }
-    single { KVRestore(get(), get(), get(), get(), get(), get()) }
-    single { FullRestore(get(), get(), get(), get(), get()) }
+    single { KVRestore(get(), get(), get(), get(), get(), get(), get()) }
+    single { FullRestore(get(), get(), get(), get(), get(), get()) }
     single {
-        RestoreCoordinator(androidContext(), get(), get(), get(), get(), get(), get(), get(), get())
+        RestoreCoordinator(
+            context = androidContext(),
+            crypto = get(),
+            settingsManager = get(),
+            metadataManager = get(),
+            notificationManager = get(),
+            backendManager = get(),
+            snapshotManager = get(),
+            kv = get(),
+            full = get(),
+            metadataReader = get(),
+        )
     }
 }

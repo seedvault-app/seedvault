@@ -20,7 +20,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.DocumentsContract
 import android.util.Log
-import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.settings.FlashDrive
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
@@ -34,7 +33,6 @@ class UsbIntentReceiver : UsbMonitor() {
 
     // using KoinComponent would crash robolectric tests :(
     private val settingsManager: SettingsManager by lazy { get().get() }
-    private val metadataManager: MetadataManager by lazy { get().get() }
     private val backupManager: IBackupManager by lazy { get().get() }
 
     override fun shouldMonitorStatus(context: Context, action: String, device: UsbDevice): Boolean {
@@ -44,14 +42,15 @@ class UsbIntentReceiver : UsbMonitor() {
         val attachedFlashDrive = FlashDrive.from(device)
         return if (savedFlashDrive == attachedFlashDrive) {
             Log.d(TAG, "Matches stored device, checking backup time...")
-            val backupMillis = System.currentTimeMillis() - metadataManager.getLastBackupTime()
+            val lastBackupTime = settingsManager.lastBackupTime.value ?: 0
+            val backupMillis = System.currentTimeMillis() - lastBackupTime
             if (backupMillis >= settingsManager.backupFrequencyInMillis) {
                 Log.d(TAG, "Last backup older than it should be, requesting a backup...")
-                Log.d(TAG, "  ${Date(metadataManager.getLastBackupTime())}")
+                Log.d(TAG, "  ${Date(lastBackupTime)}")
                 true
             } else {
                 Log.d(TAG, "We have a recent backup, not requesting a new one.")
-                Log.d(TAG, "  ${Date(metadataManager.getLastBackupTime())}")
+                Log.d(TAG, "  ${Date(lastBackupTime)}")
                 false
             }
         } else {

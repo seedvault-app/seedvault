@@ -6,7 +6,7 @@
 package org.calyxos.backup.storage.backup
 
 import org.calyxos.backup.storage.crypto.ChunkCrypto
-import org.calyxos.backup.storage.crypto.Hkdf.KEY_SIZE_BYTES
+import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.ByteArrayInputStream

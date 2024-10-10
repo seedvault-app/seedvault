@@ -14,6 +14,7 @@ import androidx.work.WorkInfo.State.RUNNING
 import androidx.work.WorkManager
 import com.stevesoltys.seedvault.storage.StorageBackupService
 import com.stevesoltys.seedvault.transport.ConfigurableBackupTransportService
+import com.stevesoltys.seedvault.worker.AppBackupPruneWorker
 import com.stevesoltys.seedvault.worker.AppBackupWorker.Companion.UNIQUE_WORK_NAME
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -31,14 +32,18 @@ class BackupStateManager(
         flow = ConfigurableBackupTransportService.isRunning,
         flow2 = StorageBackupService.isRunning,
         flow3 = workManager.getWorkInfosForUniqueWorkFlow(UNIQUE_WORK_NAME),
-    ) { appBackupRunning, filesBackupRunning, workInfos ->
-        val workInfoState = workInfos.getOrNull(0)?.state
+        flow4 = workManager.getWorkInfosForUniqueWorkFlow(AppBackupPruneWorker.UNIQUE_WORK_NAME),
+    ) { appBackupRunning, filesBackupRunning, workInfo1, workInfo2 ->
+        val workInfoState1 = workInfo1.getOrNull(0)?.state
+        val workInfoState2 = workInfo2.getOrNull(0)?.state
         Log.i(
             TAG, "appBackupRunning: $appBackupRunning, " +
                 "filesBackupRunning: $filesBackupRunning, " +
-                "workInfoState: ${workInfoState?.name}"
+                "appBackupWorker: ${workInfoState1?.name}, " +
+                "pruneBackupWorker: ${workInfoState2?.name}"
         )
-        appBackupRunning || filesBackupRunning || workInfoState == RUNNING
+        appBackupRunning || filesBackupRunning ||
+            workInfoState1 == RUNNING || workInfoState2 == RUNNING
     }
 
     val isAutoRestoreEnabled: Boolean

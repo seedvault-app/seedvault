@@ -12,9 +12,10 @@ import androidx.lifecycle.asLiveData
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.NO_DATA_END_SENTINEL
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.PackageMetadata
 import com.stevesoltys.seedvault.metadata.PackageMetadataMap
-import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
 import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SYSTEM
 import com.stevesoltys.seedvault.ui.systemData
 import com.stevesoltys.seedvault.worker.IconManager
@@ -68,31 +69,41 @@ internal class AppSelectionManager(
             val name = context.getString(data.nameRes)
             SelectableAppItem(packageName, metadata.copy(name = name), true)
         }
-        val systemItem = SelectableAppItem(
-            packageName = PACKAGE_NAME_SYSTEM,
-            metadata = PackageMetadata(
-                time = restorableBackup.packageMetadataMap.values.maxOf {
-                    if (it.system) it.time else -1
-                },
-                size = restorableBackup.packageMetadataMap.values.sumOf {
-                    if (it.system) it.size ?: 0L else 0L
-                },
-                system = true,
-                name = context.getString(R.string.backup_system_apps),
-            ),
-            selected = isSetupWizard,
-        )
-        items.add(0, systemItem)
+        if (restorableBackup.packageMetadataMap.isNotEmpty()) {
+            val systemItem = SelectableAppItem(
+                packageName = PACKAGE_NAME_SYSTEM,
+                metadata = PackageMetadata(
+                    time = restorableBackup.packageMetadataMap.values.maxOf {
+                        if (it.system) it.time else -1
+                    },
+                    size = restorableBackup.packageMetadataMap.values.sumOf {
+                        if (it.system) it.size ?: 0L else 0L
+                    },
+                    system = true,
+                    name = context.getString(R.string.backup_system_apps),
+                ),
+                selected = isSetupWizard,
+            )
+            items.add(0, systemItem)
+        }
         items.addAll(0, systemDataItems)
         selectedApps.value =
             SelectedAppsState(apps = items, allSelected = isSetupWizard, iconsLoaded = false)
         // download icons
         coroutineScope.launch(workDispatcher) {
-            val backend = backendManager.backend
-            val token = restorableBackup.token
             val packagesWithIcons = try {
-                backend.load(LegacyAppBackupFile.IconsFile(token)).use {
-                    iconManager.downloadIcons(restorableBackup.version, token, it)
+                if (restorableBackup.version == 1.toByte()) {
+                    val backend = backendManager.backend
+                    val token = restorableBackup.token
+                    backend.load(LegacyAppBackupFile.IconsFile(token)).use {
+                        iconManager.downloadIconsV1(token, it)
+                    }
+                } else if (restorableBackup.version >= 2) {
+                    val repoId = restorableBackup.repoId ?: error("No repoId in v2 backup")
+                    val snapshot = restorableBackup.snapshot ?: error("No snapshot in v2 backup")
+                    iconManager.downloadIcons(repoId, snapshot)
+                } else {
+                    emptySet()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading icons:", e)

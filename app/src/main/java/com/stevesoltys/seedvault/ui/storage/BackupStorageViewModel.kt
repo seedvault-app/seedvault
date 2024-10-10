@@ -16,7 +16,6 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.saf.SafHandler
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler
-import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
 import com.stevesoltys.seedvault.transport.backup.BackupInitializer
@@ -28,6 +27,7 @@ import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.saf.SafProperties
+import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 

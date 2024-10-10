@@ -11,8 +11,6 @@ import android.app.backup.IBackupObserver
 import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.BackupMonitor
-import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.transport.TRANSPORT_ID
 
 class BackupInitializer(
@@ -25,17 +23,7 @@ class BackupInitializer(
 
     fun initialize(onError: () -> Unit, onSuccess: () -> Unit) {
         val observer = BackupObserver("Initialization", onError) {
-            // After successful initialization, we request a @pm@ backup right away,
-            // because if this finds empty state, it asks us to do another initialization.
-            // And then we end up with yet another restore set token.
-            // Since we want the final token as soon as possible, we need to get it here.
-            Log.d(TAG, "Requesting initial $MAGIC_PACKAGE_MANAGER backup...")
-            backupManager.requestBackup(
-                arrayOf(MAGIC_PACKAGE_MANAGER),
-                BackupObserver("Initial backup of @pm@", onError, onSuccess),
-                BackupMonitor(),
-                0,
-            )
+            onSuccess()
         }
         backupManager.initializeTransportsForUser(
             UserHandle.myUserId(),

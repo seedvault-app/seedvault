@@ -1,0 +1,22 @@
+//
+// SPDX-FileCopyrightText: 2024 The Calyx Institute
+// SPDX-License-Identifier: Apache-2.0
+//
+
+java_import {
+    name: "seedvault-lib-tink-android",
+    jars: ["tink-android-1.15.0.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-kotlin-logging-jvm",
+    jars: ["kotlin-logging-jvm-6.0.3.jar"],
+    sdk_version: "current",
+}
+
+java_import {
+    name: "seedvault-lib-slf4j-api",
+    jars: ["slf4j-api-2.0.16.jar"],
+    sdk_version: "current",
+}

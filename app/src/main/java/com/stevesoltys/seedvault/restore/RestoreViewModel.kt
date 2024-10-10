@@ -17,8 +17,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.crypto.KeyManager
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.repo.AppBackupManager
+import com.stevesoltys.seedvault.restore.DisplayFragment.RECYCLE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_APPS
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_BACKUP
 import com.stevesoltys.seedvault.restore.DisplayFragment.RESTORE_FILES
@@ -30,6 +32,9 @@ import com.stevesoltys.seedvault.restore.install.InstallIntentCreator
 import com.stevesoltys.seedvault.restore.install.InstallResult
 import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.storage.StorageRestoreService
+import com.stevesoltys.seedvault.transport.restore.RestorableBackup
+import com.stevesoltys.seedvault.transport.restore.RestorableBackupResult.ErrorResult
+import com.stevesoltys.seedvault.transport.restore.RestorableBackupResult.SuccessResult
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
@@ -62,6 +67,7 @@ internal class RestoreViewModel(
     keyManager: KeyManager,
     backupManager: IBackupManager,
     private val restoreCoordinator: RestoreCoordinator,
+    private val appBackupManager: AppBackupManager,
     private val apkRestore: ApkRestore,
     private val iconManager: IconManager,
     storageBackup: StorageBackup,
@@ -77,7 +83,7 @@ internal class RestoreViewModel(
     private val appSelectionManager =
         AppSelectionManager(app, backendManager, iconManager, viewModelScope)
     private val appDataRestoreManager = AppDataRestoreManager(
-        app, backupManager, settingsManager, restoreCoordinator, backendManager
+        app, backupManager, restoreCoordinator, backendManager
     )
 
     private val mDisplayFragment = MutableLiveEvent<DisplayFragment>()
@@ -106,20 +112,11 @@ internal class RestoreViewModel(
     private var storedSnapshot: StoredSnapshot? = null
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
-        val backups = restoreCoordinator.getAvailableMetadata()?.mapNotNull { (token, metadata) ->
-            when (metadata.time) {
-                0L -> {
-                    Log.d(TAG, "Ignoring RestoreSet with no last backup time: $token.")
-                    null
-                }
-
-                else -> RestorableBackup(metadata)
-            }
-        }
-        val result = when {
-            backups == null -> RestoreSetResult(app.getString(R.string.restore_set_error))
-            backups.isEmpty() -> RestoreSetResult(app.getString(R.string.restore_set_empty_result))
-            else -> RestoreSetResult(backups)
+        val result = when (val backups = restoreCoordinator.getAvailableBackups()) {
+            is ErrorResult -> RestoreSetResult(
+                app.getString(R.string.restore_set_error) + "\n\n${backups.e}"
+            )
+            is SuccessResult -> RestoreSetResult(backups.backups)
         }
         mRestoreSetResults.postValue(result)
     }
@@ -176,11 +173,28 @@ internal class RestoreViewModel(
         super.onCleared()
         @OptIn(DelicateCoroutinesApi::class)
         GlobalScope.launch(ioDispatcher) { iconManager.removeIcons() }
-        appDataRestoreManager.closeSession()
     }
 
     @UiThread
     internal fun onFinishClickedAfterRestoringAppData() {
+        val backup = chosenRestorableBackup.value
+        if (appBackupManager.canRecycleBackupRepo(backup?.repoId, backup?.version)) {
+            mDisplayFragment.setEvent(RECYCLE_BACKUP)
+        } else {
+            mDisplayFragment.setEvent(RESTORE_FILES)
+        }
+    }
+
+    @UiThread
+    internal fun onRecycleBackupFinished(shouldRecycle: Boolean) {
+        val repoId = chosenRestorableBackup.value?.repoId
+        if (shouldRecycle && repoId != null) viewModelScope.launch(ioDispatcher) {
+            try {
+                appBackupManager.recycleBackupRepo(repoId)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error transferring backup repo: ", e)
+            }
+        }
         mDisplayFragment.setEvent(RESTORE_FILES)
     }
 
@@ -225,6 +239,7 @@ internal enum class DisplayFragment {
     SELECT_APPS,
     RESTORE_APPS,
     RESTORE_BACKUP,
+    RECYCLE_BACKUP,
     RESTORE_FILES,
     RESTORE_SELECT_FILES,
     RESTORE_FILES_STARTED,

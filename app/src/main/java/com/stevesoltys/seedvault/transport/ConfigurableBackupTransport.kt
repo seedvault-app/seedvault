@@ -17,7 +17,6 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsActivity
-import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.transport.backup.BackupCoordinator
 import com.stevesoltys.seedvault.transport.restore.RestoreCoordinator
 import kotlinx.coroutines.runBlocking
@@ -43,7 +42,6 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
 
     private val backupCoordinator by inject<BackupCoordinator>()
     private val restoreCoordinator by inject<RestoreCoordinator>()
-    private val settingsManager by inject<SettingsManager>()
 
     override fun transportDirName(): String {
         return TRANSPORT_DIRECTORY_NAME
@@ -62,13 +60,7 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
      * which is accessible to the BackupAgent.
      * This allows the agent to decide what to do based on properties of the transport.
      */
-    override fun getTransportFlags(): Int {
-        return if (settingsManager.d2dBackupsEnabled()) {
-            D2D_TRANSPORT_FLAGS
-        } else {
-            DEFAULT_TRANSPORT_FLAGS
-        }
-    }
+    override fun getTransportFlags(): Int = D2D_TRANSPORT_FLAGS
 
     /**
      * Ask the transport for an [Intent] that can be used to launch
@@ -135,8 +127,8 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
         return backupCoordinator.isAppEligibleForBackup(targetPackage, isFullBackup)
     }
 
-    override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long {
-        return backupCoordinator.getBackupQuota(packageName, isFullBackup)
+    override fun getBackupQuota(packageName: String, isFullBackup: Boolean): Long = runBlocking {
+        backupCoordinator.getBackupQuota(packageName, isFullBackup)
     }
 
     override fun clearBackupData(packageInfo: PackageInfo): Int = runBlocking {

@@ -17,18 +17,25 @@ import android.util.Log.DEBUG
 
 private val TAG = BackupMonitor::class.java.name
 
-class BackupMonitor : IBackupManagerMonitor.Stub() {
+open class BackupMonitor : IBackupManagerMonitor.Stub() {
 
     override fun onEvent(bundle: Bundle) {
-        val id = bundle.getInt(EXTRA_LOG_EVENT_ID)
-        val packageName = bundle.getString(EXTRA_LOG_EVENT_PACKAGE_NAME, "?")
+        onEvent(
+            id = bundle.getInt(EXTRA_LOG_EVENT_ID),
+            category = bundle.getInt(EXTRA_LOG_EVENT_CATEGORY),
+            packageName = bundle.getString(EXTRA_LOG_EVENT_PACKAGE_NAME),
+            bundle = bundle,
+        )
+    }
+
+    open fun onEvent(id: Int, category: Int, packageName: String?, bundle: Bundle) {
         if (id == LOG_EVENT_ID_ERROR_PREFLIGHT) {
             val preflightResult = bundle.getLong(EXTRA_LOG_PREFLIGHT_ERROR, -1)
             Log.w(TAG, "Pre-flight error from $packageName: $preflightResult")
         }
         if (!Log.isLoggable(TAG, DEBUG)) return
         Log.d(TAG, "ID: $id")
-        Log.d(TAG, "CATEGORY: " + bundle.getInt(EXTRA_LOG_EVENT_CATEGORY, -1))
+        Log.d(TAG, "CATEGORY: $category")
         Log.d(TAG, "PACKAGE: $packageName")
     }
 

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package com.stevesoltys.seedvault.proto;
+
+option java_multiple_files = true;
+
+message Snapshot {
+  uint32 version = 1;
+  uint64 token = 2;
+  string name = 3;
+  string user = 4;
+  string androidId = 5;
+  uint32 sdkInt = 6;
+  string androidIncremental = 7;
+  bool d2d = 8;
+  map<string, App> apps = 9;
+  repeated bytes iconChunkIds = 10;
+  map<string, Blob> blobs = 11;
+
+  message App {
+    uint64 time = 1;
+    BackupType type = 2;
+    string name = 3;
+    bool system = 4;
+    bool launchableSystemApp = 5;
+    repeated bytes chunkIds = 6;
+    Apk apk = 7;
+    uint64 size = 8;
+  }
+
+  enum BackupType {
+    FULL = 0;
+    KV = 1;
+  }
+
+  message Apk {
+    /**
+     * Attention: Has default value of 0
+     */
+    uint64 versionCode = 1;
+    string installer = 2;
+    repeated bytes signatures = 3;
+    repeated Split splits = 4;
+  }
+
+  message Split {
+    string name = 1;
+    repeated bytes chunkIds = 2;
+  }
+
+  message Blob {
+    bytes id = 1;
+    uint32 length = 2;
+    uint32 uncompressedLength = 3;
+  }
+
+}

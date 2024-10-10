@@ -63,7 +63,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
             full = mutableMapOf(),
             kv = mutableMapOf(),
             userApps = emptyList(), // will update everything below this after restore
-            userNotAllowedApps = emptyList()
         )
 
         spyOnRestoreData(result)
@@ -97,7 +96,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         return result.copy(
             userApps = packageService.userApps,
-            userNotAllowedApps = packageService.userNotAllowedApps
         )
     }
 
@@ -164,7 +162,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         clearMocks(spyKVRestore)
 
         coEvery {
-            spyKVRestore.initializeState(any(), any(), any(), any(), any())
+            spyKVRestore.initializeState(any(), any(), any(), any())
         } answers {
             packageName = arg<PackageInfo>(3).packageName
             restoreResult.kv[packageName!!] = mutableMapOf()
@@ -189,7 +187,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         clearMocks(spyFullRestore)
 
         coEvery {
-            spyFullRestore.initializeState(any(), any(), any(), any())
+            spyFullRestore.initializeState(any(), any(), any())
         } answers {
             packageName?.let {
                 restoreResult.full[it] = dataIntercept.toByteArray().sha256()

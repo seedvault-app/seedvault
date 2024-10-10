@@ -5,6 +5,7 @@
 
 package com.stevesoltys.seedvault.settings
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -24,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_ALLOWED
+import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_WAS_STOPPED
 import com.stevesoltys.seedvault.ui.AppBackupState.SUCCEEDED
 import com.stevesoltys.seedvault.ui.AppViewHolder
 import com.stevesoltys.seedvault.ui.toRelativeTime
@@ -114,13 +115,7 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                     startActivity(context, intent, null)
                     true
                 }
-                if (item.status == FAILED_NOT_ALLOWED) {
-                    appStatus.visibility = INVISIBLE
-                    progressBar.visibility = INVISIBLE
-                    appInfo.visibility = GONE
-                } else {
-                    setState(item.status, false)
-                }
+                setState(item.status, false)
                 if (item.status == SUCCEEDED) {
                     appInfo.text = if (item.size == null) {
                         item.time.toRelativeTime(context)
@@ -129,7 +124,17 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
                             " (${formatShortFileSize(v.context, item.size)})"
                     }
                     appInfo.visibility = VISIBLE
+                } else if (item.status == FAILED_WAS_STOPPED && item.time > 0) {
+                    @SuppressLint("SetTextI18n")
+                    appInfo.text = if (item.size == null) {
+                        item.time.toRelativeTime(context).toString()
+                    } else {
+                        item.time.toRelativeTime(context).toString() +
+                            " (${formatShortFileSize(v.context, item.size)})"
+                    } + "\n${item.status.getBackupText(context)}"
+                    appInfo.visibility = VISIBLE
                 }
+                // setState() above sets appInfo state for other cases already
                 checkBox.visibility = INVISIBLE
             }
             // show disabled items differently

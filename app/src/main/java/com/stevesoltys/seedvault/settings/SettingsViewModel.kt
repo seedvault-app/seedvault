@@ -35,12 +35,10 @@ import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import androidx.work.WorkManager
 import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.R
-import com.stevesoltys.seedvault.crypto.KeyManager
-import com.stevesoltys.seedvault.metadata.MetadataManager
-import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.crypto.KeyManager
+import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.storage.StorageBackupJobService
-import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.ui.LiveEvent
 import com.stevesoltys.seedvault.ui.MutableLiveEvent
 import com.stevesoltys.seedvault.ui.RequireProvisioningViewModel
@@ -68,11 +66,9 @@ internal class SettingsViewModel(
     settingsManager: SettingsManager,
     keyManager: KeyManager,
     backendManager: BackendManager,
-    private val metadataManager: MetadataManager,
     private val appListRetriever: AppListRetriever,
     private val storageBackup: StorageBackup,
     private val backupManager: IBackupManager,
-    private val backupInitializer: BackupInitializer,
     backupStateManager: BackupStateManager,
 ) : RequireProvisioningViewModel(app, settingsManager, keyManager, backendManager) {
 
@@ -88,7 +84,7 @@ internal class SettingsViewModel(
     private val mBackupPossible = MutableLiveData(false)
     val backupPossible: LiveData<Boolean> = mBackupPossible
 
-    internal val lastBackupTime = metadataManager.lastBackupTime
+    internal val lastBackupTime = settingsManager.lastBackupTime
     internal val appBackupWorkInfo =
         workManager.getWorkInfosForUniqueWorkLiveData(UNIQUE_WORK_NAME).map {
             it.getOrNull(0)
@@ -143,8 +139,6 @@ internal class SettingsViewModel(
             initialValue = false,
         )
         scope.launch {
-            // ensures the lastBackupTime LiveData gets set
-            metadataManager.getLastBackupTime()
             // update running state
             isBackupRunning.collect {
                 onBackupRunningStateChanged()
@@ -258,21 +252,6 @@ internal class SettingsViewModel(
 
     fun onBackupEnabled(enabled: Boolean) {
         if (enabled) {
-            if (metadataManager.requiresInit) {
-                val onError: () -> Unit = {
-                    viewModelScope.launch(Dispatchers.Main) {
-                        val res = R.string.storage_check_fragment_backup_error
-                        Toast.makeText(app, res, LENGTH_LONG).show()
-                    }
-                }
-                viewModelScope.launch(Dispatchers.IO) {
-                    backupInitializer.initialize(onError) {
-                        mInitEvent.postEvent(false)
-                        scheduleAppBackup(CANCEL_AND_REENQUEUE)
-                    }
-                    mInitEvent.postEvent(true)
-                }
-            }
             // enable call log backups for existing installs (added end of 2020)
             enableCallLogBackup()
         } else {

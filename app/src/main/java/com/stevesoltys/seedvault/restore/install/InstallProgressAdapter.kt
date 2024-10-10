@@ -84,7 +84,7 @@ internal class InstallProgressAdapter(
             if (item.icon == null) iconJob = scope.launch {
                 iconLoader(item, appIcon::setImageDrawable)
             } else appIcon.setImageDrawable(item.icon)
-            appName.text = item.name ?: getAppName(v.context, item.packageName.toString())
+            appName.text = item.name ?: getAppName(v.context, item.packageName)
             appInfo.visibility = GONE
             when (item.state) {
                 IN_PROGRESS -> {

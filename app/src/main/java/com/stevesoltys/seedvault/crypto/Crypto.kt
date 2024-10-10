@@ -5,23 +5,33 @@
 
 package com.stevesoltys.seedvault.crypto
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.provider.Settings
+import android.provider.Settings.Secure.ANDROID_ID
 import com.google.crypto.tink.subtle.AesGcmHkdfStreaming
 import com.stevesoltys.seedvault.encodeBase64
 import com.stevesoltys.seedvault.header.HeaderReader
 import com.stevesoltys.seedvault.header.MAX_SEGMENT_LENGTH
 import com.stevesoltys.seedvault.header.MAX_VERSION_HEADER_SIZE
 import com.stevesoltys.seedvault.header.SegmentHeader
+import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.header.VersionHeader
-import org.calyxos.backup.storage.crypto.StreamCrypto
-import org.calyxos.backup.storage.crypto.StreamCrypto.deriveStreamKey
+import org.calyxos.seedvault.core.crypto.CoreCrypto
+import org.calyxos.seedvault.core.crypto.CoreCrypto.ALGORITHM_HMAC
+import org.calyxos.seedvault.core.crypto.CoreCrypto.deriveKey
+import org.calyxos.seedvault.core.toByteArrayFromHex
+import org.calyxos.seedvault.core.toHexString
 import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
+import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -47,13 +57,18 @@ internal interface Crypto {
      */
     fun getRandomBytes(size: Int): ByteArray
 
-    fun getNameForPackage(salt: String, packageName: String): String
+    /**
+     * Returns the ID of the backup repository as a 64 char hex string.
+     */
+    val repoId: String
 
     /**
-     * Returns the name that identifies an APK in the backup storage plugin.
-     * @param suffix empty string for normal APKs and the name of the split in case of an APK split
+     * A secret key of size [KEY_SIZE_BYTES]
+     * only used to create a gear table specific to each main key.
      */
-    fun getNameForApk(salt: String, packageName: String, suffix: String = ""): String
+    val gearTableKey: ByteArray
+
+    fun sha256(bytes: ByteArray): ByteArray
 
     /**
      * Returns a [AesGcmHkdfStreaming] encrypting stream
@@ -71,6 +86,29 @@ internal interface Crypto {
      */
     @Throws(IOException::class, GeneralSecurityException::class)
     fun newDecryptingStream(
+        inputStream: InputStream,
+        associatedData: ByteArray,
+    ): InputStream
+
+    fun getAdForVersion(version: Byte = VERSION): ByteArray
+
+    @Deprecated("only for v1")
+    fun getNameForPackage(salt: String, packageName: String): String
+
+    /**
+     * Returns the name that identifies an APK in the backup storage plugin.
+     * @param suffix empty string for normal APKs and the name of the split in case of an APK split
+     */
+    @Deprecated("only for v1")
+    fun getNameForApk(salt: String, packageName: String, suffix: String = ""): String
+
+    /**
+     * Returns a [AesGcmHkdfStreaming] decrypting stream
+     * that gets decrypted and authenticated the given associated data.
+     */
+    @Deprecated("only for v1")
+    @Throws(IOException::class, GeneralSecurityException::class)
+    fun newDecryptingStreamV1(
         inputStream: InputStream,
         associatedData: ByteArray,
     ): InputStream
@@ -122,30 +160,71 @@ internal const val TYPE_BACKUP_KV: Byte = 0x01
 internal const val TYPE_BACKUP_FULL: Byte = 0x02
 internal const val TYPE_ICONS: Byte = 0x03
 
+@SuppressLint("HardwareIds")
 internal class CryptoImpl(
+    context: Context,
     private val keyManager: KeyManager,
     private val cipherFactory: CipherFactory,
     private val headerReader: HeaderReader,
+    private val androidId: String = Settings.Secure.getString(context.contentResolver, ANDROID_ID),
 ) : Crypto {
 
-    private val key: ByteArray by lazy {
-        deriveStreamKey(keyManager.getMainKey(), "app data key".toByteArray())
+    private val keyV1: ByteArray by lazy {
+        deriveKey(keyManager.getMainKey(), "app data key".toByteArray())
     }
-    private val secureRandom: SecureRandom by lazy { SecureRandom() }
+    private val streamKey: ByteArray by lazy {
+        deriveKey(keyManager.getMainKey(), "app backup stream key".toByteArray())
+    }
+    private val secureRandom: SecureRandom by lazy { SecureRandom.getInstanceStrong() }
 
     override fun getRandomBytes(size: Int) = ByteArray(size).apply {
         secureRandom.nextBytes(this)
     }
 
+    /**
+     * The ID of the backup repository tied to this user/device via [ANDROID_ID]
+     * and the current [KeyManager.getMainKey].
+     *
+     * Attention: If the main key ever changes, we need to kill our process,
+     * so all lazy values that depend on that key or the [gearTableKey] get reinitialized.
+     */
+    override val repoId: String by lazy {
+        val repoIdKey =
+            deriveKey(keyManager.getMainKey(), "app backup repoId key".toByteArray())
+        val hmacHasher: Mac = Mac.getInstance(ALGORITHM_HMAC).apply {
+            init(SecretKeySpec(repoIdKey, ALGORITHM_HMAC))
+        }
+        hmacHasher.doFinal(androidId.toByteArrayFromHex()).toHexString()
+    }
+
+    override val gearTableKey: ByteArray
+        get() = deriveKey(keyManager.getMainKey(), "app backup gear table key".toByteArray())
+
+    override fun newEncryptingStream(
+        outputStream: OutputStream,
+        associatedData: ByteArray,
+    ): OutputStream = CoreCrypto.newEncryptingStream(streamKey, outputStream, associatedData)
+
+    override fun newDecryptingStream(
+        inputStream: InputStream,
+        associatedData: ByteArray,
+    ): InputStream = CoreCrypto.newDecryptingStream(streamKey, inputStream, associatedData)
+
+    override fun getAdForVersion(version: Byte): ByteArray = ByteBuffer.allocate(1)
+        .put(version)
+        .array()
+
+    @Deprecated("only for v1")
     override fun getNameForPackage(salt: String, packageName: String): String {
         return sha256("$salt$packageName".toByteArray()).encodeBase64()
     }
 
+    @Deprecated("only for v1")
     override fun getNameForApk(salt: String, packageName: String, suffix: String): String {
         return sha256("${salt}APK$packageName$suffix".toByteArray()).encodeBase64()
     }
 
-    private fun sha256(bytes: ByteArray): ByteArray {
+    override fun sha256(bytes: ByteArray): ByteArray {
         val messageDigest: MessageDigest = try {
             MessageDigest.getInstance("SHA-256")
         } catch (e: NoSuchAlgorithmException) {
@@ -155,21 +234,12 @@ internal class CryptoImpl(
         return messageDigest.digest()
     }
 
+    @Deprecated("only for v1")
     @Throws(IOException::class, GeneralSecurityException::class)
-    override fun newEncryptingStream(
-        outputStream: OutputStream,
-        associatedData: ByteArray,
-    ): OutputStream {
-        return StreamCrypto.newEncryptingStream(key, outputStream, associatedData)
-    }
-
-    @Throws(IOException::class, GeneralSecurityException::class)
-    override fun newDecryptingStream(
+    override fun newDecryptingStreamV1(
         inputStream: InputStream,
         associatedData: ByteArray,
-    ): InputStream {
-        return StreamCrypto.newDecryptingStream(key, inputStream, associatedData)
-    }
+    ): InputStream = CoreCrypto.newDecryptingStream(keyV1, inputStream, associatedData)
 
     @Suppress("Deprecation")
     @Throws(IOException::class, SecurityException::class)

@@ -8,15 +8,15 @@ package com.stevesoltys.seedvault.transport.restore
 import android.app.backup.BackupDataOutput
 import android.app.backup.BackupTransport.TRANSPORT_ERROR
 import android.app.backup.BackupTransport.TRANSPORT_OK
-import com.stevesoltys.seedvault.coAssertThrows
-import com.stevesoltys.seedvault.encodeBase64
-import com.stevesoltys.seedvault.getRandomByteArray
-import com.stevesoltys.seedvault.header.UnsupportedVersionException
-import com.stevesoltys.seedvault.header.VERSION
-import com.stevesoltys.seedvault.header.VersionHeader
-import com.stevesoltys.seedvault.header.getADForKV
-import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
+import android.content.pm.PackageInfo
+import com.stevesoltys.seedvault.ANCESTRAL_RECORD_KEY
+import com.stevesoltys.seedvault.GLOBAL_METADATA_KEY
+import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.backend.BackendManager
+import com.stevesoltys.seedvault.coAssertThrows
+import com.stevesoltys.seedvault.getRandomByteArray
+import com.stevesoltys.seedvault.header.VERSION
+import com.stevesoltys.seedvault.repo.Loader
 import com.stevesoltys.seedvault.transport.backup.KVDb
 import com.stevesoltys.seedvault.transport.backup.KvDbManager
 import io.mockk.Runs
@@ -24,58 +24,38 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import io.mockk.verifyAll
 import kotlinx.coroutines.runBlocking
-import org.calyxos.seedvault.core.backends.Backend
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.security.GeneralSecurityException
-import java.util.zip.GZIPOutputStream
 import kotlin.random.Random
 
 internal class KVRestoreTest : RestoreTest() {
 
     private val backendManager: BackendManager = mockk()
-    private val backend = mockk<Backend>()
-    @Suppress("DEPRECATION")
-    private val legacyPlugin = mockk<LegacyStoragePlugin>()
+    private val loader = mockk<Loader>()
     private val dbManager = mockk<KvDbManager>()
     private val output = mockk<BackupDataOutput>()
     private val restore = KVRestore(
         backendManager = backendManager,
-        legacyPlugin = legacyPlugin,
+        loader = loader,
+        legacyPlugin = mockk(),
         outputFactory = outputFactory,
-        headerReader = headerReader,
-        crypto = crypto,
+        headerReader = mockk(),
+        crypto = mockk(),
         dbManager = dbManager,
     )
 
     private val db = mockk<KVDb>()
-    private val ad = getADForKV(VERSION, packageInfo.packageName)
+    private val blobHandles = listOf(blobHandle1)
 
     private val key = "Restore Key"
-    private val key64 = key.encodeBase64()
     private val key2 = "Restore Key2"
-    private val key264 = key2.encodeBase64()
     private val data2 = getRandomByteArray()
-
-    private val outputStream = ByteArrayOutputStream().apply {
-        GZIPOutputStream(this).close()
-    }
-    private val decryptInputStream = ByteArrayInputStream(outputStream.toByteArray())
-
-    init {
-        // for InputStream#readBytes()
-        mockkStatic("kotlin.io.ByteStreamsKt")
-
-        every { backendManager.backend } returns backend
-    }
 
     @Test
     fun `getRestoreData() throws without initializing state`() {
@@ -85,45 +65,27 @@ internal class KVRestoreTest : RestoreTest() {
     }
 
     @Test
-    fun `unexpected version aborts with error`() = runBlocking {
-        restore.initializeState(VERSION, token, name, packageInfo)
+    fun `loader#loadFiles() throws`() = runBlocking {
+        restore.initializeState(VERSION, packageInfo, blobHandles)
 
-        coEvery { backend.load(handle) } returns inputStream
-        every {
-            headerReader.readVersion(inputStream, VERSION)
-        } throws UnsupportedVersionException(Byte.MAX_VALUE)
+        coEvery { loader.loadFiles(blobHandles) } throws GeneralSecurityException()
         every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
         streamsGetClosed()
 
         assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    fun `newDecryptingStream throws`() = runBlocking {
-        restore.initializeState(VERSION, token, name, packageInfo)
-
-        coEvery { backend.load(handle) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } throws GeneralSecurityException()
-        every { dbManager.deleteDb(packageInfo.packageName, true) } returns true
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
 
         verifyAll {
+            fileDescriptor.close()
             dbManager.deleteDb(packageInfo.packageName, true)
         }
     }
 
     @Test
     fun `writeEntityHeader throws`() = runBlocking {
-        restore.initializeState(VERSION, token, name, packageInfo)
+        restore.initializeState(VERSION, packageInfo, blobHandles)
 
-        coEvery { backend.load(handle) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        coEvery { loader.loadFiles(blobHandles) } returns inputStream
+        every { inputStream.read(any()) } returns -1 // the DB we'll mock below
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()
@@ -144,11 +106,10 @@ internal class KVRestoreTest : RestoreTest() {
 
     @Test
     fun `two records get restored`() = runBlocking {
-        restore.initializeState(VERSION, token, name, packageInfo)
+        restore.initializeState(VERSION, packageInfo, blobHandles)
 
-        coEvery { backend.load(handle) } returns inputStream
-        every { headerReader.readVersion(inputStream, VERSION) } returns VERSION
-        every { crypto.newDecryptingStream(inputStream, ad) } returns decryptInputStream
+        coEvery { loader.loadFiles(blobHandles) } returns inputStream
+        every { inputStream.read(any()) } returns -1 // the DB we'll mock below
         every {
             dbManager.getDbOutputStream(packageInfo.packageName)
         } returns ByteArrayOutputStream()
@@ -180,226 +141,43 @@ internal class KVRestoreTest : RestoreTest() {
         }
     }
 
-    //
-    // v0 legacy tests below
-    //
-
     @Test
-    @Suppress("Deprecation")
-    fun `v0 hasDataForPackage() delegates to plugin`() = runBlocking {
-        val result = Random.nextBoolean()
+    fun `auto restore uses cached DB`() = runBlocking {
+        val pmPackageInfo = PackageInfo().apply {
+            packageName = MAGIC_PACKAGE_MANAGER
+        }
+        restore.initializeState(2, pmPackageInfo, blobHandles, packageInfo)
 
-        coEvery { legacyPlugin.hasDataForPackage(token, packageInfo) } returns result
-
-        assertEquals(result, restore.hasDataForPackage(token, packageInfo))
-    }
-
-    @Test
-    fun `v0 listing records throws`() = runBlocking {
-        restore.initializeState(0x00, token, name, packageInfo)
-
-        coEvery { legacyPlugin.listRecords(token, packageInfo) } throws IOException()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-    }
-
-    @Test
-    fun `v0 reading VersionHeader with unsupported version throws`() = runBlocking {
-        restore.initializeState(0x00, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every {
-            headerReader.readVersion(inputStream, 0x00)
-        } throws UnsupportedVersionException(unsupportedVersion)
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    fun `v0 error reading VersionHeader throws`() = runBlocking {
-        restore.initializeState(0x00, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } throws IOException()
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun `v0 decrypting stream throws`() = runBlocking {
-        restore.initializeState(0x00, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } returns 0x00
-        every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
-        } throws IOException()
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun `v0 decrypting stream throws security exception`() = runBlocking {
-        restore.initializeState(0x00, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0x00) } returns 0x00
-        every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
-        } returns VersionHeader(0x00, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } throws IOException()
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("Deprecation")
-    fun `v0 writing header throws`() = runBlocking {
-        restore.initializeState(0, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream, 0x00, packageInfo.packageName, key)
-        } returns VersionHeader(0x00, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
-        every { output.writeEntityHeader(key, data.size) } throws IOException()
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun `v0 writing value throws`() = runBlocking {
-        restore.initializeState(0, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
-        } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
-        every { output.writeEntityHeader(key, data.size) } returns 42
-        every { output.writeEntityData(data, data.size) } throws IOException()
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_ERROR, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun `v0 writing value succeeds`() = runBlocking {
-        restore.initializeState(0, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
-        } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
-        every { output.writeEntityHeader(key, data.size) } returns 42
-        every { output.writeEntityData(data, data.size) } returns data.size
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("deprecation")
-    fun `v0 writing value uses old v0 code`() = runBlocking {
-        restore.initializeState(0, token, name, packageInfo)
-
-        getRecordsAndOutput()
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
-        } returns VersionHeader(VERSION, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
-        every { output.writeEntityHeader(key, data.size) } returns 42
-        every { output.writeEntityData(data, data.size) } returns data.size
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
-        verifyStreamWasClosed()
-    }
-
-    @Test
-    @Suppress("Deprecation")
-    fun `v0 writing two values succeeds`() = runBlocking {
-        val data2 = getRandomByteArray()
-        val inputStream2 = mockk<InputStream>()
-        restore.initializeState(0, token, name, packageInfo)
-
-        getRecordsAndOutput(listOf(key64, key264))
-        // first key/value
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key64)
-        } returns inputStream
-        every { headerReader.readVersion(inputStream, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream, 0, packageInfo.packageName, key)
-        } returns VersionHeader(0, packageInfo.packageName, key)
-        every { crypto.decryptMultipleSegments(inputStream) } returns data
-        every { output.writeEntityHeader(key, data.size) } returns 42
-        every { output.writeEntityData(data, data.size) } returns data.size
-        // second key/value
-        coEvery {
-            legacyPlugin.getInputStreamForRecord(token, packageInfo, key264)
-        } returns inputStream2
-        every { headerReader.readVersion(inputStream2, 0) } returns 0
-        every {
-            crypto.decryptHeader(inputStream2, 0, packageInfo.packageName, key2)
-        } returns VersionHeader(0, packageInfo.packageName, key2)
-        every { crypto.decryptMultipleSegments(inputStream2) } returns data2
-        every { output.writeEntityHeader(key2, data2.size) } returns 42
-        every { output.writeEntityData(data2, data2.size) } returns data2.size
-        every { inputStream2.close() } just Runs
-        streamsGetClosed()
-
-        assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
-    }
-
-    private fun getRecordsAndOutput(recordKeys: List<String> = listOf(key64)) {
-        coEvery { legacyPlugin.listRecords(token, packageInfo) } returns recordKeys
+        every { dbManager.existsDb(MAGIC_PACKAGE_MANAGER) } returns true
+        every { dbManager.getDb(MAGIC_PACKAGE_MANAGER) } returns db
         every { outputFactory.getBackupDataOutput(fileDescriptor) } returns output
+        every { db.getAll() } returns listOf(
+            Pair(ANCESTRAL_RECORD_KEY, data),
+            Pair(GLOBAL_METADATA_KEY, data),
+            Pair(packageName, data2),
+            Pair("foo", Random.nextBytes(23)), // should get filtered out
+            Pair("bar", Random.nextBytes(42)), // should get filtered out
+        )
+        every { output.writeEntityHeader(ANCESTRAL_RECORD_KEY, data.size) } returns data.size
+        every { output.writeEntityHeader(GLOBAL_METADATA_KEY, data.size) } returns data.size
+        every { output.writeEntityHeader(packageName, data2.size) } returns data2.size
+        every { output.writeEntityData(data, data.size) } returns data.size
+        every { output.writeEntityData(data2, data2.size) } returns data2.size
+        every { db.close() } just Runs
+
+        every { dbManager.deleteDb(MAGIC_PACKAGE_MANAGER, true) } returns true
+        every { fileDescriptor.close() } just Runs
+
+        assertEquals(TRANSPORT_OK, restore.getRestoreData(fileDescriptor))
+
+        verify(exactly = 0) {
+            output.writeEntityHeader("foo", any())
+            output.writeEntityHeader("bar", any())
+        }
+        verify {
+            fileDescriptor.close()
+            db.close()
+        }
     }
 
     private fun streamsGetClosed() {
@@ -408,7 +186,7 @@ internal class KVRestoreTest : RestoreTest() {
     }
 
     private fun verifyStreamWasClosed() {
-        verifyAll {
+        verify {
             inputStream.close()
             fileDescriptor.close()
         }
