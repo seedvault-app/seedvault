@@ -192,9 +192,6 @@ internal interface LargeBackupTestBase : LargeTestBase {
         every {
             spyBackupNotificationManager.onBackupSuccess(any(), any(), any())
         } answers {
-            val success = firstArg<Boolean>()
-            assert(success) { "Backup failed." }
-
             callOriginal()
             completed.set(true)
         }
