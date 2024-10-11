@@ -10,6 +10,7 @@ import android.app.backup.IBackupManager
 import android.app.job.JobInfo
 import android.os.UserHandle
 import android.util.Log
+import androidx.annotation.UiThread
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import com.stevesoltys.seedvault.R
@@ -23,6 +24,7 @@ import com.stevesoltys.seedvault.worker.AppBackupWorker
 import com.stevesoltys.seedvault.worker.BackupRequester.Companion.requestFilesAndAppBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.calyxos.backup.storage.api.StorageBackup
 import org.calyxos.backup.storage.backup.BackupJobService
 import org.calyxos.seedvault.core.backends.Backend
@@ -46,25 +48,38 @@ internal class BackupStorageViewModel(
 
     override val isRestoreOperation = false
 
+    @UiThread
     override fun onSafUriSet(safProperties: SafProperties) {
         safHandler.save(safProperties)
-        safHandler.setPlugin(safProperties)
-        if (safProperties.isUsb) {
-            // disable storage backup if new storage is on USB
-            cancelBackupWorkers()
-        } else {
-            // enable it, just in case the previous storage was on USB,
-            // also to update the network requirement of the new storage
-            scheduleBackupWorkers()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                safHandler.setPlugin(safProperties)
+            }
+            withContext(Dispatchers.Main) { // UiThread
+                if (safProperties.isUsb) {
+                    // disable storage backup if new storage is on USB
+                    cancelBackupWorkers()
+                } else {
+                    // enable it, just in case the previous storage was on USB,
+                    // also to update the network requirement of the new storage
+                    scheduleBackupWorkers()
+                }
+                onStorageLocationSet(safProperties.isUsb)
+            }
         }
-        onStorageLocationSet(safProperties.isUsb)
     }
 
     override fun onWebDavConfigSet(properties: WebDavProperties, backend: Backend) {
         webdavHandler.save(properties)
-        webdavHandler.setPlugin(properties, backend)
-        scheduleBackupWorkers()
-        onStorageLocationSet(isUsb = false)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                webdavHandler.setPlugin(properties, backend)
+            }
+            withContext(Dispatchers.Main) {
+                scheduleBackupWorkers()
+                onStorageLocationSet(isUsb = false)
+            }
+        }
     }
 
     private fun onStorageLocationSet(isUsb: Boolean) {
