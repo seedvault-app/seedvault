@@ -5,7 +5,6 @@
 
 package com.stevesoltys.seedvault.e2e.impl
 
-import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Log
 import androidx.test.filters.LargeTest
@@ -13,7 +12,7 @@ import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTest
 import com.stevesoltys.seedvault.e2e.SeedvaultLargeTestResult
 import com.stevesoltys.seedvault.metadata.PackageState
-import com.stevesoltys.seedvault.settings.SettingsActivity
+import com.stevesoltys.seedvault.transport.backup.isStopped
 import org.junit.Test
 
 @LargeTest
@@ -67,7 +66,8 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
 
     private fun launchStoppedApps() {
         val packageManager = targetContext.packageManager
-        packageService.notBackedUpPackages.forEach { packageInfo ->
+        val notBackedUp = packageService.notBackedUpPackages
+        notBackedUp.forEach { packageInfo ->
             val i = packageManager.getLaunchIntentForPackage(packageInfo.packageName)?.apply {
                 addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
@@ -77,12 +77,13 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
             } catch (e: Exception) {
                 Log.e("TEST", "Could not launch activity for ${packageInfo.packageName}", e)
             }
+            waitUntilIdle()
         }
-        // at the end launch us again, so we are back to foreground
-        val i = Intent(targetContext, SettingsActivity::class.java).apply {
-            flags = FLAG_ACTIVITY_NEW_TASK
+        waitUntilIdle()
+        notBackedUp.forEach { packageInfo ->
+            val pi = packageManager.getPackageInfo(packageInfo.packageName, 0)
+            Log.e("TEST", "${packageInfo.packageName} isStopped: ${pi.isStopped()}")
         }
-        targetContext.startActivity(i)
     }
 
     private fun assertValidResults(
