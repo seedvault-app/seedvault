@@ -21,7 +21,6 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
 
     @Test
     fun `backup and restore applications`() {
-        launchStoppedApps()
         launchBackupActivity()
 
         if (!keyManager.hasBackupKey()) {
@@ -33,6 +32,9 @@ internal class BackupRestoreTest : SeedvaultLargeTest() {
         } else {
             changeBackupLocation()
         }
+
+        launchStoppedApps()
+        launchBackupActivity()
 
         val backupResult = performBackup()
         assertValidBackupMetadata(backupResult)
