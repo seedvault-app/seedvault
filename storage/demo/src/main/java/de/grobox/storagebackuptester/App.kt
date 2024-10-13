@@ -9,6 +9,7 @@ import android.app.Application
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import android.util.Log
+import com.google.android.material.color.DynamicColors
 import de.grobox.storagebackuptester.crypto.KeyManager
 import de.grobox.storagebackuptester.plugin.TestSafBackend
 import de.grobox.storagebackuptester.settings.SettingsManager
@@ -26,6 +27,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        DynamicColors.applyToActivitiesIfAvailable(this)
         StrictMode.setThreadPolicy(
             StrictMode.ThreadPolicy.Builder()
                 .detectAll()
