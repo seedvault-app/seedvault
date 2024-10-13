@@ -10,6 +10,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.recoverycode.RecoveryCodeActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/recovery_code_title" />
+
     <ImageView
         android:id="@+id/introIcon"
         android:layout_width="wrap_content"
@@ -18,7 +29,7 @@
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_info_outline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -32,7 +43,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/introIcon"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <TextView
         android:id="@+id/introText2"
@@ -78,8 +89,8 @@
         style="@style/SudPrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/recovery_code_confirm_button"
         android:layout_marginEnd="40dp"
+        android:text="@string/recovery_code_confirm_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wordList" />

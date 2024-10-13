@@ -6,9 +6,8 @@
 package com.stevesoltys.seedvault.ui.files
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import org.calyxos.backup.storage.ui.backup.BackupContentFragment
@@ -20,13 +19,15 @@ class FileSelectionFragment : BackupContentFragment() {
     override val viewModel by viewModel<FileSelectionViewModel>()
     private val settingsViewModel by sharedViewModel<SettingsViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        requireActivity().setTitle(R.string.settings_backup_files_title)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            title = getString(R.string.settings_backup_files_title)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
     }
 
     override fun onDestroy() {

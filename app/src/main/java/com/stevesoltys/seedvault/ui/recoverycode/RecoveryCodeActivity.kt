@@ -6,7 +6,6 @@
 package com.stevesoltys.seedvault.ui.recoverycode
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
@@ -39,16 +38,6 @@ class RecoveryCodeActivity : BackupActivity() {
         if (savedInstanceState == null) {
             if (viewModel.isRestore) showInput(false)
             else showOutput()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

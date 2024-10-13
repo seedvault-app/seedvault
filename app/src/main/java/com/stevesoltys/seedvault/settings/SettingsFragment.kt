@@ -11,12 +11,11 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.os.RemoteException
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -53,9 +52,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var backupStorage: TwoStatePreference
     private lateinit var backupRecoveryCode: Preference
 
-    private var menuBackupNow: MenuItem? = null
-    private var menuRestore: MenuItem? = null
-
     private val backendProperties: BackendProperties<*>?
         get() = backendManager.backendProperties
 
@@ -63,7 +59,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         permitDiskReads {
             setPreferencesFromResource(R.xml.settings, rootKey)
         }
-        setHasOptionsMenu(true)
 
         backup = findPreference("backup")!!
         backup.onPreferenceChangeListener = OnPreferenceChangeListener { _, newValue ->
@@ -141,6 +136,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val toolbar = view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            title = getString(R.string.backup)
+            inflateMenu(R.menu.settings_menu)
+            setOnMenuItemClickListener(::onMenuItemSelected)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
+        viewModel.backupPossible.observe(viewLifecycleOwner) { possible ->
+            toolbar.menu.findItem(R.id.action_backup)?.isEnabled = possible
+            toolbar.menu.findItem(R.id.action_restore)?.isEnabled = possible
+        }
+
         viewModel.lastBackupTime.observe(viewLifecycleOwner) { time ->
             setAppBackupStatusSummary(time)
         }
@@ -156,9 +165,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onStart() {
         super.onStart()
-
-        // we need to re-set the title when returning to this fragment
-        activity?.setTitle(R.string.backup)
 
         setBackupEnabledState()
         setBackupLocationSummary()
@@ -185,18 +191,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.settings_menu, menu)
-        menuBackupNow = menu.findItem(R.id.action_backup)
-        menuRestore = menu.findItem(R.id.action_restore)
-        viewModel.backupPossible.observe(viewLifecycleOwner) { possible ->
-            menuBackupNow?.isEnabled = possible
-            menuRestore?.isEnabled = possible
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    private fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_backup -> {
             viewModel.backupNow()
             true
@@ -219,7 +214,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .commit()
             true
         }
-        else -> super.onOptionsItemSelected(item)
+        else -> false
     }
 
     private fun trySetBackupEnabled(enabled: Boolean): Boolean {
