@@ -260,6 +260,6 @@
     <string name="about_contributor_headline">Contributors</string>
     <string name="about_contributor_content">Please see GitHub for a <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">list of contributors</a>.</string>
     <string name="about_contributing_organizations_title">Contributing Organizations</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a>\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a>\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust Fund by NLnet</a></string>
 
 </resources>
