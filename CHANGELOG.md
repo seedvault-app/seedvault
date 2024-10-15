@@ -1,5 +1,14 @@
-## [15-4.1] - 2024-09-06
-* Android 15
+## [15-5.0] - 2024-10-15
+* First Android 15 release
+* New backup format using compression and deduplication
+* Can still restore old backups, but old Seedvault can't restore backups from this version
+* Faster and more reliable backups making snapshots that can individually be restored
+* Auto-cleaning of old backups
+* All backups now mimic device-to-device (allowing backup for all apps)
+* All backups now use a high per-app app quota
+* App backup (for APKs) moved to expert settings
+* Show more information for backups available to restore
+* Fix "Waiting to back up..." showing for apps
 
 ## [14-4.1] - 2024-08-23
 * It is now possible to restore after setting up a profile
