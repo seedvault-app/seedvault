@@ -107,7 +107,11 @@ internal class AppListRetriever(
         val locale = Locale.getDefault()
         return (userApps + packageService.launchableSystemApps.mapNotNull {
             val packageName = it.activityInfo.packageName
-            if (packageName in userPackages) return@mapNotNull null
+            if (packageName in userPackages || packageName == context.packageName) {
+                // don't re-add user packages again,
+                // also on some ROMs we are a launchableSystemApp, so we need to exclude ourselves
+                return@mapNotNull null
+            }
             val metadata = metadataManager.getPackageMetadata(packageName)
             AppStatus(
                 packageName = packageName,
