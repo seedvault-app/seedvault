@@ -6,7 +6,6 @@
 package com.stevesoltys.seedvault.backend.webdav
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.R
@@ -42,7 +41,7 @@ internal class WebDavHandler(
 
     companion object {
         fun createWebDavProperties(context: Context, config: WebDavConfig): WebDavProperties {
-            val host = Uri.parse(config.url).host
+            val host = config.url.removePrefix("https://")
             return WebDavProperties(
                 config = config,
                 name = context.getString(R.string.storage_webdav_name, host),
