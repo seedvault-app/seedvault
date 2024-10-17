@@ -9,14 +9,12 @@ import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.grobox.storagebackuptester.MainViewModel
@@ -44,18 +42,21 @@ class SettingsFragment : BackupContentFragment() {
         onBackupUriReceived(uri)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        setHasOptionsMenu(true)
-        requireActivity().title = "Settings"
-        return super.onCreateView(inflater, container, savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            title = "Settings"
+            inflateMenu(R.menu.fragment_settings)
+            onCreateMenu(menu)
+            setOnMenuItemClickListener(::onMenuItemSelected)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_settings, menu)
+    private fun onCreateMenu(menu: Menu) {
         backupLocationItem = menu.findItem(R.id.backup_location)
         backupLocationItem.isChecked = viewModel.hasBackupLocation()
         jobItem = menu.findItem(R.id.backup_job)
@@ -65,7 +66,7 @@ class SettingsFragment : BackupContentFragment() {
         restoreItem.isEnabled = backupLocationItem.isChecked
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun onMenuItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.info -> {
                 parentFragmentManager.beginTransaction()
@@ -102,7 +103,7 @@ class SettingsFragment : BackupContentFragment() {
                 Toast.makeText(requireContext(), "Cache cleared", LENGTH_SHORT).show()
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> false
         }
     }
 

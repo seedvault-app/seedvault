@@ -26,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getMainExecutor
 import androidx.fragment.app.Fragment
@@ -105,7 +106,11 @@ class RecoveryCodeInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.setTitle(R.string.recovery_code_title)
+        view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
 
         if (viewModel.isRestore) {
             introText.setText(R.string.recovery_code_input_intro)

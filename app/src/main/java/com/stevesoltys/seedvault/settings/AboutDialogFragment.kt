@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.transport.backup.PackageService
@@ -41,12 +42,11 @@ class AboutDialogFragment : Fragment() {
         contributorsView.movementMethod = linkMovementMethod
         orgsView.movementMethod = linkMovementMethod
 
-        return v
-    }
+        v.requireViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
 
-    override fun onStart() {
-        super.onStart()
-        activity?.setTitle(R.string.about_title)
+        return v
     }
 
 }

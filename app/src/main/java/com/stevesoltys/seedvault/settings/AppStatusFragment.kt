@@ -7,14 +7,13 @@ package com.stevesoltys.seedvault.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +31,6 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = AppStatusAdapter(this)
 
-    private lateinit var appEditMenuItem: MenuItem
     private lateinit var list: RecyclerView
     private lateinit var progressBar: ProgressBar
 
@@ -41,7 +39,6 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        setHasOptionsMenu(true)
         val v: View = inflater.inflate(R.layout.fragment_app_status, container, false)
 
         progressBar = v.requireViewById(R.id.progressBar)
@@ -53,7 +50,17 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.setTitle(R.string.settings_backup_status_title)
+        val toolbar = view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            setOnMenuItemClickListener(::onMenuItemSelected)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
+        viewModel.appEditMode.observe(viewLifecycleOwner) { enabled ->
+            toolbar.menu.findItem(R.id.edit_app_blacklist)?.isChecked = enabled
+            adapter.setEditMode(enabled)
+        }
 
         list.apply {
             layoutManager = this@AppStatusFragment.layoutManager
@@ -67,24 +74,12 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.app_status_menu, menu)
-        appEditMenuItem = menu.findItem(R.id.edit_app_blacklist)
-
-        // observe edit mode changes here where we are sure to have the MenuItem
-        viewModel.appEditMode.observe(viewLifecycleOwner) { enabled ->
-            appEditMenuItem.isChecked = enabled
-            adapter.setEditMode(enabled)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    private fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.edit_app_blacklist -> {
             viewModel.setEditMode(!item.isChecked)
             true
         }
-        else -> super.onOptionsItemSelected(item)
+        else -> false
     }
 
     override fun onAppStatusToggled(status: AppStatus) {

@@ -10,11 +10,15 @@
         <item name="colorError">@color/red</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="fontFamily">@*android:string/config_bodyFontFamily</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="preferenceTheme">@style/PreferenceTheme</item>
         <item name="android:windowLightStatusBar">@bool/isLight</item>
         <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightNavigationBar">@bool/isLight</item>
         <item name="android:navigationBarColor">@color/background</item>
+    </style>
+
+    <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="android:layout">@layout/fragment_settings</item>
     </style>
 
     <!-- Copied from Settings -->

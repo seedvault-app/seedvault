@@ -10,8 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.FOCUS_DOWN
@@ -21,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.UiThread
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -53,8 +52,6 @@ open class MediaScanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        setHasOptionsMenu(true)
-        requireActivity().title = arguments?.getString("name")
         val v = inflater.inflate(R.layout.fragment_scan, container, false)
         scrollView = v.findViewById(R.id.scrollView)
         logView = v.findViewById(R.id.logView)
@@ -63,11 +60,19 @@ open class MediaScanFragment : Fragment() {
         return v
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.fragment_scan, menu)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            title = arguments?.getString("name")
+            setOnMenuItemClickListener(::onMenuItemSelected)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    private fun onMenuItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.refresh -> {
                 loadText()
@@ -85,7 +90,7 @@ open class MediaScanFragment : Fragment() {
                 startActivity(shareIntent)
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> false
         }
     }
 

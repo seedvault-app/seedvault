@@ -7,7 +7,9 @@ package com.stevesoltys.seedvault.settings
 
 import android.app.backup.IBackupManager
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
+import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -66,9 +68,19 @@ class ExpertSettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.requireViewById<Toolbar>(R.id.toolbar).apply {
+            title = getString(R.string.settings_expert_title)
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-        activity?.setTitle(R.string.settings_expert_title)
         apkBackup.isEnabled = backupManager.isBackupEnabled
     }
 }
