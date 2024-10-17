@@ -7,6 +7,7 @@ package com.stevesoltys.seedvault.repo
 
 import android.content.Context
 import android.content.Context.MODE_APPEND
+import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
@@ -90,6 +91,7 @@ class BlobCache(
      * * changing to a different backup to prevent usage of blobs that don't exist there
      * * uploading a new snapshot to prevent the persistent cache from growing indefinitely
      */
+    @WorkerThread
     fun clearLocalCache() {
         log.info { "Clearing local cache..." }
         context.deleteFile(CACHE_FILE_NAME)

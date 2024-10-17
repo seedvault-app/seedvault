@@ -86,6 +86,7 @@ internal class WebDavHandler(
         settingsManager.saveWebDavConfig(properties.config)
     }
 
+    @WorkerThread
     fun setPlugin(properties: WebDavProperties, backend: Backend) {
         backendManager.changePlugins(
             backend = backend,

@@ -107,8 +107,12 @@ class RecoveryCodeInputFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.requireViewById<Toolbar>(R.id.toolbar).apply {
-            setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+            if (viewModel.isRestore) {
+                visibility = GONE
+            } else {
+                setNavigationOnClickListener {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }
         }
 

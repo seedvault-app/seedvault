@@ -90,6 +90,7 @@ internal class SafHandler(
         return false
     }
 
+    @WorkerThread
     fun setPlugin(safProperties: SafProperties) {
         backendManager.changePlugins(
             backend = backendFactory.createSafBackend(safProperties),

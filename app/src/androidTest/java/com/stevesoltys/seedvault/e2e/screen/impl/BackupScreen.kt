@@ -24,7 +24,7 @@ object BackupScreen : UiDeviceScreen<BackupScreen>() {
 
     val internalStorageButton = findObject { textContains(Build.MODEL) }
 
-    val useAnywayButton = findObject { text("USE ANYWAY") }
+    val useAnywayButton = findObject { text("Use anyway") }
 
     val initializingText: BySelector = By.textContains("Initializing backup location")
 }

@@ -9,6 +9,8 @@ import com.stevesoltys.seedvault.e2e.screen.UiDeviceScreen
 
 object RecoveryCodeScreen : UiDeviceScreen<RecoveryCodeScreen>() {
 
+    val startNewBackupButton = findObject { text("Start new") }
+
     val confirmCodeButton = findObject { text("Confirm code") }
 
     val verifyCodeButton = findObject { text("Verify") }

@@ -2,8 +2,6 @@
  * SPDX-FileCopyrightText: 2020 The Calyx Institute
  * SPDX-License-Identifier: Apache-2.0
  */
-import java.io.FileInputStream
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -42,23 +40,18 @@ android {
         isReturnDefaultValues = true
     }
 
-    // optional signingConfigs
-    // On userdebug builds, you can use the testkey here to update the system app
-    val keystorePropertiesFile = project.file("keystore.properties")
-    if (keystorePropertiesFile.exists()) {
-        val keystoreProperties = Properties()
-        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-        signingConfigs {
-            create("release") {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-            }
+    signingConfigs {
+        create("aosp") {
+            keyAlias = "android"
+            keyPassword = "android"
+            storePassword = "android"
+            storeFile = file("testkey.jks")
         }
-        buildTypes.getByName("release").signingConfig = signingConfigs.getByName("release")
-        buildTypes.getByName("debug").signingConfig = signingConfigs.getByName("release")
+    }
+
+    buildTypes {
+        getByName("release").signingConfig = signingConfigs.getByName("aosp")
+        getByName("debug").signingConfig = signingConfigs.getByName("aosp")
     }
 }
 
@@ -74,6 +67,7 @@ dependencies {
     androidTestImplementation(libs.kotlin.stdlib.jdk8)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation(
-        "androidx.test.espresso:espresso-core:${libs.versions.espresso.get()}")
+        "androidx.test.espresso:espresso-core:${libs.versions.espresso.get()}"
+    )
     androidTestImplementation("io.mockk:mockk-android:${libs.versions.mockk.get()}")
 }

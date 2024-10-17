@@ -5,9 +5,12 @@
 
 package org.calyxos.backup.contacts
 
+import android.Manifest.permission.READ_CONTACTS
+import android.Manifest.permission.WRITE_CONTACTS
 import android.app.backup.BackupAgent
 import android.app.backup.BackupAgent.TYPE_FILE
 import android.app.backup.FullBackupDataOutput
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_ONLY
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +22,7 @@ import org.calyxos.backup.contacts.ContactsBackupAgent.BACKUP_FILE
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -42,6 +46,9 @@ class BackupRestoreTest {
 
     @Test
     fun testBackupAndRestore() {
+        val hasReadPermission = context.checkSelfPermission(READ_CONTACTS) == PERMISSION_GRANTED
+        val hasWritePermission = context.checkSelfPermission(WRITE_CONTACTS) == PERMISSION_GRANTED
+        assumeTrue(hasReadPermission && hasWritePermission)
         assertEquals(
             "Test will remove *all* contacts and thus requires empty address book",
             0,

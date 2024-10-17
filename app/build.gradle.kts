@@ -32,13 +32,6 @@ android {
         versionNameSuffix = "-${gitDescribe()}"
         testInstrumentationRunner = "com.stevesoltys.seedvault.KoinInstrumentationTestRunner"
         testInstrumentationRunnerArguments["disableAnalytics"] = "true"
-
-        if (project.hasProperty("instrumented_test_size")) {
-            val testSize = project.property("instrumented_test_size").toString()
-            println("Instrumented test size: $testSize")
-
-            testInstrumentationRunnerArguments["size"] = testSize
-        }
     }
 
     signingConfigs {
