@@ -124,6 +124,8 @@ class AppBackupWorker(
                 Result.retry()
             } else {
                 val result = doBackup()
+                // show error notification if backup wasn't successful (maybe only when no retry?)
+                if (result != Result.success()) nm.onBackupError()
                 // only allow retrying if rescheduling is allowed
                 if (tags.contains(TAG_RESCHEDULE)) return result
                 else Result.success()

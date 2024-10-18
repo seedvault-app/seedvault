@@ -8,12 +8,13 @@ package com.stevesoltys.seedvault.e2e
 import android.content.pm.PackageInfo
 import android.os.ParcelFileDescriptor
 import com.stevesoltys.seedvault.e2e.io.BackupDataOutputIntercept
-import com.stevesoltys.seedvault.e2e.io.OutputStreamIntercept
 import com.stevesoltys.seedvault.e2e.screen.impl.RecoveryCodeScreen
 import com.stevesoltys.seedvault.e2e.screen.impl.RestoreScreen
 import com.stevesoltys.seedvault.transport.restore.FullRestore
 import com.stevesoltys.seedvault.transport.restore.KVRestore
 import com.stevesoltys.seedvault.transport.restore.OutputFactory
+import io.mockk.Call
+import io.mockk.MockKAnswerScope
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.every
@@ -22,8 +23,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import org.calyxos.seedvault.core.toHexString
 import org.koin.core.component.get
-import java.io.ByteArrayOutputStream
+import java.security.DigestOutputStream
+import java.security.MessageDigest
+import kotlin.test.fail
 
 internal interface LargeRestoreTestBase : LargeTestBase {
 
@@ -161,13 +165,25 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
         clearMocks(spyKVRestore)
 
-        coEvery {
-            spyKVRestore.initializeState(any(), any(), any(), any())
-        } answers {
-            packageName = arg<PackageInfo>(3).packageName
+        fun initializeStateBlock(
+            packageInfoIndex: Int
+        ): MockKAnswerScope<Unit, Unit>.(Call) -> Unit = {
+            packageName = arg<PackageInfo>(packageInfoIndex).packageName
             restoreResult.kv[packageName!!] = mutableMapOf()
             callOriginal()
         }
+
+        coEvery {
+            spyKVRestore.initializeState(any(), any(), any(), any())
+        } answers initializeStateBlock(1)
+
+        coEvery {
+            spyKVRestore.initializeStateV1(any(), any(), any(), any())
+        } answers initializeStateBlock(2)
+
+        coEvery {
+            spyKVRestore.initializeStateV0(any(), any())
+        } answers initializeStateBlock(1)
 
         every {
             spyOutputFactory.getBackupDataOutput(any())
@@ -182,47 +198,61 @@ internal interface LargeRestoreTestBase : LargeTestBase {
 
     private fun spyOnFullRestoreData(restoreResult: SeedvaultLargeTestResult) {
         var packageName: String? = null
-        var dataIntercept = ByteArrayOutputStream()
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        var digestOutputStream: DigestOutputStream? = null
 
         clearMocks(spyFullRestore)
 
-        coEvery {
-            spyFullRestore.initializeState(any(), any(), any())
-        } answers {
+        fun initializeStateBlock(
+            packageInfoIndex: Int
+        ): MockKAnswerScope<Unit, Unit>.(Call) -> Unit = {
             packageName?.let {
-                restoreResult.full[it] = dataIntercept.toByteArray().sha256()
+                // sometimes finishRestore() doesn't get called, so get data from last package here
+                digestOutputStream?.messageDigest?.let { digest ->
+                    restoreResult.full[packageName!!] = digest.digest().toHexString()
+                }
             }
 
-            packageName = arg<PackageInfo>(3).packageName
-            dataIntercept = ByteArrayOutputStream()
+            packageName = arg<PackageInfo>(packageInfoIndex).packageName
 
             callOriginal()
         }
 
+        coEvery {
+            spyFullRestore.initializeState(any(), any(), any())
+        } answers initializeStateBlock(1)
+
+        coEvery {
+            spyFullRestore.initializeStateV1(any(), any(), any())
+        } answers initializeStateBlock(2)
+
+        coEvery {
+            spyFullRestore.initializeStateV0(any(), any())
+        } answers initializeStateBlock(1)
+
         every {
             spyOutputFactory.getOutputStream(any())
         } answers {
-            OutputStreamIntercept(
-                outputStream = callOriginal(),
-                intercept = dataIntercept
-            )
+            digestOutputStream = DigestOutputStream(callOriginal(), messageDigest)
+            digestOutputStream!!
         }
 
         every {
             spyFullRestore.abortFullRestore()
         } answers {
             packageName = null
-            dataIntercept = ByteArrayOutputStream()
+            digestOutputStream?.messageDigest?.reset()
             callOriginal()
         }
 
         every {
             spyFullRestore.finishRestore()
         } answers {
-            restoreResult.full[packageName!!] = dataIntercept.toByteArray().sha256()
+            val digest = digestOutputStream?.messageDigest ?: fail("No digestOutputStream")
+            restoreResult.full[packageName!!] = digest.digest().toHexString()
 
             packageName = null
-            dataIntercept = ByteArrayOutputStream()
+            digest.reset()
             callOriginal()
         }
     }
