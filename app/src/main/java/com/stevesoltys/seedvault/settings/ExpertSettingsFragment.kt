@@ -20,11 +20,11 @@ import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class ExpertSettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: SettingsViewModel by sharedViewModel()
+    private val viewModel: SettingsViewModel by activityViewModel()
     private val packageService: PackageService by inject()
     private val backupManager: IBackupManager by inject()
 

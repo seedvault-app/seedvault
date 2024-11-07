@@ -26,11 +26,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.restore.RestoreViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class InstallProgressFragment : Fragment(), InstallItemListener {
 
-    private val viewModel: RestoreViewModel by sharedViewModel()
+    private val viewModel: RestoreViewModel by activityViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = InstallProgressAdapter(lifecycleScope, this::loadIcon, this)

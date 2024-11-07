@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.stevesoltys.seedvault.R
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class AppSelectionFragment : Fragment() {
 
-    private val viewModel: RestoreViewModel by sharedViewModel()
+    private val viewModel: RestoreViewModel by activityViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = AppSelectionAdapter(lifecycleScope, this::loadIcon) { item ->

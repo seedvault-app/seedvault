@@ -31,14 +31,14 @@ import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.toRelativeTime
 import org.calyxos.seedvault.core.backends.BackendProperties
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.concurrent.TimeUnit
 
 private val TAG = SettingsFragment::class.java.name
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: SettingsViewModel by sharedViewModel()
+    private val viewModel: SettingsViewModel by activityViewModel()
     private val backendManager: BackendManager by inject()
     private val backupStateManager: BackupStateManager by inject()
     private val backupManager: IBackupManager by inject()

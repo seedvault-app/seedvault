@@ -14,11 +14,11 @@ import android.widget.Button
 import com.stevesoltys.seedvault.R
 import org.calyxos.backup.storage.ui.restore.FileSelectionFragment
 import org.calyxos.backup.storage.ui.restore.FilesItem
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 internal class FilesSelectionFragment : FileSelectionFragment() {
 
-    override val viewModel: RestoreViewModel by sharedViewModel()
+    override val viewModel: RestoreViewModel by activityViewModel()
     private lateinit var button: Button
 
     override fun onCreateView(

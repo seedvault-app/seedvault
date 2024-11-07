@@ -21,12 +21,12 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.permitDiskReads
 import com.stevesoltys.seedvault.settings.preference.M3ListPreference
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SchedulingFragment : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val viewModel: SettingsViewModel by sharedViewModel()
+    private val viewModel: SettingsViewModel by activityViewModel()
     private val settingsManager: SettingsManager by inject()
     private val backendManager: BackendManager by inject()
 

@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 internal interface AppStatusToggleListener {
     fun onAppStatusToggled(status: AppStatus)
@@ -26,7 +26,7 @@ internal interface AppStatusToggleListener {
 
 class AppStatusFragment : Fragment(), AppStatusToggleListener {
 
-    private val viewModel: SettingsViewModel by sharedViewModel()
+    private val viewModel: SettingsViewModel by activityViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = AppStatusAdapter(this)

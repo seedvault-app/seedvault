@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.ui.AppBackupState.FAILED_NOT_INSTALLED
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class RestoreProgressFragment : Fragment() {
 
-    private val viewModel: RestoreViewModel by sharedViewModel()
+    private val viewModel: RestoreViewModel by activityViewModel()
 
     private val layoutManager = LinearLayoutManager(context)
     private val adapter = RestoreProgressAdapter(lifecycleScope, this::loadIcon)

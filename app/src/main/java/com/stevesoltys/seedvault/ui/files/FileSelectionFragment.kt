@@ -11,13 +11,13 @@ import androidx.appcompat.widget.Toolbar
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.settings.SettingsViewModel
 import org.calyxos.backup.storage.ui.backup.BackupContentFragment
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FileSelectionFragment : BackupContentFragment() {
 
     override val viewModel by viewModel<FileSelectionViewModel>()
-    private val settingsViewModel by sharedViewModel<SettingsViewModel>()
+    private val settingsViewModel by activityViewModel<SettingsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

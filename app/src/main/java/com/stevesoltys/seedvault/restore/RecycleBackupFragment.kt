@@ -13,11 +13,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.stevesoltys.seedvault.R
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class RecycleBackupFragment : Fragment() {
 
-    private val viewModel: RestoreViewModel by sharedViewModel()
+    private val viewModel: RestoreViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

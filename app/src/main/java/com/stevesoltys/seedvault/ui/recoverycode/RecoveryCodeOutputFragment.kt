@@ -18,11 +18,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.isDebugBuild
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class RecoveryCodeOutputFragment : Fragment() {
 
-    private val viewModel: RecoveryCodeViewModel by sharedViewModel()
+    private val viewModel: RecoveryCodeViewModel by activityViewModel()
 
     private lateinit var wordList: RecyclerView
     private lateinit var confirmCodeButton: Button
