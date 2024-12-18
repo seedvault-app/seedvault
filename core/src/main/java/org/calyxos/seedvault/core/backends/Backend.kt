@@ -7,7 +7,6 @@ package org.calyxos.seedvault.core.backends
 
 import androidx.annotation.VisibleForTesting
 import java.io.InputStream
-import java.io.OutputStream
 import kotlin.reflect.KClass
 
 public interface Backend {
@@ -24,9 +23,6 @@ public interface Backend {
      * Returning a negative number or zero to indicate unknown is discouraged.
      */
     public suspend fun getFreeSpace(): Long?
-
-    @Deprecated(message = "use save(FileHandle, BackendSaver) instead")
-    public suspend fun save(handle: FileHandle): OutputStream
 
     public suspend fun save(handle: FileHandle, saver: BackendSaver): Long
 

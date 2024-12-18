@@ -13,11 +13,6 @@ import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.webdav.QuotaAvailableBytes
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -45,8 +40,6 @@ import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -54,7 +47,6 @@ import kotlin.reflect.KClass
 
 private const val DEBUG_LOG = true
 
-@OptIn(DelicateCoroutinesApi::class)
 public class WebDavBackend(
     webDavConfig: WebDavConfig,
     root: String = DIRECTORY_ROOT,
@@ -120,39 +112,6 @@ public class WebDavBackend(
             }
         }
         return availableBytes
-    }
-
-    @Deprecated("use save(FileHandle, BackendSaver) instead")
-    override suspend fun save(handle: FileHandle): OutputStream {
-        val location = handle.toHttpUrl()
-        val davCollection = DavCollection(okHttpClient, location)
-        davCollection.ensureFoldersExist(log, folders)
-
-        val pipedInputStream = PipedInputStream()
-        val pipedOutputStream = PipedCloseActionOutputStream(pipedInputStream)
-
-        val body = object : RequestBody() {
-            override fun isOneShot(): Boolean = true
-            override fun contentType() = "application/octet-stream".toMediaType()
-            override fun writeTo(sink: BufferedSink) {
-                pipedInputStream.use { inputStream ->
-                    sink.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-            }
-        }
-        val deferred = GlobalScope.async(Dispatchers.IO) {
-            davCollection.put(body) { response ->
-                log.debugLog { "save($location) = $response" }
-            }
-        }
-        pipedOutputStream.doOnClose {
-            runBlocking { // blocking i/o wait
-                deferred.await()
-            }
-        }
-        return pipedOutputStream
     }
 
     override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {

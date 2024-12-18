@@ -43,11 +43,6 @@ class TestSafBackend(
 
     override suspend fun getFreeSpace(): Long? = delegate.getFreeSpace()
 
-    override suspend fun save(handle: FileHandle): OutputStream {
-        if (getLocationUri() == null) return nullStream
-        return delegate.save(handle)
-    }
-
     override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
         if (getLocationUri() == null) return 0
         return delegate.save(handle, saver)

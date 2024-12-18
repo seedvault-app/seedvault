@@ -37,7 +37,6 @@ import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import kotlin.reflect.KClass
 
 internal const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
@@ -85,13 +84,6 @@ public class SafBackend(
                 StatFs("/mnt/media_rw/${documentId.trimEnd(':')}").availableBytes
             } else null
         } else bytesAvailable
-    }
-
-    @Deprecated("use save(FileHandle, BackendSaver) instead")
-    override suspend fun save(handle: FileHandle): OutputStream {
-        log.debugLog { "save($handle)" }
-        val file = cache.getOrCreateFile(handle)
-        return file.getOutputStream(context.contentResolver)
     }
 
     override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
