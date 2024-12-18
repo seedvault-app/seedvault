@@ -18,11 +18,15 @@ import org.calyxos.backup.storage.db.Db
 import org.calyxos.backup.storage.measure
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
+import org.calyxos.seedvault.core.MemoryLogger
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.FileBackupFileType
 import org.calyxos.seedvault.core.backends.IBackendManager
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.crypto.KeyManager
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.OutputStream
 import java.security.GeneralSecurityException
 import kotlin.time.Duration
 
@@ -143,15 +147,18 @@ internal class Backup(
         val smallResult = measure("Backing up $numSmallFiles small files") {
             smallFileBackup.backupFiles(filesResult.smallFiles, availableChunkIds, backupObserver)
         }
+        MemoryLogger.log()
         val numLargeFiles = filesResult.files.size
         val largeResult = measure("Backing up $numLargeFiles files") {
             fileBackup.backupFiles(filesResult.files, availableChunkIds, backupObserver)
         }
+        MemoryLogger.log()
         val result = largeResult + smallResult
         if (result.isEmpty) return // TODO maybe warn user that nothing could get backed up?
         val backupSize = result.backupMediaFiles.sumOf { it.size } +
             result.backupDocumentFiles.sumOf { it.size }
         val endTime = System.currentTimeMillis()
+        MemoryLogger.log()
 
         val backupSnapshot: BackupSnapshot
         val snapshotWriteTime = measure {
@@ -164,15 +171,25 @@ internal class Backup(
                 .setTimeStart(startTime)
                 .setTimeEnd(endTime)
                 .build()
-            val fileHandle = FileBackupFileType.Snapshot(androidId, startTime)
-            backend.save(fileHandle).use { outputStream ->
-                outputStream.write(VERSION.toInt())
-                val ad = streamCrypto.getAssociatedDataForSnapshot(startTime)
-                streamCrypto.newEncryptingStream(streamKey, outputStream, ad)
-                    .use { encryptingStream ->
-                        backupSnapshot.writeTo(encryptingStream)
-                    }
+            val bytesOutputStream = ByteArrayOutputStream(backupSnapshot.serializedSize)
+            bytesOutputStream.write(VERSION.toInt())
+            val ad = streamCrypto.getAssociatedDataForSnapshot(startTime)
+            streamCrypto.newEncryptingStream(streamKey, bytesOutputStream, ad).use { cryptoStream ->
+                backupSnapshot.writeTo(cryptoStream)
             }
+            MemoryLogger.log()
+            val fileHandle = FileBackupFileType.Snapshot(androidId, startTime)
+            val saver = object : BackendSaver {
+                override val size: Long = bytesOutputStream.size().toLong()
+                override val sha256: String? = null
+                override fun save(outputStream: OutputStream): Long {
+                    val bytes = bytesOutputStream.toByteArray()
+                    outputStream.write(bytes)
+                    return bytes.size.toLong()
+                }
+            }
+            backend.save(fileHandle, saver)
+            MemoryLogger.log()
         }
         val snapshotSize = backupSnapshot.serializedSize.toLong()
         val snapshotSizeStr = Formatter.formatShortFileSize(context, snapshotSize)

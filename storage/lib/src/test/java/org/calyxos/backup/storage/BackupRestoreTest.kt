@@ -44,6 +44,7 @@ import org.calyxos.backup.storage.restore.Restore
 import org.calyxos.backup.storage.scanner.FileScanner
 import org.calyxos.backup.storage.scanner.FileScannerResult
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Snapshot
 import org.calyxos.seedvault.core.backends.IBackendManager
@@ -164,15 +165,22 @@ internal class BackupRestoreTest {
         } returns ByteArrayInputStream(fileDBytes) andThen ByteArrayInputStream(fileDBytes)
 
         // output streams and caching
-        coEvery { backend.save(any<Blob>()) } returnsMany listOf(
-            zipChunkOutputStream, mOutputStream, dOutputStream
-        )
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(any<Blob>(), capture(saverSlot)) } answers {
+            saverSlot.captured.save(zipChunkOutputStream)
+        } andThenAnswer {
+            saverSlot.captured.save(mOutputStream)
+        } andThenAnswer {
+            saverSlot.captured.save(dOutputStream)
+        }
         every { chunksCache.hasCorruptedChunks(any()) } returns false
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        coEvery { backend.save(capture(snapshotHandle)) } returns snapshotOutputStream
+        coEvery { backend.save(capture(snapshotHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(snapshotOutputStream)
+        }
         every { db.applyInParts<String>(any(), any()) } just Runs
 
         backup.runBackup(null)
@@ -317,49 +325,64 @@ internal class BackupRestoreTest {
         every { context.cacheDir } returns tmpDir
 
         // output streams for deterministic chunks
+        val saverSlot = slot<BackendSaver>()
         val id040f32 = ByteArrayOutputStream()
         coEvery {
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
-                )
+                ),
+                capture(saverSlot),
             )
-        } returns id040f32
+        } answers {
+            saverSlot.captured.save(id040f32)
+        }
         val id901fbc = ByteArrayOutputStream()
         coEvery {
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
-                )
+                ),
+                capture(saverSlot),
             )
-        } returns id901fbc
+        } answers {
+            saverSlot.captured.save(id901fbc)
+        }
         val id5adea3 = ByteArrayOutputStream()
         coEvery {
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
-                )
+                ),
+                capture(saverSlot),
             )
-        } returns id5adea3
+        } answers {
+            saverSlot.captured.save(id5adea3)
+        }
         val id40d00c = ByteArrayOutputStream()
         coEvery {
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
-                )
+                ),
+                capture(saverSlot),
             )
-        } returns id40d00c
+        } answers {
+            saverSlot.captured.save(id40d00c)
+        }
 
         every { chunksCache.hasCorruptedChunks(any()) } returns false
         every { chunksCache.insert(any<CachedChunk>()) } just Runs
         every { filesCache.upsert(capture(cachedFiles)) } just Runs
 
         // snapshot writing
-        coEvery { backend.save(capture(snapshotHandle)) } returns snapshotOutputStream
+        coEvery { backend.save(capture(snapshotHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(snapshotOutputStream)
+        }
         every { db.applyInParts<String>(any(), any()) } just Runs
 
         backup.runBackup(null)
@@ -370,25 +393,29 @@ internal class BackupRestoreTest {
                 Blob(
                     androidId = androidId,
                     name = "040f3204869543c4015d92c04bf875b25ebde55f9645380f4172aa439b2825d3",
-                )
+                ),
+                any(),
             )
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "901fbcf9a94271fc0455d0052522cab994f9392d0bb85187860282b4beadfb29",
-                )
+                ),
+                any(),
             )
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "5adea3149fe6cf9c6e3270a52ee2c31bc9dfcef5f2080b583a4dd3b779c9182d",
-                )
+                ),
+                any(),
             )
             backend.save(
                 Blob(
                     androidId = androidId,
                     name = "40d00c1be4b0f89e8b12d47f3658aa42f568a8d02b978260da6d0050e7007e67",
-                )
+                ),
+                any(),
             )
         }
 

@@ -12,6 +12,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.api.BackupObserver
 import org.calyxos.backup.storage.crypto.StreamCrypto
@@ -22,6 +23,7 @@ import org.calyxos.backup.storage.getRandomDocFile
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.IBackendManager
 import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
 import org.calyxos.seedvault.core.toHexString
@@ -98,7 +100,10 @@ internal class SmallFileBackupIntegrationTest {
         every { mac.doFinal(any<ByteArray>()) } returns chunkId
         every { chunksCache.get(any()) } returns null
         every { chunksCache.hasCorruptedChunks(any()) } returns false
-        coEvery { backend.save(any()) } returns outputStream2
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(any(), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream2)
+        }
         every {
             chunksCache.insert(match<CachedChunk> { cachedChunk ->
                 cachedChunk.id == chunkId.toHexString() &&

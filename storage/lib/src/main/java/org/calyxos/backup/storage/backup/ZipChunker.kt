@@ -25,7 +25,7 @@ internal data class ZipChunk(
     val size: Long,
     var wasUploaded: Boolean = false,
 ) {
-    fun toCachedChunk() = CachedChunk(id, 0, size)
+    fun toCachedChunk(size: Long) = CachedChunk(id, 0, size)
 }
 
 @Suppress("BlockingMethodInNonBlockingContext")
