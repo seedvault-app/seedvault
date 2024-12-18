@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.chunker.Chunk
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -60,7 +61,10 @@ internal class BlobCreatorTest : TransportTest() {
         every { backendManager.backend } returns backend
 
         // create first blob
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream1
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream1)
+        }
         val blob1 = blobCreator.createNewBlob(chunk1)
         // check that file content hash matches snapshot hash
         val messageDigest = MessageDigest.getInstance("SHA-256")
@@ -74,7 +78,9 @@ internal class BlobCreatorTest : TransportTest() {
 
         // use same BlobCreator to create another blob, because we re-use a single buffer
         // and need to check clearing that does work as expected
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream2
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream2)
+        }
         val blob2 = blobCreator.createNewBlob(chunk2)
         // check that file content hash matches snapshot hash
         val hash2 = messageDigest.digest(outputStream2.toByteArray()).toHexString()
@@ -107,7 +113,10 @@ internal class BlobCreatorTest : TransportTest() {
         every { backendManager.backend } returns backend
 
         // create blob
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
         val blob = blobCreator.createNewBlob(chunk)
         // check that file content hash matches snapshot hash
         val messageDigest = MessageDigest.getInstance("SHA-256")

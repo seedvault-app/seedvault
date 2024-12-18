@@ -18,6 +18,7 @@ import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toByteArrayFromHex
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -95,7 +96,10 @@ internal class SnapshotManagerTest : TransportTest() {
         }
         every { crypto.sha256(any()) } returns chunkId1.toByteArrayFromHex()
         every { crypto.repoId } returns repoId
-        coEvery { backend.save(snapshotHandle) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(snapshotHandle, capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         snapshotManager.saveSnapshot(snapshot)
 
@@ -188,7 +192,10 @@ internal class SnapshotManagerTest : TransportTest() {
         every { crypto.sha256(capture(bytes)) } answers {
             messageDigest.digest(bytes.captured)
         }
-        coEvery { backend.save(capture(snapshotHandle)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(snapshotHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         snapshotManager.saveSnapshot(snapshot)
 

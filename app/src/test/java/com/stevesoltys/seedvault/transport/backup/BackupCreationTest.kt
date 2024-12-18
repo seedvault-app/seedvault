@@ -31,6 +31,7 @@ import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -126,7 +127,10 @@ internal class BackupCreationTest : BackupTest() {
 
         val handleSlot = slot<AppBackupFileType.Blob>()
         val outputStream = ByteArrayOutputStream()
-        coEvery { backend.save(capture(handleSlot)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(handleSlot), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertEquals(newRepoId, handleSlot.captured.repoId)
@@ -149,7 +153,10 @@ internal class BackupCreationTest : BackupTest() {
 
         val handleSlot = slot<AppBackupFileType.Blob>()
         val outputStream = ByteArrayOutputStream()
-        coEvery { backend.save(capture(handleSlot)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(handleSlot), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertEquals(newRepoId, handleSlot.captured.repoId)
