@@ -25,7 +25,10 @@ public interface Backend {
      */
     public suspend fun getFreeSpace(): Long?
 
+    @Deprecated(message = "use save(FileHandle, BackendSaver) instead")
     public suspend fun save(handle: FileHandle): OutputStream
+
+    public suspend fun save(handle: FileHandle, saver: BackendSaver): Long
 
     public suspend fun load(handle: FileHandle): InputStream
 

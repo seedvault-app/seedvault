@@ -18,6 +18,7 @@ import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
 import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
@@ -86,10 +87,17 @@ public class SafBackend(
         } else bytesAvailable
     }
 
+    @Deprecated("use save(FileHandle, BackendSaver) instead")
     override suspend fun save(handle: FileHandle): OutputStream {
         log.debugLog { "save($handle)" }
         val file = cache.getOrCreateFile(handle)
         return file.getOutputStream(context.contentResolver)
+    }
+
+    override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
+        log.debugLog { "save($handle)" }
+        val file = cache.getOrCreateFile(handle)
+        return file.getOutputStream(context.contentResolver).use { saver.save(it) }
     }
 
     override suspend fun load(handle: FileHandle): InputStream {

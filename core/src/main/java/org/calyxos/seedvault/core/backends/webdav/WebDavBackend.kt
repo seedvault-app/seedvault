@@ -27,6 +27,7 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
 import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
@@ -121,6 +122,7 @@ public class WebDavBackend(
         return availableBytes
     }
 
+    @Deprecated("use save(FileHandle, BackendSaver) instead")
     override suspend fun save(handle: FileHandle): OutputStream {
         val location = handle.toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
@@ -151,6 +153,27 @@ public class WebDavBackend(
             }
         }
         return pipedOutputStream
+    }
+
+    override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
+        val location = handle.toHttpUrl()
+        val davCollection = DavCollection(okHttpClient, location)
+        davCollection.ensureFoldersExist(log, folders)
+
+        val body = object : RequestBody() {
+            override fun isOneShot(): Boolean = true
+            override fun contentType() = "application/octet-stream".toMediaType()
+            override fun contentLength(): Long = saver.size
+            override fun writeTo(sink: BufferedSink) {
+                saver.save(sink.outputStream())
+            }
+        }
+        return suspendCoroutine { cont ->
+            davCollection.put(body) { response ->
+                log.debugLog { "save($location) = $response" }
+                cont.resume(saver.size)
+            }
+        }
     }
 
     override suspend fun load(handle: FileHandle): InputStream {
