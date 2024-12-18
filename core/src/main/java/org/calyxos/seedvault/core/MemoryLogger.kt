@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.stevesoltys.seedvault
+package org.calyxos.seedvault.core
 
 import android.util.Log
 
-object MemoryLogger {
+public object MemoryLogger {
 
-    fun log() {
+    public fun log() {
         Log.d("MemoryLogger", getMemStr())
     }
 
-    fun getMemStr(): String {
+    public fun getMemStr(): String {
         val r = Runtime.getRuntime()
         val total = r.totalMemory() / 1024 / 1024
         val free = r.freeMemory() / 1024 / 1024

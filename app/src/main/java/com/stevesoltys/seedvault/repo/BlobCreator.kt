@@ -8,7 +8,6 @@ package com.stevesoltys.seedvault.repo
 import androidx.annotation.WorkerThread
 import com.github.luben.zstd.ZstdOutputStream
 import com.google.protobuf.ByteString
-import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
@@ -19,6 +18,7 @@ import okio.Buffer
 import okio.buffer
 import okio.sink
 import org.calyxos.seedvault.chunker.Chunk
+import org.calyxos.seedvault.core.MemoryLogger
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import java.io.IOException
 import java.nio.ByteBuffer

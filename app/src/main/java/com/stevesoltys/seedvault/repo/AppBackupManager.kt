@@ -6,7 +6,7 @@
 package com.stevesoltys.seedvault.repo
 
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.MemoryLogger
+import org.calyxos.seedvault.core.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION

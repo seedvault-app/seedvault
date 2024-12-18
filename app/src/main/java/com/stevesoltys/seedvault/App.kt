@@ -23,7 +23,7 @@ import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.WorkManager
 import com.google.android.material.color.DynamicColors
-import com.stevesoltys.seedvault.MemoryLogger.getMemStr
+import org.calyxos.seedvault.core.MemoryLogger.getMemStr
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.backend.saf.storagePluginModuleSaf
 import com.stevesoltys.seedvault.backend.webdav.storagePluginModuleWebDav
