@@ -10,6 +10,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.ContentObserver
 import android.database.Cursor
+import android.database.StaleDataException
 import android.net.Uri
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import android.provider.DocumentsContract.EXTRA_LOADING
@@ -114,6 +115,8 @@ public suspend fun DocumentFile.listFilesBlocking(context: Context): List<Docume
         }
     } catch (e: TimeoutCancellationException) {
         throw IOException(e)
+    } catch (e: StaleDataException) {
+        throw IOException(e)
     }.use { cursor ->
         while (cursor.moveToNext()) {
             val documentId = cursor.getString(0)
@@ -195,7 +198,10 @@ public suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?)
     withTimeout(timeout) {
         suspendCancellableCoroutine { cont ->
             val cursor = query() ?: throw IOException()
-            cont.invokeOnCancellation { cursor.close() }
+            cont.invokeOnCancellation {
+                Log.i(TAG, "Closing cursor after getLoadedCursor() got cancelled")
+                cursor.close()
+            }
             val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
             if (loading) {
                 Log.d(TAG, "Wait for children to get loaded...")
