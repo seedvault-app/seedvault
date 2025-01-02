@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.slf4j.api)
 
     testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${libs.versions.coroutines}")
+    testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
     testImplementation("org.ogce:xpp3:1.1.6")
     testImplementation("org.slf4j:slf4j-simple:2.0.3")
 }

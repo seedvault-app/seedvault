@@ -6,6 +6,7 @@
 package org.calyxos.seedvault.core.backends.saf
 
 import android.content.Context
+import android.database.StaleDataException
 import android.os.Environment
 import android.os.StatFs
 import android.provider.DocumentsContract
@@ -231,6 +232,17 @@ public class SafBackend(
         } finally {
             cache.clearAll()
         }
+    }
+
+    override fun isTransientException(e: Exception): Boolean {
+        if (e is StaleDataException && e.message?.contains("closed") == true) {
+            return true
+        } else if (e.cause is StaleDataException &&
+            (e.cause as StaleDataException).message?.contains("closed") == true
+        ) {
+            return true
+        }
+        return false
     }
 
     override val providerPackageName: String? by lazy {
