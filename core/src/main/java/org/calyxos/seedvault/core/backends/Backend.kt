@@ -42,6 +42,12 @@ public interface Backend {
     public suspend fun removeAll()
 
     /**
+     * Returns true if the given exception is only transient
+     * and the operation where it threw should be retried.
+     */
+    public fun isTransientException(e: Exception): Boolean
+
+    /**
      * Returns the package name of the app that provides the storage backend
      * which is used for the current backup location.
      *

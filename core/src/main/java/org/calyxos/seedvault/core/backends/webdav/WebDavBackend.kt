@@ -38,8 +38,10 @@ import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
+import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
+import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -341,6 +343,15 @@ public class WebDavBackend(
             if (e is IOException) throw e
             else throw IOException("Error removing all at $location", e)
         }
+    }
+
+    override fun isTransientException(e: Exception): Boolean {
+        if (e is SocketTimeoutException) {
+            return true
+        } else if (e is EOFException && e.message?.contains("\\n not found") == true) {
+            return true
+        }
+        return false
     }
 
     override val providerPackageName: String? = null // 100% built-in plugin

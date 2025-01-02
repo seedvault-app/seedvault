@@ -66,6 +66,8 @@ class TestSafBackend(
 
     override suspend fun removeAll() = delegate.removeAll()
 
+    override fun isTransientException(e: Exception): Boolean = false
+
     override val providerPackageName: String? get() = delegate.providerPackageName
 
 }
