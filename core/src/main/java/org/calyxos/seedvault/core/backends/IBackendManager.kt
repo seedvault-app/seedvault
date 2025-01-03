@@ -10,3 +10,8 @@ public interface IBackendManager {
     public val isOnRemovableDrive: Boolean
     public val requiresNetwork: Boolean
 }
+
+public enum class BackendId {
+    SAF,
+    WEBDAV,
+}

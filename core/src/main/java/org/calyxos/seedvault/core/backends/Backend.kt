@@ -12,6 +12,11 @@ import kotlin.reflect.KClass
 public interface Backend {
 
     /**
+     * Returns the [BackendId] identifying this [Backend].
+     */
+    public val id: BackendId
+
+    /**
      * Returns true if the plugin is working, or false if it isn't.
      * @throws Exception any kind of exception to provide more info on the error
      */

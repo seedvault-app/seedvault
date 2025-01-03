@@ -22,6 +22,7 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendId
 import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
@@ -55,6 +56,8 @@ public class WebDavBackend(
 ) : Backend {
 
     private val log = KotlinLogging.logger {}
+
+    override val id: BackendId = BackendId.WEBDAV
 
     private val authHandler = BasicDigestAuthHandler(
         domain = null, // Optional, to only authenticate against hosts with this domain.
