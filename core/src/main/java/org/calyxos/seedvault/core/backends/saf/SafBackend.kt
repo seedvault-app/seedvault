@@ -19,6 +19,7 @@ import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendId
 import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
@@ -54,6 +55,8 @@ public class SafBackend(
     private val log = KotlinLogging.logger {}
 
     private val cache = DocumentFileCache(context, safProperties.getDocumentFile(context), root)
+
+    override val id: BackendId = BackendId.SAF
 
     override suspend fun test(): Boolean {
         log.debugLog { "test()" }

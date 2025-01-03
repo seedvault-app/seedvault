@@ -16,9 +16,8 @@ import androidx.preference.PreferenceManager
 import com.stevesoltys.seedvault.backend.webdav.WebDavHandler.Companion.createWebDavProperties
 import com.stevesoltys.seedvault.permitDiskReads
 import org.calyxos.seedvault.core.backends.Backend
-import org.calyxos.seedvault.core.backends.saf.SafBackend
+import org.calyxos.seedvault.core.backends.BackendId
 import org.calyxos.seedvault.core.backends.saf.SafProperties
-import org.calyxos.seedvault.core.backends.webdav.WebDavBackend
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
 import java.util.concurrent.ConcurrentSkipListSet
@@ -136,9 +135,9 @@ class SettingsManager(private val context: Context) {
     }
 
     fun setStorageBackend(plugin: Backend) {
-        val value = when (plugin) {
-            is SafBackend -> StoragePluginType.SAF
-            is WebDavBackend -> StoragePluginType.WEB_DAV
+        val value = when (plugin.id) {
+            BackendId.SAF -> StoragePluginType.SAF
+            BackendId.WEBDAV -> StoragePluginType.WEB_DAV
             else -> error("Unsupported plugin: ${plugin::class.java.simpleName}")
         }.name
         prefs.edit()

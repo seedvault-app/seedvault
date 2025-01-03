@@ -19,6 +19,11 @@ import kotlin.test.assertTrue
 internal class RetryBackendTest {
 
     private val delegate: Backend = mockk()
+
+    init {
+        every { delegate.id } returns BackendId.WEBDAV
+    }
+
     private val backend = RetryBackend(delegate)
 
     @Test

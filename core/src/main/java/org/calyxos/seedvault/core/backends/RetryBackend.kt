@@ -18,6 +18,8 @@ internal class RetryBackend(private val delegate: Backend) : Backend {
 
     private val log = KotlinLogging.logger { }
 
+    override val id: BackendId = delegate.id
+
     override suspend fun test(): Boolean = retry {
         delegate.test()
     }
