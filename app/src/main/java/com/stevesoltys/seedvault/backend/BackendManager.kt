@@ -15,9 +15,9 @@ import com.stevesoltys.seedvault.settings.SettingsManager
 import com.stevesoltys.seedvault.settings.StoragePluginType
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.BackendFactory
+import org.calyxos.seedvault.core.backends.BackendId
 import org.calyxos.seedvault.core.backends.BackendProperties
 import org.calyxos.seedvault.core.backends.IBackendManager
-import org.calyxos.seedvault.core.backends.saf.SafBackend
 
 class BackendManager(
     private val context: Context,
@@ -72,7 +72,7 @@ class BackendManager(
 
     fun isValidAppPluginSet(): Boolean {
         if (mBackend == null) return false
-        if (mBackend is SafBackend) {
+        if (mBackend?.id == BackendId.SAF) {
             val storage = settingsManager.getSafProperties() ?: return false
             if (storage.isUsb) return true
             return permitDiskReads {
