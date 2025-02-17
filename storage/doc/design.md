@@ -420,6 +420,7 @@ but are considered out-of-scope of the current design for time and budget reason
 * external secret-less corruption checks that would use checksums over encrypted data
 * concealing file sizes (though zip chunks helps a bit here)
 * implementing different storage plugins
+* being able to recover data from a partial backup
 
 # Known issues
 
