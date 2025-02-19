@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="settings_auto_restore_summary">當重新安裝應用程式，從備份恢復設定與資料。</string>
     <string name="settings_category_app_data_backup">應用程式資料備份</string>
     <string name="settings_backup_apk_title">應用程式備份</string>
@@ -19,7 +19,6 @@
     <string name="settings_backup_recovery_code">回復模式</string>
     <string name="settings_backup_storage_dialog_title">實驗階段功能</string>
     <string name="settings_backup_storage_dialog_ok">還是開啟</string>
-    <string name="storage_fragment_warning_delete">已存在之備份路徑將會被刪除。</string>
     <string name="storage_fragment_backup_title">選擇備份儲存地點</string>
     <string name="settings_expert_title">進階設定</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">尚未安裝</string>
@@ -33,4 +32,57 @@
     <string name="settings_category_apps">應用程式備份</string>
     <string name="settings_backup_location">備份儲存路徑</string>
     <string name="settings_info">所有備份資料都已加密。如需要從備份恢復資料，您需要12位加密密碼。</string>
+    <string name="settings_auto_restore_title">自動還原</string>
+    <string name="settings_auto_restore_summary_usb">注意：您的 %1$s 需要連接才能運作。</string>
+    <string name="settings_backup_apk_dialog_disable">關閉應用程式備份</string>
+    <string name="settings_backup_status_summary">最後一次備份：%1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">下次備份(預計)：%1$s</string>
+    <string name="settings_backup_status_next_backup">下次備份：%1$s</string>
+    <string name="settings_backup_scheduling_title">備份排程</string>
+    <string name="settings_scheduling_charging_title">僅在充電時備份</string>
+    <string name="settings_backup_recovery_code_summary">驗證現有代碼或生成新代碼</string>
+    <string name="settings_backup_new_code_dialog_title">需要新恢復代碼</string>
+    <string name="settings_backup_storage_battery_optimization">警告：由於啟用了電池最佳化，無法自動備份。</string>
+    <string name="settings_scheduling_frequency_12_hours">每 12 小時</string>
+    <string name="settings_scheduling_frequency_3_days">每三天</string>
+    <string name="settings_scheduling_frequency_daily">每天</string>
+    <string name="settings_scheduling_frequency_weekly">每週</string>
+    <string name="storage_user_selected_location_title">使用者選擇的位置</string>
+    <string name="storage_check_fragment_backup_title">初始化備份位置中…</string>
+    <string name="settings_backup_exclude_apps">排除應用程式</string>
+    <string name="settings_backup_dialog_title">確定要關閉應用程式備份嗎？</string>
+    <string name="settings_backup_dialog_message">當您再次開啟備份時，備份過程可能會比平時更久，並且會使用額外的儲存空間。</string>
+    <string name="settings_backup_dialog_disable">還是關閉</string>
+    <string name="settings_backup_apk_summary">備份應用程式本身。否則，只有應用程式數據會被備份。</string>
+    <string name="settings_backup_apk_dialog_message">關閉應用程式備份後仍會備份應用程式數據。然而，它不會自動還原。
+\n
+\n您需要在開啟「自動還原」功能的情況下手動安裝所有應用程式。</string>
+    <string name="settings_backup_status_next_backup_past">一旦條件滿足後</string>
+    <string name="settings_backup_status_next_backup_usb">當您插入 USB 隨身碟時，備份將自動進行</string>
+    <string name="settings_backup_files_summary">無</string>
+    <string name="settings_backup_new_code_dialog_message">要繼續使用應用程式備份，您需要生成一個新的恢復代碼。
+\n
+\n對於造成的不便，我們深感抱歉。</string>
+    <string name="settings_backup_new_code_code_dialog_ok">新代碼</string>
+    <string name="settings_scheduling_frequency_title">備份頻率</string>
+    <string name="settings_scheduling_category_conditions_title">條件</string>
+    <string name="settings_scheduling_metered_title">使用行動數據時備份</string>
+    <string name="settings_expert_logcat_title">保存應用程式日誌</string>
+    <string name="settings_expert_logcat_summary">開發者可以使用這些日誌診斷錯誤。
+\n
+\n警告：日誌文件可能包含個人身份訊息。分享前請先檢查並刪除！</string>
+    <string name="settings_expert_logcat_error">錯誤：無法保存應用程式日誌</string>
+    <string name="storage_fake_drive_summary">需要插入</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用空間</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> （不建議使用）</string>
+    <string name="storage_fake_davx5_summary_unavailable">掛載不可用。請設定一個。</string>
+    <string name="storage_fake_davx5_summary_installed">點擊設定 WebDAV 掛載</string>
+    <string name="storage_check_fragment_error_button">返回</string>
+    <string name="storage_check_fragment_backup_error">訪問備份位置時出錯。</string>
+    <string name="first_start_text">您要從現有備份恢復設備還是開始新的備份？</string>
+    <string name="setup_button">開始新的工作</string>
+    <string name="storage_check_fragment_restore_title">尋找備份…</string>
+    <string name="storage_check_fragment_permission_error">無法獲得寫入備份位置的許可權。</string>
+    <string name="storage_fake_nextcloud_summary_unavailable">帳戶不可用。設置一個（或禁用密碼）。</string>
+    <string name="storage_check_fragment_patience">這可能需要一些時間…</string>
 </resources>

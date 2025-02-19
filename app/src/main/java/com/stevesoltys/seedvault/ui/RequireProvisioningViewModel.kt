@@ -29,7 +29,7 @@ abstract class RequireProvisioningViewModel(
 
     internal fun recoveryCodeIsSet() = permitDiskReads { keyManager.hasBackupKey() }
 
-    open fun onStorageLocationChanged() {
+    open fun onBackendPropertiesChanged() {
         // noop can be overwritten by sub-classes
     }
 

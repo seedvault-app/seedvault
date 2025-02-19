@@ -31,10 +31,8 @@
 \nValitse toinen sijainti, joka sisältää %s-kansion.</string>
     <string name="restore_invalid_location_title">Varmuuskopioita ei löytynyt</string>
     <string name="restore_skip">Älä palauta</string>
-    <string name="restore_restore_set_times">Viimeinen varmuuskopio %1$s · Ensimmäinen %2$s.</string>
     <string name="restore_choose_restore_set">Valitse palautettava varmuuskopio</string>
     <string name="restore_title">Palauta varmuuskopiosta</string>
-    <string name="backup_section_not_allowed">Sovellukset, jotka eivät salli tietojen varmuuskopiointia</string>
     <string name="restore_app_not_installed">Sovellusta ei ole asennettu</string>
     <string name="restore_app_quota_exceeded">Varmuuskopiointikiintiö ylittyi</string>
     <string name="backup_app_quota_exceeded">Varmuuskopiointikiintiö ylitetty</string>
@@ -96,7 +94,6 @@
     <string name="storage_fake_nextcloud_summary">Napauta asentaaksesi</string>
     <string name="storage_fake_drive_summary">Täytyy olla kytkettynä</string>
     <string name="storage_fake_drive_title">USB-muistitikku</string>
-    <string name="storage_fragment_warning">Ihmiset, joilla on pääsy tallennussijaintiisi, voivat nähdä mitä sovelluksia käytät, mutta eivät kuitenkaan pääse käyttämään sovellusten tietoja.</string>
     <string name="storage_fragment_restore_title">Mistä löydät varmuuskopiot\?</string>
     <string name="storage_fragment_backup_title">Valitse, mihin varmuuskopiot tallennetaan</string>
     <string name="settings_backup_now">Varmuuskopioi heti</string>
@@ -146,12 +143,10 @@
     <string name="settings_backup_files_title">Sisällytetyt tiedostot ja kansiot</string>
     <string name="settings_backup_files_summary">Ei mitään</string>
     <string name="settings_backup_storage_dialog_title">Kokeellinen ominaisuus</string>
-    <string name="storage_fragment_warning_delete">Tässä sijainnissa olevat varmuuskopiot poistetaan.</string>
     <string name="settings_backup_storage_dialog_message">Tiedostojen varmuuskopiointi on vielä kokeiluasteella, eikä se välttämättä toimi. Älä luota siihen tärkeiden tietojen osalta.</string>
     <string name="storage_check_fragment_patience">Tämä voi kestää jonkin aikaa…</string>
     <string name="restore_storage_in_progress_title">Tiedostoja palautetaan…</string>
     <string name="settings_backup_storage_dialog_ok">Ota käyttöön joka tapauksessa</string>
-    <string name="settings_expert_quota_title">Rajoittamaton sovelluskiintiö</string>
     <string name="settings_expert_title">Asiantuntija-asetukset</string>
     <string name="restore_skip_apps">Ohita sovellusten palauttaminen</string>
     <string name="restore_storage_skip">Ohita tiedostojen palauttaminen</string>
@@ -163,7 +158,5 @@
     <string name="storage_fake_nextcloud_summary_unavailable_market">Ei asennettu</string>
     <string name="recovery_code_auth_title">Syötä näytön lukitus uudelleen</string>
     <string name="recovery_code_auth_description">Jatka kirjoittamalla laitteesi tunnistetiedot</string>
-    <string name="settings_expert_quota_summary">Älä aseta rajoituksia sovellusten varmuuskopioiden koolle.
-\n
-\nVaroitus: Tämä voi täyttää tallennustilan nopeasti. Ei tarvita useimmissa sovelluksissa.</string>
+    <string name="backup_app_check_success_intro">%1$d tilannekuvaa löydettiin ja %2$d %% niiden tiedoista (%3$s) varmistettiin onnistuneesti:</string>
 </resources>

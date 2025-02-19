@@ -6,6 +6,7 @@
 package com.stevesoltys.seedvault.storage
 
 import android.content.Intent
+import android.util.Log
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.worker.AppBackupWorker
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +65,8 @@ internal class StorageBackupService : BackupService() {
     override fun onBackupFinished(intent: Intent, success: Boolean) {
         if (intent.getBooleanExtra(EXTRA_START_APP_BACKUP, false)) {
             val isUsb = backendManager.backendProperties?.isUsb ?: false
+            Log.i("StorageBackupService", "backup finished (success: $success)")
+            Log.i("StorageBackupService", "  starting AppBackupWorker...")
             AppBackupWorker.scheduleNow(applicationContext, reschedule = !isUsb)
         }
     }

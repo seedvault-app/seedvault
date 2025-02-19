@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.chunker.Chunk
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -60,7 +61,10 @@ internal class BlobCreatorTest : TransportTest() {
         every { backendManager.backend } returns backend
 
         // create first blob
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream1
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream1)
+        }
         val blob1 = blobCreator.createNewBlob(chunk1)
         // check that file content hash matches snapshot hash
         val messageDigest = MessageDigest.getInstance("SHA-256")
@@ -74,7 +78,9 @@ internal class BlobCreatorTest : TransportTest() {
 
         // use same BlobCreator to create another blob, because we re-use a single buffer
         // and need to check clearing that does work as expected
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream2
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream2)
+        }
         val blob2 = blobCreator.createNewBlob(chunk2)
         // check that file content hash matches snapshot hash
         val hash2 = messageDigest.digest(outputStream2.toByteArray()).toHexString()
@@ -107,7 +113,10 @@ internal class BlobCreatorTest : TransportTest() {
         every { backendManager.backend } returns backend
 
         // create blob
-        coEvery { backend.save(capture(blobHandle)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
         val blob = blobCreator.createNewBlob(chunk)
         // check that file content hash matches snapshot hash
         val messageDigest = MessageDigest.getInstance("SHA-256")
@@ -139,5 +148,51 @@ internal class BlobCreatorTest : TransportTest() {
             // data came back out
             assertArrayEquals(data, inputStream.readAllBytes())
         }
+    }
+
+    @Test
+    fun `test blob saver gets reused by RetryBackend`() = runBlocking {
+        val data = getRandomByteArray(Random.nextInt(16 * 1024 * 1024))
+        val chunk = Chunk(0L, data.size, data, "doesn't matter here")
+        val outputStream1 = ByteArrayOutputStream()
+        val outputStream2 = ByteArrayOutputStream()
+        val outputStream3 = ByteArrayOutputStream()
+        val paddingNum = slot<Int>()
+
+        every { crypto.getAdForVersion() } returns ad
+        every { crypto.newEncryptingStream(capture(passThroughOutputStream), ad) } answers {
+            passThroughOutputStream.captured // not really encrypting here
+        }
+        every { crypto.getRandomBytes(capture(paddingNum)) } answers {
+            getRandomByteArray(paddingNum.captured)
+        }
+        every { crypto.repoId } returns repoId
+        every { backendManager.backend } returns backend
+
+        // create blob
+        val saverSlot = slot<BackendSaver>()
+        var size1 = -1L
+        var size2 = -1L
+        coEvery { backend.save(capture(blobHandle), capture(saverSlot)) } answers {
+            // saver saves 3 times
+            size1 = saverSlot.captured.save(outputStream1)
+            size2 = saverSlot.captured.save(outputStream2)
+            saverSlot.captured.save(outputStream3)
+        }
+        val blob = blobCreator.createNewBlob(chunk)
+        // check that file content hash matches snapshot hash
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val hash1 = messageDigest.digest(outputStream1.toByteArray()).toHexString()
+        val hash2 = messageDigest.digest(outputStream2.toByteArray()).toHexString()
+        val hash3 = messageDigest.digest(outputStream3.toByteArray()).toHexString()
+        assertEquals(hash1, blobHandle.captured.name)
+        assertEquals(hash2, blobHandle.captured.name)
+        assertEquals(hash3, blobHandle.captured.name)
+
+        // check blob metadata
+        assertEquals(hash1, blob.id.hexFromProto())
+        assertEquals(outputStream1.size(), blob.length)
+        assertEquals(blob.length.toLong(), size1)
+        assertEquals(blob.length.toLong(), size2)
     }
 }

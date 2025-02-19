@@ -2,9 +2,7 @@
 <resources>
     <string name="notification_restore_channel_title">Restauration du stockage</string>
     <string name="content_images">Photos et images</string>
-    <string name="snapshots_empty">Aucune sauvegarde de stockage trouvée
-\n
-\nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
+    <string name="snapshots_empty">Aucune sauvegarde de stockage trouvée \n \nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
     <string name="content_videos">Vidéos</string>
     <string name="content_audio">Fichiers audio</string>
     <string name="content_downloads">Téléchargements</string>

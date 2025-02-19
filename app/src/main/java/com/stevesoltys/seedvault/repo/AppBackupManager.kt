@@ -6,13 +6,12 @@
 package com.stevesoltys.seedvault.repo
 
 import androidx.annotation.WorkerThread
-import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.settings.SettingsManager
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.delay
+import org.calyxos.seedvault.core.MemoryLogger
 import org.calyxos.seedvault.core.backends.AppBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.AppBackupFileType.Snapshot
 import org.calyxos.seedvault.core.backends.FileInfo
@@ -98,10 +97,7 @@ internal class AppBackupManager(
                 // otherwise we'd have partial snapshots
                 val snapshot = snapshotCreator?.finalizeSnapshot()
                     ?: error("Had no snapshotCreator")
-                keepTrying { // TODO remove when we have auto-retrying backends
-                    // saving this is so important, we even keep trying
-                    snapshotManager.saveSnapshot(snapshot)
-                }
+                snapshotManager.saveSnapshot(snapshot)
                 // save token and time of last backup
                 settingsManager.onSuccessfulBackupCompleted(snapshot.token)
                 // after snapshot was written, we can clear local cache as its info is in snapshot
@@ -109,7 +105,7 @@ internal class AppBackupManager(
                 snapshot
             } else null
         } catch (e: Exception) {
-            log.error(e) { "Error finishing backup" }
+            log.error(e) { "Error finishing backup: " }
             null
         } finally {
             snapshotCreator = null
@@ -173,19 +169,6 @@ internal class AppBackupManager(
         blobCache.clearLocalCache()
         // TODO not critical, but nice to have: clear also local snapshot cache
         backendManager.backend.remove(TopLevelFolder(crypto.repoId))
-    }
-
-    private suspend fun keepTrying(n: Int = 3, block: suspend () -> Unit) {
-        for (i in 1..n) {
-            try {
-                block()
-                return
-            } catch (e: Exception) {
-                if (i == n) throw e
-                log.error(e) { "Error (#$i), we'll keep trying" }
-                delay(1000 * i.toLong())
-            }
-        }
     }
 
 }

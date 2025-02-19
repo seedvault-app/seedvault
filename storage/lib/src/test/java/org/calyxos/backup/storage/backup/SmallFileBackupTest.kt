@@ -22,6 +22,7 @@ import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
 import org.calyxos.backup.storage.sameCachedFile
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.io.IOException
 import java.io.InputStream
@@ -53,7 +54,7 @@ internal class SmallFileBackupTest {
         every { filesCache.getByUri(files[0].uri) } returns cachedFile
         every { chunksCache.hasCorruptedChunks(cachedFile.chunks) } returns false
 
-        val result = smallFileBackup.backupFiles(files, availableChunkIds, null)
+        val result = smallFileBackup.backupFiles(files, availableChunkIds, { false }, null)
         assertEquals(cachedFile.chunks.toSet(), result.chunkIds)
         assertEquals(1, result.backupDocumentFiles.size)
         assertEquals(backupFile, result.backupDocumentFiles[0])
@@ -102,6 +103,22 @@ internal class SmallFileBackupTest {
         singleFileBackup(files, cachedFile, availableChunkIds, corrupted = true)
     }
 
+    @Test
+    fun `no file gets backed up if we aborted`() {
+        val file = getRandomDocFile()
+        val files = listOf(file)
+        val availableChunkIds = hashSetOf(getRandomString(6))
+
+        addFile(file)
+
+        val e = assertThrows(IOException::class.java) {
+            runBlocking {
+                smallFileBackup.backupFiles(files, availableChunkIds, { true }, null)
+            }
+        }
+        assertEquals("Metered Network", e.message)
+    }
+
     private suspend fun singleFileBackup(
         files: List<DocFile>,
         cachedFile: CachedFile?,
@@ -119,7 +136,7 @@ internal class SmallFileBackupTest {
         coEvery { zipChunker.finalizeAndReset(missingChunks) } returns zipChunk
         every { filesCache.upsert(sameCachedFile(newCachedFile)) } just Runs
 
-        val result = smallFileBackup.backupFiles(files, availableChunkIds, null)
+        val result = smallFileBackup.backupFiles(files, availableChunkIds, { false }, null)
         assertEquals(newCachedFile.chunks.toSet(), result.chunkIds)
         assertEquals(1, result.backupDocumentFiles.size)
         assertEquals(backupFile, result.backupDocumentFiles[0])
@@ -143,7 +160,7 @@ internal class SmallFileBackupTest {
         coEvery { zipChunker.finalizeAndReset(emptyList()) } returns zipChunk
         every { filesCache.upsert(sameCachedFile(cachedFile2)) } just Runs
 
-        val result = smallFileBackup.backupFiles(files, availableChunkIds, null)
+        val result = smallFileBackup.backupFiles(files, availableChunkIds, { false }, null)
         assertEquals(cachedFile2.chunks.toSet(), result.chunkIds)
         assertEquals(1, result.backupDocumentFiles.size)
         assertEquals(backupFile, result.backupDocumentFiles[0])
@@ -171,7 +188,7 @@ internal class SmallFileBackupTest {
         // zipChunker.finalizeAndReset defined above for both files
         every { filesCache.upsert(sameCachedFile(cachedFile2)) } just Runs
 
-        val result = smallFileBackup.backupFiles(files, hashSetOf(), null)
+        val result = smallFileBackup.backupFiles(files, hashSetOf(), { false }, null)
         assertEquals(listOf(zipChunk1.id, zipChunk2.id).toSet(), result.chunkIds)
         assertEquals(
             listOf(backupFile1, backupFile2).sortedBy { it.name },
@@ -199,7 +216,7 @@ internal class SmallFileBackupTest {
         every { filesCache.upsert(sameCachedFile(cachedFile1)) } just Runs
         every { filesCache.upsert(sameCachedFile(cachedFile2)) } just Runs
 
-        val result = smallFileBackup.backupFiles(files, hashSetOf(), null)
+        val result = smallFileBackup.backupFiles(files, hashSetOf(), { false }, null)
         assertEquals(listOf(zipChunk.id).toSet(), result.chunkIds)
         assertEquals(
             listOf(backupFile1, backupFile2).sortedBy { it.name },
@@ -219,7 +236,7 @@ internal class SmallFileBackupTest {
         addFile(file2)
         coEvery { zipChunker.finalizeAndReset(emptyList()) } throws IOException()
 
-        val result = smallFileBackup.backupFiles(files, hashSetOf(), null)
+        val result = smallFileBackup.backupFiles(files, hashSetOf(), { false }, null)
         assertEquals(emptySet<String>(), result.chunkIds)
         assertEquals(0, result.backupDocumentFiles.size)
         assertEquals(0, result.backupMediaFiles.size)

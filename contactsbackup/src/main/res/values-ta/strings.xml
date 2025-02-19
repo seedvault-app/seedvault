@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_label">உள்ளக தொடர்புகள் காப்புப்பிரதி</string>
+</resources>

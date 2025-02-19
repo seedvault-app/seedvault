@@ -13,11 +13,13 @@ import com.stevesoltys.seedvault.header.VERSION
 import com.stevesoltys.seedvault.proto.Snapshot
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
 import org.calyxos.seedvault.core.toHexString
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
 
@@ -99,9 +101,15 @@ internal class SnapshotManager(
         // compute hash and save blob
         val sha256 = crypto.sha256(bytes).toHexString()
         val snapshotHandle = AppBackupFileType.Snapshot(crypto.repoId, sha256)
-        backendManager.backend.save(snapshotHandle).use { outputStream ->
-            outputStream.write(bytes)
+        val saver = object : BackendSaver {
+            override val size: Long get() = bytes.size.toLong()
+            override val sha256: String get() = sha256
+            override fun save(outputStream: OutputStream): Long {
+                outputStream.write(bytes)
+                return size
+            }
         }
+        backendManager.backend.save(snapshotHandle, saver)
         // save to local cache while at it
         try {
             if (!snapshotFolder.isDirectory) snapshotFolder.mkdirs()

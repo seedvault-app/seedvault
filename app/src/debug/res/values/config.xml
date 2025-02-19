@@ -4,7 +4,14 @@
   SPDX-License-Identifier: Apache-2.0
   -->
 <resources>
-    <string-array name="storage_authority_whitelist">
+    <string-array name="storage_authority_backup_allow_list">
+        <item>com.android.externalstorage.documents</item>
+        <item>org.nextcloud.documents</item>
+        <item>org.nextcloud.beta.documents</item>
+        <item>at.bitfire.davdroid.webdav</item>
+        <item>de.felixnuesse.extract.vcp</item>
+    </string-array>
+    <string-array name="storage_authority_restore_allow_list">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
         <item>org.nextcloud.beta.documents</item>

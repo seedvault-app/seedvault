@@ -19,6 +19,7 @@ import com.stevesoltys.seedvault.ERROR_BACKUP_CANCELLED
 import com.stevesoltys.seedvault.ERROR_BACKUP_NOT_ALLOWED
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.R
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.repo.AppBackupManager
@@ -44,6 +45,7 @@ internal class NotificationBackupObserver(
     private val settingsManager: SettingsManager by inject()
     private val metadataManager: MetadataManager by inject()
     private val appBackupManager: AppBackupManager by inject()
+    private val backendManager: BackendManager by inject()
     private var currentPackage: String? = null
     private var numPackages: Int = 0
     private var numPackagesToReport: Int = 0
@@ -148,10 +150,17 @@ internal class NotificationBackupObserver(
                 settingsManager.disableBackup(packageName)
             }
         }
-        if (backupRequester.requestNext()) {
-            if (isLoggable(TAG, INFO)) {
-                Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
-            }
+        Log.i(TAG, "Backup finished $numPackages/$requestedPackages. Status: $status")
+        if (backupRequester.hasNext && !backendManager.canDoBackupNow()) {
+            Log.w(TAG, "Not requesting another backup, likely on metered network. ")
+            nm.onBackupError(true)
+        } else if (backupRequester.requestNext()) {
+            // FIXME we should consider not requesting backup of more chunks of packages,
+            //  if the backup has already failed for this chunk,
+            //  because it will result in incomplete snapshots
+            //  since the rest of packages from the failed chunk won't get backed up.
+            //  So we either re-include those packages somehow (may fail again in a loop!)
+            //  or we simply fail the entire backup which may cause more failures for users :(
             var success = status == 0
             val total = try {
                 packageService.allUserPackages.size

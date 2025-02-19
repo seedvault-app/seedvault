@@ -31,7 +31,6 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil.calculateDiff
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE
 import androidx.work.WorkManager
 import com.stevesoltys.seedvault.BackupStateManager
 import com.stevesoltys.seedvault.R
@@ -124,19 +123,19 @@ internal class SettingsViewModel(
 
     private val storageObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean, uris: MutableCollection<Uri>, flags: Int) {
-            onStoragePropertiesChanged()
+            onBackendPropertiesChanged()
         }
     }
 
     private inner class NetworkObserver : ConnectivityManager.NetworkCallback() {
         var registered = false
         override fun onAvailable(network: Network) {
-            onStoragePropertiesChanged()
+            onBackendPropertiesChanged()
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            onStoragePropertiesChanged()
+            onBackendPropertiesChanged()
         }
     }
 
@@ -169,25 +168,8 @@ internal class SettingsViewModel(
                 onBackupRunningStateChanged()
             }
         }
-        onStoragePropertiesChanged()
+        onBackendPropertiesChanged()
         loadFilesSummary()
-    }
-
-    override fun onStorageLocationChanged() {
-        val storage = backendManager.backendProperties ?: return
-
-        Log.i(TAG, "onStorageLocationChanged (isUsb: ${storage.isUsb})")
-        if (storage.isUsb) {
-            // disable storage backup if new storage is on USB
-            cancelAppBackup()
-            cancelFilesBackup()
-        } else {
-            // enable it, just in case the previous storage was on USB,
-            // also to update the network requirement of the new storage
-            scheduleAppBackup(CANCEL_AND_REENQUEUE)
-            scheduleFilesBackup()
-        }
-        onStoragePropertiesChanged()
     }
 
     private suspend fun onBackupRunningStateChanged() = withContext(Dispatchers.IO) {
@@ -210,7 +192,7 @@ internal class SettingsViewModel(
         }
     }
 
-    private fun onStoragePropertiesChanged() {
+    override fun onBackendPropertiesChanged() {
         val properties = backendManager.backendProperties ?: return
 
         Log.d(TAG, "onStoragePropertiesChanged")
@@ -325,6 +307,8 @@ internal class SettingsViewModel(
     fun scheduleFilesBackup() {
         if (!backendManager.isOnRemovableDrive && settingsManager.isStorageBackupEnabled()) {
             val requiresNetwork = backendManager.backendProperties?.requiresNetwork == true
+            // FIXME this runs a backup right away (if constraints fulfilled)
+            //  and JobScheduler doesn't offer initial delay
             BackupJobService.scheduleJob(
                 context = app,
                 jobServiceClass = StorageBackupJobService::class.java,
@@ -375,6 +359,8 @@ internal class SettingsViewModel(
         try {
             app.contentResolver.openOutputStream(uri, "wt")?.use { outputStream ->
                 getRuntime().exec(command).inputStream.use { inputStream ->
+                    // first log command, so we see if it is correct, e.g. has our own uid
+                    outputStream.write("$command\n\n".toByteArray())
                     inputStream.copyTo(outputStream)
                 }
             } ?: throw IOException("OutputStream was null")

@@ -5,18 +5,38 @@
     <string name="content_audio">Arquivos de áudio</string>
     <string name="content_downloads">Downloads</string>
     <string name="content_add">Adicionar</string>
-    <string name="notification_backup_title">Backup do armazenamento</string>
-    <string name="notification_backup_scanning">Escaneando arquivos…</string>
+    <string name="notification_backup_title">Backup de arquivos</string>
+    <string name="notification_backup_scanning">Buscando arquivos…</string>
     <string name="notification_prune">Removendo backups antigos…</string>
-    <string name="notification_restore_channel_title">Restauração do armazenamento</string>
+    <string name="notification_restore_channel_title">Restauração de arquivos</string>
     <string name="notification_restore_complete_title">%1$d de %2$d arquivos restaurados</string>
-    <string name="snapshots_empty">Nenhum backup de armazenamento encontrado
-\n
-\nNão há nada que possa ser restaurado.</string>
+    <string name="snapshots_empty">Nenhum backup de arquivos encontrado \n \nDesculpe, mas não há nada que possa ser restaurado.</string>
     <string name="notification_restore_title">Restaurando arquivos…</string>
-    <string name="snapshots_title">Backups de armazenamento disponíveis</string>
+    <string name="snapshots_title">Backups de arquivos disponíveis</string>
     <string name="notification_backup_backup_files">Fazendo backup dos arquivos…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
-    <string name="snapshots_error">Erro ao carregar snapshots</string>
+    <string name="snapshots_error">Erro ao carregar backups</string>
     <string name="content_options">Opções</string>
+    <string name="select_files_title">Revisar quais arquivos restaurar</string>
+    <string name="select_files_number_of_files">%1$d arquivo(s)</string>
+    <string name="select_files_button_restore">Restaurar arquivos selecionados</string>
+    <string name="notification_restore_complete_dups">%1$d arquivos eram duplicatas.</string>
+    <string name="notification_restore_complete_errors">%1$d arquivos tinham erros.</string>
+    <string name="notification_check_channel_title">Verificação de integridade do backup de arquivos</string>
+    <string name="notification_check_title">Verificando backups de arquivos…</string>
+    <string name="notification_check_text">Buscando dados de backup disponíveis.</string>
+    <string name="notification_check_finished_title">Integridade do backup de arquivos verificada</string>
+    <string name="notification_check_finished_text">%1$s foi verificado com sucesso, em uma velocidade média de %2$s.</string>
+    <string name="notification_check_error_title">Erros no backup de arquivos foram encontrados</string>
+    <string name="notification_check_error_text">Toque para mais detalhes. Nós verificamos %1$s em uma velocidade média de %2$s.</string>
+    <string name="notification_check_action">Detalhes</string>
+    <string name="check_success_intro">%1$d backups foram encontrados e %2$d%% de seus dados (%3$s) foram verificados com sucesso:</string>
+    <string name="check_error_no_snapshots">Não encontramos nenhum backup. Execute um backup bem-sucedido primeiro e tente novamente.</string>
+    <string name="check_error_has_snapshots">Encontramos %1$d backups, alguns deles estão corrompidos ou têm erros. Abaixo estão os backups que podem ser restaurados (parcialmente).</string>
+    <string name="check_error_no_result">Perdemos os resultados detalhados. Passou muito tempo desde a verificação? Tente executá-la novamente.</string>
+    <string name="check_error_snapshot">O backup tem alguns erros. Você talvez consiga restaurá-lo parcialmente.</string>
+    <string name="check_files_text">O \"%s\" inclui os seguintes arquivos:</string>
+    <string name="check_files_error">Os dados de backup estão corrompidos. O arquivo não será totalmente restaurado.</string>
+    <string name="check_files_title">Arquivos neste backup</string>
+    <string name="check_error_only_broken_snapshots">Encontramos %1$d backups. Porém, todos estavam corrompidos. Por favor, execute um backup bem-sucedido e tente novamente.</string>
 </resources>

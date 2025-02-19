@@ -46,7 +46,6 @@
     <string name="storage_check_fragment_backup_error">Si è verificato un errore durante l\'accesso alla posizione di backup.</string>
     <string name="storage_check_fragment_backup_title">Inizializzazione della posizione di backup…</string>
     <string name="storage_fake_drive_summary">Deve essere attaccato alla corrente</string>
-    <string name="storage_fragment_warning">Le persone con l\'accesso alla tua posizione di archiviazione possono capire quali app utilizzi, ma non avranno l\'accesso ai dati delle app.</string>
     <string name="storage_fragment_restore_title">Come trovare i tuoi backup\?</string>
     <string name="settings_backup_now">Esegui il backup ora</string>
     <string name="settings_backup_exclude_apps">Escludi le app</string>
@@ -93,10 +92,8 @@
 \nSi prega di scegliere un altro punto che contenga una %s cartella.</string>
     <string name="restore_invalid_location_title">Nessun backup trovato</string>
     <string name="restore_skip">Non ripristinare</string>
-    <string name="restore_restore_set_times">Ultimo backup %1$s · Primo %2$s.</string>
     <string name="restore_choose_restore_set">Selezionare un backup da ripristinare</string>
     <string name="restore_title">Ripristino del backup</string>
-    <string name="backup_section_not_allowed">App che non consentono il backup dei relativi dati</string>
     <string name="restore_app_quota_exceeded">La quota per il backup e\' stata superata</string>
     <string name="backup_app_quota_exceeded">La quota backup e\' stata superata</string>
     <string name="restore_app_not_allowed">La app non ha permesso il backup</string>
@@ -144,10 +141,6 @@
     <string name="restore_storage_in_progress_title">I file stanno venendo ripristinati…</string>
     <string name="settings_category_apps">Backup dell\'applicazione</string>
     <string name="settings_backup_storage_title">Esegui backup dei miei file</string>
-    <string name="settings_expert_quota_title">Quota di app illimitata</string>
-    <string name="settings_expert_quota_summary">Non imporre limiti alle dimensioni dei backup delle app.
-\n
-\nAttenzione: Questo può riempire rapidamente la tua memoria di archiviazione. Non necessario per la maggior parte delle applicazioni.</string>
     <string name="settings_backup_recovery_code">Codice di recupero</string>
     <string name="settings_backup_recovery_code_summary">Verifica il codice esistente o genera un nuovo codice</string>
     <string name="settings_backup_storage_dialog_message">Il backup dei file è ancora sperimentale e potrebbe non funzionare. Non fare affidamento su di esso per i dati importanti.</string>
@@ -167,7 +160,6 @@
 \n
 \nAttenzione: il file di registro potrebbe contenere informazioni di identificazione personale. Controlla prima ed elimina dopo la condivisione!</string>
     <string name="settings_expert_logcat_error">Errore: impossibile salvare il log dell\'app</string>
-    <string name="storage_fragment_warning_delete">I backup esistenti in questa posizione verranno cancellati.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Non installato</string>
     <string name="storage_fake_davx5_summary_installed">Tocca per impostare un supporto WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">Supporto WebDAV non dipsonibile. Impostane uno.</string>

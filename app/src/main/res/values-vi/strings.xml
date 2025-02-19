@@ -30,10 +30,8 @@
 \nVui lòng chọn một vị trí khác có chứa thư mục %s.</string>
     <string name="restore_invalid_location_title">Không tìm thấy bản sao lưu nào</string>
     <string name="restore_skip">Không khôi phục</string>
-    <string name="restore_restore_set_times">Sao lưu lần cuối %1$s · Lần đầu %2$s.</string>
     <string name="restore_choose_restore_set">Chọn bản sao lưu để khôi phục</string>
     <string name="restore_title">Khôi phục từ bản sao lưu</string>
-    <string name="backup_section_not_allowed">Ứng dụng không cho phép sao lưu dữ liệu</string>
     <string name="restore_app_not_installed">Ứng dụng không được cài đặt</string>
     <string name="restore_app_quota_exceeded">Đã vượt quá hạn mức sao lưu</string>
     <string name="backup_app_quota_exceeded">Đã vượt quá hạn mức sao lưu</string>
@@ -109,7 +107,6 @@
     <string name="storage_available_bytes">Còn trống <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="storage_fake_drive_summary">Cần phải được cắm vào</string>
     <string name="storage_fake_drive_title">Ổ USB</string>
-    <string name="storage_fragment_warning">Những người có quyền truy cập vào vị trí lưu trữ có thể biết bạn sử dụng các ứng dụng gì, nhưng không thể truy cập vào dữ liệu ứng dụng.</string>
     <string name="storage_fragment_restore_title">Tìm bản sao lưu của bạn ở đâu\?</string>
     <string name="storage_fragment_backup_title">Chọn nơi lưu trữ bản sao lưu</string>
     <string name="settings_backup_recovery_code_summary">Xác minh mã hiện có hoặc tạo mã mới</string>
@@ -144,11 +141,6 @@
     <string name="settings_backup_files_summary">Không có</string>
     <string name="settings_backup_storage_dialog_title">Tính năng thử nghiệm</string>
     <string name="settings_backup_storage_dialog_ok">Vẫn bật</string>
-    <string name="settings_expert_quota_title">Không giới hạn ứng dụng</string>
-    <string name="settings_expert_quota_summary">Không giới hạn kích cỡ của bản sao lưu ứng dụng.
-\n
-\nCảnh báo: Việc này có thể nhanh chóng lấp đầy vị trí lưu trữ. Không cần thiết đối với đa số ứng dụng.</string>
-    <string name="storage_fragment_warning_delete">Các bản sao lưu đã có trong vị trí này sẽ bị xoá.</string>
     <string name="storage_check_fragment_patience">Việc này có thể mất một ít thời gian…</string>
     <string name="recovery_code_auth_title">Nhập lại mã khoá màn hình</string>
     <string name="recovery_code_auth_description">Nhập thông tin mở khoá thiết bị để tiếp tục</string>

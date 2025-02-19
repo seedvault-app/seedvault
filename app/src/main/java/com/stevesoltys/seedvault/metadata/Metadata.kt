@@ -122,6 +122,7 @@ data class PackageMetadata(
         fun fromSnapshot(app: Snapshot.App) = PackageMetadata(
             time = app.time,
             backupType = app.type.toBackupType(),
+            size = app.size,
             name = app.name,
             chunkIds = app.chunkIdsList.hexFromProto(),
             system = app.system,

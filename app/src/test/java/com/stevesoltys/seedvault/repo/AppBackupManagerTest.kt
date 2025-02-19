@@ -9,7 +9,6 @@ import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.getRandomByteArray
 import com.stevesoltys.seedvault.transport.TransportTest
 import io.mockk.Runs
-import io.mockk.andThenJust
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,7 +21,6 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import org.calyxos.seedvault.core.toHexString
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -107,22 +105,6 @@ internal class AppBackupManagerTest : TransportTest() {
         coEvery { snapshotManager.saveSnapshot(snapshot) } throws IOException()
 
         assertNull(appBackupManager.afterBackupFinished(true))
-    }
-
-    @Test
-    fun `afterBackupFinished retries saving snapshot`() = runBlocking {
-        // need to run beforeBackup to get a snapshotCreator
-        minimalBeforeBackup()
-
-        every { blobCache.clear() } just Runs
-        every { snapshotCreator.finalizeSnapshot() } returns snapshot
-        coEvery {
-            snapshotManager.saveSnapshot(snapshot) // works only at third attempt
-        } throws IOException() andThenThrows IOException() andThenJust Runs
-        every { settingsManager.onSuccessfulBackupCompleted(snapshot.token) } just Runs
-        every { blobCache.clearLocalCache() } just Runs
-
-        assertEquals(snapshot, appBackupManager.afterBackupFinished(true))
     }
 
     @Test

@@ -64,3 +64,5 @@ instrumentation_tests_task:
       path: "seedvault_test_results/**/*.mp4"
     logcat_artifacts:
       path: "seedvault_test_results/**/*.log"
+    report_artifacts:
+      path: "app/build/reports/**/*"

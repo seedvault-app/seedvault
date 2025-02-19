@@ -13,20 +13,18 @@ import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.webdav.QuotaAvailableBytes
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.internal.http2.StreamResetException
 import okio.BufferedSink
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendId
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
 import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
@@ -42,10 +40,12 @@ import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
+import java.io.EOFException
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
-import java.io.PipedInputStream
+import java.net.SocketException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -53,13 +53,14 @@ import kotlin.reflect.KClass
 
 private const val DEBUG_LOG = true
 
-@OptIn(DelicateCoroutinesApi::class)
 public class WebDavBackend(
     webDavConfig: WebDavConfig,
     root: String = DIRECTORY_ROOT,
 ) : Backend {
 
     private val log = KotlinLogging.logger {}
+
+    override val id: BackendId = BackendId.WEBDAV
 
     private val authHandler = BasicDigestAuthHandler(
         domain = null, // Optional, to only authenticate against hosts with this domain.
@@ -121,36 +122,25 @@ public class WebDavBackend(
         return availableBytes
     }
 
-    override suspend fun save(handle: FileHandle): OutputStream {
+    override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
         val location = handle.toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         davCollection.ensureFoldersExist(log, folders)
 
-        val pipedInputStream = PipedInputStream()
-        val pipedOutputStream = PipedCloseActionOutputStream(pipedInputStream)
-
         val body = object : RequestBody() {
             override fun isOneShot(): Boolean = true
             override fun contentType() = "application/octet-stream".toMediaType()
+            override fun contentLength(): Long = saver.size
             override fun writeTo(sink: BufferedSink) {
-                pipedInputStream.use { inputStream ->
-                    sink.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
+                saver.save(sink.outputStream())
             }
         }
-        val deferred = GlobalScope.async(Dispatchers.IO) {
+        return suspendCoroutine { cont ->
             davCollection.put(body) { response ->
                 log.debugLog { "save($location) = $response" }
+                cont.resume(saver.size)
             }
         }
-        pipedOutputStream.doOnClose {
-            runBlocking { // blocking i/o wait
-                deferred.await()
-            }
-        }
-        return pipedOutputStream
     }
 
     override suspend fun load(handle: FileHandle): InputStream {
@@ -359,6 +349,20 @@ public class WebDavBackend(
             if (e is IOException) throw e
             else throw IOException("Error removing all at $location", e)
         }
+    }
+
+    override fun isTransientException(e: Exception): Boolean {
+        if (e is SocketTimeoutException || e is SocketException) {
+            return true
+        } else if (e is UnknownHostException) {
+            return true // gets thrown when phone leaves WiFi range
+        } else if (e is StreamResetException) {
+            // https://github.com/seedvault-app/seedvault/pull/835#issuecomment-2591170084
+            return true
+        } else if (e is EOFException && e.message?.contains("\\n not found") == true) {
+            return true
+        }
+        return false
     }
 
     override val providerPackageName: String? = null // 100% built-in plugin

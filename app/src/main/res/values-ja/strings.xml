@@ -90,9 +90,7 @@
 \n%sフォルダを含む別の場所を選択してください。</string>
     <string name="restore_invalid_location_title">バックアップが見つかりません</string>
     <string name="restore_skip">復元しない</string>
-    <string name="restore_restore_set_times">最後のバックアップ: %1$s・最初のバックアップ: %2$s</string>
     <string name="restore_choose_restore_set">復元するバックアップを選択してください</string>
-    <string name="backup_section_not_allowed">データのバックアップを許可していないアプリ</string>
     <string name="restore_title">バックアップからの復元</string>
     <string name="restore_app_not_installed">アプリはインストールされていません</string>
     <string name="backup_app_quota_exceeded">バックアップの制限を超えました</string>
@@ -137,7 +135,6 @@
     <string name="storage_check_fragment_permission_error">バックアップ先への書き込み権限を取得できません。</string>
     <string name="storage_check_fragment_restore_title">バックアップを探しています…</string>
     <string name="storage_check_fragment_backup_title">バックアップ先を初期化しています…</string>
-    <string name="storage_fragment_warning">バックアップにアクセスできる人は、あなたがどのアプリを使用しているか知ることはできますが、アプリのデータにはアクセスできません。</string>
     <string name="storage_fragment_restore_title">バックアップの保存先はどこですか？</string>
     <string name="settings_backup_apk_dialog_message">アプリのバックアップを無効にしても、アプリの「データ」は引き続きバックアップされます。ただし、自動的には復元されません。
 \n
@@ -145,9 +142,6 @@
     <string name="settings_category_storage">ストレージバックアップ (試験的)</string>
     <string name="settings_backup_storage_title">ファイルをバックアップする</string>
     <string name="settings_backup_storage_dialog_ok">とにかく有効にする</string>
-    <string name="settings_expert_quota_summary">アプリのバックアップサイズに制限をかけない。
-\n
-\n警告: これにより、保管場所がすぐにいっぱいになる可能性があります。ほとんどのアプリには必要ありません。</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">インストールされていません</string>
     <string name="storage_check_fragment_patience">これには時間がかかる場合があります…</string>
     <string name="restore_storage_skip">ファイルの復元をスキップする</string>
@@ -155,7 +149,6 @@
     <string name="restore_storage_got_it">OK</string>
     <string name="settings_expert_title">エキスパート設定</string>
     <string name="settings_backup_storage_dialog_message">ファイルのバックアップはまだ試験段階であり、機能しない可能性があります。重要なデータにはこの機能を使わないでください。</string>
-    <string name="storage_fragment_warning_delete">この場所にある既存のバックアップは削除されます。</string>
     <string name="settings_backup_storage_dialog_title">試験的機能</string>
     <string name="settings_category_apps">アプリのバックアップ</string>
     <string name="settings_backup_files_summary">なし</string>
@@ -166,7 +159,6 @@
 \n一部のアプリ( Signal や WhatsApp など)では、ファイルが完全に復元されてから、バックアップをインポートする必要があります。ファイルの復元が完了する前に、これらのアプリを起動しないようにしてください。</string>
     <string name="restore_storage_in_progress_title">ファイルを復元中です…</string>
     <string name="recovery_code_auth_title">スクリーンロック解除コードを再入力してください</string>
-    <string name="settings_expert_quota_title">アプリ容量制限なし</string>
     <string name="recovery_code_auth_description">デバイスの認証情報を入力して続行します</string>
     <string name="settings_backup_new_code_code_dialog_ok">新しいコード</string>
     <string name="settings_backup_storage_battery_optimization">警告: バッテリーの最適化が有効になっているため、自動的にはバックアップされません。</string>
@@ -201,4 +193,6 @@
     <string name="settings_backup_dialog_title">アプリのバックアップを本当にオフにしてもよろしいですか？</string>
     <string name="settings_backup_dialog_disable">とにかくオフにします</string>
     <string name="settings_expert_logcat_error">エラー: アプリのログを保存できませんでした</string>
+    <string name="first_start_text">既存のバックアップからデバイスを復元、もしくは新しくバックアップを作成しますか？</string>
+    <string name="setup_button">新規登録</string>
 </resources>

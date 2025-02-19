@@ -138,6 +138,7 @@ internal class CoordinatorIntegrationTest : TransportTest() {
 
     init {
         every { backendManager.backend } returns backend
+        every { backendManager.canDoBackupNow() } returns true
         every { appBackupManager.snapshotCreator } returns snapshotCreator
     }
 

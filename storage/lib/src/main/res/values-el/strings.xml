@@ -5,7 +5,7 @@
     <string name="content_downloads">Λήψεις</string>
     <string name="notification_backup_scanning">Σάρωση αρχείων…</string>
     <string name="notification_backup_backup_files">Δημιουργία αντιγράφου ασφαλείας αρχείων…</string>
-    <string name="notification_backup_title">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης</string>
+    <string name="notification_backup_title">Αντίγραφο ασφαλείας αρχείων</string>
     <string name="notification_restore_channel_title">Επαναφορά χώρου αποθήκευσης</string>
     <string name="content_audio">Αρχεία ήχου</string>
     <string name="notification_prune">Κατάργηση παλαιών αντιγράφων ασφαλείας…</string>
@@ -13,10 +13,30 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">Έγινε επαναφορά %1$d αρχείων από τα %2$d</string>
     <string name="snapshots_title">Διαθέσιμα αντίγραφα ασφαλείας χώρου αποθήκευσης</string>
-    <string name="snapshots_empty">Δεν βρέθηκαν αντίγραφα ασφαλείας χώρου αποθήκευσης
-\n
-\nΛυπούμαστε, αλλά δεν υπάρχει τίποτα που να μπορεί να αποκατασταθεί.</string>
+    <string name="snapshots_empty">Δεν βρέθηκαν αντίγραφα ασφαλείας χώρου αποθήκευσης \n \nΛυπούμαστε, αλλά δεν υπάρχει τίποτα που να μπορεί να αποκατασταθεί.</string>
     <string name="snapshots_error">Σφάλμα φόρτωσης στιγμιότυπων</string>
     <string name="content_add">Προσθήκη</string>
     <string name="content_options">Επιλογές</string>
+    <string name="notification_restore_complete_dups">%1$d αρχεία ήταν διπλότυπα.</string>
+    <string name="notification_restore_complete_errors">%1$d αρχεία είχαν σφάλματα.</string>
+    <string name="select_files_title">Ελέγξτε τα αρχεία για επαναφορά</string>
+    <string name="select_files_number_of_files">%1$d αρχείο/α</string>
+    <string name="select_files_button_restore">Επαναφορά επιλεγμένων αρχείων</string>
+    <string name="notification_check_title">Έλεγχος αντιγράφων ασφαλείας αρχείων…</string>
+    <string name="notification_check_text">Ανάκτηση διαθέσιμων δεδομένων αντιγράφων ασφαλείας.</string>
+    <string name="notification_check_finished_title">Επαληθεύτηκε η ακεραιότητα του αντιγράφου ασφαλείας αρχείων</string>
+    <string name="notification_check_finished_text">Έγινε επιτυχής έλεγχος του %1$s με μέση ταχύτητα %2$s.</string>
+    <string name="notification_check_error_title">Βρέθηκαν σφάλματα στο αντίγραφο ασφαλείας αρχείων</string>
+    <string name="notification_check_action">Λεπτομέρειες</string>
+    <string name="check_success_intro">Βρέθηκαν %1$d στιγμιότυπα και το %2$d%% των δεδομένων τους (%3$s) επαληθεύτηκε με επιτυχία:</string>
+    <string name="check_error_only_broken_snapshots">Βρήκαμε %1$d εφεδρικά στιγμιότυπα. Ωστόσο, όλα τους ήταν κατεστραμμένα. Εκτελέστε ένα επιτυχημένο αντίγραφο ασφαλείας και στη συνέχεια δοκιμάστε να ελέγξετε ξανά.</string>
+    <string name="check_error_no_result">Χάσαμε τα αναλυτικά αποτελέσματα. Πέρασε πολύς καιρός από την εκτέλεση του ελέγχου; Δοκιμάστε να τρέξετε ξανά.</string>
+    <string name="check_files_title">Αρχεία σε αυτό το αντίγραφο ασφαλείας</string>
+    <string name="notification_check_error_text">Πατήστε για λεπτομέρειες. Ελέγξαμε το %1$s με μέση ταχύτητα %2$s.</string>
+    <string name="check_error_no_snapshots">Δεν μπορέσαμε να βρούμε κανένα αντίγραφο ασφαλείας. Εκτελέστε πρώτα ένα επιτυχημένο αντίγραφο ασφαλείας και μετά δοκιμάστε να το ελέγξετε ξανά.</string>
+    <string name="check_error_has_snapshots">Βρήκαμε %1$d εφεδρικά στιγμιότυπα, ορισμένα από αυτά είναι κατεστραμμένα ή έχουν σφάλματα. Παρακάτω είναι τα αντίγραφα ασφαλείας που μπορούν (εν μέρει) να αποκατασταθούν.</string>
+    <string name="check_error_snapshot">Αυτό το αντίγραφο ασφαλείας έχει ορισμένα σφάλματα. Ίσως μπορέσετε να το επαναφέρετε εν μέρει.</string>
+    <string name="check_files_text">Το \"%s\" περιλαμβάνει τα ακόλουθα αρχεία:</string>
+    <string name="notification_check_channel_title">Έλεγχος ακεραιότητας αντιγράφου ασφαλείας αρχείων</string>
+    <string name="check_files_error">Τα δεδομένα αντιγράφων ασφαλείας είναι κατεστραμμένα. Δεν θα γίνει πλήρης επαναφορά του αρχείου.</string>
 </resources>

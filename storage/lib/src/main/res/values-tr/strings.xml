@@ -14,9 +14,12 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d / %2$d dosya geri yüklendi</string>
     <string name="snapshots_title">Kullanılabilir depolama yedeklemeleri</string>
-    <string name="snapshots_empty">Depolama yedeklemesi bulunamadı
-\n
-\nÜzgünüz, ancak geri yüklenebilecek hiçbir şey yok.</string>
+    <string name="snapshots_empty">Depolama yedeklemesi bulunamadı \n \nÜzgünüz, ancak geri yüklenebilecek hiçbir şey yok.</string>
     <string name="snapshots_error">Anlık görüntüler yüklenirken hata oluştu</string>
     <string name="content_options">Seçenekler</string>
+    <string name="select_files_title">Geri yüklenecek dosyaları gözden geçir</string>
+    <string name="select_files_number_of_files">%1$d dosya</string>
+    <string name="select_files_button_restore">Seçilen dosyaları geri yükle</string>
+    <string name="notification_restore_complete_errors">%1$d dosyada hata bulundu.</string>
+    <string name="notification_restore_complete_dups">%1$d dosya yinelenen.</string>
 </resources>

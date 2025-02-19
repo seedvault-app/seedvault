@@ -4,10 +4,10 @@
     <string name="notification_backup_scanning">Сканування файлів…</string>
     <string name="content_videos">Відео</string>
     <string name="content_audio">Аудіо файли</string>
-    <string name="notification_backup_title">Резервне копіювання пам\'яті</string>
+    <string name="notification_backup_title">Резервне копіювання файлів</string>
     <string name="content_downloads">Завантаження</string>
     <string name="content_add">Додати</string>
-    <string name="notification_restore_channel_title">Відновлення пам \'яті</string>
+    <string name="notification_restore_channel_title">Відновлення резервної копії файлу</string>
     <string name="notification_restore_title">Відновлення файлів…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d з %2$d файлів відновлено</string>
@@ -15,8 +15,29 @@
     <string name="notification_backup_backup_files">Резервне копіювання файлів…</string>
     <string name="content_images">Фото та зображення</string>
     <string name="notification_prune">Вилучення старих резервних копій…</string>
-    <string name="snapshots_title">Доступні резервні копії пам\'яті</string>
-    <string name="snapshots_empty">Резервні копії пам \'яті не знайдено
-\n
-\nВибачте, але немає нічого, що можна було б відновити.</string>
+    <string name="snapshots_title">Доступні резервні копії файлів</string>
+    <string name="snapshots_empty">Резервні копії файлів не знайдено\n\nВибачте, але нічого не можна відновити.</string>
+    <string name="select_files_number_of_files">%1$d файл(и/ів)</string>
+    <string name="select_files_button_restore">Відновити обрані файли</string>
+    <string name="select_files_title">Переглянути файли для відновлення</string>
+    <string name="notification_restore_complete_dups">%1$d файлів мають дублі.</string>
+    <string name="notification_restore_complete_errors">%1$d файлів з помилками.</string>
+    <string name="notification_check_title">Перевірка резервних копій файлів…</string>
+    <string name="notification_check_channel_title">Перевірка цілісності резервної копії файлу</string>
+    <string name="notification_check_text">Отримання доступних резервних даних.</string>
+    <string name="notification_check_finished_title">Цілісність резервної копії файлу перевірено</string>
+    <string name="notification_check_finished_text">Успішно перевірено %1$s із середньою швидкістю %2$s.</string>
+    <string name="notification_check_error_title">Знайдено помилки резервного копіювання файлів</string>
+    <string name="notification_check_action">Подробиці</string>
+    <string name="check_error_title">\@string/notification_check_error_title</string>
+    <string name="check_error_no_snapshots">Не вдалося знайти жодної резервної копії. Будь ласка, спочатку запустіть успішне резервне копіювання, а потім повторіть перевірку.</string>
+    <string name="check_error_no_result">Ми втратили докладні результати. Чи багато часу минуло після перевірки? Спробуйте бігти знову.</string>
+    <string name="check_error_snapshot">Ця резервна копія містить деякі помилки. Можливо, ви зможете його частково відновити.</string>
+    <string name="check_files_title">Файли в цій резервній копії</string>
+    <string name="check_files_text">\"%s\" містить такі файли:</string>
+    <string name="check_files_error">Дані резервної копії пошкоджено. Файл не відновлюється повністю.</string>
+    <string name="check_success_intro">Було знайдено %1$d знімків і успішно перевірено %2$d%% їхніх даних (%3$s):</string>
+    <string name="notification_check_error_text">Торкніться, щоб дізнатися більше. Ми перевірили %1$s із середньою швидкістю %2$s.</string>
+    <string name="check_error_only_broken_snapshots">Ми знайшли %1$d резервні знімки. Проте всі вони були зіпсовані. Будь ласка, запустіть успішне резервне копіювання, а потім повторіть перевірку.</string>
+    <string name="check_error_has_snapshots">Ми знайшли %1$d резервних знімків, деякі з них пошкоджені або містять помилки. Нижче наведено резервні копії, які можна (частково) відновити.</string>
 </resources>

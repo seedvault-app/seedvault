@@ -60,6 +60,9 @@
     <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
     <string name="settings_backup_new_code_dialog_message">To continue using app backups, you need to generate a new recovery code.\n\nWe are sorry for the inconvenience.</string>
     <string name="settings_backup_new_code_code_dialog_ok">New code</string>
+    <string name="settings_backup_metered_title">Backup stopped</string>
+    <string name="settings_backup_metered_text">The backup won\'t proceed because your device is using mobile data.\n\nYou can enable backups on mobile data under \"Backup scheduling\".</string>
+
 
     <string name="settings_scheduling_frequency_title">Backup frequency</string>
     <string name="settings_scheduling_frequency_12_hours">Every 12 hours</string>
@@ -92,7 +95,7 @@
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Not recommended)</string>
-    <string name="storage_round_sync_summary_prefix" translatable="false">RoundSync Remote: </string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Remote: </string>
     <string name="storage_fake_nextcloud_title" translatable="false">Nextcloud</string>
     <string name="storage_fake_nextcloud_summary">Tap to install</string>
     <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
@@ -169,6 +172,7 @@
     <string name="notification_success_text">%1$d of %2$d apps backed up (%3$s). Tap to learn more.</string>
     <string name="notification_failed_title">Backup failed</string>
     <string name="notification_failed_text">An error occurred while running the backup.</string>
+    <string name="notification_failed_metered_text">The backup has been aborted. Are you using mobile data? Connect to Wi-Fi to continue.</string>
 
     <string name="notification_error_channel_title">Error notification</string>
     <string name="notification_error_title">Backup error</string>
@@ -199,6 +203,9 @@
     <string name="notification_checking_error_title">Backup errors found</string>
     <string name="notification_checking_error_text">Tap for details. We checked %1$s at an average speed of %2$s.</string>
     <string name="notification_checking_action">Details</string>
+
+    <string name="notification_usb_monitor_title">Waiting for USB drive…</string>
+    <string name="notification_usb_monitor_text">Once your USB drive becomes available, we will start a backup.</string>
 
     <string name="backup_app_check_success_intro">%1$d snapshots were found and %2$d%% of their data (%3$s) successfully verified:</string>
     <string name="backup_app_check_success_disclaimer">Note: we cannot verify whether individual apps include all of their user data in the backup.</string>
@@ -274,7 +281,7 @@
     <string name="restore_finished_button">Finish</string>
 
     <string name="restore_storage_skip">Skip restoring files</string>
-    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (beta)</string>
+    <string name="restore_storage_choose_snapshot">Choose a file backup to restore (beta)</string>
     <string name="restore_storage_selection_description">Selected files will be restored. Tap folders to see files in them.</string>
     <string name="restore_storage_in_progress_title">Files are being restored…</string>
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.\n\nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>

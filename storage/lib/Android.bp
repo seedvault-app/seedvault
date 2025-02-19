@@ -32,6 +32,7 @@ android_library {
         "com.google.android.material_material",
         "kotlinx-coroutines-android",
         "kotlinx-coroutines-core",
+        "okio-lib",
     ],
     plugins: [
         "androidx.room_room-compiler-plugin",

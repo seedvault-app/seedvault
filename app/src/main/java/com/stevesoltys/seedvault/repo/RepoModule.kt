@@ -19,7 +19,7 @@ val repoModule = module {
         val snapshotFolder = File(androidContext().filesDir, FOLDER_SNAPSHOTS)
         SnapshotManager(snapshotFolder, get(), get(), get())
     }
-    factory { SnapshotCreatorFactory(androidContext(), get(), get(), get()) }
+    factory { SnapshotCreatorFactory(androidContext(), get(), get(), get(), get()) }
     factory { Pruner(get(), get(), get(), get()) }
     single { Checker(get(), get(), get(), get(), get(), get()) }
 }

@@ -89,8 +89,11 @@ internal fun DavCollection.ensureFoldersExist(log: KLogger, folders: MutableSet<
     if (parent in folders) return
     val parentCollection = DavCollection(httpClient, parent)
     try {
-        parentCollection.head { response ->
-            log.debugLog { "head($parent) = $response" }
+        parentCollection.propfind(
+            depth = 0,
+            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+        ) { response, relation ->
+            log.debugLog { "propfind(0, $parent) = $response $relation" }
             folders.add(parent)
         }
     } catch (e: NotFoundException) {

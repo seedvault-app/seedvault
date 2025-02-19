@@ -39,9 +39,6 @@
     <string name="storage_internal_warning_title">Warning</string>
     <string name="settings_backup_apk_title">App backup</string>
     <string name="restore_app_not_allowed">App didn\'t allow backup</string>
-    <string name="settings_expert_quota_summary">Do not impose a limitation on the size of app backups.
-\n
-\nWarning: This can fill up your storage location quickly. Not needed for most apps.</string>
     <string name="settings_backup_status_title">Backup status</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Not installed</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
@@ -56,7 +53,6 @@
 \n
 \nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
-    <string name="storage_fragment_warning">People with access to your storage location can learn which apps you use, but do not get access to the apps\' data.</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
     <string name="storage_fake_davx5_summary_unavailable">WebDAV mount not available. Set one up.</string>
     <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
@@ -78,7 +74,6 @@
     <string name="restore_app_status_installing">Re-installing</string>
     <string name="error_no_store">Error: No app store installed</string>
     <string name="backup_app_not_yet_backed_up">Waiting to back up…</string>
-    <string name="backup_section_not_allowed">Apps that do not allow data backup</string>
     <string name="restore_app_status_installed">Re-installed</string>
     <string name="restore_app_status_install_error">Could not install</string>
     <string name="restore_invalid_location_message">We could not find any backups at this location.
@@ -107,7 +102,6 @@
     <string name="settings_backup_storage_dialog_title">Experimental feature</string>
     <string name="settings_backup_storage_dialog_ok">Enable anyway</string>
     <string name="settings_expert_title">Expert settings</string>
-    <string name="settings_expert_quota_title">Unlimited app quota</string>
     <string name="settings_backup_storage_battery_optimization">Warning: No automatic backups, because battery optimization is active.</string>
     <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
     <string name="settings_backup_new_code_dialog_message">To continue using app backups, you need to generate a new recovery code.
@@ -125,7 +119,6 @@
     <string name="settings_expert_logcat_title">Save app log</string>
     <string name="settings_expert_logcat_error">Error: Could not save app log</string>
     <string name="storage_fragment_restore_title">Where to find your backups\?</string>
-    <string name="storage_fragment_warning_delete">Existing backups in this location will be deleted.</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
     <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
@@ -175,7 +168,6 @@
     <string name="backup_app_in_progress">Backing up</string>
     <string name="backup_app_was_stopped">Not backed up as it wasn\'t used recently</string>
     <string name="backup_app_quota_exceeded">Backup quota exceeded</string>
-    <string name="restore_restore_set_times">Last backup %1$s · First %2$s.</string>
     <string name="restore_skip">Don\'t restore</string>
     <string name="restore_skip_apps">Skip restoring apps</string>
     <string name="restore_app_status_warning">Restore warning</string>

@@ -113,9 +113,14 @@ internal class RestoreViewModel(
 
     internal fun loadRestoreSets() = viewModelScope.launch(ioDispatcher) {
         val result = when (val backups = restoreCoordinator.getAvailableBackups()) {
-            is ErrorResult -> RestoreSetResult(
-                app.getString(R.string.restore_set_error) + "\n\n${backups.e}"
-            )
+            is ErrorResult -> {
+                val msg = if (backups.e == null) {
+                    app.getString(R.string.restore_set_empty_result)
+                } else {
+                    app.getString(R.string.restore_set_error) + "\n\n${backups.e}"
+                }
+                RestoreSetResult(msg)
+            }
             is SuccessResult -> RestoreSetResult(backups.backups)
         }
         mRestoreSetResults.postValue(result)

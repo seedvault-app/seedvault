@@ -121,19 +121,21 @@ class AppBackupWorker(
         } catch (e: Exception) {
             Log.e(TAG, "Error while running setForeground: ", e)
         }
-        val freeSpace = backendManager.getFreeSpace()
-        Log.i(TAG, "freeSpace: $freeSpace")
-        if (freeSpace != null && freeSpace < MIN_FREE_SPACE) {
-            nm.onInsufficientSpaceError()
-            return Result.failure()
-        }
         return try {
-            if (isStopped) {
+            if (isStopped || !backendManager.canDoBackupNow()) {
                 Result.retry()
             } else {
+                val freeSpace = backendManager.getFreeSpace()
+                Log.i(TAG, "freeSpace: $freeSpace")
+                if (freeSpace != null && freeSpace < MIN_FREE_SPACE) {
+                    nm.onInsufficientSpaceError()
+                    return Result.failure()
+                }
                 val result = doBackup()
-                // show error notification if backup wasn't successful (maybe only when no retry?)
-                if (result != Result.success()) nm.onBackupError()
+                // show error notification if backup wasn't successful
+                if (result != Result.success()) {
+                    nm.onBackupError(meteredNetwork = !backendManager.canDoBackupNow())
+                }
                 // only allow retrying if rescheduling is allowed
                 if (tags.contains(TAG_RESCHEDULE)) return result
                 else Result.success()
@@ -149,8 +151,7 @@ class AppBackupWorker(
     }
 
     private suspend fun doBackup(): Result {
-        var result: Result = Result.success()
-        if (!isStopped) {
+        if (!isStopped && backendManager.canDoBackupNow()) {
             Log.i(TAG, "Initializing backup info...")
             try {
                 appBackupManager.beforeBackup()
@@ -158,23 +159,28 @@ class AppBackupWorker(
                 Log.e(TAG, "Error during 'beforeBackup': ", e)
                 return Result.retry()
             }
+        } else {
+            Log.i(TAG, "Stopping, because s:$isStopped c:${backendManager.canDoBackupNow()}")
         }
         try {
-            Log.i(TAG, "Starting APK backup... (stopped: $isStopped)")
-            if (!isStopped) apkBackupManager.backup()
+            if (!isStopped && backendManager.canDoBackupNow()) {
+                Log.i(TAG, "Starting APK backup...")
+                apkBackupManager.backup()
+            } else {
+                Log.i(TAG, "Stopping, because s:$isStopped c:${backendManager.canDoBackupNow()}")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Error backing up APKs: ", e)
-            result = Result.retry()
-        } finally {
-            Log.i(TAG, "Requesting app data backup... (stopped: $isStopped)")
-            val requestSuccess = if (!isStopped && backupRequester.isBackupEnabled) {
-                Log.d(TAG, "Backup is enabled, request backup...")
-                backupRequester.requestBackup()
-            } else true
-            Log.d(TAG, "Have requested backup.")
-            if (!requestSuccess) result = Result.retry()
+            return Result.retry()
         }
-        return result
+        Log.i(TAG, "Requesting app data backup... (stopped: $isStopped)")
+        if (!isStopped && backupRequester.isBackupEnabled && backendManager.canDoBackupNow()) {
+            Log.i(TAG, "Backup is enabled, request backup...")
+            if (!backupRequester.requestBackup()) return Result.retry()
+        } else {
+            Log.i(TAG, "Stopping, because s:$isStopped c:${backendManager.canDoBackupNow()}")
+        }
+        return Result.success()
     }
 
     private fun createForegroundInfo() = ForegroundInfo(

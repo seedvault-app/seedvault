@@ -14,8 +14,6 @@
     <string name="notification_restore_complete_title">%1$d من %2$d ملفات تم استعادتها</string>
     <string name="notification_restore_info">%2$d%1$d</string>
     <string name="snapshots_title">النسخ الاحتياطية المتاحة</string>
-    <string name="snapshots_empty">لم يتم العثور على نسخ احتياطية للتخزين
-\n
-\nآسف، ولكن لا يوجد شيء يمكن استعادته.</string>
+    <string name="snapshots_empty">لم يتم العثور على نسخ احتياطية للتخزين \n \nآسف، ولكن لا يوجد شيء يمكن استعادته.</string>
     <string name="snapshots_error">خطأ في تحميل اللقطات</string>
 </resources>

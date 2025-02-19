@@ -75,7 +75,7 @@ internal class BackupCoordinator(
     private val state = CoordinatorState(
         calledInitialize = false,
         calledClearBackupData = false,
-        cancelReason = UNKNOWN_ERROR
+        cancelReason = UNKNOWN_ERROR,
     )
     private val launchableSystemApps by lazy {
         packageService.launchableSystemApps.map { it.activityInfo.packageName }.toSet()
@@ -204,6 +204,10 @@ internal class BackupCoordinator(
         flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
+        if (!backendManager.canDoBackupNow()) {
+            Log.w(TAG, "performIncrementalBackup(): Can't do backup now, rejecting...")
+            return TRANSPORT_PACKAGE_REJECTED
+        }
         return kv.performBackup(packageInfo, data, flags)
     }
 
@@ -229,6 +233,10 @@ internal class BackupCoordinator(
     }
 
     fun checkFullBackupSize(size: Long): Int {
+        if (!backendManager.canDoBackupNow()) {
+            Log.w(TAG, "checkFullBackupSize(): Can't do backup now, rejecting...")
+            return TRANSPORT_PACKAGE_REJECTED
+        }
         val result = full.checkFullBackupSize(size)
         if (result == TRANSPORT_PACKAGE_REJECTED) state.cancelReason = NO_DATA
         else if (result == TRANSPORT_QUOTA_EXCEEDED) state.cancelReason = QUOTA_EXCEEDED
@@ -241,6 +249,10 @@ internal class BackupCoordinator(
         flags: Int,
     ): Int {
         state.cancelReason = UNKNOWN_ERROR
+        if (!backendManager.canDoBackupNow()) {
+            Log.w(TAG, "performFullBackup(): Can't do backup now, rejecting...")
+            return TRANSPORT_PACKAGE_REJECTED
+        }
         return full.performFullBackup(targetPackage, fileDescriptor, flags)
     }
 

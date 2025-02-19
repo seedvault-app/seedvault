@@ -8,6 +8,8 @@ package de.grobox.storagebackuptester.plugin
 import android.content.Context
 import android.net.Uri
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendId
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.FileHandle
 import org.calyxos.seedvault.core.backends.FileInfo
 import org.calyxos.seedvault.core.backends.TopLevelFolder
@@ -37,14 +39,15 @@ class TestSafBackend(
             // oops
         }
     }
+    override val id: BackendId get() = delegate.id
 
     override suspend fun test(): Boolean = delegate.test()
 
     override suspend fun getFreeSpace(): Long? = delegate.getFreeSpace()
 
-    override suspend fun save(handle: FileHandle): OutputStream {
-        if (getLocationUri() == null) return nullStream
-        return delegate.save(handle)
+    override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
+        if (getLocationUri() == null) return 0
+        return delegate.save(handle, saver)
     }
 
     override suspend fun load(handle: FileHandle): InputStream {
@@ -64,6 +67,8 @@ class TestSafBackend(
     }
 
     override suspend fun removeAll() = delegate.removeAll()
+
+    override fun isTransientException(e: Exception): Boolean = false
 
     override val providerPackageName: String? get() = delegate.providerPackageName
 

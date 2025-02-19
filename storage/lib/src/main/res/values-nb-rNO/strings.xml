@@ -9,9 +9,7 @@
     <string name="notification_prune">Fjerner gamle sikkerhetskopier …</string>
     <string name="notification_restore_title">Gjenoppretter filer …</string>
     <string name="notification_restore_channel_title">Lagringsgjenoppretting</string>
-    <string name="snapshots_empty">Fant ingen lagringssikkerhetskopier.
-\n
-\nIngenting kan gjenopprettes.</string>
+    <string name="snapshots_empty">Fant ingen lagringssikkerhetskopier. \n \nIngenting kan gjenopprettes.</string>
     <string name="content_videos">Videoer</string>
     <string name="content_audio">Lydfiler</string>
     <string name="notification_restore_complete_title">%1$d av %2$d filer gjenopprettet</string>

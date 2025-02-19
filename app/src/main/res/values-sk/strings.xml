@@ -16,7 +16,9 @@
     <string name="backup">Záloha</string>
     <string name="recovery_code_verification_try_again">Skúsiť znova</string>
     <string name="about_version">Verzia: %s</string>
-    <string name="about_summary">Zálohovacia aplikácia využívajúca interné rozhranie API systému Android pre zálohovanie.</string>
+    <string name="about_summary">Zálohovacie aplikácie využívajúce interné rozhranie API systému Android na zálohovanie. Ide o slobodný softvér vydaný pod licenciou Apache 2.
+\n
+\nRovnako ako všetok softvér môže aj Seedvault obsahovať chyby alebo zraniteľnosti.</string>
     <string name="storage_internal_warning_use_anyway">Aj tak použiť</string>
     <string name="storage_internal_warning_choose_other">Vyberte iné</string>
     <string name="storage_internal_warning_message">Ako zálohu ste vybrali interné úložisko. Toto nebude k dispozícii, ak dôjde k strate alebo rozbitiu telefónu.</string>
@@ -44,10 +46,8 @@
 \nVyberte iné umiestnenie, ktoré obsahuje priečinok %s.</string>
     <string name="restore_invalid_location_title">Nenašli sa žiadne zálohy</string>
     <string name="restore_skip">Neobnovovať</string>
-    <string name="restore_restore_set_times">Posledná záloha %1$s · Prvá %2$s.</string>
     <string name="restore_choose_restore_set">Vyberte zálohu, ktorú chcete obnoviť</string>
     <string name="restore_title">Obnovenie zo zálohy</string>
-    <string name="backup_section_not_allowed">Aplikácie, ktoré neumožňujú zálohovanie údajov</string>
     <string name="restore_app_not_installed">Aplikácia nie je nainštalovaná</string>
     <string name="restore_app_quota_exceeded">Bola prekročená kvóta zálohovania</string>
     <string name="backup_app_quota_exceeded">Prekročenie kvóty zálohovania</string>
@@ -122,7 +122,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> zadarmo</string>
     <string name="storage_fake_drive_summary">Musí byť pripojený</string>
     <string name="storage_fake_drive_title">USB flash disk</string>
-    <string name="storage_fragment_warning">Osoby s prístupom k vášmu úložisku môžu zistiť, ktoré aplikácie používate, ale nemajú prístup k údajom aplikácií.</string>
     <string name="storage_fragment_restore_title">Kde nájdete svoje zálohy\?</string>
     <string name="storage_fragment_backup_title">Vybrať umiestnenie zálohy</string>
     <string name="settings_backup_recovery_code_summary">Overenie existujúceho kódu alebo vygenerovanie nového kódu</string>
@@ -140,4 +139,96 @@
     <string name="settings_backup_apk_summary">Zálohovať samotné aplikácie. V opačnom prípade by sa zálohovali len údaje aplikácií.</string>
     <string name="data_management_label">Záloha Seedvault</string>
     <string name="about_title">O programe</string>
+    <string name="settings_category_apps">Záloha aplikácií</string>
+    <string name="settings_backup_dialog_title">Naozaj vypnúť zálohovanie aplikácií?</string>
+    <string name="settings_backup_dialog_message">Po opätovnom zapnutí zálohovania môže proces zálohovania trvať dlhšie ako obvykle a bude využívať ďalší úložný priestor.</string>
+    <string name="settings_backup_dialog_disable">Aj tak vypnúť</string>
+    <string name="settings_backup_status_next_backup">Ďalšia záloha: %1$s</string>
+    <string name="backup_app_warning">Varovanie zalohy</string>
+    <string name="restore_skip_apps">Preskočiť obnovenie zálohy</string>
+    <string name="restore_app_status_installed">Znova nainštalované</string>
+    <string name="notification_error_no_main_key_title">Zálohy vypnuté</string>
+    <string name="restore_app_status_restored">Dáta sú obnovené</string>
+    <string name="restore_app_status_warning">Varovanie o obnovení</string>
+    <string name="settings_category_storage">Záloha úložiska (beta)</string>
+    <string name="notification_space_error_title">Nedostatok miesta pre zálohy</string>
+    <string name="restore_storage_in_progress_title">Obnovujú sa súbory…</string>
+    <string name="about_contributor_headline">Prispievatelia</string>
+    <string name="settings_backup_storage_dialog_ok">Aj tak zapnúť</string>
+    <string name="settings_backup_storage_battery_optimization">Varovanie: Žiadne automatické zálohy, pretože je zapnutá optimalizácia batérie.</string>
+    <string name="settings_backup_new_code_dialog_message">Aby ste naďalej mohli používať zálohy aplikácií, musíte vygenerovať nový kód obnovenia.
+\n
+\nOspravedlňujeme sa za nepríjemnosti.</string>
+    <string name="settings_backup_new_code_code_dialog_ok">Nový kód</string>
+    <string name="storage_webdav_config_url_helper">Dajte pozor, aby ste sem zadali celú adresu URL. Napríklad pre službu Nextcloud bude mať adresa tvar https://vasserver.cz/remote.php/webdav</string>
+    <string name="storage_webdav_config_user">Užívateľské meno</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="notification_apk_text">Zálohovanie súboru APK aplikácie %s</string>
+    <string name="storage_webdav_config_malformed_url">Neplatná adresa WebDAV</string>
+    <string name="recovery_code_auth_title">Zadajte znova zámok obrazovky</string>
+    <string name="notification_space_error_text">Vášmu umiestneniu záloh dochádza miesto. Uvoľnite ho, aby mohli prebiehať ďalšie zálohy.</string>
+    <string name="restore_app_status_failed">Obnovenie zlyhalo</string>
+    <string name="restore_storage_choose_snapshot">Vyberte zálohu úložiska pre obnovenie (beta)</string>
+    <string name="restore_storage_in_progress_info">Vaše súbory sú obnovované na pozadí. Počas tohto procesu môžete začať používať telefón.
+\n
+\nNiektoré aplikácie (napr. Signal alebo WhatsApp) môžu pre import zálohy vyžadovať úplné obnovenie súborov. Snažte sa vyhnúť spusteniu týchto aplikácií pred dokončením obnovy súborov.</string>
+    <string name="settings_backup_new_code_dialog_title">Je potrebný nový kód obnovy</string>
+    <string name="restore_storage_skip">Preskočiť obnovenie súborov</string>
+    <string name="storage_fake_davx5_summary_installed">Kliknite pre nastavenie pripojenia WebDAV</string>
+    <string name="about_contributor_content">Pozri GitHub, kde nájdete <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">zoznam prispievateľov</a>.</string>
+    <string name="about_contributing_organizations_title">Prispievajúce organizácie</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pre použitie v <a href="https://calyxos.org">CalyxOS</a> 
+\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Založený NLnet</a></string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_summary">Integrovaný priamy prístup k WebDAV</string>
+    <string name="storage_webdav_config_url">Adresa WebDAV</string>
+    <string name="recovery_code_auth_description">Pre pokračovanie zadajte poverenia k zariadeniu</string>
+    <string name="restore_storage_got_it">Rozumiem</string>
+    <string name="settings_backup_storage_title">Zálohovať moje súbory</string>
+    <string name="settings_backup_files_title">Zahrnuté súbory a priečinky</string>
+    <string name="settings_backup_status_next_backup_estimate">Ďalšia záloha (približne): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">po splnení podmienok</string>
+    <string name="settings_backup_status_next_backup_usb">Zálohy budú vykonané automaticky po pripojení USB disku</string>
+    <string name="settings_backup_scheduling_title">Plánovanie záloh</string>
+    <string name="settings_backup_files_summary">Žiadne</string>
+    <string name="settings_backup_storage_dialog_title">Beta funkcia</string>
+    <string name="settings_scheduling_frequency_title">Frekvencia záloh</string>
+    <string name="settings_scheduling_frequency_12_hours">Každých 12 hodín</string>
+    <string name="settings_scheduling_frequency_daily">Deňne</string>
+    <string name="settings_scheduling_frequency_weekly">Tyždeňne</string>
+    <string name="settings_scheduling_frequency_3_days">Každé 3 dni</string>
+    <string name="settings_scheduling_category_conditions_title">Podmienky</string>
+    <string name="settings_scheduling_metered_title">Zálohovať pri používaní mobilných dát</string>
+    <string name="settings_scheduling_charging_title">Zálohovať iba pri nabíjaní</string>
+    <string name="settings_expert_title">Odborné nastavenia</string>
+    <string name="settings_expert_logcat_title">Uloženie logov aplikácie</string>
+    <string name="settings_expert_logcat_summary">Vývojári môžu pomocou týchto logov diagnostikovať chyby.
+\n
+\nVarovanie: Súbor logov môže obsahovať osobné údaje. Pred zdieľaním ho skontrolujte a po zdieľaní vymažte!</string>
+    <string name="settings_expert_logcat_error">Chyba: Nie je možné uložiť logy aplikácie</string>
+    <string name="storage_fake_nextcloud_summary_unavailable_market">Nenainštalované</string>
+    <string name="storage_fake_davx5_summary_unavailable">Pripojenie WebDAV nie je k dispozícii. Nastavte ho.</string>
+    <string name="storage_check_fragment_patience">Môže to chvíľu trvať…</string>
+    <string name="notification_backup_disabled">Zálohovanie nie je povolené</string>
+    <string name="notification_error_no_main_key_text">Vygenerujte nový kód obnovenia na dokončenie aktualizácie a pokračovanie používania záloh.</string>
+    <string name="backup_app_in_progress">Zálohovanie</string>
+    <string name="backup_app_success">Zálohované</string>
+    <string name="restore_app_status_install_error">Inštalácia sa nepodarila</string>
+    <string name="storage_user_selected_location_title">Umiestnenie zvolené užívateľom</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nie je doporučené)</string>
+    <string name="settings_backup_storage_dialog_message">Zálohovanie súborov je vo fáze beta a nemusí fungovať. Nespoliehajte sa na neho, pokiaľ ide o dôležité dáta.</string>
+    <string name="storage_webdav_config_pass">Heslo</string>
+    <string name="storage_webdav_config_button">Použit WebDAV cloud</string>
+    <string name="notification_success_channel_title">Oznámenie o úspechu</string>
+    <string name="notification_apk_not_backed_up">Ukladanie zoznamu aplikácií, ktoré nemožno zálohovať.</string>
+    <string name="error_no_store">Chyba: Nie je nainštalovaný žiadny obchod s aplikáciami</string>
+    <string name="restore_app_status_installing">Opätovná inštalácia</string>
+    <string name="backup_system_apps">Systémové aplikácie</string>
+    <string name="restore_select_packages_all">Všetky nasledujúce aplikácie</string>
+    <string name="restore_select_packages">Vyberte aplikácie, ktoré chcete obnoviť</string>
+    <string name="notification_restore_channel_title">Oznámenia o obnovení</string>
+    <string name="notification_restore_title">Prebieha obnovovanie</string>
+    <string name="restore_storage_selection_description">Vybrané súbory budú obnovené. Klepnutím na priečinky zobrazíte súbory v nich.</string>
+    <string name="first_start_text">Chcete obnoviť svoje zariadenie z existujúcej zálohy alebo spustiť novú zálohu?</string>
+    <string name="setup_button">Vytvoriť zálohu</string>
 </resources>

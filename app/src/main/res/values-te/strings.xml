@@ -72,7 +72,6 @@
     <string name="storage_fake_nextcloud_summary">ఇన్‌స్టాల్ చేయడానికి నొక్కండి</string>
     <string name="storage_fake_drive_summary">USB ని పెట్టండి</string>
     <string name="storage_fake_drive_title">USB ఫ్లాష్ డ్రైవ్</string>
-    <string name="storage_fragment_warning">మీ ఫోన్ ని ఇతరులు చూసినప్పుడు మీరు ఏ యాప్‌లను ఉపయోగిస్తారో తెలుసుకోవచ్చు , కానీ యాప్‌ల లో డేటాకు తెలుసుకోలేరు .</string>
     <string name="storage_fragment_restore_title">మీ బ్యాకప్‌లను ఎక్కడ కనుగొనాలి\?</string>
     <string name="settings_backup_apk_summary">యాప్‌లను వారే బ్యాకప్ చేయండి. లేకపోతే, యాప్ డేటా మాత్రమే బ్యాకప్ చేయబడుతుంది.</string>
     <string name="settings_backup_status_summary">చివరి బ్యాకప్: %1$s</string>
@@ -120,10 +119,8 @@
 \nదయచేసి %s ఫోల్డర్ లో ఉన్న మరొక స్థానాన్ని ఎంచుకోండి.</string>
     <string name="restore_invalid_location_title">బ్యాకప్‌లు గుర్తించబడలేదు</string>
     <string name="restore_skip">పునరుద్ధరించవద్దు</string>
-    <string name="restore_restore_set_times">చివరి బ్యాకప్ %1$s· మొదటి %2$s.</string>
     <string name="restore_choose_restore_set">పునరుద్ధరించడానికి బ్యాకప్‌ని ఎంచుకోండి</string>
     <string name="restore_title">బ్యాకప్ నుండి పునరుద్ధరించండి</string>
-    <string name="backup_section_not_allowed">డేటా బ్యాకప్‌ని అనుమతించని యాప్‌లు</string>
     <string name="restore_app_not_installed">యాప్ ఇన్‌స్టాల్ చేయబడలేదు</string>
     <string name="restore_app_quota_exceeded">బ్యాకప్ కోటా మించిపోయింది</string>
     <string name="backup_app_quota_exceeded">బ్యాకప్ కోటా మించిపోయింది</string>

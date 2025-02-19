@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   SPDX-FileCopyrightText: 2020 The Calyx Institute
   SPDX-License-Identifier: Apache-2.0
   -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!--
-    Add only storage here that is also available
-    when restoring from backup (e.g. initial device setup)
+    Storage Access Framework authorities listed here are allowed to be used as a backup location.
+    Add only authorities here that are also listed in storage_authority_restore_allow_list
+    and available when restoring from backup (e.g. initial device setup).
     -->
-    <string-array name="storage_authority_whitelist" tools:ignore="InconsistentArrays">
+    <string-array name="storage_authority_backup_allow_list">
+        <item>com.android.externalstorage.documents</item>
+        <item>at.bitfire.davdroid.webdav</item>
+        <item>de.felixnuesse.extract.vcp</item>
+    </string-array>
+
+    <!--
+    Storage Access Framework authorities listed here are allowed to be used for restore.
+    These should include all authorities from storage_authority_backup_allow_list
+    and potentially more.
+    -->
+    <string-array name="storage_authority_restore_allow_list">
         <item>com.android.externalstorage.documents</item>
         <item>org.nextcloud.documents</item>
         <item>at.bitfire.davdroid.webdav</item>

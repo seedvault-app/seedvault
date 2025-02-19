@@ -28,36 +28,43 @@ internal class DocumentFileCache(
         }
     }
 
-    internal suspend fun getOrCreateFile(fh: FileHandle): DocumentFile = when (fh) {
-        is TopLevelFolder -> cache.getOrPut("$root/${fh.relativePath}") {
-            getRootFile().getOrCreateDirectory(context, fh.name)
-        }
+    internal suspend fun getOrCreateFile(fh: FileHandle): DocumentFile = try {
+        when (fh) {
+            is TopLevelFolder -> cache.getOrPut("$root/${fh.relativePath}") {
+                getRootFile().getOrCreateDirectory(context, fh.name)
+            }
 
-        is AppBackupFileType.Blob -> {
-            val subFolderName = fh.name.substring(0, 2)
-            cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
-                getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
-            }.getOrCreateFile(context, fh.name)
-        }
+            is AppBackupFileType.Blob -> {
+                val subFolderName = fh.name.substring(0, 2)
+                cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
+                    getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
+                }.getOrCreateFile(context, fh.name)
+            }
 
-        is AppBackupFileType.Snapshot -> {
-            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
-        }
+            is AppBackupFileType.Snapshot -> {
+                getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            }
 
-        is FileBackupFileType.Blob -> {
-            val subFolderName = fh.name.substring(0, 2)
-            cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
-                getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
-            }.getOrCreateFile(context, fh.name)
-        }
+            is FileBackupFileType.Blob -> {
+                val subFolderName = fh.name.substring(0, 2)
+                cache.getOrPut("$root/${fh.topLevelFolder.name}/$subFolderName") {
+                    getOrCreateFile(fh.topLevelFolder).getOrCreateDirectory(context, subFolderName)
+                }.getOrCreateFile(context, fh.name)
+            }
 
-        is FileBackupFileType.Snapshot -> {
-            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
-        }
+            is FileBackupFileType.Snapshot -> {
+                getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            }
 
-        is LegacyAppBackupFile -> cache.getOrPut("$root/${fh.relativePath}") {
-            getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            is LegacyAppBackupFile -> cache.getOrPut("$root/${fh.relativePath}") {
+                getOrCreateFile(fh.topLevelFolder).getOrCreateFile(context, fh.name)
+            }
         }
+    } catch (e: IllegalArgumentException) {
+        if (e.message?.contains("Missing file for") == true) {
+            clearAll() // clear cache as files may have been messed with, need re-caching
+            throw SafRetryException(e)
+        } else throw e
     }
 
     internal suspend fun getFile(fh: FileHandle): DocumentFile? = when (fh) {

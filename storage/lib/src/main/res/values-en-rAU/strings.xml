@@ -15,8 +15,6 @@
     <string name="notification_backup_scanning">Scanning files…</string>
     <string name="notification_restore_channel_title">Storage restore</string>
     <string name="snapshots_title">Available storage backups</string>
-    <string name="snapshots_empty">No storage backups found
-\n
-\nSorry, but there is nothing that can be restored.</string>
+    <string name="snapshots_empty">No storage backups found \n \nSorry, but there is nothing that can be restored.</string>
     <string name="snapshots_error">Error loading snapshots</string>
 </resources>

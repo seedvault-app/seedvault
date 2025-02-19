@@ -23,12 +23,14 @@ import com.stevesoltys.seedvault.proto.SnapshotKt.app
 import com.stevesoltys.seedvault.proto.SnapshotKt.split
 import com.stevesoltys.seedvault.proto.copy
 import com.stevesoltys.seedvault.transport.TransportTest
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.worker.BASE_SPLIT
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -46,7 +48,9 @@ internal class SnapshotCreatorTest : TransportTest() {
 
     private val ctx: Context = ApplicationProvider.getApplicationContext()
     private val packageService: PackageService = mockk()
-    private val snapshotCreator = SnapshotCreator(ctx, clock, packageService, metadataManager)
+    private val backupInitializer: BackupInitializer = mockk()
+    private val snapshotCreator =
+        SnapshotCreator(ctx, clock, packageService, metadataManager, backupInitializer)
 
     init {
         every { packageService.launchableSystemApps } returns emptyList()
@@ -171,6 +175,15 @@ internal class SnapshotCreatorTest : TransportTest() {
             assertEquals(1, s.blobsMap.size)
             assertEquals(blob1, s.blobsMap[chunkId1])
         }
+    }
+
+    @Test
+    fun `test onNoDataInCurrentRun re-initializes if no snapshot available`() {
+        every { backupInitializer.initialize(any(), any()) } just Runs
+
+        snapshotCreator.onNoDataInCurrentRun(null, MAGIC_PACKAGE_MANAGER)
+
+        verify { backupInitializer.initialize(any(), any()) }
     }
 
     @Test

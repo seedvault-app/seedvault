@@ -33,10 +33,8 @@
 \nPasirinkite kitą vietą, kurioje yra %s aplankas.</string>
     <string name="restore_invalid_location_title">Nerasta jokių atsarginių kopijų</string>
     <string name="restore_skip">Neatkurti</string>
-    <string name="restore_restore_set_times">Paskutinė atsarginė kopija %1$s - Pirmoji %2$s.</string>
     <string name="restore_choose_restore_set">Pasirinkite atsarginę kopiją, kurią norite atkurti</string>
     <string name="restore_title">Atkurti iš atsarginės kopijos</string>
-    <string name="backup_section_not_allowed">Programėlės, kurios neleidžia kurti atsarginių duomenų kopijų</string>
     <string name="restore_app_not_installed">Programėlė neįdiegta</string>
     <string name="restore_app_quota_exceeded">Buvo viršyta atsarginių kopijų kvota</string>
     <string name="backup_app_quota_exceeded">Viršyta atsarginių kopijų kvota</string>
@@ -109,7 +107,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laisvi</string>
     <string name="storage_fake_drive_summary">Turi būti prijungta prie elektros tinklo</string>
     <string name="storage_fake_drive_title">USB atmintinė</string>
-    <string name="storage_fragment_warning">Asmenys, turintys prieigą prie jūsų saugyklos vietos, gali sužinoti, kokias programėles naudojate, tačiau negali gauti prieigos prie programėlių duomenų.</string>
     <string name="storage_fragment_restore_title">Kur rasti mano atsargines kopijas\?</string>
     <string name="storage_fragment_backup_title">Pasirinkite, kur saugoti atsargines kopijas</string>
     <string name="settings_backup_recovery_code_summary">Patikrinkite esamą kodą arba sugeneruokite naują</string>
@@ -143,7 +140,6 @@
     <string name="settings_backup_files_title">Įtraukiami failai ir aplankai</string>
     <string name="settings_backup_storage_dialog_ok">Vis tiek įjungti</string>
     <string name="settings_expert_title">Eksperto nustatymai</string>
-    <string name="settings_expert_quota_title">Neribota programėlių kvota</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Neįdiegta</string>
     <string name="recovery_code_auth_description">Jei norite tęsti, įveskite įrenginio prisijungimo duomenis</string>
     <string name="restore_storage_in_progress_title">Failai atkuriami…</string>
@@ -153,12 +149,8 @@
     <string name="settings_category_apps">Programėlių atsarginės kopijos</string>
     <string name="settings_backup_storage_dialog_title">Eksperimentinė funkcija</string>
     <string name="settings_backup_storage_dialog_message">Failų atsarginių kopijų kūrimas vis dar eksperimentinis ir gali neveikti. Nepasikliaukite ja, jei norite išsaugoti svarbius duomenis.</string>
-    <string name="settings_expert_quota_summary">Netaikyti apribojimų programėlių atsarginių kopijų dydžiui.
-\n
-\nĮspėjimas: Tai gali greitai užpildyti jūsų saugyklą. Nereikalinga daugumai programėlių.</string>
     <string name="settings_category_storage">Saugyklos atsarginė kopija (eksperimentinis pasirinkimas)</string>
     <string name="settings_backup_files_summary">Jokie</string>
-    <string name="storage_fragment_warning_delete">Šioje vietoje esamos atsarginės kopijos bus ištrintos.</string>
     <string name="storage_check_fragment_patience">Tai gali užtrukti…</string>
     <string name="recovery_code_auth_title">Pakartotinai įveskite ekrano užraktą</string>
     <string name="restore_storage_skip">Praleisti failų atkūrimą</string>

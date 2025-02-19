@@ -30,7 +30,6 @@
     <string name="settings_backup_storage_battery_optimization">Avertisment: Fără crearea automată a copiilor de rezervă, optimizarea bateriei este activă.</string>
     <string name="settings_backup_location">Locația copiei de rezervă</string>
     <string name="settings_backup_location_none">Niciuna</string>
-    <string name="settings_expert_d2d_summary">Acest lucru forțează crearea copiilor de rezervă pentru majoritatea aplicațiilor, chiar și atunci când acestea le interzic. Aceasta este regim alfa, utilizează pe propriul risc.</string>
     <string name="settings_expert_logcat_summary">Dezvoltatorii pot diagnostica erori cu aceste jurnale.
 \n
 \nAvertisment: fișierul jurnal poate conține informații de identificare personală. Examinează înainte și șterge după distribuire!</string>
@@ -45,7 +44,6 @@
     <string name="about_contributing_organizations_title">Organizații care contribuie</string>
     <string name="restore_title">Restaurare din copia de rezervă</string>
     <string name="restore_choose_restore_set">Alege o copie de rezervă pentru restaurare</string>
-    <string name="restore_restore_set_times">Ultima copie de rezervă %1$s · Prima %2$s.</string>
     <string name="restore_skip_apps">Omite restabilirea aplicațiilor</string>
     <string name="restore_invalid_location_title">Nu s-au găsit copii de rezervă</string>
     <string name="restore_invalid_location_message">Nu s-au găsit copii de rezervă în această locație.
@@ -96,8 +94,7 @@
     <string name="restore_storage_skip">Omite restaurarea fișierelor</string>
     <string name="recovery_code_verification_try_again">Reîncearcă</string>
     <string name="about_contributor_headline">Contribuitori</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a></string>
     <string name="notification_backup_disabled">Crearea copiilor de rezervă nu este activată</string>
     <string name="notification_error_action">Remediază</string>
     <string name="notification_restore_error_channel_title">Eroare de restaurare automată a unității flash</string>
@@ -108,7 +105,6 @@
     <string name="settings_expert_logcat_title">Salvează jurnalul aplicației</string>
     <string name="storage_fake_drive_title">Flash Drive USB</string>
     <string name="recovery_code_done_button">Verifică</string>
-    <string name="storage_fragment_warning_delete">Copiile de rezervă existente în această locație vor fi șterse.</string>
     <string name="storage_fake_drive_summary">Trebuie conectat</string>
     <string name="recovery_code_input_hint_1">Cuvântul 1</string>
     <string name="recovery_code_input_hint_11">Cuvântul 11</string>
@@ -145,15 +141,9 @@
     <string name="settings_backup_storage_dialog_title">Caracteristică beta</string>
     <string name="settings_backup_storage_dialog_ok">Activează oricum</string>
     <string name="settings_expert_title">Setări expert</string>
-    <string name="settings_expert_quota_title">Cotă nelimitată pentru aplicații</string>
-    <string name="settings_expert_quota_summary">Nu impune o limitare a dimensiunii copiilor de rezervă ale aplicațiilor.
-\n
-\nAvertisment: acest lucru poate umple rapid locația de stocare. Nu este necesar pentru majoritatea aplicațiilor.</string>
-    <string name="settings_expert_d2d_title">Copii de rezervă de la dispozitiv la dispozitiv</string>
     <string name="settings_expert_logcat_error">Eroare: nu s-a putut salva jurnalul aplicației</string>
     <string name="storage_fragment_backup_title">Alege unde să fie stocate copiile de rezervă</string>
     <string name="storage_fragment_restore_title">Unde să găsesc copiile de rezervă?</string>
-    <string name="storage_fragment_warning">Persoanele cu acces la locația de stocare pot afla ce aplicații folosești, dar nu au acces la datele aplicațiilor.</string>
     <string name="storage_user_selected_location_title">Locație aleasă de utilizator</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> liber</string>
     <string name="storage_fake_nextcloud_summary_installed">Atinge pentru a configura contul</string>
@@ -187,7 +177,7 @@
     <string name="about_version">Versiune: %s</string>
     <string name="restore_installing_tap_to_install">Atinge pentru a instala</string>
     <string name="notification_backup_already_running">Backup deja în desfășurare</string>
-    <string name="backup_section_user">Aplicații instalate</string>
+    <string name="backup_section_user">Aplicații</string>
     <string name="backup_sms">Mesaje text SMS</string>
     <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
     <string name="storage_webdav_option_summary">Acces direct WebDAV integrat</string>
@@ -226,12 +216,21 @@
     <string name="restore_restoring_error_title">Imposibil de restabilit unele aplicații</string>
     <string name="storage_webdav_config_url_helper">Asigură-te că introduci adresa URL completă aici. De exemplu. pentru Nextcloud, are forma https://serverultau.com/remote.php/webdav</string>
     <string name="storage_webdav_config_user">Nume de utilizator</string>
-    <string name="backup_section_system">Aplicații de sistem</string>
+    <string name="backup_section_system">Date de sistem</string>
     <string name="backup_app_was_stopped">Copia de rezervă nu a fost salvată deoarece aplicația nu a fost folosită de mult timp</string>
     <string name="backup_app_no_data">Aplicația a raportat că nu există date pentru a face copii de rezervă</string>
-    <string name="backup_section_not_allowed">Aplicații care nu permit backup de date</string>
     <string name="storage_fake_nextcloud_summary_unavailable">Contul nu este disponibil. Configurează unul (sau dezactivează parola).</string>
     <string name="notification_space_error_title">Spațiu insuficient</string>
     <string name="notification_space_error_text">Locația copiilor de rezervă rămâne fără spațiu. Eliberează spațiu, astfel încât să poată rula copiile de rezervă.</string>
-    <string name="restore_restore_set_size">Dimensiune: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="backup_system_apps">Aplicații de sistem</string>
+    <string name="restore_select_packages">Selectează aplicațiile de restaurat</string>
+    <string name="restore_select_packages_all">Toate aplicatiile urmatoare</string>
+    <string name="restore_storage_selection_description">Fișierele selectate vor fi restaurate. Atingeți dosare pentru a vedea fișierele din ele.</string>
+    <string name="notification_restore_channel_title">Notificare de restabilire</string>
+    <string name="notification_restore_title">Rulează restabilirea</string>
+    <string name="setup_button">Pornește una nouă</string>
+    <string name="first_start_text">Dorești să restaurezi dispozitivul dintr-o copie de rezervă existentă sau să începi o nouă copie de rezervă?</string>
+    <string name="settings_backup_file_check_title">Verifică integritatea copiei de rezervă</string>
+    <string name="settings_backup_app_check_summary">Asigură-te că copia de rezervă funcționează pentru restaurare</string>
+    <string name="settings_backup_app_check_title">Verifică integritatea</string>
 </resources>

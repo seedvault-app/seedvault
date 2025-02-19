@@ -6,7 +6,6 @@
 package org.calyxos.backup.storage.backup
 
 import org.calyxos.backup.storage.db.CachedChunk
-import org.calyxos.seedvault.core.crypto.CoreCrypto
 import org.calyxos.seedvault.core.toHexString
 import java.io.IOException
 import java.io.InputStream
@@ -18,11 +17,10 @@ internal data class Chunk(
     val offset: Long,
     val plaintextSize: Long,
 ) {
-    fun toCachedChunk() = CachedChunk(
+    fun toCachedChunk(size: Long) = CachedChunk(
         id = id,
         refCount = 0,
-        // FIXME sometimes, the ciphertext size is not as expected
-        size = 1 + CoreCrypto.expectedCiphertextSize(plaintextSize),
+        size = size,
     )
 }
 

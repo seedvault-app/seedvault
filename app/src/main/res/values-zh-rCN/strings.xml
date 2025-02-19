@@ -56,7 +56,6 @@
 \n请选择包含 %s 文件夹的其他位置。</string>
     <string name="restore_invalid_location_title">没有找到备份</string>
     <string name="restore_skip">不恢复</string>
-    <string name="restore_restore_set_times">上次备份：%1$s · 首次备份：%2$s。</string>
     <string name="restore_choose_restore_set">选择一个备份来恢复</string>
     <string name="restore_title">从备份恢复</string>
     <string name="notification_restore_error_action">卸载应用</string>
@@ -88,7 +87,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用</string>
     <string name="storage_fake_drive_summary">需要插入</string>
     <string name="storage_fake_drive_title">U盘</string>
-    <string name="storage_fragment_warning">能访问您存储位置的人能知道您使用了哪些应用程序，但无法访问应用程序的数据。</string>
     <string name="storage_fragment_restore_title">去哪里找你的备份？</string>
     <string name="storage_fragment_backup_title">选择备份存储位置</string>
     <string name="settings_backup_now">立即备份</string>
@@ -113,21 +111,20 @@
 \n
 \n点击安装失败的应用来在继续进行恢复前手动安装他们。</string>
     <string name="backup_app_quota_exceeded">超出备份配额</string>
-    <string name="backup_section_not_allowed">不允许备份的应用</string>
     <string name="backup_app_was_stopped">最近没有使用，未备份</string>
     <string name="backup_app_not_yet_backed_up">等待备份…</string>
     <string name="restore_restoring_error_title">未能恢复某些应用</string>
     <string name="restore_installing_tap_to_install">点击安装</string>
     <string name="restore_installing_error_title">某些应用未安装</string>
     <string name="backup_sms">短信</string>
-    <string name="backup_section_system">系统应用</string>
+    <string name="backup_section_system">系统数据</string>
     <string name="about_version">版本：%s</string>
-    <string name="backup_section_user">已安装应用</string>
+    <string name="backup_section_user">应用程序</string>
     <string name="backup_contacts">本地联系人</string>
     <string name="backup_call_log">通话记录</string>
     <string name="backup_settings">设备设置</string>
     <string name="settings_backup_status_title">备份状态</string>
-    <string name="recovery_code_recreated">新的恢复代码已成功创建</string>
+    <string name="recovery_code_recreated">新的恢复代码已成功创建。正退出…</string>
     <string name="recovery_code_verification_new_dialog_message">生成新代码将使你无法访问现有备份。现有备份将会被尝试删除。
 \n
 \n你确定想这么做吗？</string>
@@ -138,7 +135,7 @@
 \n
 \n如果你丢失了代码，请轻按下面的“生成新代码”。</string>
     <string name="recovery_code_verification_error_title">不正确的恢复代码</string>
-    <string name="recovery_code_verification_ok_message">你的代码正确无误，可用于还原你的备份。</string>
+    <string name="recovery_code_verification_ok_message">你的代码正确无误，可用于恢复你的备份。</string>
     <string name="recovery_code_verification_ok_title">已验证恢复代码</string>
     <string name="settings_backup_recovery_code_summary">验证现有代码或生成新代码</string>
     <string name="settings_backup_recovery_code">恢复代码</string>
@@ -154,11 +151,6 @@
     <string name="recovery_code_auth_title">重新输入您的屏幕锁定码</string>
     <string name="storage_check_fragment_patience">这可能要花点时间…</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">未安装</string>
-    <string name="storage_fragment_warning_delete">此位置中的现有备份将被删除。</string>
-    <string name="settings_expert_quota_summary">不限制应用程序备份的大小。
-\n
-\n警告：这会很快填满您的存储位置。大多数应用程序不需要该设置。</string>
-    <string name="settings_expert_quota_title">无限应用配额</string>
     <string name="settings_expert_title">专家设置</string>
     <string name="settings_backup_storage_dialog_ok">仍要启用</string>
     <string name="settings_backup_storage_dialog_message">文件备份仍处于测试阶段，可能无法正常工作。不要依靠它备份重要数据。</string>
@@ -201,11 +193,8 @@
     <string name="about_contributor_headline">贡献者</string>
     <string name="about_contributor_content">请前往 GitHub 查看<a href="https://github.com/seedvault-app/seedvault/graphs/contributors">贡献者列表</a>。</string>
     <string name="about_contributing_organizations_title">贡献机构</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> 用于 <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> 用于 <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust Fund by NLnet</a></string>
     <string name="storage_user_selected_location_title">用户选择的位置</string>
-    <string name="settings_expert_d2d_title">设备到设备的备份</string>
-    <string name="settings_expert_d2d_summary">这会强制备份多数应用，即使这些应用不允许备份。此功能处于 alpha 状态，使用后果自负。</string>
     <string name="notification_success_channel_title">成功通知</string>
     <string name="settings_backup_status_next_backup">下次备份：%1$s</string>
     <string name="settings_backup_status_next_backup_estimate">下次备份（预计）：%1$s</string>
@@ -233,5 +222,58 @@
     <string name="storage_webdav_config_url_helper">确保在此输入完整 URL。比如对于 Nextcloud，符合要求的 URL 应形如 https://yourserver.com/remote.php/webdav</string>
     <string name="notification_space_error_title">备份空间不够</string>
     <string name="notification_space_error_text">你选择的备份位置剩余空间不足。要能运行备份，请腾出空间。</string>
-    <string name="restore_restore_set_size">大小: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="backup_system_apps">系统应用</string>
+    <string name="restore_select_packages">选择要恢复的应用</string>
+    <string name="restore_select_packages_all">下面的所有应用</string>
+    <string name="restore_storage_selection_description">选中的文件将被恢复。轻按文件夹检视其中的文件。</string>
+    <string name="first_start_text">你想从现有备份恢复你的设备还是开始新备份？</string>
+    <string name="setup_button">开始新的</string>
+    <string name="notification_restore_channel_title">恢复通知</string>
+    <string name="notification_restore_title">恢复运行中</string>
+    <string name="restore_restore_set_apks_no_size">包括 <xliff:g example="42" id="apps">%1$d</xliff:g> 个应用</string>
+    <string name="notification_checking_finished_text">成功检查了 %1$s，平均速度为 %2$s。</string>
+    <string name="settings_backup_app_check_title">检查完整性</string>
+    <string name="settings_backup_app_check_summary">确保备份文件可用于恢复</string>
+    <string name="settings_app_check_text">每个备份过程会自动检查备份完整性。不过，为了节省时间，实际应用数据不会被下载和验证。</string>
+    <string name="settings_app_check_text2">你可以运行一次性检查验证你的应用备份。选择应该为一次性检查下载多少应用数据。选得越多，花的时间越长，不过检查的可靠程度也越高。这会在后台运行并在检查完成时显示通知。</string>
+    <string name="notification_failed_text">运行备份时出现错误。</string>
+    <string name="notification_pruning_channel_title">删除旧备份通知</string>
+    <string name="notification_pruning_title">正在删除旧备份…</string>
+    <string name="notification_checking_finished_title">已验证应用备份完整性</string>
+    <string name="notification_checking_error_text">轻按了解详情。我们检查了 %1$s，平均速度为 %2$s。</string>
+    <string name="notification_checking_action">详情</string>
+    <string name="backup_app_check_success_disclaimer">注：我们无法验证备份中是否包括单个应用的所有用户数据。</string>
+    <string name="backup_app_check_error_only_broken_snapshots">我们找到了 %1$d 个备份快照。然而，所有快照均已损坏。请运行成功的备份，然后再试着检查。</string>
+    <string name="restore_restore_set_apps">有 <xliff:g example="42" id="apps">%1$d</xliff:g> 个应用的用户数据（大小为 <xliff:g example="1 GB" id="size">%2$s</xliff:g>）</string>
+    <string name="restore_recycle_backup_button_yes">重新使用备份</string>
+    <string name="restore_recycle_backup_text">你可以重新使用你刚在这台设备上恢复的备份 \'%s\' 。这会加速细节备份并使用更少数据。\n\n不过，你的旧设备将无法访问此备份。如果你想让你的旧设备依然可以访问此备份，你可以创建一个新备份。但比起使用现有备份，这么做会使用更多数据。</string>
+    <string name="settings_app_check_title">验证应用备份完整性</string>
+    <string name="settings_app_check_warning">警告：下载大量数据会花很长时间。</string>
+    <string name="settings_app_check_button">检查备份</string>
+    <string name="notification_init_text">正为了重用而准备现有备份数据…</string>
+    <string name="notification_checking_channel_title">应用备份完整性检查</string>
+    <string name="notification_checking_title">正检查应用备份…</string>
+    <string name="notification_checking_error_title">发现了备份错误</string>
+    <string name="backup_app_check_success_intro">找到了 %1$d 个快照，成功验证了这些快照数据（共 %3$s）中的 %2$d%%：</string>
+    <string name="backup_app_check_error_no_snapshots">我们找不到任何备份，请先运行成功的备份，然后再试。</string>
+    <string name="backup_app_check_error_has_snapshots">我们找到了 %1$d 个备份快照，其中某些已损坏或有错误。下面是可以恢复的备份。</string>
+    <string name="backup_app_check_error_no_result">我们丢失了详细结果。运行检查之后已经过了很久了吗？试着再次运行。</string>
+    <string name="backup_app_stopped_button">启动</string>
+    <string name="backup_app_check_error_title">\@string/notification_checking_error_title</string>
+    <string name="backup_app_stopped_no_intent">无法启动应用</string>
+    <string name="restore_restore_set_apps_no_size">有 <xliff:g example="42" id="apps">%1$d</xliff:g> 个应用的用户数据</string>
+    <string name="restore_restore_set_apks">包括 <xliff:g example="42" id="apps">%1$d</xliff:g> 个应用（大小 <xliff:g example="1 GB" id="size">%2$s</xliff:g>）</string>
+    <string name="restore_restore_set_can_not_get_restored">此备份有一些错误。你也许可以部分恢复它。</string>
+    <string name="restore_recycle_backup_title">重新使用此备份？</string>
+    <string name="restore_recycle_backup_button_no">创建新备份</string>
+    <string name="settings_backup_file_check_title">检查备份完整性</string>
+    <string name="settings_backup_file_check_summary">确保我的备份可用于恢复文件</string>
+    <string name="settings_backup_metered_title">备份停止了</string>
+    <string name="settings_backup_metered_text">备份不会继续，因你的设备正使用移动流量。\n\n你可以在“备份安排”下开启使用移动流量备份。</string>
+    <string name="settings_file_check_title">验证文件备份完整性</string>
+    <string name="settings_file_check_text">你可以在此运行一次性检查来验证文件备份。</string>
+    <string name="settings_file_check_text2">选择应该为此项检查下载多少数据。选得越多，花的时间越长，但检查的可靠性也会越高。\n\n检查会在后台运行，你会收到检查结束通知。</string>
+    <string name="notification_failed_metered_text">备份已被终止。你在使用移动流量吗？请连接到 Wi-Fi 网络以继续。</string>
+    <string name="notification_usb_monitor_text">USB 驱动器可用后我们将开始备份。</string>
+    <string name="notification_usb_monitor_title">等待 USB 驱动器中 …</string>
 </resources>

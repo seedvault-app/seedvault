@@ -6,7 +6,7 @@
     <string name="about_title">Informacije</string>
     <string name="storage_internal_warning_use_anyway">Svejedno koristi</string>
     <string name="storage_internal_warning_choose_other">Odaberi drugo</string>
-    <string name="storage_internal_warning_message">Za sigurnosnu kopiju odabrano je interno spremište (%3$s). Neće biti dostupno ako se telefon izgubi ili pokvari.</string>
+    <string name="storage_internal_warning_message">Za sigurnosnu kopiju je odabrana interna memorija. Neće biti dostupna ako se telefon izgubi ili pokvari.</string>
     <string name="storage_internal_warning_title">Upozorenje</string>
     <string name="restore_finished_button">Završi</string>
     <string name="restore_finished_error">Došlo je do greške prilikom vraćanja sigurnosne kopije.</string>
@@ -27,8 +27,7 @@
 \n
 \nOdaberi jedno drugo mjesto koje sadrži %s mapu.</string>
     <string name="restore_invalid_location_title">Nema sigurnosnih kopija</string>
-    <string name="restore_skip">Nemoj vratiti</string>
-    <string name="restore_restore_set_times">Zadnja sigurnosna kopija %1$s · Prva %2$s.</string>
+    <string name="restore_skip">Nemoj obnoviti</string>
     <string name="restore_choose_restore_set">Odaberi sigurnosnu kopiju za vraćanje</string>
     <string name="restore_title">Vrati iz sigurnosne kopije</string>
     <string name="notification_restore_error_action">Deinstaliraj program</string>
@@ -75,7 +74,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> slobodno</string>
     <string name="storage_fake_drive_summary">Mora biti priključeno</string>
     <string name="storage_fake_drive_title">USB flash pogon</string>
-    <string name="storage_fragment_warning">Osobe s pristupom tvom mjestu spremišta mogu saznati koje aplikacije koristiš, ali nemaju pristup podacima aplikacija.</string>
     <string name="storage_fragment_restore_title">Gdje tražiti sigurnosne kopije\?</string>
     <string name="storage_fragment_backup_title">Odaberi kamo spremati sigurnosne kopije</string>
     <string name="settings_backup_now">Spremi sigurnosnu kopiju sada</string>
@@ -86,7 +84,7 @@
     <string name="settings_backup_apk_dialog_message">Isključivanjem sigurnosnih kopija aplikacija i dalje će spremati podaci aplikacije. Međutim, neće se automatski vratiti.
 \n
 \nSve aplikacije morat će se instalirati ručno s uključenom postavkom „Automatska obnova”.</string>
-    <string name="settings_backup_apk_dialog_title">Stvarno isključi sigurnosne kopije aplikacije\?</string>
+    <string name="settings_backup_apk_dialog_title">Stvarno isključiti sigurnosne kopije aplikacije?</string>
     <string name="settings_backup_apk_summary">Spremi sigurnosne kopije samih aplikacija. Inače će se spremiti samo podaci aplikacije.</string>
     <string name="settings_backup_apk_title">Sigurnosna kopija aplikacije</string>
     <string name="settings_category_app_data_backup">Sigurnosna kopija podataka aplikacije</string>
@@ -98,7 +96,7 @@
     <string name="settings_backup_location_internal">Interno spremište</string>
     <string name="settings_backup_location_none">Bez</string>
     <string name="settings_backup_location">Mjesto za sigurnosne kopije</string>
-    <string name="settings_backup">Spremi sigurnosnu kopiju mojih aplikacija</string>
+    <string name="settings_backup">Spremi sigurnosne kopije mojih aplikacija</string>
     <string name="restore_backup_button">Vrati sigurnosnu kopiju</string>
     <string name="backup">Sigurnosna kopija</string>
     <string name="restore_app_was_stopped">Sigurnosna kopija nije spremljena, jer nije nedavno korištena</string>
@@ -107,7 +105,7 @@
     <string name="current_destination_string">Stanje sigurnosne kopije i postavke</string>
     <string name="data_management_label">Seedvault sigurnosna kopija</string>
     <string name="settings_backup_status_title">Stanje sigurnosne kopije</string>
-    <string name="backup_section_system">Aplikacije sustava</string>
+    <string name="backup_section_system">Podaci sustava</string>
     <string name="backup_sms">Tekstualne SMS poruke</string>
     <string name="backup_app_was_stopped">Nije sigurnosno kopirana jer nije nedavno korištena</string>
     <string name="backup_app_quota_exceeded">Količina sigurnosnih kopija premašena</string>
@@ -122,24 +120,22 @@
     <string name="settings_backup_recovery_code">Kod za obnovu</string>
     <string name="settings_backup_recovery_code_summary">Potvrdi postojeći kod ili generiraj novi</string>
     <string name="settings_expert_title">Stručne postavke</string>
-    <string name="settings_expert_quota_title">Neograničena količina aplikacija</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Nije instalirano</string>
     <string name="storage_check_fragment_patience">Ovo može potrajati neko vrijeme …</string>
     <string name="recovery_code_verification_ok_title">Kod za oporavak potvrđen</string>
     <string name="recovery_code_verification_ok_message">Tvoj kod je ispravan i poslužit će za obnavljanje tvoje sigurnosne kopije.</string>
     <string name="recovery_code_verification_error_title">Neispravan kod za oporavak</string>
     <string name="recovery_code_verification_try_again">Pokušaj ponovo</string>
-    <string name="recovery_code_recreated">Novi kod za oporavak uspješno je stvoren</string>
+    <string name="recovery_code_recreated">Novi kod za oporavak je uspješno stvoren. Izlaz …</string>
     <string name="recovery_code_auth_description">Nastavi upisom svojih podataka za prijavu</string>
     <string name="recovery_code_auth_title">Ponovo upiši podatke za zaključavanje ekrana</string>
-    <string name="backup_section_not_allowed">Aplikacije koje ne dopuštaju spremanje sigurnosne kopije</string>
     <string name="restore_skip_apps">Preskoči obnavljanje aplikacija</string>
     <string name="restore_storage_skip">Preskoči obnavljanje datoteka</string>
-    <string name="restore_storage_choose_snapshot">Odaberi spremište sigurnosnih kopija za obnavljanje (eksperimentalno)</string>
+    <string name="restore_storage_choose_snapshot">Odaberi spremište sigurnosnih kopija za obnavljanje (beta)</string>
     <string name="restore_storage_in_progress_title">Datoteke se obnavljaju …</string>
     <string name="restore_storage_got_it">Shvaćam</string>
     <string name="backup_app_not_yet_backed_up">Čeka se na izradu sigurnosne kopije …</string>
-    <string name="backup_section_user">Instalirane aplikacije</string>
+    <string name="backup_section_user">Aplikacije</string>
     <string name="settings_category_apps">Sigurnosna kopija aplikacije</string>
     <string name="backup_call_log">Povijest poziva</string>
     <string name="backup_contacts">Lokalni kontakti</string>
@@ -154,16 +150,15 @@
 \nDodirom neuspjelih aplikacija pokušaj ih ručno instalirati prije nego što nastaviš.</string>
     <string name="restore_restoring_error_message">Te aplikacije možeš ponovo instalirati ručno, a automatsko obnavljanje pokušat će obnoviti njihove podatke (kad je aktivirano).</string>
     <string name="settings_backup_files_title">Uključi datoteke i mape</string>
-    <string name="settings_backup_storage_dialog_title">Eksperimentalna funkcija</string>
-    <string name="settings_backup_storage_dialog_message">Spremanje sigurnosnih kopija datoteka još uvijek se nalazi u eksperimentalnoj fazi i možda neće raditi. Nemoj ga koristiti za važne podatke.</string>
-    <string name="settings_expert_quota_summary">Nemoj nametati ograničenje za veličinu sigurnosnih kopija aplikacija.
-\n
-\nUpozorenje: ovo može brzo popuniti mjesto tvog spremišta. Za većinu aplikacija nije potrebno.</string>
-    <string name="storage_fragment_warning_delete">Postojeće sigurnosne kopije na ovom mjestu će se izbrisati.</string>
+    <string name="settings_backup_storage_dialog_title">Beta funkcija</string>
+    <string name="settings_backup_storage_dialog_message">Spremanje sigurnosnih kopija datoteka još uvijek se nalazi u beta fazi i možda neće raditi. Nemoj koristiti za važne podatke.</string>
     <string name="recovery_code_verification_error_message">Upisan je nevaljan kod za oporavak. Pokušaj ponovo!
 \n
 \nAko si izgubio/la kod, dolje dodirni „Generiraj novi kod”.</string>
     <string name="restore_storage_in_progress_info">Tvoje se datoteke obnavljaju u pozadini. Za vrijeme ove radnje možeš početi koristiti svoj telefon.
 \n
 \nNeke aplikacije (npr. Signal ili WhatsApp) mogu zahtijevati potpuno obnavljanje datoteka za uvoz sigurnosne kopije. Pokušaj izbjeći pokretanje tih aplikacija prije nego što završi obnavljanje datoteka.</string>
+    <string name="about_contributor_headline">Doprinositelji</string>
+    <string name="backup_system_apps">Aplikacije sustava</string>
+    <string name="restore_select_packages_all">Sve sljedeće aplikacije</string>
 </resources>

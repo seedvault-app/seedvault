@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.repo
 import android.content.Context
 import com.stevesoltys.seedvault.Clock
 import com.stevesoltys.seedvault.metadata.MetadataManager
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.transport.backup.PackageService
 
 /**
@@ -18,7 +19,8 @@ internal class SnapshotCreatorFactory(
     private val clock: Clock,
     private val packageService: PackageService,
     private val metadataManager: MetadataManager,
+    private val backupInitializer: BackupInitializer,
 ) {
     fun createSnapshotCreator() =
-        SnapshotCreator(context, clock, packageService, metadataManager)
+        SnapshotCreator(context, clock, packageService, metadataManager, backupInitializer)
 }

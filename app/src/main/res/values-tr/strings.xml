@@ -28,7 +28,6 @@
 \nLütfen %s klasörünü içeren başka bir konum seçin.</string>
     <string name="restore_invalid_location_title">Yedekleme bulunamadı</string>
     <string name="restore_skip">Geri yükleme</string>
-    <string name="restore_restore_set_times">Son yedekleme %1$s · İlk %2$s.</string>
     <string name="restore_choose_restore_set">Geri yüklemek için bir yedekleme seç</string>
     <string name="restore_title">Yedeklemeyi geri yükle</string>
     <string name="notification_restore_error_action">Uygulamayı kaldır</string>
@@ -76,7 +75,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> boş</string>
     <string name="storage_fake_drive_summary">Takılı olması gerekiyor</string>
     <string name="storage_fake_drive_title">USB flash bellek</string>
-    <string name="storage_fragment_warning">Depolama konumunuza erişimi olan kişiler, hangi uygulamaları kullandığınızı öğrenebilir, ancak uygulamaların verilerine erişemez.</string>
     <string name="storage_fragment_restore_title">Yedeklemelerinizi nerede bulabilirsiniz\?</string>
     <string name="storage_fragment_backup_title">Yedeklemelerin nerede depolanacağını seç</string>
     <string name="settings_backup_now">Şimdi yedekle</string>
@@ -116,16 +114,15 @@
 \n
 \nDevam etmeden önce elle kurmayı denemek için başarısız olan uygulamalara dokunun.</string>
     <string name="restore_installing_error_title">Bazı uygulamalar kurulmadı</string>
-    <string name="backup_section_not_allowed">Veri yedeklemeye izin vermeyen uygulamalar</string>
     <string name="backup_app_quota_exceeded">Yedekleme kotası aşıldı</string>
     <string name="backup_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmedi</string>
     <string name="backup_app_not_yet_backed_up">Yedekleme bekleniyor…</string>
-    <string name="backup_section_user">Kurulu uygulamalar</string>
+    <string name="backup_section_user">Uygulamalar</string>
     <string name="backup_contacts">Yerel kişiler</string>
     <string name="backup_call_log">Arama geçmişi</string>
     <string name="backup_settings">Aygıt ayarları</string>
     <string name="backup_sms">SMS metin mesajları</string>
-    <string name="backup_section_system">Sistem uygulamaları</string>
+    <string name="backup_section_system">Sistem verileri</string>
     <string name="settings_backup_status_title">Yedekleme durumu</string>
     <string name="recovery_code_recreated">Yeni kurtarma kodu başarıyla oluşturuldu</string>
     <string name="recovery_code_verification_new_dialog_message">Yeni bir kod oluşturmak, var olan yedeklemelerinizi erişilemez hale getirecektir. Mümkünse onları silmeye çalışacağız.
@@ -154,11 +151,6 @@
     <string name="recovery_code_auth_title">Ekran kilidinizi tekrar girin</string>
     <string name="storage_check_fragment_patience">Bu biraz zaman alabilir…</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Kurulu değil</string>
-    <string name="storage_fragment_warning_delete">Bu konumdaki mevcut yedeklemeler silinecek.</string>
-    <string name="settings_expert_quota_summary">Uygulama yedeklemelerinin boyutuna bir sınırlama getirme.
-\n
-\nUyarı: Bu, depolama konumunuzu hızla doldurabilir. Çoğu uygulama için gerekli değildir.</string>
-    <string name="settings_expert_quota_title">Sınırsız uygulama kotası</string>
     <string name="settings_expert_title">Uzman ayarları</string>
     <string name="settings_backup_storage_dialog_ok">Yine de etkinleştir</string>
     <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek beta aşamasındadır ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
@@ -199,13 +191,10 @@
     <string name="settings_backup_dialog_disable">Yine de kapat</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Tavsiye edilmez)</string>
     <string name="about_contributor_headline">Katkıda Bulunanlar</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a></string>
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>
     <string name="about_contributing_organizations_title">Katkıda Bulunan Kuruluşlar</string>
     <string name="storage_user_selected_location_title">Kullanıcının seçtiği konum</string>
-    <string name="settings_expert_d2d_title">Aygıttan aygıta yedeklemeler</string>
-    <string name="settings_expert_d2d_summary">Bu, izin vermeseler bile çoğu uygulama için yedeklemeyi zorlar. Bu alfa aşamasındadır, riski size ait olmak üzere kullanın.</string>
     <string name="notification_success_channel_title">Başarı bildirimi</string>
     <string name="settings_backup_status_next_backup_usb">USB belleğinizi taktığınızda yedeklemeler otomatik olarak gerçekleşecek</string>
     <string name="settings_backup_scheduling_title">Yedekleme zamanlaması</string>
@@ -232,6 +221,13 @@
     <string name="storage_webdav_config_pass">Parola</string>
     <string name="storage_webdav_config_url_helper">URL\'nin tamamını buraya girdiğinizden emin olun. Örneğin Nextcloud için https://sunucunuz.com/remote.php/webdav şeklindedir</string>
     <string name="notification_space_error_title">Yetersiz yedekleme alanı</string>
-    <string name="restore_restore_set_size">Boyut: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="notification_space_error_text">Yedekleme konumunuzun alanı tükeniyor. Yedeklemelerin çalışabilmesi için alan boşaltın.</string>
+    <string name="backup_system_apps">Sistem uygulamaları</string>
+    <string name="restore_select_packages">Geri yüklenecek uygulamaları seçin</string>
+    <string name="restore_select_packages_all">Aşağıdaki uygulamaların tümü</string>
+    <string name="restore_storage_selection_description">Seçilen dosyalar geri yüklenecek. İçlerindeki dosyaları görmek için klasörlere dokunun.</string>
+    <string name="first_start_text">Aygıtınızı var olan bir yedekten geri yüklemek mi yoksa yeni bir yedekleme mi başlatmak istiyorsunuz?</string>
+    <string name="setup_button">Yeni başlat</string>
+    <string name="notification_restore_channel_title">Geri yükleme bildirimi</string>
+    <string name="notification_restore_title">Yeniden yükleme devam ediyor</string>
 </resources>
