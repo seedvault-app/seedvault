@@ -58,10 +58,6 @@ class UsbMonitorService : Service() {
         Log.i(TAG, "onTimeout($startId)")
     }
 
-    override fun onTimeout(startId: Int, fgsType: Int) {
-        Log.i(TAG, "onTimeout($startId, $fgsType)")
-    }
-
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
