@@ -193,7 +193,7 @@ const val ERROR_BACKUP_CANCELLED: Int = BackupManager.ERROR_BACKUP_CANCELLED
 const val ERROR_BACKUP_NOT_ALLOWED: Int = BackupManager.ERROR_BACKUP_NOT_ALLOWED
 
 // TODO this doesn't work for LineageOS as they do public debug builds
-fun isDebugBuild() = Build.TYPE == "userdebug" || Build.TYPE == "eng"
+fun isDebugBuild() = Build.TYPE != "user"
 
 fun <T> permitDiskReads(func: () -> T): T {
     return if (isDebugBuild()) {
