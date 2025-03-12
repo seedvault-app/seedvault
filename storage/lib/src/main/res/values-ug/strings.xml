@@ -10,7 +10,7 @@
     <string name="notification_backup_scanning">ھۆججەتنى تاراۋاتىدۇ…</string>
     <string name="notification_backup_backup_files">ھۆججەتنى زاپاسلاۋاتىدۇ…</string>
     <string name="notification_prune">كونا زاپاسلاشنى چىقىرىۋاتىدۇ…</string>
-    <string name="notification_restore_channel_title">ساقلىغۇچتىن ئەسلىگە كەلتۈرۈش</string>
+    <string name="notification_restore_channel_title">ھۆججەت ئەسلىگە كەلتۈرىدۇ</string>
     <string name="notification_restore_title">ھۆججەتنى ئەسلىگە كەلتۈرۈۋاتىدۇ…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d/%2$d ھۆججەت ئەسلىگە كەلتۈرۈلدى</string>
@@ -24,8 +24,8 @@
     <string name="notification_check_error_title">ھۆججەت زاپاسلاش خاتالىقى بايقالدى</string>
     <string name="notification_check_error_text">تەپسىلاتى ئۈچۈن چېكىلىدۇ. %1$s نى تەكشۈردۇق ئوتتۇرىچە سۈرئىتى %2$s.</string>
     <string name="notification_check_action">تەپسىلاتى</string>
-    <string name="snapshots_title">ئىشلىتىلىشچان ساقلىغۇچتىكى زاپاس</string>
-    <string name="snapshots_empty">ھېچقانداق ساقلىغۇچتىكى زاپاس تېپىلمىدى\n\nكەچۈرۈڭ، ئەسلىگە كەلتۈرگىلى بولىدىغان ھېچنېمە يوق.</string>
+    <string name="snapshots_title">ئىشلىتىلىشچان ھۆججەت زاپىسى</string>
+    <string name="snapshots_empty">ھېچقانداق ھۆججەت زاپىسى تېپىلمىدى\n\nكەچۈرۈڭ، ئەسلىگە كەلتۈرگىلى بولىدىغان ھېچنېمە يوق.</string>
     <string name="snapshots_error">زاپاسنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى</string>
     <string name="select_files_title">ئەسلىگە كەلتۈرىدىغان ھۆججەتنى تەكشۈرىدۇ</string>
     <string name="select_files_number_of_files">%1$d ھۆججەت</string>

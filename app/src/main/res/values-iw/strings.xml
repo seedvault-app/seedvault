@@ -135,7 +135,7 @@
     <string name="settings_backup_recovery_code_summary">אימות קוד קיים או יצירת אחד חדש</string>
     <string name="restore_storage_skip">דילוג על שחזור קבצים</string>
     <string name="recovery_code_recreated">קוד שחזור חדש נוצר בהצלחה. מסתיים…</string>
-    <string name="restore_storage_choose_snapshot">נא לבחור גיבוי אחסון לשחזור (ניסיוני)</string>
+    <string name="restore_storage_choose_snapshot">נא לבחור קובץ גיבוי לשחזור (ניסיוני)</string>
     <string name="restore_storage_got_it">הבנתי</string>
     <string name="backup_section_system">נתוני מערכת</string>
     <string name="backup_sms">מסרוני טקסט SMS</string>
@@ -244,4 +244,5 @@
     <string name="notification_pruning_channel_title">התראת הסרת גיבוי ישן</string>
     <string name="notification_checking_finished_title">רציפות גיבוי היישומים עברה אימות</string>
     <string name="notification_checking_finished_text">%1$s נבדק בהצלחה במהירות של %2$s.</string>
+    <string name="restore_storage_selection_description">הקבצים הנבחרים ישוחזרו. נגיעה בתיקיות תציג את הקבצים שבהן.</string>
 </resources>

@@ -15,7 +15,7 @@
     <string name="snapshots_error">Chyba při načítání snapshotů</string>
     <string name="content_downloads">Stažené soubory</string>
     <string name="snapshots_title">Dostupné zálohy souborů</string>
-    <string name="notification_restore_channel_title">Obnova zálohy souborů</string>
+    <string name="notification_restore_channel_title">Obnova souborů</string>
     <string name="content_options">Možnosti</string>
     <string name="select_files_title">Kontrola souborů k obnovení</string>
     <string name="select_files_number_of_files">%1$d soubor(ů)</string>

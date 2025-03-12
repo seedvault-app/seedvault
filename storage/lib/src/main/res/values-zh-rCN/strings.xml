@@ -13,7 +13,7 @@
     <string name="notification_backup_scanning">扫描文件中…</string>
     <string name="notification_backup_backup_files">备份文件中…</string>
     <string name="notification_prune">删除旧备份中…</string>
-    <string name="notification_restore_channel_title">文件备份恢复</string>
+    <string name="notification_restore_channel_title">文件恢复</string>
     <string name="snapshots_error">加载快照出错</string>
     <string name="snapshots_title">可用的文件备份</string>
     <string name="snapshots_empty">未找到文件备份 \n \n抱歉，没有什么可以恢复的。</string>

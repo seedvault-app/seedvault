@@ -180,7 +180,7 @@
     <string name="settings_expert_logcat_error">Błąd: Nie można zapisać dziennika aplikacji</string>
     <string name="storage_user_selected_location_title">Lokalizacja wybrana przez użytkownika</string>
     <string name="restore_storage_got_it">Zrozumiano</string>
-    <string name="restore_storage_choose_snapshot">Wybierz kopię zapasową do przywrócenia (beta)</string>
+    <string name="restore_storage_choose_snapshot">Wybierz kopię zapasową pliku do przywrócenia (beta)</string>
     <string name="restore_storage_in_progress_info">Twoje pliki są przywracanę w tle. Możesz używać telefonu w trakcie przywracania.
 \n
 \nNiektóre aplikacje (np. Signal czy WhatsApp) mogę wymagać by pliki były w pełni przywrócona aby zaimportować kopię zapasową. Postaraj się nie włączć tych aplikacji przed zakończeniem przywracania.</string>
@@ -276,4 +276,5 @@
     <string name="notification_failed_metered_text">Tworzenie kopii zapasowej zostało przerwane. Czy używasz danych mobilnych? Połącz się z Wi-Fi, aby kontynuować.</string>
     <string name="notification_usb_monitor_text">Gdy dysk USB będzie dostępny, rozpoczniemy tworzenie kopii zapasowej.</string>
     <string name="settings_backup_metered_title">Kopia zapasowa zatrzymana</string>
+    <string name="storage_round_sync_summary_prefix">Zdalny RoundSync:</string>
 </resources>

@@ -167,7 +167,7 @@
     <string name="notification_backup_disabled">Резервне копіювання не ввімкнено</string>
     <string name="notification_error_no_main_key_title">Резервне копіювання вимкнено</string>
     <string name="notification_error_no_main_key_text">Згенеруйте новий код відновлення, щоб завершити оновлення та продовжити використання резервних копій.</string>
-    <string name="restore_storage_choose_snapshot">Оберіть резервну копію для відновлення (бета)</string>
+    <string name="restore_storage_choose_snapshot">Виберіть резервну копію файлу для відновлення (бета-версія)</string>
     <string name="settings_category_storage">Резервне копіювання сховища (бета)</string>
     <string name="settings_backup_storage_dialog_message">Резервне копіювання файлів є бетою і може не працювати. Не покладайтеся на нього з важливими даними.</string>
     <string name="storage_fake_davx5_summary_installed">Торкніться, щоб налаштувати підключення WebDAV</string>
@@ -264,4 +264,5 @@
     <string name="settings_backup_metered_text">Резервне копіювання не продовжиться, оскільки ваш пристрій використовує мобільні дані.\n\nВи можете ввімкнути резервне копіювання через мобільні дані в розділі «Розклад резервного копіювання».</string>
     <string name="notification_usb_monitor_title">Очікування USB-накопичувача…</string>
     <string name="notification_usb_monitor_text">Коли ваш USB-накопичувач стане доступним, ми почнемо резервне копіювання.</string>
+    <string name="storage_round_sync_summary_prefix">Пульт дистанційного керування RoundSync:</string>
 </resources>

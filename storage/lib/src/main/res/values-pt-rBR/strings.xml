@@ -23,10 +23,10 @@
     <string name="notification_restore_complete_dups">%1$d arquivos eram duplicatas.</string>
     <string name="notification_restore_complete_errors">%1$d arquivos tinham erros.</string>
     <string name="notification_check_channel_title">Verificação de integridade do backup de arquivos</string>
-    <string name="notification_check_title">Verificando backups de arquivos…</string>
+    <string name="notification_check_title">Verificando o backup de arquivos…</string>
     <string name="notification_check_text">Buscando dados de backup disponíveis.</string>
     <string name="notification_check_finished_title">Integridade do backup de arquivos verificada</string>
-    <string name="notification_check_finished_text">%1$s foi verificado com sucesso, em uma velocidade média de %2$s.</string>
+    <string name="notification_check_finished_text">%1$s foram verificados com sucesso, em uma velocidade média de %2$s.</string>
     <string name="notification_check_error_title">Erros no backup de arquivos foram encontrados</string>
     <string name="notification_check_error_text">Toque para mais detalhes. Nós verificamos %1$s em uma velocidade média de %2$s.</string>
     <string name="notification_check_action">Detalhes</string>

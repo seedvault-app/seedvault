@@ -144,7 +144,7 @@
 \n
 \nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien abgeschlossen ist.</string>
     <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
-    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (beta)</string>
+    <string name="restore_storage_choose_snapshot">Wähle eine Dateisicherung zum Wiederherstellen aus (beta)</string>
     <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
     <string name="restore_skip_apps">Wiederherstellen von Apps überspringen</string>
     <string name="recovery_code_auth_description">Eingabe deiner Geräteanmeldedaten zum Fortfahren</string>
@@ -190,7 +190,7 @@
     <string name="settings_backup_dialog_message">Wenn du die Sicherung wieder aktivierst, kann der Sicherungsvorgang länger dauern als gewöhnlich, und es wird zusätzlicher Speicherplatz benötigt.</string>
     <string name="settings_backup_dialog_disable">Trotzdem deaktivieren</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nicht empfohlen)</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a>\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust Fund by NLnet</a></string>
     <string name="about_contributor_headline">Mitwirkende</string>
     <string name="about_contributor_content">Eine <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Liste der Mitwirkenden</a> findest du auf GitHub.</string>
     <string name="about_contributing_organizations_title">Mitwirkende Organisationen</string>
@@ -235,4 +235,40 @@
     <string name="settings_app_check_button">Sicherung überprüfen</string>
     <string name="notification_failed_text">Beim Ausführen der Sicherung ist ein Fehler aufgetreten.</string>
     <string name="notification_init_text">Vorbereitung vorhandener Sicherungsdaten zur Wiederverwendung…</string>
+    <string name="notification_restore_title">Wiederherstellung läuft</string>
+    <string name="restore_storage_selection_description">Ausgewählte Dateien werden wiederhergestellt. Tippe auf Ordner, um die darin enthaltenen Dateien zu sehen.</string>
+    <string name="settings_app_check_text2">Führe hier eine einmalige Prüfung der App-Sicherung durch. Wähle aus, wie viele der App-Daten dafür heruntergeladen werden sollen. Je mehr du auswählst, desto länger dauert es, aber desto zuverlässiger ist sie. Die Prüfung läuft im Hintergrund und zeigt eine Benachrichtigung an, sobald sie abgeschlossen ist.</string>
+    <string name="settings_backup_file_check_title">Integrität der Sicherung prüfen</string>
+    <string name="settings_backup_file_check_summary">Prüfen, dass die Sicherung zur Dateiwiederherstellung funktioniert</string>
+    <string name="settings_file_check_text">Führe hier eine einmalige Prüfung der Datei-Sicherung durch.</string>
+    <string name="settings_file_check_text2">Wähle aus, wie viele der Datei-Daten dafür heruntergeladen werden sollen. Je mehr du auswählst, desto länger dauert es, aber desto zuverlässiger ist sie.\n\nDie Prüfung läuft im Hintergrund und zeigt eine Benachrichtigung an, sobald sie abgeschlossen ist.</string>
+    <string name="settings_file_check_title">Integrität der Dateisicherung prüfen</string>
+    <string name="notification_restore_channel_title">Wiederherstellungsbenachrichtigung</string>
+    <string name="notification_pruning_title">Entferne alte Sicherungen…</string>
+    <string name="notification_checking_channel_title">Integritätsprüfung der App-Sicherung</string>
+    <string name="notification_checking_title">App-Sicherungen werden geprüft…</string>
+    <string name="notification_checking_finished_title">Integrität der App-Sicherung geprüft</string>
+    <string name="notification_checking_error_title">Fehler in der Sicherung gefunden</string>
+    <string name="notification_checking_finished_text">Erfolgreiche Prüfung von %1$s mit einer durchschnittlichen Geschwindigkeit von %2$s.</string>
+    <string name="backup_app_check_success_disclaimer">Hinweis: wir können nicht überprüfen, ob einzelne Apps ihre Benutzerdaten in die Sicherung aufnehmen.</string>
+    <string name="backup_app_check_error_no_snapshots">Wir konnten keine Sicherungen finden. Erstelle zuerst eine erfolgreiche Sicherung und dann starte die Prüfung erneut.</string>
+    <string name="backup_app_stopped_button">Starten</string>
+    <string name="backup_app_stopped_no_intent">App kann nicht gestartet werden</string>
+    <string name="restore_restore_set_apps">Enthält Benutzerdaten für <xliff:g example="42" id="apps">%1$d</xliff:g> Apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apps_no_size">Enthält Benutzerdaten für <xliff:g example="42" id="apps">%1$d</xliff:g> Apps</string>
+    <string name="restore_restore_set_apks">Enthält <xliff:g example="42" id="apps">%1$d</xliff:g> Apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size">Enthält <xliff:g example="42" id="apps">%1$d</xliff:g> Apps</string>
+    <string name="restore_restore_set_can_not_get_restored">Die Sicherung hat einige Fehler. Womöglich kannst du sie teilweise wiederherstellen.</string>
+    <string name="restore_recycle_backup_text">Du kannst die soeben auf diesem Gerät wiederhergestellte Sicherung \'%s\' wiederverwenden. So lassen sich neue Sicherungen schneller und mit weniger Daten erstellen.\n\nAllerdings verliert dein altes Gerät den Zugriff auf diese Sicherung. Wenn du den Zugriff für dein altes Gerät beibehalten möchtest, erstelle eine neue Sicherung. Das verbraucht mehr Daten als die Wiederverwendung der vorhandenen Sicherung.</string>
+    <string name="restore_recycle_backup_title">Diese Sicherung wiederverwenden?</string>
+    <string name="restore_recycle_backup_button_no">Neue Sicherung erstellen</string>
+    <string name="settings_backup_metered_title">Sicherung gestoppt</string>
+    <string name="settings_backup_metered_text">Die Sicherung wird nicht fortgesetzt, weil dein Gerät mobile Daten verwendet.\n\nDu kannst Sicherungen über mobile Daten unter \"Planung der Datensicherung\" aktivieren.</string>
+    <string name="notification_checking_action">Details</string>
+    <string name="notification_usb_monitor_text">Sobald das USB-Laufwerk verfügbar ist, startet die Sicherung.</string>
+    <string name="restore_recycle_backup_button_yes">Sicherung wiederverwenden</string>
+    <string name="notification_failed_metered_text">Sicherung abgebrochen. Verwendest du mobile Daten? Stelle eine Wi-Fi-Verbindung her, um fortzufahren.</string>
+    <string name="notification_checking_error_text">Tippe für Details. Wir prüften %1$s mit einer durchschnittlichen Geschwindigkeit von %2$s.</string>
+    <string name="notification_usb_monitor_title">Warten auf USB-Laufwerk…</string>
+    <string name="backup_app_check_error_no_result">Detaillierte Ergebnisse nicht vorhanden. Ist seit der Prüfung viel Zeit vergangen? Versuche es nochmal.</string>
 </resources>

@@ -237,7 +237,7 @@
     <string name="restore_finished_error">زاپاسلاشنى ئەسلىگە كەلتۈرۈۋاتقاندا خاتالىق كۆرۈلدى.</string>
     <string name="restore_finished_button">تامام</string>
     <string name="restore_storage_skip">ئەسلىگە كەلتۈرۈۋاتقان ھۆججەتتىن ئاتلا</string>
-    <string name="restore_storage_choose_snapshot">ئەسلىگە كەلتۈرىدىغان دىسكىدىكى زاپاس تاللىنىدۇ (سىناق)</string>
+    <string name="restore_storage_choose_snapshot">ئەسلىگە كەلتۈرىدىغان ھۆججەت زاپاس تاللىنىدۇ (سىناق)</string>
     <string name="restore_storage_selection_description">تاللانغان ھۆججەت ئەسلىگە كەلتۈرۈلىدۇ. قىسقۇچ چېكىلسە ئىچىدىكى ھۆججەتنى كۆرسىتىدۇ.</string>
     <string name="restore_storage_got_it">بىلدىم</string>
     <string name="storage_internal_warning_title">ئاگاھلاندۇرۇش</string>
@@ -254,4 +254,5 @@
     <string name="backup_app_check_success_intro">%1$d تېز زاپاسلاش بايقالدى %2$d%% سانلىق مەلۇمات (%3$s) مۇۋەپپەقىيەتلىك دەلىللەندى:</string>
     <string name="restore_storage_in_progress_info">ھۆججەتلەرنى ئارقا سۇپىدا ئەسلىگە كەلتۈرۈۋاتىدۇ. ئىجرا قىلىنىۋاتقاندا تېلېفونىڭىزنى ئىشلىتەلەيسىز.\n\nبەزى ئەپ (مەسىلەن، Signal ياكى WhatsApp) بەلكىم ھۆججەتنى تولۇق ئەسلىگە كەلتۈرگەندىن كېيىن ئاندىن زاپاسنى ئەكىرگىلى بولۇشى مۇمكىن. ئامالنىڭ بارىچە ھۆججەتنى ئەسلىگە كەلتۈرۈش تاماملىنىشتىن ئىلگىرى بۇ ئەپلەرنى قوزغىتىشتىن ساقلىنىڭ.</string>
     <string name="notification_backup_already_running">زاپاسلاش ئاللىبۇرۇن ئىجرا قىلىنىۋاتىدۇ</string>
+    <string name="storage_round_sync_summary_prefix">يىراقتىكى RoundSync :</string>
 </resources>

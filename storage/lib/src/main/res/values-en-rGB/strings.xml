@@ -2,16 +2,16 @@
 <resources>
     <string name="content_downloads">Downloads</string>
     <string name="snapshots_error">Error loading snapshots</string>
-    <string name="snapshots_title">Available storage backups</string>
+    <string name="snapshots_title">Available file backups</string>
     <string name="notification_restore_complete_title">%1$d of %2$d files restored</string>
-    <string name="notification_restore_channel_title">Storage restore</string>
+    <string name="notification_restore_channel_title">File restore</string>
     <string name="content_options">Options</string>
-    <string name="snapshots_empty">No storage backups found \n \nSorry, but there is nothing that can be restored.</string>
+    <string name="snapshots_empty">No file backups found\n\nSorry, but there is nothing that can be restored.</string>
     <string name="content_images">Photos and images</string>
     <string name="content_audio">Audio files</string>
     <string name="content_videos">Videos</string>
     <string name="content_add">Add</string>
-    <string name="notification_backup_title">Storage backup</string>
+    <string name="notification_backup_title">File backup</string>
     <string name="notification_backup_scanning">Scanning files…</string>
     <string name="notification_backup_backup_files">Backing up files…</string>
     <string name="notification_prune">Removing old backups…</string>
@@ -22,4 +22,21 @@
     <string name="select_files_button_restore">Restore selected files</string>
     <string name="notification_restore_complete_errors">%1$d files had errors.</string>
     <string name="notification_restore_complete_dups">%1$d files were duplicates.</string>
+    <string name="notification_check_finished_text">Successfully checked %1$s at an average speed of %2$s.</string>
+    <string name="notification_check_error_text">Tap for details. We checked %1$s at an average speed of %2$s.</string>
+    <string name="check_files_title">Files in this backup</string>
+    <string name="check_error_no_result">We lost the detailed results. Did a long time pass since running the check? Try running again.</string>
+    <string name="check_error_snapshot">This backup has some errors. You may be able to restore it partly.</string>
+    <string name="check_files_text">The \"%s\" includes the following files:</string>
+    <string name="check_files_error">Backup data is corrupted. File won\'t fully restore.</string>
+    <string name="notification_check_channel_title">File backup integrity check</string>
+    <string name="notification_check_title">Checking file backups…</string>
+    <string name="notification_check_text">Retrieving available backup data.</string>
+    <string name="notification_check_finished_title">File backup integrity verified</string>
+    <string name="notification_check_error_title">File backup errors found</string>
+    <string name="notification_check_action">Details</string>
+    <string name="check_success_intro">%1$d snapshots were found and %2$d%% of their data (%3$s) successfully verified:</string>
+    <string name="check_error_no_snapshots">We could not find any backup. Please run a successful backup first and then try checking again.</string>
+    <string name="check_error_only_broken_snapshots">We found %1$d backup snapshots. However, all of them were corrupted. Please run a successful backup and then try checking again.</string>
+    <string name="check_error_has_snapshots">We found %1$d backup snapshots, some of them are corrupted or have errors. Below are the backups that can (partly) be restored.</string>
 </resources>

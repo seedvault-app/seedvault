@@ -131,7 +131,7 @@
     <string name="recovery_code_auth_title">Ponovo upiši podatke za zaključavanje ekrana</string>
     <string name="restore_skip_apps">Preskoči obnavljanje aplikacija</string>
     <string name="restore_storage_skip">Preskoči obnavljanje datoteka</string>
-    <string name="restore_storage_choose_snapshot">Odaberi spremište sigurnosnih kopija za obnavljanje (beta)</string>
+    <string name="restore_storage_choose_snapshot">Odaberi datoteku sigurnosne kopije za obnavljanje (beta)</string>
     <string name="restore_storage_in_progress_title">Datoteke se obnavljaju …</string>
     <string name="restore_storage_got_it">Shvaćam</string>
     <string name="backup_app_not_yet_backed_up">Čeka se na izradu sigurnosne kopije …</string>
@@ -142,7 +142,7 @@
     <string name="restore_restoring_error_title">Nije moguće obnoviti neke aplikacije</string>
     <string name="restore_installing_tap_to_install">Dodirni za instaliranje</string>
     <string name="restore_installing_error_title">Neke aplikacije nisu instalirane</string>
-    <string name="settings_category_storage">Sigurnosna kopija spremišta (eksperimentalno)</string>
+    <string name="settings_category_storage">Sigurnosna kopija spremišta (beta)</string>
     <string name="settings_backup_storage_title">Spremi sigurnosne kopije mojih datoteka</string>
     <string name="settings_backup_storage_dialog_ok">Svejedno aktiviraj</string>
     <string name="restore_installing_error_message">Podaci se mogu vratiti samo ako je aplikacija instalirana.

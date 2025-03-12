@@ -13,7 +13,7 @@
     <string name="backup_app_warning">Avertisment copie de rezervă</string>
     <string name="restore_app_status_install_error">Nu s-a putut instala</string>
     <string name="restore_next">Înainte</string>
-    <string name="restore_storage_choose_snapshot">Alege o copie de rezervă de stocare pentru restaurare (beta)</string>
+    <string name="restore_storage_choose_snapshot">Alege o copie de rezervă a fișierelor pentru a restabili (beta)</string>
     <string name="restore_storage_got_it">Am înțeles</string>
     <string name="storage_internal_warning_title">Avertisment</string>
     <string name="current_destination_string">Starea și setările copiei de rezervă</string>
@@ -94,7 +94,7 @@
     <string name="restore_storage_skip">Omite restaurarea fișierelor</string>
     <string name="recovery_code_verification_try_again">Reîncearcă</string>
     <string name="about_contributor_headline">Contribuitori</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">Fondul NGI0 Entrust al NLnet</a></string>
     <string name="notification_backup_disabled">Crearea copiilor de rezervă nu este activată</string>
     <string name="notification_error_action">Remediază</string>
     <string name="notification_restore_error_channel_title">Eroare de restaurare automată a unității flash</string>
@@ -114,7 +114,7 @@
     <string name="recovery_code_input_hint_9">Cuvântul 9</string>
     <string name="recovery_code_error_invalid_word">Cuvânt greșit.</string>
     <string name="recovery_code_input_hint_10">Cuvântul 10</string>
-    <string name="recovery_code_recreated">Noul cod de recuperare a fost creat cu succes</string>
+    <string name="recovery_code_recreated">Noul cod de recuperare a fost creat cu succes. Ieșire…</string>
     <string name="recovery_code_auth_title">Reintrodu blocarea ecranului</string>
     <string name="recovery_code_auth_description">Introdu acreditările dispozitivului pentru a continua</string>
     <string name="about_title">Despre</string>
@@ -233,4 +233,47 @@
     <string name="settings_backup_file_check_title">Verifică integritatea copiei de rezervă</string>
     <string name="settings_backup_app_check_summary">Asigură-te că copia de rezervă funcționează pentru restaurare</string>
     <string name="settings_backup_app_check_title">Verifică integritatea</string>
+    <string name="settings_backup_file_check_summary">Asigură că backup-ul meu poate restaura fișiere</string>
+    <string name="notification_checking_error_title">S-au găsit erori la backup</string>
+    <string name="settings_backup_metered_title">Backup oprit</string>
+    <string name="settings_backup_metered_text">Backup-ul se va opri deoarece dispozitivul folosește date mobile.\n\nPuteți activa backup-urile pe date mobile în \"Programarea backup-urilor\".</string>
+    <string name="settings_app_check_title">Verifică integritatea backup-ului aplicației</string>
+    <string name="settings_app_check_text">Fiecare proces de backup va verifica automat integritatea acestuia. Pentru a economisi timp, datele aplicației nu vor fi descărcate și verificate.</string>
+    <string name="settings_app_check_text2">Aici puteți verifica backup-ul. Selectați cât din datele aplicației să fie descărcate pentru verificare. Cu cât selectați mai mult, cu atât procesul va dura mai mult, dar verificarea va fi mai de încredere. Procesul va rula în fundal și va trimite o notificare atunci când este gata.</string>
+    <string name="settings_app_check_warning">Avertisment: Descărcarea unei cantități mari de date poate dura mult.</string>
+    <string name="settings_file_check_title">Verifică integritatea backup-ului fișierelor</string>
+    <string name="settings_file_check_text">Aici puteți verifica backup-ul fișierelor.</string>
+    <string name="settings_file_check_text2">Aici puteți verifica backup-ul. Selectați cât din datele aplicației să fie descărcate pentru verificare. Cu cât selectați mai mult, cu atât procesul va dura mai mult, dar verificarea va fi mai de încredere. \n\nProcesul va rula în fundal și va trimite o notificare atunci când este gata.</string>
+    <string name="notification_failed_text">S-a produs o eroare la backup.</string>
+    <string name="notification_failed_metered_text">Backup-ul a fost oprit. Folosiți date mobile? Conectați-vă la Wi-Fi pentru a continua.</string>
+    <string name="notification_pruning_title">Se șterg backup-urile vechi…</string>
+    <string name="notification_checking_channel_title">Verificarea integrității backup-ului aplicațiilor</string>
+    <string name="notification_checking_title">Se verifică integritatea backup-ului aplicațiilor…</string>
+    <string name="notification_checking_finished_title">S-a verificat integritatea backup-ului aplicațiilor</string>
+    <string name="notification_checking_finished_text">S-a verificat %1$s cu o viteză medie de %2$s.</string>
+    <string name="notification_checking_error_text">Apăsați pentru detalii. Am verificat %1$s cu o viteză medie de %2$s.</string>
+    <string name="backup_app_check_success_intro">%1$d snapshot-uri au fost găsite și %2$d%% din date (%3$s) au fost verificate cu succes:</string>
+    <string name="notification_checking_action">Detalii</string>
+    <string name="notification_usb_monitor_title">Aștept drive USB…</string>
+    <string name="notification_usb_monitor_text">Când drive-ul USB este disponibil, va începe un backup.</string>
+    <string name="settings_app_check_button">Verifică backup-ul</string>
+    <string name="notification_init_text">Se pregătește backup-ul existent pentru reutilizare…</string>
+    <string name="notification_pruning_channel_title">Se șterg notificările vechi de backup</string>
+    <string name="storage_round_sync_summary_prefix">Server RoundSync:</string>
+    <string name="backup_app_check_success_disclaimer">Notă: Nu putem verifica dacă aplicațiile individuale includ toate datele de utilizator în copia de rezervă.</string>
+    <string name="backup_app_check_error_no_snapshots">Nu am putut găsi nicio copie de rezervă. Creează cu succes mai întâi o copie de rezervă și apoi încearcă să verifici din nou.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Am găsit %1$d copii de rezervă. Cu toate acestea, toate sunt deteriorate. Creează cu succes o copie de rezervă și apoi încearcă să verifici din nou.</string>
+    <string name="backup_app_check_error_has_snapshots">Am găsit %1$d copii de rezervă. Unele dintre ele sunt deteriorate sau au erori. Mai jos sunt copiile de rezervă care ar putea fi restaurate.</string>
+    <string name="backup_app_check_error_no_result">Am pierdut rezultatele detaliate. A trecut mult timp de la rularea verificării? Încearcă din nou.</string>
+    <string name="backup_app_stopped_button">Lansează</string>
+    <string name="backup_app_stopped_no_intent">Nu se poate lansa aplicația</string>
+    <string name="restore_restore_set_apps">Are date de utilizator pentru <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apps_no_size">Are date de utilizator pentru <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații</string>
+    <string name="restore_recycle_backup_text">Poți reutiliza copia de rezervă „%s” pe care tocmai ai restabilit-o pe acest dispozitiv. Acest lucru va face mai rapidă crearea noilor copii de rezervă și va folosi mai puține date.\n\nCu toate acestea, vechiul dispozitiv va pierde accesul la această copie de rezervă. Dacă dorești să păstrezi accesul pentru dispozitivul vechi, poți crea în schimb o nouă copie de rezervă. Aceasta va folosi mai multe date decât reutilizarea copiilor de rezervă existente.</string>
+    <string name="restore_recycle_backup_button_no">Creează o copie de rezervă nouă</string>
+    <string name="restore_recycle_backup_button_yes">Reutilizează copai de rezervă</string>
+    <string name="restore_restore_set_apks">Conține <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size">Conține <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații</string>
+    <string name="restore_restore_set_can_not_get_restored">Această copie de rezervă are unele erori. S -ar putea să o poți restabili parțial.</string>
+    <string name="restore_recycle_backup_title">Reutilizezi această copie de rezervă?</string>
 </resources>

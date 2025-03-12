@@ -144,7 +144,7 @@
 \n
 \n某些应用程序（例如 Signal 或 WhatsApp）可能在文件完全恢复后才能导入备份。尽量避免在文件恢复完成之前启动这些应用程序。</string>
     <string name="restore_storage_in_progress_title">正在恢复文件…</string>
-    <string name="restore_storage_choose_snapshot">选择要恢复的存储备份（测试）</string>
+    <string name="restore_storage_choose_snapshot">选择要恢复的文件备份（测试）</string>
     <string name="restore_storage_skip">跳过恢复文件</string>
     <string name="restore_skip_apps">跳过恢复应用程序</string>
     <string name="recovery_code_auth_description">输入您的设备凭据以继续</string>
@@ -276,4 +276,5 @@
     <string name="notification_failed_metered_text">备份已被终止。你在使用移动流量吗？请连接到 Wi-Fi 网络以继续。</string>
     <string name="notification_usb_monitor_text">USB 驱动器可用后我们将开始备份。</string>
     <string name="notification_usb_monitor_title">等待 USB 驱动器中 …</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync 远端：</string>
 </resources>

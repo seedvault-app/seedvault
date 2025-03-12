@@ -185,7 +185,7 @@
     <string name="restore_invalid_location_title">No backups found</string>
     <string name="restore_installing_error_title">Some apps not installed</string>
     <string name="restore_storage_skip">Skip restoring files</string>
-    <string name="restore_storage_choose_snapshot">Choose a storage backup to restore (beta)</string>
+    <string name="restore_storage_choose_snapshot">Choose a file backup to restore (beta)</string>
     <string name="restore_storage_in_progress_info">Your files are being restored in the background. You can start using your phone while this is running.
 \n
 \nSome apps (e.g. Signal or WhatsApp) might require files to be fully restored to import a backup. Try to avoid starting those apps before file restore is complete.</string>
@@ -264,4 +264,15 @@
     <string name="backup_app_check_error_title">\@string/notification_checking_error_title</string>
     <string name="backup_app_check_error_no_snapshots">We could not find any backup. Please run a successful backup first and then try checking again.</string>
     <string name="restore_restore_set_apps_no_size">Has user data for <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
+    <string name="settings_file_check_text">Here you can run a one-time check to verify your file backup.</string>
+    <string name="notification_usb_monitor_title">Waiting for USB drive…</string>
+    <string name="settings_file_check_title">Verify file backup integrity</string>
+    <string name="settings_file_check_text2">Select how much of file data should be downloaded for the check. The more you select, the longer it will take, yet the more reliable the check will be.\n\nThe check will run in the background and send you a notification once it is done.</string>
+    <string name="notification_usb_monitor_text">Once your USB drive becomes available, we will start a backup.</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
+    <string name="settings_backup_file_check_title">Check backup integrity</string>
+    <string name="settings_backup_file_check_summary">Make sure my backup is working for restoring files</string>
+    <string name="settings_backup_metered_title">Backup stopped</string>
+    <string name="settings_backup_metered_text">The backup won\'t proceed because your device is using mobile data.\n\nYou can enable backups on mobile data under \"Backup scheduling\".</string>
+    <string name="notification_failed_metered_text">The backup has been aborted. Are you using mobile data? Connect to Wi-Fi to continue.</string>
 </resources>

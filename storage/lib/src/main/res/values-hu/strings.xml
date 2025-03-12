@@ -1,2 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_options">Opciók</string>
+    <string name="content_add">Hozzáadás</string>
+    <string name="notification_backup_title">Fájl biztonsági mentés</string>
+    <string name="notification_backup_scanning">Fájlok pásztázása…</string>
+    <string name="notification_backup_backup_files">Fájlok biztonsági mentése…</string>
+    <string name="notification_prune">Régi biztonsági mentések törlése…</string>
+    <string name="notification_restore_title">Fájlok visszaállítása…</string>
+    <string name="notification_restore_complete_title">%1$d-ból %2$d fájl visszaállítva</string>
+    <string name="notification_restore_complete_errors">%1$d fájl esetén hiba lépett fel.</string>
+    <string name="content_images">Fotók és képek</string>
+    <string name="content_videos">Videók</string>
+    <string name="content_audio">Hang fájlok</string>
+    <string name="content_downloads">Letöltések</string>
+    <string name="notification_restore_complete_dups">%1$d fájl duplikáció volt.</string>
+    <string name="notification_restore_channel_title">Fájl visszaállítás</string>
+    <string name="notification_check_channel_title">Fájl biztonsági mentés integritás ellenőrzés</string>
+    <string name="notification_check_title">Fájl mentések ellenőrzése…</string>
+    <string name="notification_check_text">Rendelkezésre álló mentés adat visszanyerése.</string>
+    <string name="notification_check_finished_title">Fájl mentés integritása hitelesítve</string>
+    <string name="notification_check_finished_text">%1$s sikeresen ellenőrizve %2$s átlagos sebességgel.</string>
+    <string name="snapshots_error">Hiba a felvételek betöltésénél</string>
+    <string name="select_files_title">Visszaállítandó fájlok szemléje</string>
+    <string name="select_files_number_of_files">%1$d fájl</string>
+    <string name="select_files_button_restore">Kiválasztott fájlok visszaállítása</string>
+    <string name="check_error_snapshot">Ez a mentés tartalmaz néhány hibát. Részlegesen helyre tudja állítani.</string>
+    <string name="snapshots_empty">Nem található fájl biztonsági mentés\n\nSajnáljuk, de nincs visszaállítható fájl.</string>
+    <string name="check_error_only_broken_snapshots">%1$d biztonsági mentés felvétel áll rendelkezésre. Azonban mind sérült. Kérem futtasson le egy sikeres biztonsági mentést, és próbálja újra.</string>
+    <string name="notification_check_error_title">Hibás fájl mentések találhatóak</string>
+    <string name="notification_check_error_text">Koppintson a részletekért. %1$s ellenőrzésre került %2$s átlagos sebességgel.</string>
+    <string name="notification_check_action">Részletek</string>
+    <string name="check_success_intro">%1$d felvétel található, és az adat %2$d%% része (%3$s) sikeresen hitelesítve:</string>
+    <string name="check_error_no_snapshots">Nem található biztonsági mentés. Kérem futtasson le egy sikeres mentési folyamatot, és próbálkozzon újra.</string>
+    <string name="check_error_has_snapshots">%1$d biztonsági mentés felvétel áll rendelkezésre, némely közülük sérült vagy hibákat tartalmaz. Alább található mentések (részlegesen) visszaállíthatóak.</string>
+    <string name="check_error_no_result">Elvesződtek a részletes eredmények. Jelentősebb idő telt el az utolsó ellenőrzés óta? Próbálja újra elindítani.</string>
+    <string name="check_files_title">A mentésben levő fájlok</string>
+    <string name="check_files_text">A \"%s\" magában foglalja az alábbi fájlokat:</string>
+    <string name="check_files_error">A mentési adat sérült. A fájlt nem lehet teljes mértékben visszaállítani.</string>
+    <string name="snapshots_title">Elérhető fájl biztonsági mentések</string>
+</resources>

@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="notification_restore_channel_title">Restauration du stockage</string>
+    <string name="notification_restore_channel_title">Restauration des fichiers</string>
     <string name="content_images">Photos et images</string>
-    <string name="snapshots_empty">Aucune sauvegarde de stockage trouvée \n \nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
+    <string name="snapshots_empty">Aucune sauvegarde de fichier trouvée \n \nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
     <string name="content_videos">Vidéos</string>
     <string name="content_audio">Fichiers audio</string>
     <string name="content_downloads">Téléchargements</string>
     <string name="content_add">Ajouter</string>
-    <string name="notification_backup_title">Sauvegarde du stockage</string>
+    <string name="notification_backup_title">Sauvegarde des fichiers</string>
     <string name="notification_backup_scanning">Analyse des fichiers…</string>
     <string name="notification_backup_backup_files">Sauvegarde des fichiers…</string>
     <string name="notification_prune">Suppression des anciennes sauvegardes…</string>
     <string name="notification_restore_title">Restauration des fichiers…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d sur %2$d fichiers restaurés</string>
-    <string name="snapshots_title">Sauvegardes de stockage disponibles</string>
+    <string name="snapshots_title">Sauvegardes de fichier disponibles</string>
     <string name="snapshots_error">Erreur de chargement des instantanés</string>
     <string name="content_options">Options</string>
+    <string name="notification_restore_complete_dups">%1$d fichiers ont été dupliqués.</string>
+    <string name="select_files_button_restore">Rétablir les fichiers sélectionnés</string>
+    <string name="select_files_number_of_files">%1$d fichier(s)</string>
+    <string name="notification_restore_complete_errors">%1$d fichiers contenant des erreurs.</string>
+    <string name="check_success_intro">%1$d fichiers \"snapshots\" ont été trouvés et %2$d%% de leur données (%3$s) vérifiées avec succès :</string>
+    <string name="check_error_only_broken_snapshots">%1$d snapshots de sauvegarde ont été trouvés. Cependant, toutes les sauvegardes ont été corrompues. Veuillez d\'abord exécuter une sauvegarde réussie, puis essayez de vérifier à nouveau.</string>
+    <string name="check_error_no_result">Les résultats détaillés ont été perdus. Il est possible qu\'une trop longue période ce soit écoulée depuis la vérification. Essayer d\'en relancer une.</string>
+    <string name="notification_check_channel_title">Vérification de l\'intégrité de la sauvegarde des fichiers</string>
+    <string name="notification_check_title">Vérification des sauvegardes de fichier.…</string>
+    <string name="notification_check_text">Récupération des données de sauvegarde disponibles.</string>
+    <string name="notification_check_finished_title">Intégrité de la sauvegarde de fichier vérifiée</string>
+    <string name="notification_check_finished_text">Vérifié avec succès %1$s à une vitesse moyenne de %2$s.</string>
+    <string name="notification_check_error_title">Erreurs dans la sauvegarde des fichiers</string>
+    <string name="notification_check_error_text">Appuyez pour en savoir plus. Nous avons vérifié %1$s à une vitesse moyenne de %2$s.</string>
+    <string name="notification_check_action">Détails</string>
+    <string name="select_files_title">Examiner les fichiers pour les restaurer</string>
+    <string name="check_error_has_snapshots">%1$d snapshots de sauvegarde on été trouvés, certains sont corrompus ou comportent des erreurs. Veuillez-trouver ci-dessous les sauvegardes qui peuvent être (partiellement) restaurées.</string>
+    <string name="check_error_snapshot">Cette sauvegarde contient des erreurs. Il peut être possible de les récupérer partiellement.</string>
+    <string name="check_files_title">Fichiers dans cette sauvegarde</string>
+    <string name="check_error_no_snapshots">Aucune sauvegarde retrouvée. Veuillez lancer une sauvegarde réussie puis réessayer.</string>
+    <string name="check_files_error">Les données de la sauvegarde sont corrompues. Le fichier ne pourra pas être complètement restaurée.</string>
+    <string name="check_files_text">\"%s\" inclut les fichiers suivants :</string>
 </resources>
