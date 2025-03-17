@@ -10,6 +10,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.ContentObserver
 import android.database.Cursor
+import android.database.StaleDataException
 import android.net.Uri
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
 import android.provider.DocumentsContract.EXTRA_LOADING
@@ -64,7 +65,8 @@ internal fun DocumentFile.createFileOrThrow(
     name: String,
     mimeType: String = MIME_TYPE,
 ): DocumentFile {
-    val file = createFile(mimeType, name) ?: throw IOException("Unable to create file: $name")
+    val file = createFile(mimeType, name)
+        ?: throw SafRetryException(IOException("Unable to create file: $name"))
     if (file.name != name) {
         file.delete()
         if (file.name == null) { // this happens when file existed already
@@ -72,7 +74,8 @@ internal fun DocumentFile.createFileOrThrow(
             val foundFile = findFile(name)
             if (foundFile?.name == name) return foundFile
         }
-        throw IOException("Wanted to create $name, but got ${file.name}")
+        val e = IOException("Wanted to create $name, but got ${file.name}")
+        throw SafRetryException(e)
     }
     return file
 }
@@ -88,10 +91,11 @@ public suspend fun DocumentFile.getOrCreateDirectory(context: Context, name: Str
 @Throws(IOException::class)
 public fun DocumentFile.createDirectoryOrThrow(name: String): DocumentFile {
     val directory = createDirectory(name)
-        ?: throw IOException("Unable to create directory: $name")
+        ?: throw SafRetryException(IOException("Unable to create directory: $name"))
     if (directory.name != name) {
         directory.delete()
-        throw IOException("Wanted to directory $name, but got ${directory.name}")
+        val e = IOException("Wanted to create directory $name, but got ${directory.name}")
+        throw SafRetryException(e)
     }
     return directory
 }
@@ -113,6 +117,8 @@ public suspend fun DocumentFile.listFilesBlocking(context: Context): List<Docume
             resolver.query(childrenUri, projection, null, null, null)
         }
     } catch (e: TimeoutCancellationException) {
+        throw IOException(e)
+    } catch (e: StaleDataException) {
         throw IOException(e)
     }.use { cursor ->
         while (cursor.moveToNext()) {
@@ -164,6 +170,7 @@ public suspend fun DocumentFile.findFileBlocking(
         listFilesBlocking(context)
     } catch (e: IOException) {
         Log.e(TAG, "Error finding file blocking", e)
+        if (e is SafRetryException) throw e
         return null
     }
     for (doc in files) {
@@ -194,8 +201,11 @@ public suspend fun DocumentFile.findFileBlocking(
 public suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?): Cursor =
     withTimeout(timeout) {
         suspendCancellableCoroutine { cont ->
-            val cursor = query() ?: throw IOException()
-            cont.invokeOnCancellation { cursor.close() }
+            val cursor = query() ?: throw SafRetryException(IOException("null cursor"))
+            cont.invokeOnCancellation {
+                Log.i(TAG, "Closing cursor after getLoadedCursor() got cancelled")
+                cursor.close()
+            }
             val loading = cursor.extras.getBoolean(EXTRA_LOADING, false)
             if (loading) {
                 Log.d(TAG, "Wait for children to get loaded...")
@@ -215,3 +225,5 @@ public suspend fun getLoadedCursor(timeout: Long = 15_000, query: () -> Cursor?)
             }
         }
     }
+
+internal class SafRetryException(e: Exception) : IOException(e)

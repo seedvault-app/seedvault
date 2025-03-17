@@ -33,11 +33,7 @@ internal class BackupTransportMonitor(
         log.info { "sendNoDataChanged($packageName)" }
 
         val snapshot = snapshotManager.latestSnapshot
-        if (snapshot == null) {
-            log.error { "No latest snapshot!" }
-        } else {
-            val snapshotCreator = appBackupManager.snapshotCreator ?: error("No SnapshotCreator")
-            snapshotCreator.onNoDataInCurrentRun(snapshot, packageName)
-        }
+        val snapshotCreator = appBackupManager.snapshotCreator ?: error("No SnapshotCreator")
+        snapshotCreator.onNoDataInCurrentRun(snapshot, packageName)
     }
 }

@@ -1,5 +1,6 @@
 # Seedvault
 [![Build](https://github.com/seedvault-app/seedvault/actions/workflows/build.yml/badge.svg)](https://github.com/seedvault-app/seedvault/actions/workflows/build.yml)
+[![Translation](https://hosted.weblate.org/widget/calyxos/seedvault/svg-badge.svg)](https://hosted.weblate.org/engage/calyxos)
 
 A backup application for the [Android Open Source Project](https://source.android.com/).
 Needs to be [integrated](https://github.com/seedvault-app/seedvault/wiki/ROM-Integration)
@@ -76,11 +77,14 @@ This project aims to adhere to the
 [official Kotlin coding style](https://developer.android.com/kotlin/style-guide).
 
 ### Translating
-Seedvault is translated using Weblate. It is currently under the [CalyxOS project.](https://hosted.weblate.org/projects/calyxos/)
+Seedvault can be translated with Weblate, as provided by [CalyxOS](https://hosted.weblate.org/projects/calyxos/).
+
+[![Translation status](https://hosted.weblate.org/widget/calyxos/seedvault/horizontal-auto.svg)](https://hosted.weblate.org/engage/calyxos/)
 
 ## Third-party tools
 
-> **⚠ WARNING**: the Seedvault developers make no guarantees about external software projects.
+> [!WARNING]
+> The Seedvault developers make no guarantees about external software projects.
 > Please be aware that disclosing your secret recovery key to other software has security risks.
 
 The [Seedvault backup parser](https://github.com/tlambertz/seedvault_backup_parser)

@@ -7,7 +7,6 @@
     <string name="storage_check_fragment_backup_title">Προετοιμασία τοποθεσίας αντιγράφων ασφαλείας…</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ελεύθερα</string>
     <string name="storage_fake_drive_summary">Πρέπει να είναι συνδεδεμένο</string>
-    <string name="storage_fragment_warning">Άτομα με πρόσβαση στον αποθηκευτικό χώρο σας μπορούν να μάθουν ποιες εφαρμογές χρησιμοποιείτε, αλλά δεν έχουν πρόσβαση στα δεδομένα των εφαρμογών.</string>
     <string name="storage_fragment_restore_title">Πού βρίσκονται τα αντίγραφα ασφαλείας σας;</string>
     <string name="storage_fragment_backup_title">Επιλέξτε πού θα αποθηκεύονται τα αντίγραφα ασφαλείας</string>
     <string name="settings_backup_now">Δημιουργία αντιγράφων ασφαλείας τώρα</string>
@@ -59,7 +58,6 @@
 \nΕπιλέξτε άλλη τοποθεσία που περιέχει ένα φάκελο %s.</string>
     <string name="restore_invalid_location_title">Δεν βρέθηκαν αντίγραφα ασφαλείας</string>
     <string name="restore_skip">Να μην γίνει επαναφορά</string>
-    <string name="restore_restore_set_times">Τελευταίο αντίγραφο ασφαλείας %1$s · Πρώτο %2$s.</string>
     <string name="restore_choose_restore_set">Επιλέξτε ένα αντίγραφο ασφαλείας για επαναφορά</string>
     <string name="restore_title">Επαναφορά από αντίγραφο ασφαλείας</string>
     <string name="notification_restore_error_action">Απεγκατάσταση εφαρμογής</string>
@@ -116,16 +114,15 @@
 \n
 \nΠατήστε στις εφαρμογές που απέτυχαν για να τις εγκαταστήσετε χειροκίνητα πριν συνεχίσετε.</string>
     <string name="restore_installing_error_title">Κάποιες εφαρμογές δεν εγκαταστάθηκαν</string>
-    <string name="backup_section_not_allowed">Εφαρμογές που δεν επιτρέπουν αντίγραφο ασφαλείας δεδομένων</string>
     <string name="backup_app_quota_exceeded">Υπέρβαση ορίου αντιγράφων ασφαλείας</string>
     <string name="backup_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν έχει χρησιμοποιηθεί πρόσφατα</string>
     <string name="backup_app_not_yet_backed_up">Αναμονή για αντίγραφο ασφαλείας…</string>
-    <string name="backup_section_user">Εγκατεστημένες εφαρμογές</string>
+    <string name="backup_section_user">Εφαρμογές</string>
     <string name="backup_contacts">Τοπικές επαφές</string>
     <string name="backup_call_log">Ιστορικό κλήσεων</string>
     <string name="backup_settings">Ρυθμίσεις συσκευής</string>
     <string name="backup_sms">Μηνύματα SMS</string>
-    <string name="backup_section_system">Εφαρμογές συστήματος</string>
+    <string name="backup_section_system">Δεδομένα συστήματος</string>
     <string name="recovery_code_recreated">Ο νέος κωδικός επαναφοράς δημιουργήθηκε επιτυχώς</string>
     <string name="recovery_code_verification_new_dialog_message">Η δημιουργία νέου κωδικού θα καταστήσει τα υπάρχοντα αντίγραφα ασφαλείας σας μη-προσβάσιμα. Θα προσπαθήσουμε να τα διαγράψουμε αν είναι δυνατόν.
 \n
@@ -147,10 +144,8 @@
     <string name="settings_backup_files_summary">Κανένα</string>
     <string name="settings_backup_storage_dialog_title">Χαρακτηριστικό beta</string>
     <string name="settings_backup_storage_dialog_message">Η δημιουργία αντιγράφου ασφαλείας αρχείων είναι σε στάδιο beta και μπορεί να μην λειτουργήσει. Μην βασίζεστε σε αυτή για σημαντικά δεδομένα.</string>
-    <string name="storage_fragment_warning_delete">Τα υπάρχοντα αντίγραφα ασφαλείας σε αυτήν την τοποθεσία θα διαγραφούν.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Νέος κωδικός</string>
     <string name="settings_expert_title">Προηγμένες ρυθμίσεις</string>
-    <string name="settings_expert_quota_title">Απεριόριστο όριο εφαρμογών</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Μη εγκατεστημένο</string>
     <string name="storage_check_fragment_patience">Αυτό μπορεί να πάρει λίγη ώρα…</string>
     <string name="recovery_code_auth_title">Εισάγετε εκ νέου το κλείδωμα οθόνης</string>
@@ -166,9 +161,6 @@
     <string name="settings_backup_new_code_dialog_message">Για να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας εφαρμογών, πρέπει να δημιουργήσετε έναν νέο κωδικό επαναφοράς.
 \n
 \nΛυπούμαστε για την ταλαιπωρία.</string>
-    <string name="settings_expert_quota_summary">Μην επιβάλλετε περιορισμό στο μέγεθος των αντιγράφων ασφαλείας εφαρμογών.
-\n
-\nΠροειδοποίηση: Αυτό μπορεί να γεμίσει γρήγορα την τοποθεσία αποθήκευσης. Δεν χρειάζεται για τις περισσότερες εφαρμογές.</string>
     <string name="notification_error_no_main_key_title">Τα αντίγραφα ασφαλείας απενεργοποιήθηκαν</string>
     <string name="recovery_code_auth_description">Εισάγετε τα διαπιστευτήρια της συσκευής σας για να συνεχίσετε</string>
     <string name="notification_error_no_main_key_text">Δημιουργήστε έναν νέο κωδικό επαναφοράς για να ολοκληρώσετε την αναβάθμιση και να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας.</string>
@@ -201,11 +193,9 @@
     <string name="about_contributor_headline">Συνεισφέροντες</string>
     <string name="about_contributor_content">Ανατρέξτε στο GitHub για μια <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">λίστα συνεισφερόντων</a>.</string>
     <string name="about_contributing_organizations_title">Συνεισφέροντες Οργανισμοί</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Ινστιτούτο Calyx</a> για χρήση στο <a href="https://calyxos.org">CalyxOS</a> 
 \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET χρηματοδότηση από την NLnet</a></string>
     <string name="storage_user_selected_location_title">Τοποθεσία επιλεγμένη από το χρήστη</string>
-    <string name="settings_expert_d2d_title">Αντίγραφα ασφαλείας από συσκευή σε συσκευή</string>
-    <string name="settings_expert_d2d_summary">Αυτό αναγκάζει τη δημιουργία αντιγράφων ασφαλείας για τις περισσότερες εφαρμογές, ακόμη και όταν το απαγορεύουν. Αυτό είναι σε στάδιο alpha, χρησιμοποιήστε με δική σας ευθύνη.</string>
     <string name="settings_backup_status_next_backup_past">μόλις πληρούνται οι προϋποθέσεις</string>
     <string name="settings_backup_scheduling_title">Προγραμματισμός δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="settings_scheduling_frequency_title">Συχνότητα αντίγραφων ασφάλειας</string>
@@ -222,4 +212,26 @@
     <string name="settings_backup_status_next_backup">Επόμενο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_status_next_backup_usb">Τα αντίγραφα ασφαλείας θα συμβούν αυτόματα όταν συνδέσετε τη μονάδα USB</string>
     <string name="notification_apk_not_backed_up">Αποθήκευση λίστας εφαρμογών για τις οποίες δεν μπορούμε να δημιουργήσουμε αντίγραφα ασφαλείας.</string>
+    <string name="storage_webdav_config_url">WebDAV URL</string>
+    <string name="storage_webdav_config_url_helper">Βεβαιωθείτε ότι έχετε εισαγάγει την πλήρη διεύθυνση URL εδώ. Π.χ. για το Nextcloud, έχει τη μορφή https://yourserver.com/remote.php/webdav</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="restore_select_packages">Επιλέξτε εφαρμογές για επαναφορά</string>
+    <string name="restore_select_packages_all">Όλες οι παρακάτω εφαρμογές</string>
+    <string name="notification_space_error_title">Ανεπαρκής χώρος αντιγράφων ασφαλείας</string>
+    <string name="notification_space_error_text">Ο χώρος στην τοποθεσία των αντιγράφων ασφαλείας σας εξαντλείται. Ελευθερώστε χώρο, ώστε τα αντίγραφα ασφαλείας να συνεχίσουν να εκτελούνται.</string>
+    <string name="backup_system_apps">Εφαρμογές συστήματος</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_summary">Ενσωματωμένη άμεση πρόσβαση WebDAV</string>
+    <string name="storage_webdav_config_user">Όνομα χρήστη</string>
+    <string name="storage_webdav_config_pass">Κωδικός πρόσβασης</string>
+    <string name="storage_webdav_config_button">Χρήση WebDAV cloud</string>
+    <string name="storage_webdav_config_malformed_url">Μη έγκυρη διεύθυνση URL WebDAV</string>
+    <string name="notification_restore_channel_title">Ειδοποίηση επαναφοράς</string>
+    <string name="notification_restore_title">Επαναφορά σε εξέλιξη</string>
+    <string name="restore_storage_selection_description">Θα γίνει επαναφορά των επιλεγμένων αρχείων. Πατήστε τους φακέλους για να δείτε τα αρχεία σε αυτούς.</string>
+    <string name="first_start_text">Θέλετε να επαναφέρετε τη συσκευή σας από ένα υπάρχον αντίγραφο ασφαλείας ή να ξεκινήσετε ένα νέο αντίγραφο ασφαλείας;</string>
+    <string name="setup_button">Ξεκινήστε νέο</string>
+    <string name="settings_backup_file_check_title">Ελέγξτε την ακεραιότητα του αντιγράφου ασφαλείας</string>
+    <string name="settings_backup_app_check_title">Ελέγξτε την ακεραιότητα</string>
+    <string name="settings_backup_app_check_summary">Βεβαιωθείτε ότι το αντίγραφο ασφαλείας λειτουργεί για επαναφορά</string>
 </resources>

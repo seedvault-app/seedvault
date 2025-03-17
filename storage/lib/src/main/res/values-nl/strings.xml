@@ -16,7 +16,5 @@
     <string name="content_images">Foto\'s en afbeeldingen</string>
     <string name="notification_restore_channel_title">Opslagherstel</string>
     <string name="notification_restore_complete_title">%1$d van de %2$d bestanden zijn hersteld</string>
-    <string name="snapshots_empty">Geen opslagback-ups zijn gevonden
-\n
-\nEr is helaas niets om te herstellen.</string>
+    <string name="snapshots_empty">Geen opslagback-ups zijn gevonden \n \nEr is helaas niets om te herstellen.</string>
 </resources>

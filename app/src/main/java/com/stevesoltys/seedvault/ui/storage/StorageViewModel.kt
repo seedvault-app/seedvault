@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.ui.storage
 import android.annotation.UiThread
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,6 +27,8 @@ import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.saf.SafProperties
 import org.calyxos.seedvault.core.backends.webdav.WebDavConfig
 import org.calyxos.seedvault.core.backends.webdav.WebDavProperties
+
+private const val TAG = "StorageViewModel"
 
 internal abstract class StorageViewModel(
     private val app: Application,
@@ -70,6 +73,7 @@ internal abstract class StorageViewModel(
     }
 
     internal fun onUriPermissionResultReceived(uri: Uri?) {
+        Log.i(TAG, "onUriPermissionResultReceived($uri)")
         if (uri == null) {
             val msg = app.getString(R.string.storage_check_fragment_permission_error)
             mLocationChecked.setEvent(LocationResult(msg))

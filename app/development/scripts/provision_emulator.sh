@@ -59,7 +59,7 @@ fi
 ADB="$ANDROID_HOME/platform-tools/adb -s $EMULATOR_DEVICE_NAME"
 
 echo "Waiting for emulator to boot..."
-$ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Provisioning emulator for write access to '/system'..."
 $ADB root
@@ -68,14 +68,14 @@ $ADB remount # remount /system as writable
 
 echo "Rebooting emulator..."
 $ADB reboot # need to reboot first time we remount
-$ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Provisioning emulator for Seedvault..."
 "$SCRIPT_DIR"/install_app.sh
 
 echo "Rebooting emulator..."
 $ADB reboot
-$ADB wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Disabling backup..."
 $ADB shell bmgr enable false

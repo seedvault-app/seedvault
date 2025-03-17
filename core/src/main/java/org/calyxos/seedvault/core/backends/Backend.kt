@@ -7,10 +7,14 @@ package org.calyxos.seedvault.core.backends
 
 import androidx.annotation.VisibleForTesting
 import java.io.InputStream
-import java.io.OutputStream
 import kotlin.reflect.KClass
 
 public interface Backend {
+
+    /**
+     * Returns the [BackendId] identifying this [Backend].
+     */
+    public val id: BackendId
 
     /**
      * Returns true if the plugin is working, or false if it isn't.
@@ -25,7 +29,7 @@ public interface Backend {
      */
     public suspend fun getFreeSpace(): Long?
 
-    public suspend fun save(handle: FileHandle): OutputStream
+    public suspend fun save(handle: FileHandle, saver: BackendSaver): Long
 
     public suspend fun load(handle: FileHandle): InputStream
 
@@ -41,6 +45,12 @@ public interface Backend {
 
     @VisibleForTesting
     public suspend fun removeAll()
+
+    /**
+     * Returns true if the given exception is only transient
+     * and the operation where it threw should be retried.
+     */
+    public fun isTransientException(e: Exception): Boolean
 
     /**
      * Returns the package name of the app that provides the storage backend

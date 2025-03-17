@@ -42,6 +42,7 @@ private val TAG = DocumentsStorage::class.java.simpleName
 internal class DocumentsStorage(
     private val appContext: Context,
     internal val safStorage: SafProperties,
+    private val root: String = DIRECTORY_ROOT,
 ) {
 
     /**
@@ -55,7 +56,7 @@ internal class DocumentsStorage(
             if (field == null) {
                 val parent = safStorage.getDocumentFile(context)
                 field = try {
-                    parent.createOrGetDirectory(context, DIRECTORY_ROOT)
+                    parent.createOrGetDirectory(context, root)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error creating root backup dir.", e)
                     null

@@ -24,7 +24,6 @@
     <string name="settings_backup_storage_dialog_title">Experimentele feature</string>
     <string name="settings_backup_storage_dialog_ok">Schakel toch in</string>
     <string name="settings_expert_title">Expertinstellingen</string>
-    <string name="settings_expert_quota_title">Onbeperkt appquotum</string>
     <string name="storage_fragment_restore_title">Waar moeten back-ups worden gezocht\?</string>
     <string name="storage_fake_drive_title">USB-memorystick</string>
     <string name="storage_fake_drive_summary">Moet ingeplugd zijn</string>
@@ -42,7 +41,6 @@
     <string name="settings_backup_new_code_code_dialog_ok">Nieuwe code</string>
     <string name="settings_backup_new_code_dialog_title">Nieuwe herstelcode is vereist</string>
     <string name="storage_fragment_backup_title">Kies waar de back-ups worden opgeslagen</string>
-    <string name="storage_fragment_warning_delete">Bestaande back-ups op de locatie zullen verwijderd worden.</string>
     <string name="recovery_code_confirm_button">Bevestig code</string>
     <string name="recovery_code_input_hint_9">Woord 9</string>
     <string name="storage_check_fragment_patience">Dit kan even duren…</string>
@@ -91,7 +89,6 @@
     <string name="settings_auto_restore_summary_usb">Let op: Je %1$s moet ingeplugd zijn om dit te laten werken.</string>
     <string name="settings_category_storage">Opslagback-up (experimenteel)</string>
     <string name="restore_app_quota_exceeded">Back-upquota was overschreden</string>
-    <string name="restore_restore_set_times">Laatste back-up op %1$s · Eerste op %2$s.</string>
     <string name="restore_app_status_installing">Herinstalleren</string>
     <string name="restore_next">Volgende</string>
     <string name="restore_restoring_error_title">Sommige apps konden niet worden hersteld</string>
@@ -108,7 +105,6 @@
     <string name="backup_app_no_data">App heeft geen gegevens gerapporteerd voor back-up</string>
     <string name="restore_app_status_restored">Gegevens zijn hersteld</string>
     <string name="restore_invalid_location_title">Geen back-ups gevonden</string>
-    <string name="storage_fragment_warning">Mensen met toegang tot je opslaglocatie kunnen te zien welke apps je gebruikt, maar zij krijgen geen toegang tot de gegevens van de apps.</string>
     <string name="restore_storage_skip">Sla herstellen van bestanden over</string>
     <string name="restore_storage_in_progress_title">Bestanden worden hersteld…</string>
     <string name="restore_choose_restore_set">Kies een back-up om te herstellen</string>
@@ -138,9 +134,6 @@
     <string name="storage_internal_warning_use_anyway">Gebruik toch</string>
     <string name="about_title">Over</string>
     <string name="about_version">Versie: %s</string>
-    <string name="settings_expert_quota_summary">Let geen limiet op voor de grootte van de appback-ups.
-\n
-\nWaarschuwing: Dit kan je opslag snel volledig vullen. Is niet nodig voor de meeste apps.</string>
     <string name="settings_backup_new_code_dialog_message">Om appback-ups te blijven gebruiken moet je een nieuwe herstelcode aanmaken.
 \n
 \nExcuses voor het ongemak.</string>
@@ -183,7 +176,6 @@
     <string name="backup_app_quota_exceeded">Back-upquota is overschreden</string>
     <string name="restore_app_not_installed">App is niet geïnstalleerd</string>
     <string name="restore_skip">Niet herstellen</string>
-    <string name="backup_section_not_allowed">Apps die geen gegevensback-ups toestaan</string>
     <string name="restore_skip_apps">Sla herstellen van apps over</string>
     <string name="restore_installing_packages">Herinstalleren van apps</string>
     <string name="restore_finished_error">Er was een fout opgetreden tijdens het herstel van de back-up.</string>
@@ -201,7 +193,6 @@
     <string name="about_contributor_headline">Bijdragers</string>
     <string name="about_contributor_content">Zie GitHub voor een <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lijst van bijdragers</a>.</string>
     <string name="about_contributing_organizations_title">Bijdragende organisaties</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> voor gebruik in <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund van NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> voor gebruik in <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund van NLnet</a></string>
     <string name="storage_user_selected_location_title">Door gebruiker gekozen locatie</string>
 </resources>

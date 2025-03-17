@@ -11,7 +11,7 @@ import android.content.Context.MODE_PRIVATE
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.google.protobuf.ByteString
-import com.stevesoltys.seedvault.MemoryLogger
+import org.calyxos.seedvault.core.MemoryLogger
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import io.github.oshai.kotlinlogging.KotlinLogging

@@ -48,7 +48,7 @@
     <string name="settings_backup_apk_dialog_disable">Désactiver la sauvegarde des applications</string>
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde des applications</string>
-    <string name="settings_category_app_data_backup">Sauvegarde des données de l’appli</string>
+    <string name="settings_category_app_data_backup">Sauvegarde des données de l’application</string>
     <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une application, restaurer les paramètres et les données sauvegardées.</string>
     <string name="settings_auto_restore_title">Restaurer automatiquement</string>
@@ -78,7 +78,6 @@
 \n
 \nVeuillez choisir un autre emplacement contenant un dossier %s.</string>
     <string name="restore_invalid_location_title">Aucune sauvegarde trouvée</string>
-    <string name="restore_restore_set_times">Dernière sauvegarde %1$s · Première %2$s.</string>
     <string name="restore_choose_restore_set">Choisir une sauvegarde à restaurer</string>
     <string name="restore_title">Restaurer depuis une sauvegarde</string>
     <string name="notification_restore_error_action">Désinstaller l\'appli</string>
@@ -93,7 +92,6 @@
     <string name="notification_title">Sauvegarde en cours</string>
     <string name="recovery_code_input_intro">Entrez votre code de récupération de 12 mots que vous avez écrit lors de la configuration des sauvegardes.</string>
     <string name="storage_check_fragment_permission_error">Impossible d\'obtenir la permission d\'écrire dans l\'emplacement de sauvegarde.</string>
-    <string name="storage_fragment_warning">Les personnes ayant accès à votre lieu de stockage peuvent savoir quelles applications vous sauvegardes mais ne peuvent pas lire les données des applications.</string>
     <string name="settings_backup_apk_dialog_message">La sauvegarde d\'une application désactivée entraînera bien la sauvegarde des données de cette application. Celles-ci ne seront toutefois pas restaurées automatiquement.
 \n
 \nVous devrez alors installer toutes vos applications manuellement avec le paramètre « Restaurer automatiquement » activé.</string>
@@ -113,7 +111,6 @@
 \n
 \nToucher les apps ayant échoué pour essayer de les installer manuellement avant de continuer.</string>
     <string name="restore_installing_error_title">Certains applications n\'ont pas été installées</string>
-    <string name="backup_section_not_allowed">Applications n\'autorisant pas de sauvegarde</string>
     <string name="backup_app_quota_exceeded">Quota de sauvegarde dépassé</string>
     <string name="backup_app_was_stopped">Pas sauvegardé car pas utilisé récemment</string>
     <string name="backup_app_not_yet_backed_up">En attente de backup…</string>
@@ -141,19 +138,14 @@
     <string name="recovery_code_verification_ok_message">Votre code est correct est permettra la restauration de votre sauvegarde.</string>
     <string name="recovery_code_verification_ok_title">Code de récupération vérifié</string>
     <string name="settings_backup_storage_title">Sauvegarder mes fichiers</string>
-    <string name="settings_backup_files_title">Fichiers et dossier inclus</string>
+    <string name="settings_backup_files_title">Fichiers et dossiers inclus</string>
     <string name="settings_backup_files_summary">Aucun</string>
     <string name="settings_backup_storage_dialog_title">Fonctionnalité expérimentale</string>
     <string name="settings_expert_title">Paramètres experts</string>
-    <string name="storage_fragment_warning_delete">Les sauvegardes existantes à cet emplacement seront supprimées.</string>
     <string name="settings_category_apps">Sauvegarde des applications</string>
     <string name="settings_category_storage">Sauvegarde des fichiers (expérimental)</string>
     <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
-    <string name="settings_expert_quota_title">Quota illimité d\'applications</string>
-    <string name="settings_expert_quota_summary">Ne pas limiter la taille de la sauvegarde des applications.
-\n
-\nAttention : cela peut remplir rapidement votre espace de stockage. N\'est pas nécessaire pour la plupart des applications.</string>
     <string name="storage_check_fragment_patience">Cela peut prendre un certain temps…</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Pas installé</string>
     <string name="restore_storage_in_progress_info">Vos fichiers sont restaurés en arrière-plan. Vous pouvez commencer à utiliser votre téléphone pendant cette opération.
@@ -168,7 +160,7 @@
     <string name="recovery_code_auth_title">Saisissez à nouveau vos identifiants</string>
     <string name="notification_error_no_main_key_text">Générez un nouveau code de récupération pour terminer la mise à jour et continuer à utiliser vos sauvegardes.</string>
     <string name="storage_fake_davx5_summary_installed">Appuyez pour configurer un montage WebDAV</string>
-    <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegardes automatique scar l\'optimisation de la batterie est activée.</string>
+    <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegardes automatiques car l\'optimisation de la batterie est activée.</string>
     <string name="settings_backup_new_code_dialog_title">Nouveau code de récupération requis</string>
     <string name="settings_backup_new_code_dialog_message">Pour continuer à utiliser les sauvegardes d\'applications, vous devez générer un nouveau code de récupération.
 \n
@@ -191,7 +183,7 @@
     <string name="settings_expert_logcat_title">Sauvegarde des logs de l\'application</string>
     <string name="settings_backup_dialog_message">A la prochaine activation ,
 \nLe processus de sauvegarde peux durer plus longtemps et utilisera du stockage additionnel.</string>
-    <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App\?</string>
+    <string name="settings_backup_dialog_title">Désactiver les sauvegardes de l\'App ?</string>
     <string name="about_contributing_organizations_title">Organisations participantes</string>
     <string name="settings_backup_scheduling_title">Planification des sauvegardes</string>
     <string name="settings_backup_status_next_backup_estimate">Prochaine sauvegarde (estimée) : %1$s</string>
@@ -208,8 +200,7 @@
     <string name="notification_apk_text">Sauvegarde de l\'APK de %s</string>
     <string name="about_contributor_content">Veuillez consulter GitHub pour la <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">liste des contributeurs</a>.</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Non recommandé)</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Institut Calyx</a> pour l\'usage de <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET sponsorisé par NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Institut Calyx</a> pour l\'usage de <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET sponsorisé par NLnet</a></string>
     <string name="settings_backup_status_next_backup">Prochaine sauvegarde : %1$s</string>
     <string name="settings_backup_status_next_backup_usb">Les sauvegardes se joueront automatiquement quand vous brancherez votre disque USB</string>
     <string name="settings_scheduling_frequency_daily">Journalier</string>

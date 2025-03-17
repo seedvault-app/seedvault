@@ -200,6 +200,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_backup -> {
             viewModel.backupNow()
+            if (!backendManager.canDoBackupNow()) {
+                // if USB isn't plugged in, this action shouldn't be enabled,
+                // so this leaves only that we are on a metered network
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.settings_backup_metered_title))
+                    .setMessage(getString(R.string.settings_backup_metered_text))
+                    .setNeutralButton(getString(R.string.restore_storage_got_it)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
             true
         }
         R.id.action_restore -> {

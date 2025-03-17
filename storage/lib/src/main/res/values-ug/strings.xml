@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="content_videos">سىن</string>
+    <string name="content_images">سۈرەت ۋە رەسىم</string>
+    <string name="content_audio">ئۈن ھۆججەت</string>
+    <string name="content_downloads">چۈشۈرۈش</string>
+    <string name="content_options">تاللانما</string>
+    <string name="content_add">قوش</string>
+    <string name="notification_backup_title">ھۆججەت زاپاسلاش</string>
+    <string name="notification_backup_scanning">ھۆججەتنى تاراۋاتىدۇ…</string>
+    <string name="notification_backup_backup_files">ھۆججەتنى زاپاسلاۋاتىدۇ…</string>
+    <string name="notification_prune">كونا زاپاسلاشنى چىقىرىۋاتىدۇ…</string>
+    <string name="notification_restore_channel_title">ساقلىغۇچتىن ئەسلىگە كەلتۈرۈش</string>
+    <string name="notification_restore_title">ھۆججەتنى ئەسلىگە كەلتۈرۈۋاتىدۇ…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="notification_restore_complete_title">%1$d/%2$d ھۆججەت ئەسلىگە كەلتۈرۈلدى</string>
+    <string name="notification_restore_complete_dups">%1$d ھۆججەت تەكرار.</string>
+    <string name="notification_restore_complete_errors">%1$d ھۆججەتتە خاتالىق بار.</string>
+    <string name="notification_check_channel_title">ھۆججەت زاپاسلاشنىڭ مۇكەممەللىكىنى تەكشۈرۈش</string>
+    <string name="notification_check_title">ھۆججەت زاپاسلاشنى تەكشۈرۈۋاتىدۇ…</string>
+    <string name="notification_check_text">ئىشلەتكىلى بولىدىغان زاپاس سانلىق مەلۇماتنى ئىزدەۋاتىدۇ.</string>
+    <string name="notification_check_finished_title">ھۆججەت زاپاسلاشنىڭ مۇكەممەللىكى دەلىللەندى</string>
+    <string name="notification_check_finished_text">%1$s مۇۋەپپەقىيەتلىك تەكشۈرۈلدى ئوتتۇرىچە سۈرئىتى %2$s.</string>
+    <string name="notification_check_error_title">ھۆججەت زاپاسلاش خاتالىقى بايقالدى</string>
+    <string name="notification_check_error_text">تەپسىلاتى ئۈچۈن چېكىلىدۇ. %1$s نى تەكشۈردۇق ئوتتۇرىچە سۈرئىتى %2$s.</string>
+    <string name="notification_check_action">تەپسىلاتى</string>
+    <string name="snapshots_title">ئىشلىتىلىشچان ساقلىغۇچتىكى زاپاس</string>
+    <string name="snapshots_empty">ھېچقانداق ساقلىغۇچتىكى زاپاس تېپىلمىدى\n\nكەچۈرۈڭ، ئەسلىگە كەلتۈرگىلى بولىدىغان ھېچنېمە يوق.</string>
+    <string name="snapshots_error">زاپاسنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى</string>
+    <string name="select_files_title">ئەسلىگە كەلتۈرىدىغان ھۆججەتنى تەكشۈرىدۇ</string>
+    <string name="select_files_number_of_files">%1$d ھۆججەت</string>
+    <string name="select_files_button_restore">تاللانغان ھۆججەتنى ئەسلىگە كەلتۈرىدۇ</string>
+    <string name="check_error_title">\@string/notification_check_error_title</string>
+    <string name="check_error_no_snapshots">ھېچقانداق زاپاسنى تاپالمىدۇق. ئالدى بىلەن زاپاسلاشنى مۇۋەپپەقىيەتلىك ئىجرا قىلىپ ئاندىن قايتا سىناڭ.</string>
+    <string name="check_error_only_broken_snapshots">زاپاستىن %1$d نى تاپتۇق. ئەمما ئۇلارنىڭ ھەممىسى بۇزۇلغان. زاپاسلاشنى مۇۋەپپەقىيەتلىك ئىجرا قىلىپ ئاندىن قايتا سىناڭ.</string>
+    <string name="check_error_has_snapshots">زاپاستىن %1$d نى تاپتۇق. ئەمما ئۇلارنىڭ بەزىسى بۇزۇلغان ياكى خاتالىق بار. تۆۋەندىكىسى قىسمەن ئەسلىگە كەلتۈرگىلى بولىدىغان زاپاسلار.</string>
+    <string name="check_error_no_result">تەپسىلىي نەتىجىنى يىتتۈردۇق. تەكشۈرۈشنى ئىجرا قىلغاندىن كېيىن بەك ئۇزۇن ۋاقىت ئۆتتىمۇ؟ قايتا ئىجرا قىلىپ سىناڭ.</string>
+    <string name="check_error_snapshot">بۇ زاپاستا ئازراق خاتالىق بار. ئۇنى قىسمەن ئەسلىگە كەلتۈرەلىشىڭىز مۇمكىن.</string>
+    <string name="check_files_title">بۇ زاپاستىكى ھۆججەتلەر</string>
+    <string name="check_files_error">زاپاسلانغان سانلىق مەلۇمات بۇزۇلغان. ھۆججەت تولۇق ئەسلىگە كەلمەيدۇ.</string>
+    <string name="check_success_intro">%1$d تېز زاپاسلاش بايقالدى %2$d%% سانلىق مەلۇمات (%3$s) مۇۋەپپەقىيەتلىك دەلىللەندى:</string>
+    <string name="check_files_text">«%s» دا تۆۋەندىكى ھۆججەتلەر بار:</string>
+</resources>

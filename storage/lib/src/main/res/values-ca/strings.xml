@@ -14,9 +14,7 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d de %2$d fitxers restaurats</string>
     <string name="snapshots_title">Còpies de seguretat disponibles</string>
-    <string name="snapshots_empty">No s\'ha trobat cap còpia de seguretat d\'emmagatzematge
-\n
-\nHo sentim, però no hi ha res que es pugui restaurar.</string>
+    <string name="snapshots_empty">No s\'ha trobat cap còpia de seguretat d\'emmagatzematge \n \nHo sentim, però no hi ha res que es pugui restaurar.</string>
     <string name="snapshots_error">Error en carregar les instantànies</string>
     <string name="content_options">Opcions</string>
 </resources>

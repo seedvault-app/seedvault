@@ -9,14 +9,35 @@
     <string name="content_videos">视频</string>
     <string name="content_downloads">下载</string>
     <string name="content_add">添加</string>
-    <string name="notification_backup_title">存储备份</string>
+    <string name="notification_backup_title">文件备份</string>
     <string name="notification_backup_scanning">扫描文件中…</string>
     <string name="notification_backup_backup_files">备份文件中…</string>
     <string name="notification_prune">删除旧备份中…</string>
-    <string name="notification_restore_channel_title">存储恢复</string>
+    <string name="notification_restore_channel_title">文件备份恢复</string>
     <string name="snapshots_error">加载快照出错</string>
-    <string name="snapshots_title">可用的存储备份</string>
-    <string name="snapshots_empty">未找到存储备份
-\n
-\n抱歉，没有什么可以恢复的。</string>
+    <string name="snapshots_title">可用的文件备份</string>
+    <string name="snapshots_empty">未找到文件备份 \n \n抱歉，没有什么可以恢复的。</string>
+    <string name="select_files_title">检查用于恢复的文件</string>
+    <string name="select_files_number_of_files">%1$d 个文件</string>
+    <string name="select_files_button_restore">恢复所选文件</string>
+    <string name="notification_restore_complete_dups">%1$d 个文件是重复项。</string>
+    <string name="notification_restore_complete_errors">%1$d 个文件有错误。</string>
+    <string name="notification_check_text">正获取可用的备份数据。</string>
+    <string name="notification_check_channel_title">文件备份完整性检查</string>
+    <string name="notification_check_title">检查文件备份中…</string>
+    <string name="notification_check_finished_title">已验证文件备份完整性</string>
+    <string name="notification_check_finished_text">成功检查了 %1$s，平均检查速度为 %2$s。</string>
+    <string name="notification_check_error_title">找到了文件备份错误</string>
+    <string name="notification_check_error_text">轻按了解详情。我们检查了 %1$s 数据，平均速度为 %2$s。</string>
+    <string name="notification_check_action">详情</string>
+    <string name="check_error_no_snapshots">我们找不到任何备份。请先运行一次成功的备份，然后再试着检查。</string>
+    <string name="check_error_has_snapshots">我们找到了 %1$d 个备份快照，其中一些坏了或又错误。下方是可以被（部分）恢复的备份。</string>
+    <string name="check_error_no_result">我们丢失了详细结果。是否距上次运行检查已过了很久？请试着再运行。</string>
+    <string name="check_error_snapshot">此备份有一些错误。你或许可以部分恢复它。</string>
+    <string name="check_files_title">此备份中的文件</string>
+    <string name="check_files_text">\"%s\" 备份包含下列文件：</string>
+    <string name="check_error_title">\@string/notification_check_error_title</string>
+    <string name="check_success_intro">找到了 %1$d 个快照，成功验证了这些快照数据总量 (%3$s) 的 %2$d%%：</string>
+    <string name="check_error_only_broken_snapshots">我们找到了 %1$d 个备份快照。然而，它们全都损坏了。请运行一次成功的备份，然后再试着检查。</string>
+    <string name="check_files_error">备份文件损坏了。文件不会完全恢复。</string>
 </resources>

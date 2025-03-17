@@ -12,11 +12,14 @@
     <string name="notification_backup_backup_files">Se fac copii de rezervă ale fișierelor…</string>
     <string name="notification_prune">Se elimină vechile copii de rezervă…</string>
     <string name="notification_restore_channel_title">Restaurare stocare</string>
-    <string name="snapshots_empty">Nu s-au găsit copii de rezervă
-\n
-\nNe pare rău, dar nu există nimic care să poată fi restaurat.</string>
+    <string name="snapshots_empty">Nu s-au găsit copii de rezervă \n \nNe pare rău, dar nu există nimic care să poată fi restaurat.</string>
     <string name="content_images">Fotografii și imagini</string>
     <string name="content_videos">Videoclipuri</string>
     <string name="content_audio">Fișiere audio</string>
     <string name="content_add">Adaugă</string>
+    <string name="notification_restore_complete_dups">%1$d fișiere erau duplicate.</string>
+    <string name="notification_restore_complete_errors">%1$d fișiere au avut erori.</string>
+    <string name="select_files_number_of_files">%1$d fișier(e)</string>
+    <string name="select_files_button_restore">Restaurează fișierele selectate</string>
+    <string name="select_files_title">Examinează fișierele pentru restaurare</string>
 </resources>

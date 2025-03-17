@@ -25,6 +25,7 @@ import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.proto.Snapshot.Apk
 import com.stevesoltys.seedvault.proto.Snapshot.App
 import com.stevesoltys.seedvault.proto.Snapshot.Blob
+import com.stevesoltys.seedvault.transport.backup.BackupInitializer
 import com.stevesoltys.seedvault.transport.backup.PackageService
 import com.stevesoltys.seedvault.transport.backup.isSystemApp
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -41,6 +42,7 @@ internal class SnapshotCreator(
     private val clock: Clock,
     private val packageService: PackageService,
     private val metadataManager: MetadataManager,
+    private val backupInitializer: BackupInitializer,
 ) {
 
     private val log = KotlinLogging.logger { }
@@ -115,44 +117,55 @@ internal class SnapshotCreator(
      * we try to extract data from the given [snapshot] (ideally we latest we have) and
      * add it to the current snapshot under construction.
      *
-     * @param warnNoData log a warning, if [snapshot] had no data for the given [packageName].
+     * @param isStopped set to true if the app had no data, because it is currently force-stopped.
      */
-    fun onNoDataInCurrentRun(snapshot: Snapshot, packageName: String, isStopped: Boolean = false) {
-        log.info { "onKvPackageNotChanged(${snapshot.token}, $packageName)" }
+    fun onNoDataInCurrentRun(snapshot: Snapshot?, packageName: String, isStopped: Boolean = false) {
+        log.info { "onKvPackageNotChanged(${snapshot?.token}, $packageName)" }
 
         if (appBuilderMap.containsKey(packageName)) {
             // the system backs up K/V apps repeatedly, e.g. @pm@
             log.info { "  Already have data for $packageName in current snapshot, not touching it" }
             return
         }
-        val app = snapshot.appsMap[packageName]
-        if (app == null) {
-            if (!isStopped) log.error {
-                "  No changed data for $packageName, but we had no data for it"
+        if (snapshot == null) {
+            log.error { "No latest snapshot! Initializing transport..." }
+            // Tell the system that it needs to initialize our transport,
+            // so it stops telling us that it has no data.
+            // It seems crazy that we can do this mid-backup
+            val error = { log.error { "Error initializing transport." } }
+            backupInitializer.initialize(error) {
+                log.info { "Success initializing transport." }
             }
-            return
-        }
+        } else {
+            val app = snapshot.appsMap[packageName]
+            if (app == null) {
+                if (!isStopped) log.error {
+                    "  No changed data for $packageName, but we had no data for it"
+                }
+                return
+            }
 
-        // get chunkIds from last snapshot
-        val chunkIds = app.chunkIdsList.hexFromProto() +
-            app.apk.splitsList.flatMap { it.chunkIdsList }.hexFromProto()
+            // get chunkIds from last snapshot
+            val chunkIds = app.chunkIdsList.hexFromProto() +
+                app.apk.splitsList.flatMap { it.chunkIdsList }.hexFromProto()
 
-        // get blobs for chunkIds
-        val blobMap = mutableMapOf<String, Blob>()
-        chunkIds.forEach { chunkId ->
-            val blob = snapshot.blobsMap[chunkId]
-            if (blob == null) log.error { "  No blob for $packageName chunk $chunkId" }
-            else blobMap[chunkId] = blob
-        }
+            // get blobs for chunkIds
+            val blobMap = mutableMapOf<String, Blob>()
+            chunkIds.forEach { chunkId ->
+                val blob = snapshot.blobsMap[chunkId]
+                if (blob == null) log.error { "  No blob for $packageName chunk $chunkId" }
+                else blobMap[chunkId] = blob
+            }
 
-        // add info to current snapshot
-        appBuilderMap[packageName] = app.toBuilder()
-        blobsMap.putAll(blobMap)
+            // add info to current snapshot
+            appBuilderMap[packageName] = app.toBuilder()
+            blobsMap.putAll(blobMap)
 
-        // record local metadata if this is not a stopped app
-        if (!isStopped) {
-            val packageInfo = PackageInfo().apply { this.packageName = packageName }
-            metadataManager.onPackageBackedUp(packageInfo, app.type.toBackupType(), app.size)
+            // record local metadata if this is not a stopped app
+            if (!isStopped) {
+                val packageInfo = PackageInfo().apply { this.packageName = packageName }
+                metadataManager.onPackageBackedUp(packageInfo, app.type.toBackupType(), app.size)
+            }
         }
     }
 

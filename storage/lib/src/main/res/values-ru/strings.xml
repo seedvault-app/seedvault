@@ -4,9 +4,7 @@
     <string name="content_add">Добавить</string>
     <string name="notification_restore_complete_title">%1$d из %2$d файлов восстановлены</string>
     <string name="notification_restore_title">Восстановление файлов…</string>
-    <string name="snapshots_empty">Резервные копии хранилища не найдены
-\n
-\nИзвините, но нет ничего, что можно было бы восстановить.</string>
+    <string name="snapshots_empty">Резервные копии хранилища не найдены \n \nИзвините, но нет ничего, что можно было бы восстановить.</string>
     <string name="snapshots_title">Доступные резервные копии хранилища</string>
     <string name="content_images">Фото и изображения</string>
     <string name="content_videos">Видео</string>

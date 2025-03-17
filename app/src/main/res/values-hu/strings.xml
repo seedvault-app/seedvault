@@ -34,7 +34,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> szabad</string>
     <string name="storage_fake_drive_summary">Be kell hogy legyen dugva</string>
     <string name="storage_fake_drive_title">USB flash meghajtó</string>
-    <string name="storage_fragment_warning">Személyek akik hozzáférnek a tárolási helyedhez meg tudhatják mely appokat használod, de nem férhetnek hozzá az app adataihoz.</string>
     <string name="storage_fragment_restore_title">Hol találhatóak a mentéseid\?</string>
     <string name="storage_fragment_backup_title">Válaszd ki a mentések tárolásának helyét</string>
     <string name="settings_backup_recovery_code_summary">Létező kód ellenőrzése vagy új generálása</string>

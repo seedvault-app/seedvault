@@ -56,8 +56,11 @@ internal class BackupRequester(
                 val i = Intent(context, StorageBackupService::class.java)
                 // this starts an app backup afterwards
                 i.putExtra(EXTRA_START_APP_BACKUP, appBackupEnabled)
+                Log.i(TAG, "Starting foreground service for file backup...")
+                Log.i(TAG, "  appBackupEnabled = $appBackupEnabled")
                 startForegroundService(context, i)
             } else if (appBackupEnabled) {
+                Log.i(TAG, "File backup disabled, starting only AppBackupWorker...")
                 AppBackupWorker.scheduleNow(context, reschedule)
             } else {
                 Log.d(TAG, "Neither files nor app backup enabled, do nothing.")
@@ -67,12 +70,10 @@ internal class BackupRequester(
 
     val isBackupEnabled: Boolean get() = backupManager.isBackupEnabled
 
-    private val packages = packageService.eligiblePackages
-    private val observer = NotificationBackupObserver(
-        context = context,
-        backupRequester = this,
-        requestedPackages = packages.size,
-    )
+    private val packages by lazy { packageService.eligiblePackages }
+    private val observer by lazy {
+        NotificationBackupObserver(context, this, packages.size)
+    }
 
     /**
      * The current package index.
@@ -89,6 +90,11 @@ internal class BackupRequester(
 
         return request(getNextChunk())
     }
+
+    /**
+     * Returns true, if there are more packages waiting to get backed up by calling [requestNext].
+     */
+    val hasNext: Boolean get() = packageIndex < packages.size
 
     /**
      * Backs up the next chunk of packages.

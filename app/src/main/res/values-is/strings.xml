@@ -26,7 +26,6 @@
 \nVinsamlegast veldu annan afritageymslustað sem býður upp á %s möppu.</string>
     <string name="restore_invalid_location_title">Engin öryggisafrit fundust</string>
     <string name="restore_skip">Ekki endurvekja</string>
-    <string name="restore_restore_set_times">Síðasta öryggisafrit %1$s · Fyrsta %2$s.</string>
     <string name="restore_choose_restore_set">Veldu öryggisafrit til að endurvekja</string>
     <string name="restore_title">Endurvekja úr öryggisafriti</string>
     <string name="notification_restore_error_action">Fjarlægja app</string>
@@ -73,7 +72,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laus</string>
     <string name="storage_fake_drive_summary">Þarf að vera í sambandi við rafmagn</string>
     <string name="storage_fake_drive_title">USB Flash drif</string>
-    <string name="storage_fragment_warning">Þeir sem hafa aðgang að geymslustað öryggisafrita þinna geta séð hvaða öpp þú notar en hafa ekkert aðgengi að gögnum appanna.</string>
     <string name="storage_fragment_restore_title">Hvar er öryggisafrit þín að finna\?</string>
     <string name="storage_fragment_backup_title">Velja vistunarstað öryggisafrita</string>
     <string name="settings_backup_now">Framkvæma öryggisafritun núna</string>

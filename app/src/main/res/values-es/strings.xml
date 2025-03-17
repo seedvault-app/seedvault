@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="storage_fragment_warning">Quienes tengan acceso a su ubicación de almacenamiento pueden ver qué aplicaciones utiliza, pero no podrán acceder a los datos de estas.</string>
     <string name="about_title">Acerca de</string>
     <string name="storage_internal_warning_use_anyway">Usar de todos modos</string>
     <string name="storage_internal_warning_title">Atención</string>
@@ -57,7 +56,6 @@
 \n
 \nPor favor, elija otra ubicación que contenga una carpeta %s.</string>
     <string name="restore_invalid_location_title">No se encontraron copias de seguridad</string>
-    <string name="restore_restore_set_times">Última copia de seguridad %1$s · Primera %2$s.</string>
     <string name="restore_choose_restore_set">Elija una copia de seguridad para restaurar</string>
     <string name="restore_title">Restaurar desde copia de seguridad</string>
     <string name="notification_restore_error_title">No se pudieron restaurar los datos por %1$s</string>
@@ -117,15 +115,14 @@
 \n
 \nPulse las aplicaciones fallidas para intentar instalarlas manualmente antes de continuar.</string>
     <string name="restore_installing_error_title">Algunas aplicaciones no instaladas</string>
-    <string name="backup_section_not_allowed">Aplicaciones que no permiten la copia de seguridad de los datos</string>
     <string name="backup_app_quota_exceeded">Se ha superado la cuota de copias de seguridad</string>
     <string name="backup_app_was_stopped">No se ha hecho una copia de seguridad porque no se ha utilizado recientemente</string>
-    <string name="backup_section_user">Aplicaciones instaladas</string>
+    <string name="backup_section_user">Aplicaciones</string>
     <string name="backup_contacts">Contactos locales</string>
     <string name="backup_call_log">Historial de llamadas</string>
     <string name="backup_settings">Ajustes del dispositivo</string>
     <string name="backup_sms">Mensajes de texto SMS</string>
-    <string name="backup_section_system">Aplicaciones del sistema</string>
+    <string name="backup_section_system">Datos del sistema</string>
     <string name="settings_backup_status_title">Estado de la copia de seguridad</string>
     <string name="settings_backup_recovery_code_summary">Verifique el código existente o genere uno nuevo</string>
     <string name="settings_backup_recovery_code">Código de recuperación</string>
@@ -138,7 +135,7 @@
     <string name="recovery_code_verification_error_title">Código de recuperación incorrecto</string>
     <string name="recovery_code_verification_ok_message">Su código es correcto y funcionará al restaurar su copia de seguridad.</string>
     <string name="recovery_code_verification_ok_title">Código de recuperación verificado</string>
-    <string name="recovery_code_recreated">Se ha creado un código de recuperación nuevo satisfactoriamente</string>
+    <string name="recovery_code_recreated">Se ha creado correctamente el nuevo código de recuperación. Saliendo…</string>
     <string name="recovery_code_verification_new_dialog_message">Generar un código nuevo hará que sus copias de seguridad existentes se vuelvan inaccesibles. Intentaremos eliminarlas si es posible.
 \n
 \n¿Está seguro de que quiere hacerlo\?</string>
@@ -146,11 +143,6 @@
     <string name="settings_backup_files_summary">Ninguno</string>
     <string name="settings_backup_storage_dialog_ok">Activar de todos modos</string>
     <string name="settings_expert_title">Opciones avanzadas</string>
-    <string name="settings_expert_quota_title">Cuota ilimitada de apps</string>
-    <string name="settings_expert_quota_summary">No imponga una limitación en el tamaño de las copias de seguridad de las apps.
-\n
-\nAdvertencia: Esto puede llenar su espacio de almacenamiento rápidamente. No es necesario para la mayoría de las aplicaciones.</string>
-    <string name="storage_fragment_warning_delete">Las copias de seguridad existentes en esta ubicación se eliminarán.</string>
     <string name="storage_check_fragment_patience">Esto puede llevar un tiempo…</string>
     <string name="recovery_code_auth_title">Vuelva a introducir su bloqueo de pantalla</string>
     <string name="recovery_code_auth_description">Introduzca las credenciales de su dispositivo para continuar</string>
@@ -199,13 +191,10 @@
     <string name="settings_backup_dialog_disable">Apagar de todos modos</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (No recomendado)</string>
     <string name="about_contributing_organizations_title">Organizaciones colaboradoras</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Instituto Calyx</a> para su uso en <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">Fondo NGI0 PET de NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org"> Calyx Institute</a>para su uso en<a href="https://calyxos.org">CalyxOS</a><a href="https://nlnet.nl/project/Seedvault/">Fondo PET NGI0 de NLnet</a><a href="https://nlnet.nl/project/SeedVault-Integrity/">Fondo fiduciario NGI0 de NLnet </a></string>
     <string name="about_contributor_headline">Colaboradores</string>
     <string name="about_contributor_content">En GitHub encontrará una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a>.</string>
     <string name="storage_user_selected_location_title">Ubicación elegida por el usuario</string>
-    <string name="settings_expert_d2d_title">Copias de seguridad de dispositivo a dispositivo</string>
-    <string name="settings_expert_d2d_summary">Esto obliga a realizar copias de seguridad para la mayoría de las aplicaciones, incluso cuando no las permiten. Esta en fase alpha, úselo bajo su propio riesgo.</string>
     <string name="notification_success_channel_title">Notificación exitosa</string>
     <string name="settings_backup_status_next_backup_usb">Las copias de seguridad se realizarán automáticamente después de conectar la unidad USB</string>
     <string name="settings_scheduling_frequency_3_days">Cada 3 días</string>
@@ -233,5 +222,48 @@
     <string name="storage_webdav_config_url_helper">Asegúrate de introducir aquí la URL completa. Por ejemplo, para Nextcloud, tiene la forma https://yourserver.com/remote.php/webdav</string>
     <string name="notification_space_error_title">No hay espacio suficiente para la copia de seguridad</string>
     <string name="notification_space_error_text">La ubicación de la copia de seguridad se está quedando sin espacio. Libere espacio para que se puedan realizar las copias de seguridad.</string>
-    <string name="restore_restore_set_size">Tamaño: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
+    <string name="restore_select_packages_all">Las siguientes aplicaciones</string>
+    <string name="backup_system_apps">Aplicaciones del sistema</string>
+    <string name="restore_select_packages">Seleccionar aplicaciones para restaurar</string>
+    <string name="restore_storage_selection_description">Se restaurarán los(el) archivo(s) seleccionado(s). Toca las carpetas para ver los(el) archivo(s) que contienen.</string>
+    <string name="first_start_text">¿Quieres restaurar tu dispositivo desde una copia de seguridad existente o iniciar una nueva copia de seguridad?</string>
+    <string name="setup_button">Iniciar una nueva</string>
+    <string name="notification_restore_channel_title">Notificación de restauración</string>
+    <string name="notification_restore_title">Restauración esta en ejecución</string>
+    <string name="settings_backup_app_check_summary">Asegúrese de que la copia de seguridad esté funcionando para la restauración</string>
+    <string name="settings_app_check_title">Verificar la integridad de la copia de seguridad de la aplicación</string>
+    <string name="settings_app_check_warning">Advertencia: La descarga de grandes cantidades de datos puede llevar mucho tiempo.</string>
+    <string name="settings_app_check_button">Comprobar copia de seguridad</string>
+    <string name="notification_init_text">Preparando datos de la copia de seguridad existentes para su reutilización…</string>
+    <string name="notification_failed_text">Se ha producido un error al ejecutar la copia de seguridad.</string>
+    <string name="notification_pruning_channel_title">Notificación de eliminación de copias de seguridad antiguas</string>
+    <string name="notification_pruning_title">Eliminando copias de seguridad antiguas…</string>
+    <string name="notification_checking_channel_title">Comprobación de la integridad de la copia de seguridad de la aplicación</string>
+    <string name="notification_checking_title">Comprobando las copias de seguridad de la aplicación…</string>
+    <string name="notification_checking_finished_title">Verificación de la integridad de la copia de seguridad de la aplicación</string>
+    <string name="notification_checking_finished_text">Se verificó correctamente %1$s a una velocidad media de %2$s.</string>
+    <string name="notification_checking_error_title">Se encontraron errores de copia de seguridad</string>
+    <string name="notification_checking_error_text">Toca para obtener más detalles. Comprobamos %1$s a una velocidad media de %2$s .</string>
+    <string name="notification_checking_action">Detalles</string>
+    <string name="backup_app_check_success_intro">Se han encontrado %1$d instantáneas y %2$d%% de sus datos (%3$s) se han verificado correctamente:</string>
+    <string name="backup_app_check_error_no_snapshots">No hemos podido encontrar ninguna copia de seguridad. Por favor, ejecute primero una copia de seguridad correcta y luego intente comprobar de nuevo.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Hemos encontrado %1$d instantáneas de copia de seguridad. Sin embargo, todas ellas estaban dañadas. Por favor, ejecute una copia de seguridad correcta e intente comprobarlo de nuevo.</string>
+    <string name="backup_app_check_error_no_result">Hemos perdido los resultados detallados. ¿Ha pasado mucho tiempo desde la comprobación? Inténtelo de nuevo.</string>
+    <string name="backup_app_stopped_button">Iniciar</string>
+    <string name="restore_restore_set_apps">Tiene datos de usuario para <xliff:g example="42" id="apps">%1$d</xliff:g> aplicaciones (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks">Contiene <xliff:g example="42" id="apps">%1$d</xliff:g> aplicaciones (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apps_no_size">Tiene datos del usuario en <xliff:g example="42" id="apps">%1$d</xliff:g> aplicaciones</string>
+    <string name="restore_restore_set_apks_no_size">Contiene <xliff:g example="42" id="apps">%1$d</xliff:g> aplicaciones</string>
+    <string name="restore_restore_set_can_not_get_restored">Esta copia de seguridad tiene algunos errores. Es posible que puedas restaurarla parcialmente.</string>
+    <string name="restore_recycle_backup_title">¿Reutilizar esta copia de seguridad?</string>
+    <string name="restore_recycle_backup_text">Puedes reutilizar la copia de seguridad \'%s\' que acabas de restaurar en este dispositivo. Esto hará que las nuevas copias de seguridad sean más rápidas y utilicen menos datos.\n\nSin embargo, tu antiguo dispositivo perderá el acceso a esta copia de seguridad. Si quieres mantener el acceso a tu antiguo dispositivo, puedes crear una nueva copia de seguridad en su lugar. Esto utilizará más datos que reutilizar la copia de seguridad existente.</string>
+    <string name="restore_recycle_backup_button_no">Crear una nueva copia de seguridad</string>
+    <string name="restore_recycle_backup_button_yes">Reutilizar copia de seguridad</string>
+    <string name="settings_backup_app_check_title">Comprobar integridad</string>
+    <string name="backup_app_check_success_disclaimer">Nota: no podemos verificar si las aplicaciones individuales incluyen todos sus datos de usuario en la copia de seguridad.</string>
+    <string name="settings_app_check_text2">Aquí puede ejecutar una comprobación única para verificar la copia de seguridad de su aplicación. Seleccione la cantidad de datos de la aplicación que deben descargarse para la comprobación. Cuanto más seleccione, más tiempo tardará, pero más fiable será la comprobación. Se ejecutará en segundo plano y mostrará una notificación una vez finalizada la comprobación.</string>
+    <string name="settings_app_check_text">Cada proceso de copia de seguridad comprobará automáticamente la integridad de la copia. Sin embargo, para ahorrar tiempo, los datos reales de la aplicación no se descargarán ni verificarán.</string>
+    <string name="backup_app_check_error_title">\@string/notification_checking_error_title</string>
+    <string name="backup_app_check_error_has_snapshots">Hemos encontrado %1$d instantáneas de copia de seguridad, algunas de ellas están corruptas o tienen errores. A continuación se muestran las copias de seguridad que se han podido restaurar.</string>
+    <string name="backup_app_stopped_no_intent">No se puede iniciar la aplicación</string>
 </resources>

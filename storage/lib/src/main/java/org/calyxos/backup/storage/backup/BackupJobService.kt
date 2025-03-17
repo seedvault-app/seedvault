@@ -42,7 +42,11 @@ public abstract class BackupJobService(private val serviceClass: Class<out Servi
                 .setPersisted(true)
             if (networkType != null) jobInfoBuilder.setRequiredNetworkType(networkType)
             val jobScheduler: JobScheduler = context.getSystemService(JobScheduler::class.java)
-            jobScheduler.schedule(jobInfoBuilder.build())
+            val result = jobScheduler.schedule(jobInfoBuilder.build())
+
+            val hours = periodMillis / 1000 / 60 / 60
+            Log.i(TAG, "Scheduled file backup every $hours hours: $result")
+            Log.i(TAG, "   (idle=$deviceIdle, charging=$charging, networkType=$networkType")
         }
 
         public fun isScheduled(context: Context): Boolean {

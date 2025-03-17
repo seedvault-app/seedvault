@@ -25,6 +25,7 @@ class App : Application() {
         override val backend: Backend get() = plugin
         override val isOnRemovableDrive: Boolean = false
         override val requiresNetwork: Boolean = false
+        override fun canDoBackupNow(): Boolean = true
     }
     val settingsManager: SettingsManager by lazy { SettingsManager(applicationContext) }
     val storageBackup: StorageBackup by lazy {

@@ -33,6 +33,7 @@ internal class SmallFileBackup(
     suspend fun backupFiles(
         files: List<ContentFile>,
         availableChunkIds: Set<String>,
+        wasAborted: () -> Boolean,
         backupObserver: BackupObserver?,
     ): BackupResult {
         val chunkIds = HashSet<String>()
@@ -66,6 +67,7 @@ internal class SmallFileBackup(
             } else true
         }
         changedFiles.windowed(2, 1, true).forEach { window ->
+            if (wasAborted()) throw IOException("Metered Network")
             val file = window[0]
             val result = try {
                 makeZipChunk(window, missingChunkIds)

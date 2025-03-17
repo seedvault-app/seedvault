@@ -46,9 +46,10 @@ public abstract class BackupService : Service() {
                 storageBackup.pruneOldBackups(backupObserver)
             }
             onBackupFinished(intent, success)
+            Log.d(TAG, "stopSelf($startId)")
             stopSelf(startId)
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     protected open fun onBackupFinished(intent: Intent, success: Boolean) {

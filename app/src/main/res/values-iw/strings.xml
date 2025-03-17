@@ -37,7 +37,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> פנויים</string>
     <string name="storage_fake_drive_summary">יש לחבר אותו</string>
     <string name="storage_fake_drive_title">כונן USB נייד</string>
-    <string name="storage_fragment_warning">אנשים עם גישה למיקום האחסון שלך יכולים להבין אילו יישומונים משמשים אותך אך לא יקבלו גישה לנתוני היישומונים.</string>
     <string name="storage_fragment_restore_title">איפה ניתן יהיה למצוא את הגיבויים שלך\?</string>
     <string name="storage_fragment_backup_title">לבחור היכן לאחסן את הגיבויים</string>
     <string name="settings_backup_now">לגבות כעת</string>
@@ -56,7 +55,6 @@
 \nנא לבחור במיקום אחר שמכיל תיקיית %s.</string>
     <string name="restore_invalid_location_title">לא נמצאו גיבויים</string>
     <string name="restore_skip">לא לשחזר</string>
-    <string name="restore_restore_set_times">גיבוי אחרון %1$s · ראשון %2$s.</string>
     <string name="restore_choose_restore_set">נא לבחור גיבוי לשחזור</string>
     <string name="restore_title">שחזור מגיבוי</string>
     <string name="notification_restore_error_action">הסרת יישומון</string>
@@ -116,14 +114,11 @@
     <string name="settings_backup_status_title">מצב גיבוי</string>
     <string name="settings_backup_files_summary">אין</string>
     <string name="settings_backup_recovery_code">קוד שחזור</string>
-    <string name="settings_expert_quota_title">מיכסה בלתי מוגבלת ליישומונים</string>
     <string name="settings_backup_storage_title">גיבוי הקבצים שלי</string>
     <string name="settings_backup_files_title">קבצים ותיקיות שיוכללו</string>
-    <string name="backup_section_not_allowed">יישומונים שלא מרשים גיבוי נתונים</string>
     <string name="restore_installing_tap_to_install">יש לגעת כדי להתקין</string>
     <string name="restore_restoring_error_title">לא ניתן לשחזר חלק מהיישומונים</string>
     <string name="about_version">גרסה: %s</string>
-    <string name="storage_fragment_warning_delete">גיבויים קיימים במקום הזה יימחקו.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">לא מותקן</string>
     <string name="storage_check_fragment_patience">עשוי לארוך זמן מה…</string>
     <string name="recovery_code_verification_ok_title">קוד השחזור אומת</string>
@@ -139,13 +134,10 @@
     <string name="restore_restoring_error_message">אפשר להתקין את היישומונים האלה ידנית מחדש והשחזור האוטומטי ינסה לשחזר את הנתונים שלהם (אם הוא מופעל).</string>
     <string name="settings_backup_recovery_code_summary">אימות קוד קיים או יצירת אחד חדש</string>
     <string name="restore_storage_skip">דילוג על שחזור קבצים</string>
-    <string name="settings_expert_quota_summary">לא לאכוף מגבלה על גודל גיבויי היישומונים.
-\n
-\nאזהרה: הגדרה זו עשויה לגרום למילוי מקום האחסון שלך במהירות. לא נחוץ לרוב היישומונים.</string>
-    <string name="recovery_code_recreated">קוד שחזור חדש נוצר בהצלחה</string>
+    <string name="recovery_code_recreated">קוד שחזור חדש נוצר בהצלחה. מסתיים…</string>
     <string name="restore_storage_choose_snapshot">נא לבחור גיבוי אחסון לשחזור (ניסיוני)</string>
     <string name="restore_storage_got_it">הבנתי</string>
-    <string name="backup_section_system">יישומוני מערכת</string>
+    <string name="backup_section_system">נתוני מערכת</string>
     <string name="backup_sms">מסרוני טקסט SMS</string>
     <string name="backup_app_not_yet_backed_up">בהמתנה לגיבוי…</string>
     <string name="backup_app_was_stopped">לא גובה כיוון שלא היה בשימוש לאחרונה</string>
@@ -154,7 +146,7 @@
     <string name="backup_settings">הגדרות מכשיר</string>
     <string name="backup_call_log">היסטוריית שיחות</string>
     <string name="backup_contacts">אנשי קשר מקומיים</string>
-    <string name="backup_section_user">יישומונים מותקנים</string>
+    <string name="backup_section_user">יישומונים</string>
     <string name="settings_backup_new_code_dialog_message">כדי להמשיך להשתמש בגיבויי היישומון, עליך לייצר קוד שחזור חדש.
 \n
 \nאנו מתנצלים על חוסר הנעימות.</string>
@@ -200,11 +192,56 @@
     <string name="about_contributing_organizations_title">ארגונים תורמים</string>
     <string name="about_contributor_headline">תורמים</string>
     <string name="about_contributor_content">את רשימת התורמים אפשר <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">לראות ב־GitHub</a>.</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">קרן NGI0 PET מבית NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">מכון Calyx</a> לשימוש ב־<a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">קרן NGI0 PET מבית NLnet</a></string>
     <string name="storage_user_selected_location_title">מקום לבחירת המשתמש</string>
-    <string name="settings_expert_d2d_title">גיבויי מכשיר למכשיר</string>
-    <string name="settings_expert_d2d_summary">כופה את גיבוי רוב היישומונים, אפילו אם הם מסרבים לזה. יכולת ניסיונית ראשית, נא להשתמש במשנה זהירות.</string>
     <string name="notification_success_channel_title">התראה על הצלחה</string>
     <string name="notification_success_text">%1$d מתוך %2$d יישומונים גובו (%3$s). למידע נוסף נא לגעת.</string>
+    <string name="restore_select_packages">בחירת יישומונים לשחזור</string>
+    <string name="backup_system_apps">יישומוני מערכת</string>
+    <string name="settings_backup_status_next_backup_usb">גיבויים יתרחשו אוטומטית בעת חיבור כונן ה־USB שלך</string>
+    <string name="settings_scheduling_frequency_3_days">כל 3 ימים</string>
+    <string name="settings_scheduling_frequency_title">תדירות גיבוי</string>
+    <string name="settings_scheduling_category_conditions_title">תנאים</string>
+    <string name="settings_scheduling_frequency_daily">יומית</string>
+    <string name="restore_select_packages_all">כל היישומונים הבאים</string>
+    <string name="notification_space_error_title">אין מספיק מקום לגיבוי</string>
+    <string name="notification_space_error_text">הנפח הפנוי במקור הגיבוי שלך אוזל. נא לפנות מקום כדי שאפשר יהיה להמשיך לגבות.</string>
+    <string name="notification_apk_not_backed_up">שמירת רשימת היישומונים שאין לנו איך לגבות.</string>
+    <string name="storage_webdav_option_title">ענן WebDAV (ניסיוני)</string>
+    <string name="storage_webdav_option_summary">גישה ישירה מובנית ל־WebDAV</string>
+    <string name="storage_webdav_config_url">כתובת WebDAV</string>
+    <string name="settings_backup_status_next_backup">הגיבוי הבא: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">הגיבוי הבא (משוערך): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">אם תנאי מולא</string>
+    <string name="settings_backup_scheduling_title">תזמון גיבוי</string>
+    <string name="settings_scheduling_frequency_12_hours">כל 12 שעות</string>
+    <string name="settings_scheduling_frequency_weekly">שבועית</string>
+    <string name="settings_scheduling_metered_title">לגבות בעת שימוש בתקשורת נתונים סלולרית</string>
+    <string name="settings_scheduling_charging_title">לגבות רק בזמן טעינה</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="storage_webdav_config_malformed_url">כתובת WebDAV שגויה</string>
+    <string name="storage_webdav_config_button">להשתמש בענן של WebDAV</string>
+    <string name="storage_webdav_config_pass">סיסמה</string>
+    <string name="storage_webdav_config_user">שם משתמש</string>
+    <string name="storage_webdav_config_url_helper">נא למלא כאן את הכתובת המלאה. למשל: ל־Nextcloud היא צריכה להיות בצורה https://yourserver.com/remote.php/webdav</string>
+    <string name="notification_apk_text">מתבצע גיבוי ה־APK של %s</string>
+    <string name="notification_checking_title">גיבויי היישומים נבדקים…</string>
+    <string name="settings_backup_app_check_title">בדיקת רציפות</string>
+    <string name="settings_app_check_text">כל תהליך גיבוי יבדוק את רציפות הגיבוי אוטומטית. עם זאת, כדי לחסוך זמן, נתוני היישומונים לא יימשכו ויאומתו בפועל.</string>
+    <string name="settings_backup_app_check_summary">לוודא שהגיבוי עובד בשחזור</string>
+    <string name="notification_checking_channel_title">בדיקת רציפות גיבוי יישומים</string>
+    <string name="notification_pruning_title">גיבויים ישנים נמחקים…</string>
+    <string name="notification_checking_error_title">נמצאו שגיאות גיבוי</string>
+    <string name="notification_restore_channel_title">שחזור התראה</string>
+    <string name="notification_restore_title">שחזור פעיל</string>
+    <string name="first_start_text">לשחזר את המכשיר שלך מגיבוי קיים או לפתוח גיבוי חדש?</string>
+    <string name="setup_button">התחלת חדש</string>
+    <string name="settings_app_check_title">אימות רציפות גיבוי יישומים</string>
+    <string name="settings_app_check_warning">אזהרה: הורדת כמות גדולה של נתונים יכולה לארוך זמן רב.</string>
+    <string name="settings_app_check_button">בדיקת הגיבוי</string>
+    <string name="notification_init_text">מתבצעת הכנה של נתוני גיבוי קיימים לשימוש חוזר…</string>
+    <string name="notification_failed_text">אירעה שגיאה במהלך הרצת הגיבוי.</string>
+    <string name="notification_pruning_channel_title">התראת הסרת גיבוי ישן</string>
+    <string name="notification_checking_finished_title">רציפות גיבוי היישומים עברה אימות</string>
+    <string name="notification_checking_finished_text">%1$s נבדק בהצלחה במהירות של %2$s.</string>
 </resources>

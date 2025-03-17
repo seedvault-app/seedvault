@@ -15,7 +15,8 @@
     <string name="notification_restore_channel_title">ストレージの復元</string>
     <string name="notification_restore_complete_title">%1$d のファイルのうち %2$d のファイルが復元されました</string>
     <string name="snapshots_title">利用可能なストレージのバックアップ</string>
-    <string name="snapshots_empty">ストレージのバックアップが見つかりません
-\n
-\n申し訳ありませんが、復元できるものはありません。</string>
+    <string name="snapshots_empty">ストレージのバックアップが見つかりません \n \n申し訳ありませんが、復元できるものはありません。</string>
+    <string name="content_options">オプション</string>
+    <string name="notification_restore_complete_errors">%1$d でエラーが発生しました</string>
+    <string name="notification_restore_complete_dups">%1$dが重複しています。</string>
 </resources>

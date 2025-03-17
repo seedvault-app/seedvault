@@ -11,6 +11,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.backup.storage.backup.Backup.Companion.VERSION
 import org.calyxos.backup.storage.crypto.StreamCrypto
@@ -18,6 +19,7 @@ import org.calyxos.backup.storage.db.ChunksCache
 import org.calyxos.backup.storage.getRandomString
 import org.calyxos.backup.storage.mockLog
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.FileBackupFileType.Blob
 import org.calyxos.seedvault.core.backends.IBackendManager
 import org.calyxos.seedvault.core.crypto.CoreCrypto.KEY_SIZE_BYTES
@@ -27,7 +29,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import kotlin.random.Random
+import kotlin.test.assertFailsWith
 
 internal class ChunkWriterTest {
 
@@ -77,33 +82,43 @@ internal class ChunkWriterTest {
         every { chunksCache.get(chunkId2) } returns null
         every { chunksCache.get(chunkId3) } returns null
 
-        // get the output streams for the chunks
-        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
-        coEvery { backend.save(Blob(androidId, chunkId2)) } returns chunk2Output
-        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
-
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
         every { streamCrypto.getAssociatedDataForChunk(chunkId2) } returns ad2
         every { streamCrypto.getAssociatedDataForChunk(chunkId3) } returns ad3
 
         // wrap output stream in crypto stream
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk1Output, ad1)
-        } returns chunk1Output
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk2Output, ad2)
-        } returns chunk2Output
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk3Output, ad3)
-        } returns chunk3Output
+        val streamSlot = slot<OutputStream>()
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad1) } answers {
+            streamSlot.captured
+        }
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad2) } answers {
+            streamSlot.captured
+        }
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad3) } answers {
+            streamSlot.captured
+        }
+
+        // save the chunks
+        val saverSlot = slot<BackendSaver>()
+        coEvery {
+            backend.save(Blob(androidId, chunkId1), capture(saverSlot))
+        } answers {
+            saverSlot.captured.save(chunk1Output)
+        }
+        coEvery { backend.save(Blob(androidId, chunkId2), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk2Output)
+        }
+        coEvery { backend.save(Blob(androidId, chunkId3), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk3Output)
+        }
 
         // insert chunks into cache after upload
-        every { chunksCache.insert(chunks[0].toCachedChunk()) } just Runs
-        every { chunksCache.insert(chunks[1].toCachedChunk()) } just Runs
-        every { chunksCache.insert(chunks[2].toCachedChunk()) } just Runs
+        every { chunksCache.insert(chunks[0].toCachedChunk(3)) } just Runs
+        every { chunksCache.insert(chunks[1].toCachedChunk(3)) } just Runs
+        every { chunksCache.insert(chunks[2].toCachedChunk(3)) } just Runs
 
-        chunkWriter.writeChunk(inputStream, chunks, emptyList())
+        chunkWriter.writeChunk(inputStream, chunks, emptyList()) { false }
 
         // check that version was written as the first byte
         outputStreams.forEach { outputStream ->
@@ -129,31 +144,36 @@ internal class ChunkWriterTest {
         val chunk3Output = ByteArrayOutputStream()
 
         // only first two chunks are cached (first chunk is missing from storage)
-        every { chunksCache.get(chunkId1) } returns chunks[0].toCachedChunk()
-        every { chunksCache.get(chunkId2) } returns chunks[1].toCachedChunk()
+        every { chunksCache.get(chunkId1) } returns chunks[0].toCachedChunk(1)
+        every { chunksCache.get(chunkId2) } returns chunks[1].toCachedChunk(2)
         every { chunksCache.get(chunkId3) } returns null
 
         // get and wrap the output stream for chunk that is missing
-        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(Blob(androidId, chunkId1), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk1Output)
+        }
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
+        val streamSlot = slot<OutputStream>()
         every {
-            streamCrypto.newEncryptingStream(streamKey, chunk1Output, bytes(34))
-        } returns chunk1Output
+            streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), bytes(34))
+        } answers {
+            streamSlot.captured
+        }
 
         // insert missing cached chunk into cache after upload
-        every { chunksCache.insert(chunks[0].toCachedChunk()) } just Runs
+        every { chunksCache.insert(chunks[0].toCachedChunk(3)) } just Runs
 
         // get and wrap the output stream for chunk that isn't cached
-        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
+        coEvery { backend.save(Blob(androidId, chunkId3), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk3Output)
+        }
         every { streamCrypto.getAssociatedDataForChunk(chunkId3) } returns ad3
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk3Output, bytes(34))
-        } returns chunk3Output
 
         // insert last not cached chunk into cache after upload
-        every { chunksCache.insert(chunks[2].toCachedChunk()) } just Runs
+        every { chunksCache.insert(chunks[2].toCachedChunk(3)) } just Runs
 
-        chunkWriter.writeChunk(inputStream, chunks, listOf(chunkId1))
+        chunkWriter.writeChunk(inputStream, chunks, listOf(chunkId1)) { false }
 
         // check that output matches chunk data
         assertEquals(VERSION, chunk1Output.toByteArray()[0])
@@ -183,30 +203,40 @@ internal class ChunkWriterTest {
 
         // first and last chunk are not cached
         every { chunksCache.get(chunkId1) } returns null
-        every { chunksCache.get(chunkId2) } returns chunks[1].toCachedChunk()
+        every { chunksCache.get(chunkId2) } returns chunks[1].toCachedChunk(1)
         every { chunksCache.get(chunkId3) } returns null
 
         // get the output streams for the chunks
-        coEvery { backend.save(Blob(androidId, chunkId1)) } returns chunk1Output
-        coEvery { backend.save(Blob(androidId, chunkId3)) } returns chunk3Output
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(Blob(androidId, chunkId1), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk1Output)
+        }
+        coEvery { backend.save(Blob(androidId, chunkId3), capture(saverSlot)) } answers {
+            saverSlot.captured.save(chunk3Output)
+        }
 
         // get AD
         every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
         every { streamCrypto.getAssociatedDataForChunk(chunkId3) } returns ad3
 
         // wrap output streams in crypto streams
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk1Output, ad1)
-        } returns chunk1Output
-        every {
-            streamCrypto.newEncryptingStream(streamKey, chunk3Output, ad3)
-        } returns chunk3Output
+        val streamSlot = slot<OutputStream>()
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad1) } answers {
+            streamSlot.captured
+        }
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad3) } answers {
+            streamSlot.captured
+        }
 
         // insert chunks into cache after upload
-        every { chunksCache.insert(chunks[0].toCachedChunk()) } just Runs
-        every { chunksCache.insert(chunks[2].toCachedChunk()) } just Runs
+        every {
+            chunksCache.insert(chunks[0].toCachedChunk(chunk1Bytes.size.toLong() + 1))
+        } just Runs
+        every {
+            chunksCache.insert(chunks[2].toCachedChunk(chunk3Bytes.size.toLong() + 1))
+        } just Runs
 
-        chunkWriter.writeChunk(inputStream, chunks, emptyList())
+        chunkWriter.writeChunk(inputStream, chunks, emptyList()) { false }
 
         // check that version and wrapped key was written as the first byte
         outputStreams.forEach { outputStream ->
@@ -224,6 +254,79 @@ internal class ChunkWriterTest {
             chunk3Bytes,
             chunk3Output.toByteArray().copyOfRange(1, 1 + chunks[2].plaintextSize.toInt())
         )
+    }
+
+    @Test
+    fun testChunkSavingCanBeRetried() = runBlocking {
+        val chunkBytes = Random.nextBytes(16 * 1024 * 1024)
+        val inputStream = ByteArrayInputStream(chunkBytes)
+        val chunks = listOf(
+            Chunk(chunkId1, 0, chunkBytes.size.toLong()),
+        )
+        val chunkOutput1 = ByteArrayOutputStream()
+        val chunkOutput2 = ByteArrayOutputStream()
+        val chunkOutput3 = ByteArrayOutputStream()
+
+        // chunk is not cached
+        every { chunksCache.get(chunkId1) } returns null
+
+        // get the output streams for the chunks
+        val saverSlot = slot<BackendSaver>()
+        var size1 = -1L
+        var size2 = -1L
+        coEvery { backend.save(Blob(androidId, chunkId1), capture(saverSlot)) } answers {
+            // saver saves 3 times
+            size1 = saverSlot.captured.save(chunkOutput1)
+            size2 = saverSlot.captured.save(chunkOutput2)
+            saverSlot.captured.save(chunkOutput3)
+        }
+
+        // wrap output streams in crypto streams
+        val streamSlot = slot<OutputStream>()
+        every { streamCrypto.getAssociatedDataForChunk(chunkId1) } returns ad1
+        every { streamCrypto.newEncryptingStream(streamKey, capture(streamSlot), ad1) } answers {
+            streamSlot.captured
+        }
+
+        // insert chunks into cache after upload
+        every {
+            chunksCache.insert(chunks[0].toCachedChunk(chunkBytes.size.toLong() + 1))
+        } just Runs
+
+        chunkWriter.writeChunk(inputStream, chunks, emptyList()) { false }
+
+        // check that output matches chunk data
+        assertEquals(1 + chunks[0].plaintextSize.toInt(), chunkOutput1.size())
+        assertEquals(1 + chunks[0].plaintextSize.toInt(), chunkOutput2.size())
+        assertEquals(1 + chunks[0].plaintextSize.toInt(), chunkOutput3.size())
+        assertArrayEquals(
+            chunkBytes,
+            chunkOutput1.toByteArray().copyOfRange(1, 1 + chunks[0].plaintextSize.toInt())
+        )
+        assertArrayEquals(
+            chunkBytes,
+            chunkOutput2.toByteArray().copyOfRange(1, 1 + chunks[0].plaintextSize.toInt())
+        )
+        assertArrayEquals(
+            chunkBytes,
+            chunkOutput3.toByteArray().copyOfRange(1, 1 + chunks[0].plaintextSize.toInt())
+        )
+        assertEquals(chunkOutput3.size().toLong(), size1)
+        assertEquals(chunkOutput3.size().toLong(), size2)
+    }
+
+    @Test
+    fun testAbort() = runBlocking {
+        val chunkBytes = Random.nextBytes(16 * 1024 * 1024)
+        val inputStream = ByteArrayInputStream(chunkBytes)
+        val chunks = listOf(
+            Chunk(chunkId1, 0, chunkBytes.size.toLong()),
+        )
+
+        val e = assertFailsWith<IOException> {
+            chunkWriter.writeChunk(inputStream, chunks, emptyList()) { true }
+        }
+        assertEquals("Metered Network", e.message)
     }
 
     private fun MockKMatcherScope.bytes(size: Int) = match<ByteArray> {

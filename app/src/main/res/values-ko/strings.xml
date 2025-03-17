@@ -99,7 +99,6 @@
     <string name="storage_fake_nextcloud_summary_unavailable">계정을 사용할 수 없습니다. 새 계정을 만들거나 비밀번호를 비활성화하세요.</string>
     <string name="storage_fake_nextcloud_summary_installed">여기를 눌러 계정 만들기</string>
     <string name="storage_fake_nextcloud_summary">여기를 눌러 설치</string>
-    <string name="storage_fragment_warning">사용자의 저장소에 접근 가능한 타인은 사용자가 쓰는 앱까지는 알 수 있지만 앱의 데이터에는 접근할 수 없습니다.</string>
     <string name="restore_restoring_error_message">앱을 다시 설치하면 (자동 복원 기능이 켜져 있는 경우) 자동으로 해당 앱의 데이터를 복원할 것입니다.</string>
     <string name="about_version">버전: %s</string>
     <string name="restore_restoring_error_title">복원하지 못한 앱</string>
@@ -108,8 +107,6 @@
 \n
 \n복원을 계속하려면 실패한 앱을 눌러 직접 앱을 설치하세요.</string>
     <string name="restore_installing_error_title">설치되지 않은 앱</string>
-    <string name="restore_restore_set_times">최근 백업 %1$s · 처음 백업 %2$s.</string>
-    <string name="backup_section_not_allowed">데이터 백업을 허용하지 않는 앱</string>
     <string name="backup_app_quota_exceeded">백업 한도 초과</string>
     <string name="backup_app_no_data">앱에 백업이 필요한 데이터가 없음</string>
     <string name="backup_app_was_stopped">최근에 사용하지 않아 백업되지 않음</string>
@@ -145,11 +142,7 @@
     <string name="settings_backup_storage_title">내 파일들을 백업</string>
     <string name="storage_fake_davx5_summary_unavailable">WebDAV 마운트 사용이 불가능 합니다. 하나를 설정하세요.</string>
     <string name="storage_fake_davx5_summary_installed">탭하여 WebDAV 마운트 설정하기</string>
-    <string name="settings_expert_quota_title">무제한 앱 할당량</string>
     <string name="recovery_code_auth_description">계속하려면 기기 암호를 입력하세요</string>
-    <string name="settings_expert_quota_summary">앱 백업 크기에 제한을 두지 않습니다.
-\n
-\n경고: 이렇게 하면 저장 공간을 빠르게 채울 수 있습니다. 대부분의 앱에는 필요하지 않습니다.</string>
     <string name="storage_check_fragment_patience">시간이 좀 걸릴 수 있습니다…</string>
     <string name="restore_skip_apps">앱 복원 넘기기</string>
     <string name="notification_error_no_main_key_title">백업 비활성화됨</string>
@@ -175,7 +168,6 @@
 \n
 \n불편함을 드려 죄송합니다.</string>
     <string name="settings_backup_new_code_code_dialog_ok">새로운 코드</string>
-    <string name="storage_fragment_warning_delete">이 위치에 있던 기존의 백업은 삭제됩니다.</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">설치되지 않음</string>
     <string name="backup_app_in_progress">백업 중</string>
     <string name="backup_app_success">백업됨</string>

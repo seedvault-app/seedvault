@@ -31,6 +31,7 @@ import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toHexString
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -65,8 +66,13 @@ internal class BackupCreationTest : BackupTest() {
     private val backupReceiver = BackupReceiver(blobCache, blobCreator, cryptoImpl)
     private val appBackupManager = mockk<AppBackupManager>()
     private val packageService = mockk<PackageService>()
-    private val snapshotCreator =
-        SnapshotCreator(context, clock, packageService, mockk(relaxed = true))
+    private val snapshotCreator = SnapshotCreator(
+        context = context,
+        clock = clock,
+        packageService = packageService,
+        metadataManager = mockk(relaxed = true),
+        backupInitializer = mockk(relaxed = true),
+    )
     private val notificationManager = mockk<BackupNotificationManager>()
     private val db = TestKvDbManager()
 
@@ -92,6 +98,7 @@ internal class BackupCreationTest : BackupTest() {
 
     init {
         every { backendManager.backend } returns backend
+        every { backendManager.canDoBackupNow() } returns true
         every { appBackupManager.snapshotCreator } returns snapshotCreator
         every { clock.time() } returns token
         every { packageInfo.applicationInfo?.loadLabel(any()) } returns packageName
@@ -126,7 +133,10 @@ internal class BackupCreationTest : BackupTest() {
 
         val handleSlot = slot<AppBackupFileType.Blob>()
         val outputStream = ByteArrayOutputStream()
-        coEvery { backend.save(capture(handleSlot)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(handleSlot), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertEquals(newRepoId, handleSlot.captured.repoId)
@@ -149,7 +159,10 @@ internal class BackupCreationTest : BackupTest() {
 
         val handleSlot = slot<AppBackupFileType.Blob>()
         val outputStream = ByteArrayOutputStream()
-        coEvery { backend.save(capture(handleSlot)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(handleSlot), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         assertEquals(TRANSPORT_OK, backup.finishBackup())
         assertEquals(newRepoId, handleSlot.captured.repoId)

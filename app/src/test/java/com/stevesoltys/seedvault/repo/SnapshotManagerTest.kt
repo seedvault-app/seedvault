@@ -18,6 +18,7 @@ import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.toByteArrayFromHex
 import org.calyxos.seedvault.core.toHexString
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -95,7 +96,10 @@ internal class SnapshotManagerTest : TransportTest() {
         }
         every { crypto.sha256(any()) } returns chunkId1.toByteArrayFromHex()
         every { crypto.repoId } returns repoId
-        coEvery { backend.save(snapshotHandle) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(snapshotHandle, capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         snapshotManager.saveSnapshot(snapshot)
 
@@ -188,7 +192,10 @@ internal class SnapshotManagerTest : TransportTest() {
         every { crypto.sha256(capture(bytes)) } answers {
             messageDigest.digest(bytes.captured)
         }
-        coEvery { backend.save(capture(snapshotHandle)) } returns outputStream
+        val saverSlot = slot<BackendSaver>()
+        coEvery { backend.save(capture(snapshotHandle), capture(saverSlot)) } answers {
+            saverSlot.captured.save(outputStream)
+        }
 
         snapshotManager.saveSnapshot(snapshot)
 
@@ -212,6 +219,59 @@ internal class SnapshotManagerTest : TransportTest() {
             assertEquals(1, snapshots.size)
             assertEquals(snapshot, snapshots[0])
         }
+    }
+
+    @Test
+    fun `test that saving can be re-tried`(@TempDir tmpDir: Path) = runBlocking {
+        val loader = Loader(crypto, backendManager) // need a real loader
+        val snapshotManager = getSnapshotManager(File(tmpDir.toString()), loader)
+
+        val bytes = slot<ByteArray>()
+        val outputStream1 = ByteArrayOutputStream()
+        val outputStream2 = ByteArrayOutputStream()
+        val outputStream3 = ByteArrayOutputStream()
+
+        every { crypto.getAdForVersion() } returns ad
+        every { crypto.newEncryptingStream(capture(passThroughOutputStream), ad) } answers {
+            passThroughOutputStream.captured // not really encrypting here
+        }
+        every { crypto.repoId } returns repoId
+        every { crypto.sha256(capture(bytes)) } answers {
+            messageDigest.digest(bytes.captured)
+        }
+        val saverSlot = slot<BackendSaver>()
+        var size1 = -1L
+        var size2 = -1L
+        coEvery { backend.save(capture(snapshotHandle), capture(saverSlot)) } answers {
+            // saver saves 3 times
+            size1 = saverSlot.captured.save(outputStream1)
+            size2 = saverSlot.captured.save(outputStream2)
+            saverSlot.captured.save(outputStream3)
+        }
+
+        snapshotManager.saveSnapshot(snapshot)
+
+        // check that data was saved to all streams
+        assertTrue(outputStream1.size() > 0)
+        assertTrue(outputStream2.size() > 0)
+        assertTrue(outputStream3.size() > 0)
+
+        assertEquals(size1, outputStream1.size().toLong())
+        assertEquals(size2, outputStream2.size().toLong())
+
+        // check that file content hash matches snapshot hash for each write
+        assertEquals(
+            messageDigest.digest(outputStream1.toByteArray()).toHexString(),
+            snapshotHandle.captured.hash,
+        )
+        assertEquals(
+            messageDigest.digest(outputStream2.toByteArray()).toHexString(),
+            snapshotHandle.captured.hash,
+        )
+        assertEquals(
+            messageDigest.digest(outputStream3.toByteArray()).toHexString(),
+            snapshotHandle.captured.hash,
+        )
     }
 
     @Test

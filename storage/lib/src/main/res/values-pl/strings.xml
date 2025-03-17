@@ -9,14 +9,35 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="content_audio">Pliki dźwiękowe</string>
     <string name="content_add">Dodaj</string>
-    <string name="notification_backup_title">Kopia zapasowa pamięci masowej</string>
+    <string name="notification_backup_title">Kopia zapasowa pliku</string>
     <string name="notification_backup_scanning">Skanowanie plików…</string>
     <string name="notification_restore_complete_title">%1$d z %2$d plików przywróconych</string>
     <string name="notification_restore_channel_title">Przywracanie pamięci masowej</string>
     <string name="snapshots_title">Dostępne kopie zapasowe pamięci masowej</string>
-    <string name="snapshots_empty">Nie znaleziono kopii zapasowych pamięci masowej
-\n
-\nPrzepraszamy, ale nie ma nic, co można przywrócić.</string>
+    <string name="snapshots_empty">Nie znaleziono kopii zapasowych pamięci masowej \n \nPrzepraszamy, ale nie ma nic, co można przywrócić.</string>
     <string name="snapshots_error">Błąd ładowania kopii zapasowych</string>
     <string name="content_options">Opcje</string>
+    <string name="select_files_title">Przejrzyj pliki do przywrócenia</string>
+    <string name="select_files_button_restore">Przywróć wybrane pliki</string>
+    <string name="select_files_number_of_files">%1$d plik(ów)</string>
+    <string name="notification_restore_complete_errors">%1$d plików miało błędy.</string>
+    <string name="notification_restore_complete_dups">%1$d plików było zduplikowanych.</string>
+    <string name="notification_check_channel_title">Sprawdzanie integralności kopii zapasowych plików</string>
+    <string name="notification_check_title">Sprawdzanie kopii zapasowych plików…</string>
+    <string name="notification_check_text">Pobieranie dostępnych danych kopii zapasowej.</string>
+    <string name="notification_check_finished_title">Zweryfikowano integralność kopii zapasowej pliku</string>
+    <string name="notification_check_finished_text">Pomyślnie sprawdzono %1$s ze średnią prędkością %2$s.</string>
+    <string name="notification_check_error_title">Znaleziono błędy kopii zapasowej pliku</string>
+    <string name="notification_check_error_text">Dotknij, aby uzyskać szczegółowe informacje. Sprawdziliśmy %1$s ze średnią prędkością %2$s.</string>
+    <string name="notification_check_action">Szczegóły</string>
+    <string name="check_success_intro">Znaleziono %1$d migawek i pomyślnie zweryfikowano %2$d%% ich danych (%3$s):</string>
+    <string name="check_error_title">\@string/notification_check_error_title</string>
+    <string name="check_error_no_snapshots">Nie znaleziono żadnej kopii zapasowej. Najpierw wykonaj udaną kopię zapasową, a następnie spróbuj sprawdzić ponownie.</string>
+    <string name="check_error_only_broken_snapshots">Znaleziono %1$d migawek kopii zapasowych. Wszystkie z nich były jednak uszkodzone. Wykonaj udaną kopię zapasową, a następnie spróbuj sprawdzić ponownie.</string>
+    <string name="check_error_has_snapshots">Znaleziono %1$d migawek kopii zapasowych, niektóre z nich są uszkodzone lub zawierają błędy. Poniżej znajdują się kopie zapasowe, które można (częściowo) przywrócić.</string>
+    <string name="check_error_no_result">Straciliśmy szczegółowe wyniki. Czy minęło dużo czasu od uruchomienia testu? Spróbuj uruchomić ponownie.</string>
+    <string name="check_error_snapshot">Ta kopia zapasowa zawiera błędy. Być może uda się ją częściowo przywrócić.</string>
+    <string name="check_files_title">Pliki w tej kopii zapasowej</string>
+    <string name="check_files_text">„%s” zawiera następujące pliki:</string>
+    <string name="check_files_error">Dane kopii zapasowej są uszkodzone. Plik nie zostanie w pełni przywrócony.</string>
 </resources>

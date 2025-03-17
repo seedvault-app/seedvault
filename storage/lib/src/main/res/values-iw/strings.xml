@@ -14,9 +14,12 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">שוחזרו %1$d מתוך %2$d קבצים</string>
     <string name="snapshots_title">גיבויי האחסון הזמינים</string>
-    <string name="snapshots_empty">לא נמצאו גיבויים לאחסון
-\n
-\nאין מה לשחזר, עמך סליחה.</string>
+    <string name="snapshots_empty">לא נמצאו גיבויים לאחסון \n \nאין מה לשחזר, עמך סליחה.</string>
     <string name="snapshots_error">שגיאה בטעינת תמונות המצב</string>
     <string name="content_options">אפשרויות</string>
+    <string name="notification_restore_complete_dups">%1$d קבצים היו כפולים.</string>
+    <string name="notification_restore_complete_errors">ב־%1$d קבצים היו שגיאות.</string>
+    <string name="select_files_number_of_files">%1$d קבצים</string>
+    <string name="select_files_title">סקירת קבצים לשחזור</string>
+    <string name="select_files_button_restore">שחזור הקבצים הנבחרים</string>
 </resources>

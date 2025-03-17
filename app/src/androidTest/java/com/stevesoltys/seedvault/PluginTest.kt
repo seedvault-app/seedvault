@@ -13,10 +13,9 @@ import com.stevesoltys.seedvault.backend.LegacyStoragePlugin
 import com.stevesoltys.seedvault.backend.saf.DocumentsProviderLegacyPlugin
 import com.stevesoltys.seedvault.backend.saf.DocumentsStorage
 import com.stevesoltys.seedvault.settings.SettingsManager
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.saf.SafBackend
 import org.junit.After
@@ -28,6 +27,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.OutputStream
+
+private const val root = ".SeedvaultPluginTest"
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -35,13 +37,13 @@ class PluginTest : KoinComponent {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val settingsManager: SettingsManager by inject()
-    private val mockedSettingsManager: SettingsManager = mockk()
     private val storage = DocumentsStorage(
         appContext = context,
         safStorage = settingsManager.getSafProperties() ?: error("No SAF storage"),
+        root = root,
     )
 
-    private val backend = SafBackend(context, storage.safStorage)
+    private val backend = SafBackend(context, storage.safStorage, root)
 
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = DocumentsProviderLegacyPlugin(context) {
@@ -54,9 +56,6 @@ class PluginTest : KoinComponent {
 
     @Before
     fun setup() = runBlocking {
-        every {
-            mockedSettingsManager.getSafProperties()
-        } returns settingsManager.getSafProperties()
         backend.removeAll()
     }
 
@@ -93,34 +92,26 @@ class PluginTest : KoinComponent {
         // no backups available initially
         assertEquals(0, backend.getAvailableBackupFileHandles().toList().size)
 
-        // prepare returned tokens requested when initializing device
-        every { mockedSettingsManager.token } returnsMany listOf(token, token + 1, token + 1)
-
         // write metadata (needed for backup to be recognized)
-        backend.save(LegacyAppBackupFile.Metadata(token))
-            .writeAndClose(getRandomByteArray())
+        backend.save(LegacyAppBackupFile.Metadata(token), getSaver(getRandomByteArray()))
 
         // one backup available now
         assertEquals(1, backend.getAvailableBackupFileHandles().toList().size)
 
         // initializing again (with another restore set) does add a restore set
-        backend.save(LegacyAppBackupFile.Metadata(token + 1))
-            .writeAndClose(getRandomByteArray())
+        backend.save(LegacyAppBackupFile.Metadata(token + 1), getSaver(getRandomByteArray()))
         assertEquals(2, backend.getAvailableBackupFileHandles().toList().size)
 
         // initializing again (without new restore set) doesn't change number of restore sets
-        backend.save(LegacyAppBackupFile.Metadata(token + 1))
-            .writeAndClose(getRandomByteArray())
+        backend.save(LegacyAppBackupFile.Metadata(token + 1), getSaver(getRandomByteArray()))
         assertEquals(2, backend.getAvailableBackupFileHandles().toList().size)
     }
 
     @Test
     fun testMetadataWriteRead() = runBlocking(Dispatchers.IO) {
-        every { mockedSettingsManager.token } returns token
-
         // write metadata
         val metadata = getRandomByteArray()
-        backend.save(LegacyAppBackupFile.Metadata(token)).writeAndClose(metadata)
+        backend.save(LegacyAppBackupFile.Metadata(token), getSaver(metadata))
 
         // get available backups, expect only one with our token and no error
         var availableBackups = backend.getAvailableBackupFileHandles().toList()
@@ -132,7 +123,7 @@ class PluginTest : KoinComponent {
         assertReadEquals(metadata, backend.load(backupHandle))
 
         // initializing again (without changing storage) keeps restore set with same token
-        backend.save(LegacyAppBackupFile.Metadata(token)).writeAndClose(metadata)
+        backend.save(LegacyAppBackupFile.Metadata(token), getSaver(metadata))
         availableBackups = backend.getAvailableBackupFileHandles().toList()
         assertEquals(1, availableBackups.size)
         backupHandle = availableBackups[0] as LegacyAppBackupFile.Metadata
@@ -144,13 +135,12 @@ class PluginTest : KoinComponent {
 
     @Test
     fun v0testApkWriteRead() = runBlocking {
-        // initialize storage with given token
-        initStorage(token)
-
         // write random bytes as APK
         val apk1 = getRandomByteArray(1337 * 1024)
-        backend.save(LegacyAppBackupFile.Blob(token, "${packageInfo.packageName}.apk"))
-            .writeAndClose(apk1)
+        backend.save(
+            LegacyAppBackupFile.Blob(token, "${packageInfo.packageName}.apk"),
+            getSaver(apk1)
+        )
 
         // assert that read APK bytes match what was written
         assertReadEquals(
@@ -162,8 +152,10 @@ class PluginTest : KoinComponent {
         val suffix2 = getRandomBase64(23)
         val apk2 = getRandomByteArray(23 * 1024 * 1024)
 
-        backend.save(LegacyAppBackupFile.Blob(token, "${packageInfo2.packageName}$suffix2.apk"))
-            .writeAndClose(apk2)
+        backend.save(
+            LegacyAppBackupFile.Blob(token, "${packageInfo2.packageName}$suffix2.apk"),
+            getSaver(apk2)
+        )
 
         // assert that read APK bytes match what was written
         assertReadEquals(
@@ -174,22 +166,19 @@ class PluginTest : KoinComponent {
 
     @Test
     fun testBackupRestore() = runBlocking {
-        // initialize storage with given token
-        initStorage(token)
-
         val name1 = getRandomBase64()
         val name2 = getRandomBase64()
 
         // write full backup data
         val data = getRandomByteArray(5 * 1024 * 1024)
-        backend.save(LegacyAppBackupFile.Blob(token, name1)).writeAndClose(data)
+        backend.save(LegacyAppBackupFile.Blob(token, name1), getSaver(data))
 
         // restore data matches backed up data
         assertReadEquals(data, backend.load(LegacyAppBackupFile.Blob(token, name1)))
 
         // write and check data for second package
         val data2 = getRandomByteArray(5 * 1024 * 1024)
-        backend.save(LegacyAppBackupFile.Blob(token, name2)).writeAndClose(data2)
+        backend.save(LegacyAppBackupFile.Blob(token, name2), getSaver(data2))
         assertReadEquals(data2, backend.load(LegacyAppBackupFile.Blob(token, name2)))
 
         // remove data of first package again and ensure that no more data is found
@@ -199,8 +188,14 @@ class PluginTest : KoinComponent {
         backend.remove(LegacyAppBackupFile.Blob(token, name2))
     }
 
-    private fun initStorage(token: Long) = runBlocking {
-        every { mockedSettingsManager.token } returns token
+    private fun getSaver(bytes: ByteArray) = object : BackendSaver {
+        override val size: Long = bytes.size.toLong()
+        override val sha256: String? = null
+
+        override fun save(outputStream: OutputStream): Long {
+            outputStream.write(bytes)
+            return size
+        }
     }
 
 }

@@ -65,7 +65,6 @@
     <string name="settings_backup_recovery_code_summary">Verifica el codi existent o genera\'n un de nou</string>
     <string name="settings_backup_storage_dialog_title">Funció experimental</string>
     <string name="settings_backup_storage_dialog_message">La còpia de seguretat de fitxers encara és experimental i podria no funcionar. No hi confieu per a dades importants.</string>
-    <string name="settings_expert_quota_title">Quota il·limitada d\'aplicacions</string>
     <string name="settings_expert_title">Configuració avançada</string>
     <string name="recovery_code_input_hint_5">Paraula 5</string>
     <string name="settings_backup_storage_battery_optimization">Avís: No hi ha còpies de seguretat automàtiques, perquè l\'optimització de la bateria està activa.</string>
@@ -74,12 +73,7 @@
 \n
 \nLamentem les molèsties.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Nou codi</string>
-    <string name="settings_expert_quota_summary">No imposis una limitació a la mida de les còpies de seguretat de les aplicacions.
-\n
-\nAvís: Això pot omplir la ubicació del teu emmagatzematge ràpidament. No cal per a la majoria d\'aplicacions.</string>
     <string name="storage_fragment_restore_title">On trobar les teves còpies de seguretat\?</string>
-    <string name="storage_fragment_warning">Qui tingui accés a la ubicació d\'emmagatzematge pot saber quines aplicacions utilitzes, però no tenir accés a les dades de les aplicacions.</string>
-    <string name="storage_fragment_warning_delete">Les còpies de seguretat existents en aquesta ubicació seran eliminades.</string>
     <string name="storage_fake_drive_summary">S\'ha d\'endollar</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> lliure</string>
     <string name="storage_fake_nextcloud_summary">Fes un toc per instal·lar</string>
@@ -123,7 +117,6 @@
     <string name="notification_restore_error_action">Desinstal·lar aplicació</string>
     <string name="notification_error_no_main_key_title">Còpia de seguretat deshabilitada</string>
     <string name="backup_section_system">Aplicacions del sistema</string>
-    <string name="backup_section_not_allowed">Aplicacions que no permeten la còpia de seguretat de dades</string>
     <string name="restore_title">Restaura des de la còpia de seguretat</string>
     <string name="backup_sms">Missatges de text SMS</string>
     <string name="backup_settings">Configuració del dispositiu</string>
@@ -140,7 +133,6 @@
     <string name="restore_app_quota_exceeded">S\'ha excedit la quota de còpia de seguretat</string>
     <string name="restore_app_not_installed">Aplicació no instal·lada</string>
     <string name="restore_choose_restore_set">Trieu una còpia de seguretat per restaurar</string>
-    <string name="restore_restore_set_times">Última còpia de seguretat %1$s · Primera%2$s.</string>
     <string name="restore_invalid_location_title">No s\'han trobat còpies de seguretat</string>
     <string name="restore_installing_packages">Reinstal·lant aplicacions</string>
     <string name="restore_installing_error_title">Algunes aplicacions no s\'han instal·lat</string>
@@ -196,8 +188,7 @@
     <string name="about_contributor_headline">Col·laboradors</string>
     <string name="about_contributor_content">Si us plau, vegeu GitHub per a una <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">llista de col·laboradors</a>.</string>
     <string name="about_contributing_organizations_title">Organitzacions col·laboradores</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> per ús a <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Finançat per NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> per ús a <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Finançat per NLnet</a></string>
     <string name="settings_expert_logcat_title">Desa el registre de l\'aplicació</string>
     <string name="settings_expert_logcat_summary">Els desenvolupadors poden diagnosticar errors amb aquests registres.
 \n

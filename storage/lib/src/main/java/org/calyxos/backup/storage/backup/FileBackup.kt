@@ -34,6 +34,7 @@ internal class FileBackup(
     suspend fun backupFiles(
         files: List<ContentFile>,
         availableChunkIds: Set<String>,
+        wasAborted: () -> Boolean,
         backupObserver: BackupObserver?,
     ): BackupResult {
         val chunkIds = HashSet<String>()
@@ -41,8 +42,9 @@ internal class FileBackup(
         val backupDocumentFiles = ArrayList<BackupDocumentFile>()
         var bytesWritten = 0L
         files.forEach { file ->
+            if (wasAborted()) throw IOException("Metered Network")
             val result = try {
-                backupFile(file, availableChunkIds)
+                backupFile(file, availableChunkIds, wasAborted)
             } catch (e: IOException) {
                 backupObserver?.onFileBackupError(file, "L")
                 Log.e(TAG, "Error backing up ${file.uri}", e)
@@ -79,6 +81,7 @@ internal class FileBackup(
     private suspend fun backupFile(
         file: ContentFile,
         availableChunkIds: Set<String>,
+        wasAborted: () -> Boolean,
     ): FileBackupResult {
         val cachedFile = filesCache.getByUri(file.uri)
         val missingChunkIds = cachedFile?.chunks?.minus(availableChunkIds) ?: emptyList()
@@ -92,7 +95,7 @@ internal class FileBackup(
             chunker.makeChunks(inputStream)
         }
         val chunkWriterResult = uri.openInputStream(contentResolver).use { inputStream ->
-            chunkWriter.writeChunk(inputStream, chunks, missingChunkIds)
+            chunkWriter.writeChunk(inputStream, chunks, missingChunkIds, wasAborted)
         }
 
         val chunkIds = chunks.map { it.id }

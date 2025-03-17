@@ -166,6 +166,8 @@ public class StorageBackup(
             backend.getCurrentBackupSnapshots(androidId).forEach {
                 val handle = FileBackupFileType.Snapshot(androidId, it.timestamp)
                 try {
+                    // TODO could we not only delete snapshots that we cannot decrypt here?
+                    //  ChunksCacheRepopulater should be able to restore refCounts
                     backend.remove(handle)
                 } catch (e: IOException) {
                     Log.e(TAG, "Error deleting snapshot $it", e)

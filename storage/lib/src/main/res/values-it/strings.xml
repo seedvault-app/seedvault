@@ -8,9 +8,7 @@
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d di %2$d file ripristinati</string>
     <string name="snapshots_title">Backup di archiviazione disponibili</string>
-    <string name="snapshots_empty">Nessun backup di archiviazione trovato
-\n
-\nCi dispiace, ma non c\'è nulla che può essere ripristinato.</string>
+    <string name="snapshots_empty">Nessun backup di archiviazione trovato \n \nCi dispiace, ma non c\'è nulla che può essere ripristinato.</string>
     <string name="content_images">Foto e immagini</string>
     <string name="content_videos">Video</string>
     <string name="content_audio">File audio</string>

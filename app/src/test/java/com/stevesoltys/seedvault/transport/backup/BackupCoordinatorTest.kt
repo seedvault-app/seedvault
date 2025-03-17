@@ -105,7 +105,6 @@ internal class BackupCoordinatorTest : BackupTest() {
     @Test
     fun `finish backup delegates to KV plugin if it has state`() = runBlocking {
         val snapshotCreator: SnapshotCreator = mockk()
-        val size = Random.nextLong()
 
         every { kv.hasState } returns true
         every { full.hasState } returns false
@@ -143,7 +142,6 @@ internal class BackupCoordinatorTest : BackupTest() {
     @Test
     fun `finish backup delegates to full plugin if it has state`() = runBlocking {
         val snapshotCreator: SnapshotCreator = mockk()
-        val size: Long = 2345
 
         every { kv.hasState } returns false
         every { full.hasState } returns true
@@ -166,6 +164,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `metadata does not get updated when no APK was backed up`() = runBlocking {
+        every { backendManager.canDoBackupNow() } returns true
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
@@ -176,6 +175,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `app exceeding quota gets cancelled and reason written to metadata`() = runBlocking {
+        every { backendManager.canDoBackupNow() } returns true
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
@@ -215,6 +215,7 @@ internal class BackupCoordinatorTest : BackupTest() {
 
     @Test
     fun `app with no data gets cancelled and reason written to metadata`() = runBlocking {
+        every { backendManager.canDoBackupNow() } returns true
         coEvery {
             full.performFullBackup(packageInfo, fileDescriptor, 0)
         } returns TRANSPORT_OK
@@ -248,7 +249,24 @@ internal class BackupCoordinatorTest : BackupTest() {
     }
 
     @Test
-    fun `not allowed apps get their APKs backed up after @pm@ backup`() = runBlocking {
+    fun `KV backup gets rejected on metered network`() = runBlocking {
+        every { backendManager.canDoBackupNow() } returns false
+
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            backup.performIncrementalBackup(packageInfo, fileDescriptor, 0),
+        )
+    }
+
+    @Test
+    fun `full backup gets rejected on metered network`() = runBlocking {
+        every { backendManager.canDoBackupNow() } returns false
+
+        assertEquals(TRANSPORT_PACKAGE_REJECTED, backup.checkFullBackupSize(23L))
+        assertEquals(
+            TRANSPORT_PACKAGE_REJECTED,
+            backup.performFullBackup(packageInfo, fileDescriptor, 0),
+        )
     }
 
 }

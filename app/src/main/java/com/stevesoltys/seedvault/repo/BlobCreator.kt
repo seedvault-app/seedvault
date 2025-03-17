@@ -8,7 +8,6 @@ package com.stevesoltys.seedvault.repo
 import androidx.annotation.WorkerThread
 import com.github.luben.zstd.ZstdOutputStream
 import com.google.protobuf.ByteString
-import com.stevesoltys.seedvault.MemoryLogger
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.crypto.Crypto
 import com.stevesoltys.seedvault.header.VERSION
@@ -16,11 +15,12 @@ import com.stevesoltys.seedvault.proto.Snapshot.Blob
 import com.stevesoltys.seedvault.proto.SnapshotKt.blob
 import com.stevesoltys.seedvault.repo.Padding.getPadTo
 import okio.Buffer
-import okio.buffer
-import okio.sink
 import org.calyxos.seedvault.chunker.Chunk
+import org.calyxos.seedvault.core.MemoryLogger
 import org.calyxos.seedvault.core.backends.AppBackupFileType
+import org.calyxos.seedvault.core.backends.BackendSaver
 import java.io.IOException
+import java.io.OutputStream
 import java.nio.ByteBuffer
 
 /**
@@ -68,14 +68,14 @@ internal class BlobCreator(
         // compute hash and save blob
         val sha256ByteString = buffer.sha256()
         val handle = AppBackupFileType.Blob(crypto.repoId, sha256ByteString.hex())
-        // TODO for later: implement a backend wrapper that handles retries for transient errors
-        val size = backendManager.backend.save(handle).use { outputStream ->
-            val outputBuffer = outputStream.sink().buffer()
-            val length = outputBuffer.writeAll(buffer)
-            // flushing is important here, otherwise data doesn't get fully written!
-            outputBuffer.flush()
-            length
+        val saver = object : BackendSaver {
+            override val size: Long get() = buffer.size
+            override val sha256: String get() = sha256ByteString.hex()
+            override fun save(outputStream: OutputStream): Long {
+                return buffer.copyTo(outputStream).size
+            }
         }
+        val size = backendManager.backend.save(handle, saver)
         buffer.clear()
         return blob {
             id = ByteString.copyFrom(sha256ByteString.asByteBuffer())

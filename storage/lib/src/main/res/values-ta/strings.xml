@@ -1,2 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_add">கூட்டு</string>
+    <string name="content_options">விருப்பங்கள்</string>
+    <string name="notification_restore_complete_dups">%1$d கோப்புகள் நகல்கள்.</string>
+    <string name="notification_restore_complete_errors">%1$d கோப்புகள் பிழைகள் இருந்தன.</string>
+    <string name="content_images">புகைப்படங்கள் மற்றும் படங்கள்</string>
+    <string name="content_videos">வீடியோக்கள்</string>
+    <string name="notification_backup_backup_files">கோப்புகளை காப்புப் பிரதி எடுக்கிறது…</string>
+    <string name="notification_prune">பழைய காப்புப்பிரதிகளை நீக்குதல்…</string>
+    <string name="notification_restore_info">%1$d/%2$d</string>
+    <string name="content_audio">ஆடியோ கோப்புகள்</string>
+    <string name="content_downloads">பதிவிறக்கங்கள்</string>
+    <string name="notification_backup_title">சேமிப்பக காப்புப்பிரதி</string>
+    <string name="notification_backup_scanning">கோப்புகளை ச்கேன் செய்வது…</string>
+    <string name="notification_restore_channel_title">சேமிப்பக மீட்டமை</string>
+    <string name="notification_restore_title">கோப்புகளை மீட்டமைத்தல்…</string>
+    <string name="notification_restore_complete_title">%2$d கோப்புகளின் %1$d மீட்டெடுக்கப்பட்டது</string>
+    <string name="snapshots_title">கிடைக்கும் சேமிப்பக காப்புப்பிரதிகள்</string>
+    <string name="snapshots_empty">சேமிப்பக காப்புப்பிரதிகள் எதுவும் கிடைக்கவில்லை\n\n மன்னிக்கவும், ஆனால் மீட்டெடுக்க எதுவும் இல்லை.</string>
+    <string name="snapshots_error">ச்னாப்சாட்களை ஏற்றுவதில் பிழை</string>
+    <string name="select_files_title">மீட்டெடுப்பதற்கான கோப்புகளை மதிப்பாய்வு செய்யவும்</string>
+    <string name="select_files_number_of_files">%1$d கோப்பு (கள்)</string>
+    <string name="select_files_button_restore">தேர்ந்தெடுக்கப்பட்ட கோப்புகளை மீட்டெடுங்கள்</string>
+</resources>

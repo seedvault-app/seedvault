@@ -7,6 +7,7 @@ package org.calyxos.seedvault.core.backends
 
 import androidx.annotation.VisibleForTesting
 import org.calyxos.seedvault.core.toHexString
+import java.io.OutputStream
 import kotlin.random.Random
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -15,6 +16,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @VisibleForTesting
+@Suppress("BlockingMethodInNonBlockingContext")
 public abstract class BackendTest {
 
     public abstract val backend: Backend
@@ -26,13 +28,8 @@ public abstract class BackendTest {
         val now = System.currentTimeMillis()
         val bytes1 = Random.nextBytes(1337)
         val bytes2 = Random.nextBytes(1337 * 8)
-        backend.save(LegacyAppBackupFile.Metadata(now)).use {
-            it.write(bytes1)
-        }
-
-        backend.save(FileBackupFileType.Snapshot(androidId, now)).use {
-            it.write(bytes2)
-        }
+        backend.save(LegacyAppBackupFile.Metadata(now), getSaver(bytes1))
+        backend.save(FileBackupFileType.Snapshot(androidId, now), getSaver(bytes2))
 
         var metadata: LegacyAppBackupFile.Metadata? = null
         var fileSnapshot: FileBackupFileType.Snapshot? = null
@@ -58,9 +55,7 @@ public abstract class BackendTest {
         val blobName = Random.nextBytes(32).toHexString()
         var blob: FileBackupFileType.Blob? = null
         val bytes3 = Random.nextBytes(1337 * 16)
-        backend.save(FileBackupFileType.Blob(androidId, blobName)).use {
-            it.write(bytes3)
-        }
+        backend.save(FileBackupFileType.Blob(androidId, blobName), getSaver(bytes3))
         backend.list(
             null,
             FileBackupFileType.Snapshot::class,
@@ -91,9 +86,7 @@ public abstract class BackendTest {
 
         val bytes4 = Random.nextBytes(1337)
         val bytes5 = Random.nextBytes(1337 * 8)
-        backend.save(AppBackupFileType.Snapshot(repoId, snapshotId)).use {
-            it.write(bytes4)
-        }
+        backend.save(AppBackupFileType.Snapshot(repoId, snapshotId), getSaver(bytes4))
 
         var appSnapshot: AppBackupFileType.Snapshot? = null
         backend.list(
@@ -108,9 +101,7 @@ public abstract class BackendTest {
         assertNotNull(appSnapshot)
         assertContentEquals(bytes4, backend.load(appSnapshot as FileHandle).readAllBytes())
 
-        backend.save(AppBackupFileType.Blob(repoId, blobId)).use {
-            it.write(bytes5)
-        }
+        backend.save(AppBackupFileType.Blob(repoId, blobId), getSaver(bytes5))
 
         var blobHandle: AppBackupFileType.Blob? = null
         backend.list(
@@ -151,9 +142,7 @@ public abstract class BackendTest {
 
         backend.remove(blob)
         try {
-            backend.save(blob).use {
-                it.write(bytes)
-            }
+            backend.save(blob, getSaver(bytes))
             assertContentEquals(bytes, backend.load(blob as FileHandle).readAllBytes())
         } finally {
             backend.remove(blob)
@@ -170,12 +159,20 @@ public abstract class BackendTest {
         val blob = AppBackupFileType.Blob(repoId, Random.nextBytes(32).toHexString())
         val bytes = Random.nextBytes(2342)
         try {
-            backend.save(blob).use {
-                it.write(bytes)
-            }
+            backend.save(blob, getSaver(bytes))
             assertContentEquals(bytes, backend.load(blob as FileHandle).readAllBytes())
         } finally {
             backend.remove(blob)
+        }
+    }
+
+    private fun getSaver(bytes: ByteArray) = object : BackendSaver {
+        override val size: Long = bytes.size.toLong()
+        override val sha256: String? = null
+
+        override fun save(outputStream: OutputStream): Long {
+            outputStream.write(bytes)
+            return size
         }
     }
 

@@ -4,60 +4,53 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> вільно</string>
     <string name="storage_fake_drive_summary">Потрібно під\'єднати</string>
     <string name="storage_fake_drive_title">USB-накопичувач</string>
-    <string name="storage_fragment_warning">Люди, які мають доступ до вашого сховища, можуть дізнатися, які застосунки ви використовуєте, але не отримають доступу до даних застосунків.</string>
     <string name="storage_fragment_restore_title">Де знайти резервні копії\?</string>
     <string name="storage_fragment_backup_title">Вибір місця зберігання резервних копій</string>
     <string name="settings_backup_recovery_code_summary">Перевірка наявного коду або створення нового</string>
     <string name="settings_backup_recovery_code">Код відновлення</string>
     <string name="settings_backup_now">Створити резервну копію зараз</string>
-    <string name="settings_backup_exclude_apps">Виключити застосунки</string>
+    <string name="settings_backup_exclude_apps">Виключити програми</string>
     <string name="settings_backup_status_summary">Остання резервна копія: %1$s</string>
     <string name="settings_backup_status_title">Стан резервного копіювання</string>
-    <string name="settings_backup_apk_dialog_disable">Вимкнути резервне копіювання застосунків</string>
+    <string name="settings_backup_apk_dialog_disable">Вимкнути резервне копіювання програм</string>
     <string name="settings_backup_apk_dialog_cancel">Скасувати</string>
-    <string name="settings_backup_apk_dialog_message">При вимкненому резервному копіюванні застосунків як і раніше будуть виконуватися резервні копії даних застосунків. Однак їх не буде відновлено автоматично.
-\n
-\nВам потрібно буде встановити всі свої застосунки вручну при увімкненому \"автоматичному відновленні\".</string>
-    <string name="settings_backup_apk_dialog_title">Дійсно вимкнути резервне копіювання застосунків\?</string>
-    <string name="settings_backup_apk_summary">Зробіть резервну копію самих застосунків. В іншому випадку буде виконано резервне копіювання тільки даних застосунків.</string>
-    <string name="settings_backup_apk_title">Резервне копіювання застосунків</string>
-    <string name="settings_category_app_data_backup">Резервне копіювання даних застосунків</string>
+    <string name="settings_backup_apk_dialog_message">При вимкненому резервному копіюванні програм як і раніше будуть виконуватися резервні копії даних програм. Однак їх не буде відновлено автоматично.\n\nВам потрібно буде встановити всі свої програми вручну при увімкненому \"автоматичному відновленні\".</string>
+    <string name="settings_backup_apk_dialog_title">Дійсно вимкнути резервне копіювання програм?</string>
+    <string name="settings_backup_apk_summary">Зробіть резервну копію самих програм. В іншому випадку буде виконано резервне копіювання тільки даних програм.</string>
+    <string name="settings_backup_apk_title">Резервне копіювання програм</string>
+    <string name="settings_category_app_data_backup">Резервне копіювання даних програм</string>
     <string name="settings_auto_restore_summary_usb">Примітка: Ваш %1$s повинен бути під\'єднаний до електромережі, щоб це працювало.</string>
-    <string name="settings_auto_restore_summary">При перевстановленні застосунків відновіть резервні копії налаштувань і даних.</string>
+    <string name="settings_auto_restore_summary">При перевстановленні програм відновіть резервні копії налаштувань і даних.</string>
     <string name="settings_auto_restore_title">Автоматичне відновлення</string>
-    <string name="settings_info">Усі резервні копії на вашому телефоні зашифровані. Для відновлення з резервної копії вам знадобиться код відновлення з 12 слів.</string>
+    <string name="settings_info">Усі резервні копії на Вашому телефоні зашифровані. Для відновлення з резервної копії Вам знадобиться код відновлення з 12 слів.</string>
     <string name="settings_backup_last_backup_never">Ніколи</string>
     <string name="settings_backup_location_internal">Внутрішня пам\'ять</string>
     <string name="settings_backup_location_none">Жодного</string>
     <string name="settings_backup_location">Розташування резервної копії</string>
-    <string name="settings_backup">Резервне копіювання моїх застосунків</string>
+    <string name="settings_backup">Резервне копіювання моїх програм</string>
     <string name="restore_backup_button">Відновлення резервної копії</string>
     <string name="current_destination_string">Стан і налаштування резервного копіювання</string>
     <string name="data_management_label">Резервне копіювання Seedvault</string>
     <string name="backup">Резервна копія</string>
     <string name="about_version">Версія: %s</string>
-    <string name="about_summary">Застосунок для резервного копіювання, що використовує внутрішній API резервного копіювання Android. Це вільне програмне забезпечення, випущене під ліцензією Apache 2.
-\n
-\nЯк і все програмне забезпечення, Seedvault може містити помилки або вразливості.</string>
+    <string name="about_summary">Програма резервного копіювання, яка використовує внутрішній API резервного копіювання Android. Це безкоштовне програмне забезпечення, випущене за ліцензією Apache 2. \n\nЯк і будь-яке інше програмне забезпечення, Seedvault може містити помилки або вразливості.</string>
     <string name="about_title">Про</string>
     <string name="storage_internal_warning_use_anyway">Однаково використовувати</string>
     <string name="storage_internal_warning_choose_other">Обрати інше</string>
-    <string name="storage_internal_warning_message">Ви вибрали карту пам\'яті для резервної копії. Це буде недоступно, якщо ваш телефон загублений або зламаний.</string>
+    <string name="storage_internal_warning_message">Ви вибрали карту пам\'яті для резервної копії. Це буде недоступно, якщо Ваш телефон загублений або зламаний.</string>
     <string name="storage_internal_warning_title">Попередження</string>
     <string name="restore_finished_button">Готово</string>
     <string name="restore_finished_error">Під час відновлення резервної копії сталася помилка.</string>
     <string name="restore_finished_success">Відновлення завершено</string>
     <string name="restore_magic_package">Менеджер системних пакетів</string>
-    <string name="restore_restoring_error_message">Ви можете повторно встановити ці застосунки вручну, і автоматичне відновлення спробує відновити їх дані (якщо це увімкнено).</string>
-    <string name="restore_restoring_error_title">Не вдалося відновити деякі застосунки</string>
+    <string name="restore_restoring_error_message">Ви можете повторно встановити ці програми вручну, і автоматичне відновлення спробує відновити їх дані (якщо це увімкнено).</string>
+    <string name="restore_restoring_error_title">Не вдалося відновити деякі програми</string>
     <string name="restore_restoring">Відновлення резервної копії</string>
     <string name="restore_next">Далі</string>
     <string name="restore_installing_tap_to_install">Торкніться, щоб установити</string>
-    <string name="restore_installing_error_message">Дані можуть бути відновлені, якщо застосунок установлено.
-\n
-\nНатисніть на застосунок, щоб установити вручну перед тим як продовжити.</string>
-    <string name="restore_installing_error_title">Деякі застосунки не встановлено</string>
-    <string name="restore_installing_packages">Перевстановлення застосунків</string>
+    <string name="restore_installing_error_message">Дані можуть бути відновлені, коли програма встановлена.\n\nНатисніть на програму, щоб установити її вручну перед продовженням.</string>
+    <string name="restore_installing_error_title">Деякі програми не встановлено</string>
+    <string name="restore_installing_packages">Перевстановлення програм</string>
     <string name="restore_set_empty_result">За цим розташуванням не знайдено відповідних резервних копій.
 \n
 \nШвидше за все, це пов\'язано з неправильним кодом відновлення або помилкою сховища.</string>
@@ -67,27 +60,25 @@
 \nБудь ласка, виберіть інше розташування, що містить каталог %s.</string>
     <string name="restore_invalid_location_title">Резервні копії не знайдено</string>
     <string name="restore_skip">Не відновлювати</string>
-    <string name="restore_restore_set_times">Остання резервна копія %1$s · Перша %2$s.</string>
     <string name="restore_choose_restore_set">Виберіть резервну копію для відновлення</string>
     <string name="restore_title">Відновити з резервної копії</string>
-    <string name="backup_section_not_allowed">Застосунки, які забороняють резервне копіювання</string>
-    <string name="restore_app_not_installed">Застосунок не встановлено</string>
+    <string name="restore_app_not_installed">Програма не встановлена</string>
     <string name="restore_app_quota_exceeded">Перевищено ліміт резервного копіювання</string>
     <string name="backup_app_quota_exceeded">Перевищено ліміт резервного копіювання</string>
-    <string name="restore_app_not_allowed">Застосунок не дозволяє резервне копіювання</string>
-    <string name="backup_app_no_data">Застосунок повідомив про відсутність даних для резервного копіювання</string>
-    <string name="restore_app_was_stopped">Резервна копія не збережена, оскільки застосунок давно не використовувався</string>
-    <string name="backup_app_was_stopped">Резервна копія не збережена, оскільки застосунок давно не використовувався</string>
+    <string name="restore_app_not_allowed">Програма не дозволяє резервне копіювання</string>
+    <string name="backup_app_no_data">Програма повідомила про відсутність даних для резервного копіювання</string>
+    <string name="restore_app_was_stopped">Резервна копія не була створена, оскільки програма давно не використовувалася</string>
+    <string name="backup_app_was_stopped">Резервна копія не збережена, оскільки програма останнім часом не використовувалася</string>
     <string name="restore_app_not_yet_backed_up">Ще не було зроблено резервну копію</string>
     <string name="backup_app_not_yet_backed_up">Очікування резервного копіювання…</string>
-    <string name="backup_section_user">Установлені застосунки</string>
+    <string name="backup_section_user">Програми</string>
     <string name="backup_contacts">Контакти на пристрої</string>
     <string name="backup_call_log">Історія дзвінків</string>
     <string name="backup_settings">Налаштування пристрою</string>
     <string name="backup_sms">SMS-повідомлення</string>
-    <string name="backup_section_system">Системні застосунки</string>
-    <string name="notification_restore_error_action">Видалити застосунок</string>
-    <string name="notification_restore_error_text">Підключіть %1$s перед установленням застосунку, щоб відновити його дані з резервної копії.</string>
+    <string name="backup_section_system">Системні дані</string>
+    <string name="notification_restore_error_action">Видалити програму</string>
+    <string name="notification_restore_error_text">Під\'єднайте %1$s перед установкою програми, щоб відновити її дані з резервної копії.</string>
     <string name="notification_restore_error_title">Не вдалося відновити дані для %1$s</string>
     <string name="notification_restore_error_channel_title">Помилка автоматичного відновлення флеш-накопичувача</string>
     <string name="notification_error_action">Виправити</string>
@@ -95,21 +86,19 @@
     <string name="notification_error_title">Помилка резервного копіювання</string>
     <string name="notification_error_channel_title">Сповіщення про помилку</string>
     <string name="notification_failed_title">Не вдалося виконати резервне копіювання</string>
-    <string name="notification_success_text">Резервне копіювання %1$d з %2$d застосунків виконано (%3$s). Натисніть, щоб дізнатися більше.</string>
+    <string name="notification_success_text">Резервне копіювання %1$d з %2$d програм виконано (%3$s). Натисніть, щоб дізнатися більше.</string>
     <string name="notification_success_title">Резервне копіювання завершено</string>
     <string name="notification_backup_already_running">Резервне копіювання вже виконується</string>
     <string name="notification_title">Резервне копіювання запущено</string>
     <string name="notification_channel_title">Сповіщення про резервне копіювання</string>
-    <string name="recovery_code_recreated">Новий код відновлення успішно створено</string>
+    <string name="recovery_code_recreated">Новий код відновлення успішно створено. Вихід…</string>
     <string name="recovery_code_verification_new_dialog_message">Утворення нового коду зробить наявні резервні копії недоступними. Ми спробуємо видалити їх, якщо це можливо.
 \n
 \nВи дійсно бажаєте це зробити\?</string>
     <string name="recovery_code_verification_new_dialog_title">Зачекайте одну секунду…</string>
-    <string name="recovery_code_verification_generate_new">Утворити новий код</string>
+    <string name="recovery_code_verification_generate_new">Створити новий код</string>
     <string name="recovery_code_verification_try_again">Спробувати ще раз</string>
-    <string name="recovery_code_verification_error_message">Уведено неправильний код відновлення. Будь ласка, спробуйте ще раз!
-\n
-\nЯкщо ви втратили код, натисніть кнопку \"Утворити новий код\" нижче.</string>
+    <string name="recovery_code_verification_error_message">Уведено неправильний код відновлення. Будь ласка, спробуйте ще раз!\n\nЯкщо Ви втратили свій код, натисніть нижче кнопку \"Створити новий код\".</string>
     <string name="recovery_code_verification_error_title">Неправильний код відновлення</string>
     <string name="recovery_code_verification_ok_message">Ваш код правильний і буде працювати для відновлення резервної копії.</string>
     <string name="recovery_code_verification_ok_title">Код відновлення перевірено</string>
@@ -129,8 +118,8 @@
     <string name="recovery_code_input_hint_2">Слово 2</string>
     <string name="recovery_code_input_hint_1">Слово 1</string>
     <string name="recovery_code_done_button">Перевірити</string>
-    <string name="recovery_code_input_intro">Введіть свій код відновлення з 12 слів, який ви записали під час налаштування резервних копій.</string>
-    <string name="recovery_code_confirm_intro">Уведіть код відновлення з 12 слів, щоб переконатися, що він буде працювати, коли вам це потрібно.</string>
+    <string name="recovery_code_input_intro">Введіть свій код відновлення з 12 слів, який Ви записали під час налаштування резервних копій.</string>
+    <string name="recovery_code_confirm_intro">Уведіть код відновлення з 12 слів, щоб переконатися, що він буде працювати, коли Вам це знадобиться.</string>
     <string name="recovery_code_confirm_button">Підтвердити код</string>
     <string name="recovery_code_write_it_down">Запишіть його на папері прямо зараз!</string>
     <string name="recovery_code_12_word_intro">Щоб відновити резервні копії даних, потрібен код відновлення з 12 слів.</string>
@@ -144,37 +133,33 @@
     <string name="storage_fake_nextcloud_summary_installed">Торкніться, щоб налаштувати обліковий запис</string>
     <string name="backup_app_success">Резервне копіювання успішне</string>
     <string name="backup_app_warning">Попередження про резервне копіювання</string>
-    <string name="restore_skip_apps">Пропустити відновлення застосунків</string>
+    <string name="restore_skip_apps">Пропустити відновлення програм</string>
     <string name="restore_app_status_installing">Повторне встановлення</string>
     <string name="restore_app_status_installed">Перевстановлено</string>
     <string name="restore_app_status_install_error">Не вдалося встановити</string>
     <string name="restore_app_status_restored">Дані відновлено</string>
     <string name="restore_app_status_failed">Не вдалося відновити</string>
     <string name="restore_app_status_warning">Попередження про відновлення</string>
-    <string name="error_no_store">Помилка: Магазин застосунків не встановлено</string>
+    <string name="error_no_store">Помилка: Магазин програм не встановлено</string>
     <string name="restore_storage_skip">Пропустити відновлення файлів</string>
     <string name="restore_storage_in_progress_title">Файли відновлюються…</string>
     <string name="restore_storage_got_it">Зрозумів</string>
     <string name="settings_backup_storage_title">Резервне копіювання моїх файлів</string>
     <string name="settings_backup_files_title">Включно з файлами та папками</string>
     <string name="settings_backup_files_summary">Жодного</string>
-    <string name="settings_category_apps">Резервне копіювання застосунків</string>
-    <string name="settings_backup_storage_dialog_title">Експериментальна функція</string>
-    <string name="settings_expert_quota_title">Необмежена квота застосунків</string>
+    <string name="settings_category_apps">Резервне копіювання програм</string>
+    <string name="settings_backup_storage_dialog_title">Бета функція</string>
     <string name="settings_backup_storage_dialog_ok">Все одно увімкнути</string>
     <string name="settings_expert_title">Налаштування експерта</string>
     <string name="settings_backup_storage_battery_optimization">Попередження: Немає автоматичного резервного копіювання, оскільки активна оптимізація акумулятора.</string>
     <string name="settings_backup_new_code_dialog_title">Потрібен новий код відновлення</string>
-    <string name="settings_backup_new_code_dialog_message">Щоб продовжувати використовувати резервне копіювання застосунків, вам потрібно створити новий код відновлення.
-\n
-\nПросимо вибачення за незручності.</string>
+    <string name="settings_backup_new_code_dialog_message">Щоб продовжувати використовувати резервне копіювання програм, Вам потрібно створити новий код відновлення.\n\nПросимо вибачення за незручності.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Новий код</string>
-    <string name="settings_expert_logcat_title">Зберегти журнал застосунка</string>
+    <string name="settings_expert_logcat_title">Зберегти журнал програми</string>
     <string name="settings_expert_logcat_summary">Розробники можуть діагностувати помилки за допомогою цих журналів.
 \n
 \nПопередження: Файл журналу може містити особисту інформацію. Перегляньте до та видаліть після надання доступу!</string>
-    <string name="settings_expert_logcat_error">Помилка: не вдалося зберегти журнал застосунка</string>
-    <string name="storage_fragment_warning_delete">Наявні резервні копії в цьому місці будуть видалені.</string>
+    <string name="settings_expert_logcat_error">Помилка: не вдалося зберегти журнал програми</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Не встановлено</string>
     <string name="storage_check_fragment_patience">Це може зайняти деякий час…</string>
     <string name="recovery_code_auth_title">Введіть знову пароль для розблокування</string>
@@ -182,26 +167,101 @@
     <string name="notification_backup_disabled">Резервне копіювання не ввімкнено</string>
     <string name="notification_error_no_main_key_title">Резервне копіювання вимкнено</string>
     <string name="notification_error_no_main_key_text">Згенеруйте новий код відновлення, щоб завершити оновлення та продовжити використання резервних копій.</string>
-    <string name="restore_storage_choose_snapshot">Виберіть резервну копію для відновлення (експериментальне)</string>
-    <string name="settings_category_storage">Резервне копіювання сховища (експериментальне)</string>
-    <string name="settings_backup_storage_dialog_message">Резервне копіювання файлів все ще є експериментальним і може не працювати. Не покладайтеся на нього для отримання важливих даних.</string>
-    <string name="settings_expert_quota_summary">Не встановлювати обмеження на розмір резервних копій застосунків.
-\n
-\nПопередження: Це може швидко заповнити місце зберігання. Не потрібні для більшості застосунків.</string>
+    <string name="restore_storage_choose_snapshot">Оберіть резервну копію для відновлення (бета)</string>
+    <string name="settings_category_storage">Резервне копіювання сховища (бета)</string>
+    <string name="settings_backup_storage_dialog_message">Резервне копіювання файлів є бетою і може не працювати. Не покладайтеся на нього з важливими даними.</string>
     <string name="storage_fake_davx5_summary_installed">Торкніться, щоб налаштувати підключення WebDAV</string>
     <string name="storage_fake_davx5_summary_unavailable">Підключення WebDAV недоступне. Налаштуйте одне з них.</string>
     <string name="backup_app_in_progress">Резервне копіювання</string>
-    <string name="restore_storage_in_progress_info">Ваші файли відновлюються у фоновому режимі. Ви можете почати користуватися своїм телефоном, поки це працює.
-\n
-\nДеякі застосунки (напр. Signal або WhatsApp) можуть вимагати повного відновлення файлів, щоб імпортувати резервну копію. Намагайтеся не запускати ці застосунки до завершення відновлення файлів.</string>
-    <string name="settings_backup_dialog_title">Дійсно вимкніть резервне копіювання застосунків\?</string>
-    <string name="settings_backup_dialog_message">Коли ви знову вмикаєте резервне копіювання, процес резервного копіювання може зайняти більше часу, ніж зазвичай, і він використовуватиме додатковий простір для зберігання.</string>
+    <string name="restore_storage_in_progress_info">Ваші файли відновлюються у фоновому режимі. Ви можете почати користуватися своїм телефоном, поки це працює.\n\nДеякі програми (напр. Signal або WhatsApp) можуть вимагати повного відновлення файлів, щоб імпортувати резервну копію. Намагайтеся не запускати ці програми до завершення відновлення файлів.</string>
+    <string name="settings_backup_dialog_title">Дійсно вимкніть резервне копіювання програм?</string>
+    <string name="settings_backup_dialog_message">Коли Ви знову вмикаєте резервне копіювання, процес резервного копіювання може зайняти більше часу, ніж зазвичай, і він використовуватиме додатковий простір для зберігання.</string>
     <string name="settings_backup_dialog_disable">Вимкнути у будь-якому випадку</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Не рекомендовано)</string>
     <string name="about_contributor_headline">Учасники</string>
     <string name="about_contributor_content">Будь ласка, відвідайте GitHub для отримання <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">списку учасників</a>.</string>
     <string name="about_contributing_organizations_title">Організації-учасники</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> для використання в <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> для використання в <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">Фонд NGI0 PET від NLnet</a> \n<a href="https://nlnet.nl/project/SeedVault-Integrity/">Довірчий фонд NGI0 від NLnet</a></string>
     <string name="storage_user_selected_location_title">Вибране користувачем розташування</string>
+    <string name="notification_restore_channel_title">Відновити сповіщення</string>
+    <string name="notification_restore_title">Відновити роботу</string>
+    <string name="restore_select_packages">Оберіть програми для відновлення</string>
+    <string name="restore_select_packages_all">Усі наступні програми</string>
+    <string name="notification_space_error_title">Брак місця для резервного копіювання</string>
+    <string name="notification_space_error_text">У розміщенні резервної копії бракує місця. Для створення резервної копії його потрібно звільнити.</string>
+    <string name="restore_storage_selection_description">Вибрані файли будуть відновлені. Для перегляду вмісту тек торкніться їх.</string>
+    <string name="storage_webdav_option_title">Хмара WebDAV (бета)</string>
+    <string name="storage_webdav_option_summary">Інтегрований прямий доступ до WebDAV</string>
+    <string name="storage_webdav_config_url">Адреса WebDAV</string>
+    <string name="storage_webdav_config_button">Використовувати хмару WebDAV</string>
+    <string name="settings_backup_scheduling_title">Планування резервного копіювання</string>
+    <string name="settings_backup_status_next_backup_usb">Резервне копіювання буде створено автоматично, коли під\'єднаєте USB-накопичувач</string>
+    <string name="settings_scheduling_frequency_12_hours">Кожні 12 годин</string>
+    <string name="settings_scheduling_frequency_daily">Щодня</string>
+    <string name="notification_apk_not_backed_up">Збереження списку програм, для яких неможливо створити резервну копію.</string>
+    <string name="setup_button">Створити нову</string>
+    <string name="settings_backup_status_next_backup">Наступна резервна копія: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Наступна рез.копія (прибл.): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">одразу при виконанні умов</string>
+    <string name="settings_scheduling_frequency_title">Частота резервного копіювання</string>
+    <string name="settings_scheduling_frequency_3_days">Що 3 дні</string>
+    <string name="settings_scheduling_frequency_weekly">Щотижня</string>
+    <string name="settings_scheduling_category_conditions_title">Умови</string>
+    <string name="settings_scheduling_metered_title">Резервне копіювання з використанням мобільних даних</string>
+    <string name="settings_scheduling_charging_title">Створення резервної копії лише на зарядці</string>
+    <string name="storage_webdav_config_user">Ім\'я користувача</string>
+    <string name="storage_webdav_config_malformed_url">Помилкова адреса WebDAV</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="notification_apk_text">Резервне копіювання APK з %s</string>
+    <string name="backup_system_apps">Системні програми</string>
+    <string name="storage_webdav_config_url_helper">Переконайтеся, що тут повне посилання. Напр. для Nextcloud це буде щось схоже на https://yourserver.com/remote.php/webdav</string>
+    <string name="first_start_text">Хочете відновити свій пристрій із наявної резервної копії чи створити нову резервну копію?</string>
+    <string name="storage_webdav_config_pass">Пароль</string>
+    <string name="notification_success_channel_title">Повідомлення про успіх</string>
+    <string name="restore_restore_set_can_not_get_restored">Ця резервна копія містить деякі помилки. Можливо, ви зможете його частково відновити.</string>
+    <string name="settings_app_check_button">Перевірте резервну копію</string>
+    <string name="restore_restore_set_apks_no_size">Містить <xliff:g example="42" id="apps">%1$d</xliff:g> програм</string>
+    <string name="restore_restore_set_apps">Містить дані користувача для програм <xliff:g example="42" id="apps">%1$d</xliff:g> (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="settings_app_check_text2">Тут ви можете запустити одноразову перевірку, щоб підтвердити резервну копію програми. Виберіть, скільки даних програми потрібно завантажити для перевірки. Чим більше ви виберете, тим довше це займе, але тим надійнішим буде перевірка. Це працюватиме у фоновому режимі та показуватиме сповіщення після завершення перевірки.</string>
+    <string name="settings_app_check_warning">Попередження: завантаження великих обсягів даних може зайняти багато часу.</string>
+    <string name="restore_recycle_backup_text">Ви можете повторно використати резервну копію «%s», яку щойно відновили на цьому пристрої. Це зробить нові резервні копії швидшими та використає менше даних. \n\nОднак ваш старий пристрій втратить доступ до цієї резервної копії. Якщо ви хочете зберегти доступ для свого старого пристрою, ви можете створити нову резервну копію. Це дозволить використати більше даних, ніж повторне використання наявної резервної копії.</string>
+    <string name="settings_backup_app_check_title">Перевірте цілісність</string>
+    <string name="settings_backup_app_check_summary">Переконайтеся, що резервне копіювання працює для відновлення</string>
+    <string name="settings_app_check_title">Перевірте цілісність резервної копії програми</string>
+    <string name="settings_app_check_text">Кожен процес резервного копіювання автоматично перевіряє цілісність резервної копії. Однак, щоб заощадити час, фактичні дані програми не будуть завантажені та перевірені.</string>
+    <string name="notification_init_text">Підготовка наявних даних резервної копії до повторного використання…</string>
+    <string name="notification_failed_text">Під час резервного копіювання сталася помилка.</string>
+    <string name="notification_pruning_channel_title">Сповіщення про видалення старих резервних копій</string>
+    <string name="notification_pruning_title">Видалення старих резервних копій…</string>
+    <string name="notification_checking_channel_title">Перевірка цілісності резервної копії програми</string>
+    <string name="notification_checking_title">Перевірка резервних копій програм…</string>
+    <string name="notification_checking_finished_title">Цілісність резервної копії програми перевірено</string>
+    <string name="notification_checking_finished_text">Успішно перевірено %1$s із середньою швидкістю %2$s.</string>
+    <string name="notification_checking_error_title">Виявлено помилки резервного копіювання</string>
+    <string name="notification_checking_error_text">Торкніться, щоб дізнатися більше. Ми перевірили %1$s із середньою швидкістю %2$s.</string>
+    <string name="notification_checking_action">Подробиці</string>
+    <string name="backup_app_check_success_intro">Було знайдено %1$d знімків і успішно перевірено %2$d%% їхніх даних (%3$s):</string>
+    <string name="backup_app_check_success_disclaimer">Примітка: ми не можемо перевірити, чи окремі програми містять усі свої дані користувача в резервній копії.</string>
+    <string name="backup_app_check_error_title">\@string/notification_checking_error_title</string>
+    <string name="backup_app_check_error_no_snapshots">Не вдалося знайти резервну копію. Будь ласка, спочатку запустіть успішне резервне копіювання, а потім повторіть перевірку.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Ми знайшли %1$d резервні знімки. Проте всі вони були зіпсовані. Будь ласка, запустіть успішне резервне копіювання, а потім повторіть перевірку.</string>
+    <string name="backup_app_check_error_has_snapshots">Ми знайшли %1$d знімок резервної копії, деякі з них пошкоджені або містять помилки. Нижче наведено резервні копії, які можна відновити.</string>
+    <string name="backup_app_check_error_no_result">Ми втратили докладні результати. Чи багато часу минуло після перевірки? Спробуйте бігти знову.</string>
+    <string name="backup_app_stopped_button">Запуск</string>
+    <string name="backup_app_stopped_no_intent">Не вдається запустити програму</string>
+    <string name="restore_restore_set_apps_no_size">Містить дані користувача для програм <xliff:g example="42" id="apps">%1$d</xliff:g></string>
+    <string name="restore_restore_set_apks">Містить &lt;xliff:g example=\"42\" id=\"apps\"&gt;%1$d&lt;/xliff:g&gt; програм (&lt;xliff:g example=\"1 GB\" id=\"size\"&gt;%2$s&lt;/ xliff:g&gt;)</string>
+    <string name="restore_recycle_backup_title">Повторно використовувати цю резервну копію?</string>
+    <string name="restore_recycle_backup_button_no">Створіть нову резервну копію</string>
+    <string name="restore_recycle_backup_button_yes">Повторне використання резервної копії</string>
+    <string name="settings_backup_file_check_title">Перевірте цілісність резервної копії</string>
+    <string name="settings_backup_file_check_summary">Переконайтеся, що моя резервна копія працює для відновлення файлів</string>
+    <string name="settings_file_check_title">Перевірте цілісність резервної копії файлу</string>
+    <string name="settings_file_check_text">Тут ви можете запустити одноразову перевірку, щоб підтвердити резервну копію файлу.</string>
+    <string name="settings_file_check_text2">Виберіть, скільки даних файлів потрібно завантажити для перевірки. Чим більше ви виберете, тим довше це займе, але тим надійнішим буде перевірка. \n\nПеревірка виконуватиметься у фоновому режимі та надішле вам сповіщення, коли її буде завершено.</string>
+    <string name="settings_backup_metered_title">Резервне копіювання зупинено</string>
+    <string name="notification_failed_metered_text">Резервне копіювання перервано. Ви використовуєте мобільні дані? Підключіться до Wi-Fi, щоб продовжити.</string>
+    <string name="settings_backup_metered_text">Резервне копіювання не продовжиться, оскільки ваш пристрій використовує мобільні дані.\n\nВи можете ввімкнути резервне копіювання через мобільні дані в розділі «Розклад резервного копіювання».</string>
+    <string name="notification_usb_monitor_title">Очікування USB-накопичувача…</string>
+    <string name="notification_usb_monitor_text">Коли ваш USB-накопичувач стане доступним, ми почнемо резервне копіювання.</string>
 </resources>

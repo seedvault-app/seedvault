@@ -3,12 +3,10 @@
     <string name="content_videos">Videa</string>
     <string name="content_images">Fotky a obrázky</string>
     <string name="notification_prune">Mazání starých záloh…</string>
-    <string name="snapshots_empty">Nebyly nalezeny žádné zálohy úložiště
-\n
-\nJe nám to líto, ale není nic, co by mohlo být obnoveno.</string>
+    <string name="snapshots_empty">Nebyly nalezeny žádné zálohy souborů\n \nOmlouváme se, ale nenašli jsme nic, co by mohlo být obnoveno.</string>
     <string name="content_audio">Zvukové soubory</string>
     <string name="content_add">Přidat</string>
-    <string name="notification_backup_title">Záloha úložiště</string>
+    <string name="notification_backup_title">Záloha souborů</string>
     <string name="notification_backup_scanning">Skenování souborů…</string>
     <string name="notification_backup_backup_files">Zálohování souborů…</string>
     <string name="notification_restore_title">Obnova souborů…</string>
@@ -16,7 +14,30 @@
     <string name="notification_restore_complete_title">%1$d z %2$d souborů obnoveno</string>
     <string name="snapshots_error">Chyba při načítání snapshotů</string>
     <string name="content_downloads">Stažené soubory</string>
-    <string name="snapshots_title">Dostupné zálohy úložiště</string>
-    <string name="notification_restore_channel_title">Obnova úložiště</string>
+    <string name="snapshots_title">Dostupné zálohy souborů</string>
+    <string name="notification_restore_channel_title">Obnova zálohy souborů</string>
     <string name="content_options">Možnosti</string>
+    <string name="select_files_title">Kontrola souborů k obnovení</string>
+    <string name="select_files_number_of_files">%1$d soubor(ů)</string>
+    <string name="select_files_button_restore">Obnovit vybrané soubory</string>
+    <string name="notification_restore_complete_errors">%1$d souborů obsahovalo chyby.</string>
+    <string name="notification_restore_complete_dups">%1$d souborů bylo duplicitních.</string>
+    <string name="notification_check_title">Kontrola záloh souborů…</string>
+    <string name="notification_check_text">Načítání dostupných dat zálohy.</string>
+    <string name="notification_check_channel_title">Kontrola integrity zálohy souborů</string>
+    <string name="notification_check_finished_text">Úspěšně zkontrolováno %1$s s průměrnou rychlostí %2$s.</string>
+    <string name="notification_check_error_text">Klepněte pro zobrazení podrobností. Zkontrolovali jsme %1$s s průměrnou rychlostí %2$s.</string>
+    <string name="notification_check_action">Podrobnosti</string>
+    <string name="notification_check_finished_title">Integrita zálohy souborů ověřena</string>
+    <string name="check_error_title">\@string/notification_check_error_title</string>
+    <string name="check_error_no_snapshots">Nepodařilo se najít žádnou zálohu. Nejprve ji prosím vytvořte a poté zopakujte kontrolu.</string>
+    <string name="notification_check_error_title">V záloze souborů byly nalezeny chyby</string>
+    <string name="check_success_intro">Bylo nalezeno %1$d snímků a %2$d%% jejich dat (%3$s) bylo úspěšně ověřeno:</string>
+    <string name="check_error_only_broken_snapshots">Našli jsme %1$d snímků zálohy. Všechny z nich byly nicméně poškozené. Nejprve prosím vytvořte úspěšnou zálohu a poté zopakujte kontrolu.</string>
+    <string name="check_error_has_snapshots">Našli jsme %1$d snímků zálohy, některé z nich jsou poškozené nebo mají chyby. Níže najdete zálohy, které lze (částečně) obnovit.</string>
+    <string name="check_error_no_result">Ztratili jsme podrobné výsledky. Zkontrolujte, zda neuplynula dlouhá doba od kontroly. Zkuste ji zpustit znovu.</string>
+    <string name="check_error_snapshot">Tato záloha má chyby. Možná ji budete moci částečně obnovit.</string>
+    <string name="check_files_title">Soubory v této záloze</string>
+    <string name="check_files_text">„%s“ zahrnuje následující soubory:</string>
+    <string name="check_files_error">Data zálohy jsou poškozená. Soubor nebude plně obnoven.</string>
 </resources>

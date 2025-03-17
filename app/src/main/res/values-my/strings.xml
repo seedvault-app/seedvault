@@ -40,7 +40,6 @@
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> အခမဲ့.</string>
     <string name="storage_fake_drive_summary">ထပ်မံဖြေသွင်းခြင်း</string>
     <string name="storage_fake_drive_title">အချက်အလက်များသိုလှောင်သည့်ကဒ်</string>
-    <string name="storage_fragment_warning">သင်၏သိမ်းဆည်းခြင်းနေရာကိုကြည့်ရှုသူများသည်သင်မည်သည့်အက်ပ်များကိုသုံးသည်ကိုလေ့လာနိုင်သည်၊ သို့သော်အက်ပလီကေးရှင်းဒေတာကိုလက်လှမ်းမမှီပါ ။</string>
     <string name="storage_fragment_restore_title">သင်၏ backups များကိုမည်သည့်နေရာတွင်ရှာဖွေရမည်နည်း ။</string>
     <string name="storage_fragment_backup_title">အရန်ကူးယူမည့်နေရာကိုရွေးချယ်ပါ</string>
     <string name="settings_backup_now">ယခု Backup လုပ်ပါ</string>

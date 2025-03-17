@@ -8,6 +8,7 @@ package com.stevesoltys.seedvault.worker
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
+import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.metadata.MetadataManager
 import com.stevesoltys.seedvault.metadata.PackageState.NOT_ALLOWED
 import com.stevesoltys.seedvault.metadata.PackageState.WAS_STOPPED
@@ -24,6 +25,7 @@ import java.io.IOException
 internal class ApkBackupManager(
     private val context: Context,
     private val appBackupManager: AppBackupManager,
+    private val backendManager: BackendManager,
     private val settingsManager: SettingsManager,
     private val snapshotManager: SnapshotManager,
     private val metadataManager: MetadataManager,
@@ -43,6 +45,7 @@ internal class ApkBackupManager(
             // Since an APK backup does not change the [packageState], we first record it for all
             // packages that don't get backed up.
             recordNotBackedUpPackages()
+            if (!backendManager.canDoBackupNow()) throw IllegalStateException("can't do backup now")
             // Upload current icons, so we can show them to user before restore
             uploadIcons()
             // Now, if APK backups are enabled by the user, we back those up.
@@ -60,6 +63,9 @@ internal class ApkBackupManager(
     private suspend fun backUpApks() {
         val apps = packageService.allUserPackages
         apps.forEachIndexed { i, packageInfo ->
+            // the situation may change, so stop backup when it does by throwing exception
+            if (!backendManager.canDoBackupNow()) throw IllegalStateException("can't do backup now")
+
             val packageName = packageInfo.packageName
             val name = getAppName(context, packageName)
             nm.onApkBackup(packageName, name, i, apps.size)
@@ -68,6 +74,7 @@ internal class ApkBackupManager(
     }
 
     // TODO we could use BackupMonitor for this. It emits LOG_EVENT_ID_PACKAGE_STOPPED
+    //  need to check if it has something for NOT_ALLOWED as well
     private fun recordNotBackedUpPackages() {
         nm.onAppsNotBackedUp()
         packageService.notBackedUpPackages.forEach { packageInfo ->

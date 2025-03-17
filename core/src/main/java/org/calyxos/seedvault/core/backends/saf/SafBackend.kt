@@ -6,6 +6,7 @@
 package org.calyxos.seedvault.core.backends.saf
 
 import android.content.Context
+import android.database.StaleDataException
 import android.os.Environment
 import android.os.StatFs
 import android.provider.DocumentsContract
@@ -18,6 +19,8 @@ import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.calyxos.seedvault.core.backends.AppBackupFileType
 import org.calyxos.seedvault.core.backends.Backend
+import org.calyxos.seedvault.core.backends.BackendId
+import org.calyxos.seedvault.core.backends.BackendSaver
 import org.calyxos.seedvault.core.backends.Constants.DIRECTORY_ROOT
 import org.calyxos.seedvault.core.backends.Constants.FILE_BACKUP_METADATA
 import org.calyxos.seedvault.core.backends.Constants.appSnapshotRegex
@@ -36,7 +39,6 @@ import org.calyxos.seedvault.core.backends.LegacyAppBackupFile
 import org.calyxos.seedvault.core.backends.TopLevelFolder
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import kotlin.reflect.KClass
 
 internal const val AUTHORITY_STORAGE = "com.android.externalstorage.documents"
@@ -53,6 +55,8 @@ public class SafBackend(
     private val log = KotlinLogging.logger {}
 
     private val cache = DocumentFileCache(context, safProperties.getDocumentFile(context), root)
+
+    override val id: BackendId = BackendId.SAF
 
     override suspend fun test(): Boolean {
         log.debugLog { "test()" }
@@ -86,10 +90,10 @@ public class SafBackend(
         } else bytesAvailable
     }
 
-    override suspend fun save(handle: FileHandle): OutputStream {
+    override suspend fun save(handle: FileHandle, saver: BackendSaver): Long {
         log.debugLog { "save($handle)" }
         val file = cache.getOrCreateFile(handle)
-        return file.getOutputStream(context.contentResolver)
+        return file.getOutputStream(context.contentResolver).use { saver.save(it) }
     }
 
     override suspend fun load(handle: FileHandle): InputStream {
@@ -231,6 +235,15 @@ public class SafBackend(
         } finally {
             cache.clearAll()
         }
+    }
+
+    override fun isTransientException(e: Exception): Boolean {
+        if (e is SafRetryException) return true
+        if (e is StaleDataException && e.message?.contains("closed") == true) return true
+        if (e.cause is StaleDataException &&
+            (e.cause as StaleDataException).message?.contains("closed") == true
+        ) return true
+        return false
     }
 
     override val providerPackageName: String? by lazy {

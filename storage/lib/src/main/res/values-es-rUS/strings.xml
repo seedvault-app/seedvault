@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notification_restore_title">Restaurando archivos…</string>
-    <string name="snapshots_empty">No se encontraron copias de seguridad de almacenamiento
-\n
-\nLo sentimos, pero no hay nada que se pueda restaurar.</string>
+    <string name="snapshots_empty">No se encontraron copias de seguridad de almacenamiento \n \nLo sentimos, pero no hay nada que se pueda restaurar.</string>
     <string name="content_options">Opciones</string>
     <string name="content_add">Añadir</string>
     <string name="notification_backup_title">Copia de seguridad en almacenamiento</string>

@@ -44,7 +44,7 @@ abstract class RequireProvisioningActivity : BackupActivity() {
                 if (!getViewModel().validLocationIsSet()) {
                     finishAfterTransition()
                 }
-            } else getViewModel().onStorageLocationChanged()
+            } else getViewModel().onBackendPropertiesChanged()
         }
 
     protected val isSetupWizard: Boolean

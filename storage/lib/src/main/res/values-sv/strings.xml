@@ -15,8 +15,11 @@
     <string name="snapshots_title">Tillgängliga säkerhetskopior av lagring</string>
     <string name="notification_restore_channel_title">Återställning av lagring</string>
     <string name="notification_restore_title">Återställer filer …</string>
-    <string name="snapshots_empty">Inga säkerhetskopior av lagring hittades
-\n
-\nTyvärr, det finns inget att återställa.</string>
+    <string name="snapshots_empty">Inga säkerhetskopior av lagring hittades \n \nTyvärr, det finns inget att återställa.</string>
     <string name="snapshots_error">Fel vid inläsning av ögonblicksbilder</string>
+    <string name="select_files_button_restore">Återställ valda filer</string>
+    <string name="notification_restore_complete_dups">%1$d filer var dubbletter.</string>
+    <string name="notification_restore_complete_errors">%1$d filer hade felaktigheter.</string>
+    <string name="select_files_title">Granska filer för återställning</string>
+    <string name="select_files_number_of_files">%1$d fil/-er</string>
 </resources>

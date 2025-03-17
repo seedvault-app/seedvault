@@ -54,7 +54,6 @@
     <string name="storage_fake_nextcloud_summary">Tippen zum Installieren</string>
     <string name="storage_fake_drive_summary">muss angeschlossen sein</string>
     <string name="storage_fake_drive_title">USB-Speichergerät</string>
-    <string name="storage_fragment_warning">Personen mit Zugriff auf deinen Speicherort können herausfinden, welche Apps du nutzt, allerdings nicht auf deine App-Daten zugreifen.</string>
     <string name="storage_fragment_restore_title">Wo befinden sich deine Sicherungen\?</string>
     <string name="settings_backup_now">Jetzt sichern</string>
     <string name="settings_backup_exclude_apps">Apps ausschließen</string>
@@ -100,7 +99,6 @@
 \nWähle einen anderen Speicherort aus, der einen %s Ordner enthält.</string>
     <string name="restore_invalid_location_title">Keine Sicherungen gefunden</string>
     <string name="restore_skip">Nicht wiederherstellen</string>
-    <string name="restore_restore_set_times">Letzte Sicherung %1$s · Erste %2$s.</string>
     <string name="restore_choose_restore_set">Wähle eine Sicherung aus, um sie wiederherzustellen</string>
     <string name="notification_restore_error_action">App deinstallieren</string>
     <string name="notification_success_text">%1$d von %2$d Apps gesichert (%3$s). Tippe, um mehr zu erfahren.</string>
@@ -116,18 +114,17 @@
 \n
 \nTippe auf fehlgeschlagene Apps, um zu versuchen, sie manuell zu installieren, bevor du fortfährst.</string>
     <string name="restore_installing_error_title">Einige Apps sind nicht installiert</string>
-    <string name="backup_section_not_allowed">Apps, die keine Datensicherung zulassen</string>
     <string name="backup_app_quota_exceeded">Sicherungskontingent überschritten</string>
     <string name="backup_app_was_stopped">Nicht gesichert, da es in letzter Zeit nicht verwendet wurde</string>
     <string name="backup_app_not_yet_backed_up">Warten auf die Sicherung…</string>
-    <string name="backup_section_user">Installierte Apps</string>
+    <string name="backup_section_user">Apps</string>
     <string name="backup_contacts">Lokale Kontakte</string>
     <string name="backup_call_log">Anrufhistorie</string>
     <string name="backup_settings">Geräteeinstellungen</string>
     <string name="backup_sms">SMS-Textnachrichten</string>
-    <string name="backup_section_system">System-Apps</string>
+    <string name="backup_section_system">Systemdaten</string>
     <string name="settings_backup_status_title">Sicherungsstatus</string>
-    <string name="recovery_code_recreated">Neuer Wiederherstellungscode wurde erfolgreich erstellt</string>
+    <string name="recovery_code_recreated">Neuer Wiederherstellungscode wurde erfolgreich erstellt. Beenden…</string>
     <string name="recovery_code_verification_new_dialog_message">Durch das Generieren eines neuen Codes kannst du nicht mehr auf deine vorhandenen Sicherungen zugreifen. Wir werden versuchen, sie nach Möglichkeit zu löschen.
 \n
 \nBist du sicher, dass du das machen willst\?</string>
@@ -147,21 +144,16 @@
 \n
 \nBei einigen Apps (z. B. Signal oder WhatsApp) müssen die Dateien möglicherweise vollständig wiederhergestellt werden, um eine Sicherung zu importieren. Vermeide es, diese Apps zu starten, bevor die Wiederherstellung der Dateien abgeschlossen ist.</string>
     <string name="restore_storage_in_progress_title">Dateien werden wiederhergestellt…</string>
-    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (experimentell)</string>
+    <string name="restore_storage_choose_snapshot">Wähle eine Speichersicherung zum Wiederherstellen aus (beta)</string>
     <string name="restore_storage_skip">Wiederherstellen von Dateien überspringen</string>
     <string name="restore_skip_apps">Wiederherstellen von Apps überspringen</string>
     <string name="recovery_code_auth_description">Eingabe deiner Geräteanmeldedaten zum Fortfahren</string>
     <string name="recovery_code_auth_title">Deine Bildschirmsperre erneut eingeben</string>
     <string name="storage_check_fragment_patience">Das kann einige Zeit dauern…</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Nicht installiert</string>
-    <string name="storage_fragment_warning_delete">Vorhandene Sicherungen an diesem Speicherort werden gelöscht.</string>
-    <string name="settings_expert_quota_summary">Beschränke die Größe von App-Sicherungen nicht.
-\n
-\nAchtung: Dadurch kann dein Speicherplatz schnell voll werden. Für die meisten Apps nicht erforderlich.</string>
-    <string name="settings_expert_quota_title">Unbegrenztes App-Kontingent</string>
     <string name="settings_expert_title">Experteneinstellungen</string>
     <string name="settings_backup_storage_dialog_ok">Trotzdem aktivieren</string>
-    <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist noch experimentell und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
+    <string name="settings_backup_storage_dialog_message">Das Sichern von Dateien ist beta und funktioniert möglicherweise nicht. Verlasse dich bei wichtigen Daten nicht darauf.</string>
     <string name="settings_backup_storage_dialog_title">Beta-Funktion</string>
     <string name="settings_backup_files_summary">Keine</string>
     <string name="settings_backup_files_title">Enthaltene Dateien und Ordner</string>
@@ -198,15 +190,12 @@
     <string name="settings_backup_dialog_message">Wenn du die Sicherung wieder aktivierst, kann der Sicherungsvorgang länger dauern als gewöhnlich, und es wird zusätzlicher Speicherplatz benötigt.</string>
     <string name="settings_backup_dialog_disable">Trotzdem deaktivieren</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nicht empfohlen)</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a>
-\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> zur Verwendung in <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a></string>
     <string name="about_contributor_headline">Mitwirkende</string>
     <string name="about_contributor_content">Eine <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Liste der Mitwirkenden</a> findest du auf GitHub.</string>
     <string name="about_contributing_organizations_title">Mitwirkende Organisationen</string>
     <string name="storage_user_selected_location_title">Benutzerdefinierter Speicherort</string>
     <string name="notification_success_channel_title">Erfolgsbenachrichtigung</string>
-    <string name="settings_expert_d2d_title">Gerät-zu-Gerät-Sicherungen</string>
-    <string name="settings_expert_d2d_summary">Dies erzwingt Sicherungen für die meisten Apps, auch wenn diese dies nicht zulassen. Dies ist experimentell, die Verwendung erfolgt auf eigene Gefahr.</string>
     <string name="storage_webdav_option_title">WebDAV-Cloud (Beta)</string>
     <string name="storage_webdav_option_summary">Integrierter direkter WebDAV-Zugang</string>
     <string name="storage_webdav_config_url">WebDAV-URL</string>
@@ -225,7 +214,6 @@
     <string name="settings_scheduling_metered_title">Datensicherung bei Nutzung mobiler Daten</string>
     <string name="settings_scheduling_charging_title">Datensicherung nur beim Aufladen</string>
     <string name="notification_space_error_title">Unzureichender Speicherplatz für die Datensicherung</string>
-    <string name="restore_restore_set_size">Größe: <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="storage_webdav_config_url_helper">Achten Sie darauf, dass Sie hier die vollständige URL eingeben. Für Nextcloud z. B. hat sie die Form https://yourserver.com/remote.php/webdav</string>
     <string name="storage_webdav_config_user">Benutzername</string>
     <string name="storage_webdav_config_pass">Passwort</string>
@@ -233,4 +221,18 @@
     <string name="storage_webdav_config_malformed_url">Ungültige WebDAV-URL</string>
     <string name="storage_webdav_name">WebDAV %s</string>
     <string name="notification_apk_text">APK von %s wird gesichert</string>
+    <string name="notification_space_error_text">Der Speicherplatz für deine Sicherungen wird knapp. Gib Speicherplatz frei, damit die Sicherungen durchgeführt werden können.</string>
+    <string name="backup_system_apps">System-Apps</string>
+    <string name="restore_select_packages">Wiederherzustellende Apps auswählen</string>
+    <string name="restore_select_packages_all">Alle der folgenden Apps</string>
+    <string name="first_start_text">Möchtest du dein Gerät von einer vorhandenen Sicherung wiederherstellen oder eine neue Sicherung erstellen?</string>
+    <string name="settings_app_check_title">Überprüfen der Integrität von App-Backups</string>
+    <string name="setup_button">Neu starten</string>
+    <string name="settings_backup_app_check_title">Integrität prüfen</string>
+    <string name="settings_app_check_text">Bei jedem Sicherungsvorgang wird die Integrität der Sicherung automatisch überprüft. Um Zeit zu sparen, werden die tatsächlichen Anwendungsdaten jedoch nicht heruntergeladen und überprüft.</string>
+    <string name="settings_backup_app_check_summary">Sicherstellen, dass die Sicherung für die Wiederherstellung funktioniert</string>
+    <string name="settings_app_check_warning">Achtung: Das Herunterladen großer Datenmengen kann sehr lange dauern.</string>
+    <string name="settings_app_check_button">Sicherung überprüfen</string>
+    <string name="notification_failed_text">Beim Ausführen der Sicherung ist ein Fehler aufgetreten.</string>
+    <string name="notification_init_text">Vorbereitung vorhandener Sicherungsdaten zur Wiederverwendung…</string>
 </resources>

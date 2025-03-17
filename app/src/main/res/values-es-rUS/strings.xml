@@ -26,7 +26,6 @@
 \nElija otra ubicación que contenga una carpeta %s.</string>
     <string name="restore_invalid_location_title">No se encontraron respaldos</string>
     <string name="restore_skip">No restaurar</string>
-    <string name="restore_restore_set_times">Último Respaldo %1$s · Primero %2$s.</string>
     <string name="restore_choose_restore_set">Elije un respaldo para restaurar</string>
     <string name="restore_title">Restaurar desde el respaldo</string>
     <string name="notification_restore_error_action">Desinstalar Aplicación</string>
@@ -71,7 +70,6 @@
     <string name="storage_fake_nextcloud_summary">Haz clic para instalar</string>
     <string name="storage_fake_drive_summary">Necesita ser enchufado</string>
     <string name="storage_fake_drive_title">Memoria USB</string>
-    <string name="storage_fragment_warning">Las personas con acceso a su ubicación de almacenamiento pueden saber qué aplicaciones usas, pero no reciben acceso a los datos de las aplicaciones.</string>
     <string name="storage_fragment_restore_title">¿Dónde encontrar sus respaldos\?</string>
     <string name="storage_fragment_backup_title">Elija dónde almacenar los respaldos</string>
     <string name="settings_backup_now">Respaldar ahora</string>
