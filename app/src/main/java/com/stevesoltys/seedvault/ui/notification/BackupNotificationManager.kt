@@ -29,7 +29,6 @@ import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationCompat.CATEGORY_ERROR
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_DEFERRED
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
-import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import androidx.core.app.NotificationCompat.PRIORITY_LOW
 import com.stevesoltys.seedvault.R
@@ -179,7 +178,7 @@ internal class BackupNotificationManager(private val context: Context) {
             setOngoing(true)
             setShowWhen(false)
             setProgress(total, progress, progress == 0 && total == 0)
-            priority = PRIORITY_DEFAULT
+            priority = PRIORITY_LOW
             foregroundServiceBehavior = FOREGROUND_SERVICE_IMMEDIATE
         }.build()
     }
