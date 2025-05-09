@@ -367,6 +367,8 @@ public class WebDavBackend(
             return true
         } else if (e is IOException && e.message?.contains("unexpected end of stream") == true) {
             return true
+        } else if (e is HttpException && e.code == 423) {
+            return true // HTTP 423 Locked
         }
         return false
     }

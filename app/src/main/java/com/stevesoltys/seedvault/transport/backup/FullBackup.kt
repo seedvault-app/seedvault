@@ -128,7 +128,7 @@ internal class FullBackup(
             backupReceiver.addBytes(getOwner(state.packageName), payload)
             state.size += numBytes
             TRANSPORT_OK
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e(TAG, "Error handling backup data for ${state.packageName}: ", e)
             if (e.isOutOfSpace()) nm.onInsufficientSpaceError()
             TRANSPORT_ERROR
