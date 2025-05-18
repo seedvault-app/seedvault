@@ -51,8 +51,8 @@
     <string name="settings_backup_status_summary">Último backup: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Desativar o backup de APKs</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
-    <string name="settings_backup_apk_dialog_message">O backup dos apps desativado ainda significa que o backup dos dados dos apps acontece. Porém, eles não serão restaurados automaticamente.\n\nPara isso, você precisará instalar todos os seus apps manualmente com a opção \"Restauração automática\" ativada.</string>
-    <string name="settings_backup_apk_summary">Fazer backup dos próprios apps. Quando desativado, apenas os dados dos apps serão armazenados no backup.</string>
+    <string name="settings_backup_apk_dialog_message">Após desativar o backup dos APKs, o backup dos dados do app ainda será feito. Porém, os dados não serão restaurados automaticamente.\n\nPara isso, você precisará instalar todos os seus apps manualmente com a opção \"Restauração automática\" ativada.</string>
+    <string name="settings_backup_apk_summary">Faz backup dos próprios apps. Quando desativado, apenas os dados dos apps serão armazenados no backup.</string>
     <string name="settings_category_app_data_backup">Backup de dados dos apps</string>
     <string name="settings_backup_apk_title">Backup dos APKs</string>
     <string name="settings_auto_restore_summary_usb">Observação: seu %1$s precisa estar conectado para que isso funcione.</string>
@@ -67,7 +67,7 @@
     <string name="settings_backup">Fazer backup dos meus apps</string>
     <string name="restore_backup_button">Restaurar backup</string>
     <string name="backup">Backup</string>
-    <string name="restore_set_error">Ocorreu um erro ao carregar os backups.</string>
+    <string name="restore_set_error">Ocorreu um erro ao carregar os backups:</string>
     <string name="restore_invalid_location_message">Não conseguimos encontrar nenhum backup neste local.\n\nEscolha outro local que contenha uma pasta %s.</string>
     <string name="restore_invalid_location_title">Nenhum backup encontrado</string>
     <string name="restore_skip">Não restaurar</string>
@@ -115,7 +115,7 @@
     <string name="backup_call_log">Histórico de chamadas</string>
     <string name="backup_settings">Configurações do dispositivo</string>
     <string name="recovery_code_recreated">Um novo código de recuperação foi criado com sucesso. Saindo…</string>
-    <string name="recovery_code_verification_new_dialog_message">Gerar um novo código fará com que seus backups existentes fiquem inacessíveis. Tentaremos excluí-los se possível. O app fechará quando isso ser concluído.\n\nTem certeza que quer fazer isso?</string>
+    <string name="recovery_code_verification_new_dialog_message">Gerar um novo código fará com que seus backups existentes fiquem inacessíveis. Tentaremos apaga-los se possível. O app fechará quando isso ser concluído.\n\nTem certeza que quer fazer isso?</string>
     <string name="recovery_code_verification_new_dialog_title">Só um momento…</string>
     <string name="recovery_code_verification_generate_new">Gerar um novo código</string>
     <string name="recovery_code_verification_try_again">Tente novamente</string>
@@ -150,7 +150,7 @@
     <string name="settings_backup_new_code_dialog_message">Para continuar usando o backup de apps, você precisa gerar um novo código de recuperação.\n\nPedimos desculpas pelo inconveniente.</string>
     <string name="notification_error_no_main_key_title">Backups desativados</string>
     <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar usando os backups.</string>
-    <string name="error_no_store">Erro: Nenhuma loja de apps instalada</string>
+    <string name="error_no_store">Erro: Não há uma loja de apps instalada</string>
     <string name="restore_app_status_restored">Dados restaurados</string>
     <string name="restore_app_status_installed">Reinstalado</string>
     <string name="restore_app_status_install_error">Não foi possível instalar</string>
@@ -166,7 +166,7 @@
     <string name="about_contributing_organizations_title">Organizações Colaboradoras</string>
     <string name="settings_expert_logcat_title">Salvar registros do app</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
-    <string name="settings_expert_logcat_summary">Os desenvolvedores podem diagnosticar bugs com esses registros.\n\nAtenção: Os registros podem conter informações de identificação pessoal. Verifique-os e os excluam após compartilhar-los!</string>
+    <string name="settings_expert_logcat_summary">Os desenvolvedores podem diagnosticar bugs com esses registros.\n\nAtenção: Os registros podem conter informações de identificação pessoal. Verifique-os e os apague após compartilha-los!</string>
     <string name="settings_backup_dialog_message">Quando você ativar o backup novamente, o processo pode demorar mais do que normal e utilizará mais espaço de armazenamento.</string>
     <string name="settings_backup_dialog_title">Você realmente deseja desativar o backup de apps?</string>
     <string name="settings_expert_logcat_error">Erro: Não foi possível salvar os registros do app</string>
@@ -233,7 +233,7 @@
     <string name="notification_init_text">Preparando os dados de backup existentes para a reutilização…</string>
     <string name="restore_restore_set_can_not_get_restored">Este backup tem alguns erros. Você talvez consiga restaurá-lo parcialmente.</string>
     <string name="restore_recycle_backup_title">Reutilizar este backup?</string>
-    <string name="restore_recycle_backup_text">Você pode reutilizar o backup \'%s\' que você acabou de restaurar neste dispositivo. Isto fará novos backups mais rápidos e usar menos dados.\n\nPorém, seu dispositivo antigo perderá acesso a este backup. Se você gostaria de manter o acesso ao seu dispositivo antigo, você pode criar um novo backup em vez disso. Isso usará mais dados do que reutilizar o backup existente.</string>
+    <string name="restore_recycle_backup_text">Você pode reutilizar o backup \'%s\' que você acabou de restaurar neste dispositivo. Isto fará com que novos backups sejam mais rápidos e usem menos dados.\n\nPorém, seu dispositivo antigo perderá acesso a este backup. Se você gostaria de manter o acesso ao seu dispositivo antigo, você também pode criar um novo backup. Isso usará mais dados do que reutilizar o backup existente.</string>
     <string name="restore_recycle_backup_button_yes">Reutilizar backup</string>
     <string name="settings_app_check_title">Verificar integridade do backup de apps</string>
     <string name="notification_checking_error_title">Erros de backup encontrados</string>
@@ -257,5 +257,8 @@
     <string name="settings_file_check_text2">Selecione quanto dos dados dos arquivos você quer que sejam baixados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será.\n\nA verificação executará em segundo plano e enviará a você uma notificação quando for concluída.</string>
     <string name="storage_round_sync_summary_prefix">Remoto do RoundSync:</string>
     <string name="notification_finalizing_text">Finalizando o backup…</string>
-    <string name="notification_pruning_blobs_title">Removendo dados de backup antigos…</string>
+    <string name="notification_pruning_blobs_title">Removendo os dados dos backup antigos…</string>
+    <string name="restore_set_bad_decrypt">Não foi possível descriptografar os backups.\n\nO código de recuperação atual provavelmente não é mesmo do que o que foi usado para criar o backup.</string>
+    <string name="restore_set_button_try_again">Tentar novamente</string>
+    <string name="restore_set_button_restart">Iniciar do começo</string>
 </resources>

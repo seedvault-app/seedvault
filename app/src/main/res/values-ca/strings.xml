@@ -20,16 +20,14 @@
     <string name="settings_category_apps">Còpia de seguretat de l\'aplicació</string>
     <string name="settings_auto_restore_summary">Al reinstalar una aplicació, es restaura la configuració i les dades de la còpia de seguretat.</string>
     <string name="settings_backup_apk_summary">Fer còpia de seguretat de les aplicacions. En cas contrari, només es farà còpia de seguretat de les dades de les aplicacions.</string>
-    <string name="settings_backup_apk_dialog_title">Segur que vols desactivar la còpia de seguretat d\'aplicacions\?</string>
+    <string name="settings_backup_apk_dialog_title">Segur que vols desactivar la còpia de seguretat d\'aplicacions?</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
     <string name="settings_backup_apk_dialog_disable">Deshabilitar la còpia de seguretat d\'aplicacions</string>
     <string name="settings_backup_status_title">Estat de les còpies de seguretat</string>
     <string name="settings_backup_status_summary">Última còpia de seguretat: %1$s</string>
     <string name="settings_backup_exclude_apps">Aplicacions excloses</string>
     <string name="settings_backup_now">Fer còpia de seguretat ara</string>
-    <string name="settings_backup_apk_dialog_message">La còpia de seguretat de les aplicacions desactivades farà còpia de seguretat de les dades de l\'aplicació. No obstant, no es restaurarà automàticament.
-\n
-\nHauràs d\'instal·lar totes les teves aplicacions manualment mentre la \"Recuperació Automàtica\" està activada.</string>
+    <string name="settings_backup_apk_dialog_message">La còpia de seguretat de les aplicacions desactivades farà còpia de seguretat de les dades de l\'aplicació. No obstant, no es restaurarà automàticament. \n \nHauràs d\'instal·lar totes les teves aplicacions manualment mentre la \"Recuperació Automàtica\" està activada.</string>
     <string name="storage_fake_drive_title">Unitat flash USB</string>
     <string name="storage_fragment_backup_title">Tria on emmagatzemar les còpies de seguretat</string>
     <string name="recovery_code_write_it_down">Escriu-ho en un paper ara mateix!</string>

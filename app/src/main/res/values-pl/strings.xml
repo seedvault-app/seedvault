@@ -9,10 +9,10 @@
     <string name="settings_backup_now">Utwórz kopię zapasową teraz</string>
     <string name="settings_backup_exclude_apps">Wyklucz aplikacje</string>
     <string name="settings_backup_status_summary">Ostatnia kopia zapasowa: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">Wyłączanie tworzenia kopii zapasowych aplikacji</string>
+    <string name="settings_backup_apk_dialog_disable">Wyłącz tworzenie kopii zapasowych plików APK</string>
     <string name="settings_backup_apk_dialog_cancel">Anuluj</string>
-    <string name="settings_backup_apk_dialog_title">Naprawdę wyłączyć kopię zapasową aplikacji\?</string>
-    <string name="settings_backup_apk_title">Kopia zapasowa aplikacji</string>
+    <string name="settings_backup_apk_dialog_title">Naprawdę wyłączyć kopię zapasową plików APK?</string>
+    <string name="settings_backup_apk_title">Kopia zapasowa plików APK</string>
     <string name="settings_category_app_data_backup">Kopia zapasowa danych aplikacji</string>
     <string name="settings_auto_restore_summary">Podczas ponownej instalacji aplikacji przywróć ustawienia i dane z kopii zapasowej.</string>
     <string name="settings_auto_restore_title">Automatyczne przywracanie</string>
@@ -26,13 +26,11 @@
     <string name="storage_fake_drive_summary">Musi być podłączona</string>
     <string name="storage_fake_drive_title">Pamięć USB</string>
     <string name="storage_fragment_restore_title">Gdzie znaleźć kopie zapasowe\?</string>
-    <string name="settings_backup_apk_summary">Utwórz kopie zapasowe aplikacji. W przeciwnym razie utworzona zostanie kopia zapasowa tylko danych aplikacji.</string>
+    <string name="settings_backup_apk_summary">Tworzy kopie zapasowe samych aplikacji. W przeciwnym razie kopia zapasowa obejmie tylko dane aplikacji.</string>
     <string name="settings_auto_restore_summary_usb">Uwaga: Twój %1$s musi być podłączony, aby to zadziałało.</string>
     <string name="backup">Kopia zapasowa</string>
     <string name="settings_backup_status_title">Status kopii zapasowej</string>
-    <string name="settings_backup_apk_dialog_message">Wyłączona kopia zapasowa aplikacji w dalszym ciągu zapisuje kopie danych aplikacji. Nie przywróci ich jednak automatycznie.
-\n
-\nBędziesz musiał ręcznie zainstalować wszystkie swoje aplikacje jednocześnie mając funkcję \"Przywracania Automatycznego\" włączoną.</string>
+    <string name="settings_backup_apk_dialog_message">Po wyłączeniu kopii zapasowych plików APK, dane aplikacji będą nadal archiwizowane. Nie zostaną one jednak przywrócone automatycznie.\n\nNiezbędne będzie ręczne zainstalowanie wszystkich swoich aplikacji jednocześnie, mając funkcję \"Przywracania Automatycznego\" włączoną.</string>
     <string name="current_destination_string">Kopia zapasowa statusu i ustawień</string>
     <string name="data_management_label">Kopia zapasowa Seedvault</string>
     <string name="recovery_code_verification_new_dialog_message">Wygenerowanie nowego kodu sprawi, że istniejące kopie zapasowe przestaną być dostępne. Spróbujemy je usunąć, jeśli będzie to możliwe.
@@ -115,7 +113,7 @@
     <string name="restore_restoring">Przywracanie kopii zapasowej</string>
     <string name="restore_next">Dalej</string>
     <string name="restore_installing_packages">Ponowna instalacja aplikacja</string>
-    <string name="restore_set_error">Wystąpił błąd podczas ładowania kopii zapasowych.</string>
+    <string name="restore_set_error">Wystąpił błąd podczas ładowania kopii zapasowych:</string>
     <string name="restore_invalid_location_message">Nie udało się znaleźć żadnych kopii zapasowych w tym miejscu.
 \n
 \nWybierz inne położenie, które zawiera katalog %s.</string>
@@ -278,4 +276,8 @@
     <string name="settings_backup_metered_title">Kopia zapasowa zatrzymana</string>
     <string name="storage_round_sync_summary_prefix">Zdalny RoundSync:</string>
     <string name="notification_finalizing_text">Kończenie tworzenia kopii zapasowej…</string>
+    <string name="notification_pruning_blobs_title">Usuwanie starych kopii zapasowych…</string>
+    <string name="restore_set_button_try_again">Spróbuj ponownie</string>
+    <string name="restore_set_button_restart">Rozpocznij od początku</string>
+    <string name="restore_set_bad_decrypt">Nie można odszyfrować kopii zapasowych.\n\nBieżący kod odzyskiwania najprawdopodobniej nie jest tym, który został użyty do utworzenia kopii zapasowej.</string>
 </resources>

@@ -81,9 +81,7 @@
     <string name="settings_backup_status_summary">Zadnja sigurnosna kopija: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Isključi sigurnosne kopije aplikacije</string>
     <string name="settings_backup_apk_dialog_cancel">Odustani</string>
-    <string name="settings_backup_apk_dialog_message">Isključivanjem sigurnosnih kopija aplikacija i dalje će spremati podaci aplikacije. Međutim, neće se automatski vratiti.
-\n
-\nSve aplikacije morat će se instalirati ručno s uključenom postavkom „Automatska obnova”.</string>
+    <string name="settings_backup_apk_dialog_message">Isključivanjem sigurnosnih kopija aplikacija i dalje će spremati podaci aplikacije. Međutim, neće se automatski vratiti. \n \nSve aplikacije morat će se instalirati ručno s uključenom postavkom „Automatska obnova”.</string>
     <string name="settings_backup_apk_dialog_title">Stvarno isključiti sigurnosne kopije aplikacije?</string>
     <string name="settings_backup_apk_summary">Spremi sigurnosne kopije samih aplikacija. Inače će se spremiti samo podaci aplikacije.</string>
     <string name="settings_backup_apk_title">Sigurnosna kopija aplikacije</string>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="settings_backup_apk_dialog_message">גיבוי מושבת של יישומון עדיין יגבה את נתוני היישומון. עם זאת, הוא לא ישוחזר אוטומטית.
-\n
-\nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
+    <string name="settings_backup_apk_dialog_message">גיבוי מושבת של יישומון עדיין יגבה את נתוני היישומון. עם זאת, הוא לא ישוחזר אוטומטית. \n \nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
     <string name="notification_title">הגיבוי פועל</string>
     <string name="notification_channel_title">התראת גיבוי</string>
     <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ואת מיקומן ולנסות שוב!</string>
@@ -44,7 +42,7 @@
     <string name="settings_backup_status_summary">גיבוי אחרון: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">להשבית את גיבוי היישומון</string>
     <string name="settings_backup_apk_dialog_cancel">ביטול</string>
-    <string name="settings_backup_apk_dialog_title">להשבית את גיבוי היישומון\?</string>
+    <string name="settings_backup_apk_dialog_title">להשבית את גיבויי ה־APK?</string>
     <string name="settings_backup_apk_summary">לגבות את היישומונים עצמם, אחרת, רק נתוני היישומונים יגובו.</string>
     <string name="restore_set_empty_result">לא נמצאו גיבויים מתאימים במיקום הנתון.
 \n

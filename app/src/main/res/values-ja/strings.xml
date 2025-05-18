@@ -136,9 +136,7 @@
     <string name="storage_check_fragment_restore_title">バックアップを探しています…</string>
     <string name="storage_check_fragment_backup_title">バックアップ先を初期化しています…</string>
     <string name="storage_fragment_restore_title">バックアップの保存先はどこですか？</string>
-    <string name="settings_backup_apk_dialog_message">アプリのバックアップを無効にしても、アプリの「データ」は引き続きバックアップされます。ただし、自動的には復元されません。
-\n
-\n「自動復元」をオンにした状態で、すべてのアプリを手動でインストールする必要があります。</string>
+    <string name="settings_backup_apk_dialog_message">アプリのバックアップを無効にしても、アプリの「データ」は引き続きバックアップされます。ただし、自動的には復元されません。 \n \n「自動復元」をオンにした状態で、すべてのアプリを手動でインストールする必要があります。</string>
     <string name="settings_category_storage">ストレージバックアップ (試験的)</string>
     <string name="settings_backup_storage_title">ファイルをバックアップする</string>
     <string name="settings_backup_storage_dialog_ok">とにかく有効にする</string>

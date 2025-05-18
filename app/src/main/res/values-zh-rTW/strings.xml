@@ -54,9 +54,7 @@
     <string name="settings_backup_dialog_message">當您再次開啟備份時，備份過程可能會比平時更久，並且會使用額外的儲存空間。</string>
     <string name="settings_backup_dialog_disable">還是關閉</string>
     <string name="settings_backup_apk_summary">備份應用程式本身。否則，只有應用程式數據會被備份。</string>
-    <string name="settings_backup_apk_dialog_message">關閉應用程式備份後仍會備份應用程式數據。然而，它不會自動還原。
-\n
-\n您需要在開啟「自動還原」功能的情況下手動安裝所有應用程式。</string>
+    <string name="settings_backup_apk_dialog_message">關閉應用程式備份後仍會備份應用程式數據。然而，它不會自動還原。 \n \n您需要在開啟「自動還原」功能的情況下手動安裝所有應用程式。</string>
     <string name="settings_backup_status_next_backup_past">一旦條件滿足後</string>
     <string name="settings_backup_status_next_backup_usb">當您插入 USB 隨身碟時，備份將自動進行</string>
     <string name="settings_backup_files_summary">無</string>

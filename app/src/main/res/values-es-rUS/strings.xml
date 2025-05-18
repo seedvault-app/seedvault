@@ -77,10 +77,8 @@
     <string name="settings_backup_status_summary">Último respaldo: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Deshabilitar respaldo de la aplicación</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
-    <string name="settings_backup_apk_dialog_message">Respaldo deshabilitado de la aplicación aún seguirá haciendo un respaldo de los datos de la aplicación. Sin embargo, no se restaurará automáticamente.
-\n
-\nDeberás instalar todas tus aplicaciones manualmente mientras tengas activada la \"Restauración Automática\".</string>
-    <string name="settings_backup_apk_dialog_title">¿Deshabilitar realmente el respaldo de la aplicación\?</string>
+    <string name="settings_backup_apk_dialog_message">Respaldo deshabilitado de la aplicación aún seguirá haciendo un respaldo de los datos de la aplicación. Sin embargo, no se restaurará automáticamente. \n \nDeberás instalar todas tus aplicaciones manualmente mientras tengas activada la \"Restauración Automática\".</string>
+    <string name="settings_backup_apk_dialog_title">¿Deshabilitar realmente el respaldo de la aplicación?</string>
     <string name="settings_backup_apk_summary">Respalde las aplicaciones en sí. De lo contrario, solo se harían respaldos de los datos de la aplicación.</string>
     <string name="settings_backup_apk_title">Respaldo de la aplicación</string>
     <string name="settings_category_app_data_backup">Respaldo de datos de la aplicación</string>

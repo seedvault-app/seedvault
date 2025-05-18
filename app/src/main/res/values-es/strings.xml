@@ -86,10 +86,8 @@
     <string name="settings_backup_exclude_apps">Excluir aplicaciones</string>
     <string name="settings_backup_status_summary">Última copia de seguridad: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Deshabilitar la copia de seguridad de la aplicación</string>
-    <string name="settings_backup_apk_dialog_message">Si se desactiva la copia de seguridad de la aplicación, se seguirán guardando los datos de la misma. Sin embargo, no se restaurará automáticamente.
-\n
-\nDeberá instalar todas sus aplicaciones manualmente mientras tenga activada la \"Restauración automática\".</string>
-    <string name="settings_backup_apk_dialog_title">¿Desactivar realmente la copia de seguridad de la aplicación\?</string>
+    <string name="settings_backup_apk_dialog_message">Si se desactiva la copia de seguridad de la aplicación, se seguirán guardando los datos de la misma. Sin embargo, no se restaurará automáticamente. \n \nDeberá instalar todas sus aplicaciones manualmente mientras tenga activada la \"Restauración automática\".</string>
+    <string name="settings_backup_apk_dialog_title">¿Desactivar realmente la copia de seguridad de la aplicación?</string>
     <string name="settings_backup_apk_summary">Realiza una copia de seguridad de las aplicaciones. De lo contrario, solo se realizarían copias de seguridad de los datos de la aplicación.</string>
     <string name="settings_backup_apk_title">Copia de seguridad de la aplicación</string>
     <string name="settings_category_app_data_backup">Copia de seguridad de los datos de la aplicación</string>

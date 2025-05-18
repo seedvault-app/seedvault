@@ -36,10 +36,8 @@
     <string name="recovery_code_input_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, den du beim Konfigurieren der Sicherungen aufgeschrieben hast.</string>
     <string name="recovery_code_confirm_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, um sicher zu gehen, dass er funktionieren wird, wenn du ihn brauchst.</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> frei</string>
-    <string name="settings_backup_apk_dialog_message">Bei deaktivierter App-Sicherung werden die App-Daten weiterhin gesichert. Sie werden jedoch nicht automatisch wiederhergestellt.
-\n
-\nDu musst alle deine Apps manuell installieren, während die \"Automatische Sicherungen\" eingeschaltet ist.</string>
-    <string name="settings_backup_apk_summary">Die Apps selbst sichern. Andernfalls würden nur die App-Daten gesichert werden.</string>
+    <string name="settings_backup_apk_dialog_message">Nach der Deaktivierung von APK Sicherung werden die App-Daten weiterhin gesichert. Sie werden jedoch nicht automatisch wiederhergestellt.\n\nDu musst alle deine Apps manuell installieren, obwohl die „Automatische Wiederherstellung“ aktiviert ist.</string>
+    <string name="settings_backup_apk_summary">Sichert die Apps selbst. Andernfalls werden nur die App-Daten gesichert.</string>
     <string name="storage_check_fragment_restore_title">Suche nach Sicherungen…</string>
     <string name="storage_check_fragment_backup_title">Bereite Speicherort vor…</string>
     <string name="storage_fragment_backup_title">Wähle aus, wo die Sicherungen gespeichert werden sollen</string>
@@ -58,11 +56,11 @@
     <string name="settings_backup_now">Jetzt sichern</string>
     <string name="settings_backup_exclude_apps">Apps ausschließen</string>
     <string name="settings_backup_status_summary">Letzte Sicherung: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">App-Sicherungen deaktivieren</string>
+    <string name="settings_backup_apk_dialog_disable">APK Sicherungen deaktivieren</string>
     <string name="settings_backup_apk_dialog_cancel">Abbrechen</string>
-    <string name="settings_backup_apk_dialog_title">App-Sicherung wirklich deaktivieren\?</string>
+    <string name="settings_backup_apk_dialog_title">APK Sicherung wirklich deaktivieren?</string>
     <string name="settings_info">Alle Backups auf deinem Gerät sind verschlüsselt. Zum Wiederherstellen benötigst du dein aus 12 Wörtern bestehenden Wiederherstellungscode.</string>
-    <string name="settings_backup_apk_title">App-Sicherung</string>
+    <string name="settings_backup_apk_title">APK Sicherung</string>
     <string name="settings_category_app_data_backup">App-Daten-Sicherung</string>
     <string name="settings_auto_restore_summary_usb">Achtung: Dein %1$s muss für diese Aktion verbunden sein.</string>
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer App die gesicherten Daten und Einstellungen wiederherstellen.</string>
@@ -93,7 +91,7 @@
 \nDies ist höchstwahrscheinlich auf einen falschen Wiederherstellungscode oder einen Speicherfehler zurückzuführen.</string>
     <string name="restore_next">Weiter</string>
     <string name="restore_title">Wiederherstellung einer Sicherung</string>
-    <string name="restore_set_error">Beim Laden der Sicherungen ist ein Fehler aufgetreten.</string>
+    <string name="restore_set_error">Beim Laden der Sicherungen ist ein Fehler aufgetreten:</string>
     <string name="restore_invalid_location_message">Wir konnten keine Sicherungen an diesem Speicherort finden.
 \n
 \nWähle einen anderen Speicherort aus, der einen %s Ordner enthält.</string>
@@ -158,7 +156,7 @@
     <string name="settings_backup_files_summary">Keine</string>
     <string name="settings_backup_files_title">Enthaltene Dateien und Ordner</string>
     <string name="settings_backup_storage_title">Meine Dateien sichern</string>
-    <string name="settings_category_storage">Speichersicherung (Beta)</string>
+    <string name="settings_category_storage">Dateisicherung (Beta)</string>
     <string name="settings_category_apps">App-Sicherung</string>
     <string name="storage_fake_davx5_summary_installed">Tippe, um eine WebDAV-Verbindung einzurichten</string>
     <string name="error_no_store">Fehler: Kein App-Store installiert</string>
@@ -271,4 +269,11 @@
     <string name="notification_checking_error_text">Tippe für Details. Wir prüften %1$s mit einer durchschnittlichen Geschwindigkeit von %2$s.</string>
     <string name="notification_usb_monitor_title">Warten auf USB-Laufwerk…</string>
     <string name="backup_app_check_error_no_result">Detaillierte Ergebnisse nicht vorhanden. Ist seit der Prüfung viel Zeit vergangen? Versuche es nochmal.</string>
+    <string name="notification_pruning_blobs_title">Alte Sicherungsdaten werden entfernt…</string>
+    <string name="restore_set_bad_decrypt">Sicherungen konnten nicht entschlüsselt werden.\n\nDer aktuelle Wiederherstellungscode ist höchstwahrscheinlich nicht derjenige, der zur Erstellung der Sicherung verwendet wurde.</string>
+    <string name="restore_set_button_try_again">Erneut versuchen</string>
+    <string name="restore_set_button_restart">Neu beginnen</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
+    <string name="notification_finalizing_text">Abschluss der Sicherung…</string>
+    <string name="notification_pruning_channel_title">Benachrichtigung über alte Sicherungen entfernen</string>
 </resources>

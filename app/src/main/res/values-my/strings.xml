@@ -48,9 +48,7 @@
     <string name="settings_backup_status_title">အရန်ကူးအခြေအနေ</string>
     <string name="settings_backup_apk_dialog_disable">အက်ပ်အရန်ကူးခြင်းကိုပိတ်ပါ</string>
     <string name="settings_backup_apk_dialog_cancel">ပယ်ဖြတ်ခြင်း ။</string>
-    <string name="settings_backup_apk_dialog_message">ပိတ်ထားသောအက်ပလီကေးရှင်းသည်အက်ပ်ဒေတာကိုအရံသိမ်းလိမ့်မည်။ သို့သော်၎င်းသည်အလိုအလျောက်ပြန်လည်ရရှိမည်မဟုတ်ပါ။
-\n
-\n\"Automatic Restore\" ကိုဖွင့်ထားစဉ်သင်၏အက်ပ်များအားလုံးကိုကိုယ်တိုင်ထည့်သွင်းရန်လိုအပ်သည် ။</string>
+    <string name="settings_backup_apk_dialog_message">ပိတ်ထားသောအက်ပလီကေးရှင်းသည်အက်ပ်ဒေတာကိုအရံသိမ်းလိမ့်မည်။ သို့သော်၎င်းသည်အလိုအလျောက်ပြန်လည်ရရှိမည်မဟုတ်ပါ။ \n \n\"Automatic Restore\" ကိုဖွင့်ထားစဉ်သင်၏အက်ပ်များအားလုံးကိုကိုယ်တိုင်ထည့်သွင်းရန်လိုအပ်သည် ။</string>
     <string name="settings_backup_apk_dialog_title">အက်ပလီကေးရှင်းအရန်ကူးခြင်းကိုအမှန်ပိတ်ထားသလား ။</string>
     <string name="settings_backup_apk_summary">အက်ပ်များကိုသူတို့ကိုယ်တိုင်အရန်ကူးပါ။ ဒီလိုမှမဟုတ်ရင် app data များသာအရန်သင့်သိမ်းဆည်းလိမ့်မယ် ။</string>
     <string name="settings_backup_apk_title">အက်ပ်ဒေတာအရံကူးခြင်း ။</string>

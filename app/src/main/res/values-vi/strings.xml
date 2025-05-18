@@ -117,10 +117,8 @@
     <string name="settings_backup_status_title">Trạng thái sao lưu</string>
     <string name="settings_backup_apk_dialog_disable">Tắt sao lưu ứng dụng</string>
     <string name="settings_backup_apk_dialog_cancel">Hủy</string>
-    <string name="settings_backup_apk_dialog_message">Bản sao lưu ứng dụng bị tắt vẫn sẽ sao lưu dữ liệu ứng dụng. Tuy nhiên, nó sẽ không được tự động khôi phục.
-\n
-\nBạn sẽ cần phải cài đặt thủ công tất cả ứng dụng trong khi \"Khôi phục tự động\" được bật.</string>
-    <string name="settings_backup_apk_dialog_title">Thực sự tắt sao lưu ứng dụng\?</string>
+    <string name="settings_backup_apk_dialog_message">Bản sao lưu ứng dụng bị tắt vẫn sẽ sao lưu dữ liệu ứng dụng. Tuy nhiên, nó sẽ không được tự động khôi phục. \n \nBạn sẽ cần phải cài đặt thủ công tất cả ứng dụng trong khi \"Khôi phục tự động\" được bật.</string>
+    <string name="settings_backup_apk_dialog_title">Thực sự tắt sao lưu ứng dụng?</string>
     <string name="settings_backup_apk_summary">Sao lưu bản thân các ứng dụng. Nếu không, chỉ có dữ liệu ứng dụng được sao lưu.</string>
     <string name="settings_backup_apk_title">Sao lưu ứng dụng</string>
     <string name="settings_category_app_data_backup">Sao lưu dữ liệu ứng dụng</string>

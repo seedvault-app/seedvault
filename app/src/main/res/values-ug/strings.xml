@@ -54,12 +54,12 @@
     <string name="settings_auto_restore_summary">ئەپنى قايتا ئورناتقاندا، زاپاسلانغان تەڭشەك ۋە سانلىق مەلۇمات ئەسلىگە كەلتۈرۈلىدۇ.</string>
     <string name="settings_auto_restore_summary_usb">ئەسكەرتىش: بۇ ئىقتىدارنىڭ ئىشلىشى ئۈچۈن %1$s ڭىزنى چېتىشىڭىز كېرەك.</string>
     <string name="settings_category_app_data_backup">ئەپ سانلىق مەلۇمات زاپاسلاش</string>
-    <string name="settings_backup_apk_title">ئەپ زاپاسلاش</string>
+    <string name="settings_backup_apk_title">APK زاپاسلاش</string>
     <string name="settings_backup_apk_summary">ئەپنىڭ ئۆزى زاپاسلىنىدۇ. ئۇنداق بولمىسا، پەقەت ئەپ سانلىق مەلۇماتىلا زاپاسلىنىدۇ.</string>
-    <string name="settings_backup_apk_dialog_title">ئەپ زاپاسلاشنى راستتىنلا چەكلەمدۇ؟</string>
-    <string name="settings_backup_apk_dialog_message">ئەپ زاپاسلاش چەكلەنسىمۇ ئەپنىڭ سانلىق مەلۇماتى يەنىلا زاپاسلىنىدۇ. ئەمما، ئۇ ئۆزلۈكىدىن ئەسلىگە كەلتۈرۈلمەيدۇ.\n\n«ئۆزلۈكىدىن ئەسلىگە كەلتۈر» ئوچۇق ھالەتتە بارلىق ئەپنى قولدا ئورنىتىشىڭىز كېرەك.</string>
+    <string name="settings_backup_apk_dialog_title">APK زاپاسلاشنى راستتىنلا چەكلەمدۇ؟</string>
+    <string name="settings_backup_apk_dialog_message">APK زاپاسلاش چەكلەنگەندىن كېيىن، ئەپنىڭ سانلىق مەلۇماتى يەنىلا زاپاسلىنىدۇ. ئەمما، ئۇ ئۆزلۈكىدىن ئەسلىگە كەلتۈرۈلمەيدۇ.\n\n«ئۆزلۈكىدىن ئەسلىگە كەلتۈر» ئوچۇق ھالەتتە بارلىق ئەپنى قولدا ئورنىتىشىڭىز كېرەك.</string>
     <string name="settings_backup_apk_dialog_cancel">ۋاز كەچ</string>
-    <string name="settings_backup_apk_dialog_disable">ئەپ زاپاسلاشنى چەكلە</string>
+    <string name="settings_backup_apk_dialog_disable">APK زاپاسلاشنى چەكلە</string>
     <string name="settings_backup_status_title">زاپاسلاش ھالىتى</string>
     <string name="settings_backup_status_summary">ئاخىرقى زاپاسلانغان ۋاقىت: %1$s</string>
     <string name="settings_backup_status_next_backup">كېيىنكى زاپاسلىنىدىغان ۋاقىت: %1$s</string>
@@ -71,7 +71,7 @@
     <string name="settings_backup_app_check_summary">زاپاسنىڭ ئەسلىگە كەلتۈرۈلۈشىگە كاپالەتلىك قىلىدۇ</string>
     <string name="settings_backup_exclude_apps">مۇستەسنا ئەپ</string>
     <string name="settings_backup_now">دەرھال زاپاسلا</string>
-    <string name="settings_category_storage">ساقلىغۇچ زاپاسلاش (سىناق)</string>
+    <string name="settings_category_storage">ھۆججەت زاپاسلاش (سىناق)</string>
     <string name="settings_backup_storage_title">ھۆججەتلىرىمنى زاپاسلا</string>
     <string name="settings_backup_files_title">ھۆججەت ۋە قىسقۇچنى ئۆز ئىچىگە ئالىدۇ</string>
     <string name="settings_backup_files_summary">يوق</string>
@@ -215,7 +215,7 @@
     <string name="restore_choose_restore_set">ئەسلىگە كەلتۈرىدىغان زاپاس تاللىنىدۇ</string>
     <string name="restore_invalid_location_title">ھېچقانداق زاپاس تېپىلمىدى</string>
     <string name="restore_invalid_location_message">بۇ جايدىن ھېچقانداق زاپاسنى تاپالمىدۇق.\n\n%s قىسقۇچ بار باشقا جاينى تاللاڭ.</string>
-    <string name="restore_set_error">زاپاسنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى.</string>
+    <string name="restore_set_error">زاپاسنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى:</string>
     <string name="restore_select_packages_all">تۆۋەندىكى بارلىق ئەپ</string>
     <string name="restore_recycle_backup_title">بۇ زاپاسنى قايتا ئىشلىتەمدۇ؟</string>
     <string name="restore_recycle_backup_button_no">يېڭى زاپاس قۇر</string>
@@ -255,4 +255,9 @@
     <string name="restore_storage_in_progress_info">ھۆججەتلەرنى ئارقا سۇپىدا ئەسلىگە كەلتۈرۈۋاتىدۇ. ئىجرا قىلىنىۋاتقاندا تېلېفونىڭىزنى ئىشلىتەلەيسىز.\n\nبەزى ئەپ (مەسىلەن، Signal ياكى WhatsApp) بەلكىم ھۆججەتنى تولۇق ئەسلىگە كەلتۈرگەندىن كېيىن ئاندىن زاپاسنى ئەكىرگىلى بولۇشى مۇمكىن. ئامالنىڭ بارىچە ھۆججەتنى ئەسلىگە كەلتۈرۈش تاماملىنىشتىن ئىلگىرى بۇ ئەپلەرنى قوزغىتىشتىن ساقلىنىڭ.</string>
     <string name="notification_backup_already_running">زاپاسلاش ئاللىبۇرۇن ئىجرا قىلىنىۋاتىدۇ</string>
     <string name="storage_round_sync_summary_prefix">يىراقتىكى RoundSync :</string>
+    <string name="notification_pruning_blobs_title">كونا زاپاس سانلىق مەلۇماتنى چىقىرىۋەتمەكتە…</string>
+    <string name="restore_set_button_try_again">قايتا سىناڭ</string>
+    <string name="restore_set_button_restart">باشتىن باشلا</string>
+    <string name="restore_set_bad_decrypt">زاپاسنىڭ شىفىرىنى يېشەلمىدى.\n\nنۆۋەتتىكى ئەسلىگە كەلتۈرۈش كودى زاپاسلىغاندا ئىشلەتكىنى ئەمەستەك قىلىدۇ.</string>
+    <string name="notification_finalizing_text">زاپاسلاشنى تاماملاۋاتىدۇ…</string>
 </resources>

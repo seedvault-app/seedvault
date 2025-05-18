@@ -17,7 +17,7 @@
     <string name="settings_category_apps">App backup</string>
     <string name="settings_backup_apk_summary">Back up the apps themselves. Otherwise, only app data would get backed up.</string>
     <string name="settings_backup_apk_dialog_cancel">Cancel</string>
-    <string name="settings_backup_apk_dialog_title">Really disable app backup\?</string>
+    <string name="settings_backup_apk_dialog_title">Really disable app backup?</string>
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
@@ -44,9 +44,7 @@
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="recovery_code_input_hint_5">Word 5</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
-    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically.
-\n
-\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
+    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically. \n \nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
     <string name="storage_check_fragment_backup_title">Initialising backup location…</string>
     <string name="recovery_code_input_hint_4">Word 4</string>
     <string name="settings_expert_logcat_summary">Developers can diagnose bugs with these logs.

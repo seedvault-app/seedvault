@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="settings_backup_apk_title">Copii de rezervă aplicații</string>
-    <string name="settings_backup_apk_dialog_title">Dezactivezi cu adevărat crearea copiilor de rezervă pentru aplicații?</string>
-    <string name="settings_backup_apk_dialog_message">Dezactivarea copiilor de rezervă pentru aplicații nu va dezactiva crearea copiilor de rezervă pentru datele aplicațiilor. Cu toate acestea, nu se va restaurat automat.
-\n
-\nVa trebui să instalezi manual toate aplicațiile în timp ce „Restaurare automată” este activată.</string>
+    <string name="settings_backup_apk_dialog_title">Dezactivezi cu adevărat crearea copiilor de rezervă pentru APK?</string>
+    <string name="settings_backup_apk_dialog_message">După dezactivarea copiilor de rezervă pentru APK, datele aplicațiilor vor fi încă rezervate. Cu toate acestea, nu se vor restaurat automat. \n \nVa trebui să instalezi manual toate aplicațiile în timp ce „Restaurare automată” este activată.</string>
     <string name="settings_backup_apk_dialog_cancel">Anulează</string>
-    <string name="settings_backup_apk_dialog_disable">Dezactivează crearea copiilor de rezervă pentru aplicații</string>
+    <string name="settings_backup_apk_dialog_disable">Dezactivează crearea copiilor de rezervă pentru APK</string>
     <string name="settings_backup_status_title">Stare copii de rezervă</string>
     <string name="backup">Copii de rezervă</string>
     <string name="storage_check_fragment_restore_title">Se caută copii de rezervă…</string>
@@ -49,7 +47,7 @@
     <string name="restore_invalid_location_message">Nu s-au găsit copii de rezervă în această locație.
 \n
 \nAlege o altă locație care conține un dosar %s.</string>
-    <string name="restore_set_error">A apărut o eroare la încărcarea copiilor de rezervă.</string>
+    <string name="restore_set_error">A apărut o eroare la încărcarea copiilor de rezervă:</string>
     <string name="storage_internal_warning_message">Ai ales stocarea internă pentru crearea copiilor de rezervă. Aceasta nu va fi disponibilă atunci când telefonul este pierdut sau spart.</string>
     <string name="settings_backup_recovery_code">Cod de recuperare</string>
     <string name="storage_fake_davx5_summary_unavailable">Suportul WebDAV nu este disponibil. Configurează unul.</string>
@@ -67,11 +65,9 @@
     <string name="restore_storage_in_progress_info">Fișierele sunt restaurate în fundal. Poți începe să utilizezi telefonul în timp ce aceasta rulează.
 \n
 \nUnele aplicații (de exemplu, Signal sau WhatsApp) ar putea necesita restaurarea completă a fișierelor pentru a importa o copie de rezervă. Încearcă să eviți pornirea acelor aplicații înainte ca restaurarea fișierelor să fie finalizată.</string>
-    <string name="about_summary">O aplicație pentru crearea copiilor de rezervă care utilizează API-ul intern al Android. Este Software Liber, lansat sub licență Apache 2.
-\n
-\nCa toate programele, Seedvault poate conține erori sau vulnerabilități.</string>
+    <string name="about_summary">O aplicație pentru crearea copiilor de rezervă care utilizează API-ul intern al Android. Este Software liber, lansat sub licență Apache 2. \n \nCa toate programele, Seedvault poate conține erori sau vulnerabilități.</string>
     <string name="settings_category_apps">Copii de rezervă pentru aplicații</string>
-    <string name="settings_category_storage">Copie de rezervă pentru stocare (beta)</string>
+    <string name="settings_category_storage">Copie de rezervă pentru fișiere (beta)</string>
     <string name="settings_backup_storage_title">Creează copie de rezervă fișierelor mele</string>
     <string name="settings_backup_files_title">Fișiere și dosare incluse</string>
     <string name="storage_check_fragment_backup_error">A apărut o eroare la accesarea locației copiilor de rezervă.</string>
@@ -226,8 +222,8 @@
     <string name="restore_select_packages">Selectează aplicațiile de restaurat</string>
     <string name="restore_select_packages_all">Toate aplicatiile urmatoare</string>
     <string name="restore_storage_selection_description">Fișierele selectate vor fi restaurate. Atingeți dosare pentru a vedea fișierele din ele.</string>
-    <string name="notification_restore_channel_title">Notificare de restabilire</string>
-    <string name="notification_restore_title">Rulează restabilirea</string>
+    <string name="notification_restore_channel_title">Notificare despre restabilire</string>
+    <string name="notification_restore_title">Se restabilește</string>
     <string name="setup_button">Pornește una nouă</string>
     <string name="first_start_text">Dorești să restaurezi dispozitivul dintr-o copie de rezervă existentă sau să începi o nouă copie de rezervă?</string>
     <string name="settings_backup_file_check_title">Verifică integritatea copiei de rezervă</string>
@@ -276,4 +272,9 @@
     <string name="restore_restore_set_apks_no_size">Conține <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații</string>
     <string name="restore_restore_set_can_not_get_restored">Această copie de rezervă are unele erori. S -ar putea să o poți restabili parțial.</string>
     <string name="restore_recycle_backup_title">Reutilizezi această copie de rezervă?</string>
+    <string name="notification_pruning_blobs_title">Eliminarea datelor vechi…</string>
+    <string name="restore_set_bad_decrypt">Nu s-au putut decripta copiile de rezervă.\n\nCodul de recuperare actual, cel mai probabil, nu este cel care a fost folosit pentru a face copia de rezervă.</string>
+    <string name="restore_set_button_try_again">Reîncearcă</string>
+    <string name="restore_set_button_restart">Pornește de la început</string>
+    <string name="notification_finalizing_text">Finalizarea copiei de rezervă…</string>
 </resources>

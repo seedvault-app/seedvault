@@ -117,10 +117,8 @@
     <string name="settings_backup_status_title">Atsarginės kopijos būsena</string>
     <string name="settings_backup_apk_dialog_disable">Išjungti atsargines programėlių kopijas</string>
     <string name="settings_backup_apk_dialog_cancel">Atšaukti</string>
-    <string name="settings_backup_apk_dialog_message">Išjungus atsargines programėlių kopijas vis tiek bus sukurtos atsarginės programėlių duomenų kopijos. Tačiau jos nebus atkuriami automatiškai.
-\n
-\nVisas programėles turėsite įdiegti rankiniu būdu, net ir turint įjungtą \"Automatinis atkūrimas\" funkciją.</string>
-    <string name="settings_backup_apk_dialog_title">Tikrai išjungti atsargines programėlių kopijas\?</string>
+    <string name="settings_backup_apk_dialog_message">Išjungus atsargines programėlių kopijas vis tiek bus sukurtos atsarginės programėlių duomenų kopijos. Tačiau jos nebus atkuriami automatiškai. \n \nVisas programėles turėsite įdiegti rankiniu būdu, net ir turint įjungtą \"Automatinis atkūrimas\" funkciją.</string>
+    <string name="settings_backup_apk_dialog_title">Tikrai išjungti atsargines programėlių kopijas?</string>
     <string name="settings_backup_apk_summary">Padarykite atsarginę pačių programėlių kopiją. Priešingu atveju atsarginė kopija bus daroma tik programėlių duomenims.</string>
     <string name="settings_backup_apk_title">Programėlių atsarginės kopijos</string>
     <string name="settings_category_app_data_backup">Programėlių duomenų atsarginės kopijos</string>

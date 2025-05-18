@@ -22,7 +22,7 @@
     <string name="restore_set_empty_result">Belirtilen konumda uygun yedekleme bulunamadı.
 \n
 \nBunun nedeni büyük olasılıkla yanlış bir kurtarma kodu veya bir depolama hatasıdır.</string>
-    <string name="restore_set_error">Yedeklemeler yüklenirken bir hata oluştu.</string>
+    <string name="restore_set_error">Yedeklemeler yüklenirken bir hata oluştu:</string>
     <string name="restore_invalid_location_message">Bu konumda herhangi bir yedekleme bulamadık.
 \n
 \nLütfen %s klasörünü içeren başka bir konum seçin.</string>
@@ -80,17 +80,15 @@
     <string name="settings_backup_now">Şimdi yedekle</string>
     <string name="settings_backup_exclude_apps">Uygulamaları hariç tut</string>
     <string name="settings_backup_status_summary">Son yedekleme: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">Uygulama yedeklemeyi devre dışı bırak</string>
+    <string name="settings_backup_apk_dialog_disable">APK yedeklemeyi devre dışı bırak</string>
     <string name="settings_backup_apk_dialog_cancel">İptal</string>
-    <string name="settings_backup_apk_dialog_message">Uygulama yedekleme devre dışı bırakıldığında, uygulama verileri yine de yedeklenecektir. Ancak, otomatik olarak geri yüklenmeyecektir.
-\n
-\n\"Otomatik Geri Yükle\" açıkken tüm uygulamalarınızı elle kurmanız gerekecektir.</string>
+    <string name="settings_backup_apk_dialog_message">APK yedekleme devre dışı bırakıldığında, uygulama verileri yine de yedeklenecektir. Ancak, otomatik olarak geri yüklenmeyecektir. \n \n\"Otomatik Geri Yükle\" açıkken tüm uygulamalarınızı elle kurmanız gerekecektir.</string>
     <string name="backup">Yedekle</string>
     <string name="settings_auto_restore_title">Otomatik geri yükle</string>
     <string name="settings_category_app_data_backup">Uygulama verilerini yedekle</string>
-    <string name="settings_backup_apk_title">Uygulama yedekle</string>
-    <string name="settings_backup_apk_dialog_title">Uygulama yedeklemesi gerçekten devre dışı bırakılsın mı\?</string>
-    <string name="settings_backup_apk_summary">Uygulamaların kendisini yedekle. Aksi takdirde, yalnızca uygulama verileri yedeklenir.</string>
+    <string name="settings_backup_apk_title">APK yedeklemesi</string>
+    <string name="settings_backup_apk_dialog_title">APK yedeklemesi gerçekten devre dışı bırakılsın mı?</string>
+    <string name="settings_backup_apk_summary">Uygulamaların kendisini yedekler. Aksi takdirde, yalnızca uygulama verileri yedeklenecektir.</string>
     <string name="settings_auto_restore_summary">Bir uygulamayı yeniden kurarken, yedeklenen ayarları ve verileri geri yükle.</string>
     <string name="settings_info">Tüm yedeklemeler telefonunuzda şifrelenir. Yedeklemeyi geri yüklemek için 12 sözcükten oluşan kurtarma kodunuza ihtiyacınız olacak.</string>
     <string name="settings_backup_last_backup_never">Asla</string>
@@ -124,7 +122,7 @@
     <string name="backup_sms">SMS metin mesajları</string>
     <string name="backup_section_system">Sistem verileri</string>
     <string name="settings_backup_status_title">Yedekleme durumu</string>
-    <string name="recovery_code_recreated">Yeni kurtarma kodu başarıyla oluşturuldu</string>
+    <string name="recovery_code_recreated">Yeni kurtarma kodu başarıyla oluşturuldu. Çıkış yapılıyor…</string>
     <string name="recovery_code_verification_new_dialog_message">Yeni bir kod oluşturmak, var olan yedeklemelerinizi erişilemez hale getirecektir. Mümkünse onları silmeye çalışacağız.
 \n
 \nBunu yapmak istediğinizden emin misiniz\?</string>
@@ -144,7 +142,7 @@
 \n
 \nBazı uygulamalar (örn. Signal veya WhatsApp), bir yedeklemeyi içe aktarmak için dosyaların tamamen geri yüklenmesini gerektirebilir. Dosya geri yükleme işlemi tamamlanmadan bu uygulamaları başlatmaktan kaçının.</string>
     <string name="restore_storage_in_progress_title">Dosyalar geri yükleniyor…</string>
-    <string name="restore_storage_choose_snapshot">Geri yüklenecek bir depolama yedeklemesi seçin (beta aşamasında)</string>
+    <string name="restore_storage_choose_snapshot">Geri yüklenecek bir dosya yedeklemesi seçin (beta aşamasında)</string>
     <string name="restore_storage_skip">Dosyaları geri yüklemeyi atla</string>
     <string name="restore_skip_apps">Uygulamaları geri yüklemeyi atla</string>
     <string name="recovery_code_auth_description">Devam etmek için aygıt kimlik bilgilerinizi girin</string>
@@ -158,7 +156,7 @@
     <string name="settings_backup_files_summary">Yok</string>
     <string name="settings_backup_files_title">Dahil edilen dosya ve klasörler</string>
     <string name="settings_backup_storage_title">Dosyalarımı yedekle</string>
-    <string name="settings_category_storage">Depolama yedekle (beta aşamasında)</string>
+    <string name="settings_category_storage">Dosya yedekleme (beta aşamasında)</string>
     <string name="settings_category_apps">Uygulama yedekle</string>
     <string name="settings_backup_storage_battery_optimization">Uyarı: Pil iyileştirme etkin olduğundan otomatik yedekleme yok.</string>
     <string name="settings_backup_new_code_dialog_title">Yeni kurtarma kodu gerekli</string>
@@ -191,7 +189,7 @@
     <string name="settings_backup_dialog_disable">Yine de kapat</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Tavsiye edilmez)</string>
     <string name="about_contributor_headline">Katkıda Bulunanlar</string>
-    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a></string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NLnet tarafından NGI0 Güven Fonu</a></string>
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>
     <string name="about_contributing_organizations_title">Katkıda Bulunan Kuruluşlar</string>
     <string name="storage_user_selected_location_title">Kullanıcının seçtiği konum</string>
@@ -230,4 +228,52 @@
     <string name="setup_button">Yeni başlat</string>
     <string name="notification_restore_channel_title">Geri yükleme bildirimi</string>
     <string name="notification_restore_title">Yeniden yükleme devam ediyor</string>
+    <string name="notification_pruning_blobs_title">Eski yedekleme verileri kaldırılıyor…</string>
+    <string name="notification_usb_monitor_title">USB sürücüsü bekleniyor…</string>
+    <string name="notification_usb_monitor_text">USB sürücünüz müsait olduğunda, yedeklemeyi başlatacağız.</string>
+    <string name="backup_app_check_success_disclaimer">Not: Her uygulamanın içinde kullanıcı verisi içerip içermediğini doğrulayamayız.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">%1$d tane anlık görüntü yedeği bulduk. Ancak, hepsi bozuk. Lütfen başarılı bir yedekleme yapın ve tekrar kontrol edin.</string>
+    <string name="backup_app_check_error_has_snapshots">%1$d tane anlık görüntü yedeği bulduk, bazıları bozuk ya da hata içeriyor. Aşağıdakiler geri getirilebilen yedeklemelerdir.</string>
+    <string name="backup_app_check_error_no_result">Detaylı sonuçları kaybettik. Kontrolü çalıştırdıktan beri uzun bir zaman mı geçti? Tekrar çalıştırmayı deneyin.</string>
+    <string name="restore_restore_set_can_not_get_restored">Bu yedek bazı hatalar içeriyor. Kısmen geri getirme ihtimaliniz mevcut.</string>
+    <string name="restore_recycle_backup_title">Bu yedeği tekrar kullan?</string>
+    <string name="restore_set_button_restart">Baştan başla</string>
+    <string name="restore_set_bad_decrypt">Yedeklemelerin şifresi çözülemedi.\n\nMevcut kurtarma kodu büyük ihtimalle yedeği yapmak için kullanılan değil.</string>
+    <string name="restore_set_button_try_again">Tekrar dene</string>
+    <string name="settings_backup_file_check_title">Yedeklemenin bütünlüğünü kontrol et</string>
+    <string name="settings_app_check_title">Uygulama yedeklemesi bütünlüğünü doğrula</string>
+    <string name="settings_app_check_text">Her yedekleme işlemi otomatik olarak yedek bütünlüğünü kontrol edecektir. Ancak, zamandan tasarruf etmek için, asıl uygulama verisi indirilmeyecek ve doğrulanmayacaktır.</string>
+    <string name="settings_backup_file_check_summary">Dosyaları geri getirmek için yedeğimin çalıştığından emin ol</string>
+    <string name="settings_file_check_title">Dosya yedek bütünlüğünü doğrula</string>
+    <string name="settings_app_check_text2">Uygulama yedeğinizi doğrulamak için buradan tek seferlik bir kontrol yapabilirsiniz. Kontrol için uygulama verisinin ne kadarının indirileceğini seçiniz. Ne kadar seçerseniz, o kadar uzun sürecektir ancak kontrol bir o kadar da güvenilir olacaktır. Bu arkaplanda çalışacak ve kontrol bittiğinde bir bildirim gönderecektir.</string>
+    <string name="settings_app_check_warning">Uyarı: Yüksek miktarlarda veri indirmek uzun vakit alabilir.</string>
+    <string name="settings_app_check_button">Yedeği kontrol et</string>
+    <string name="settings_file_check_text">Dosya yedeğinizi doğrulamak için buradan tek seferlik bir kontrol yapabilirsiniz.</string>
+    <string name="settings_file_check_text2">Uygulama yedeğinizi doğrulamak için buradan tek seferlik bir kontrol yapabilirsiniz. Kontrol için uygulama verisinin ne kadarının indirileceğini seçiniz. Ne kadar seçerseniz, o kadar uzun sürecektir ancak kontrol bir o kadar da güvenilir olacaktır.\n\nBu arkaplanda çalışacak ve kontrol bittiğinde bir bildirim gönderecektir.</string>
+    <string name="notification_checking_title">Uygulama yedeklemeleri kontrol ediliyor…</string>
+    <string name="notification_checking_finished_title">Uygulama yedeklemesi bütünlüğü doğrulandı</string>
+    <string name="notification_pruning_channel_title">Eski yedekleme bildirimi kaldırılıyor</string>
+    <string name="notification_pruning_title">Eski yedeklemeler kaldırılıyor…</string>
+    <string name="notification_checking_channel_title">Uygulama yedekleme bütünlük kontrolü</string>
+    <string name="notification_checking_error_text">Detaylar için dokunun. %2$s ortalama hızıyla %1$s kontrol ettik.</string>
+    <string name="backup_app_check_success_intro">%1$d tane anlık durum kopyası bulundu ve %2$d%% kadarının verisi (%3$s) başarıyla doğrulandı:</string>
+    <string name="notification_checking_action">Detaylar</string>
+    <string name="notification_checking_finished_text">Başarıyla %2$s ortalama hızıyla %1$s doğrulandı.</string>
+    <string name="backup_app_stopped_no_intent">Uygulama açılamadı</string>
+    <string name="backup_app_stopped_button">Aç</string>
+    <string name="restore_restore_set_apps_no_size"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama için kullanıcı verisi içeriyor</string>
+    <string name="settings_backup_metered_title">Yedekleme durduruldu</string>
+    <string name="settings_backup_metered_text">Yedekleme devam etmeyecektir çünkü cihazınız mobil veri kullanıyor.\n\n\"Yedekleme sıklığı\" altından mobil veri ile yedeklemeyi etkinleştirebilirsiniz.</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
+    <string name="notification_checking_error_title">Yedekleme hataları bulundu</string>
+    <string name="settings_backup_app_check_summary">Geri getirmek için yedeklemenin çalıştığından emin olunuz</string>
+    <string name="settings_backup_app_check_title">Bütünlüğü kontrol et</string>
+    <string name="notification_finalizing_text">Yedekleme bitiriliyor…</string>
+    <string name="notification_failed_text">Yedeklemeyi yaparken bir hata meydana geldi.</string>
+    <string name="notification_failed_metered_text">Yedekleme iptal edildi. Mobil veri mi kullanıyorsunuz? Devam etmek için Wi-Fi\'ye bağlanın.</string>
+    <string name="notification_init_text">Varolan yedekleme verisi tekrar kullanım için hazırlanıyor…</string>
+    <string name="restore_recycle_backup_button_no">Yeni yedek oluştur</string>
+    <string name="backup_app_check_error_no_snapshots">Yedekleme bulamadık. Lütfen ilk önce başarılı bir yedekleme yapın ve sonra tekrar kontrol edin.</string>
+    <string name="restore_recycle_backup_button_yes">Yedeği yeniden kullan</string>
+    <string name="restore_recycle_backup_text">Az önce geri getirdiğiniz \'%s\' yedeklemesini tekrar kullanabilirsiniz. Bu yeni yedeklemeleri daha hızlı kılacaktır ve daha az veri kullanacaktır.\n\nAncak, eski cihazınız muhtemelen bu yedeğe erişimi kaybedecektir. Eski cihazınızın erişimini tutmak istiyorsanız, yeni bir yedek oluşturabilirsiniz. Bu çoktan varolan yedeği kullanmaktan daha fazla veri tüketecektir.</string>
 </resources>

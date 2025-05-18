@@ -102,10 +102,8 @@
     <string name="settings_backup_status_title">Varmuuskopioinnin tila</string>
     <string name="settings_backup_apk_dialog_disable">Poista sovellusten varmuuskopiointi käytöstä</string>
     <string name="settings_backup_apk_dialog_cancel">Peruuta</string>
-    <string name="settings_backup_apk_dialog_message">Poistettu sovelluksen varmuuskopiointi silti varmuuskopioi sovellustiedot. Sitä ei kuitenkaan palauteta automaattisesti.
-\n
-\nSinun on asennettava kaikki sovelluksesi manuaalisesti, kun \"Automaattinen Palautus\" on päällä.</string>
-    <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten varmuuskopiointi todella käytöstä\?</string>
+    <string name="settings_backup_apk_dialog_message">Poistettu sovelluksen varmuuskopiointi silti varmuuskopioi sovellustiedot. Sitä ei kuitenkaan palauteta automaattisesti. \n \nSinun on asennettava kaikki sovelluksesi manuaalisesti, kun \"Automaattinen Palautus\" on päällä.</string>
+    <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten varmuuskopiointi todella käytöstä?</string>
     <string name="settings_backup_apk_summary">Varmuuskopioi itse sovellukset. Muuten vain sovellustiedot varmuuskopioidaan.</string>
     <string name="settings_backup_apk_title">Sovelluksen varmuuskopiointi</string>
     <string name="settings_category_app_data_backup">Sovellustietojen varmuuskopiointi</string>

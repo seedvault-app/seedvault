@@ -36,7 +36,7 @@
     <string name="check_error_no_result">Perdemos os resultados detalhados. Passou muito tempo desde a verificação? Tente executá-la novamente.</string>
     <string name="check_error_snapshot">O backup tem alguns erros. Você talvez consiga restaurá-lo parcialmente.</string>
     <string name="check_files_text">O \"%s\" inclui os seguintes arquivos:</string>
-    <string name="check_files_error">Os dados de backup estão corrompidos. O arquivo não será totalmente restaurado.</string>
+    <string name="check_files_error">Os dados do backup estão corrompidos. O arquivo não será totalmente restaurado.</string>
     <string name="check_files_title">Arquivos neste backup</string>
     <string name="check_error_only_broken_snapshots">Encontramos %1$d backups. Porém, todos estavam corrompidos. Por favor, execute um backup bem-sucedido e tente novamente.</string>
 </resources>

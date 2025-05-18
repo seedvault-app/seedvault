@@ -75,10 +75,8 @@
     <string name="settings_backup_status_summary">최근 백업: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">앱 백업 비활성화</string>
     <string name="settings_backup_apk_dialog_cancel">취소</string>
-    <string name="settings_backup_apk_dialog_message">앱 백업을 꺼도 앱 데이터는 계속 백업됩니다. 그러나 데이터가 자동으로 복원되지는 않습니다.
-\n
-\n\"자동 복원\"이 켜진 상태에서 모든 앱을 수동으로 설치해야 합니다.</string>
-    <string name="settings_backup_apk_dialog_title">정말 앱 백업을 끄시겠습니까\?</string>
+    <string name="settings_backup_apk_dialog_message">앱 백업을 꺼도 앱 데이터는 계속 백업됩니다. 그러나 데이터가 자동으로 복원되지는 않습니다. \n \n\"자동 복원\"이 켜진 상태에서 모든 앱을 수동으로 설치해야 합니다.</string>
+    <string name="settings_backup_apk_dialog_title">정말 앱 백업을 끄시겠습니까?</string>
     <string name="settings_backup_apk_summary">앱 자체를 백업합니다. 이 설정을 끄면 앱 데이터만 백업됩니다.</string>
     <string name="settings_backup_apk_title">앱 백업</string>
     <string name="settings_category_app_data_backup">앱 데이터 백업</string>

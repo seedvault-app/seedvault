@@ -1,2 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_prune">A remover backups antigos…</string>
+    <string name="notification_check_error_text">Toque para mais pormenores. Verificamos %1$s numa velocidade média de %2$s.</string>
+    <string name="check_success_intro">%1$d backups foram encontrados e %2$d%% dos seus dados (%3$s) foram verificados com sucesso:</string>
+    <string name="check_error_no_snapshots">Não encontramos nenhum backup. Execute um backup concluido primeiro e tente novamente.</string>
+    <string name="check_error_only_broken_snapshots">Encontramos %1$d backups. Porém, todos estavam corrompidos. Por favor, execute um backup bem-sucedido e tente novamente.</string>
+    <string name="check_error_no_result">Perdemos os resultados detalhados. Passou muito tempo desde a verificação? Tente executá-la novamente.</string>
+    <string name="check_error_snapshot">O backup tem alguns erros. Talvez consiga restaurá-lo parcialmente.</string>
+    <string name="notification_check_finished_text">%1$s foram verificados com sucesso, numa velocidade média de %2$s.</string>
+    <string name="notification_check_action">Pormenores</string>
+    <string name="content_options">Opções</string>
+    <string name="notification_restore_title">A restaurar ficheiros…</string>
+    <string name="snapshots_error">Erro ao carregar backups</string>
+    <string name="notification_restore_complete_errors">%1$d ficheiros tinham erros.</string>
+    <string name="select_files_number_of_files">%1$d ficheiro(s)</string>
+    <string name="select_files_button_restore">Restaurar ficheiros selecionados</string>
+    <string name="notification_restore_complete_title">%1$d de %2$d ficheiros restaurados</string>
+    <string name="notification_restore_channel_title">Restauração de ficheiros</string>
+    <string name="notification_check_channel_title">Verificação de integridade do backup de ficheiros</string>
+    <string name="notification_check_title">A verificar o backup de ficheiros…</string>
+    <string name="notification_check_text">A buscar dados de backup disponíveis.</string>
+    <string name="notification_check_finished_title">Integridade do backup de ficheiros verificada</string>
+    <string name="notification_check_error_title">Erros no backup de ficheiros foram encontrados</string>
+    <string name="select_files_title">Revisar quais ficheiros restaurar</string>
+    <string name="check_error_has_snapshots">Encontramos %1$d backups, alguns deles estão corrompidos ou têm erros. Abaixo estão os backups que podem ser restaurados (parcialmente).</string>
+    <string name="check_files_title">Ficheiros neste backup</string>
+    <string name="check_files_text">O \"%s\" inclui os seguintes ficheiros:</string>
+    <string name="notification_backup_title">Backup de ficheiros</string>
+    <string name="notification_restore_complete_dups">%1$d ficheiros eram duplicatas.</string>
+    <string name="snapshots_empty">Nenhum backup de ficheiros encontrado \n \nDesculpe, mas não há nada que possa ser restaurado.</string>
+    <string name="check_files_error">Os dados de backup estão corrompidos. O ficheiro não será totalmente restaurado.</string>
+    <string name="content_images">Fotos e imagens</string>
+    <string name="content_add">Adicionar</string>
+    <string name="content_audio">Ficheiros de áudio</string>
+    <string name="notification_backup_backup_files">A fazer backup de ficheiros…</string>
+    <string name="notification_backup_scanning">A escanear ficheiros…</string>
+    <string name="content_downloads">Descargas</string>
+    <string name="content_videos">Vídeos</string>
+    <string name="snapshots_title">Backups de ficheiros disponíveis</string>
+</resources>

@@ -11,14 +11,12 @@
     <string name="storage_fragment_backup_title">Επιλέξτε πού θα αποθηκεύονται τα αντίγραφα ασφαλείας</string>
     <string name="settings_backup_now">Δημιουργία αντιγράφων ασφαλείας τώρα</string>
     <string name="settings_backup_exclude_apps">Εξαίρεση εφαρμογών</string>
-    <string name="settings_backup_apk_dialog_disable">Απενεργοποίηση αντιγράφων ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_apk_dialog_disable">Απενεργοποιήστε τα αντίγραφα ασφαλείας APK</string>
     <string name="settings_backup_apk_dialog_cancel">Άκυρο</string>
-    <string name="settings_backup_apk_dialog_message">Η απενεργοποιημένη δημιουργία αντιγράφων ασφαλείας θα εξακολουθεί να δημιουργεί αντίγραφα ασφαλείας των δεδομένων εφαρμογών. Ωστόσο, δεν θα επαναφέρονται αυτόματα.
-\n
-\nΘα πρέπει να εγκαταστήσετε όλες τις εφαρμογές σας χειροκίνητα ενώ έχετε ενεργοποιήσει την \"Αυτόματη επαναφορά\".</string>
-    <string name="settings_backup_apk_dialog_title">Θέλετε πραγματικά να απενεργοποιήσετε τα αντίγραφα ασφαλείας εφαρμογών;</string>
-    <string name="settings_backup_apk_summary">Δημιουργία αντιγράφων των ίδιων των εφαρμογών. Διαφορετικά, θα δημιουργούνται αντίγραφα ασφαλείας μόνο δεδομένων εφαρμογών.</string>
-    <string name="settings_backup_apk_title">Αντίγραφα ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_apk_dialog_message">Μετά την απενεργοποίηση των αντιγράφων ασφαλείας APK, θα εξακολουθούν να δημιουργούνται αντίγραφα ασφαλείας των δεδομένων εφαρμογών. Ωστόσο, δεν θα αποκατασταθεί αυτόματα.\n\nΘα χρειαστεί να εγκαταστήσετε όλες τις εφαρμογές σας με μη αυτόματο τρόπο, ενώ έχετε ενεργοποιημένη την \"Αυτόματη επαναφορά\".</string>
+    <string name="settings_backup_apk_dialog_title">Απενεργοποιήστε πραγματικά τα αντίγραφα ασφαλείας APK;</string>
+    <string name="settings_backup_apk_summary">Δημιουργεί αντίγραφα ασφαλείας των ίδιων των εφαρμογών. Διαφορετικά, θα δημιουργηθούν αντίγραφα ασφαλείας μόνο των δεδομένων εφαρμογών.</string>
+    <string name="settings_backup_apk_title">Αντίγραφα ασφαλείας APK</string>
     <string name="settings_category_app_data_backup">Αντίγραφα ασφαλείας δεδομένων εφαρμογών</string>
     <string name="settings_auto_restore_summary_usb">Σημείωση: Το %1$s πρέπει να συνδεθεί για να λειτουργήσει η αυτόματη επαναφορά.</string>
     <string name="settings_auto_restore_summary">Κατά την επανεγκατάσταση μιας εφαρμογής, επαναφέρετε τα αντίγραφα ασφαλείας των ρυθμίσεων και των δεδομένων.</string>
@@ -30,9 +28,7 @@
     <string name="restore_backup_button">Επαναφορά αντιγράφου ασφαλείας</string>
     <string name="backup">Αντίγραφο ασφαλείας</string>
     <string name="settings_info">Όλα τα αντίγραφα ασφαλείας είναι κρυπτογραφημένα στο τηλέφωνό σας. Για επαναφορά από το αντίγραφο ασφαλείας θα χρειαστείτε τον κωδικό επαναφοράς 12 λέξεων.</string>
-    <string name="about_summary">Μια εφαρμογή δημιουργίας αντιγράφων ασφαλείας που χρησιμοποιεί το εσωτερικό API αντιγράφων ασφαλείας του Android. Είναι ελεύθερο λογισμικό, που κυκλοφορεί με άδεια Apache 2.
-\n
-\nΌπως κάθε λογισμικό, το Seedvault μπορεί να περιέχει σφάλματα ή ευπάθειες.</string>
+    <string name="about_summary">Μια εφαρμογή δημιουργίας αντιγράφων ασφαλείας που χρησιμοποιεί το εσωτερικό API αντιγράφων ασφαλείας του Android. Είναι ελεύθερο λογισμικό, που κυκλοφορεί με άδεια Apache 2.\n\nΌπως κάθε λογισμικό, το Seedvault μπορεί να περιέχει σφάλματα ή ευπάθειες.</string>
     <string name="about_title">Σχετικά με</string>
     <string name="storage_internal_warning_use_anyway">Χρησιμοποιήστε ούτως ή άλλως</string>
     <string name="storage_internal_warning_choose_other">Επιλέξτε άλλο</string>
@@ -52,7 +48,7 @@
     <string name="restore_set_empty_result">Δεν βρέθηκαν κατάλληλα αντίγραφα ασφαλείας στη δεδομένη τοποθεσία.
 \n
 \nΑυτό πιθανότατα οφείλεται σε λάθος κωδικό επαναφοράς ή σε σφάλμα αποθηκευτικού χώρου.</string>
-    <string name="restore_set_error">Παρουσιάστηκε σφάλμα κατά τη φόρτωση των αντιγράφων ασφαλείας.</string>
+    <string name="restore_set_error">Παρουσιάστηκε σφάλμα κατά τη φόρτωση των αντιγράφων ασφαλείας:</string>
     <string name="restore_invalid_location_message">Δεν ήταν δυνατή η εύρεση αντιγράφων ασφαλείας σε αυτήν την τοποθεσία.
 \n
 \nΕπιλέξτε άλλη τοποθεσία που περιέχει ένα φάκελο %s.</string>
@@ -123,7 +119,7 @@
     <string name="backup_settings">Ρυθμίσεις συσκευής</string>
     <string name="backup_sms">Μηνύματα SMS</string>
     <string name="backup_section_system">Δεδομένα συστήματος</string>
-    <string name="recovery_code_recreated">Ο νέος κωδικός επαναφοράς δημιουργήθηκε επιτυχώς</string>
+    <string name="recovery_code_recreated">Ο νέος κωδικός ανάκτησης δημιουργήθηκε με επιτυχία. Έξοδος…</string>
     <string name="recovery_code_verification_new_dialog_message">Η δημιουργία νέου κωδικού θα καταστήσει τα υπάρχοντα αντίγραφα ασφαλείας σας μη-προσβάσιμα. Θα προσπαθήσουμε να τα διαγράψουμε αν είναι δυνατόν.
 \n
 \nΕίστε βέβαιοι ότι θέλετε να συνεχίσετε;</string>
@@ -151,12 +147,12 @@
     <string name="recovery_code_auth_title">Εισάγετε εκ νέου το κλείδωμα οθόνης</string>
     <string name="restore_skip_apps">Παράλειψη επαναφοράς εφαρμογών</string>
     <string name="restore_storage_skip">Παράλειψη επαναφοράς αρχείων</string>
-    <string name="restore_storage_choose_snapshot">Επιλέξτε ένα αντίγραφο ασφαλείας χώρου αποθήκευσης για επαναφορά (beta)</string>
+    <string name="restore_storage_choose_snapshot">Επιλέξτε ένα αντίγραφο ασφαλείας αρχείου για επαναφορά (beta)</string>
     <string name="restore_storage_got_it">Το κατάλαβα</string>
     <string name="settings_backup_files_title">Περιλαμβανόμενα αρχεία και φάκελοι</string>
     <string name="settings_backup_storage_dialog_ok">Ενεργοποίηση ούτως ή άλλως</string>
     <string name="settings_backup_storage_battery_optimization">Προειδοποίηση: Τα αυτόματα αντίγραφα ασφαλείας απενεργοποιήθηκαν επειδή η βελτιστοποίηση μπαταρίας είναι ενεργή.</string>
-    <string name="settings_category_storage">Δημιουργία αντιγράφου ασφαλείας χώρου αποθήκευσης (beta)</string>
+    <string name="settings_category_storage">Δημιουργία αντιγράφων ασφαλείας αρχείων (beta)</string>
     <string name="settings_backup_new_code_dialog_title">Απαιτείται νέος κωδικός επαναφοράς</string>
     <string name="settings_backup_new_code_dialog_message">Για να συνεχίσετε να χρησιμοποιείτε τα αντίγραφα ασφαλείας εφαρμογών, πρέπει να δημιουργήσετε έναν νέο κωδικό επαναφοράς.
 \n
@@ -234,4 +230,52 @@
     <string name="settings_backup_file_check_title">Ελέγξτε την ακεραιότητα του αντιγράφου ασφαλείας</string>
     <string name="settings_backup_app_check_title">Ελέγξτε την ακεραιότητα</string>
     <string name="settings_backup_app_check_summary">Βεβαιωθείτε ότι το αντίγραφο ασφαλείας λειτουργεί για επαναφορά</string>
+    <string name="notification_checking_finished_text">Ελέγχθηκε με επιτυχία %1$s με μέση ταχύτητα %2$s.</string>
+    <string name="notification_checking_finished_title">Η ακεραιότητα της δημιουργίας αντιγράφων ασφαλείας εφαρμογών επαληθεύτηκε</string>
+    <string name="notification_checking_error_text">Πατήστε για λεπτομέρειες. Ελέγξαμε %1$s με μέση ταχύτητα %2$s.</string>
+    <string name="settings_backup_metered_text">Η δημιουργία αντιγράφων ασφαλείας δεν θα προχωρήσει, επειδή η συσκευή σας χρησιμοποιεί δεδομένα κινητής τηλεφωνίας. Μπορείτε να ενεργοποιήσετε τα αντίγραφα ασφαλείας σε δεδομένα κινητής τηλεφωνίας στην ενότητα \"Προγραμματισμός δημιουργίας αντιγράφων ασφαλείας\".</string>
+    <string name="restore_restore_set_apks_no_size">Περιέχει <xliff:g example="42" id="εφαρμογές">%1$d</xliff:g> εφαρμογές</string>
+    <string name="restore_recycle_backup_text">Μπορείτε να χρησιμοποιήσετε ξανά το αντίγραφο ασφαλείας \'%s\' που μόλις επαναφέρατε σε αυτήν τη συσκευή. Αυτό θα κάνει τα νέα αντίγραφα ασφαλείας πιο γρήγορα και θα χρησιμοποιεί λιγότερα δεδομένα.\n\nΩστόσο, η παλιά σας συσκευή θα χάσει την πρόσβαση σε αυτό το αντίγραφο ασφαλείας. Εάν θέλετε να διατηρήσετε την πρόσβαση για την παλιά σας συσκευή, μπορείτε να δημιουργήσετε ένα νέο αντίγραφο ασφαλείας. Αυτό θα χρησιμοποιήσει περισσότερα δεδομένα από την επαναχρησιμοποίηση του υπάρχοντος αντιγράφου ασφαλείας.</string>
+    <string name="settings_file_check_text">Εδώ μπορείτε να εκτελέσετε έναν εφάπαξ έλεγχο για να επαληθεύσετε το αντίγραφο ασφαλείας του αρχείου σας.</string>
+    <string name="restore_restore_set_apps">Έχει δεδομένα χρήστη για<xliff:g example="42" id="εφαρμογές">%1$d</xliff:g> εφαρμογές (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="settings_backup_metered_title">Η δημιουργία αντιγράφων ασφαλείας σταμάτησε</string>
+    <string name="settings_backup_file_check_summary">Βεβαιωθείτε ότι το αντίγραφο ασφαλείας μου λειτουργεί για την επαναφορά αρχείων</string>
+    <string name="settings_app_check_text2">Εδώ μπορείτε να εκτελέσετε έναν εφάπαξ έλεγχο για να επαληθεύσετε το αντίγραφο ασφαλείας της εφαρμογής σας. Επιλέξτε πόσα από τα δεδομένα της εφαρμογής θα πρέπει να ληφθούν για τον έλεγχο. Όσο περισσότερο επιλέγετε, τόσο περισσότερος χρόνος θα χρειαστεί, αλλά τόσο πιο αξιόπιστος θα είναι ο έλεγχος. Αυτό θα εκτελεστεί στο παρασκήνιο και θα εμφανίσει μια ειδοποίηση μόλις ολοκληρωθεί ο έλεγχος.</string>
+    <string name="backup_app_check_error_no_result">Χάσαμε τα λεπτομερή αποτελέσματα. Πέρασε πολύς καιρός από την εκτέλεση του ελέγχου; Δοκιμάστε να τρέξετε ξανά.</string>
+    <string name="settings_file_check_title">Επαληθεύστε την ακεραιότητα του αντιγράφου ασφαλείας του αρχείου</string>
+    <string name="notification_failed_text">Παρουσιάστηκε σφάλμα κατά την εκτέλεση του αντιγράφου ασφαλείας.</string>
+    <string name="settings_file_check_text2">Επιλέξτε πόσα δεδομένα αρχείων θα ληφθούν για τον έλεγχο. Όσο περισσότερο επιλέγετε, τόσο περισσότερος χρόνος θα χρειαστεί, αλλά τόσο πιο αξιόπιστος θα είναι ο έλεγχος.\n\nΟ έλεγχος θα εκτελεστεί στο παρασκήνιο και θα σας στείλει μια ειδοποίηση μόλις ολοκληρωθεί.</string>
+    <string name="backup_app_check_success_disclaimer">Σημείωση: δεν μπορούμε να επαληθεύσουμε αν μεμονωμένες εφαρμογές περιλαμβάνουν όλα τα δεδομένα χρήστη τους στο αντίγραφο ασφαλείας.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Βρήκαμε αντίγραφα ασφαλείας %1$d στιγμιότυπα. Ωστόσο, όλοι τους ήταν κατεστραμμένοι. Εκτελέστε ένα επιτυχημένο αντίγραφο ασφαλείας και, στη συνέχεια, δοκιμάστε να ελέγξετε ξανά.</string>
+    <string name="restore_restore_set_apks">Περιέχει <xliff:g example="42" id="εφαρμογές">%1$d</xliff:g> εφαρμογές(<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="notification_pruning_blobs_title">Κατάργηση παλιών δεδομένων αντιγράφων ασφαλείας…</string>
+    <string name="notification_checking_title">Έλεγχος αντιγράφων ασφαλείας εφαρμογών…</string>
+    <string name="notification_checking_action">Λεπτομέρειες</string>
+    <string name="notification_usb_monitor_title">Αναμονή για μονάδα USB…</string>
+    <string name="notification_usb_monitor_text">Μόλις γίνει διαθέσιμη η μονάδα USB, θα ξεκινήσουμε ένα αντίγραφο ασφαλείας.</string>
+    <string name="backup_app_check_success_intro">%1$d στιγμιότυπα βρέθηκαν και %2$d%% των δεδομένων τους (%3$s) επαληθεύτηκαν με επιτυχία:</string>
+    <string name="backup_app_check_error_no_snapshots">Δεν μπορέσαμε να βρούμε κανένα αντίγραφο ασφαλείας. Εκτελέστε πρώτα ένα επιτυχημένο αντίγραφο ασφαλείας και, στη συνέχεια, δοκιμάστε να ελέγξετε ξανά.</string>
+    <string name="backup_app_check_error_has_snapshots">Βρήκαμε στιγμιότυπα αντιγράφων ασφαλείας %1$d, μερικά από αυτά είναι κατεστραμμένα ή έχουν σφάλματα. Παρακάτω είναι τα αντίγραφα ασφαλείας που θα μπορούσαν να αποκατασταθούν.</string>
+    <string name="backup_app_stopped_button">Εκκίνηση</string>
+    <string name="restore_set_bad_decrypt">Δεν ήταν δυνατή η αποκρυπτογράφηση αντιγράφων ασφαλείας.\n\nΟ τρέχων κωδικός ανάκτησης πιθανότατα δεν είναι αυτός που χρησιμοποιήθηκε για τη δημιουργία του αντιγράφου ασφαλείας.</string>
+    <string name="restore_set_button_try_again">Δοκίμασε ξανά</string>
+    <string name="restore_set_button_restart">Ξεκινήστε από την αρχή</string>
+    <string name="settings_app_check_title">Επαληθεύστε την ακεραιότητα της δημιουργίας αντιγράφων ασφαλείας εφαρμογών</string>
+    <string name="settings_app_check_text">Κάθε διαδικασία δημιουργίας αντιγράφων ασφαλείας θα ελέγχει αυτόματα την ακεραιότητα της δημιουργίας αντιγράφων ασφαλείας. Ωστόσο, για εξοικονόμηση χρόνου, τα πραγματικά δεδομένα εφαρμογών δεν θα ληφθούν και δεν θα επαληθευτούν.</string>
+    <string name="settings_app_check_button">Έλεγχος αντιγράφων ασφαλείας</string>
+    <string name="storage_round_sync_summary_prefix">Τηλεχειριστήριο RoundSync:</string>
+    <string name="notification_init_text">Προετοιμασία υπαρχόντων δεδομένων αντιγράφων ασφαλείας για επαναχρησιμοποίηση…</string>
+    <string name="notification_checking_error_title">Βρέθηκαν σφάλματα δημιουργίας αντιγράφων ασφαλείας</string>
+    <string name="restore_restore_set_apps_no_size">Έχει δεδομένα χρήστη για <xliff:g example="42" id="εφαρμογές">%1$d</xliff:g> εφαρμογές</string>
+    <string name="restore_restore_set_can_not_get_restored">Αυτό το αντίγραφο ασφαλείας έχει ορισμένα σφάλματα. Ίσως μπορέσετε να το επαναφέρετε εν μέρει.</string>
+    <string name="restore_recycle_backup_title">Επαναχρησιμοποιήστε αυτό το αντίγραφο ασφαλείας;</string>
+    <string name="restore_recycle_backup_button_no">Δημιουργία νέου αντιγράφου ασφαλείας</string>
+    <string name="settings_app_check_warning">Προειδοποίηση: Η λήψη μεγάλων ποσοτήτων δεδομένων μπορεί να διαρκέσει πολύ.</string>
+    <string name="restore_recycle_backup_button_yes">Επαναχρησιμοποίηση αντιγράφων ασφαλείας</string>
+    <string name="backup_app_stopped_no_intent">Δεν είναι δυνατή η εκκίνηση της εφαρμογής</string>
+    <string name="notification_finalizing_text">Οριστικοποίηση δημιουργίας αντιγράφων ασφαλείας…</string>
+    <string name="notification_failed_metered_text">Η δημιουργία αντιγράφων ασφαλείας ματαιώθηκε. Χρησιμοποιείτε δεδομένα κινητής τηλεφωνίας; Συνδεθείτε σε Wi-Fi για να συνεχίσετε.</string>
+    <string name="notification_pruning_channel_title">Κατάργηση ειδοποίησης παλιών αντιγράφων ασφαλείας</string>
+    <string name="notification_pruning_title">Αφαίρεση παλιών αντιγράφων ασφαλείας…</string>
+    <string name="notification_checking_channel_title">Έλεγχος ακεραιότητας δημιουργίας αντιγράφων ασφαλείας εφαρμογών</string>
 </resources>

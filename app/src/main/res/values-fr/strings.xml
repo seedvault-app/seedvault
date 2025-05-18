@@ -49,7 +49,7 @@
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde des applications</string>
     <string name="settings_category_app_data_backup">Sauvegarde des données de l’application</string>
-    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
+    <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branchée pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une application, restaurer les paramètres et les données sauvegardés.</string>
     <string name="settings_auto_restore_title">Restaurer automatiquement</string>
     <string name="settings_info">Toutes les sauvegardes sont stockées sur votre téléphone et chiffrées. Pour restaurer une sauvegarde, vous aurez besoin de votre code de récupération constitué de 12 mots.</string>
@@ -92,11 +92,9 @@
     <string name="notification_title">Sauvegarde en cours</string>
     <string name="recovery_code_input_intro">Entrez votre code de récupération de 12 mots que vous avez écrit lors de la configuration des sauvegardes.</string>
     <string name="storage_check_fragment_permission_error">Impossible d\'obtenir la permission d\'écrire dans l\'emplacement de sauvegarde.</string>
-    <string name="settings_backup_apk_dialog_message">La sauvegarde d\'une application désactivée entraînera bien la sauvegarde des données de cette application. Celles-ci ne seront toutefois pas restaurées automatiquement.
-\n
-\nVous devrez alors installer toutes vos applications manuellement avec le paramètre « Restaurer automatiquement » activé.</string>
-    <string name="settings_backup_apk_dialog_title">Êtes-vous sûr(e) de vouloir désactiver la sauvegarde des applications \?</string>
-    <string name="settings_backup_apk_summary">Sauvegardez les applications elles-mêmes. Sinon, seules les données des applications sont sauvegardées.</string>
+    <string name="settings_backup_apk_dialog_message">La sauvegarde d\'une application désactivée entraînera bien la sauvegarde des données de cette application. Celles-ci ne seront toutefois pas restaurées automatiquement. \n \nVous devrez alors installer toutes vos applications manuellement avec le paramètre « Restaurer automatiquement » activé.</string>
+    <string name="settings_backup_apk_dialog_title">Êtes-vous sûr(e) de vouloir désactiver la sauvegarde des applications ?</string>
+    <string name="settings_backup_apk_summary">Sauvegarde les applications elles-mêmes. Sinon, seules les données des applications seront sauvegardées.</string>
     <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
     <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées (%3$s). Appuyez pour en savoir plus.</string>
@@ -141,7 +139,7 @@
     <string name="settings_backup_storage_dialog_title">Fonctionnalité expérimentale</string>
     <string name="settings_expert_title">Paramètres experts</string>
     <string name="settings_category_apps">Sauvegarde des applications</string>
-    <string name="settings_category_storage">Sauvegarde du stockage (beta)</string>
+    <string name="settings_category_storage">Sauvegarde de l\'espace de stockage (bêta)</string>
     <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
     <string name="storage_check_fragment_patience">Cela peut prendre un certain temps…</string>
@@ -149,7 +147,7 @@
     <string name="restore_storage_in_progress_info">Vos fichiers sont restaurés en arrière-plan. Vous pouvez commencer à utiliser votre téléphone pendant cette opération.
 \n
 \nCertaines applications (par exemple, Signal ou WhatsApp) peuvent exiger que les fichiers soient entièrement restaurés avant d\'importer une sauvegarde. Essayez d\'éviter de démarrer ces applications avant que la restauration des fichiers ne soit terminée.</string>
-    <string name="restore_storage_choose_snapshot">Choisir une sauvegarde de fichiers à restaurer (beta)</string>
+    <string name="restore_storage_choose_snapshot">Choisir une sauvegarde de fichiers à restaurer (bêta)</string>
     <string name="restore_storage_got_it">Compris</string>
     <string name="restore_skip_apps">Ne pas restaurer les applications</string>
     <string name="restore_storage_skip">Ne pas restaurer les fichiers</string>
@@ -199,7 +197,7 @@
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Non recommandé)</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Institut Calyx</a> pour l\'usage de <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET financé par NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust financé par NLnet</a></string>
     <string name="settings_backup_status_next_backup">Prochaine sauvegarde : %1$s</string>
-    <string name="settings_backup_status_next_backup_usb">Les sauvegardes s\'effectueront automatiquement lorsque vous branchez votre clef USB</string>
+    <string name="settings_backup_status_next_backup_usb">Les sauvegardes s\'effectueront automatiquement lorsque vous branchez votre clé USB</string>
     <string name="settings_scheduling_frequency_daily">Journalier</string>
     <string name="notification_success_channel_title">Notification de succès</string>
     <string name="notification_restore_channel_title">Rétablir la notification</string>
@@ -216,7 +214,7 @@
     <string name="notification_checking_finished_title">Intégrité de la sauvegarde des applications vérifiée</string>
     <string name="notification_failed_metered_text">La sauvegarde a été annulée. Utilisez-vous les données mobiles ? Connectez-vous au Wi-Fi pour continuer.</string>
     <string name="notification_checking_finished_text">%1$s vérifié(s) avec succès à une vitesse moyenne de %2$s.</string>
-    <string name="storage_webdav_option_title">Cloud WebDAV (beta)</string>
+    <string name="storage_webdav_option_title">Cloud WebDAV (bêta)</string>
     <string name="storage_round_sync_summary_prefix">Stockage distant RoundSync :</string>
     <string name="first_start_text">Restaurer depuis une sauvegarde existante ou commencer une nouvelle sauvegarde ?</string>
     <string name="setup_button">Commencer une nouvelle sauvegarde</string>
@@ -225,7 +223,7 @@
     <string name="settings_file_check_title">Vérifier l\'intégrité du fichier de sauvegarde</string>
     <string name="notification_checking_title">Contrôle des sauvegardes d\'application…</string>
     <string name="notification_checking_action">Détails</string>
-    <string name="backup_app_check_success_intro">%1$d snapshots ont été trouvés et %2$d%% de leurs données (%3$s) ont été vérifiées avec succès :</string>
+    <string name="backup_app_check_success_intro">%1$d instantanés ont été trouvés et %2$d%% de leurs données (%3$s) ont été vérifiées avec succès :</string>
     <string name="settings_app_check_text">Chaque processus de sauvegarde vérifie automatiquement l\'intégrité de celle-ci. Cependant, pour aller plus vite, les données des applications ne sont ni téléchargées, ni vérifiées.</string>
     <string name="settings_file_check_text">Ici, vous pouvez effectuer un contrôle unique pour vérifier la sauvegarde de vos fichiers.</string>
     <string name="storage_user_selected_location_title">Emplacement choisi par l\'utilisateur</string>
@@ -240,8 +238,8 @@
     <string name="notification_failed_text">Une erreur est survenue pendant l\'exécution de la sauvegarde.</string>
     <string name="notification_pruning_channel_title">Suppression de la notification des anciennes sauvegardes</string>
     <string name="notification_pruning_title">Supression des anciennes sauvegardes …</string>
-    <string name="notification_usb_monitor_title">En attente d\'une clef USB…</string>
-    <string name="notification_usb_monitor_text">La sauvegarde commencera lorsque la clef USB sera disponible.</string>
+    <string name="notification_usb_monitor_title">En attente d\'une clé USB…</string>
+    <string name="notification_usb_monitor_text">La sauvegarde commencera lorsque la clé USB sera disponible.</string>
     <string name="settings_backup_app_check_title">Vérification de l\'intégrité des fichiers</string>
     <string name="settings_backup_app_check_summary">Vérifier que la sauvegarde fonctionne</string>
     <string name="settings_app_check_warning">Attention : Télécharger une grande quantité de données peut prendre du temps.</string>
@@ -251,13 +249,13 @@
     <string name="notification_checking_channel_title">Ajouter un contrôle des l\'intégrité de la sauvegarde</string>
     <string name="backup_system_apps">Applications sytème</string>
     <string name="about_contributor_headline">Contributeurs</string>
-    <string name="backup_app_check_error_no_snapshots">Aucune sauvegarde n\'a été trouvée. Veuillez exécuter une sauvegarde réussie puis essayez de nouveau.</string>
+    <string name="backup_app_check_error_no_snapshots">Nous n\'avons trouvé aucune sauvegarde. Veuillez d\'abord exécuter une sauvegarde avec succès, puis essayez de vérifier à nouveau.</string>
     <string name="restore_storage_selection_description">Les fichiers suivants seront restaurés. Appuyez sur les dossiers pour voir les fichiers qu\'ils contiennent.</string>
-    <string name="backup_app_check_error_has_snapshots">%1$d snapshots de sauvegarde ont été trouvées, certaines sont corrompues ou comportent des erreurs. Vous trouverez ci-dessous les sauvegardes qui ont pu être restaurées.</string>
+    <string name="backup_app_check_error_has_snapshots">Nous avons trouvé %1$d instantanés de sauvegarde, certaines sont corrompues ou comportent des erreurs. Vous trouverez ci-dessous les sauvegardes qui ont pu être restaurées.</string>
     <string name="restore_select_packages">Sélectionner les applications à restaurer</string>
     <string name="restore_recycle_backup_text">Vous pouvez réutiliser la sauvegarde \'%s\' que vous venez de restaurer sur cet appareil. Les nouvelles sauvegardes seront ainsi plus rapides et utiliseront moins de données.\n\nCependant, votre ancien appareil ne pourra plus accéder à cette sauvegarde. Si vous souhaitez conserver l\'accès de votre ancien appareil, vous pouvez créer une nouvelle sauvegarde à la place. Cela utilisera plus de données que la réutilisation de la sauvegarde existante.</string>
     <string name="backup_app_check_success_disclaimer">Remarque : nous ne pouvons pas vérifier si les applications individuelles incluent toutes leurs données utilisateur dans la sauvegarde.</string>
-    <string name="backup_app_check_error_only_broken_snapshots">%1$d snapshots de sauvegarde trouvées. Cependant, elles étaient toutes corrompues. Veuillez exécuter une sauvegarde réussie puis essayez de nouveau.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Nous avons trouvé %1$d instantanés de sauvegarde. Cependant, elles étaient toutes corrompues. Veuillez exécuter une sauvegarde avec succès puis essayez à nouveau.</string>
     <string name="backup_app_check_error_no_result">Les résultats détaillés ont été perdus. Un long délai s\'est-il écoulé depuis l\'exécution du contrôle ? Essayez à nouveau.</string>
     <string name="backup_app_stopped_no_intent">Impossible de lancer l\'application</string>
     <string name="backup_app_stopped_button">Lancer</string>
@@ -271,4 +269,8 @@
     <string name="restore_recycle_backup_button_yes">Réutiliser une sauvegarde</string>
     <string name="restore_restore_set_apps">Dispose de données utilisateur pour les applications <xliff:g example="42" id="apps">%1$d</xliff:g> (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
     <string name="notification_finalizing_text">Finalisation de la sauvegarde…</string>
+    <string name="notification_pruning_blobs_title">Suppression des anciennes données de sauvegarde…</string>
+    <string name="restore_set_button_try_again">Réessayer</string>
+    <string name="restore_set_button_restart">Reprendre au début</string>
+    <string name="restore_set_bad_decrypt">Impossible de décrypter les sauvegardes.\n\nLe code de récupération actuel n\'est probablement pas celui qui a été utilisé pour effectuer la sauvegarde.</string>
 </resources>

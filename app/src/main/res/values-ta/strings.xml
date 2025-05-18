@@ -116,15 +116,13 @@
     <string name="settings_backup_status_title">காப்பு நிலை</string>
     <string name="settings_backup_apk_dialog_disable">செயலி காப்புப்பிரதியை முடக்கு</string>
     <string name="settings_backup_apk_dialog_cancel">ரத்து</string>
-    <string name="settings_backup_apk_dialog_message">முடக்கப்பட்ட செயலி காப்புப்பிரதி இன்னும் செயலி தரவை காப்புப் பிரதி எடுக்கும். இருப்பினும், அது தானாகவே மீட்டமைக்கப்படாது.
-\n
-\n\"தானியங்கி மீட்பு\" இயக்கப்பட்டிருக்கும் போது உங்கள் எல்லா செயலிகளையும் நீங்களாகவே நிறுவ வேண்டும்.</string>
-    <string name="settings_backup_apk_dialog_title">பயன்பாட்டு காப்புப்பிரதியை உண்மையில் முடக்கவா\?</string>
-    <string name="settings_backup_apk_summary">செயலிகள் தாங்களே காப்புப் பிரதி எடுக்கவும். இல்லையெனில், செயலித் தரவு மட்டுமே காப்புப் பிரதி எடுக்கப்படும்.</string>
+    <string name="settings_backup_apk_dialog_message">முடக்கப்பட்ட செயலி காப்புப்பிரதி இன்னும் செயலி தரவை காப்புப் பிரதி எடுக்கும். இருப்பினும், அது தானாகவே மீட்டமைக்கப்படாது. \n \n\"தானியங்கி மீட்பு\" இயக்கப்பட்டிருக்கும் போது உங்கள் எல்லா செயலிகளையும் நீங்களாகவே நிறுவ வேண்டும்.</string>
+    <string name="settings_backup_apk_dialog_title">பயன்பாட்டு காப்புப்பிரதிகளை உண்மையில் முடக்கவா?</string>
+    <string name="settings_backup_apk_summary">செயலிகள் தாங்களே காப்புப் பிரதி எடுக்கும். இல்லையெனில், செயலித் தரவு மட்டுமே காப்புப் பிரதி எடுக்கப்படும்.</string>
     <string name="settings_auto_restore_summary_usb">குறிப்பு: இது வேலை செய்ய உங்கள் %1$s செருகப்பட வேண்டும்.</string>
     <string name="settings_auto_restore_summary">ஒரு செயலியை மீண்டும் நிறுவும் போது, காப்புப் பிரதி எடுத்த அமைப்புகள் மற்றும் தரவை மீட்டெடுக்கவும்.</string>
     <string name="settings_category_app_data_backup">செயலி தரவு காப்பு</string>
-    <string name="settings_backup_apk_title">செயலி காப்பு</string>
+    <string name="settings_backup_apk_title">செயலி காப்புகள்</string>
     <string name="settings_auto_restore_title">தானியங்கி மீட்பு</string>
     <string name="settings_info">அனைத்து காப்புப்பிரதிகளும் உங்கள் தொலைபேசியில் குறியாக்கம் செய்யப்பட்டுள்ளன. காப்புப்பிரதியிலிருந்து மீட்டமைக்க உங்களுக்கு உங்கள் 12-வார்த்தை மீட்பு குறியீடு தேவைப்படும்.</string>
     <string name="settings_backup_last_backup_never">ஒருபோதும்</string>

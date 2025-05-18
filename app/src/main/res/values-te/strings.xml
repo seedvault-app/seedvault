@@ -81,10 +81,8 @@
     <string name="settings_backup_now">ఇప్పుడు బ్యాకప్ చేయండి</string>
     <string name="settings_backup_exclude_apps">యాప్‌లను మినహాయించండి</string>
     <string name="settings_backup_apk_dialog_disable">యాప్ బ్యాకుప్ ని నిలిపివేయండి</string>
-    <string name="settings_backup_apk_dialog_title">యాప్ బ్యాకప్‌ను చేయకుండా నిలిపివేయాలా \?</string>
-    <string name="settings_backup_apk_dialog_message">నిలిపివేయబడిన యాప్ బ్యాకప్ ఇప్పటికీ యాప్ డేటాను బ్యాకప్ చేస్తుంది. అయితే, ఇది స్వయంచాలకంగా పునరుద్ధరించబడదు.
-\n
-\n\"ఆటోమేటిక్ రీస్టోర్\" స్విచ్ ఆన్ చేస్తున్నప్పుడు మీరు మీ అన్ని యాప్‌లను మాన్యువల్‌గా ఇన్‌స్టాల్ చేయాలి.</string>
+    <string name="settings_backup_apk_dialog_title">యాప్ బ్యాకప్‌ను చేయకుండా నిలిపివేయాలా ?</string>
+    <string name="settings_backup_apk_dialog_message">నిలిపివేయబడిన యాప్ బ్యాకప్ ఇప్పటికీ యాప్ డేటాను బ్యాకప్ చేస్తుంది. అయితే, ఇది స్వయంచాలకంగా పునరుద్ధరించబడదు. \n \n\"ఆటోమేటిక్ రీస్టోర్\" స్విచ్ ఆన్ చేస్తున్నప్పుడు మీరు మీ అన్ని యాప్‌లను మాన్యువల్‌గా ఇన్‌స్టాల్ చేయాలి.</string>
     <string name="settings_backup_apk_title">యాప్ బ్యాకప్</string>
     <string name="settings_category_app_data_backup">యాప్ డేటా బ్యాకప్</string>
     <string name="settings_auto_restore_summary">యాప్‌ని మళ్లీ ఇన్‌స్టాల్ చేస్తున్నప్పుడు, బ్యాకప్ చేసిన సెట్టింగ్‌లు మరియు డేటాను పునరుద్ధరించండి</string>

@@ -26,7 +26,7 @@
     <string name="restore_set_empty_result">V daném umístění nebyly nalezeny žádné vhodné zálohy.
 \n
 \nTo je s největší pravděpodobností způsobeno nesprávným obnovovacím kódem nebo chybou úložiště.</string>
-    <string name="restore_set_error">Při načítání záloh došlo k chybě.</string>
+    <string name="restore_set_error">Během načítání záloh došlo k chybě:</string>
     <string name="restore_invalid_location_message">Na vybraném umístění jsme nenašli žádné zálohy.
 \n
 \nVyberte prosím jiné umístění, které obsahuje složku %s.</string>
@@ -109,7 +109,7 @@
     <string name="storage_fake_nextcloud_summary_unavailable">Účet není dostupný. Nastavte ho (nebo vypněte kód).</string>
     <string name="storage_fake_nextcloud_summary_installed">Klepněte pro nastavení účtu</string>
     <string name="storage_fake_nextcloud_summary">Klepněte pro instalaci</string>
-    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> zdarma</string>
+    <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> volných</string>
     <string name="storage_fake_drive_summary">Musí být připojeno</string>
     <string name="storage_fake_drive_title">USB flash disk</string>
     <string name="storage_fragment_restore_title">Kde jsou zálohy uloženy\?</string>
@@ -118,16 +118,14 @@
     <string name="settings_backup_exclude_apps">Vynechat aplikace</string>
     <string name="settings_backup_status_summary">Poslední záloha: %1$s</string>
     <string name="settings_backup_status_title">Stav zálohy</string>
-    <string name="settings_backup_apk_dialog_disable">Vypnout zálohu aplikací</string>
+    <string name="settings_backup_apk_dialog_disable">Vypnout zálohu souborů APK</string>
     <string name="settings_backup_apk_dialog_cancel">Zrušit</string>
-    <string name="settings_backup_apk_dialog_message">Data aplikací budou nadále zálohována i pokud je zakázáno zálohování aplikací samotných.
-\n
-\nPro obnovení dat bude vyžadována manuální instalace aplikací a aktivované „Automatické obnovení“.</string>
-    <string name="settings_backup_apk_dialog_title">Jste si jistí, že chcete vypnout zálohu aplikací\?</string>
-    <string name="settings_backup_apk_title">Záloha aplikací</string>
-    <string name="settings_backup_apk_summary">Zálohovat aplikace samotné. V opačném případě budou zálohována pouze jejich data.</string>
+    <string name="settings_backup_apk_dialog_message">Data aplikací budou zálohována, i když vypnete zálohy souborů APK. Nebudou ale automaticky obnovena.\n\nPro obnovení dat bude vyžadována manuální instalace aplikací a aktivované „Automatické obnovení“.</string>
+    <string name="settings_backup_apk_dialog_title">Opravdu chcete vypnout zálohu souborů APK?</string>
+    <string name="settings_backup_apk_title">Záloha souborů APK</string>
+    <string name="settings_backup_apk_summary">Zálohuje aplikace samotné. V opačném případě budou zálohována pouze jejich data.</string>
     <string name="settings_category_app_data_backup">Záloha dat aplikací</string>
-    <string name="settings_auto_restore_summary_usb">Poznámka: Pro správnou funkci musí být Vaše %1$s připojeno.</string>
+    <string name="settings_auto_restore_summary_usb">Poznámka: pro správnou funkci musí být připojeno zařízení %1$s.</string>
     <string name="settings_auto_restore_summary">Obnovit nastavení a data při reinstalaci aplikace.</string>
     <string name="settings_auto_restore_title">Automatické obnovení</string>
     <string name="settings_backup_last_backup_never">Nikdy</string>
@@ -146,7 +144,7 @@
 \nNěkteré aplikace (např. Signal nebo WhatsApp) mohou pro import zálohy vyžadovat úplné obnovení souborů. Snažte se vyhnout spuštění těchto aplikací před dokončením obnovy souborů.</string>
     <string name="recovery_code_auth_description">Pro pokračování zadejte pověření k zařízení</string>
     <string name="settings_category_apps">Záloha aplikací</string>
-    <string name="settings_backup_storage_title">Zálohovat mé soubory</string>
+    <string name="settings_backup_storage_title">Zálohovat moje soubory</string>
     <string name="settings_backup_files_summary">Žádné</string>
     <string name="settings_expert_title">Pokročilá nastavení</string>
     <string name="settings_backup_storage_dialog_title">Beta funkce</string>
@@ -231,7 +229,7 @@
     <string name="backup_app_check_success_disclaimer">Upozornění: nemůžeme ověřit, zda jednotlivé aplikace zahrnují všechna svá data do zálohy.</string>
     <string name="backup_app_check_error_only_broken_snapshots">Bylo nalezeno %1$d snímků záloh. Všechny z nich jsou ale poškozené. Proveďte prosím úspěšnou zálohu a poté zopakujte kontrolu.</string>
     <string name="notification_init_text">Příprava existujících dat zálohy pro opětovné použití…</string>
-    <string name="notification_failed_text">Při zálohování se vyskytla chyba.</string>
+    <string name="notification_failed_text">Při zálohování došlo k chybě.</string>
     <string name="notification_checking_channel_title">Kontrola integrity zálohy aplikací</string>
     <string name="notification_checking_error_title">Nalezeny chyby v záloze</string>
     <string name="restore_restore_set_apps_no_size">Má uživatelská data pro <xliff:g example="42" id="apps">%1$d</xliff:g> aplikací</string>
@@ -277,4 +275,7 @@
     <string name="storage_round_sync_summary_prefix">Vzdálená služba RoundSync:</string>
     <string name="notification_finalizing_text">Dokončování zálohy…</string>
     <string name="notification_pruning_blobs_title">Mazání dat starých záloh…</string>
+    <string name="restore_set_button_restart">Začít od začátku</string>
+    <string name="restore_set_bad_decrypt">Nepodařilo se dešifrovat zálohy:\n\nAktuální obnovovací kód nejspíše není totožný s tím, který byl použit pro vytvoření zálohy.</string>
+    <string name="restore_set_button_try_again">Zkusit znovu</string>
 </resources>

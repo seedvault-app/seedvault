@@ -7,10 +7,8 @@
     <string name="settings_backup_status_title">Status pencadangan</string>
     <string name="settings_backup_apk_dialog_disable">Nonaktifkan pencadangan aplikasi</string>
     <string name="settings_backup_apk_dialog_cancel">Batalkan</string>
-    <string name="settings_backup_apk_dialog_message">Pencadangan aplikasi yang dinonaktifkan akan tetap mencadangkan data aplikasi. Namun, tidak akan dipulihkan secara otomatis.
-\n
-\nAnda perlu menginstal semua aplikasi Anda secara manual saat \"Pemulihan Otomatis\" diaktifkan.</string>
-    <string name="settings_backup_apk_dialog_title">Yakin menonaktifkan pencadangan aplikasi\?</string>
+    <string name="settings_backup_apk_dialog_message">Pencadangan aplikasi yang dinonaktifkan akan tetap mencadangkan data aplikasi. Namun, tidak akan dipulihkan secara otomatis. \n \nAnda perlu menginstal semua aplikasi Anda secara manual saat \"Pemulihan Otomatis\" diaktifkan.</string>
+    <string name="settings_backup_apk_dialog_title">Yakin menonaktifkan pencadangan aplikasi?</string>
     <string name="settings_backup_apk_summary">Cadangkan aplikasi itu sendiri. Jika tidak, hanya data aplikasi yang akan dicadangkan.</string>
     <string name="settings_backup_apk_title">Pencadangan aplikasi</string>
     <string name="settings_category_app_data_backup">Pencadangan data aplikasi</string>

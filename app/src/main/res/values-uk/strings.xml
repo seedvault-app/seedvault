@@ -12,12 +12,12 @@
     <string name="settings_backup_exclude_apps">Виключити програми</string>
     <string name="settings_backup_status_summary">Остання резервна копія: %1$s</string>
     <string name="settings_backup_status_title">Стан резервного копіювання</string>
-    <string name="settings_backup_apk_dialog_disable">Вимкнути резервне копіювання програм</string>
+    <string name="settings_backup_apk_dialog_disable">Вимкнути резервне копіювання APK</string>
     <string name="settings_backup_apk_dialog_cancel">Скасувати</string>
-    <string name="settings_backup_apk_dialog_message">При вимкненому резервному копіюванні програм як і раніше будуть виконуватися резервні копії даних програм. Однак їх не буде відновлено автоматично.\n\nВам потрібно буде встановити всі свої програми вручну при увімкненому \"автоматичному відновленні\".</string>
-    <string name="settings_backup_apk_dialog_title">Дійсно вимкнути резервне копіювання програм?</string>
-    <string name="settings_backup_apk_summary">Зробіть резервну копію самих програм. В іншому випадку буде виконано резервне копіювання тільки даних програм.</string>
-    <string name="settings_backup_apk_title">Резервне копіювання програм</string>
+    <string name="settings_backup_apk_dialog_message">Після вимкнення резервного копіювання APK дані програми все одно будуть збережені. Однак вони не будуть відновлюватися автоматично.\n\nВам потрібно буде встановити всі програми вручну з увімкненою функцією \"Автоматичне відновлення\".</string>
+    <string name="settings_backup_apk_dialog_title">Справді вимкнути резервне копіювання APK?</string>
+    <string name="settings_backup_apk_summary">Резервне копіювання самих програм. В іншому випадку буде створено резервну копію лише даних програми.</string>
+    <string name="settings_backup_apk_title">Резервні копії APK</string>
     <string name="settings_category_app_data_backup">Резервне копіювання даних програм</string>
     <string name="settings_auto_restore_summary_usb">Примітка: Ваш %1$s повинен бути під\'єднаний до електромережі, щоб це працювало.</string>
     <string name="settings_auto_restore_summary">При перевстановленні програм відновіть резервні копії налаштувань і даних.</string>
@@ -54,7 +54,7 @@
     <string name="restore_set_empty_result">За цим розташуванням не знайдено відповідних резервних копій.
 \n
 \nШвидше за все, це пов\'язано з неправильним кодом відновлення або помилкою сховища.</string>
-    <string name="restore_set_error">Під час завантаження резервних копій сталася помилка.</string>
+    <string name="restore_set_error">Під час завантаження резервних копій сталася помилка:</string>
     <string name="restore_invalid_location_message">Ми не змогли знайти жодних резервних копій у цьому розташуванні.
 \n
 \nБудь ласка, виберіть інше розташування, що містить каталог %s.</string>
@@ -266,4 +266,8 @@
     <string name="notification_usb_monitor_text">Коли ваш USB-накопичувач стане доступним, ми почнемо резервне копіювання.</string>
     <string name="storage_round_sync_summary_prefix">Пульт дистанційного керування RoundSync:</string>
     <string name="notification_finalizing_text">Завершення резервного копіювання…</string>
+    <string name="restore_set_bad_decrypt">Не вдалося розшифрувати резервні копії.\n\nПоточний код відновлення, швидше за все, не той, який використовувався для створення резервної копії.</string>
+    <string name="notification_pruning_blobs_title">Видалення старих резервних даних…</string>
+    <string name="restore_set_button_try_again">Спробуйте знову</string>
+    <string name="restore_set_button_restart">Почати з початку</string>
 </resources>

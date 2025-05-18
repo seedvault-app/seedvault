@@ -79,10 +79,8 @@
     <string name="settings_backup_status_summary">Síðasta öryggisafritun: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Afvirkja öryggisafritun appa</string>
     <string name="settings_backup_apk_dialog_cancel">Stöðva</string>
-    <string name="settings_backup_apk_dialog_message">Ef öryggisafritun appa er óvirk verða gögn úr öppum samt afrituð. Hins vegar verða þau ekki endurvakin sjálfkrafa.
-\n
-\nÞú munt þurfa að enduruppsetja öll öpp handvirkt með stillinguna \"Sjálfvirk endurvakning úr öryggisafriti\" virka.</string>
-    <string name="settings_backup_apk_dialog_title">Viltu í alvöru ekki taka öryggisafrit af öppum\?</string>
+    <string name="settings_backup_apk_dialog_message">Ef öryggisafritun appa er óvirk verða gögn úr öppum samt afrituð. Hins vegar verða þau ekki endurvakin sjálfkrafa. \n \nÞú munt þurfa að enduruppsetja öll öpp handvirkt með stillinguna \"Sjálfvirk endurvakning úr öryggisafriti\" virka.</string>
+    <string name="settings_backup_apk_dialog_title">Viltu í alvöru ekki taka öryggisafrit af öppum?</string>
     <string name="settings_backup_apk_summary">Taka öryggisafrit af öppunum sjálfum. Ef þetta er ekki valið er aðeins tekið öryggisafrit af öppunum sjálfum.</string>
     <string name="settings_backup_apk_title">Öryggisafritun appa</string>
     <string name="settings_category_app_data_backup">Öryggisafritun gagna úr öppum</string>

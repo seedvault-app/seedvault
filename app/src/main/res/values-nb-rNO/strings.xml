@@ -29,11 +29,7 @@
     <string name="recovery_code_title">Gjenopprettingskode</string>
     <string name="storage_check_fragment_backup_error">Fikk ikke tilgang til sikkerhetskopiplassering</string>
     <string name="storage_check_fragment_backup_title">Igangsetter sikkerhetskopiplassering…</string>
-    <string name="settings_backup_apk_dialog_message">Å skru av programsikkerhetskopiering vil fremdeles sikkerhetskopiere programdata. Dog, vil den ikke bli gjenopprettet automatisk.
-\n
-\nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.
-\n
-\nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.</string>
+    <string name="settings_backup_apk_dialog_message">Å skru av programsikkerhetskopiering vil fremdeles sikkerhetskopiere programdata. Dog, vil den ikke bli gjenopprettet automatisk. \n \nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på. \n \nDu vil måtte installere alle dine programmer manuelt mens du har \"Automatisk gjenoppretting\" skrudd på.</string>
     <string name="about_title">Om</string>
     <string name="storage_internal_warning_use_anyway">Bruk uansett</string>
     <string name="storage_internal_warning_title">Advarsel</string>
@@ -84,7 +80,7 @@
     <string name="settings_backup_status_summary">Siste sikkerhetskopi: %1$s</string>
     <string name="settings_backup_apk_dialog_disable">Skru av programsikkerhetskopiering</string>
     <string name="settings_backup_apk_dialog_cancel">Avbryt</string>
-    <string name="settings_backup_apk_dialog_title">Vil du virkelig skru av programsikkerhetskopiering\?</string>
+    <string name="settings_backup_apk_dialog_title">Vil du virkelig skru av programsikkerhetskopiering?</string>
     <string name="settings_backup_apk_summary">Sikkerhetskopierer programmene. Ellers vil kun programdata sikkerhetskopieres.</string>
     <string name="settings_backup_apk_title">Sikkerhetskopiering av programmer</string>
     <string name="settings_category_app_data_backup">Sikkerhetskopiering av programdata</string>

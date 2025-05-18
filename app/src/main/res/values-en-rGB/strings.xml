@@ -15,9 +15,7 @@
     <string name="settings_backup_apk_dialog_disable">Disable app backup</string>
     <string name="notification_restore_channel_title">Restore notification</string>
     <string name="notification_restore_title">Restore running</string>
-    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically.
-\n
-\nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
+    <string name="settings_backup_apk_dialog_message">Disabled app backup will still back up app data. However, it will not get restored automatically. \n \nYou will need to install all your apps manually while having \"Automatic Restore\" switched on.</string>
     <string name="settings_backup_status_summary">Last backup: %1$s</string>
     <string name="settings_backup_last_backup_never">Never</string>
     <string name="settings_backup_dialog_title">Really turn off app backups?</string>

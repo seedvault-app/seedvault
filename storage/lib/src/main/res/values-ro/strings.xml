@@ -11,7 +11,7 @@
     <string name="notification_backup_scanning">Se scanează fișierele…</string>
     <string name="notification_backup_backup_files">Se fac copii de rezervă ale fișierelor…</string>
     <string name="notification_prune">Se elimină vechile copii de rezervă…</string>
-    <string name="notification_restore_channel_title">Restaurare fișiere</string>
+    <string name="notification_restore_channel_title">Restaurarea fișierelor</string>
     <string name="snapshots_empty">Nu s-au găsit copii de rezervă \n \nNe pare rău, dar nu există nimic care să poată fi restaurat.</string>
     <string name="content_images">Fotografii și imagini</string>
     <string name="content_videos">Videoclipuri</string>

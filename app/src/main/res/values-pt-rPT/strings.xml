@@ -4,7 +4,7 @@
     <string name="current_destination_string">Estado do backup e configurações</string>
     <string name="backup">Backup</string>
     <string name="about_version">Versão: %s</string>
-    <string name="about_summary">Uma app de backup usando a API de backup interna do Android.</string>
+    <string name="about_summary">Uma aplicação de backup que usa a API de backup interna do Android. É software gratuito, lançado sob a licença \"Apache 2\". \n \nComo todo o software, o Seedvault pode conter bugs ou vulnerabilidades.</string>
     <string name="about_title">Sobre</string>
     <string name="storage_internal_warning_use_anyway">Usar assim mesmo</string>
     <string name="storage_internal_warning_choose_other">Escolha outro</string>
@@ -27,7 +27,7 @@
     <string name="restore_set_empty_result">Nenhum backup adequado encontrado no local dado.
 \n
 \nIsso provavelmente se deve a um código de recuperação errado ou a um erro de armazenamento.</string>
-    <string name="restore_set_error">Ocorreu um erro ao carregar os backups.</string>
+    <string name="restore_set_error">Ocorreu um erro ao carregar os backups:</string>
     <string name="restore_invalid_location_message">Não podemos encontrar nenhum backup neste local.
 \n
 \nEscolha outro local que contenha uma pasta %s.</string>
@@ -98,14 +98,12 @@
     <string name="settings_backup_exclude_apps">Excluir apps</string>
     <string name="settings_backup_status_summary">Último backup: %1$s</string>
     <string name="settings_backup_status_title">Estado do backup</string>
-    <string name="settings_backup_apk_dialog_disable">Desativar backup da app</string>
+    <string name="settings_backup_apk_dialog_disable">Desativar o backup de APKs</string>
     <string name="settings_backup_apk_dialog_cancel">Cancelar</string>
-    <string name="settings_backup_apk_dialog_message">O backup da app desativado ainda fará o backup dos dados da app. Porém, ele não será restaurado automaticamente.
-\n
-\nPrecisará instalar todos as suas apps manualmente enquanto o \"Restauração automática\" está ativado.</string>
-    <string name="settings_backup_apk_dialog_title">Deseja realmente desativar o backup da app\?</string>
-    <string name="settings_backup_apk_summary">Faça backup das apps neles mesmos. Caso contrário, apenas os dados da app seriam armazenados em backup.</string>
-    <string name="settings_backup_apk_title">Backup da app</string>
+    <string name="settings_backup_apk_dialog_message">Após desativar o backup dos APKs, o backup dos dados do app ainda será feito. Porém, os dados não serão restaurados automaticamente.\n\nPara isso, precisará instalar todos os seus apps manualmente com a opção \"Restauração automática\" ativada.</string>
+    <string name="settings_backup_apk_dialog_title">Deseja realmente desativar o backup dos APKs?</string>
+    <string name="settings_backup_apk_summary">Faz backup dos próprios apps. Quando desativado, apenas os dados dos apps serão armazenados no backup.</string>
+    <string name="settings_backup_apk_title">Backup dos APKs</string>
     <string name="settings_category_app_data_backup">Backup de dados da app</string>
     <string name="settings_auto_restore_summary_usb">Observação: o seu %1$s precisa estar conectado para que isso funcione.</string>
     <string name="settings_auto_restore_summary">Ao reinstalar uma app, restaura as configurações e dados do backup.</string>
@@ -118,14 +116,14 @@
     <string name="settings_backup">Faça backup dos meus apps</string>
     <string name="data_management_label">Backup do Seedvault</string>
     <string name="restore_storage_got_it">Entendi</string>
-    <string name="settings_backup_storage_dialog_title">Recurso experimental</string>
-    <string name="settings_backup_storage_dialog_message">O backup de ficheiros ainda é experimental e pode não funcionar. Não confie nele para dados importantes.</string>
-    <string name="backup_section_user">Apps instaladas</string>
+    <string name="settings_backup_storage_dialog_title">Recurso beta</string>
+    <string name="settings_backup_storage_dialog_message">O backup de ficheiros está em beta e pode não funcionar. Não dependa dele para dados importantes.</string>
+    <string name="backup_section_user">Apps</string>
     <string name="restore_app_not_allowed">A app não permitiu um backup</string>
     <string name="restore_storage_skip">Pular restauração de ficheiros</string>
-    <string name="restore_storage_choose_snapshot">Escolha um backup de armazenamento para restaurar (experimental)</string>
+    <string name="restore_storage_choose_snapshot">Escolha um backup de ficheiros para restaurar (beta)</string>
     <string name="settings_category_apps">Backup de app</string>
-    <string name="settings_category_storage">Backup de armazenamento (experimental)</string>
+    <string name="settings_category_storage">Backup de ficheiros (beta)</string>
     <string name="settings_backup_storage_title">Faça backup dos meus ficheiros</string>
     <string name="settings_backup_files_title">Ficheiros e pastas incluídos</string>
     <string name="settings_backup_files_summary">Nenhum</string>
@@ -133,7 +131,7 @@
     <string name="settings_backup_recovery_code_summary">Verifique o código existente ou gere um novo</string>
     <string name="settings_backup_storage_dialog_ok">Ativar mesmo assim</string>
     <string name="settings_expert_title">Configurações para especialistas</string>
-    <string name="backup_section_system">Apps de sistema</string>
+    <string name="backup_section_system">Dados do sistema</string>
     <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
     <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
     <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados …</string>
@@ -150,7 +148,7 @@
     <string name="recovery_code_verification_new_dialog_message">A geração de um novo código fará os backups existentes inacessíveis. Vamos tentar apagá-los, se possível.
 \n
 \nTem a certeza que quer fazer isto\?</string>
-    <string name="recovery_code_recreated">O novo código de recuperação foi criado com sucesso</string>
+    <string name="recovery_code_recreated">Um novo código de recuperação foi criado com sucesso. Saindo…</string>
     <string name="recovery_code_auth_title">Digite novamente o bloqueio de ecrã</string>
     <string name="recovery_code_auth_description">Digite as credenciais do seu aparelho para continuar</string>
     <string name="notification_title">Backup em execução</string>
@@ -176,4 +174,105 @@
     <string name="notification_backup_disabled">Backup desativado</string>
     <string name="notification_error_no_main_key_title">Backups desativados</string>
     <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar a usar os backups.</string>
+    <string name="backup_app_success">Backup concluído</string>
+    <string name="storage_user_selected_location_title">Local escolhido pelo utilizador</string>
+    <string name="notification_checking_finished_title">Integridade do backup de apps verificada</string>
+    <string name="notification_usb_monitor_title">À espera do armazenamento USB…</string>
+    <string name="restore_recycle_backup_title">Reutilizar este backup?</string>
+    <string name="restore_recycle_backup_button_yes">Reutilizar backup</string>
+    <string name="restore_set_button_try_again">Tentar novamente</string>
+    <string name="restore_recycle_backup_button_no">Criar backup</string>
+    <string name="notification_space_error_title">Espaço para backup insuficiente</string>
+    <string name="about_contributor_content">Veja a <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">lista de colaboradores</a> no GitHub.</string>
+    <string name="about_contributing_organizations_title">Organizações Colaboradoras</string>
+    <string name="backup_system_apps">Apps do sistema</string>
+    <string name="settings_expert_logcat_error">Erro: Não foi possível gravar os registos da app</string>
+    <string name="first_start_text">Deseja restaurar o seu dispositivo de um backup existente ou iniciar um novo backup?</string>
+    <string name="setup_button">Iniciar um</string>
+    <string name="settings_backup_dialog_title">Realmente deseja desativar o backup de apps?</string>
+    <string name="settings_backup_dialog_message">Quando ativar o backup novamente, o processo pode demorar mais do que normal e utilizará mais espaço de armazenamento.</string>
+    <string name="settings_backup_dialog_disable">Desligar mesmo assim</string>
+    <string name="settings_scheduling_frequency_title">Frequência de backup</string>
+    <string name="settings_scheduling_frequency_12_hours">A cada 12 horas</string>
+    <string name="storage_webdav_config_url_helper">Certifique-se de digitar a URL inteira aqui. Ex: para o Nextcloud, tem a forma de https://seuservidor.com/remote.php/webdav</string>
+    <string name="storage_webdav_config_malformed_url">URL do WebDAV inválida</string>
+    <string name="settings_backup_file_check_title">Verificar integridade do backup</string>
+    <string name="settings_backup_file_check_summary">Certifique que o meu backup funciona para restaurar ficheiros</string>
+    <string name="notification_checking_error_title">Erros de backup encontrados</string>
+    <string name="restore_storage_selection_description">Os ficheiros selecionados serão restaurados. Toque em pastas para ver os ficheiros nelas.</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Instituto Calyx</a> para o uso no <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund por NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust Fund por NLnet</a></string>
+    <string name="settings_backup_status_next_backup">Próximo backup: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Próximo backup (previsão): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">quando as condições forem cumpridas</string>
+    <string name="settings_backup_status_next_backup_usb">Backups serão feitos automaticamente quando conectar o seu armazenamento USB</string>
+    <string name="settings_backup_scheduling_title">Agendamento de backup</string>
+    <string name="settings_app_check_text">Cada processo de backup automaticamente verificará a integridade do backup. Porém, para economizar tempo, os dados dos apps não serão descarregados e verificados.</string>
+    <string name="settings_app_check_text2">Aqui pode executar uma verificação do seu backup de apps. Selecione quanto dos dados dos apps devem serem descarregados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será. Isto executará em segundo plano e uma notificação será enviada quando a verificação for concluída.</string>
+    <string name="settings_file_check_title">Verificar integridade do backup de ficheiros</string>
+    <string name="settings_file_check_text">Aqui pode executar uma verificação do seu backup de ficheiros.</string>
+    <string name="storage_fake_davx5_summary_unavailable">Pasta WebDAV indisponível. Configure uma.</string>
+    <string name="storage_webdav_option_title">Nuvem WebDAV (beta)</string>
+    <string name="storage_webdav_option_summary">Acesso direto ao WebDAV</string>
+    <string name="storage_webdav_config_url">URL do WebDAV</string>
+    <string name="storage_webdav_config_user">Nome de utilizador</string>
+    <string name="storage_webdav_config_pass">Palavra-passe</string>
+    <string name="storage_webdav_name">%s WebDAV</string>
+    <string name="notification_space_error_text">O seu local de backup está quase sem espaço. Libere mais espaço, para que os backups possam ser feitos.</string>
+    <string name="notification_pruning_blobs_title">A remover dados de backups antigos…</string>
+    <string name="notification_checking_channel_title">Verificação de integridade do backup de apps</string>
+    <string name="notification_checking_title">A verificar o backup de apps…</string>
+    <string name="notification_checking_finished_text">%1$s foram verificados com sucesso, de velocidade média de %2$s.</string>
+    <string name="settings_file_check_text2">Selecione quanto dos dados dos ficheiros quer que sejam descarregados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será.\n\nA verificação executará em segundo plano e enviará a uma notificação quando for concluída.</string>
+    <string name="notification_checking_error_text">Toque para mais pormenores. Verificamos %1$s numa velocidade média de %2$s.</string>
+    <string name="notification_checking_action">Pormenores</string>
+    <string name="notification_usb_monitor_text">Quando o seu armazenamento USB estiver disponível, iniciaremos um backup.</string>
+    <string name="backup_app_check_success_intro">%1$d backups foram encontrados e %2$d%% dos seus dados (%3$s) foram verificados com sucesso:</string>
+    <string name="backup_app_check_success_disclaimer">Observação: não conseguimos verificar se apps individuais incluem todos os dados do utilizador no backup.</string>
+    <string name="backup_app_check_error_no_snapshots">Não encontramos nenhum backup. Execute um backup bem-sucedido primeiro e tente novamente.</string>
+    <string name="backup_app_check_error_only_broken_snapshots">Encontramos %1$d backups. Porém, todos estavam corrompidos. Execute um backup bem-sucedido e tente verificar novamente.</string>
+    <string name="backup_app_check_error_has_snapshots">Encontramos %1$d backups, alguns deles estão corrompidos ou têm erros. Abaixo estão os backups que podem ser restaurados.</string>
+    <string name="restore_restore_set_apps_no_size">Tem dados de utilizador para <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
+    <string name="restore_restore_set_apks">Contém <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size">Contém <xliff:g example="42" id="apps">%1$d</xliff:g> apps</string>
+    <string name="backup_app_check_error_no_result">Nós perdemos os resultados detalhados. Passou muito tempo desde quando a verificação foi executada? Tente executá-la novamente.</string>
+    <string name="restore_restore_set_apps">Tem dados de utilizador para <xliff:g example="42" id="apps">%1$d</xliff:g> apps (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_can_not_get_restored">Este backup tem alguns erros. Talvez consiga restaurá-lo parcialmente.</string>
+    <string name="restore_set_bad_decrypt">Não foi possível descriptografar os backups.\n\nO código de recuperação atual provavelmente não é mesmo do que o que foi usado para criar o backup.</string>
+    <string name="restore_set_button_restart">Iniciar do começo</string>
+    <string name="restore_select_packages_all">Todos os apps</string>
+    <string name="restore_recycle_backup_text">Pode reutilizar o backup \'%s\' que acabou de restaurar neste dispositivo. Isto fará com que novos backups sejam mais rápidos e usem menos dados.\n\nPorém, o seu dispositivo antigo perderá acesso a este backup. Se gostaria de manter o acesso ao seu dispositivo antigo, pode criar um novo backup em vez disso. Isto usará mais dados do que reutilizar o backup existente.</string>
+    <string name="about_contributor_headline">Colaboradores</string>
+    <string name="settings_scheduling_frequency_daily">Diariamente</string>
+    <string name="settings_scheduling_frequency_3_days">A cada 3 dias</string>
+    <string name="settings_scheduling_frequency_weekly">Semanalmente</string>
+    <string name="settings_scheduling_category_conditions_title">Condições</string>
+    <string name="settings_backup_metered_title">O backup parou</string>
+    <string name="settings_backup_metered_text">O backup não irá continuar por que o seu dispositivo usa dados móveis.\n\nPode ativar os backups nos dados móveis em \"Agendamento de backup\".</string>
+    <string name="settings_scheduling_metered_title">Fazer backup nos dados móveis</string>
+    <string name="settings_scheduling_charging_title">Fazer backup somente carregando</string>
+    <string name="settings_app_check_title">Verificar integridade do backup de apps</string>
+    <string name="settings_app_check_warning">Alerta: Descarregar grandes quantidades de dados pode demorar bastante tempo.</string>
+    <string name="settings_expert_logcat_title">Gravar registos da app</string>
+    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
+    <string name="storage_round_sync_summary_prefix">Remoto do RoundSync:</string>
+    <string name="storage_fake_davx5_summary_installed">Toque para configurar uma pasta WebDAV</string>
+    <string name="settings_expert_logcat_summary">Os programadores podem diagnosticar bugs com esses logs. \n \nAviso: O ficheiro de registos pode conter informações de identificação pessoal. Analise antes e apage-o após partilhar!</string>
+    <string name="notification_success_channel_title">Notificação de sucesso</string>
+    <string name="notification_init_text">A preparar os dados de backup existentes para a reutilização…</string>
+    <string name="notification_apk_text">A fazer backup do APK de %s</string>
+    <string name="notification_apk_not_backed_up">A gravar uma lista dos apps que não conseguimos fazer backup.</string>
+    <string name="restore_select_packages">Selecione apps para restaurar</string>
+    <string name="settings_backup_app_check_title">Verificar integridade</string>
+    <string name="settings_backup_app_check_summary">Certifique que o backup funciona para a restauração</string>
+    <string name="settings_app_check_button">Verificar backup</string>
+    <string name="storage_webdav_config_button">Usar nuvem WebDAV</string>
+    <string name="notification_restore_title">Restauração em execução</string>
+    <string name="notification_pruning_channel_title">Notificação de remoção de backups antigos</string>
+    <string name="backup_app_stopped_button">Abrir</string>
+    <string name="backup_app_stopped_no_intent">Não foi possível abrir o app</string>
+    <string name="notification_finalizing_text">A finalizar o backup…</string>
+    <string name="notification_failed_text">Um erro ocorreu ao executar o backup.</string>
+    <string name="notification_failed_metered_text">O backup foi abortado. Usa dados móveis? Conecte-se ao Wi-Fi para continuar.</string>
+    <string name="notification_restore_channel_title">Notificação de restauração</string>
+    <string name="notification_pruning_title">A remover backups antigos…</string>
 </resources>

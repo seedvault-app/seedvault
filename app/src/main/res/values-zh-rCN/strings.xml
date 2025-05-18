@@ -3,8 +3,8 @@
     <string name="settings_backup">备份我的应用</string>
     <string name="restore_backup_button">恢复备份</string>
     <string name="backup">备份</string>
-    <string name="settings_backup_apk_dialog_title">真的要禁用“备份应用程序”吗？</string>
-    <string name="settings_backup_apk_title">备份应用程序</string>
+    <string name="settings_backup_apk_dialog_title">真的要停用 APK 备份？</string>
+    <string name="settings_backup_apk_title">APK 备份</string>
     <string name="settings_category_app_data_backup">应用数据备份</string>
     <string name="settings_auto_restore_summary">重新安装应用程序时，恢复备份的数据与设置。</string>
     <string name="settings_auto_restore_title">自动恢复</string>
@@ -50,7 +50,7 @@
     <string name="restore_set_empty_result">在给定位置找不到合适的备份。
 \n
 \n这很可能是由错误的恢复代码或存储错误导致的。</string>
-    <string name="restore_set_error">加载备份时出错。</string>
+    <string name="restore_set_error">加载备份时出错：</string>
     <string name="restore_invalid_location_message">我们在此位置找不到任何备份。
 \n
 \n请选择包含 %s 文件夹的其他位置。</string>
@@ -92,11 +92,9 @@
     <string name="settings_backup_now">立即备份</string>
     <string name="settings_backup_exclude_apps">排除应用</string>
     <string name="settings_backup_status_summary">上次备份：%1$s</string>
-    <string name="settings_backup_apk_dialog_disable">禁用“备份应用程序”</string>
+    <string name="settings_backup_apk_dialog_disable">停用 APK 备份</string>
     <string name="settings_backup_apk_dialog_cancel">取消</string>
-    <string name="settings_backup_apk_dialog_message">禁用“备份应用程序”仍将备份应用数据。不过，应用数据不会自动恢复。
-\n
-\n您将需要在打开“自动恢复”的情况下手动安装所有应用程序。</string>
+    <string name="settings_backup_apk_dialog_message">停用 APK 备份后，应用数据仍将被备份。不过，它不会被自动恢复。 \n \n您将需要在打开“自动恢复”的情况下手动安装所有应用程序。</string>
     <string name="settings_backup_apk_summary">备份应用程序本身。否则只备份应用程序数据。</string>
     <string name="settings_auto_restore_summary_usb">注意：要让该功能正常工作，需插入你的%1$s。</string>
     <string name="restore_app_was_stopped">最近没有使用，未备份</string>
@@ -279,4 +277,7 @@
     <string name="storage_round_sync_summary_prefix">RoundSync 远端：</string>
     <string name="notification_finalizing_text">正在完成备份…</string>
     <string name="notification_pruning_blobs_title">正在删除旧的备份数据…</string>
+    <string name="restore_set_bad_decrypt">无法解密备份。\n\n当前的恢复码很可能不是用来制作备份的代码。</string>
+    <string name="restore_set_button_try_again">再次尝试</string>
+    <string name="restore_set_button_restart">从头开始</string>
 </resources>

@@ -13,7 +13,7 @@
     <string name="current_destination_string">Back-up status en instellingen</string>
     <string name="settings_category_app_data_backup">Appgegevensback-up</string>
     <string name="settings_backup_apk_title">Appback-up</string>
-    <string name="settings_backup_apk_dialog_title">Weet je zeker dat je appback-up uit wil zetten\?</string>
+    <string name="settings_backup_apk_dialog_title">Weet je zeker dat je appback-up uit wil zetten?</string>
     <string name="settings_backup_exclude_apps">Sluit apps uit</string>
     <string name="recovery_code_done_button">Verifieer</string>
     <string name="backup_section_system">Systeemapps</string>
@@ -180,9 +180,7 @@
     <string name="restore_installing_packages">Herinstalleren van apps</string>
     <string name="restore_finished_error">Er was een fout opgetreden tijdens het herstel van de back-up.</string>
     <string name="restore_installing_error_title">Sommige apps zijn niet geïnstalleerd</string>
-    <string name="settings_backup_apk_dialog_message">Uitgeschakelde appback-up zal nog steeds appgegevens back-uppen. Ze worden echter niet automatisch hersteld.
-\n
-\nJe zal al je apps handmatig moeten installeren terwijl \"Automatisch herstellen\" is ingeschakeld.</string>
+    <string name="settings_backup_apk_dialog_message">Uitgeschakelde appback-up zal nog steeds appgegevens back-uppen. Ze worden echter niet automatisch hersteld. \n \nJe zal al je apps handmatig moeten installeren terwijl \"Automatisch herstellen\" is ingeschakeld.</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> vrij</string>
     <string name="restore_set_empty_result">Geen geschikte back-ups gevonden op de opgegeven locatie.
 \n
