@@ -93,5 +93,4 @@ internal class BackupContentAdapter(private val listener: ContentClickListener) 
             }
         }
     }
-
 }

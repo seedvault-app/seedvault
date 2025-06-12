@@ -94,7 +94,5 @@ internal class RestoreSetAdapter(
             val now = System.currentTimeMillis()
             return getRelativeTimeSpanString(time, now, MINUTE_IN_MILLIS, FORMAT_ABBREV_RELATIVE)
         }
-
     }
-
 }

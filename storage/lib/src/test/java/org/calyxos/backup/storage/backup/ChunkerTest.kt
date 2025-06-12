@@ -126,5 +126,4 @@ internal class ChunkerTest {
             chunker.makeChunks(input16)
         )
     }
-
 }

@@ -85,5 +85,4 @@ class AppCheckFragment : Fragment() {
             sliderLabel.visibility = newVisibility
         }
     }
-
 }

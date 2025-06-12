@@ -95,5 +95,4 @@ internal class DocumentsProviderLegacyPlugin(
             ?: throw FileNotFoundException()
         return storage.getInputStream(file)
     }
-
 }

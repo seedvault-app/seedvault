@@ -76,5 +76,4 @@ abstract class RequireProvisioningActivity : BackupActivity() {
         }
         recoveryCodeRequest.launch(intent)
     }
-
 }

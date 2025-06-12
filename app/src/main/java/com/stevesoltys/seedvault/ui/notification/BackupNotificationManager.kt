@@ -487,5 +487,4 @@ internal class BackupNotificationManager(private val context: Context) {
     fun onNoMainKeyErrorFixed() {
         nm.cancel(NOTIFICATION_ID_NO_MAIN_KEY_ERROR)
     }
-
 }

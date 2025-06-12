@@ -91,5 +91,4 @@ class MetadataReaderTest {
             packageMetadataMap = packageMetadata
         )
     }
-
 }

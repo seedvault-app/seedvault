@@ -197,5 +197,4 @@ internal class KVBackup(
         class Ok<out T>(val result: T) : Result<T>()
         class Error(val exception: Exception) : Result<Nothing>()
     }
-
 }

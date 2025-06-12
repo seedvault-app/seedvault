@@ -68,5 +68,4 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
         }
         return v
     }
-
 }

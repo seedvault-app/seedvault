@@ -231,7 +231,6 @@ internal class RestoreViewModel(
         mDisplayFragment.setEvent(RESTORE_FILES_STARTED)
         this.storedSnapshot = null
     }
-
 }
 
 internal class RestoreSetResult(

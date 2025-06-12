@@ -32,7 +32,8 @@ internal const val PREF_KEY_SCHED_CHARGING = "scheduling_charging"
 
 private const val PREF_KEY_STORAGE_PLUGIN = "storagePlugin"
 
-internal enum class StoragePluginType { // don't rename, will break existing installs
+internal enum class StoragePluginType {
+    // don't rename, will break existing installs
     SAF,
     WEB_DAV,
 }

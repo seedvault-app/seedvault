@@ -110,5 +110,4 @@ internal class MultiChunkRestore(
     }
 
     private fun getChunkCacheFile(chunkId: String) = File(context.cacheDir, chunkId)
-
 }

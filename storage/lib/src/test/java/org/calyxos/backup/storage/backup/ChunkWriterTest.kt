@@ -332,5 +332,4 @@ internal class ChunkWriterTest {
     private fun MockKMatcherScope.bytes(size: Int) = match<ByteArray> {
         it.size == size
     }
-
 }

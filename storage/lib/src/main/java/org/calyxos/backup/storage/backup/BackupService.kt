@@ -63,5 +63,4 @@ public abstract class BackupService : Service() {
         Log.d(TAG, "onDestroy")
         super.onDestroy()
     }
-
 }

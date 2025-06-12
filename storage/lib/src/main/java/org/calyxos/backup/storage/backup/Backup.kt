@@ -230,5 +230,4 @@ internal class Backup(
         }
         Log.e(TAG, "Updating last seen time took $lastSeenUpdateTime")
     }
-
 }

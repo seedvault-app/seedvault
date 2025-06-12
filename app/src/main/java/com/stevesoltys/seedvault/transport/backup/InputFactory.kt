@@ -22,5 +22,4 @@ internal class InputFactory {
     fun getInputStream(inputFileDescriptor: ParcelFileDescriptor): InputStream {
         return FileInputStream(inputFileDescriptor.fileDescriptor)
     }
-
 }

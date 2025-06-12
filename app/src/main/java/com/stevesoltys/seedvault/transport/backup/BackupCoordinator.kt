@@ -289,7 +289,8 @@ internal class BackupCoordinator(
         // don't bother with remembering state for boring system apps that have no data
         val ignoreApp = state.cancelReason == NO_DATA &&
             packageInfo.isSystemApp() &&
-            packageName !in systemData.keys && // don't ignore our special system apps
+            // don't ignore our special system apps
+            packageName !in systemData.keys &&
             packageName !in launchableSystemApps // don't ignore launchable system apps
         if (!ignoreApp) onPackageBackupError(packageInfo, BackupType.FULL)
         full.cancelFullBackup()

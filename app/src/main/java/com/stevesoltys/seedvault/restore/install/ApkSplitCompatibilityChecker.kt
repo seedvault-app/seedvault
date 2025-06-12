@@ -135,5 +135,4 @@ class ApkSplitCompatibilityChecker(private val deviceInfo: DeviceInfo) {
             true
         }
     }
-
 }

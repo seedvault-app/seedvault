@@ -87,7 +87,6 @@ internal class StorageOptionAdapter(
                 }
             }
         }
-
     }
 
     private fun showWarningDialog(context: Context, item: StorageOption) {
@@ -103,5 +102,4 @@ internal class StorageOptionAdapter(
             }
             .show()
     }
-
 }

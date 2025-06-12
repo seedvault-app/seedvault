@@ -131,5 +131,4 @@ internal class SmallFileBackupIntegrationTest {
             observer.onFileBackedUp(file2, true, 0, match<Long> { it <= outputStream2.size() }, "S")
         }
     }
-
 }

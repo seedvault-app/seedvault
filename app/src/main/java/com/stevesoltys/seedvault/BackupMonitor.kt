@@ -34,5 +34,4 @@ open class BackupMonitor : IBackupManagerMonitor.Stub() {
             Log.w(TAG, "Pre-flight error from $packageName: $preflightResult")
         }
     }
-
 }

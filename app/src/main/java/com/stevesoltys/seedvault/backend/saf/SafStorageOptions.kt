@@ -68,7 +68,6 @@ internal class SafStorageOptions(
      * Add a storage root for each child directory at the RoundSync root, if it exists.
      */
     private fun checkOrAddRoundSyncRoots(roots: ArrayList<StorageOption>) {
-
         val roundSyncRoot = roots.firstOrNull {
             it is SafOption && it.authority == AUTHORITY_ROUND_SYNC
         } as? SafOption ?: return
@@ -230,5 +229,4 @@ internal class SafStorageOptions(
         // restoring can be more free for forward compatibility
         return isRestore || whitelistedAuthorities.contains(authority)
     }
-
 }

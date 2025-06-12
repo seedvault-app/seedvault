@@ -180,5 +180,4 @@ internal class MetadataManager(
             stream.write(metadataWriter.encode(metadata))
         }
     }
-
 }

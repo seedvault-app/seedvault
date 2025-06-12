@@ -19,9 +19,9 @@ public object Constants {
     public val blobFolderRegex: Regex = chunkFolderRegex
     public val chunkRegex: Regex = repoIdRegex
     public val blobRegex: Regex = repoIdRegex
+
     // good until year 2286
     public val appSnapshotRegex: Regex = Regex("(^[a-f0-9]{64})\\.snapshot$")
     public val fileSnapshotRegex: Regex = Regex("(^[0-9]{13})\\.SeedSnap$") // good until year 2286
     public const val MIME_TYPE: String = "application/octet-stream"
-
 }

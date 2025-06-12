@@ -124,5 +124,4 @@ class IconManagerTest : KoinComponent {
         val compressedSize = outputStream.size().toFloat() / 1024 / 1024
         println("Icon size: $size MB, compressed $compressedSize MB")
     }
-
 }

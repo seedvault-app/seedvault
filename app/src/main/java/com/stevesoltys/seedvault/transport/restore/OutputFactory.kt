@@ -22,5 +22,4 @@ internal class OutputFactory {
     fun getOutputStream(outputFileDescriptor: ParcelFileDescriptor): OutputStream {
         return FileOutputStream(outputFileDescriptor.fileDescriptor)
     }
-
 }

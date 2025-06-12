@@ -56,5 +56,4 @@ internal object Hkdf {
         }
         return buffer.array()
     }
-
 }

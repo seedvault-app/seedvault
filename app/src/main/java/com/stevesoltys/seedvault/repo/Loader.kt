@@ -107,7 +107,6 @@ internal class Loader(
         val paddedStream = PaddedInputStream(decryptingStream)
         return ZstdInputStream(paddedStream)
     }
-
 }
 
 internal class HashMismatchException(msg: String? = null) : GeneralSecurityException(msg)

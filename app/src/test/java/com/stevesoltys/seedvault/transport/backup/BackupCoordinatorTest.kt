@@ -268,5 +268,4 @@ internal class BackupCoordinatorTest : BackupTest() {
             backup.performFullBackup(packageInfo, fileDescriptor, 0),
         )
     }
-
 }

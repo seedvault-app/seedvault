@@ -98,5 +98,4 @@ public open class NotificationBackupObserver internal constructor(private val n:
     override suspend fun onPruneComplete(pruneDuration: Long) {
         n.cancelPruneNotification()
     }
-
 }

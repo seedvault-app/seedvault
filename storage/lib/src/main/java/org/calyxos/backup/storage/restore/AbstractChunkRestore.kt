@@ -49,5 +49,4 @@ internal abstract class AbstractChunkRestore(
     ) {
         fileRestore.restoreFile(file, observer, tag, streamWriter)
     }
-
 }

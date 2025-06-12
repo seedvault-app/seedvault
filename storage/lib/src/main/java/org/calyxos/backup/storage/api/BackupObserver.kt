@@ -55,5 +55,4 @@ public interface BackupObserver {
     public suspend fun onPruneError(snapshot: Long?, e: Exception)
 
     public suspend fun onPruneComplete(pruneDuration: Long)
-
 }

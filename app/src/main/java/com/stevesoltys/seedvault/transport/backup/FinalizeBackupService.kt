@@ -44,5 +44,4 @@ class FinalizeBackupService : Service() {
         nm.cancelBackupNotification()
         super.onDestroy()
     }
-
 }

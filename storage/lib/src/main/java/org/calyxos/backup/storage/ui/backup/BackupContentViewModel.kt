@@ -59,5 +59,4 @@ public abstract class BackupContentViewModel(app: Application) : AndroidViewMode
         }
         _content.postValue(items)
     }
-
 }

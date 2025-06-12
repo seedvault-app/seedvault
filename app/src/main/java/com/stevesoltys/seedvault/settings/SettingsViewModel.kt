@@ -391,5 +391,4 @@ internal class SettingsViewModel(
         val str = app.getString(R.string.settings_expert_logcat_error)
         Toast.makeText(app, str, LENGTH_LONG).show()
     }
-
 }

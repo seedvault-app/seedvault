@@ -181,7 +181,8 @@ public class SafBackend(
                     }
                 }
             }
-            if (LegacyAppBackupFile.Metadata::class in fileTypes && name == FILE_BACKUP_METADATA &&
+            if (LegacyAppBackupFile.Metadata::class in fileTypes &&
+                name == FILE_BACKUP_METADATA &&
                 parentName.matches(tokenRegex)
             ) {
                 val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
@@ -254,7 +255,6 @@ public class SafBackend(
         log.debugLog { "  ${providerInfo.packageName}" }
         providerInfo.packageName
     }
-
 }
 
 private inline fun KLogger.debugLog(crossinline block: () -> String) {

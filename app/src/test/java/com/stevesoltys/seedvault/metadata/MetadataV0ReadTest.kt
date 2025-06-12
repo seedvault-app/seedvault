@@ -70,5 +70,4 @@ internal class MetadataV0ReadTest {
         deviceName = "foo bar",
         packageMetadataMap = packageMetadata
     )
-
 }

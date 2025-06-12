@@ -41,5 +41,4 @@ class KeyManagerTestImpl(private val customKey: SecretKey? = null) : KeyManager 
     }
 
     override fun getMainKey(): SecretKey = key
-
 }

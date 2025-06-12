@@ -32,5 +32,4 @@ class TryAgainBroadcastReceiver : BroadcastReceiver() {
         val reschedule = !backendManager.isOnRemovableDrive
         requestFilesAndAppBackup(context, settingsManager, backupManager, reschedule)
     }
-
 }

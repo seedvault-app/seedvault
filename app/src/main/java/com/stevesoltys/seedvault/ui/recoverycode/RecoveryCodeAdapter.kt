@@ -27,7 +27,6 @@ class RecoveryCodeAdapter(private val items: List<CharArray>) :
     override fun onBindViewHolder(holder: RecoveryCodeViewHolder, position: Int) {
         holder.bind(position + 1, items[position])
     }
-
 }
 
 class RecoveryCodeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -39,5 +38,4 @@ class RecoveryCodeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         num.text = number.toString()
         word.text = String(item)
     }
-
 }

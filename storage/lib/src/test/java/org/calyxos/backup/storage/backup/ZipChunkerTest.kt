@@ -130,5 +130,4 @@ internal class ZipChunkerTest {
         every { chunkWriter.writeNewZipEntry(any(), 1, fileInputStream) } just Runs
         zipChunker.addFile(file1a, fileInputStream)
     }
-
 }

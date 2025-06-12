@@ -250,5 +250,4 @@ internal class FullRestoreV1Test : RestoreTest() {
         every { decryptedInputStream.close() } just Runs
         every { fileDescriptor.close() } just Runs
     }
-
 }

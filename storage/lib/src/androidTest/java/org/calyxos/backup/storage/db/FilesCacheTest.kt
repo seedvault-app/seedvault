@@ -61,5 +61,4 @@ internal class FilesCacheTest {
 
         assertThat(filesCache.getByUri(Uri.parse("doesntExist")), equalTo(null))
     }
-
 }

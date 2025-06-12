@@ -130,5 +130,4 @@ internal class ApkInstaller(private val context: Context) {
         val status = if (success) SUCCEEDED else FAILED
         return installResult.update(packageName) { it.copy(state = status) }
     }
-
 }

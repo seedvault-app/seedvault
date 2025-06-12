@@ -87,5 +87,4 @@ class SchedulingFragment : PreferenceFragmentCompat(),
             PREF_KEY_SCHED_CHARGING -> viewModel.scheduleBackups(UPDATE)
         }
     }
-
 }

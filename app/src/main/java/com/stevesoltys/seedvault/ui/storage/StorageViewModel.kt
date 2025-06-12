@@ -113,7 +113,6 @@ internal abstract class StorageViewModel(
         mLocationSet.setEvent(true)
         onWebDavConfigSet(properties, backend)
     }
-
 }
 
 class LocationResult(val errorMsg: String? = null)

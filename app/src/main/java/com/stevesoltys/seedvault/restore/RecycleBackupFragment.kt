@@ -38,5 +38,4 @@ class RecycleBackupFragment : Fragment() {
         }
         return v
     }
-
 }

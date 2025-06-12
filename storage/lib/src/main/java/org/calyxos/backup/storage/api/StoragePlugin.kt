@@ -66,5 +66,4 @@ public interface StoragePlugin {
      */
     @Throws(IOException::class)
     public suspend fun deleteChunks(chunkIds: List<String>)
-
 }

@@ -384,5 +384,4 @@ internal class CheckerTest : TransportTest() {
             snapshotManager.onSnapshotsLoaded(snapshots.keys.toList())
         } returns snapshots.values.toList()
     }
-
 }

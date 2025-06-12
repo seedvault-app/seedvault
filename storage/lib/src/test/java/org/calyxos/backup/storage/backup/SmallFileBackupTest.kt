@@ -255,5 +255,4 @@ internal class SmallFileBackupTest {
         every { zipChunker.addFile(file, fileInputStream) } just Runs
         every { fileInputStream.close() } just Runs
     }
-
 }

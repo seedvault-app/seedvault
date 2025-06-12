@@ -73,5 +73,4 @@ public object CoreCrypto {
     public fun expectedCiphertextSize(size: Long): Long {
         return onlyForSizeCalculation.expectedCiphertextSize(size)
     }
-
 }

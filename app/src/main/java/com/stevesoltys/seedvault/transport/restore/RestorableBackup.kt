@@ -71,5 +71,4 @@ data class RestorableBackup(
 
     val packageMetadataMap: PackageMetadataMap
         get() = backupMetadata.packageMetadataMap
-
 }

@@ -186,8 +186,10 @@ public class WebDavBackend(
                 log.debugLog { "list() = $response" }
 
                 // work around nginx's inability to find files starting with .
-                if (relation != SELF && LegacyAppBackupFile.Metadata::class in fileTypes &&
-                    response.isFolder() && response.hrefName().matches(tokenRegex)
+                if (relation != SELF &&
+                    LegacyAppBackupFile.Metadata::class in fileTypes &&
+                    response.isFolder() &&
+                    response.hrefName().matches(tokenRegex)
                 ) {
                     tokenFolders.add(response.href)
                 }
@@ -209,7 +211,8 @@ public class WebDavBackend(
                         }
                     }
                     if ((AppBackupFileType.Blob::class in fileTypes ||
-                            AppBackupFileType::class in fileTypes) && response.href.pathSize >= 3
+                            AppBackupFileType::class in fileTypes) &&
+                        response.href.pathSize >= 3
                     ) {
                         val repoId = response.href.pathSegments[response.href.pathSegments.size - 3]
                         if (repoIdRegex.matches(repoId) &&
@@ -239,7 +242,8 @@ public class WebDavBackend(
                         }
                     }
                     if ((FileBackupFileType.Blob::class in fileTypes ||
-                            FileBackupFileType::class in fileTypes) && response.href.pathSize >= 3
+                            FileBackupFileType::class in fileTypes) &&
+                        response.href.pathSize >= 3
                     ) {
                         val androidIdSv =
                             response.href.pathSegments[response.href.pathSegments.size - 3]
@@ -361,7 +365,8 @@ public class WebDavBackend(
             return true
         } else if (e is EOFException && e.message?.contains("\\n not found") == true) {
             return true
-        } else if (e is IOException && e.cause is EOFException &&
+        } else if (e is IOException &&
+            e.cause is EOFException &&
             e.cause?.message?.contains("\\n not found") == true
         ) {
             return true
@@ -380,7 +385,6 @@ public class WebDavBackend(
         is TopLevelFolder -> "$url/$name/".toHttpUrl()
         else -> "$url/$relativePath".toHttpUrl()
     }
-
 }
 
 internal inline fun KLogger.debugLog(crossinline block: () -> String) {

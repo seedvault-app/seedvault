@@ -128,5 +128,4 @@ internal class BackupReceiver(
         if (this.owner == null) this.owner = owner
         else check(this.owner == owner) { "Owned by ${this.owner}, but called from $owner" }
     }
-
 }

@@ -48,5 +48,4 @@ class AboutDialogFragment : Fragment() {
 
         return v
     }
-
 }

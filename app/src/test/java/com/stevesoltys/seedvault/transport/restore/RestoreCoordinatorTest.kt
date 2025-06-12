@@ -503,5 +503,4 @@ internal class RestoreCoordinatorTest : TransportTest() {
         assertEquals(expected.packageName, actual?.packageName)
         assertEquals(expected.dataType, actual?.dataType)
     }
-
 }

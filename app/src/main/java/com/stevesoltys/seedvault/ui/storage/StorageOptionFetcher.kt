@@ -122,5 +122,4 @@ internal class StorageOptionFetcher(private val context: Context, private val is
         // restoring can be more free for forward compatibility
         return isRestore || whitelistedAuthorities.contains(authority)
     }
-
 }

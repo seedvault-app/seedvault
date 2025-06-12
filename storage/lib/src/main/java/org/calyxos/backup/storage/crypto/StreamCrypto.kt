@@ -66,5 +66,4 @@ public object StreamCrypto {
             l = l shr 8
         }
     }
-
 }

@@ -207,5 +207,4 @@ internal class FullRestoreTest : RestoreTest() {
         every { inputStream.close() } just Runs
         every { fileDescriptor.close() } just Runs
     }
-
 }

@@ -18,5 +18,4 @@ internal object WebDavTestConfig {
             password = System.getenv("NEXTCLOUD_PASS") ?: fail(),
         )
     }
-
 }

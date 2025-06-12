@@ -82,8 +82,10 @@ internal class PackageService(
             // We need the GET_SIGNING_CERTIFICATES flag here,
             // because the package info is used by [ApkBackup] which needs signing info.
             return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
-                .filter { packageInfo -> // only apps that are:
-                    !packageInfo.isNotUpdatedSystemApp() && // not vanilla system apps
+                // only apps that are:
+                .filter { packageInfo ->
+                    // not vanilla system apps
+                    !packageInfo.isNotUpdatedSystemApp() &&
                         packageInfo.packageName != context.packageName // not this app
                 }
         }
@@ -99,8 +101,10 @@ internal class PackageService(
             // because the package info is used by [ApkBackup] which needs signing info.
             return packageManager.getInstalledPackages(GET_SIGNING_CERTIFICATES)
                 .filter { packageInfo ->
-                    packageInfo.doesNotGetBackedUp() && // only apps that do not allow backup
-                        !packageInfo.isNotUpdatedSystemApp() && // and are not vanilla system apps
+                    // only apps that do not allow backup
+                    packageInfo.doesNotGetBackedUp() &&
+                        // and are not vanilla system apps
+                        !packageInfo.isNotUpdatedSystemApp() &&
                         packageInfo.packageName != context.packageName // not this app
                 }.sortedBy { packageInfo ->
                     packageInfo.packageName

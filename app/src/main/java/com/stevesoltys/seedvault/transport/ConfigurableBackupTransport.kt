@@ -234,5 +234,4 @@ class ConfigurableBackupTransport internal constructor(private val context: Cont
     override fun finishRestore() {
         restoreCoordinator.finishRestore()
     }
-
 }

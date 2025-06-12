@@ -160,7 +160,8 @@ data class PackageMetadata(
 
     val isInternalSystem: Boolean = system && !isLaunchableSystemApp
     fun hasApk(): Boolean {
-        return version != null && // v2 doesn't use sha256 here
+        return version != null &&
+            // v2 doesn't use sha256 here
             (sha256 != null || baseApkChunkIds?.isNotEmpty() == true) &&
             signatures != null
     }

@@ -466,5 +466,4 @@ internal class RestoreCoordinator(
         val storage = backendManager.backendProperties ?: return false
         return storage.isUnavailableUsb(context)
     }
-
 }

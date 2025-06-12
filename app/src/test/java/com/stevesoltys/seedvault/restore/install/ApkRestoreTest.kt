@@ -96,7 +96,8 @@ internal class ApkRestoreTest : TransportTest() {
     private val apkBytes = byteArrayOf(0x04, 0x05, 0x06)
     private val apkInputStream = ByteArrayInputStream(apkBytes)
     private val appName = getRandomString()
-    private val appNoSplit = app.copy { // tests that need splits bring their own
+    private val appNoSplit = app.copy {
+        // tests that need splits bring their own
         this.apk = apk.copy {
             splits.clear()
             splits.add(baseSplit)
@@ -740,7 +741,6 @@ internal class ApkRestoreTest : TransportTest() {
         assertEquals(1, item.list.size)
         return item
     }
-
 }
 
 internal operator fun InstallResult.get(packageName: String): ApkInstallResult {

@@ -37,7 +37,6 @@ internal class SnapshotRetriever(
             }
         }
     }
-
 }
 
 @Throws(IOException::class)

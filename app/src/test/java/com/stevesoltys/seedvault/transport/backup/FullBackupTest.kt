@@ -307,5 +307,4 @@ internal class FullBackupTest : BackupTest() {
         every { inputStream.close() } just Runs
         every { data.close() } just Runs
     }
-
 }

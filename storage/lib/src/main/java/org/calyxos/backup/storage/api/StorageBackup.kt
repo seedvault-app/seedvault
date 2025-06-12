@@ -290,5 +290,4 @@ public class StorageBackup(
         Log.i(TAG, "Clearing check result...")
         checkResult = null
     }
-
 }

@@ -66,5 +66,4 @@ class KeyManagerImplTest {
         assertTrue(keyEntry.isCaptured)
         assertArrayEquals(seed.sliceArray(32 until 64), keyEntry.captured.secretKey.encoded)
     }
-
 }

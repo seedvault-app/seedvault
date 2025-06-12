@@ -211,7 +211,6 @@ internal class ApkBackup(
     }
 
     private fun getOwner(packageName: String, split: String) = "APK backup $packageName $split"
-
 }
 
 /**

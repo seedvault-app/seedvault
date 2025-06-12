@@ -22,5 +22,4 @@ class PermissionGrantActivity : AppCompatActivity() {
         }
         finish()
     }
-
 }

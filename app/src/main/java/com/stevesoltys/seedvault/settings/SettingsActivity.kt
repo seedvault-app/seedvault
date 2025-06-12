@@ -71,5 +71,4 @@ class SettingsActivity : RequireProvisioningActivity(), OnPreferenceStartFragmen
             .commit()
         return true
     }
-
 }

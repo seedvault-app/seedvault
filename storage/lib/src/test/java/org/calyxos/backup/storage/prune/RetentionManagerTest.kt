@@ -148,5 +148,4 @@ internal class RetentionManagerTest {
     private fun LocalDateTime.toMillis(): Long {
         return toInstant(UTC).toEpochMilli()
     }
-
 }

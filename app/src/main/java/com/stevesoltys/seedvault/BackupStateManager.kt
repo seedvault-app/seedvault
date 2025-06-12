@@ -67,5 +67,4 @@ class BackupStateManager(
 
     val isFrameworkSchedulingEnabled: Boolean
         get() = Settings.Secure.getInt(contentResolver, BACKUP_SCHEDULING_ENABLED, 1) == 1
-
 }

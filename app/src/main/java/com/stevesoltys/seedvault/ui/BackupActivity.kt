@@ -24,5 +24,4 @@ abstract class BackupActivity : AppCompatActivity() {
             commit()
         }
     }
-
 }

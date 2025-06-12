@@ -61,5 +61,4 @@ internal class UriStoreTest {
         uriStore.removeStoredUri(uri3)
         assertThat(uriStore.getStoredUris(), equalTo(listOf(uri2)))
     }
-
 }

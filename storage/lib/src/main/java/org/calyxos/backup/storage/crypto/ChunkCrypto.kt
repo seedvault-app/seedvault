@@ -43,5 +43,4 @@ internal object ChunkCrypto {
         }
         init(SecretKeySpec(chunkKey, ALGORITHM_HMAC))
     }
-
 }

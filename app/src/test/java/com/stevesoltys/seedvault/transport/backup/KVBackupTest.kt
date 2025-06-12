@@ -236,7 +236,8 @@ internal class KVBackupTest : BackupTest() {
             backupReceiver.readFromStream("KV $packageName", inputStream)
         } throws IOException()
 
-        assertThrows<IOException> { // we let exceptions bubble up to coordinators
+        assertThrows<IOException> {
+            // we let exceptions bubble up to coordinators
             backup.finishBackup()
         }
         assertFalse(backup.hasState)
@@ -283,5 +284,4 @@ internal class KVBackupTest : BackupTest() {
             backupReceiver.readFromStream("KV $packageName", inputStream)
         } returns apkBackupData
     }
-
 }

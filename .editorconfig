@@ -7,6 +7,16 @@ trim_trailing_whitespace = true
 [*.{kt,kts}]
 indent_size = 4
 max_line_length = 100
+ktlint_code_style = android_studio
+ktlint_standard_wrapping = disabled
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_import-ordering = disabled
+ktlint_standard_multiline-if-else = disabled
+ktlint_standard_class-signature = disabled
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_function-signature = disabled
 
 [app/src/main/res/values-*/strings.xml]
 insert_final_newline = unset

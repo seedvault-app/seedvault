@@ -36,5 +36,4 @@ class RestoreErrorBroadcastReceiver : BroadcastReceiver() {
         }
         context.startActivity(i)
     }
-
 }

@@ -123,5 +123,4 @@ class ContactsBackupAgentTest {
 
         assertFalse(file.exists())
     }
-
 }

@@ -331,5 +331,4 @@ internal class CoordinatorIntegrationTest : TransportTest() {
         // assert that restored data matches original app data
         assertArrayEquals(appData, rOutputStream.toByteArray())
     }
-
 }

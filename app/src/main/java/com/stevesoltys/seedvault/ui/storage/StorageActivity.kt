@@ -130,7 +130,6 @@ class StorageActivity : BackupActivity() {
     } else {
         getString(R.string.storage_check_fragment_backup_title)
     }
-
 }
 
 private class OpenPersistableDocumentTree : OpenDocumentTree() {

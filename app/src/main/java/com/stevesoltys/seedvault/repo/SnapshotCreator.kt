@@ -221,7 +221,6 @@ internal class SnapshotCreator(
         BackupType.KV -> Snapshot.BackupType.KV
         BackupType.FULL -> Snapshot.BackupType.FULL
     }
-
 }
 
 fun Iterable<String>.forProto() = map { ByteString.fromHex(it) }

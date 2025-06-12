@@ -86,5 +86,4 @@ class KvBackupInstrumentationTest : KoinComponent {
             assertArrayEquals(dataValue, db.get(key)) // new data got added
         }
     }
-
 }

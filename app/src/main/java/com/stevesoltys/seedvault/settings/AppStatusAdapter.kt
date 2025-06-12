@@ -166,7 +166,6 @@ internal class AppStatusAdapter(private val toggleListener: AppStatusToggleListe
             appStatus.alpha = alpha
         }
     }
-
 }
 
 internal class AppStatusDiff(

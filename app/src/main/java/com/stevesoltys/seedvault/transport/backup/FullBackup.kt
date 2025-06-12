@@ -179,5 +179,4 @@ internal class FullBackup(
     } catch (e: Exception) {
         Log.w(TAG, "Error closing: ", e)
     }
-
 }

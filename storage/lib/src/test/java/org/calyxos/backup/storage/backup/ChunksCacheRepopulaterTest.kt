@@ -98,5 +98,4 @@ internal class ChunksCacheRepopulaterTest {
 
         coVerify { backend.remove(Blob(androidId, chunk3)) }
     }
-
 }

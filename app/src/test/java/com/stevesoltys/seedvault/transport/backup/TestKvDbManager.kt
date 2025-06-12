@@ -109,7 +109,6 @@ class TestKVDb(private val json: JSONObject = JSONObject()) : KVDb {
         if (str.isNullOrEmpty()) return null
         return str.toByteArrayFromHex()
     }
-
 }
 
 class TestKvDbManagerTest {
@@ -155,5 +154,4 @@ class TestKvDbManagerTest {
         db.delete(key2)
         assertNull(db.get(key2))
     }
-
 }

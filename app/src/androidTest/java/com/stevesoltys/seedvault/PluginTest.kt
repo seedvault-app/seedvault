@@ -29,7 +29,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.OutputStream
 
-private const val root = ".SeedvaultPluginTest"
+private const val ROOT = ".SeedvaultPluginTest"
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -40,10 +40,10 @@ class PluginTest : KoinComponent {
     private val storage = DocumentsStorage(
         appContext = context,
         safStorage = settingsManager.getSafProperties() ?: error("No SAF storage"),
-        root = root,
+        root = ROOT,
     )
 
-    private val backend = SafBackend(context, storage.safStorage, root)
+    private val backend = SafBackend(context, storage.safStorage, ROOT)
 
     @Suppress("Deprecation")
     private val legacyStoragePlugin: LegacyStoragePlugin = DocumentsProviderLegacyPlugin(context) {
@@ -197,5 +197,4 @@ class PluginTest : KoinComponent {
             return size
         }
     }
-
 }

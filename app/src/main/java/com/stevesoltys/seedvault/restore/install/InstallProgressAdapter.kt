@@ -126,5 +126,4 @@ internal class InstallProgressAdapter(
             }
         }
     } // end AppInstallViewHolder
-
 }

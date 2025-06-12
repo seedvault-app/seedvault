@@ -44,5 +44,4 @@ enum class AppBackupState {
         FAILED_NOT_INSTALLED -> context.getString(R.string.restore_app_not_installed)
         FAILED_QUOTA_EXCEEDED -> context.getString(R.string.restore_app_quota_exceeded)
     }
-
 }

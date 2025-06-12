@@ -215,5 +215,4 @@ internal class IconManager(
         .put(TYPE_ICONS)
         .put(token.toByteArray())
         .array()
-
 }

@@ -280,5 +280,4 @@ internal class Notifications(private val context: Context) {
         setProgress(expected, transferred, expected == 0)
         setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
     }
-
 }

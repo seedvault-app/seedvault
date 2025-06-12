@@ -11,5 +11,4 @@ public interface CheckObserver {
     public fun onCheckUpdate(speed: Long, thousandth: Int)
     public fun onCheckSuccess(size: Long, speed: Long)
     public fun onCheckFoundErrors(size: Long, speed: Long)
-
 }

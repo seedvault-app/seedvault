@@ -170,5 +170,4 @@ internal class BackupCreationTest : BackupTest() {
         println(handleSlot.captured)
         println(outputStream.toByteArray().toHexString())
     }
-
 }

@@ -170,5 +170,4 @@ internal class AppBackupManager(
         // TODO not critical, but nice to have: clear also local snapshot cache
         backendManager.backend.remove(TopLevelFolder(crypto.repoId))
     }
-
 }
