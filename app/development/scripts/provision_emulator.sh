@@ -59,7 +59,69 @@ fi
 ADB="$ANDROID_HOME/platform-tools/adb -s $EMULATOR_DEVICE_NAME"
 
 echo "Waiting for emulator to boot..."
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
+
+# List of packages to disable
+PACKAGES_TO_DISABLE=(
+  "com.google.android.webview"
+  "com.google.android.apps.photos"
+  "com.google.android.youtube"
+  "com.google.android.apps.youtube.music"
+  "com.android.musicfx"
+  "com.google.android.soundpicker"
+  "com.android.soundpicker"
+  "com.google.android.gm"
+  "com.google.android.dialer"
+  "com.google.android.apps.messaging"
+  "com.android.mms.service"
+  "com.google.android.cellbroadcastreceiver"
+  "com.google.android.cellbroadcastservice"
+  "com.android.cellbroadcastreceiver"
+  "com.google.android.apps.docs"
+  "com.google.android.calendar"
+  "com.google.android.contacts"
+  "com.google.android.deskclock"
+  "com.android.providers.calendar"
+  "com.android.providers.contacts"
+  "com.google.android.apps.maps"
+  "com.google.android.projection.gearhead"
+  "com.android.chrome"
+  "com.google.android.webview"
+  "com.google.android.googlequicksearchbox"
+  "com.google.android.as"
+  "com.google.android.as.oss"
+  "com.google.android.apps.customization.pixel"
+  "com.android.wallpapercropper"
+  "com.android.wallpaper.livepicker"
+  "com.google.android.accessibility.switchaccess"
+  "com.google.android.apps.accessibility.voiceaccess"
+  "com.google.android.marvin.talkback"
+  "com.android.systemui.accessibility.accessibilitymenu"
+  "com.google.android.apps.wellbeing"
+  "com.google.android.healthconnect.controller"
+  "com.android.camera2"
+  "com.android.cameraextensions"
+  "com.android.bips"
+  "com.android.printspooler"
+  "com.google.android.printservice.recommendation"
+  "com.android.egg"
+  "com.android.theme.font.notoserifsource"
+  "com.google.android.federatedcompute"
+  "com.google.android.ondevicepersonalization.services"
+  "com.google.android.odad"
+  "com.google.android.onetimeinitializer"
+  "com.google.android.telephony.satellite"
+  "com.google.android.apps.safetyhub"
+  "com.android.DeviceAsWebcam"
+  "com.android.dreams.basic"
+  "com.google.android.tag"
+)
+
+echo "Disabling unwanted apps..."
+for PACKAGE in "${PACKAGES_TO_DISABLE[@]}"; do
+  echo "Disabling $PACKAGE"
+  $ADB shell pm disable-user --user 0 "$PACKAGE" || echo "$PACKAGE not found, skipping..."
+done
 
 echo "Provisioning emulator for write access to '/system'..."
 $ADB root
@@ -68,14 +130,14 @@ $ADB remount # remount /system as writable
 
 echo "Rebooting emulator..."
 $ADB reboot # need to reboot first time we remount
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Provisioning emulator for Seedvault..."
 "$SCRIPT_DIR"/install_app.sh
 
 echo "Rebooting emulator..."
 $ADB reboot
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Disabling backup..."
 $ADB shell bmgr enable false
@@ -97,7 +159,13 @@ $ADB shell mkdir -p /sdcard/seedvault_baseline
 $ADB shell tar xzf /sdcard/backup.tar.gz --directory=/sdcard/seedvault_baseline
 $ADB shell rm /sdcard/backup.tar.gz
 
+$ADB shell rm -Rf /sdcard/Audiobooks /sdcard/Documents /sdcard/Downloads \
+                  /sdcard/DCIM /sdcard/Movies /sdcard/Music /sdcard/Pictures \
+                  /sdcard/Podcasts /sdcard/Ringtones /sdcard/Notifications /sdcard/Alarms \
+                  /sdcard/Recordings
+
 # sometimes a system dialog (e.g. launcher stopped) is showing and taking focus
 $ADB shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS
 
 echo "Emulator '$EMULATOR_NAME' has been provisioned with Seedvault!"
+

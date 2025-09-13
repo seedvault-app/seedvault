@@ -1,5 +1,5 @@
 container:
-  image: ghcr.io/cirruslabs/android-sdk:34
+  image: ghcr.io/cirruslabs/android-sdk:35
   kvm: true
   cpu: 8
   memory: 16G
@@ -7,13 +7,13 @@ container:
 instrumentation_tests_task:
   name: "Cirrus CI Instrumentation Tests"
   start_avd_background_script:
-    sdkmanager --install "system-images;android-34;default;x86_64" "emulator";
-    echo no | avdmanager create avd -n seedvault -k "system-images;android-34;default;x86_64";
+    sdkmanager --install "system-images;android-35;google_apis;x86_64" "emulator";
+    echo no | avdmanager create avd -n seedvault -k "system-images;android-35;google_apis;x86_64";
     $ANDROID_HOME/emulator/emulator
     -avd seedvault
     -no-audio
     -no-boot-anim
-    -gpu swiftshader_indirect
+    -gpu swangle_indirect
     -no-snapshot
     -no-window
     -writable-system;
@@ -36,6 +36,8 @@ instrumentation_tests_task:
     timeout 180s bash -c 'while [[ -z $(adb shell mount | grep "/system " | grep "(rw,") ]]; do sleep 1; done;';
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
 
+    for pkg in com.google.android.webview com.google.android.apps.photos com.google.android.youtube com.google.android.apps.youtube.music com.android.musicfx com.google.android.soundpicker com.android.soundpicker com.google.android.gm com.google.android.dialer com.google.android.apps.messaging com.android.mms.service com.google.android.cellbroadcastreceiver com.google.android.cellbroadcastservice com.android.cellbroadcastreceiver com.google.android.apps.docs com.google.android.calendar com.google.android.contacts com.google.android.deskclock com.android.providers.calendar com.android.providers.contacts com.google.android.apps.maps com.google.android.projection.gearhead com.android.chrome com.google.android.googlequicksearchbox com.google.android.as com.google.android.as.oss com.google.android.apps.customization.pixel com.android.wallpapercropper com.android.wallpaper.livepicker com.google.android.accessibility.switchaccess com.google.android.apps.accessibility.voiceaccess com.google.android.marvin.talkback com.android.systemui.accessibility.accessibilitymenu com.google.android.apps.wellbeing com.google.android.healthconnect.controller com.android.camera2 com.android.cameraextensions com.android.bips com.android.printspooler com.google.android.printservice.recommendation com.android.egg com.android.theme.font.notoserifsource com.google.android.federatedcompute com.google.android.ondevicepersonalization.services com.google.android.odad com.google.android.onetimeinitializer com.google.android.telephony.satellite com.google.android.apps.safetyhub com.android.DeviceAsWebcam com.android.dreams.basic com.google.android.tag; do adb shell pm disable-user --user 0 "$pkg" || echo "$pkg not found, skipping..."; done;
+
     adb shell mkdir -p /sdcard/seedvault_baseline;
     adb push backup.tar.gz /sdcard/seedvault_baseline/backup.tar.gz;
     adb shell tar xzf /sdcard/seedvault_baseline/backup.tar.gz --directory=/sdcard/seedvault_baseline;
@@ -55,6 +57,7 @@ instrumentation_tests_task:
     adb shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport;
     adb reboot;
     adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;';
+    for folder in Audiobooks Documents Downloads DCIM Movies Music Pictures Podcasts Ringtones Notifications Alarms Recordings; do adb shell rm -Rf "/sdcard/$folder" || echo "/sdcard/$folder cleanup failed, skipping..."; done;
   run_large_tests_script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.size=large :app:connectedAndroidTest
   run_other_tests_script: ./gradlew -Pandroid.testInstrumentationRunnerArguments.notAnnotation=androidx.test.filters.LargeTest connectedAndroidTest
   always:

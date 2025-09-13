@@ -9,8 +9,8 @@ import com.stevesoltys.seedvault.e2e.screen.UiDeviceScreen
 
 object RestoreScreen : UiDeviceScreen<RestoreScreen>() {
 
-    val backupListItem = findObject {
-        textContains("Android SDK") // device name of test backups
+    fun backupListItem(name: String) = findObject {
+        textContains(name)
     }
 
     val appsSelectedButton = findObject { text("Restore backup") }

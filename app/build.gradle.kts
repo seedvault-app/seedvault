@@ -241,7 +241,7 @@ tasks.register<Exec>("provisionEmulator") {
         commandLine(
             "${project.projectDir}/development/scripts/provision_emulator.sh",
             "seedvault",
-            "system-images;android-34;default;x86_64"
+            "system-images;android-35;google_apis;x86_64"
         )
 
         environment("ANDROID_HOME", android.sdkDirectory.absolutePath)

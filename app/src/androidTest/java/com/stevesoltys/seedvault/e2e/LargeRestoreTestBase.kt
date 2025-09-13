@@ -61,7 +61,9 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         }
     }
 
-    fun performRestore(): SeedvaultLargeTestResult {
+    fun performRestore(
+        backupName: String
+    ): SeedvaultLargeTestResult {
         val result = SeedvaultLargeTestResult(
             full = mutableMapOf(),
             kv = mutableMapOf(),
@@ -71,7 +73,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
         spyOnRestoreData(result)
 
         RestoreScreen {
-            backupListItem.clickAndWaitForNewWindow()
+            backupListItem(backupName).clickAndWaitForNewWindow()
             waitUntilIdle()
 
             waitForAppSelectionLoaded()
