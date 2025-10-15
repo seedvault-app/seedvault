@@ -13,7 +13,7 @@ import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Root.COLUMN_AVAILABLE_BYTES
 import android.provider.DocumentsContract.Root.COLUMN_ROOT_ID
 import android.provider.DocumentsContract.renameDocument
-import androidx.core.database.getIntOrNull
+import androidx.core.database.getLongOrNull
 import androidx.documentfile.provider.DocumentFile
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -75,8 +75,8 @@ public class SafBackend(
             rootUri, projection, "$COLUMN_ROOT_ID=?", arrayOf(rootId), null
         )?.use { c ->
             if (!c.moveToNext()) return@use null // no results
-            val bytes = c.getIntOrNull(c.getColumnIndex(COLUMN_AVAILABLE_BYTES))
-            if (bytes != null && bytes >= 0) return@use bytes.toLong()
+            val bytes = c.getLongOrNull(c.getColumnIndex(COLUMN_AVAILABLE_BYTES))
+            if (bytes != null && bytes >= 0) return@use bytes
             else return@use null
         }
         // if we didn't get anything from SAF, try some known hacks
