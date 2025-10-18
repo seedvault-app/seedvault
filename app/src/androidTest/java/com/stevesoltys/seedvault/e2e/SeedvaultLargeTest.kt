@@ -87,7 +87,7 @@ internal abstract class SeedvaultLargeTest :
             launchRestoreActivity()
             chooseStorageLocation(folderName = BASELINE_BACKUP_FOLDER, exists = true)
             typeInRestoreCode(baselineBackupRecoveryCode())
-            performRestore()
+            performRestore("Android SDK")
 
             resetApplicationState()
         }

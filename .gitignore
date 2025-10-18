@@ -11,7 +11,8 @@ storage/build/
 contactsbackup/build/
 /lib/
 .idea/*
-!.idea/runConfigurations*
+!.idea/runConfigurations/*
+.idea/runConfigurations.xml
 !.idea/inspectionProfiles*
 !.idea/codeStyles*
 !.idea/copyright*

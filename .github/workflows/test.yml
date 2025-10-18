@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        android_target: [ 34 ]
-        emulator_type: [ aosp_atd ]
+        android_target: [ 35 ]
+        emulator_type: [ google_apis ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
             target: ${{ matrix.emulator_type }}
             arch: x86_64
             force-avd-creation: true
-            emulator-options: -cores 2 -writable-system -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+            emulator-options: -cores 2 -writable-system -no-snapshot-load -no-snapshot-save -no-window -gpu swangle_indirect -noaudio -no-boot-anim -camera-back none
             disk-size: '14G'
             sdcard-path-or-size: '4096M'
             disable-animations: true
