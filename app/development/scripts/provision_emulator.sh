@@ -59,7 +59,7 @@ fi
 ADB="$ANDROID_HOME/platform-tools/adb -s $EMULATOR_DEVICE_NAME"
 
 echo "Waiting for emulator to boot..."
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Provisioning emulator for write access to '/system'..."
 $ADB root
@@ -68,14 +68,14 @@ $ADB remount # remount /system as writable
 
 echo "Rebooting emulator..."
 $ADB reboot # need to reboot first time we remount
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Provisioning emulator for Seedvault..."
 "$SCRIPT_DIR"/install_app.sh
 
 echo "Rebooting emulator..."
 $ADB reboot
-$ADB wait-for-device shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;"
+$ADB wait-for-device shell "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done;"
 
 echo "Disabling backup..."
 $ADB shell bmgr enable false
@@ -99,5 +99,11 @@ $ADB shell rm /sdcard/backup.tar.gz
 
 # sometimes a system dialog (e.g. launcher stopped) is showing and taking focus
 $ADB shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS
+
+echo "Enabling bmgr and setting transport"
+$ADB shell bmgr enable true
+# wait for the transport to be recognized by android
+adb shell "while [[ -z \$(bmgr list transports | grep seedvault) ]]; do sleep 1; done;"
+$ADB shell bmgr transport com.stevesoltys.seedvault.transport.ConfigurableBackupTransport
 
 echo "Emulator '$EMULATOR_NAME' has been provisioned with Seedvault!"
