@@ -84,7 +84,7 @@ internal class RestoreSetAdapter(
             val apkTextColor = if (item.canBeRestored) {
                 appView.currentTextColor
             } else {
-                MaterialColors.getColor(apkView, com.google.android.material.R.attr.colorError)
+                MaterialColors.getColor(apkView, androidx.appcompat.R.attr.colorError)
             }
             apkView.setTextColor(apkTextColor)
             timeView.text = getRelativeTime(item.time)

@@ -59,7 +59,7 @@ public abstract class SnapshotFragment : Fragment(), SnapshotClickListener {
 
                 is SnapshotResult.Error -> {
                     val color =
-                        getColor(emptyStateView, com.google.android.material.R.attr.colorError)
+                        getColor(emptyStateView, androidx.appcompat.R.attr.colorError)
                     emptyStateView.setTextColor(color)
                     emptyStateView.setText(R.string.snapshots_error)
                     emptyStateView.visibility = VISIBLE
