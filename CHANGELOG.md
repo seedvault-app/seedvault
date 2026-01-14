@@ -1,3 +1,7 @@
+## 16-5.8 - 2026-01-13
+* Fix issue with free space reporting causing insufficient backup space errors
+* Port for use in Android 16 QPR1
+
 ## 16-5.7 - 2025-08-13
 * First Android 16 release
 
