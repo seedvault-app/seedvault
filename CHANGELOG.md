@@ -1,3 +1,6 @@
+## 15-5.8 - 2026-01-13
+* Fix issue with free space reporting causing insufficient backup space errors
+
 ## 15-5.7 - 2025-08-12
 * Use more reliable detection of flash drive presence
 * Don't request backup more than once when notified about available USB storage
