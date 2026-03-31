@@ -36,7 +36,7 @@
     <string name="recovery_code_input_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, den du beim Konfigurieren der Sicherungen aufgeschrieben hast.</string>
     <string name="recovery_code_confirm_intro">Gib deinen aus 12 Wörtern bestehenden Wiederherstellungscode ein, um sicher zu gehen, dass er funktionieren wird, wenn du ihn brauchst.</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> frei</string>
-    <string name="settings_backup_apk_dialog_message">Nach der Deaktivierung von APK Sicherung werden die App-Daten weiterhin gesichert. Sie werden jedoch nicht automatisch wiederhergestellt.\n\nDu musst alle deine Apps manuell installieren, obwohl die „Automatische Wiederherstellung“ aktiviert ist.</string>
+    <string name="settings_backup_apk_dialog_message">Nach der Deaktivierung von APK-Sicherung werden die App-Daten weiterhin gesichert. Sie werden jedoch nicht automatisch wiederhergestellt.\n\nDu musst alle deine Apps manuell installieren, obwohl die „Automatische Wiederherstellung“ aktiviert ist.</string>
     <string name="settings_backup_apk_summary">Sichert die Apps selbst. Andernfalls werden nur die App-Daten gesichert.</string>
     <string name="storage_check_fragment_restore_title">Suche nach Sicherungen…</string>
     <string name="storage_check_fragment_backup_title">Bereite Speicherort vor…</string>
@@ -56,11 +56,11 @@
     <string name="settings_backup_now">Jetzt sichern</string>
     <string name="settings_backup_exclude_apps">Apps ausschließen</string>
     <string name="settings_backup_status_summary">Letzte Sicherung: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">APK Sicherungen deaktivieren</string>
+    <string name="settings_backup_apk_dialog_disable">APK-Sicherungen deaktivieren</string>
     <string name="settings_backup_apk_dialog_cancel">Abbrechen</string>
-    <string name="settings_backup_apk_dialog_title">APK Sicherung wirklich deaktivieren?</string>
+    <string name="settings_backup_apk_dialog_title">APK-Sicherung wirklich deaktivieren?</string>
     <string name="settings_info">Alle Backups auf deinem Gerät sind verschlüsselt. Zum Wiederherstellen benötigst du dein aus 12 Wörtern bestehenden Wiederherstellungscode.</string>
-    <string name="settings_backup_apk_title">APK Sicherung</string>
+    <string name="settings_backup_apk_title">APK-Sicherung</string>
     <string name="settings_category_app_data_backup">App-Daten-Sicherung</string>
     <string name="settings_auto_restore_summary_usb">Achtung: Dein %1$s muss für diese Aktion verbunden sein.</string>
     <string name="settings_auto_restore_summary">Bei der erneuten Installation einer App die gesicherten Daten und Einstellungen wiederherstellen.</string>
@@ -197,13 +197,13 @@
     <string name="storage_webdav_option_title">WebDAV-Cloud (Beta)</string>
     <string name="storage_webdav_option_summary">Integrierter direkter WebDAV-Zugang</string>
     <string name="storage_webdav_config_url">WebDAV-URL</string>
-    <string name="notification_apk_not_backed_up">Liste der Apps, die wir nicht sichern können, wird gespeichert.</string>
+    <string name="notification_apk_not_backed_up">Liste der Apps wird gespeichert, die wir nicht sichern können.</string>
     <string name="settings_backup_scheduling_title">Planung der Datensicherung</string>
     <string name="settings_scheduling_frequency_3_days">Alle 3 Tage</string>
     <string name="settings_backup_status_next_backup">Nächste Datensicherung: %1$s</string>
     <string name="settings_backup_status_next_backup_estimate">Nächste Datensicherung (Schätzung): %1$s</string>
     <string name="settings_backup_status_next_backup_past">sobald die Bedingungen erfüllt sind</string>
-    <string name="settings_backup_status_next_backup_usb">Die Datensicherung erfolgt automatisch, wenn Sie Ihr USB-Laufwerk anschließen</string>
+    <string name="settings_backup_status_next_backup_usb">Datensicherung erfolgt automatisch, wenn du dein USB-Laufwerk anschließt</string>
     <string name="settings_scheduling_frequency_title">Häufigkeit der Datensicherung</string>
     <string name="settings_scheduling_frequency_12_hours">Alle 12 Stunden</string>
     <string name="settings_scheduling_frequency_daily">Täglich</string>
@@ -212,7 +212,7 @@
     <string name="settings_scheduling_metered_title">Datensicherung bei Nutzung mobiler Daten</string>
     <string name="settings_scheduling_charging_title">Datensicherung nur beim Aufladen</string>
     <string name="notification_space_error_title">Unzureichender Speicherplatz für die Datensicherung</string>
-    <string name="storage_webdav_config_url_helper">Achten Sie darauf, dass Sie hier die vollständige URL eingeben. Für Nextcloud z. B. hat sie die Form https://yourserver.com/remote.php/webdav</string>
+    <string name="storage_webdav_config_url_helper">Achte darauf, dass du hier die vollständige URL eingibst. Für Nextcloud z. B. hat sie die Form https://yourserver.com/remote.php/webdav</string>
     <string name="storage_webdav_config_user">Benutzername</string>
     <string name="storage_webdav_config_pass">Passwort</string>
     <string name="storage_webdav_config_button">WebDAV-Cloud verwenden</string>

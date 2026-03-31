@@ -204,7 +204,7 @@
     <string name="settings_app_check_text2">Aqui pode executar uma verificação do seu backup de apps. Selecione quanto dos dados das apps devem serem descarregados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será. Isto executará em segundo plano e uma notificação será enviada quando a verificação for concluída.</string>
     <string name="settings_file_check_title">Verificar integridade do backup de ficheiros</string>
     <string name="settings_file_check_text">Aqui pode executar uma verificação do seu backup de ficheiros.</string>
-    <string name="storage_fake_davx5_summary_unavailable">Pasta WebDAV indisponível. Configure uma.</string>
+    <string name="storage_fake_davx5_summary_unavailable">Montagem WebDAV indisponível. Configure uma.</string>
     <string name="storage_webdav_option_title">Nuvem WebDAV (beta)</string>
     <string name="storage_webdav_option_summary">Acesso direto ao WebDAV</string>
     <string name="storage_webdav_config_url">URL do WebDAV</string>
@@ -249,7 +249,7 @@
     <string name="settings_expert_logcat_title">Gravar registos da app</string>
     <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
     <string name="storage_round_sync_summary_prefix">Remoto do RoundSync:</string>
-    <string name="storage_fake_davx5_summary_installed">Toque para configurar uma pasta WebDAV</string>
+    <string name="storage_fake_davx5_summary_installed">Toque para configurar uma montagem WebDAV</string>
     <string name="settings_expert_logcat_summary">Os programadores podem diagnosticar bugs com esses logs. \n \nAviso: O ficheiro de registos pode conter informações de identificação pessoal. Analise antes e apage-o após partilhar!</string>
     <string name="notification_success_channel_title">Notificação de sucesso</string>
     <string name="notification_init_text">A preparar os dados existentes do backup para a reutilização…</string>

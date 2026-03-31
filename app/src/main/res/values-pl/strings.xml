@@ -112,7 +112,7 @@
     <string name="restore_magic_package">Menedżer pakietów systemu</string>
     <string name="restore_restoring">Przywracanie kopii zapasowej</string>
     <string name="restore_next">Dalej</string>
-    <string name="restore_installing_packages">Ponowna instalacja aplikacja</string>
+    <string name="restore_installing_packages">Ponowna instalacja aplikacji</string>
     <string name="restore_set_error">Wystąpił błąd podczas ładowania kopii zapasowych:</string>
     <string name="restore_invalid_location_message">Nie udało się znaleźć żadnych kopii zapasowych w tym miejscu.
 \n

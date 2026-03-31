@@ -96,8 +96,8 @@
     <string name="backup_app_quota_exceeded">La quota backup e\' stata superata</string>
     <string name="restore_app_not_allowed">La app non ha permesso il backup</string>
     <string name="backup_app_no_data">La app ha indicato che non ci sono dati da gestire per il backup</string>
-    <string name="restore_app_was_stopped">Non e\' stato fatto il backup siccome non e\' stata utilizzata recentemente</string>
-    <string name="backup_app_was_stopped">Non e\' stato fatto il backup siccome non c\'e\' stato un utilizzo recente</string>
+    <string name="restore_app_was_stopped">Non è stato fatto il backup perché non c\'è stato un utilizzo recente</string>
+    <string name="backup_app_was_stopped">Non è stato fatto il backup perché non c\'è stato un utilizzo recente</string>
     <string name="restore_app_not_yet_backed_up">Non e\' stato ancora fatto il backup</string>
     <string name="backup_app_not_yet_backed_up">In attesa di fare il backup…</string>
     <string name="backup_section_user">App installate</string>
@@ -188,4 +188,10 @@
     <string name="settings_backup_dialog_disable">Disattiva comunque</string>
     <string name="first_start_text">Si desidera ripristinare il dispositivo da un backup esistente o avviare un nuovo backup?</string>
     <string name="setup_button">Iniziare un nuovo</string>
+    <string name="settings_backup_status_next_backup">Prossimo backup: %1$s</string>
+    <string name="settings_backup_status_next_backup_estimate">Prossimo backup (stimato): %1$s</string>
+    <string name="settings_backup_status_next_backup_past">quando sono soddisfatte le condizioni</string>
+    <string name="settings_backup_status_next_backup_usb">I Backup avverrano automaticamente quando inserisci il tuo dispositivo USB</string>
+    <string name="settings_backup_scheduling_title">Pianificazione Backup</string>
+    <string name="settings_backup_app_check_title">Controllo integrità</string>
 </resources>
