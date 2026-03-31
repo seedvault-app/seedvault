@@ -260,4 +260,5 @@
     <string name="restore_set_button_restart">باشتىن باشلا</string>
     <string name="restore_set_bad_decrypt">زاپاسنىڭ شىفىرىنى يېشەلمىدى.\n\nنۆۋەتتىكى ئەسلىگە كەلتۈرۈش كودى زاپاسلىغاندا ئىشلەتكىنى ئەمەستەك قىلىدۇ.</string>
     <string name="notification_finalizing_text">زاپاسلاشنى تاماملاۋاتىدۇ…</string>
+    <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> for use in <a href="https://calyxos.org">CalyxOS</a>\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fund by NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust Fund by NLnet</a></string>
 </resources>

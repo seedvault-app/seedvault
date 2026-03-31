@@ -17,4 +17,13 @@
     <string name="notification_backup_title">Backup archiviazione</string>
     <string name="notification_backup_scanning">Scansionando i file…</string>
     <string name="snapshots_error">Errore nel caricamento degli snapshot</string>
+    <string name="content_remove">Rimuovi</string>
+    <string name="notification_restore_complete_dups">%1$d files sono duplicati.</string>
+    <string name="notification_restore_complete_errors">%1$d files presentano errori.</string>
+    <string name="notification_check_finished_text">Controllato con successo %1$s ad una velocità media di %2$s.</string>
+    <string name="notification_check_action">Dettagli</string>
+    <string name="select_files_number_of_files">%1$d file(s)</string>
+    <string name="check_error_no_snapshots">Non siamo riusciti a trovare nessun backup. Prima esegui con successo un backup e poi prova a controllare di nuovo.</string>
+    <string name="check_error_only_broken_snapshots">Abbiamo trovato %1$d snapshots di backups. Purtroppo, erano tutti corrotti. Prima esegui con successo un backup e poi prova a controllare di nuovo.</string>
+    <string name="check_files_title">Files in questo backup</string>
 </resources>

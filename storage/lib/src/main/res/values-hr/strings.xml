@@ -1,2 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="notification_restore_title">Obnavljanje datoteka …</string>
+    <string name="notification_restore_complete_title">Obnovljene datoteke: %1$d od %2$d</string>
+    <string name="notification_restore_complete_dups">Duple datoteke: %1$d.</string>
+    <string name="notification_restore_complete_errors">Datoteke s greškama: %1$d.</string>
+    <string name="notification_check_channel_title">Provjera integriteta sigurnosne kopije datoteka</string>
+    <string name="notification_check_title">Provjera sigurnosnih kopija datoteka …</string>
+    <string name="notification_check_text">Dohvaćanje dostupnih podataka sigurnosne kopije.</string>
+    <string name="notification_check_finished_title">Integritet sigurnosne kopije datoteka je potvrđena</string>
+    <string name="notification_check_finished_text">Uspješno provjereno %1$s s prosječnom brzinom od %2$s.</string>
+    <string name="notification_check_error_title">Pronađene su greške u sigurnosnoj kopiji datoteka</string>
+    <string name="notification_check_error_text">Dodirni za detalje. Provjerili smo %1$s prosječnom brzinom od %2$s.</string>
+    <string name="notification_check_action">Detalji</string>
+    <string name="snapshots_title">Dostupne sigurnosne kopije datoteka</string>
+    <string name="snapshots_empty">Nije pronađena nijedna sigurnosna kopija datoteka\n\nNažalost se ništa ne može obnoviti.</string>
+    <string name="snapshots_error">Greška pri učitavanju snimaka</string>
+    <string name="select_files_title">Pregledaj datoteke za obnavljanje</string>
+    <string name="select_files_number_of_files">Broj datoteka: %1$d</string>
+    <string name="select_files_button_restore">Obnovi odabrane datoteke</string>
+    <string name="check_success_intro">Pronađene snimke: %1$d, uspješno provjereno: %2$d %% njihovih podataka (%3$s):</string>
+    <string name="check_error_no_snapshots">Nismo mogli pronaći nijednu sigurnosnu kopiju. Najprije pokreni uspješnu sigurnosnu kopiju i zatim pokušaj ponovo provjeriti.</string>
+    <string name="check_error_only_broken_snapshots">Pronašli smo %1$d snimke sigurnosnih kopija. Međutim, sve su bile oštećene. Pokreni uspješnu sigurnosnu kopiju i zatim pokušaj ponovo provjeriti.</string>
+    <string name="notification_restore_channel_title">Obnavljanje datoteke</string>
+    <string name="check_error_has_snapshots">Pronašli smo %1$d snimke sigurnosnih kopija, od kojih su neke oštećene ili sadrže greške. U nastavku su sigurnosne kopije koje se mogu (djelomično) obnoviti.</string>
+    <string name="check_error_snapshot">Ova sigurnosna kopija sadrži neke greške. Možda ćeš je moći djelomično obnoviti.</string>
+    <string name="check_files_error">Sigurnosna kopija podataka je oštećena. Datoteka se neće u potpunosti obnoviti.</string>
+    <string name="check_error_no_result">Izgubili smo detaljne rezultate. Je li prošlo puno vremena od provjere? Pokušaj ponovo pokrenuti provjeru.</string>
+    <string name="content_images">Fotografije i slike</string>
+    <string name="content_videos">Videa</string>
+    <string name="content_audio">Audio datoteke</string>
+    <string name="content_downloads">Preuzimanja</string>
+    <string name="content_options">Opcije</string>
+    <string name="content_add">Dodaj</string>
+    <string name="content_remove">Ukloni</string>
+    <string name="notification_backup_title">Sigurnosna kopija datoteke</string>
+    <string name="notification_backup_scanning">Skeniranje datoteka …</string>
+    <string name="notification_backup_backup_files">Sigurnosno kopiranje datoteka …</string>
+    <string name="notification_prune">Uklanjanje starih sigurnosnih kopija …</string>
+    <string name="check_files_title">Datoteke u ovoj sigurnosnoj kopiji</string>
+    <string name="check_files_text">„%s” uključuje sljedeće datoteke:</string>
+</resources>
