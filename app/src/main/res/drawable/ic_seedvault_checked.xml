@@ -1,0 +1,20 @@
+<!--
+  SPDX-FileCopyrightText: 2026 The Calyx Institute
+  SPDX-License-Identifier: Apache-2.0
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="#FFFFFF"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <group
+        android:scaleX="0.92"
+        android:scaleY="0.92"
+        android:translateX="3.84"
+        android:translateY="3.84">
+        <path
+            android:fillColor="#2D1E2F"
+            android:pathData="M48,6.27C24.95,6.27 6.27,24.95 6.27,48C6.27,71.05 24.96,89.73 48,89.73C71.04,89.73 89.73,71.04 89.73,48C89.73,24.96 71.05,6.27 48,6.27ZM46.27,62.09C46.27,63.37 45.23,64.41 43.95,64.41H22.44C21.16,64.41 20.12,63.37 20.12,62.09V58.83C20.12,57.55 21.16,56.51 22.44,56.51H43.95C45.23,56.51 46.27,57.55 46.27,58.83V62.09ZM46.27,49.63C46.27,50.91 45.23,51.95 43.95,51.95H22.44C21.16,51.95 20.12,50.91 20.12,49.63V46.37C20.12,45.09 21.16,44.05 22.44,44.05H43.95C45.23,44.05 46.27,45.09 46.27,46.37V49.63ZM46.27,37.18C46.27,38.46 45.23,39.5 43.95,39.5H22.44C21.16,39.5 20.12,38.46 20.12,37.18V33.92C20.12,32.64 21.16,31.6 22.44,31.6H43.95C45.23,31.6 46.27,32.64 46.27,33.92V37.18ZM60.99,58.9L51.15,49.06L56.06,44.15L61,49.09L72.99,37.1L77.9,42.01L61,58.91L60.99,58.9Z" />
+    </group>
+</vector>
