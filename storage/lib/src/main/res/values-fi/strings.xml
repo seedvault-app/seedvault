@@ -1,2 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">Kuvat</string>
+    <string name="content_videos">Videot</string>
+    <string name="content_audio">Äänitiedostot</string>
+    <string name="content_downloads">Lataukset</string>
+    <string name="content_options">Valinnat</string>
+    <string name="content_add">Lisää</string>
+    <string name="content_remove">Poista</string>
+    <string name="notification_backup_title">Tiedostojen varmuuskopiointi</string>
+    <string name="notification_backup_scanning">Skannataan tiedostoja…</string>
+    <string name="notification_prune">Poistetaan vanhoja varmuuskopioita…</string>
+    <string name="notification_restore_channel_title">Tiedostojen palauttaminen</string>
+    <string name="notification_restore_title">Palautetaan tiedostoja…</string>
+    <string name="notification_restore_complete_title">%2$d tiedostosta palautettu %1$d</string>
+    <string name="notification_restore_complete_dups">%1$d tiedostoa oli toistensa kopioita.</string>
+    <string name="notification_restore_complete_errors">%1$d tiedostoa sisältää virheitä.</string>
+    <string name="notification_check_channel_title">Tiedostovarmuuskopioiden eheyden tarkistus</string>
+    <string name="notification_check_title">Tarkistetaan tiedostovarmuuskopioita…</string>
+    <string name="notification_check_text">Palautetaan saatavilla olevaa varmuuskopiodataa.</string>
+    <string name="notification_check_finished_title">Tiedostovarmuuskopion eheys tarkistettu</string>
+    <string name="notification_check_finished_text">Tarkistettu %1$s %2$s keskinopeudella.</string>
+    <string name="notification_check_error_title">Virheitä löydetty tiedostovarmuuskopiossa</string>
+    <string name="notification_check_error_text">Naupauta saadaksesi lisätietoja. Tarkistimme %1$s %2$s keskinopeudella.</string>
+    <string name="notification_check_action">Lisätietoja</string>
+    <string name="snapshots_title">Saatavilla olevat tiedostovarmuuskopiot</string>
+    <string name="snapshots_empty">Tiedostovarmuuskopioita ei löytynyt\n\nPahoittelemme, mutta palautettavia tietoja ei löytynyt.</string>
+    <string name="snapshots_error">Esikatseluiden lataaminen epäonnistui</string>
+    <string name="select_files_title">Tarkista palautettavat tiedostot</string>
+    <string name="select_files_number_of_files">%1$d tiedosto(a)</string>
+    <string name="select_files_button_restore">Palauta valitut tiedostot</string>
+    <string name="check_success_intro">%1$d vedosta löytyi ja %2$d niiden tiedoista (%3$s) tarkistettiin onnistuneesti:</string>
+    <string name="check_error_no_snapshots">Emme löytäneet yhtäkään varmuuskopiota. Suorita ensin onnistunut varmuuskopio ja yritä sitten uudelleen.</string>
+    <string name="check_error_only_broken_snapshots">Löysimme %1$d varmuuskopiovedosta. Kaikki niistä olivat kuitenkin virheellisiä. Suorita ensin onnistunut varmuuskopio ja yritä sitten uudelleen.</string>
+    <string name="check_error_has_snapshots">Löysimme %1$d varmuuskopiovedosta, mutta jotkin niistä olivat virheellisiä tai sisälsivät virheitä. Alla on kaikki varmuuskopiot jotka voi palauttaa ainakin osittain.</string>
+    <string name="check_error_no_result">Kadotimme kaikki yksityiskohtaiset tulokset. Onko viimeisimmän tarkistuksen suorittamisesta kulunut paljon aikaa? Koita suorittaa sellainen uudestaan.</string>
+    <string name="check_error_snapshot">Varmuuskopiossa on jonkin verran virheitä. Saatat pystyä palauttamaan sen osittain.</string>
+    <string name="check_files_title">Tiedostot tässä varmuuskopiossa</string>
+    <string name="check_files_text">\"%s\" sisältää seuraavat tiedostot:</string>
+    <string name="check_files_error">Varmuuskopio on korruptoitunut. Tiedostoja ei tulla palauttamaan kokonaan.</string>
+    <string name="notification_backup_backup_files">Varmuuskopioidaan tiedostoja…</string>
+</resources>

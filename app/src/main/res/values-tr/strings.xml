@@ -264,7 +264,7 @@
     <string name="restore_restore_set_apps_no_size"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama için kullanıcı verisi içeriyor</string>
     <string name="settings_backup_metered_title">Yedekleme durduruldu</string>
     <string name="settings_backup_metered_text">Yedekleme devam etmeyecektir çünkü cihazınız mobil veri kullanıyor.\n\n\"Yedekleme sıklığı\" altından mobil veri ile yedeklemeyi etkinleştirebilirsiniz.</string>
-    <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Sunucusu:</string>
     <string name="notification_checking_error_title">Yedekleme hataları bulundu</string>
     <string name="settings_backup_app_check_summary">Geri getirmek için yedeklemenin çalıştığından emin olunuz</string>
     <string name="settings_backup_app_check_title">Bütünlüğü kontrol et</string>
@@ -276,4 +276,7 @@
     <string name="backup_app_check_error_no_snapshots">Yedekleme bulamadık. Lütfen ilk önce başarılı bir yedekleme yapın ve sonra tekrar kontrol edin.</string>
     <string name="restore_recycle_backup_button_yes">Yedeği yeniden kullan</string>
     <string name="restore_recycle_backup_text">Az önce geri getirdiğiniz \'%s\' yedeklemesini tekrar kullanabilirsiniz. Bu yeni yedeklemeleri daha hızlı kılacaktır ve daha az veri kullanacaktır.\n\nAncak, eski cihazınız muhtemelen bu yedeğe erişimi kaybedecektir. Eski cihazınızın erişimini tutmak istiyorsanız, yeni bir yedek oluşturabilirsiniz. Bu çoktan varolan yedeği kullanmaktan daha fazla veri tüketecektir.</string>
+    <string name="restore_restore_set_apps"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama için kullanıcı verileri var (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama içerir (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
+    <string name="restore_restore_set_apks_no_size"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama içerir</string>
 </resources>

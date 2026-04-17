@@ -1,2 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">ຮູບຖ່າຍ ແລະ ຮູບພາບ</string>
+    <string name="content_videos">ວິດີໂອ</string>
+    <string name="content_audio">ໄຟລ໌ສຽງ</string>
+    <string name="content_downloads">ດາວໂຫຼດ</string>
+    <string name="content_options">ຕົວເລືອກ</string>
+    <string name="content_add">ເພີ່ມ</string>
+    <string name="content_remove">ລົບ</string>
+    <string name="notification_backup_title">ການສຳຮອງໄຟລ໌</string>
+    <string name="notification_backup_scanning">ກຳລັງສະແກນໄຟລ໌…</string>
+    <string name="notification_backup_backup_files">ກຳລັງສຳຮອງໄຟລ໌…</string>
+    <string name="notification_prune">ກຳລັງລົບຂໍ້ມູນສຳຮອງເກົ່າ…</string>
+    <string name="notification_restore_channel_title">ການກູ້ຄືນໄຟລ໌</string>
+    <string name="notification_restore_title">ກຳລັງກູ້ຄືນໄຟລ໌…</string>
+    <string name="notification_restore_complete_title">ກູ້ຄືນໄຟລ໌ %1$d ຈາກ %2$d ໄຟລ໌ສຳເລັດ</string>
+    <string name="notification_restore_complete_dups">ມີ %1$d ໄຟລ໌ທີ່ຊ້ຳກັນ.</string>
+    <string name="notification_restore_complete_errors">ມີ %1$d ໄຟລ໌ທີ່ເກີດຂໍ້ຜິດພາດ.</string>
+    <string name="notification_check_channel_title">ກວດສອບຄວາມສົມບູນຂອງການສຳຮອງໄຟລ໌</string>
+    <string name="notification_check_title">ກຳລັງກວດສອບຂໍ້ມູນສຳຮອງ…</string>
+    <string name="notification_check_text">ກຳລັງດຶງຂໍ້ມູນສຳຮອງທີ່ມີຢູ່.</string>
+    <string name="notification_check_finished_title">ກວດສອບຄວາມສົມບູນຂອງການສຳຮອງໄຟລ໌ແລ້ວ</string>
+    <string name="notification_check_finished_text">ກວດສອບ %1$s ສຳເລັດ ໂດຍໃຊ້ຄວາມໄວສະເລ່ຍ %2$s.</string>
+    <string name="notification_check_error_title">ພົບຂໍ້ຜິດພາດໃນການສຳຮອງໄຟລ໌</string>
+    <string name="notification_check_error_text">ແຕະເພື່ອເບິ່ງລາຍລະອຽດ. ພວກເຮົາໄດ້ກວດສອບ %1$s ໂດຍໃຊ້ຄວາມໄວສະເລ່ຍ %2$s.</string>
+    <string name="notification_check_action">ລາຍລະອຽດ</string>
+    <string name="snapshots_title">ຂໍ້ມູນສຳຮອງທີ່ມີຢູ່</string>
+    <string name="snapshots_empty">ບໍ່ພົບຂໍ້ມູນສຳຮອງ\n\nຂໍອະໄພ, ບໍ່ມີຫຍັງທີ່ສາມາດກູ້ຄືນໄດ້.</string>
+    <string name="snapshots_error">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນສຳຮອງ</string>
+    <string name="select_files_title">ກວດສອບໄຟລ໌ທີ່ຈະກູ້ຄືນ</string>
+    <string name="select_files_number_of_files">%1$d ໄຟລ໌</string>
+    <string name="select_files_button_restore">ກູ້ຄືນໄຟລ໌ທີ່ເລືອກ</string>
+    <string name="check_success_intro">ພົບຂໍ້ມູນສຳຮອງ %1$d ລາຍການ ແລະ ໄດ້ກວດສອບຂໍ້ມູນ %2$d%% (%3$s) ສຳເລັດ:</string>
+    <string name="check_error_no_snapshots">ພວກເຮົາບໍ່ພົບຂໍ້ມູນສຳຮອງ. ກະລຸນາສຳຮອງຂໍ້ມູນໃຫ້ສຳເລັດກ່ອນ ແລ້ວຈຶ່ງລອງກວດສອບໃໝ່ອີກຄັ້ງ.</string>
+    <string name="check_error_only_broken_snapshots">ພວກເຮົາພົບຂໍ້ມູນສຳຮອງ %1$d ລາຍການ. ແຕ່ທັງໝົດນັ້ນແມ່ນເສຍຫາຍ. ກະລຸນາສຳຮອງຂໍ້ມູນໃຫ້ສຳເລັດ ແລ້ວຈຶ່ງລອງກວດສອບໃໝ່ອີກຄັ້ງ.</string>
+    <string name="check_error_has_snapshots">ພວກເຮົາພົບຂໍ້ມູນສຳຮອງ %1$d ລາຍການ, ບາງສ່ວນເສຍຫາຍ ຫຼື ມີຂໍ້ຜິດພາດ. ລຸ່ມນີ້ແມ່ນຂໍ້ມູນສຳຮອງທີ່ສາມາດກູ້ຄືນໄດ້ (ບາງສ່ວນ).</string>
+    <string name="check_error_no_result">ພວກເຮົາບໍ່ພົບຜົນລັບແບບລະອຽດ. ໃຊ້ເວລາດົນເກີນໄປແລ້ວບໍ່ຫຼັງຈາກການກວດສອບ? ລອງກວດສອບໃໝ່ອີກຄັ້ງ.</string>
+    <string name="check_error_snapshot">ການສຳຮອງຂໍ້ມູນນີ້ມີຂໍ້ຜິດພາດບາງຢ່າງ. ທ່ານອາດຈະສາມາດກູ້ຄືນໄດ້ພຽງບາງສ່ວນ.</string>
+    <string name="check_files_title">ໄຟລ໌ໃນຂໍ້ມູນສຳຮອງນີ້</string>
+    <string name="check_files_text">ການສຳຮອງ \"%s\" ລວມມີໄຟລ໌ດັ່ງຕໍ່ໄປນີ້:</string>
+    <string name="check_files_error">ຂໍ້ມູນສຳຮອງເສຍຫາຍ. ຈະບໍ່ສາມາດກູ້ຄືນໄຟລ໌ໄດ້ຢ່າງສົມບູນ.</string>
+</resources>
