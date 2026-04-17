@@ -39,4 +39,5 @@
     <string name="check_files_text">\"%s\" şu dosyaları içeriyor:</string>
     <string name="notification_check_action">Detaylar</string>
     <string name="notification_check_error_title">Dosya yedekleme hataları bulundu</string>
+    <string name="content_remove">Kaldır</string>
 </resources>

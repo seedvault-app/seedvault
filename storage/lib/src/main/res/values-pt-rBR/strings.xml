@@ -9,7 +9,7 @@
     <string name="notification_backup_scanning">Buscando arquivos…</string>
     <string name="notification_prune">Removendo backups antigos…</string>
     <string name="notification_restore_channel_title">Restauração de arquivos</string>
-    <string name="notification_restore_complete_title">%1$d arquivos de %2$d foram restaurados</string>
+    <string name="notification_restore_complete_title">%1$d arquivos foram restaurados dos %2$d</string>
     <string name="snapshots_empty">Nenhum backup de arquivos encontrado \n \nDesculpe, mas não há nada que possa ser restaurado.</string>
     <string name="notification_restore_title">Restaurando arquivos…</string>
     <string name="snapshots_title">Backups de arquivos disponíveis</string>
@@ -24,11 +24,11 @@
     <string name="notification_restore_complete_errors">%1$d arquivos tinham erros.</string>
     <string name="notification_check_channel_title">Verificação de integridade do backup de arquivos</string>
     <string name="notification_check_title">Verificando o backup de arquivos…</string>
-    <string name="notification_check_text">Buscando dados de backup disponíveis.</string>
+    <string name="notification_check_text">Buscando dados disponíveis do backup.</string>
     <string name="notification_check_finished_title">Integridade do backup de arquivos verificada</string>
     <string name="notification_check_finished_text">%1$s foram verificados com sucesso, em uma velocidade média de %2$s.</string>
     <string name="notification_check_error_title">Erros no backup de arquivos foram encontrados</string>
-    <string name="notification_check_error_text">Toque para mais detalhes. Verificamos %1$s em uma velocidade média de %2$s.</string>
+    <string name="notification_check_error_text">Toque para mais detalhes. %1$s foram verificados, em uma velocidade média de %2$s.</string>
     <string name="notification_check_action">Detalhes</string>
     <string name="check_success_intro">%1$d backups foram encontrados e %2$d%% de seus dados (%3$s) verificaram:</string>
     <string name="check_error_no_snapshots">Não encontramos nenhum backup. Execute um backup bem-sucedido primeiro e tente novamente.</string>

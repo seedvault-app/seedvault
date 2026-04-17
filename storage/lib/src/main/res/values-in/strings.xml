@@ -1,2 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="content_images">Foto dan gambar</string>
+    <string name="content_videos">Video</string>
+    <string name="content_audio">File audio</string>
+    <string name="content_downloads">Unduhan</string>
+    <string name="content_options">Opsi</string>
+    <string name="content_add">Tambah</string>
+    <string name="content_remove">Hapus</string>
+    <string name="notification_backup_title">Cadangan file</string>
+    <string name="notification_backup_scanning">Memindai file…</string>
+    <string name="notification_backup_backup_files">Mencadangkan file…</string>
+    <string name="notification_prune">Menghapus cadangan lama…</string>
+    <string name="notification_restore_channel_title">Pemulihan file</string>
+    <string name="notification_restore_title">Memulihkan file…</string>
+    <string name="notification_restore_complete_title">%1$d dari %2$d file dipulihkan</string>
+    <string name="notification_restore_complete_dups">%1$d file adalah duplikat.</string>
+    <string name="notification_restore_complete_errors">%1$d file mengalami kesalahan.</string>
+    <string name="notification_check_channel_title">Pemeriksaan integritas cadangan file</string>
+    <string name="notification_check_title">Memeriksa cadangan file…</string>
+    <string name="notification_check_text">Mengambil data cadangan yang tersedia.</string>
+    <string name="notification_check_finished_title">Integritas cadangan file terverifikasi</string>
+    <string name="notification_check_finished_text">Berhasil memeriksa %1$s dengan kecepatan rata-rata %2$s.</string>
+    <string name="notification_check_error_title">Ditemukan kesalahan cadangan file</string>
+    <string name="notification_check_error_text">Ketuk untuk detail. Kami memeriksa %1$s dengan kecepatan rata-rata %2$s.</string>
+    <string name="notification_check_action">Detail</string>
+    <string name="snapshots_title">Cadangan file yang tersedia</string>
+    <string name="snapshots_empty">Tidak ditemukan cadangan file\n\nMaaf, tidak ada yang dapat dipulihkan.</string>
+    <string name="snapshots_error">Kesalahan memuat snapshot</string>
+    <string name="select_files_title">Tinjau file untuk dipulihkan</string>
+    <string name="select_files_number_of_files">%1$d file</string>
+    <string name="select_files_button_restore">Pulihkan file yang dipilih</string>
+    <string name="check_success_intro">%1$d snapshot ditemukan dan %2$d%% data mereka (%3$s) berhasil diverifikasi:</string>
+    <string name="check_error_no_snapshots">Kami tidak dapat menemukan cadangan apa pun. Silakan jalankan pencadangan yang berhasil terlebih dahulu lalu coba periksa lagi.</string>
+    <string name="check_error_only_broken_snapshots">Kami menemukan %1$d snapshot cadangan. Namun, semuanya rusak. Silakan jalankan pencadangan yang berhasil lalu coba periksa lagi.</string>
+    <string name="check_error_has_snapshots">Kami menemukan %1$d snapshot cadangan, sebagian di antaranya rusak atau mengalami kesalahan. Di bawah ini adalah cadangan yang dapat (sebagian) dipulihkan.</string>
+    <string name="check_error_no_result">Kami kehilangan hasil detailnya. Apakah sudah lama sejak menjalankan pemeriksaan? Coba jalankan lagi.</string>
+    <string name="check_error_snapshot">Cadangan ini memiliki beberapa kesalahan. Anda mungkin dapat memulihkannya sebagian.</string>
+    <string name="check_files_title">File dalam cadangan ini</string>
+    <string name="check_files_text">\"%s\" mencakup file berikut:</string>
+    <string name="check_files_error">Data cadangan rusak. File tidak akan dapat dipulihkan sepenuhnya.</string>
+</resources>

@@ -40,7 +40,7 @@
     <string name="recovery_code_title">Cod de recuperare</string>
     <string name="settings_category_app_data_backup">Copiere de rezervă a datelor aplicațiilor</string>
     <string name="about_contributing_organizations_title">Organizații care contribuie</string>
-    <string name="restore_title">Restaurare din copia de rezervă</string>
+    <string name="restore_title">Se restaurează din copia de rezervă</string>
     <string name="restore_choose_restore_set">Alege o copie de rezervă pentru restaurare</string>
     <string name="restore_skip_apps">Omite restabilirea aplicațiilor</string>
     <string name="restore_invalid_location_title">Nu s-au găsit copii de rezervă</string>
@@ -86,7 +86,7 @@
     <string name="notification_error_no_main_key_text">Generează un nou cod de recuperare pentru a finaliza actualizarea și a continua să utilizezi copii de rezervă.</string>
     <string name="notification_error_no_main_key_title">Copii de rezervă dezactivate</string>
     <string name="restore_app_not_allowed">Aplicația nu a permis crearea copiei de rezervă</string>
-    <string name="restore_restoring">Restaurând copia de rezervă</string>
+    <string name="restore_restoring">Se restaurează copia de rezervă</string>
     <string name="restore_storage_skip">Omite restaurarea fișierelor</string>
     <string name="recovery_code_verification_try_again">Reîncearcă</string>
     <string name="about_contributor_headline">Contribuitori</string>
@@ -221,7 +221,7 @@
     <string name="backup_system_apps">Aplicații de sistem</string>
     <string name="restore_select_packages">Selectează aplicațiile de restaurat</string>
     <string name="restore_select_packages_all">Toate aplicatiile urmatoare</string>
-    <string name="restore_storage_selection_description">Fișierele selectate vor fi restaurate. Atingeți dosare pentru a vedea fișierele din ele.</string>
+    <string name="restore_storage_selection_description">Fișierele selectate vor fi restaurate. Atinge dosarele pentru a vedea fișierele din ele.</string>
     <string name="notification_restore_channel_title">Notificare despre restabilire</string>
     <string name="notification_restore_title">Se restabilește</string>
     <string name="setup_button">Pornește una nouă</string>
@@ -267,7 +267,7 @@
     <string name="restore_restore_set_apps_no_size">Are date de utilizator pentru <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații</string>
     <string name="restore_recycle_backup_text">Poți reutiliza copia de rezervă „%s” pe care tocmai ai restabilit-o pe acest dispozitiv. Acest lucru va face mai rapidă crearea noilor copii de rezervă și va folosi mai puține date.\n\nCu toate acestea, vechiul dispozitiv va pierde accesul la această copie de rezervă. Dacă dorești să păstrezi accesul pentru dispozitivul vechi, poți crea în schimb o nouă copie de rezervă. Aceasta va folosi mai multe date decât reutilizarea copiilor de rezervă existente.</string>
     <string name="restore_recycle_backup_button_no">Creează o copie de rezervă nouă</string>
-    <string name="restore_recycle_backup_button_yes">Reutilizează copai de rezervă</string>
+    <string name="restore_recycle_backup_button_yes">Reutilizează copia de rezervă</string>
     <string name="restore_restore_set_apks">Conține <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
     <string name="restore_restore_set_apks_no_size">Conține <xliff:g example="42" id="apps">%1$d</xliff:g> aplicații</string>
     <string name="restore_restore_set_can_not_get_restored">Această copie de rezervă are unele erori. S -ar putea să o poți restabili parțial.</string>
