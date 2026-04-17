@@ -173,7 +173,7 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun getBackupNotification(text: CharSequence, progress: Int = 0, total: Int = 0): Notification {
         return Builder(context, CHANNEL_ID_OBSERVER).apply {
-            setSmallIcon(R.drawable.ic_cloud_upload)
+            setSmallIcon(R.drawable.ic_seedvault_upload)
             setContentTitle(context.getString(R.string.notification_title))
             setContentText(text)
             setOngoing(true)
@@ -214,7 +214,7 @@ internal class BackupNotificationManager(private val context: Context) {
         }
         val pendingIntent = getActivity(context, 0, intent, FLAG_IMMUTABLE)
         val notification = Builder(context, CHANNEL_ID_SUCCESS).apply {
-            setSmallIcon(R.drawable.ic_cloud_done)
+            setSmallIcon(R.drawable.ic_seedvault_done)
             setContentTitle(context.getString(R.string.notification_success_title))
             setContentText(contentText)
             setOngoing(false)
@@ -244,7 +244,7 @@ internal class BackupNotificationManager(private val context: Context) {
             context.getString(R.string.notification_failed_text)
         }
         val notification = Builder(context, CHANNEL_ID_ERROR).apply {
-            setSmallIcon(R.drawable.ic_cloud_error)
+            setSmallIcon(R.drawable.ic_seedvault_error)
             setContentTitle(context.getString(R.string.notification_failed_title))
             setContentText(text)
             setOngoing(false)
@@ -268,7 +268,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val actionText = context.getString(R.string.notification_error_action)
         val action = Action(R.drawable.ic_storage, actionText, pendingIntent)
         val notification = Builder(context, CHANNEL_ID_ERROR).apply {
-            setSmallIcon(R.drawable.ic_cloud_error)
+            setSmallIcon(R.drawable.ic_seedvault_error)
             setContentTitle(context.getString(R.string.notification_error_title))
             setContentText(context.getString(R.string.notification_error_text))
             setWhen(System.currentTimeMillis())
@@ -285,7 +285,7 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun onInsufficientSpaceError() {
         val notification = Builder(context, CHANNEL_ID_ERROR).apply {
-            setSmallIcon(R.drawable.ic_cloud_error)
+            setSmallIcon(R.drawable.ic_seedvault_error)
             setContentTitle(context.getString(R.string.notification_space_error_title))
             setContentText(context.getString(R.string.notification_space_error_text))
             setWhen(System.currentTimeMillis())
@@ -301,7 +301,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val intent = Intent(context, RestoreActivity::class.java)
         val pendingIntent = getActivity(context, 0, intent, FLAG_IMMUTABLE)
         setContentIntent(pendingIntent)
-        setSmallIcon(org.calyxos.backup.storage.R.drawable.ic_cloud_restore)
+        setSmallIcon(R.drawable.ic_seedvault_progressing)
         setContentTitle(context.getString(R.string.notification_restore_title))
         setOngoing(true)
         setShowWhen(false)
@@ -330,7 +330,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val actionText = context.getString(R.string.notification_restore_error_action)
         val action = Action(R.drawable.ic_warning, actionText, pendingIntent)
         val notification = Builder(context, CHANNEL_ID_RESTORE_ERROR).apply {
-            setSmallIcon(R.drawable.ic_cloud_error)
+            setSmallIcon(R.drawable.ic_seedvault_error)
             setContentTitle(context.getString(R.string.notification_restore_error_title, appName))
             setContentText(context.getString(R.string.notification_restore_error_text, storageName))
             setWhen(System.currentTimeMillis())
@@ -347,7 +347,7 @@ internal class BackupNotificationManager(private val context: Context) {
 
     fun getPruningNotification(): Notification {
         return Builder(context, CHANNEL_ID_PRUNING).apply {
-            setSmallIcon(org.calyxos.backup.storage.R.drawable.ic_auto_delete)
+            setSmallIcon(R.drawable.ic_seedvault_autodelete)
             setContentTitle(context.getString(R.string.notification_pruning_title))
             setOngoing(true)
             setShowWhen(false)
@@ -360,7 +360,7 @@ internal class BackupNotificationManager(private val context: Context) {
     fun updatePruningNotification(blobsPruned: Int, totalBlobs: Int) {
         Log.d(TAG, "pruning $blobsPruned/$totalBlobs")
         val n = Builder(context, CHANNEL_ID_PRUNING).apply {
-            setSmallIcon(org.calyxos.backup.storage.R.drawable.ic_auto_delete)
+            setSmallIcon(R.drawable.ic_seedvault_autodelete)
             setContentTitle(context.getString(R.string.notification_pruning_blobs_title))
             setOngoing(true)
             setShowWhen(false)
@@ -388,7 +388,7 @@ internal class BackupNotificationManager(private val context: Context) {
     fun cancelUsbMonitorNotification() = nm.cancel(NOTIFICATION_ID_USB_MONITOR)
 
     fun getCheckNotification() = Builder(context, CHANNEL_ID_CHECKING).apply {
-        setSmallIcon(R.drawable.ic_cloud_search)
+        setSmallIcon(R.drawable.ic_seedvault_check)
         setContentTitle(context.getString(R.string.notification_checking_title))
         setOngoing(true)
         setShowWhen(false)
@@ -413,7 +413,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val notification = getOnCheckFinishedBuilder()
             .setContentTitle(context.getString(R.string.notification_checking_finished_title))
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_cloud_done)
+            .setSmallIcon(R.drawable.ic_seedvault_checked)
             .build()
         nm.cancel(NOTIFICATION_ID_CHECKING)
         nm.notify(NOTIFICATION_ID_CHECK_FINISHED, notification)
@@ -428,7 +428,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val notification = getOnCheckFinishedBuilder()
             .setContentTitle(context.getString(R.string.notification_checking_error_title))
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_cloud_error)
+            .setSmallIcon(R.drawable.ic_seedvault_error)
             .build()
         nm.cancel(NOTIFICATION_ID_CHECKING)
         nm.notify(NOTIFICATION_ID_CHECK_FINISHED, notification)
@@ -471,7 +471,7 @@ internal class BackupNotificationManager(private val context: Context) {
         val actionText = context.getString(R.string.notification_error_action)
         val action = Action(0, actionText, pendingIntent)
         val notification = Builder(context, CHANNEL_ID_ERROR).apply {
-            setSmallIcon(R.drawable.ic_cloud_error)
+            setSmallIcon(R.drawable.ic_seedvault_error)
             setContentTitle(context.getString(R.string.notification_error_no_main_key_title))
             setContentText(context.getString(R.string.notification_error_no_main_key_text))
             setWhen(System.currentTimeMillis())
