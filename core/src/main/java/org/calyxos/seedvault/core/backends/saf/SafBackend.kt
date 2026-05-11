@@ -221,7 +221,6 @@ public class SafBackend(
         val toFile = DocumentFile.fromTreeUri(context, newUri)
             ?: throw IOException("renamed URI invalid: $newUri")
         if (toFile.name != toName) {
-            toFile.delete()
             throw IOException("renamed to ${toFile.name}, but expected $toName")
         }
     }
