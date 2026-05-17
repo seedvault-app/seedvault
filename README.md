@@ -92,8 +92,12 @@ allows you to decrypt and inspect your backups (version 0 backup).
 It can also re-encrypt them.
 
 The [Seedvault extractor](https://github.com/jackwilsdon/seedvault-extractor)
-allows you to decrypt and inspect your backups from newer versions of Seedvault (version 1 backup).
+allows you to decrypt and inspect your backups (version 1 backup).
 It is currently work-in-progress.
+
+The [Seednaut](https://github.com/Baltram/seednaut) utility
+allows you to decrypt and inspect your backups from newer versions of Seedvault (version 2 backup).
+It also supports file backups (version 0).
 
 ## License
 This application is available as open source under the terms
