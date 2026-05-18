@@ -14,6 +14,7 @@ import com.stevesoltys.seedvault.metadata.PackageState.UNKNOWN_ERROR
 import com.stevesoltys.seedvault.proto.Snapshot
 import com.stevesoltys.seedvault.repo.hexFromProto
 import com.stevesoltys.seedvault.worker.BASE_SPLIT
+import com.stevesoltys.seedvault.worker.BASE_SPLIT_GRAPHENE
 import org.calyxos.backup.storage.crypto.StreamCrypto.toByteArray
 import java.nio.ByteBuffer
 
@@ -130,14 +131,18 @@ data class PackageMetadata(
             version = app.apk.versionCode,
             installer = app.apk.installer.takeIf { it.isNotEmpty() },
             baseApkChunkIds = run {
-                val baseChunk = app.apk.splitsList.find { it.name == BASE_SPLIT }
+                val baseChunk = app.apk.splitsList.find {
+                    it.name == BASE_SPLIT || it.name == BASE_SPLIT_GRAPHENE
+                }
                 if (baseChunk == null || baseChunk.chunkIdsCount == 0) {
                     null
                 } else {
                     baseChunk.chunkIdsList.hexFromProto()
                 }
             },
-            splits = app.apk.splitsList.filter { it.name != BASE_SPLIT }.map {
+            splits = app.apk.splitsList.filter {
+                it.name != BASE_SPLIT && it.name != BASE_SPLIT_GRAPHENE
+            }.map {
                 ApkSplit(
                     name = it.name,
                     size = null,
