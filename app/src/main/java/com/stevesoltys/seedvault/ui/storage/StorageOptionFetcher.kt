@@ -28,19 +28,17 @@ const val ROOT_ID_DEVICE = "primary"
 const val ROOT_ID_HOME = "home"
 
 const val AUTHORITY_DOWNLOADS = "com.android.providers.downloads.documents"
-const val AUTHORITY_NEXTCLOUD = "org.nextcloud.documents"
-const val AUTHORITY_DAVX5 = "at.bitfire.davdroid.webdav"
 const val AUTHORITY_ROUND_SYNC = "de.felixnuesse.extract.vcp"
 
 internal interface RemovableStorageListener {
     fun onStorageChanged()
 }
 
-internal class StorageOptionFetcher(private val context: Context, private val isRestore: Boolean) {
+internal class StorageOptionFetcher(private val context: Context) {
 
     private val packageManager = context.packageManager
     private val contentResolver = context.contentResolver
-    private val safStorageOptions = SafStorageOptions(context, isRestore)
+    private val safStorageOptions = SafStorageOptions(context)
 
     private var listener: RemovableStorageListener? = null
     private val handler = Handler(Looper.getMainLooper())
