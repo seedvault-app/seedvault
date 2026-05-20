@@ -39,4 +39,5 @@
     <string name="check_files_text">Το \"%s\" περιλαμβάνει τα ακόλουθα αρχεία:</string>
     <string name="notification_check_channel_title">Έλεγχος ακεραιότητας αντιγράφου ασφαλείας αρχείων</string>
     <string name="check_files_error">Τα δεδομένα αντιγράφων ασφαλείας είναι κατεστραμμένα. Δεν θα γίνει πλήρης επαναφορά του αρχείου.</string>
+    <string name="content_remove">Αφαίρεση</string>
 </resources>

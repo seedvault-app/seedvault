@@ -124,7 +124,7 @@
     <string name="restore_app_status_warning">Avertisment de restabilire</string>
     <string name="error_no_store">Eroare: nu este instalat niciun magazin de aplicații</string>
     <string name="storage_internal_warning_choose_other">Alege alta</string>
-    <string name="about_contributor_content">Consultă GitHub pentru o <a href="https://github.com/seedvault-app/seedvault/graphs/contributors"> listă a colaboratorilor</a>.</string>
+    <string name="about_contributor_content">Consultă GitHub pentru o <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">listă a colaboratorilor</a>.</string>
     <string name="settings_backup_dialog_disable">Oprește oricum</string>
     <string name="settings_auto_restore_title">Restaurare automată</string>
     <string name="settings_auto_restore_summary_usb">Notă: %1$s trebuie conectat la rețea pentru ca acest lucru să funcționeze.</string>
