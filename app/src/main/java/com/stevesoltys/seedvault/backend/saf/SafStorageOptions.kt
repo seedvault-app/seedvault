@@ -9,10 +9,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME
 import android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID
+import androidx.core.net.toUri
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.saf.StorageRootResolver.getIcon
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DAVX5
@@ -34,7 +34,6 @@ private const val NEXTCLOUD_ACTIVITY = "com.owncloud.android.authentication.Auth
 internal class SafStorageOptions(
     private val context: Context,
     private val isRestore: Boolean,
-    private val whitelistedAuthorities: Array<String>,
 ) {
 
     private val packageManager = context.packageManager
@@ -122,7 +121,7 @@ internal class SafStorageOptions(
             setClassName(DAVX5_PACKAGE, DAVX5_ACTIVITY)
         }
         val marketIntent =
-            Intent(ACTION_VIEW, Uri.parse("market://details?id=$DAVX5_PACKAGE")).apply {
+            Intent(ACTION_VIEW, "market://details?id=$DAVX5_PACKAGE".toUri()).apply {
                 addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
         val isInstalled = packageManager.resolveActivity(intent, 0) != null
@@ -171,11 +170,11 @@ internal class SafStorageOptions(
             addFlags(FLAG_ACTIVITY_NEW_TASK)
             setClassName(NEXTCLOUD_PACKAGE, NEXTCLOUD_ACTIVITY)
             // setting a nc:// Uri prevents FirstRunActivity to show
-            data = Uri.parse("nc://login/server:")
+            data = "nc://login/server:".toUri()
             putExtra("onlyAdd", true)
         }
         val marketIntent =
-            Intent(ACTION_VIEW, Uri.parse("market://details?id=$NEXTCLOUD_PACKAGE")).apply {
+            Intent(ACTION_VIEW, "market://details?id=$NEXTCLOUD_PACKAGE".toUri()).apply {
                 addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
         val isInstalled = packageManager.resolveActivity(intent, 0) != null
@@ -214,7 +213,6 @@ internal class SafStorageOptions(
         roots: ArrayList<StorageOption>,
         doNotIncludeIfTrue: ((StorageOption) -> Boolean)? = null,
     ): Boolean {
-        if (!isAuthoritySupported(authority)) return true
         for (root in roots) {
             if (root !is SafOption) continue
             if (root.authority == authority && doNotIncludeIfTrue?.invoke(root) != false) {
@@ -222,11 +220,5 @@ internal class SafStorageOptions(
             }
         }
         return false
-    }
-
-    private fun isAuthoritySupported(authority: String): Boolean {
-        // just restrict where to store backups,
-        // restoring can be more free for forward compatibility
-        return isRestore || whitelistedAuthorities.contains(authority)
     }
 }
