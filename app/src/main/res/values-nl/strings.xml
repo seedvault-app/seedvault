@@ -11,7 +11,6 @@
     <string name="settings_backup_apk_dialog_disable">Schakel appback-up uit</string>
     <string name="data_management_label">Seedvault Backup</string>
     <string name="current_destination_string">Back-up status en instellingen</string>
-    <string name="settings_category_app_data_backup">Appgegevensback-up</string>
     <string name="settings_backup_apk_title">Appback-up</string>
     <string name="settings_backup_apk_dialog_title">Weet je zeker dat je appback-up uit wil zetten?</string>
     <string name="settings_backup_exclude_apps">Sluit apps uit</string>
@@ -20,7 +19,6 @@
     <string name="backup_sms">Sms-berichten</string>
     <string name="settings_backup_storage_title">Back-up mijn bestanden</string>
     <string name="recovery_code_input_hint_11">Woord 11</string>
-    <string name="notification_backup_already_running">Back-up loopt al</string>
     <string name="settings_backup_storage_dialog_title">Experimentele feature</string>
     <string name="settings_backup_storage_dialog_ok">Schakel toch in</string>
     <string name="settings_expert_title">Expertinstellingen</string>
@@ -47,15 +45,11 @@
     <string name="notification_title">Back-up loopt</string>
     <string name="notification_channel_title">Back-upnotificatie</string>
     <string name="notification_error_title">Back-upfout</string>
-    <string name="notification_backup_disabled">Back-up is niet ingeschakeld</string>
     <string name="notification_error_action">Los op</string>
     <string name="notification_error_channel_title">Foutnotificatie</string>
     <string name="notification_error_no_main_key_title">Back-ups zijn uitgeschakeld</string>
     <string name="settings_expert_logcat_title">Sla applog op</string>
     <string name="settings_expert_logcat_error">Fout: Kon de applog niet opslaan</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Een account is niet beschikbaar. Maak er een aan (of schakel passcode uit).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Is niet geïnstalleerd</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV-mount is niet beschikbaar. Stel er een in.</string>
     <string name="storage_check_fragment_backup_title">Back-uplocatie wordt geïnitialiseerd…</string>
     <string name="storage_check_fragment_restore_title">Back-ups aan het zoeken…</string>
     <string name="storage_check_fragment_backup_error">Er is een fout opgetreden tijden benaderen van de back-uplocatie.</string>
@@ -108,7 +102,6 @@
     <string name="restore_storage_skip">Sla herstellen van bestanden over</string>
     <string name="restore_storage_in_progress_title">Bestanden worden hersteld…</string>
     <string name="restore_choose_restore_set">Kies een back-up om te herstellen</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Niet aanbevolen)</string>
     <string name="recovery_code_verification_error_message">Je hebt een ongeldige herstelcode ingevoerd. Probeer het opnieuw.
 \n
 \nAls je je code bent verloren, tik dan op \'Maak nieuwe code aan\' hieronder.</string>
@@ -153,9 +146,6 @@
     <string name="notification_restore_error_action">Deïnstalleer app</string>
     <string name="backup_section_user">Geïnstalleerde apps</string>
     <string name="backup_app_not_yet_backed_up">Wachtende om te back-uppen…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Tik om account aan te maken</string>
-    <string name="storage_fake_nextcloud_summary">Tik om te installeren</string>
-    <string name="storage_fake_davx5_summary_installed">Tik om een WebDAV-mount in te stellen</string>
     <string name="storage_check_fragment_permission_error">Het is niet gelukt om schrijfrechten te krijgen om naar de back-uplocatie.</string>
     <string name="recovery_code_confirm_intro">Voer je herstelcode van 12 woorden in om te garanderen dat deze werkt wanneer je je gegevens wil herstellen.</string>
     <string name="recovery_code_input_intro">Voeg je herstelcode van 12 woorden in die je hebt opgeschreven tijdens het instellen van de back-ups.</string>

@@ -35,8 +35,6 @@
     <string name="storage_check_fragment_backup_error">Une erreur est survenue lors de l’accès à l’emplacement de la sauvegarde.</string>
     <string name="storage_check_fragment_restore_title">Recherche de sauvegardes…</string>
     <string name="storage_check_fragment_backup_title">Initialisation de l’emplacement de la sauvegarde…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Appuyez pour configurer un compte</string>
-    <string name="storage_fake_nextcloud_summary">Appuyez pour installer</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> de libre</string>
     <string name="storage_fake_drive_summary">Doit être branchée</string>
     <string name="storage_fake_drive_title">Clé USB</string>
@@ -48,7 +46,6 @@
     <string name="settings_backup_apk_dialog_disable">Désactiver la sauvegarde des APK</string>
     <string name="settings_backup_apk_dialog_cancel">Annuler</string>
     <string name="settings_backup_apk_title">Sauvegarde des APK</string>
-    <string name="settings_category_app_data_backup">Sauvegarde des données de l’application</string>
     <string name="settings_auto_restore_summary_usb">Remarque : votre %1$s doit être branché pour que ceci fonctionne.</string>
     <string name="settings_auto_restore_summary">Lors de la réinstallation d’une application, restaurer les paramètres et les données sauvegardés.</string>
     <string name="settings_auto_restore_title">Restaurer automatiquement</string>
@@ -98,8 +95,6 @@
     <string name="restore_app_was_stopped">N\'a pas été sauvegardé car n\'a pas été utilisé récemment</string>
     <string name="restore_app_not_yet_backed_up">Pas encore sauvegardé</string>
     <string name="notification_success_text">%1$d des applications %2$d sauvegardées (%3$s). Appuyez pour en savoir plus.</string>
-    <string name="notification_backup_already_running">Sauvegarde déjà en cours</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Compte non disponible. Configurez-en un (ou désactivez le mot de passe).</string>
     <string name="current_destination_string">Statut et paramètres de sauvegarde</string>
     <string name="about_version">Version : %s</string>
     <string name="restore_restoring_error_message">Vous pouvez réinstaller ces applications manuellement et Automatic restore essaiera de restaurer leurs données (si activé).</string>
@@ -143,7 +138,6 @@
     <string name="settings_backup_storage_dialog_message">La sauvegarde des fichiers est une fonctionnalité expérimentale susceptible de ne pas fonctionner correctement. Ne vous y fiez pas pour des données importantes.</string>
     <string name="settings_backup_storage_dialog_ok">Activer quand même</string>
     <string name="storage_check_fragment_patience">Cela peut prendre un certain temps…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Pas installé</string>
     <string name="restore_storage_in_progress_info">Vos fichiers sont restaurés en arrière-plan. Vous pouvez commencer à utiliser votre téléphone pendant cette opération.
 \n
 \nCertaines applications (par exemple, Signal ou WhatsApp) peuvent exiger que les fichiers soient entièrement restaurés avant d\'importer une sauvegarde. Essayez d\'éviter de démarrer ces applications avant que la restauration des fichiers ne soit terminée.</string>
@@ -155,7 +149,6 @@
     <string name="recovery_code_auth_description">Saisissez vos identifiants pour continer</string>
     <string name="recovery_code_auth_title">Saisissez à nouveau vos identifiants</string>
     <string name="notification_error_no_main_key_text">Générez un nouveau code de récupération pour terminer la mise à jour et continuer à utiliser vos sauvegardes.</string>
-    <string name="storage_fake_davx5_summary_installed">Appuyez pour configurer un montage WebDAV</string>
     <string name="settings_backup_storage_battery_optimization">Attention : pas de sauvegarde automatique car l\'optimisation de la batterie est activée.</string>
     <string name="settings_backup_new_code_dialog_title">Nouveau code de récupération requis</string>
     <string name="settings_backup_new_code_dialog_message">Pour continuer à utiliser les sauvegardes d\'applications, vous devez générer un nouveau code de récupération.
@@ -163,9 +156,7 @@
 \nNous sommes désolés pour ce désagrément.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Nouveau code</string>
     <string name="notification_error_no_main_key_title">Sauvegardes désactivées</string>
-    <string name="storage_fake_davx5_summary_unavailable">Le montage WebDAV n\'est pas disponible. Veuillez en configurer un.</string>
     <string name="error_no_store">Erreur : Aucun app store installé</string>
-    <string name="notification_backup_disabled">Sauvegardes désactivées</string>
     <string name="backup_app_in_progress">Sauvegarde en cours</string>
     <string name="backup_app_success">Sauvegardé</string>
     <string name="backup_app_warning">Alerte de sauvegarde</string>
@@ -194,7 +185,6 @@
     <string name="notification_apk_not_backed_up">Enregistrer la liste des applications que nous ne pouvons pas sauvegarder.</string>
     <string name="notification_apk_text">Sauvegarde de l\'APK de %s</string>
     <string name="about_contributor_content">Veuillez consulter GitHub pour la <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">liste des contributeurs</a>.</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Non recommandé)</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Institut Calyx</a> pour l\'usage de <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET financé par NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NGI0 Entrust financé par NLnet</a></string>
     <string name="settings_backup_status_next_backup">Prochaine sauvegarde : %1$s</string>
     <string name="settings_backup_status_next_backup_usb">Les sauvegardes s\'effectueront automatiquement lorsque vous branchez votre clé USB</string>

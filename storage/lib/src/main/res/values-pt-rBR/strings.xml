@@ -8,7 +8,6 @@
     <string name="notification_backup_title">Backup de arquivos</string>
     <string name="notification_backup_scanning">Buscando arquivos…</string>
     <string name="notification_prune">Removendo backups antigos…</string>
-    <string name="notification_restore_channel_title">Restauração de arquivos</string>
     <string name="notification_restore_complete_title">%1$d arquivos foram restaurados dos %2$d</string>
     <string name="snapshots_empty">Nenhum backup de arquivos encontrado \n \nDesculpe, mas não há nada que possa ser restaurado.</string>
     <string name="notification_restore_title">Restaurando arquivos…</string>

@@ -68,8 +68,6 @@
     <string name="recovery_code_confirm_button">Bekreft kode</string>
     <string name="storage_check_fragment_error_button">Tilbake</string>
     <string name="storage_check_fragment_restore_title">Ser etter sikkerhetskopier…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Klikk for å sette opp konto</string>
-    <string name="storage_fake_nextcloud_summary">Klikk for å installere</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ledig</string>
     <string name="storage_fake_drive_summary">Må plugges inn</string>
     <string name="storage_fake_drive_title">USB-minnepinne</string>
@@ -83,7 +81,6 @@
     <string name="settings_backup_apk_dialog_title">Vil du virkelig skru av programsikkerhetskopiering?</string>
     <string name="settings_backup_apk_summary">Sikkerhetskopierer programmene. Ellers vil kun programdata sikkerhetskopieres.</string>
     <string name="settings_backup_apk_title">Sikkerhetskopiering av programmer</string>
-    <string name="settings_category_app_data_backup">Sikkerhetskopiering av programdata</string>
     <string name="settings_auto_restore_summary_usb">Merk: Din %1$s må plugges inn for at dette skal virke.</string>
     <string name="settings_auto_restore_summary">Når du reinstallerer et program, gjenopprett sikkerhetskopierte innstillinger og data.</string>
     <string name="settings_auto_restore_title">Automatisk gjenoppretting</string>
@@ -96,7 +93,6 @@
     <string name="restore_backup_button">Gjenopprett sikkerhetskopi</string>
     <string name="backup">Sikkerhetskopier</string>
     <string name="notification_success_text">%1$d av %2$d programmer sikkerhetskopiert (%3$s). Trykk for mer info.</string>
-    <string name="notification_backup_already_running">Sikkerhetskopi allerede underveis</string>
     <string name="settings_backup_status_title">Sikkerhetskopieringsstatus</string>
     <string name="recovery_code_verification_error_title">Feil gjenopprettingskode</string>
     <string name="settings_backup_storage_title">Sikkerhetskopier filene mine</string>
@@ -110,7 +106,6 @@
     <string name="settings_expert_title">Ekspertinnstillinger</string>
     <string name="recovery_code_recreated">Ny gjenopprettingskode opprettet</string>
     <string name="settings_backup_new_code_dialog_title">Ny gjenopprettingskode påkrevd</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Ikke installert</string>
     <string name="restore_storage_got_it">Skjønner</string>
     <string name="recovery_code_verification_ok_message">Koden din er riktig, og vil fungere for gjenoppretting av sikkerhetskopien din.</string>
     <string name="recovery_code_verification_generate_new">Generer ny gjenopprettingskode</string>
@@ -129,9 +124,7 @@
     <string name="recovery_code_verification_new_dialog_message">Generering av ny gjenopprettingskode gjør dine eksisterende sikkerhetskopier utilgjengelige. De vil bli forsøkt slettet.
 \n
 \nFortsett\?</string>
-    <string name="storage_fake_davx5_summary_installed">Trykk for å sette opp en WebDAV-montering</string>
     <string name="error_no_store">Feil: Ingen programbutikk installert</string>
-    <string name="storage_fake_davx5_summary_unavailable">Du må sette opp en WebDAV-montering først.</string>
     <string name="recovery_code_verification_ok_title">Gjenopprettingskode bekreftet</string>
     <string name="restore_storage_skip">Hopp over gjenoppretting av filer</string>
     <string name="recovery_code_verification_new_dialog_title">Vent ett sekund …</string>

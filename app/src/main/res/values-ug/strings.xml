@@ -8,7 +8,6 @@
     <string name="settings_expert_logcat_error">خاتالىق: ئەپ خاتىرىسىنى ساقلىيالمايدۇ</string>
     <string name="storage_fragment_backup_title">زاپاس ساقلىنىدىغان جاي تاللىنىدۇ</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> بوش</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (تەۋسىيە قىلىنمايدۇ)</string>
     <string name="recovery_code_verification_error_message">ئىناۋەتسىز ئەسلىگە كەلتۈرۈش كودى كىرگۈزدىڭىز، قايتا سىناڭ!\n\nئەگەر كودنى يىتتۈرۈپ قويغان بولسىڭىز، تۆۋەندىكى «يېڭى كود ھاسىللا» نى چېكىڭ.</string>
     <string name="recovery_code_verification_try_again">قايتا سىنا</string>
     <string name="recovery_code_verification_generate_new">يېڭى كود ھاسىللا</string>
@@ -53,7 +52,6 @@
     <string name="settings_auto_restore_title">ئۆزلۈكىدىن ئەسلىگە كەلتۈر</string>
     <string name="settings_auto_restore_summary">ئەپنى قايتا ئورناتقاندا، زاپاسلانغان تەڭشەك ۋە سانلىق مەلۇمات ئەسلىگە كەلتۈرۈلىدۇ.</string>
     <string name="settings_auto_restore_summary_usb">ئەسكەرتىش: بۇ ئىقتىدارنىڭ ئىشلىشى ئۈچۈن %1$s ڭىزنى چېتىشىڭىز كېرەك.</string>
-    <string name="settings_category_app_data_backup">ئەپ سانلىق مەلۇمات زاپاسلاش</string>
     <string name="settings_backup_apk_title">APK زاپاسلاش</string>
     <string name="settings_backup_apk_summary">ئەپنىڭ ئۆزى زاپاسلىنىدۇ. ئۇنداق بولمىسا، پەقەت ئەپ سانلىق مەلۇماتىلا زاپاسلىنىدۇ.</string>
     <string name="settings_backup_apk_dialog_title">APK زاپاسلاشنى راستتىنلا چەكلەمدۇ؟</string>
@@ -105,12 +103,6 @@
     <string name="storage_user_selected_location_title">ئىشلەتكۈچى تاللىغان ئورۇن</string>
     <string name="storage_fake_drive_title">USB بارماق دىسكا</string>
     <string name="storage_fake_drive_summary">چېتىلىشى كېرەك</string>
-    <string name="storage_fake_nextcloud_summary">چېكىلسە ئورنىتىدۇ</string>
-    <string name="storage_fake_nextcloud_summary_installed">چېكىلسە ھېسابات تەڭشەيدۇ</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">ھېساباتنى ئىشلەتكىلى بولمايدۇ. بىرنى تەڭشەيدۇ (ياكى ئىم ئىبارىنى چەكلەيدۇ).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">ئورنىتىلمىغان</string>
-    <string name="storage_fake_davx5_summary_installed">چېكىلسە WebDAV ئېگەرلەشنى تەڭشەيدۇ</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV ئېگەرلەشنى ئىشلەتكىلى بولمايدۇ. بىرنى تەڭشەڭ.</string>
     <string name="storage_check_fragment_backup_title">زاپاسلاش ئورنىنى دەسلەپلەشتۈرۈۋاتىدۇ…</string>
     <string name="storage_check_fragment_patience">بۇنىڭغا بىر ئاز ۋاقىت كېتىشى مۇمكىن…</string>
     <string name="storage_check_fragment_restore_title">زاپاسنى ئىزدەۋاتىدۇ…</string>
@@ -157,7 +149,6 @@
     <string name="notification_init_text">قايتا ئىشلىتىش ئۈچۈن مەۋجۇت زاپاسلانغان سانلىق مەلۇماتنى تەييارلاۋاتىدۇ…</string>
     <string name="notification_apk_text">%s نىڭ APK سىنى زاپاسلاۋاتىدۇ</string>
     <string name="notification_apk_not_backed_up">زاپاسلىيالمايدىغان ئەپ تىزىمىنى ساقلاۋاتىدۇ.</string>
-    <string name="notification_backup_disabled">زاپاسلاش قوزغىتىلمىغان\'</string>
     <string name="notification_success_title">زاپاسلاش تامام</string>
     <string name="notification_success_text">%1$d / %2$d ئەپ زاپاسلاندى (%3$s). تېخىمۇ كۆپ بىلدۈرگۈ ئۈچۈن چېكىلىدۇ.</string>
     <string name="notification_failed_title">زاپاسلىيالمىدى</string>
@@ -253,7 +244,6 @@
     <string name="settings_app_check_text">ھەر بىر زاپاسلاش جەريانى مۇكەممەللىكنى ئۆزلۈكىدىن تەكشۈرىدۇ. ئەمما ۋاقىت تېجەش ئۈچۈن، ئەمەلىي ئەپ سانلىق مەلۇماتى چۈشۈرۈلمەيدۇ ۋە دەلىللەنمەيدۇ.</string>
     <string name="backup_app_check_success_intro">%1$d تېز زاپاسلاش بايقالدى %2$d%% سانلىق مەلۇمات (%3$s) مۇۋەپپەقىيەتلىك دەلىللەندى:</string>
     <string name="restore_storage_in_progress_info">ھۆججەتلەرنى ئارقا سۇپىدا ئەسلىگە كەلتۈرۈۋاتىدۇ. ئىجرا قىلىنىۋاتقاندا تېلېفونىڭىزنى ئىشلىتەلەيسىز.\n\nبەزى ئەپ (مەسىلەن، Signal ياكى WhatsApp) بەلكىم ھۆججەتنى تولۇق ئەسلىگە كەلتۈرگەندىن كېيىن ئاندىن زاپاسنى ئەكىرگىلى بولۇشى مۇمكىن. ئامالنىڭ بارىچە ھۆججەتنى ئەسلىگە كەلتۈرۈش تاماملىنىشتىن ئىلگىرى بۇ ئەپلەرنى قوزغىتىشتىن ساقلىنىڭ.</string>
-    <string name="notification_backup_already_running">زاپاسلاش ئاللىبۇرۇن ئىجرا قىلىنىۋاتىدۇ</string>
     <string name="storage_round_sync_summary_prefix">يىراقتىكى RoundSync :</string>
     <string name="notification_pruning_blobs_title">كونا زاپاس سانلىق مەلۇماتنى چىقىرىۋەتمەكتە…</string>
     <string name="restore_set_button_try_again">قايتا سىناڭ</string>

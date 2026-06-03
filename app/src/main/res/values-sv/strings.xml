@@ -20,7 +20,6 @@
     <string name="settings_auto_restore_title">Automatisk återställning</string>
     <string name="settings_auto_restore_summary">Återställ säkerhetskopierade inställningar och data vid ominstallation av en app.</string>
     <string name="settings_auto_restore_summary_usb">Observera: Din %1$s behöver vara inkopplad för att detta ska fungera.</string>
-    <string name="settings_category_app_data_backup">Säkerhetskopiering av appdata</string>
     <string name="settings_info">Alla säkerhetskopior krypteras på din telefon. För att återställa från en säkerhetskopia behöver du din återställningskod med 12 ord.</string>
     <string name="settings_backup_apk_summary">Säkerhetskopierar själva apparna. Annars kommer endast apparnas data att säkerhetskopieras.</string>
     <string name="data_management_label">Seedvault Säkerhetskopiering</string>
@@ -54,8 +53,6 @@
     <string name="settings_expert_title">Avancerade inställningar</string>
     <string name="settings_category_storage">Säkerhetskopiering av filer (beta)</string>
     <string name="about_version">Version: %s</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Inte installerad</string>
-    <string name="notification_backup_already_running">Säkerhetskopiering pågår redan</string>
     <string name="backup_app_quota_exceeded">Kvot för säkerhetskopiering överskriden</string>
     <string name="storage_check_fragment_error_button">Tillbaka</string>
     <string name="recovery_code_12_word_intro">Du behöver din återställningskod på 12-ord för att återställa säkerhetskopierade data.</string>
@@ -76,9 +73,6 @@
     <string name="recovery_code_error_empty_word">Du glömde ange detta ord.</string>
     <string name="recovery_code_error_invalid_word">Fel ord.</string>
     <string name="backup_section_user">Appar</string>
-    <string name="storage_fake_nextcloud_summary">Tryck för att installera</string>
-    <string name="storage_fake_nextcloud_summary_installed">Tryck för att ställa in konto</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Konto inte tillgängligt. Ställ in ett (eller inaktivera lösenkod).</string>
     <string name="storage_check_fragment_restore_title">Letar efter säkerhetskopieringar …</string>
     <string name="storage_check_fragment_backup_error">Ett fel inträffade vid åtkomst till plats för säkerhetskopieringar.</string>
     <string name="storage_check_fragment_permission_error">Kan inte få behörigheten för att skriva till platsen för säkerhetskopiering.</string>
@@ -171,9 +165,7 @@
     <string name="settings_expert_logcat_error">Fel: Kunde inte spara applogg</string>
     <string name="storage_user_selected_location_title">Plats vald av användaren</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> ledigt</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Rekommenderas inte)</string>
     <string name="storage_fragment_backup_title">Välj plats för att spara säkerhetskopior</string>
-    <string name="notification_backup_disabled">Säkerhetskopiering är inte aktiverad</string>
     <string name="notification_failed_title">Säkerhetskopiering misslyckades</string>
     <string name="settings_backup_new_code_dialog_message">För att fortsätta använda säkerhetskopiering av appar behöver du generera en ny återställningskod.
 \n
@@ -233,8 +225,6 @@
     <string name="settings_file_check_text">Här kan du köra en engångskontroll för att verifiera din säkerhetskopia av filer.</string>
     <string name="settings_file_check_text2">Välj hur mycket av filernas data som ska laddas ner för kontrollen. Ju mer du inkluderar desto längre tid tar det men desto pålitligare blir resultatet.\n\nDetta kommer köras i bakgrunden och visa en avisering när det är klart.</string>
     <string name="storage_fake_drive_title">USB-flashminne</string>
-    <string name="storage_fake_davx5_summary_installed">Tryck för att skapa ett WebDAV-fäste</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV-anslutning inte tillgängligt. Skapa en.</string>
     <string name="recovery_code_auth_description">Ange din enhets inloggningsuppgifter för att fortsätta</string>
     <string name="notification_channel_title">Säkerhetskopieringsavisering</string>
     <string name="notification_success_channel_title">Framgångsavisering</string>

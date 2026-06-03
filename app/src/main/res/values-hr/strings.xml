@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_success_text">Sigurnosne kopije spremljene za %1$d od %2$d aplikacija (%3$s). Dodirni i saznaj više.</string>
-    <string name="notification_backup_already_running">Izrada sigurnosne kopije je već u tijeku</string>
     <string name="about_summary">Aplikacija koja koristi Androidov interni API za izradu sigurnosnih kopija. Radi se o slobodnom softveru, objavljen pod Apache 2 licencom.\n\nKao i sav softver, Seedvault može sadržavati greške ili ranjivosti.</string>
     <string name="about_title">Informacije</string>
     <string name="storage_internal_warning_use_anyway">Svejedno koristi</string>
@@ -69,8 +68,6 @@
     <string name="storage_check_fragment_backup_error">Došlo je do greške pri pristupanju mjestu sigurnosne kopije.</string>
     <string name="storage_check_fragment_restore_title">Pretraga za sigurnosnim kopijama …</string>
     <string name="storage_check_fragment_backup_title">Inicijaliziranje mjesta sigurnosne kopije …</string>
-    <string name="storage_fake_nextcloud_summary_installed">Dodirni za postavljanje računa</string>
-    <string name="storage_fake_nextcloud_summary">Dodirni za instaliranje</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> slobodno</string>
     <string name="storage_fake_drive_summary">Mora biti priključeno</string>
     <string name="storage_fake_drive_title">USB flash pogon</string>
@@ -85,7 +82,6 @@
     <string name="settings_backup_apk_dialog_title">Stvarno isključiti APK sigurnosne kopije?</string>
     <string name="settings_backup_apk_summary">Sprema sigurnosne kopije samih aplikacija. Inače će se spremiti samo podaci aplikacije.</string>
     <string name="settings_backup_apk_title">APK sigurnosne kopije</string>
-    <string name="settings_category_app_data_backup">Sigurnosna kopija podataka aplikacije</string>
     <string name="settings_auto_restore_summary_usb">Napomena: Da bi ovo radilo, tvoj %1$s mora biti priključen.</string>
     <string name="settings_auto_restore_summary">Pri ponovnom instaliranju aplikacije obnovi sigurnosno kopirane postavke i podatke.</string>
     <string name="settings_auto_restore_title">Automatsko obnavljanje</string>
@@ -99,7 +95,6 @@
     <string name="backup">Sigurnosna kopija</string>
     <string name="restore_app_was_stopped">Sigurnosna kopija nije spremljena, jer nije nedavno korištena</string>
     <string name="restore_app_not_yet_backed_up">Sigurnosna kopija još nije spremljena</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Račun nije dostupan. Postavi jedan račun (ili deaktiviraj pristupni kod).</string>
     <string name="current_destination_string">Stanje sigurnosne kopije i postavke</string>
     <string name="data_management_label">Seedvault sigurnosna kopija</string>
     <string name="settings_backup_status_title">Stanje sigurnosne kopije</string>
@@ -118,7 +113,6 @@
     <string name="settings_backup_recovery_code">Kod za obnovu</string>
     <string name="settings_backup_recovery_code_summary">Potvrdi postojeći kod ili generiraj novi</string>
     <string name="settings_expert_title">Stručne postavke</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Nije instalirano</string>
     <string name="storage_check_fragment_patience">Ovo može potrajati neko vrijeme …</string>
     <string name="recovery_code_verification_ok_title">Kod za oporavak potvrđen</string>
     <string name="recovery_code_verification_ok_message">Tvoj kod je ispravan i poslužit će za obnavljanje tvoje sigurnosne kopije.</string>
@@ -229,7 +223,6 @@
     <string name="settings_scheduling_category_conditions_title">Uvjeti</string>
     <string name="settings_expert_logcat_title">Spremi zapisnik aplikacije</string>
     <string name="settings_expert_logcat_error">Greška: Nije bilo moguće spremiti zapisnik aplikacije</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nije preporučeno)</string>
     <string name="settings_backup_dialog_message">Kada ponovo uključiš sigurnosne kopije, proces sigurnosnog kopiranja može trajati dulje nego inače i koristit će dodatnu memoriju.</string>
     <string name="settings_backup_metered_text">Sigurnosno kopiranje se neće nastaviti jer tvoj uređaj koristi mobilne podatke.\n\nSigurnosne kopije mobilnih podataka možeš aktivirati pod „Zakazivanje sigurnosnih kopija”.</string>
     <string name="settings_scheduling_metered_title">Spremi sigurnosnu kopiju kada koristiš mobilne podatke</string>
@@ -244,8 +237,6 @@
     <string name="settings_file_check_text2">Odaberi količinu podataka datoteke koja se treba preuzeti za provjeru. Što više odabereš, to će dulje trajati, ali će provjera biti pouzdanija.\n\nProvjera će se izvoditi u pozadini i poslat će obavijest kada završi.</string>
     <string name="settings_expert_logcat_summary">Programeri mogu dijagnosticirati greške pomoću ovih zapisnika.\n\nUpozorenje: Datoteka zapisnika može sadržavati osobne podatke. Pregledaj je prije dijeljenja i izbriši je nakon dijeljenja!</string>
     <string name="storage_user_selected_location_title">Lokacija koju je odabrao korisnik</string>
-    <string name="storage_fake_davx5_summary_installed">Dodirni za postavljanje WebDAV veze</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV veza nije dostupna. Postavi jednu vezu.</string>
     <string name="storage_webdav_option_title">WebDAV oblak (beta)</string>
     <string name="storage_webdav_option_summary">Integriran izravni WebDAV pristup</string>
     <string name="storage_webdav_config_url">WebDAV URL</string>
@@ -260,7 +251,6 @@
     <string name="notification_finalizing_text">Završavanje sigurnosne kopije …</string>
     <string name="notification_apk_text">Sigurnosno kopiranje APK-a od %s</string>
     <string name="notification_apk_not_backed_up">Sprema se popis aplikacija koje ne možemo sigurnosno kopirati.</string>
-    <string name="notification_backup_disabled">Izrada sigurnosne kopije nije aktivirana</string>
     <string name="notification_failed_text">Dogodila se greška prilikom pokretanja sigurnosne kopije.</string>
     <string name="notification_failed_metered_text">Sigurnosno kopiranje je prekinuto. Koristiš li mobilne podatke? Poveži se s Wi-Fi mrežom za nastavljanjei.</string>
     <string name="backup_app_stopped_button">Pokreni</string>

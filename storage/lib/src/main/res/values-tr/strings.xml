@@ -9,7 +9,6 @@
     <string name="notification_backup_title">Dosya yedeklemesi</string>
     <string name="notification_backup_backup_files">Dosyalar yedekleniyor…</string>
     <string name="notification_prune">Eski yedeklemeler kaldırılıyor…</string>
-    <string name="notification_restore_channel_title">Dosya geri yüklemesi</string>
     <string name="notification_restore_title">Dosyalar geri yükleniyor…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d / %2$d dosya geri yüklendi</string>

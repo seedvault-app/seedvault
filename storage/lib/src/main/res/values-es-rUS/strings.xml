@@ -7,7 +7,6 @@
     <string name="notification_backup_title">Copia de seguridad en almacenamiento</string>
     <string name="notification_backup_scanning">Escaneando archivos…</string>
     <string name="notification_backup_backup_files">Copia de seguridad de archivos…</string>
-    <string name="notification_restore_channel_title">Restauración de almacenamiento</string>
     <string name="notification_restore_complete_title">%1$d de %2$d archivos restaurados</string>
     <string name="content_images">Fotos e imágenes</string>
     <string name="content_videos">Videos</string>

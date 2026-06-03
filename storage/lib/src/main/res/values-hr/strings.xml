@@ -21,7 +21,6 @@
     <string name="check_success_intro">Pronađene snimke: %1$d, uspješno provjereno: %2$d %% njihovih podataka (%3$s):</string>
     <string name="check_error_no_snapshots">Nismo mogli pronaći nijednu sigurnosnu kopiju. Najprije pokreni uspješnu sigurnosnu kopiju i zatim pokušaj ponovo provjeriti.</string>
     <string name="check_error_only_broken_snapshots">Pronašli smo %1$d snimke sigurnosnih kopija. Međutim, sve su bile oštećene. Pokreni uspješnu sigurnosnu kopiju i zatim pokušaj ponovo provjeriti.</string>
-    <string name="notification_restore_channel_title">Obnavljanje datoteke</string>
     <string name="check_error_has_snapshots">Pronašli smo %1$d snimke sigurnosnih kopija, od kojih su neke oštećene ili sadrže greške. U nastavku su sigurnosne kopije koje se mogu (djelomično) obnoviti.</string>
     <string name="check_error_snapshot">Ova sigurnosna kopija sadrži neke greške. Možda ćeš je moći djelomično obnoviti.</string>
     <string name="check_files_error">Sigurnosna kopija podataka je oštećena. Datoteka se neće u potpunosti obnoviti.</string>
