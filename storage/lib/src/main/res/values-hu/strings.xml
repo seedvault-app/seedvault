@@ -14,7 +14,6 @@
     <string name="content_audio">Hang fájlok</string>
     <string name="content_downloads">Letöltések</string>
     <string name="notification_restore_complete_dups">%1$d fájl duplikáció volt.</string>
-    <string name="notification_restore_channel_title">Fájl visszaállítás</string>
     <string name="notification_check_channel_title">Fájl biztonsági mentés integritás ellenőrzés</string>
     <string name="notification_check_title">Fájl mentések ellenőrzése…</string>
     <string name="notification_check_text">Rendelkezésre álló mentés adat visszanyerése.</string>

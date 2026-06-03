@@ -30,8 +30,6 @@
     <string name="storage_check_fragment_backup_error">אירעה שגיאה בעת ניסיון הגישה למיקום הגיבויים.</string>
     <string name="storage_check_fragment_restore_title">מתבצע חיפוש אחר גיבויים…</string>
     <string name="storage_check_fragment_backup_title">מיקום הגיבוי נערך…</string>
-    <string name="storage_fake_nextcloud_summary_installed">יש לגעת כדי להקים חשבון</string>
-    <string name="storage_fake_nextcloud_summary">יש לגעת כדי להתקין</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> פנויים</string>
     <string name="storage_fake_drive_summary">יש לחבר אותו</string>
     <string name="storage_fake_drive_title">כונן USB נייד</string>
@@ -65,7 +63,6 @@
     <string name="notification_error_channel_title">התראת שגיאה</string>
     <string name="notification_failed_title">הגיבוי נכשל</string>
     <string name="notification_success_title">הגיבוי הסתיים</string>
-    <string name="notification_backup_already_running">הגיבוי כבר מתבצע</string>
     <string name="about_summary">יישומון גיבוי שמשתמש ב־API הפנימי לגיבוי של Android. תוכנה חופשית שכפופה לרישיון Apache 2.
 \n
 \nכמו בכל תוכנה אחרת, גם ב־Seedvault יכולות להיות תקלות או חולשות אבטחה.</string>
@@ -87,9 +84,7 @@
     <string name="restore_installing_packages">היישומונים מותקנים מחדש</string>
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
     <string name="restore_app_not_yet_backed_up">עדיין לא גובה</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">החשבון אינו זמין. ניתן להקים אחד (או להשבית את קוד הגישה).</string>
     <string name="settings_backup_apk_title">גיבוי יישומונים</string>
-    <string name="settings_category_app_data_backup">גיבוי נתוני יישומונים</string>
     <string name="settings_auto_restore_summary_usb">לתשומת לבך: עליך לחבר את %1$s שלך לחשמל כדי שזה יפעל.</string>
     <string name="settings_auto_restore_summary">בעת התקנת יישומון מחדש, לשחזר את ההגדרות והנתונים שגובו.</string>
     <string name="settings_auto_restore_title">שחזור אוטומטי</string>
@@ -117,7 +112,6 @@
     <string name="restore_installing_tap_to_install">יש לגעת כדי להתקין</string>
     <string name="restore_restoring_error_title">לא ניתן לשחזר חלק מהיישומונים</string>
     <string name="about_version">גרסה: %s</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">לא מותקן</string>
     <string name="storage_check_fragment_patience">עשוי לארוך זמן מה…</string>
     <string name="recovery_code_verification_ok_title">קוד השחזור אומת</string>
     <string name="recovery_code_verification_ok_message">הקוד שלך נכון והוא יעבוד לשחזור הגיבוי שלך.</string>
@@ -166,9 +160,6 @@
     <string name="restore_storage_in_progress_info">הקבצים שלך משוחזרים ברקע. ניתן להתחיל להשתמש בטלפון שלך בזמן שזה מתבצע.
 \n
 \nחלק מהיישומונים (כמו למשל סיגנל ו־WhatsApp) עשויים לדרוש שחזור מלא כדי לייבא גיבוי. מומלץ לנסות להימנע מהפעלת היישומונים האלו בטרם השלמת השחזור.</string>
-    <string name="storage_fake_davx5_summary_installed">להקמת עיגון WebDAV יש לגעת כאן</string>
-    <string name="storage_fake_davx5_summary_unavailable">עיגון WebDAV לא זמין. יש להקים אחד.</string>
-    <string name="notification_backup_disabled">גיבוי לא מופעל</string>
     <string name="backup_app_in_progress">מתבצע גיבוי</string>
     <string name="backup_app_success">הגיבוי הושלם</string>
     <string name="restore_app_status_installing">מתבצעת התקנה מחדש</string>
@@ -186,7 +177,6 @@
     <string name="settings_backup_dialog_title">לכבות את גיבויי היישומון\?</string>
     <string name="settings_backup_dialog_message">עם הפעלת הגיבויים מחדש, תהליך הגיבוי יתמשך מעבר לרגיל ויותר שטח אחסון ינוצל.</string>
     <string name="settings_backup_dialog_disable">לכבות בכל זאת</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (לא מומלץ)</string>
     <string name="about_contributing_organizations_title">ארגונים תורמים</string>
     <string name="about_contributor_headline">תורמים</string>
     <string name="about_contributor_content">את רשימת התורמים אפשר <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">לראות ב־GitHub</a>.</string>

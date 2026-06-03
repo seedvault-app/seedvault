@@ -60,7 +60,6 @@
     <string name="notification_success_title">காப்புப்பிரதி முடிந்தது</string>
     <string name="notification_channel_title">காப்புப்பிரதி அறிவிப்பு</string>
     <string name="notification_title">காப்புப்பிரதி இயங்குகிறது</string>
-    <string name="notification_backup_already_running">காப்புப்பிரதி ஏற்கனவே செயல்பாட்டில் உள்ளது</string>
     <string name="recovery_code_recreated">புதிய மீட்பு குறியீடு வெற்றிகரமாக உருவாக்கப்பட்டுள்ளது. வெளியேறுதல்…</string>
     <string name="recovery_code_verification_new_dialog_message">புதிய குறியீட்டை உருவாக்குவது உங்கள் இருக்கும் காப்புப்பிரதிகளை அணுக முடியாததாக ஆக்கும். முடிந்தால் அவற்றை நீக்க முயற்சிப்போம்.
 \n
@@ -101,9 +100,6 @@
     <string name="storage_check_fragment_backup_error">காப்பு இருப்பிடத்தை அணுகும்போது பிழை ஏற்பட்டது.</string>
     <string name="storage_check_fragment_restore_title">காப்புப்பிரதிகளைத் தேடுகிறது …</string>
     <string name="storage_check_fragment_backup_title">காப்பு இருப்பிடத்தைத் தொடங்குகிறது …</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">கணக்கு கிடைக்கவில்லை. ஒன்றை அமைக்கவும் (அல்லது கடவுக்குறியீட்டை முடக்கவும்).</string>
-    <string name="storage_fake_nextcloud_summary_installed">கணக்கை அமைக்க தட்டவும்</string>
-    <string name="storage_fake_nextcloud_summary">நிறுவ தட்டவும்</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> மீதமுள்ளது</string>
     <string name="storage_fake_drive_summary">செருகப்பட வேண்டும்</string>
     <string name="storage_fragment_restore_title">உங்கள் காப்புப்பிரதிகளை எங்கே கண்டுபிடிப்பது\?</string>
@@ -121,7 +117,6 @@
     <string name="settings_backup_apk_summary">செயலிகள் தாங்களே காப்புப் பிரதி எடுக்கும். இல்லையெனில், செயலித் தரவு மட்டுமே காப்புப் பிரதி எடுக்கப்படும்.</string>
     <string name="settings_auto_restore_summary_usb">குறிப்பு: இது வேலை செய்ய உங்கள் %1$s செருகப்பட வேண்டும்.</string>
     <string name="settings_auto_restore_summary">ஒரு செயலியை மீண்டும் நிறுவும் போது, காப்புப் பிரதி எடுத்த அமைப்புகள் மற்றும் தரவை மீட்டெடுக்கவும்.</string>
-    <string name="settings_category_app_data_backup">செயலி தரவு காப்பு</string>
     <string name="settings_backup_apk_title">செயலி காப்புகள்</string>
     <string name="settings_auto_restore_title">தானியங்கி மீட்பு</string>
     <string name="settings_info">அனைத்து காப்புப்பிரதிகளும் உங்கள் தொலைபேசியில் குறியாக்கம் செய்யப்பட்டுள்ளன. காப்புப்பிரதியிலிருந்து மீட்டமைக்க உங்களுக்கு உங்கள் 12-வார்த்தை மீட்பு குறியீடு தேவைப்படும்.</string>
@@ -135,8 +130,6 @@
     <string name="data_management_label">விதை பெட்டக காப்பு</string>
     <string name="backup">காப்பு</string>
     <string name="backup_app_in_progress">காப்புப்பிரதி</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDav மவுண்ட் கிடைக்கவில்லை. ஒன்றை அமைக்கவும்.</string>
-    <string name="storage_fake_davx5_summary_installed">வெப்டாவ் ஏற்றத்தை அமைக்க தட்டவும்</string>
     <string name="restore_app_status_installed">மீண்டும் நிறுவப்பட்டது</string>
     <string name="about_contributor_content">தயவுசெய்து ஒரு <a href="https://github.com/seedvault-app/seedvault/graphs/contributors"> பங்களிப்பாளர்களின் பட்டியல் </a>.</string>
     <string name="notification_restore_title">ஓட்டத்தை மீட்டமைக்கவும்</string>
@@ -180,7 +173,6 @@
     <string name="recovery_code_auth_description">தொடர உங்கள் சாதன நற்சான்றிதழ்களை உள்ளிடவும்</string>
     <string name="notification_apk_text">%s இன் APK ஐ ஆதரிக்கிறது</string>
     <string name="notification_apk_not_backed_up">பயன்பாடுகளின் பட்டியலை சேமித்தல் நாம் காப்புப் பிரதி எடுக்க முடியாது.</string>
-    <string name="notification_backup_disabled">காப்புப்பிரதி இயக்கப்படவில்லை</string>
     <string name="backup_app_success">காப்புப் பிரதி எடுக்கப்பட்டது</string>
     <string name="restore_storage_in_progress_info">உங்கள் கோப்புகள் பின்னணியில் மீட்டெடுக்கப்படுகின்றன. இது இயங்கும்போது உங்கள் தொலைபேசியைப் பயன்படுத்தத் தொடங்கலாம்.\n\n சில பயன்பாடுகளுக்கு (எ.கா. சிக்னல் அல்லது வாட்ச்அப்) காப்புப்பிரதியை இறக்குமதி செய்ய கோப்புகளை முழுமையாக மீட்டெடுக்க வேண்டும். கோப்பு மீட்டெடுப்பு நிறைவடைவதற்கு முன்பு அந்த பயன்பாடுகளைத் தொடங்குவதைத் தவிர்க்க முயற்சிக்கவும்.</string>
     <string name="storage_webdav_config_user">பயனர் பெயர்</string>
@@ -193,7 +185,6 @@
     <string name="settings_backup_storage_title">எனது கோப்புகளை காப்புப் பிரதி எடுக்கவும்</string>
     <string name="settings_backup_files_title">கோப்புகள் மற்றும் கோப்புறைகள் சேர்க்கப்பட்டுள்ளன</string>
     <string name="storage_user_selected_location_title">பயனர் தேர்ந்தெடுக்கப்பட்ட இடம்</string>
-    <string name="storage_not_recommended">&lt;xliff: g எடுத்துக்காட்டு = \"ச்கைனெட்\"&gt;%1$s &lt;/xliff: g&gt; (பரிந்துரைக்கப்படவில்லை)</string>
     <string name="restore_app_status_restored">தரவு மீட்டெடுக்கப்பட்டது</string>
     <string name="restore_app_status_failed">மீட்டமை தோல்வியடைந்தது</string>
     <string name="restore_app_status_warning">எச்சரிக்கையை மீட்டமை</string>
@@ -208,7 +199,6 @@
     <string name="settings_category_storage">கோப்பு காப்புப்பிரதி (பீட்டா)</string>
     <string name="settings_backup_files_summary">எதுவுமில்லை</string>
     <string name="settings_expert_logcat_summary">உருவாக்குபவர்கள் இந்த பதிவுகள் மூலம் பிழைகள் கண்டறிய முடியும்.\n\n எச்சரிக்கை: பதிவு கோப்பில் தனிப்பட்ட முறையில் அடையாளம் காணக்கூடிய தகவல்கள் இருக்கலாம். முன்பு மதிப்பாய்வு செய்து பகிரப்பட்ட பிறகு நீக்கு!</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">நிறுவப்படவில்லை</string>
     <string name="storage_check_fragment_patience">இதற்கு சிறிது நேரம் ஆகலாம்…</string>
     <string name="storage_webdav_option_title">WebDav முகில் (பீட்டா)</string>
     <string name="notification_success_channel_title">செய் அறிவிப்பு</string>

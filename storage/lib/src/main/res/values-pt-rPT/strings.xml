@@ -16,7 +16,6 @@
     <string name="select_files_number_of_files">%1$d ficheiro(s)</string>
     <string name="select_files_button_restore">Restaurar ficheiros selecionados</string>
     <string name="notification_restore_complete_title">%1$d de %2$d ficheiros restaurados</string>
-    <string name="notification_restore_channel_title">Restauração de ficheiros</string>
     <string name="notification_check_channel_title">Verificação de integridade do backup de ficheiros</string>
     <string name="notification_check_title">A verificar o backup de ficheiros…</string>
     <string name="notification_check_text">A buscar dados de backup disponíveis.</string>

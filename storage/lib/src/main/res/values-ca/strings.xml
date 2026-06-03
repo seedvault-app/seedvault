@@ -9,7 +9,6 @@
     <string name="notification_backup_scanning">Explorant els fitxers…</string>
     <string name="notification_backup_backup_files">Còpia de seguretat dels fitxers…</string>
     <string name="notification_prune">Eliminant còpies de seguretat antigues…</string>
-    <string name="notification_restore_channel_title">Restauració de l\'emmagatzematge</string>
     <string name="notification_restore_title">Restauració de fitxers…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d de %2$d fitxers restaurats</string>

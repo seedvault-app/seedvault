@@ -13,7 +13,6 @@
     <string name="content_downloads">பதிவிறக்கங்கள்</string>
     <string name="notification_backup_title">கோப்பு காப்புப்பிரதி</string>
     <string name="notification_backup_scanning">கோப்புகளை ச்கேன் செய்வது…</string>
-    <string name="notification_restore_channel_title">கோப்பு மீட்டமை</string>
     <string name="notification_restore_title">கோப்புகளை மீட்டமைத்தல்…</string>
     <string name="notification_restore_complete_title">%2$d கோப்புகளின் %1$d மீட்டெடுக்கப்பட்டது</string>
     <string name="snapshots_title">கிடைக்கும் கோப்பு காப்புப்பிரதிகள்</string>

@@ -5,7 +5,6 @@
     <string name="backup">备份</string>
     <string name="settings_backup_apk_dialog_title">真的要停用 APK 备份？</string>
     <string name="settings_backup_apk_title">APK 备份</string>
-    <string name="settings_category_app_data_backup">应用数据备份</string>
     <string name="settings_auto_restore_summary">重新安装应用程序时，恢复备份的数据与设置。</string>
     <string name="settings_auto_restore_title">自动恢复</string>
     <string name="settings_backup_last_backup_never">从未备份</string>
@@ -82,8 +81,6 @@
     <string name="storage_check_fragment_backup_error">访问备份位置时发生错误。</string>
     <string name="storage_check_fragment_restore_title">正在查找备份…</string>
     <string name="storage_check_fragment_backup_title">初始化备份位置中…</string>
-    <string name="storage_fake_nextcloud_summary_installed">点击设置账户</string>
-    <string name="storage_fake_nextcloud_summary">点击安装</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> 可用</string>
     <string name="storage_fake_drive_summary">需要插入</string>
     <string name="storage_fake_drive_title">U盘</string>
@@ -100,8 +97,6 @@
     <string name="restore_app_was_stopped">最近没有使用，未备份</string>
     <string name="restore_app_not_yet_backed_up">未备份</string>
     <string name="notification_success_text">%2$d个应用中的%1$d个已备份 (%3$s)。点击了解更多。</string>
-    <string name="notification_backup_already_running">备份已在进行</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">账户不可用。设置一个（或禁用密码）。</string>
     <string name="current_destination_string">备份状态与备份设置</string>
     <string name="data_management_label">Seedvault 备份</string>
     <string name="restore_restoring_error_message">您可以手动重装这些应用。自动恢复会尝试恢复它们的数据（在自动恢复启用时）。</string>
@@ -148,7 +143,6 @@
     <string name="recovery_code_auth_description">输入您的设备凭据以继续</string>
     <string name="recovery_code_auth_title">重新输入您的屏幕锁定码</string>
     <string name="storage_check_fragment_patience">这可能要花点时间…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">未安装</string>
     <string name="settings_expert_title">专家设置</string>
     <string name="settings_backup_storage_dialog_ok">仍要启用</string>
     <string name="settings_backup_storage_dialog_message">文件备份仍处于测试阶段，可能无法正常工作。不要依靠它备份重要数据。</string>
@@ -167,9 +161,6 @@
     <string name="settings_backup_new_code_dialog_message">要继续使用应用程序备份，你需要生成一个新的恢复代码。
 \n
 \n我们对于不便表示歉意。</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV 挂载不可用。设置一个。</string>
-    <string name="storage_fake_davx5_summary_installed">点击设置 WebDAV 挂载</string>
-    <string name="notification_backup_disabled">备份未启用</string>
     <string name="backup_app_warning">备份警告</string>
     <string name="restore_app_status_installing">重新安装中</string>
     <string name="restore_app_status_installed">已重新安装</string>
@@ -187,7 +178,6 @@
     <string name="settings_backup_dialog_title">真要关闭应用备份吗？</string>
     <string name="settings_backup_dialog_message">当你再次开启备份时，备份过程可能比平时要久并使用额外的存储空间。</string>
     <string name="settings_backup_dialog_disable">仍要关闭</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> （不推荐）</string>
     <string name="about_contributor_headline">贡献者</string>
     <string name="about_contributor_content">请前往 GitHub 查看<a href="https://github.com/seedvault-app/seedvault/graphs/contributors">贡献者列表</a>。</string>
     <string name="about_contributing_organizations_title">贡献机构</string>
@@ -214,7 +204,7 @@
     <string name="storage_webdav_config_button">使用 WebDAV 云</string>
     <string name="storage_webdav_config_malformed_url">无效的 WebDAV URL</string>
     <string name="storage_webdav_name">WebDAV %s</string>
-    <string name="storage_webdav_option_title">WebDAV 云 （公测）</string>
+    <string name="storage_webdav_option_title">WebDAV 云（推荐）</string>
     <string name="storage_webdav_config_url">WebDAV URL</string>
     <string name="storage_webdav_config_user">用户名</string>
     <string name="storage_webdav_config_url_helper">确保在此输入完整 URL。比如对于 Nextcloud，符合要求的 URL 应形如 https://yourserver.com/remote.php/webdav</string>

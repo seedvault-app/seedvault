@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="notification_restore_channel_title">Restauration des fichiers</string>
     <string name="content_images">Photos et images</string>
     <string name="snapshots_empty">Aucune sauvegarde de fichier trouvée \n \nDésolé, mais il n\'y a rien qui puisse être restauré.</string>
     <string name="content_videos">Vidéos</string>

@@ -28,9 +28,6 @@
     <string name="storage_check_fragment_backup_error">Hiba történt mentés helyének elérése közben.</string>
     <string name="storage_check_fragment_restore_title">Mentések keresése…</string>
     <string name="storage_check_fragment_backup_title">Mentés hely inicializálása…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Fiók nem elérhető. Hozzon létre egyet (vagy kapcsolja ki a jelszót).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Koppintson a fiók létrehozásához</string>
-    <string name="storage_fake_nextcloud_summary">Koppintson a telepítéshez</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="méret">%1$s</xliff:g> szabad</string>
     <string name="storage_fake_drive_summary">Be kell hogy legyen dugva</string>
     <string name="storage_fake_drive_title">USB flash meghajtó</string>
@@ -48,7 +45,6 @@
     <string name="settings_backup_apk_dialog_title">Biztosan ki kívánja kapcsolni az app biztonsági mentést?</string>
     <string name="settings_backup_apk_summary">Mentse el magát az appot is. Máskülönben csak az app adatok kerülnek mentésre.</string>
     <string name="settings_backup_apk_title">App biztonsági mentés</string>
-    <string name="settings_category_app_data_backup">App adat biztonsági mentés</string>
     <string name="settings_auto_restore_summary_usb">Megjegyzés: A %1$s be kell legyen dugva, hogy ez működjön.</string>
     <string name="settings_auto_restore_summary">Egy app újratelepítése esetén visszaállítja a korábbi beállításokat és adatokat.</string>
     <string name="settings_auto_restore_title">Automatikus visszaállítás</string>
@@ -106,8 +102,6 @@
     <string name="settings_backup_files_title">Beleértve a fájlokat és mappákat</string>
     <string name="settings_backup_files_summary">Nincs</string>
     <string name="recovery_code_verification_error_message">Hibás visszaállító kódot adott meg. Kérem próbálja újra!\n\nHa elvesztette a kódját, koppintson a \'Kód generálása\' gombra lent.</string>
-    <string name="notification_backup_already_running">Biztonsági mentés már folyamatban</string>
-    <string name="notification_backup_disabled">Biztonsági mentés kikapcsolva</string>
     <string name="notification_success_text">%1$d-ból %2$d app mentésre került (%3$s). Koppintson ha többet akar megtudni.</string>
     <string name="notification_error_title">Mentés hiba</string>
     <string name="notification_error_action">Megoldás</string>
@@ -127,7 +121,6 @@
     <string name="settings_file_check_title">Fájl mentés integritás ellenőrzés</string>
     <string name="settings_file_check_text">Ebben a pontban indíthat egy egyszeri fájl mentés integritás ellenőrzést.</string>
     <string name="settings_file_check_text2">Válassza ki mennyi adatot kíván letölteni ellenőrzésre. Minél többet tölt le, annál több ideig tart, azonban ezzel arányosan nő a megbízhatósága is.\n\nA háttérben fog futni, és egy értesítést küld a rendszer ha kész.</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Nem telepített</string>
     <string name="storage_round_sync_summary_prefix">Távoli RoundSync:</string>
     <string name="storage_webdav_config_user">Felhasználói név</string>
     <string name="storage_webdav_config_pass">Jelszó</string>
@@ -140,9 +133,6 @@
     <string name="settings_scheduling_metered_title">Mobil adat használatakor is mentsen</string>
     <string name="settings_scheduling_charging_title">Csak töltés közben mentsen</string>
     <string name="settings_expert_logcat_summary">A napló alapján fejlesztők diagnosztizálhatják a hibákat.\n\nFigyelem: A napló tartalmazhat személyes adatokat. Emiatt tekintse át küldés előtt, és törölje a megosztást követően!</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nem ajánlott)</string>
-    <string name="storage_fake_davx5_summary_installed">Koppintson a WebDAV felcsatolás beállításához</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV felcsatolás nem elérhető. Állítson be egyet.</string>
     <string name="storage_check_fragment_patience">Ez eltarthat egy darabig…</string>
     <string name="storage_webdav_option_title">WebDAV Felhő (béta)</string>
     <string name="storage_webdav_option_summary">Integrált direkt WebDAV hozzáférés</string>

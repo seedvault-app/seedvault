@@ -9,7 +9,6 @@
     <string name="notification_backup_scanning">파일 스캐닝중…</string>
     <string name="notification_backup_backup_files">파일 백업중…</string>
     <string name="notification_prune">예전 백업 삭제하는 중…</string>
-    <string name="notification_restore_channel_title">저장소 복원</string>
     <string name="notification_restore_title">파일 복원중…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%2$d개 중 %1$d개의 파일이 복원됨</string>

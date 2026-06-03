@@ -66,8 +66,6 @@
     <string name="storage_check_fragment_backup_error">Se produjo un error al acceder a la ubicación del respaldo.</string>
     <string name="storage_check_fragment_restore_title">Buscando respaldos…</string>
     <string name="storage_check_fragment_backup_title">Inicializando la ubicación del respaldo…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Haz clic para configurar la cuenta</string>
-    <string name="storage_fake_nextcloud_summary">Haz clic para instalar</string>
     <string name="storage_fake_drive_summary">Necesita ser enchufado</string>
     <string name="storage_fake_drive_title">Memoria USB</string>
     <string name="storage_fragment_restore_title">¿Dónde encontrar sus respaldos\?</string>
@@ -81,7 +79,6 @@
     <string name="settings_backup_apk_dialog_title">¿Deshabilitar realmente el respaldo de la aplicación?</string>
     <string name="settings_backup_apk_summary">Respalde las aplicaciones en sí. De lo contrario, solo se harían respaldos de los datos de la aplicación.</string>
     <string name="settings_backup_apk_title">Respaldo de la aplicación</string>
-    <string name="settings_category_app_data_backup">Respaldo de datos de la aplicación</string>
     <string name="settings_auto_restore_summary_usb">Nota: Su %1$s necesita estar enchufado para que esto funcione.</string>
     <string name="settings_auto_restore_summary">Al reinstalar una aplicación, restaure la configuración y los datos respaldados.</string>
     <string name="settings_auto_restore_title">Restauración automática</string>

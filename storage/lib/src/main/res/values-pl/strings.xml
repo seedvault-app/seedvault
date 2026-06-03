@@ -12,7 +12,6 @@
     <string name="notification_backup_title">Kopia zapasowa pliku</string>
     <string name="notification_backup_scanning">Skanowanie plików…</string>
     <string name="notification_restore_complete_title">%1$d z %2$d plików przywróconych</string>
-    <string name="notification_restore_channel_title">Przywracanie pliku</string>
     <string name="snapshots_title">Dostępne kopie zapasowe plików</string>
     <string name="snapshots_empty">Nie znaleziono kopii zapasowych plików\n \nPrzepraszamy, ale nie ma nic, co można przywrócić.</string>
     <string name="snapshots_error">Błąd ładowania kopii zapasowych</string>

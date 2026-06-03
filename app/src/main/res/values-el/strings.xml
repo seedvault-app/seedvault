@@ -17,7 +17,6 @@
     <string name="settings_backup_apk_dialog_title">Απενεργοποιήστε πραγματικά τα αντίγραφα ασφαλείας APK;</string>
     <string name="settings_backup_apk_summary">Δημιουργεί αντίγραφα ασφαλείας των ίδιων των εφαρμογών. Διαφορετικά, θα δημιουργηθούν αντίγραφα ασφαλείας μόνο των δεδομένων εφαρμογών.</string>
     <string name="settings_backup_apk_title">Αντίγραφα ασφαλείας APK</string>
-    <string name="settings_category_app_data_backup">Αντίγραφα ασφαλείας δεδομένων εφαρμογών</string>
     <string name="settings_auto_restore_summary_usb">Σημείωση: Το %1$s πρέπει να συνδεθεί για να λειτουργήσει η αυτόματη επαναφορά.</string>
     <string name="settings_auto_restore_summary">Κατά την επανεγκατάσταση μιας εφαρμογής, επαναφέρετε τα αντίγραφα ασφαλείας των ρυθμίσεων και των δεδομένων.</string>
     <string name="settings_auto_restore_title">Αυτόματη επαναφορά</string>
@@ -63,7 +62,6 @@
     <string name="notification_failed_title">Η δημιουργία αντιγράφων ασφαλείας απέτυχε</string>
     <string name="notification_success_text">Δημιουργήθηκαν αντίγραφα ασφαλείας για %1$d από %2$d εφαρμογές (%3$s). Πατήστε για να μάθετε περισσότερα.</string>
     <string name="notification_success_title">Η δημιουργία αντιγράφων ασφαλείας ολοκληρώθηκε</string>
-    <string name="notification_backup_already_running">Η δημιουργία αντιγράφων ασφαλείας βρίσκεται ήδη σε εξέλιξη</string>
     <string name="notification_title">Εκτελείται δημιουργία αντιγράφων ασφαλείας</string>
     <string name="notification_channel_title">Ειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="recovery_code_error_checksum_word">Ο κωδικός σας δεν είναι έγκυρος. Ελέγξτε όλες τις λέξεις καθώς και τη θέση τους και δοκιμάστε ξανά!</string>
@@ -88,14 +86,11 @@
     <string name="recovery_code_write_it_down">Γράψτε το σε χαρτί τώρα!</string>
     <string name="recovery_code_12_word_intro">Χρειάζεστε τον κωδικό επαναφοράς 12 λέξεων για να επαναφέρετε τα αντίγραφα ασφαλείας των δεδομένων.</string>
     <string name="recovery_code_title">Κωδικός επαναφοράς</string>
-    <string name="storage_fake_nextcloud_summary_installed">Πατήστε για να δημιουργήσετε λογαριασμό</string>
-    <string name="storage_fake_nextcloud_summary">Πατήστε για εγκατάσταση</string>
     <string name="storage_fake_drive_title">Μονάδα USB flash</string>
     <string name="settings_backup_status_summary">Τελευταίο αντίγραφο ασφαλείας: %1$s</string>
     <string name="settings_backup_location_internal">Εσωτερικός αποθηκευτικός χώρος</string>
     <string name="restore_app_was_stopped">Δεν δημιουργήθηκε αντίγραφο ασφαλείας καθώς δεν έχει χρησιμοποιηθεί πρόσφατα</string>
     <string name="restore_app_not_yet_backed_up">Δεν έχει δημιουργηθεί ακόμη αντίγραφο ασφαλείας</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Ο λογαριασμός δεν είναι διαθέσιμος. Ρυθμίστε έναν (ή απενεργοποιήστε τον κωδικό πρόσβασης).</string>
     <string name="current_destination_string">Κατάσταση αντιγράφων ασφαλείας και ρυθμίσεις</string>
     <string name="data_management_label">Αντίγραφα ασφαλείας Seedvault</string>
     <string name="about_version">Έκδοση: %s</string>
@@ -132,7 +127,6 @@
     <string name="settings_backup_storage_dialog_message">Η δημιουργία αντιγράφου ασφαλείας αρχείων είναι σε στάδιο beta και μπορεί να μην λειτουργήσει. Μην βασίζεστε σε αυτή για σημαντικά δεδομένα.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Νέος κωδικός</string>
     <string name="settings_expert_title">Προηγμένες ρυθμίσεις</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Μη εγκατεστημένο</string>
     <string name="storage_check_fragment_patience">Αυτό μπορεί να πάρει λίγη ώρα…</string>
     <string name="recovery_code_auth_title">Εισάγετε εκ νέου το κλείδωμα οθόνης</string>
     <string name="restore_skip_apps">Παράλειψη επαναφοράς εφαρμογών</string>
@@ -151,9 +145,6 @@
     <string name="error_no_store">Σφάλμα: Δεν έχει εγκατασταθεί κατάστημα εφαρμογών</string>
     <string name="restore_storage_in_progress_title">Γίνεται επαναφορά αρχείων…</string>
     <string name="restore_storage_in_progress_info">Γίνεται επαναφορά των αρχείων σας στο παρασκήνιο. Μπορείτε να αρχίσετε να χρησιμοποιείτε το τηλέφωνό σας ενώ αυτό εκτελείται. \n \nΟρισμένες εφαρμογές (π.χ. Signal ή WhatsApp) ενδέχεται να απαιτούν την πλήρη επαναφορά των αρχείων για την εισαγωγή ενός αντιγράφου ασφαλείας. Προσπαθήστε να αποφύγετε την εκκίνηση αυτών των εφαρμογών πριν ολοκληρωθεί η επαναφορά αρχείων.</string>
-    <string name="storage_fake_davx5_summary_installed">Πατήστε για να ρυθμίσετε μια προσάρτηση WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">Η προσάρτηση WebDAV δεν είναι διαθέσιμη. Ρυθμίστε μια.</string>
-    <string name="notification_backup_disabled">Η δημιουργία αντιγράφων ασφαλείας δεν είναι ενεργοποιημένη</string>
     <string name="backup_app_warning">Προειδοποίηση δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="restore_app_status_restored">Τα δεδομένα αποκαταστάθηκαν</string>
     <string name="restore_app_status_failed">Η επαναφορά απέτυχε</string>
@@ -166,7 +157,6 @@
     <string name="settings_expert_logcat_summary">Οι προγραμματιστές μπορούν να διαγνώσουν σφάλματα με τα αρχεία καταγραφής. \n \nΠροειδοποίηση: Το αρχείο καταγραφής ενδέχεται να περιέχει προσωπικά αναγνωρίσιμες πληροφορίες. Ελέγξτε πριν την κοινή χρήση και στη συνέχεια διαγράψτε το!</string>
     <string name="settings_expert_logcat_title">Αποθήκευση αρχείου καταγραφής</string>
     <string name="settings_expert_logcat_error">Σφάλμα: Δεν ήταν δυνατή η αποθήκευση του αρχείου καταγραφής</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Δεν συνιστάται)</string>
     <string name="settings_backup_dialog_disable">Απενεργοποίηση ούτως ή άλλως</string>
     <string name="settings_backup_dialog_title">Θέλετε πραγματικά απενεργοποιήστε τα αντίγραφα ασφαλείας εφαρμογών;</string>
     <string name="settings_backup_dialog_message">Όταν ενεργοποιήσετε ξανά τα αντίγραφα ασφαλείας, η διαδικασία δημιουργίας αντιγράφων ασφαλείας μπορεί να διαρκέσει περισσότερο από το συνηθισμένο και θα χρησιμοποιήσει επιπλέον χώρο αποθήκευσης.</string>

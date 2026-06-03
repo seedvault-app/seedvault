@@ -17,7 +17,6 @@
     <string name="settings_auto_restore_title">ກູ້ຄືນອັດຕະໂນມັດ</string>
     <string name="settings_auto_restore_summary">ເມື່ອຕິດຕັ້ງແອັບຄືນໃໝ່, ໃຫ້ກູ້ຄືນການຕັ້ງຄ່າ ແລະ ຂໍ້ມູນທີ່ສຳຮອງໄວ້.</string>
     <string name="settings_auto_restore_summary_usb">ໝາຍເຫດ: ຕ້ອງສຽບ %1$s ຂອງທ່ານໄວ້ ເພື່ອໃຫ້ຟັງຊັນນີ້ເຮັດວຽກ.</string>
-    <string name="settings_category_app_data_backup">ການສຳຮອງຂໍ້ມູນແອັບ</string>
     <string name="settings_backup_apk_title">ການສຳຮອງຂໍ້ມູນ APK</string>
     <string name="settings_backup_apk_summary">ສຳຮອງຂໍ້ມູນຕົວແອັບເອງ. ຖ້າບໍ່ດັ່ງນັ້ນ, ຈະມີພຽງຂໍ້ມູນຂອງແອັບເທົ່ານັ້ນທີ່ຈະຖືກສຳຮອງໄວ້.</string>
     <string name="settings_backup_apk_dialog_title">ຕ້ອງການປິດການສຳຮອງຂໍ້ມູນ APK ແທ້ບໍ່?</string>
@@ -78,13 +77,7 @@
     <string name="storage_fake_drive_title">USB ແຟລດໄດຣ</string>
     <string name="storage_fake_drive_summary">ຕ້ອງສຽບໄວ້</string>
     <string name="storage_available_bytes">ວ່າງ <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (ບໍ່ແນະນຳ)</string>
     <string name="storage_round_sync_summary_prefix">RoundSync ໄລຍະໄກ:</string>
-    <string name="storage_fake_nextcloud_summary">ແຕະເພື່ອຕິດຕັ້ງ</string>
-    <string name="storage_fake_nextcloud_summary_installed">ແຕະເພື່ອຕັ້ງຄ່າບັນຊີ</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">ບໍ່ໄດ້ຕິດຕັ້ງ</string>
-    <string name="storage_fake_davx5_summary_installed">ແຕະເພື່ອຕັ້ງຄ່າການເຊື່ອມຕໍ່ WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">ການເຊື່ອມຕໍ່ WebDAV ບໍ່ສາມາດໃຊ້ງານໄດ້. ກະລຸນາຕັ້ງຄ່າ.</string>
     <string name="storage_check_fragment_backup_title">ກຳລັງເລີ່ມຕົ້ນບ່ອນຈັດເກັບຂໍ້ມູນສຳຮອງ…</string>
     <string name="storage_check_fragment_patience">ຂັ້ນຕອນນີ້ອາດໃຊ້ເວລາຈັກໜ້ອຍ…</string>
     <string name="storage_check_fragment_restore_title">ກຳລັງຊອກຫາຂໍ້ມູນສຳຮອງ…</string>
@@ -140,7 +133,6 @@
     <string name="notification_finalizing_text">ກຳລັງສຳເລັດການສຳຮອງຂໍ້ມູນ…</string>
     <string name="notification_apk_text">ກຳລັງສຳຮອງຂໍ້ມູນ APK ຂອງ %s</string>
     <string name="notification_apk_not_backed_up">ກຳລັງບັນທຶກລາຍຊື່ແອັບທີ່ພວກເຮົາບໍ່ສາມາດສຳຮອງຂໍ້ມູນໄດ້.</string>
-    <string name="notification_backup_disabled">ການສຳຮອງຂໍ້ມູນບໍ່ໄດ້ເປີດໃຊ້ງານ</string>
     <string name="notification_success_title">ສຳຮອງຂໍ້ມູນສຳເລັດ</string>
     <string name="notification_success_text">ສຳຮອງຂໍ້ມູນແລ້ວ %1$d ຈາກ %2$d ແອັບ (%3$s). ແຕະເພື່ອເບິ່ງຂໍ້ມູນເພີ່ມເຕີມ.</string>
     <string name="notification_failed_title">ການສຳຮອງຂໍ້ມູນລົ້ມເຫຼວ</string>

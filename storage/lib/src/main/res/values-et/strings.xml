@@ -4,7 +4,6 @@
     <string name="notification_backup_title">Failide varundamine</string>
     <string name="notification_prune">Vanade varukoopiate eemaldamine…</string>
     <string name="notification_backup_backup_files">Failide varundamine…</string>
-    <string name="notification_restore_channel_title">Failide taastamine</string>
     <string name="notification_backup_scanning">Failide skannimine…</string>
     <string name="content_options">Valikud</string>
     <string name="content_audio">Helifailid</string>

@@ -54,7 +54,6 @@
     <string name="notification_failed_title">Backup falhou</string>
     <string name="notification_success_text">Feito o backup de %1$d apps de %2$d (%3$s). Toque para saber mais.</string>
     <string name="notification_success_title">Backup concluído</string>
-    <string name="notification_backup_already_running">O backup já está em andamento</string>
     <string name="notification_channel_title">Notificação de backup</string>
     <string name="recovery_code_error_checksum_word">O seu código é inválido. Por favor, verifique todas as palavras e tente novamente!</string>
     <string name="recovery_code_error_invalid_word">Palavra errada.</string>
@@ -82,9 +81,6 @@
     <string name="storage_check_fragment_backup_error">Ocorreu um erro ao acessar o local do backup.</string>
     <string name="storage_check_fragment_restore_title">A procurar por backups…</string>
     <string name="storage_check_fragment_backup_title">A inicializar o local de backup…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Conta não disponível. Crie uma (ou desative a palavra-passe).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Toque para configurar a conta</string>
-    <string name="storage_fake_nextcloud_summary">Toque para instalar</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> livre</string>
     <string name="storage_fake_drive_summary">Precisa ser conectado</string>
     <string name="storage_fake_drive_title">Pen drive USB</string>
@@ -100,7 +96,6 @@
     <string name="settings_backup_apk_dialog_title">Deseja realmente desativar o backup dos APKs?</string>
     <string name="settings_backup_apk_summary">Faz backup das próprias apps. Quando desativado, apenas os dados das apps serão armazenados no backup.</string>
     <string name="settings_backup_apk_title">Backup dos APKs</string>
-    <string name="settings_category_app_data_backup">Backup de dados da app</string>
     <string name="settings_auto_restore_summary_usb">Observação: o seu %1$s precisa estar conectado para que isso funcione.</string>
     <string name="settings_auto_restore_summary">Ao reinstalar uma app, restaura as definições e dados do backup.</string>
     <string name="settings_auto_restore_title">Restauração automática</string>
@@ -128,7 +123,6 @@
     <string name="settings_backup_storage_dialog_ok">Ativar mesmo assim</string>
     <string name="settings_expert_title">Definições para especialistas</string>
     <string name="backup_section_system">Dados do sistema</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Não instalado</string>
     <string name="recovery_code_verification_ok_title">Código de recuperação verificado</string>
     <string name="restore_storage_in_progress_title">Os ficheiros estão sendo restaurados…</string>
     <string name="storage_check_fragment_patience">Isto pode levar algum tempo…</string>
@@ -165,7 +159,6 @@
     <string name="settings_backup_new_code_dialog_title">Novo código de recuperação necessário</string>
     <string name="settings_backup_new_code_dialog_message">Para continuar usando o backup de apps, precisa gerar um novo código de recuperação. \n \nLamentamos o inconveniente.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Novo código</string>
-    <string name="notification_backup_disabled">Backup desativado</string>
     <string name="notification_error_no_main_key_title">Backups desativados</string>
     <string name="notification_error_no_main_key_text">Gere um novo código de recuperação para concluir a atualização e continuar a usar os backups.</string>
     <string name="backup_app_success">Backup concluído</string>
@@ -204,7 +197,6 @@
     <string name="settings_app_check_text2">Aqui pode executar uma verificação do seu backup de apps. Selecione quanto dos dados das apps devem serem descarregados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será. Isto executará em segundo plano e uma notificação será enviada quando a verificação for concluída.</string>
     <string name="settings_file_check_title">Verificar integridade do backup de ficheiros</string>
     <string name="settings_file_check_text">Aqui pode executar uma verificação do seu backup de ficheiros.</string>
-    <string name="storage_fake_davx5_summary_unavailable">Montagem WebDAV indisponível. Configure uma.</string>
     <string name="storage_webdav_option_title">Nuvem WebDAV (beta)</string>
     <string name="storage_webdav_option_summary">Acesso direto ao WebDAV</string>
     <string name="storage_webdav_config_url">URL do WebDAV</string>
@@ -247,9 +239,7 @@
     <string name="settings_app_check_title">Verificar integridade do backup de apps</string>
     <string name="settings_app_check_warning">Alerta: Descarregar grandes quantidades de dados pode demorar bastante tempo.</string>
     <string name="settings_expert_logcat_title">Gravar registos da app</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Não é recomendado)</string>
     <string name="storage_round_sync_summary_prefix">Remoto do RoundSync:</string>
-    <string name="storage_fake_davx5_summary_installed">Toque para configurar uma montagem WebDAV</string>
     <string name="settings_expert_logcat_summary">Os programadores podem diagnosticar bugs com esses logs. \n \nAviso: O ficheiro de registos pode conter informações de identificação pessoal. Analise antes e apage-o após partilhar!</string>
     <string name="notification_success_channel_title">Notificação de sucesso</string>
     <string name="notification_init_text">A preparar os dados existentes do backup para a reutilização…</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="storage_fake_nextcloud_summary">Торкніться, щоб установити</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> вільно</string>
     <string name="storage_fake_drive_summary">Потрібно під\'єднати</string>
     <string name="storage_fake_drive_title">USB-накопичувач</string>
@@ -18,7 +17,6 @@
     <string name="settings_backup_apk_dialog_title">Справді вимкнути резервне копіювання APK?</string>
     <string name="settings_backup_apk_summary">Резервне копіювання самих програм. В іншому випадку буде створено резервну копію лише даних програми.</string>
     <string name="settings_backup_apk_title">Резервні копії APK</string>
-    <string name="settings_category_app_data_backup">Резервне копіювання даних програм</string>
     <string name="settings_auto_restore_summary_usb">Примітка: Ваш %1$s повинен бути під\'єднаний до електромережі, щоб це працювало.</string>
     <string name="settings_auto_restore_summary">При перевстановленні програм відновіть резервні копії налаштувань і даних.</string>
     <string name="settings_auto_restore_title">Автоматичне відновлення</string>
@@ -88,7 +86,6 @@
     <string name="notification_failed_title">Не вдалося виконати резервне копіювання</string>
     <string name="notification_success_text">Резервне копіювання %1$d з %2$d програм виконано (%3$s). Натисніть, щоб дізнатися більше.</string>
     <string name="notification_success_title">Резервне копіювання завершено</string>
-    <string name="notification_backup_already_running">Резервне копіювання вже виконується</string>
     <string name="notification_title">Резервне копіювання запущено</string>
     <string name="notification_channel_title">Сповіщення про резервне копіювання</string>
     <string name="recovery_code_recreated">Новий код відновлення успішно створено. Вихід…</string>
@@ -129,8 +126,6 @@
     <string name="storage_check_fragment_backup_error">Сталася помилка під час доступу до розташування резервної копії.</string>
     <string name="storage_check_fragment_restore_title">Пошук резервних копій…</string>
     <string name="storage_check_fragment_backup_title">Ініціалізація розташування резервної копії…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Обліковий запис недоступний. Налаштуйте його (або вимкніть код доступу).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Торкніться, щоб налаштувати обліковий запис</string>
     <string name="backup_app_success">Резервне копіювання успішне</string>
     <string name="backup_app_warning">Попередження про резервне копіювання</string>
     <string name="restore_skip_apps">Пропустити відновлення програм</string>
@@ -160,24 +155,19 @@
 \n
 \nПопередження: Файл журналу може містити особисту інформацію. Перегляньте до та видаліть після надання доступу!</string>
     <string name="settings_expert_logcat_error">Помилка: не вдалося зберегти журнал програми</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Не встановлено</string>
     <string name="storage_check_fragment_patience">Це може зайняти деякий час…</string>
     <string name="recovery_code_auth_title">Введіть знову пароль для розблокування</string>
     <string name="recovery_code_auth_description">Щоб продовжити, введіть облікові дані пристрою</string>
-    <string name="notification_backup_disabled">Резервне копіювання не ввімкнено</string>
     <string name="notification_error_no_main_key_title">Резервне копіювання вимкнено</string>
     <string name="notification_error_no_main_key_text">Згенеруйте новий код відновлення, щоб завершити оновлення та продовжити використання резервних копій.</string>
     <string name="restore_storage_choose_snapshot">Виберіть резервну копію файлу для відновлення (бета-версія)</string>
     <string name="settings_category_storage">Резервне копіювання файлів (бета-версія)</string>
     <string name="settings_backup_storage_dialog_message">Резервне копіювання файлів є бетою і може не працювати. Не покладайтеся на нього з важливими даними.</string>
-    <string name="storage_fake_davx5_summary_installed">Торкніться, щоб налаштувати підключення WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">Підключення WebDAV недоступне. Налаштуйте одне з них.</string>
     <string name="backup_app_in_progress">Резервне копіювання</string>
     <string name="restore_storage_in_progress_info">Ваші файли відновлюються у фоновому режимі. Ви можете почати користуватися своїм телефоном, поки це працює.\n\nДеякі програми (напр. Signal або WhatsApp) можуть вимагати повного відновлення файлів, щоб імпортувати резервну копію. Намагайтеся не запускати ці програми до завершення відновлення файлів.</string>
     <string name="settings_backup_dialog_title">Дійсно вимкніть резервне копіювання програм?</string>
     <string name="settings_backup_dialog_message">Коли Ви знову вмикаєте резервне копіювання, процес резервного копіювання може зайняти більше часу, ніж зазвичай, і він використовуватиме додатковий простір для зберігання.</string>
     <string name="settings_backup_dialog_disable">Вимкнути у будь-якому випадку</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Не рекомендовано)</string>
     <string name="about_contributor_headline">Учасники</string>
     <string name="about_contributor_content">Будь ласка, відвідайте GitHub для отримання <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">списку учасників</a>.</string>
     <string name="about_contributing_organizations_title">Організації-учасники</string>

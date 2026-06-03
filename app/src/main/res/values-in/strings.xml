@@ -11,7 +11,6 @@
     <string name="settings_backup_apk_dialog_title">Yakin menonaktifkan cadangan APK?</string>
     <string name="settings_backup_apk_summary">Mencadangkan aplikasi itu sendiri. Jika tidak, hanya data aplikasi yang akan dicadangkan.</string>
     <string name="settings_backup_apk_title">Cadangan APK</string>
-    <string name="settings_category_app_data_backup">Pencadangan data aplikasi</string>
     <string name="settings_auto_restore_summary_usb">Catatan: %1$s Anda harus dicolokkan agar ini berfungsi.</string>
     <string name="settings_auto_restore_summary">Saat menginstal ulang aplikasi, pulihkan pengaturan dan data yang dicadangkan.</string>
     <string name="settings_auto_restore_title">Pemulihan otomatis</string>
@@ -127,14 +126,7 @@
     <string name="storage_fake_drive_title">Drive flash USB</string>
     <string name="storage_fake_drive_summary">Perlu dicolokkan</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> tersedia</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Tidak disarankan)</string>
     <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
-    <string name="storage_fake_nextcloud_summary">Ketuk untuk menginstal</string>
-    <string name="storage_fake_nextcloud_summary_installed">Ketuk untuk menyiapkan akun</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Akun tidak tersedia. Siapkan akun (atau nonaktifkan kode sandi).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Tidak terinstal</string>
-    <string name="storage_fake_davx5_summary_installed">Ketuk untuk menyiapkan mount WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">Mount WebDAV tidak tersedia. Siapkan mount.</string>
     <string name="storage_check_fragment_backup_title">Menginisialisasi lokasi cadangan…</string>
     <string name="storage_check_fragment_patience">Ini mungkin memerlukan waktu…</string>
     <string name="storage_check_fragment_restore_title">Mencari cadangan…</string>
@@ -171,8 +163,6 @@
     <string name="notification_finalizing_text">Menyelesaikan pencadangan…</string>
     <string name="notification_apk_text">Mencadangkan APK dari %s</string>
     <string name="notification_apk_not_backed_up">Menyimpan daftar aplikasi yang tidak dapat kami cadangkan.</string>
-    <string name="notification_backup_already_running">Pencadangan sudah berlangsung</string>
-    <string name="notification_backup_disabled">Pencadangan tidak diaktifkan</string>
     <string name="notification_success_text">%1$d dari %2$d aplikasi dicadangkan (%3$s). Ketuk untuk mempelajari lebih lanjut.</string>
     <string name="notification_failed_text">Terjadi kesalahan saat menjalankan pencadangan.</string>
     <string name="notification_failed_metered_text">Pencadangan telah dibatalkan. Apakah Anda menggunakan data seluler? Sambungkan ke Wi‑Fi untuk melanjutkan.</string>
