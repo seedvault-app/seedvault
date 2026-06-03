@@ -10,7 +10,6 @@
     <string name="notification_backup_title">Tiedostojen varmuuskopiointi</string>
     <string name="notification_backup_scanning">Skannataan tiedostoja…</string>
     <string name="notification_prune">Poistetaan vanhoja varmuuskopioita…</string>
-    <string name="notification_restore_channel_title">Tiedostojen palauttaminen</string>
     <string name="notification_restore_title">Palautetaan tiedostoja…</string>
     <string name="notification_restore_complete_title">%2$d tiedostosta palautettu %1$d</string>
     <string name="notification_restore_complete_dups">%1$d tiedostoa oli toistensa kopioita.</string>

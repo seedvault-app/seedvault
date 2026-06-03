@@ -4,7 +4,6 @@
     <string name="content_options">Opzioni</string>
     <string name="notification_backup_backup_files">Eseguendo il backup dei file…</string>
     <string name="notification_prune">Rimuovendo i vecchi backup…</string>
-    <string name="notification_restore_channel_title">Ripristino archiviazione</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d di %2$d file ripristinati</string>
     <string name="snapshots_title">Backup di archiviazione disponibili</string>

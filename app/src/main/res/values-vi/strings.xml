@@ -58,7 +58,6 @@
     <string name="notification_failed_title">Sao lưu thất bại</string>
     <string name="notification_success_text">Đã sao lưu %1$d trong số %2$d ứng dụng (%3$s). Nhấn để tìm hiểu thêm.</string>
     <string name="notification_success_title">Sao lưu hoàn tất</string>
-    <string name="notification_backup_already_running">Bản sao lưu đã đang được thực hiện rồi</string>
     <string name="notification_title">Bản sao lưu đang chạy</string>
     <string name="notification_channel_title">Thông báo sao lưu</string>
     <string name="recovery_code_recreated">Mã phục hồi mới đã được tạo thành công</string>
@@ -101,9 +100,6 @@
     <string name="storage_check_fragment_backup_error">Đã xảy ra lỗi khi truy cập vị trí sao lưu.</string>
     <string name="storage_check_fragment_restore_title">Đang tìm bản sao lưu…</string>
     <string name="storage_check_fragment_backup_title">Đang khởi tạo vị trí sao lưu…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Tài khoản không có sẵn. Hãy thiết lập một tài khoản (hoặc tắt mật khẩu).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Nhấn để thiết lập tài khoản</string>
-    <string name="storage_fake_nextcloud_summary">Nhấn để cài đặt</string>
     <string name="storage_available_bytes">Còn trống <xliff:g example="1 GB" id="size">%1$s</xliff:g></string>
     <string name="storage_fake_drive_summary">Cần phải được cắm vào</string>
     <string name="storage_fake_drive_title">Ổ USB</string>
@@ -121,7 +117,6 @@
     <string name="settings_backup_apk_dialog_title">Thực sự tắt sao lưu ứng dụng?</string>
     <string name="settings_backup_apk_summary">Sao lưu bản thân các ứng dụng. Nếu không, chỉ có dữ liệu ứng dụng được sao lưu.</string>
     <string name="settings_backup_apk_title">Sao lưu ứng dụng</string>
-    <string name="settings_category_app_data_backup">Sao lưu dữ liệu ứng dụng</string>
     <string name="settings_auto_restore_summary_usb">Lưu ý: %1$s của bạn cần phải được cắm điện để thực hiện việc này.</string>
     <string name="settings_auto_restore_summary">Khi cài đặt lại ứng dụng, khôi phục cài đặt và dữ liệu đã sao lưu.</string>
     <string name="settings_auto_restore_title">Khôi phục tự động</string>
@@ -150,13 +145,11 @@
     <string name="settings_backup_files_title">Tệp và thư mục được bao gồm</string>
     <string name="settings_backup_storage_dialog_message">Tính năng sao lưu tệp vẫn đang được thử nghiệm và có thể không hoạt động. Đừng dựa vào nó để sao lưu các tệp quan trọng.</string>
     <string name="settings_expert_title">Cài đặt chuyên gia</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Không được cài đặt</string>
     <string name="restore_storage_skip">Bỏ qua khôi phục tệp</string>
     <string name="restore_storage_choose_snapshot">Chọn bản sao lưu bộ nhớ để khôi phục (thử nghiệm)</string>
     <string name="restore_storage_in_progress_info">Các tệp của bạn đang được khôi phục trong nền. Bạn có thể bắt đầu sử dụng điện thoại trong khi việc này đang chạy.
 \n
 \nMột số ứng dụng (vd: Signal hoặc WhatsApp) có thể yêu cầu các tệp phải được khôi phục đầy đủ để nhập bản sao lưu. Hãy cố tránh sử dụng các ứng dụng đó trước khi khôi phục tệp hoàn tất.</string>
-    <string name="storage_fake_davx5_summary_unavailable">Nơi gắn WebDAV không có sẵn. Hãy thiết lập một cái.</string>
     <string name="settings_backup_storage_battery_optimization">Cảnh báo: Không sao lưu tự động vì tối ưu hóa pin đang hoạt động.</string>
     <string name="settings_backup_new_code_dialog_title">Yêu cầu mã phục hồi mới</string>
     <string name="settings_backup_new_code_dialog_message">Để tiếp tục sử dụng sao lưu ứng dụng, bạn cần phải tạo mã phục hồi mới.
@@ -166,8 +159,6 @@
     <string name="notification_error_no_main_key_title">Sao lưu bị tắt</string>
     <string name="notification_error_no_main_key_text">Hãy tạo mã phục hồi mới để hoàn thành nâng cấp và tiếp tục sử dụng bản sao lưu.</string>
     <string name="error_no_store">Lỗi: Không có cửa hàng ứng dụng nào được cài đặt</string>
-    <string name="storage_fake_davx5_summary_installed">Nhấn để thiết lập nơi gắn WebDAV</string>
-    <string name="notification_backup_disabled">Sao lưu chưa được kích hoạt</string>
     <string name="backup_app_in_progress">Đang sao lưu</string>
     <string name="backup_app_success">Đã sao lưu</string>
     <string name="backup_app_warning">Cảnh báo sao lưu</string>

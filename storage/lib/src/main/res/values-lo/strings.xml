@@ -11,7 +11,6 @@
     <string name="notification_backup_scanning">ກຳລັງສະແກນໄຟລ໌…</string>
     <string name="notification_backup_backup_files">ກຳລັງສຳຮອງໄຟລ໌…</string>
     <string name="notification_prune">ກຳລັງລົບຂໍ້ມູນສຳຮອງເກົ່າ…</string>
-    <string name="notification_restore_channel_title">ການກູ້ຄືນໄຟລ໌</string>
     <string name="notification_restore_title">ກຳລັງກູ້ຄືນໄຟລ໌…</string>
     <string name="notification_restore_complete_title">ກູ້ຄືນໄຟລ໌ %1$d ຈາກ %2$d ໄຟລ໌ສຳເລັດ</string>
     <string name="notification_restore_complete_dups">ມີ %1$d ໄຟລ໌ທີ່ຊ້ຳກັນ.</string>

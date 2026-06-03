@@ -13,7 +13,6 @@
     <string name="content_add">Add</string>
     <string name="notification_backup_title">File backup</string>
     <string name="notification_backup_scanning">Scanning files…</string>
-    <string name="notification_restore_channel_title">File restore</string>
     <string name="snapshots_title">Available file backups</string>
     <string name="snapshots_empty">No file backups found \n \nSorry, but there is nothing that can be restored.</string>
     <string name="snapshots_error">Error loading snapshots</string>

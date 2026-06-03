@@ -13,7 +13,6 @@
     <string name="notification_backup_scanning">Skenovanie súborov…</string>
     <string name="notification_backup_backup_files">Zálohovanie súborov…</string>
     <string name="notification_prune">Mazanie starých záloh…</string>
-    <string name="notification_restore_channel_title">Obnova úložiska</string>
     <string name="notification_restore_title">Obnova súborov…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d z %2$d súborov obnovené</string>

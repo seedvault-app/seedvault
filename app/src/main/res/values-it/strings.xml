@@ -28,8 +28,6 @@
     <string name="recovery_code_title">Codice di Recupero</string>
     <string name="storage_check_fragment_error_button">Indietro</string>
     <string name="storage_check_fragment_restore_title">Cercando i backup…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Clicca per configurare l\'account</string>
-    <string name="storage_fake_nextcloud_summary">Clicca per installare</string>
     <string name="storage_fake_drive_title">Chiavetta USB</string>
     <string name="storage_fragment_backup_title">Scegli dove archiviare i backup</string>
     <string name="settings_backup_status_summary">Ultimo backup: %1$s</string>
@@ -53,7 +51,6 @@
     <string name="settings_backup_apk_dialog_message">Dopo aver disabilitato i backup APK, i dati delle app saranno comunque sottoposti a backup. Tuttavia, non verranno ripristinati automaticamente.\n\nSarà necessario installare manualmente tutte le app con l\'opzione “Ripristino automatico” attivata.</string>
     <string name="settings_backup_apk_summary">Esegue il backup delle app stesse. Altrimenti, verrà eseguito il backup solo dei dati delle app.</string>
     <string name="settings_backup_apk_title">Backup APK</string>
-    <string name="settings_category_app_data_backup">Backup dei dati dell\'app</string>
     <string name="settings_auto_restore_summary">Quando reinstalli un\'app, ripristina impostazioni e dati di backup.</string>
     <string name="settings_backup_location_internal">Memoria interna</string>
     <string name="settings_backup_location_none">Nessuno</string>
@@ -115,10 +112,8 @@
     <string name="notification_error_title">Errore di backup</string>
     <string name="notification_error_channel_title">Notifica d\'errore</string>
     <string name="notification_success_text">%1$d di %2$d app gia\' in backup (%3$s). Tocca per ulteriori informazioni.</string>
-    <string name="notification_backup_already_running">Backup gia\' in corso</string>
     <string name="recovery_code_confirm_intro">Inserisci il tuo codice di recupero composto da 12 parole per controllare ora che il tutto funzionera\' correttamente quando sara\' necessario.</string>
     <string name="recovery_code_input_intro">Inserisi il tuo codice di recupero composto da 12 parole che ti sei annotato quando hai inizializzato i backup.</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Account non disponibile. Crearne uno ora (o disabilitare la passcode).</string>
     <string name="settings_backup_status_title">Stato del backup</string>
     <string name="settings_backup_storage_dialog_title">Funzionalità sperimentale</string>
     <string name="settings_backup_files_summary">Nessuno</string>
@@ -152,15 +147,11 @@
     <string name="settings_backup_new_code_code_dialog_ok">Nuovo codice</string>
     <string name="storage_check_fragment_patience">Questo potrebbe richiedere del tempo…</string>
     <string name="restore_skip_apps">Salta ripristino applicazioni</string>
-    <string name="notification_backup_disabled">Backup non abilitato</string>
     <string name="settings_expert_logcat_title">Salva log app</string>
     <string name="settings_expert_logcat_summary">Gli sviluppatori possono diagnosticare bug con questi log.
 \n
 \nAttenzione: il file di registro potrebbe contenere informazioni di identificazione personale. Controlla prima ed elimina dopo la condivisione!</string>
     <string name="settings_expert_logcat_error">Errore: impossibile salvare il log dell\'app</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Non installato</string>
-    <string name="storage_fake_davx5_summary_installed">Tocca per impostare un supporto WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">Supporto WebDAV non dipsonibile. Impostane uno.</string>
     <string name="recovery_code_verification_ok_message">Il codice è corretto e funzionerà per ripristinare il backup.</string>
     <string name="recovery_code_verification_error_message">Hai inserito un codice di recupero non valido. Riprova!
 \n
@@ -182,7 +173,6 @@
 \n
 \nAlcune app (ad es. Signal o WhatsApp) potrebbero richiedere il ripristino completo dei file per importare un backup. Cercate di evitare di avviare le applicazioni prima che il ripristino dei file è completo.</string>
     <string name="restore_storage_got_it">Capito</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet"> %1$s</xliff:g>(Sconsigliato)</string>
     <string name="settings_backup_dialog_title">Vuoi davvero disattivare i backup\?</string>
     <string name="settings_backup_dialog_message">Quando si riattivano i backup, il processo di backup potrebbe richiedere più tempo del solito e verrà utilizzato spazio di archiviazione aggiuntivo.</string>
     <string name="settings_backup_dialog_disable">Disattiva comunque</string>

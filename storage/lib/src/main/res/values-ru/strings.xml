@@ -13,7 +13,6 @@
     <string name="notification_backup_scanning">Сканирование файлов…</string>
     <string name="notification_backup_backup_files">Резервное копирование файлов…</string>
     <string name="notification_prune">Удаление старых резервных копий…</string>
-    <string name="notification_restore_channel_title">Восстановление хранилища</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="snapshots_error">Ошибка при загрузке снимков хранилища</string>
     <string name="content_options">Опции</string>

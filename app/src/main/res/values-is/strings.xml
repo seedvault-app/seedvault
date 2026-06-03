@@ -67,8 +67,6 @@
     <string name="storage_check_fragment_backup_title">Tek geymslustað öryggisafrita í notkun…</string>
     <string name="storage_check_fragment_backup_error">Villa kom upp þegar reynt var að hafa samband við geymslustað öryggisafrita.</string>
     <string name="storage_check_fragment_restore_title">Leita að öryggisafritum…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Smelltu til að setja upp notandareikning</string>
-    <string name="storage_fake_nextcloud_summary">Smelltu til að innsetja</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> laus</string>
     <string name="storage_fake_drive_summary">Þarf að vera í sambandi við rafmagn</string>
     <string name="storage_fake_drive_title">USB Flash drif</string>
@@ -83,7 +81,6 @@
     <string name="settings_backup_apk_dialog_title">Viltu í alvöru ekki taka öryggisafrit af öppum?</string>
     <string name="settings_backup_apk_summary">Taka öryggisafrit af öppunum sjálfum. Ef þetta er ekki valið er aðeins tekið öryggisafrit af öppunum sjálfum.</string>
     <string name="settings_backup_apk_title">Öryggisafritun appa</string>
-    <string name="settings_category_app_data_backup">Öryggisafritun gagna úr öppum</string>
     <string name="settings_auto_restore_summary_usb">ATH: %1$s þarf að vera tengt til að þetta sé hægt.</string>
     <string name="settings_auto_restore_summary">Enduruppsetja stillingar og gögn þegar app er enduruppsett.</string>
     <string name="settings_auto_restore_title">Sjálfvirk endurvakning úr öryggisafriti</string>

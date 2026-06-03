@@ -70,8 +70,6 @@
     <string name="storage_check_fragment_backup_error">Yedekleme konumuna erişilirken bir hata oluştu.</string>
     <string name="storage_check_fragment_restore_title">Yedeklemeler aranıyor…</string>
     <string name="storage_check_fragment_backup_title">Yedekleme konumu başlatılıyor…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Hesap oluşturmak için dokunun</string>
-    <string name="storage_fake_nextcloud_summary">Kurmak için dokunun</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> boş</string>
     <string name="storage_fake_drive_summary">Takılı olması gerekiyor</string>
     <string name="storage_fake_drive_title">USB flash bellek</string>
@@ -85,7 +83,6 @@
     <string name="settings_backup_apk_dialog_message">APK yedekleme devre dışı bırakıldığında, uygulama verileri yine de yedeklenecektir. Ancak, otomatik olarak geri yüklenmeyecektir. \n \n\"Otomatik Geri Yükle\" açıkken tüm uygulamalarınızı elle kurmanız gerekecektir.</string>
     <string name="backup">Yedekle</string>
     <string name="settings_auto_restore_title">Otomatik geri yükle</string>
-    <string name="settings_category_app_data_backup">Uygulama verilerini yedekle</string>
     <string name="settings_backup_apk_title">APK yedeklemesi</string>
     <string name="settings_backup_apk_dialog_title">APK yedeklemesi gerçekten devre dışı bırakılsın mı?</string>
     <string name="settings_backup_apk_summary">Uygulamaların kendisini yedekler. Aksi takdirde, yalnızca uygulama verileri yedeklenecektir.</string>
@@ -100,8 +97,6 @@
     <string name="restore_app_was_stopped">Yakın zamanda kullanılmadığı için yedeklenmemişti</string>
     <string name="restore_app_not_yet_backed_up">Henüz yedeklenmemişti</string>
     <string name="notification_success_text">%1$d / %2$d uygulama yedeklendi (%3$s). Daha fazlasını öğrenmek için dokunun.</string>
-    <string name="notification_backup_already_running">Yedekleme zaten devam ediyor</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Kullanılabilir hesap yok. Bir tane ayarlayın (veya parolayı devre dışı bırakın).</string>
     <string name="current_destination_string">Yedekleme durumu ve ayarları</string>
     <string name="data_management_label">Seedvault Yedeklemesi</string>
     <string name="about_version">Sürüm: %s</string>
@@ -148,7 +143,6 @@
     <string name="recovery_code_auth_description">Devam etmek için aygıt kimlik bilgilerinizi girin</string>
     <string name="recovery_code_auth_title">Ekran kilidinizi tekrar girin</string>
     <string name="storage_check_fragment_patience">Bu biraz zaman alabilir…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Kurulu değil</string>
     <string name="settings_expert_title">Uzman ayarları</string>
     <string name="settings_backup_storage_dialog_ok">Yine de etkinleştir</string>
     <string name="settings_backup_storage_dialog_message">Dosyaları yedeklemek beta aşamasındadır ve çalışmayabilir. Önemli veriler için ona güvenmeyin.</string>
@@ -167,9 +161,6 @@
 \n
 \nRahatsızlıktan dolayı üzgünüz.</string>
     <string name="settings_backup_new_code_code_dialog_ok">Yeni kod</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV bağlantısı yok. Bir tane kurun.</string>
-    <string name="storage_fake_davx5_summary_installed">Bir WebDAV bağlantısı kurmak için dokunun</string>
-    <string name="notification_backup_disabled">Yedekleme etkinleştirilmedi</string>
     <string name="backup_app_success">Yedeklendi</string>
     <string name="restore_app_status_installing">Yeniden kuruluyor</string>
     <string name="backup_app_in_progress">Yedekleniyor</string>
@@ -187,7 +178,6 @@
     <string name="settings_backup_dialog_title">Uygulama yedeklemeleri gerçekten kapatılsın mı\?</string>
     <string name="settings_backup_dialog_message">Yedeklemeleri tekrar açtığınızda, yedekleme işlemi normalden daha uzun sürebilir ve ek depolama alanı kullanacaktır.</string>
     <string name="settings_backup_dialog_disable">Yine de kapat</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Tavsiye edilmez)</string>
     <string name="about_contributor_headline">Katkıda Bulunanlar</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Enstitüsü</a>, <a href="https://calyxos.org">CalyxOS</a> ile kullanmak için\n<a href="https://nlnet.nl/project/Seedvault/">NGI0 PET Fonu, NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">NLnet tarafından NGI0 Güven Fonu</a></string>
     <string name="about_contributor_content"><a href="https://github.com/seedvault-app/seedvault/graphs/contributors">Katkıda bulunanların listesi</a> için lütfen GitHub\'a bakın.</string>

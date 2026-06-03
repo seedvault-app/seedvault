@@ -11,7 +11,6 @@
     <string name="notification_backup_scanning">Memindai file…</string>
     <string name="notification_backup_backup_files">Mencadangkan file…</string>
     <string name="notification_prune">Menghapus cadangan lama…</string>
-    <string name="notification_restore_channel_title">Pemulihan file</string>
     <string name="notification_restore_title">Memulihkan file…</string>
     <string name="notification_restore_complete_title">%1$d dari %2$d file dipulihkan</string>
     <string name="notification_restore_complete_dups">%1$d file adalah duplikat.</string>

@@ -9,7 +9,6 @@
     <string name="notification_backup_scanning">Escaneando archivos…</string>
     <string name="notification_backup_backup_files">Respaldando archivos…</string>
     <string name="notification_prune">Eliminando respaldos antiguos…</string>
-    <string name="notification_restore_channel_title">Restauración de archivos</string>
     <string name="notification_restore_title">Restaurando archivos…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d de %2$d archivos restaurados</string>

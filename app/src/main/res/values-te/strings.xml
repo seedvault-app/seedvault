@@ -39,7 +39,6 @@
     <string name="notification_failed_title">బ్యాకప్ విఫలమైంది</string>
     <string name="notification_success_text">%2$d యాప్‌లలో %1$d బ్యాకప్ చేయబడినవి (%3$s) . మరింత తెలుసుకోవడానికి ఇక్కడ నొక్కండి.</string>
     <string name="notification_success_title">బ్యాకప్ పూర్తయింది</string>
-    <string name="notification_backup_already_running">బ్యాకప్ ఇప్పటికే ప్రారంభించబడింది</string>
     <string name="notification_title">బ్యాకప్ జరుగుతుంది</string>
     <string name="notification_channel_title">బ్యాకప్ నోటిఫికేషన్</string>
     <string name="recovery_code_recreated">కొత్త రికవరీ కోడ్ విజయవంతంగా సృష్టించబడింది</string>
@@ -67,9 +66,6 @@
     <string name="storage_check_fragment_backup_error">బ్యాకప్ స్థానాన్ని యాక్సెస్ చేస్తున్నప్పుడు లోపం సంభవించింది.</string>
     <string name="storage_check_fragment_restore_title">బ్యాకప్‌ల కోసం వెతుకుతోంది …</string>
     <string name="storage_check_fragment_backup_title">బ్యాకప్ స్థానం ప్రారంభించబడుతుంది…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">ఖాతా అందుబాటులో లేదు. క్రొత్తదాన్ని సెటప్ చేయండి (లేదా పాస్‌కోడ్‌ను తీసివేయండి ).</string>
-    <string name="storage_fake_nextcloud_summary_installed">ఖాతాను సెటప్ చేయడానికి నొక్కండి</string>
-    <string name="storage_fake_nextcloud_summary">ఇన్‌స్టాల్ చేయడానికి నొక్కండి</string>
     <string name="storage_fake_drive_summary">USB ని పెట్టండి</string>
     <string name="storage_fake_drive_title">USB ఫ్లాష్ డ్రైవ్</string>
     <string name="storage_fragment_restore_title">మీ బ్యాకప్‌లను ఎక్కడ కనుగొనాలి\?</string>
@@ -84,7 +80,6 @@
     <string name="settings_backup_apk_dialog_title">యాప్ బ్యాకప్‌ను చేయకుండా నిలిపివేయాలా ?</string>
     <string name="settings_backup_apk_dialog_message">నిలిపివేయబడిన యాప్ బ్యాకప్ ఇప్పటికీ యాప్ డేటాను బ్యాకప్ చేస్తుంది. అయితే, ఇది స్వయంచాలకంగా పునరుద్ధరించబడదు. \n \n\"ఆటోమేటిక్ రీస్టోర్\" స్విచ్ ఆన్ చేస్తున్నప్పుడు మీరు మీ అన్ని యాప్‌లను మాన్యువల్‌గా ఇన్‌స్టాల్ చేయాలి.</string>
     <string name="settings_backup_apk_title">యాప్ బ్యాకప్</string>
-    <string name="settings_category_app_data_backup">యాప్ డేటా బ్యాకప్</string>
     <string name="settings_auto_restore_summary">యాప్‌ని మళ్లీ ఇన్‌స్టాల్ చేస్తున్నప్పుడు, బ్యాకప్ చేసిన సెట్టింగ్‌లు మరియు డేటాను పునరుద్ధరించండి</string>
     <string name="settings_backup_location">బ్యాకుప్ చేయు స్థానం</string>
     <string name="settings_backup">డేటా ను బ్యాకుప్ చెయ్యి</string>

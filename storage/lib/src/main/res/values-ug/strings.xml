@@ -10,7 +10,6 @@
     <string name="notification_backup_scanning">ھۆججەتنى تاراۋاتىدۇ…</string>
     <string name="notification_backup_backup_files">ھۆججەتنى زاپاسلاۋاتىدۇ…</string>
     <string name="notification_prune">كونا زاپاسلاشنى چىقىرىۋاتىدۇ…</string>
-    <string name="notification_restore_channel_title">ھۆججەت ئەسلىگە كەلتۈرىدۇ</string>
     <string name="notification_restore_title">ھۆججەتنى ئەسلىگە كەلتۈرۈۋاتىدۇ…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">%1$d/%2$d ھۆججەت ئەسلىگە كەلتۈرۈلدى</string>
