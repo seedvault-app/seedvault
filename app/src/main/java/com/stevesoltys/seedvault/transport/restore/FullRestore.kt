@@ -243,5 +243,4 @@ internal class FullRestore(
         closeQuietly(state?.inputStream)
         state = null
     }
-
 }

@@ -354,5 +354,4 @@ internal class ApkBackupTest : BackupTest() {
         every { sigInfo.hasMultipleSigners() } returns false
         every { sigInfo.signingCertificateHistory } returns sigs
     }
-
 }

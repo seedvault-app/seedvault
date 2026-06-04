@@ -76,5 +76,4 @@ class AppSelectionFragment : Fragment() {
     private suspend fun loadIcon(item: SelectableAppItem, callback: (Drawable) -> Unit) {
         viewModel.loadIcon(item, callback)
     }
-
 }

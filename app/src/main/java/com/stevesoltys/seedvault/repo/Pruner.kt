@@ -103,7 +103,8 @@ internal class Pruner(
         val tokenList = tokenSet.sortedDescending()
         val toKeep = mutableSetOf<Long>()
         toKeep += getToKeep(tokenList, 3) // 3 daily
-        toKeep += getToKeep(tokenList, 2) { temporal -> // keep one from this and last week
+        toKeep += getToKeep(tokenList, 2) { temporal ->
+            // keep one from this and last week
             temporal.with(ChronoField.DAY_OF_WEEK, 1)
         }
         // ensure we keep at least three snapshots
@@ -131,5 +132,4 @@ internal class Pruner(
         }
         return toKeep
     }
-
 }

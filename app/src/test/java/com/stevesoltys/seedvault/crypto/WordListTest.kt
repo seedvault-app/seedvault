@@ -2263,5 +2263,4 @@ class WordListTest {
             ).toEntropy().toHexString()
         )
     }
-
 }

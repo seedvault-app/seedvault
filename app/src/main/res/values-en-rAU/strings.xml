@@ -2,7 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="settings_backup_last_backup_never">Never</string>
     <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
-    <string name="settings_category_app_data_backup">App data backup</string>
     <string name="backup">Backup</string>
     <string name="restore_backup_button">Restore backup</string>
     <string name="settings_backup">Backup my apps</string>
@@ -28,7 +27,6 @@
     <string name="backup_section_system">System data</string>
     <string name="backup_sms">SMS text messages</string>
     <string name="restore_app_not_yet_backed_up">Was not yet backed up</string>
-    <string name="storage_fake_nextcloud_summary">Tap to install</string>
     <string name="backup_app_success">Backed up</string>
     <string name="backup_app_no_data">App reported no data for backup</string>
     <string name="restore_app_quota_exceeded">Backup quota was exceeded</string>
@@ -40,7 +38,6 @@
     <string name="settings_backup_apk_title">APK backups</string>
     <string name="restore_app_not_allowed">App didn\'t allow backup</string>
     <string name="settings_backup_status_title">Backup status</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Not installed</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="recovery_code_input_hint_5">Word 5</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
@@ -52,7 +49,6 @@
 \nWarning: The log file might contain personally identifiable information. Review before and delete after sharing!</string>
     <string name="storage_check_fragment_backup_error">An error occurred while accessing the backup location.</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV mount not available. Set one up.</string>
     <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
     <string name="recovery_code_input_hint_12">Word 12</string>
     <string name="recovery_code_input_hint_10">Word 10</string>
@@ -109,7 +105,6 @@
     <string name="recovery_code_input_hint_3">Word 3</string>
     <string name="backup_settings">Device settings</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
-    <string name="storage_fake_davx5_summary_installed">Tap to set up a WebDAV mount</string>
     <string name="recovery_code_error_invalid_word">Wrong word.</string>
     <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
     <string name="recovery_code_error_checksum_word">Your code is invalid. Please check all words as well as their position and try again!</string>
@@ -119,8 +114,6 @@
     <string name="storage_fragment_restore_title">Where to find your backups\?</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
-    <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
     <string name="storage_check_fragment_patience">This may take some time…</string>
     <string name="storage_check_fragment_permission_error">Unable to get the permission to write to the backup location.</string>
     <string name="storage_check_fragment_error_button">Back</string>
@@ -148,8 +141,6 @@
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_title">Backup running</string>
-    <string name="notification_backup_already_running">Backup already in progress</string>
-    <string name="notification_backup_disabled">Backup not enabled</string>
     <string name="notification_success_title">Backup finished</string>
     <string name="notification_success_text">%1$d of %2$d apps backed up (%3$s). Tap to learn more.</string>
     <string name="notification_error_channel_title">Error notification</string>

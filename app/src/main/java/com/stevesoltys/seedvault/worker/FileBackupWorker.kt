@@ -112,7 +112,13 @@ class FileBackupWorker(
     override suspend fun doWork(): Result {
         log.info { "Start worker $this ($id)" }
         return try {
-            val result = super.doWork()
+            val result = if (settingsManager.isFileBackupEnabled()) {
+                super.doWork()
+            } else {
+                // file backup is disabled, but we still want to kick off app backup,
+                // so just return success here
+                Result.success()
+            }
             // only allow retrying if rescheduling is allowed
             if (tags.contains(TAG_RESCHEDULE)) result
             else Result.success()

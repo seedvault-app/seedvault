@@ -150,7 +150,6 @@ internal class Restore(
         observer?.onRestoreComplete(totalDuration.inWholeMilliseconds)
         Log.e(TAG, "Restored $restoredFiles/$filesTotal files.")
     }
-
 }
 
 @Throws(IOException::class, GeneralSecurityException::class)

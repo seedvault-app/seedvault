@@ -284,5 +284,4 @@ class RecoveryCodeInputFragment : Fragment() {
             getWordLayout(i).editText!!.setText(String(words[i]))
         }
     }
-
 }

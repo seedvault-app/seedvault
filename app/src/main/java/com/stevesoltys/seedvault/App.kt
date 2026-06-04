@@ -196,14 +196,14 @@ open class App : Application() {
             workManager.cancelAllWork()
             // only schedule, if backup is enabled and not removable drive,
             // also we need to be the selected transport
-            if (backupRequester.isBackupEnabled && !backendManager.isOnRemovableDrive &&
+            if (backupRequester.isBackupEnabled &&
+                !backendManager.isOnRemovableDrive &&
                 backupManager.currentTransport == TRANSPORT_ID
             ) {
                 FileBackupWorker.schedule(applicationContext, settingsManager, CANCEL_AND_REENQUEUE)
             }
         }
     }
-
 }
 
 const val MAGIC_PACKAGE_MANAGER: String = PACKAGE_MANAGER_SENTINEL

@@ -126,7 +126,6 @@ internal class StorageOptionsFragment : Fragment(), StorageOptionClickedListener
             }
         }
     }
-
 }
 
 internal interface StorageOptionClickedListener {

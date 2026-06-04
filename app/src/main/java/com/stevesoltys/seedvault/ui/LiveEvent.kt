@@ -35,5 +35,4 @@ open class LiveEvent<T> : LiveData<ConsumableEvent<T>>() {
             if (content != null) handler.onEvent(content)
         }
     }
-
 }

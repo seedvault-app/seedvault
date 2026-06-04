@@ -175,5 +175,4 @@ internal class AppSelectionManager(
             backupMetadata = backup.backupMetadata.copy(packageMetadataMap = packages),
         )
     }
-
 }

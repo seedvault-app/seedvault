@@ -188,7 +188,6 @@ internal interface LargeTestBase : KoinComponent {
             DocumentPickerScreen {
                 if (exists) {
                     existingFolder(folderName).scrollTo().clickAndWaitForNewWindow()
-
                 } else {
                     createNewFolderButton.clickAndWaitForNewWindow()
                     textBox.setText(folderName)

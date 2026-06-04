@@ -58,5 +58,4 @@ class RecoveryCodeActivity : BackupActivity() {
     private fun isRestore(): Boolean {
         return intent?.getBooleanExtra(INTENT_EXTRA_IS_RESTORE, false) ?: false
     }
-
 }

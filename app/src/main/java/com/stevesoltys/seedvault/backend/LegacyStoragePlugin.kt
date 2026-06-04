@@ -56,5 +56,4 @@ interface LegacyStoragePlugin {
      */
     @Throws(IOException::class)
     suspend fun getApkInputStream(token: Long, packageName: String, suffix: String): InputStream
-
 }

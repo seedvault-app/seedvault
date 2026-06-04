@@ -77,5 +77,4 @@ internal class SnapshotAdapter(private val listener: SnapshotClickListener) :
             timeView.text = getRelativeTimeSpanString(item.time, now, 0L, FORMAT_ABBREV_ALL)
         }
     }
-
 }

@@ -254,5 +254,4 @@ internal class RestoreV1IntegrationTest : BackupTest() {
         // assert that restored data matches original app data
         assertArrayEquals(appData2, outputStream.toByteArray())
     }
-
 }

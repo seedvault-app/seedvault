@@ -85,5 +85,4 @@ public class DocumentScanner(context: Context) {
         }
         return documentFiles
     }
-
 }

@@ -74,5 +74,4 @@ public abstract class RestoreService : Service() {
         Log.d(TAG, "onDestroy")
         super.onDestroy()
     }
-
 }

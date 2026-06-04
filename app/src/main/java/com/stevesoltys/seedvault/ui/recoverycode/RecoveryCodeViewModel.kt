@@ -138,7 +138,6 @@ internal class RecoveryCodeViewModel(
             }
         }
     }
-
 }
 
 internal fun List<CharSequence>.toMnemonicChars(): CharArray {

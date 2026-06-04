@@ -245,5 +245,4 @@ internal class ApkBackupRestoreTest : TransportTest() {
         assertReadEquals(apkBytes, FileInputStream(apkFile))
         assertReadEquals(splitBytes, FileInputStream(splitFile))
     }
-
 }

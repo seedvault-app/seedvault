@@ -117,5 +117,4 @@ class ContactUtils(private val resolver: ContentResolver) {
             null
         )!!.count
     }
-
 }

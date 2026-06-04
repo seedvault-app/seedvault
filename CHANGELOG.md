@@ -1,3 +1,13 @@
+## 15-5.9 - 2026-06-04
+* New app icon & notification icons
+* Import translations from Weblate
+* Add ScrollView to restore screens for small screen support
+* Allow app install when restoring from ROMs that mess with string constants
+* Remove restriction on SAF backends so that the user can use their preferred app instead of a hardcoded allowlist
+* Don't promote Nextcloud or DavX5 when not installed or set up because the built-in WebDAV support is recommended now
+* Only perform a file backup when it is actually enabled
+* Don't delete anything when SAF renaming fails so it may be recovered by the user
+
 ## 15-5.8 - 2026-01-13
 * Fix issue with free space reporting causing insufficient backup space errors
 

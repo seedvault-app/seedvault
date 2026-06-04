@@ -31,14 +31,10 @@
     <string name="settings_expert_logcat_summary">Dezvoltatorii pot diagnostica erori cu aceste jurnale.
 \n
 \nAvertisment: fișierul jurnal poate conține informații de identificare personală. Examinează înainte și șterge după distribuire!</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nu se recomandă)</string>
-    <string name="storage_fake_nextcloud_summary">Atinge pentru a instala</string>
-    <string name="storage_fake_davx5_summary_installed">Atinge pentru a configura o montare WebDAV</string>
     <string name="storage_check_fragment_backup_title">Se inițializează locația copiilor de rezervă…</string>
     <string name="storage_check_fragment_patience">Acest lucru poate dura ceva timp…</string>
     <string name="storage_check_fragment_permission_error">Nu se poate obține permisiunea de a scrie în locația copiilor de rezervă.</string>
     <string name="recovery_code_title">Cod de recuperare</string>
-    <string name="settings_category_app_data_backup">Copiere de rezervă a datelor aplicațiilor</string>
     <string name="about_contributing_organizations_title">Organizații care contribuie</string>
     <string name="restore_title">Se restaurează din copia de rezervă</string>
     <string name="restore_choose_restore_set">Alege o copie de rezervă pentru restaurare</string>
@@ -50,7 +46,6 @@
     <string name="restore_set_error">A apărut o eroare la încărcarea copiilor de rezervă:</string>
     <string name="storage_internal_warning_message">Ai ales stocarea internă pentru crearea copiilor de rezervă. Aceasta nu va fi disponibilă atunci când telefonul este pierdut sau spart.</string>
     <string name="settings_backup_recovery_code">Cod de recuperare</string>
-    <string name="storage_fake_davx5_summary_unavailable">Suportul WebDAV nu este disponibil. Configurează unul.</string>
     <string name="storage_check_fragment_error_button">Înapoi</string>
     <string name="recovery_code_write_it_down">Notează-le pe hârtie acum!</string>
     <string name="notification_success_text">Pentru %1$d din %2$d aplicații s-a creat copie de rezervă (%3$s). Atinge pentru a afla mai multe.</string>
@@ -91,7 +86,6 @@
     <string name="recovery_code_verification_try_again">Reîncearcă</string>
     <string name="about_contributor_headline">Contribuitori</string>
     <string name="about_contributing_organizations_content"><a href="https://www.calyxinstitute.org">Calyx Institute</a> pentru utilizare în <a href="https://calyxos.org">CalyxOS</a> \n<a href="https://nlnet.nl/project/Seedvault/">Fondul NGI0 PET de NLnet</a>\n<a href="https://nlnet.nl/project/SeedVault-Integrity/">Fondul NGI0 Entrust al NLnet</a></string>
-    <string name="notification_backup_disabled">Crearea copiilor de rezervă nu este activată</string>
     <string name="notification_error_action">Remediază</string>
     <string name="notification_restore_error_channel_title">Eroare de restaurare automată a unității flash</string>
     <string name="notification_restore_error_title">Nu s-au putut restaura datele pentru %1$s</string>
@@ -124,7 +118,7 @@
     <string name="restore_app_status_warning">Avertisment de restabilire</string>
     <string name="error_no_store">Eroare: nu este instalat niciun magazin de aplicații</string>
     <string name="storage_internal_warning_choose_other">Alege alta</string>
-    <string name="about_contributor_content">Consultă GitHub pentru o <a href="https://github.com/seedvault-app/seedvault/graphs/contributors"> listă a colaboratorilor</a>.</string>
+    <string name="about_contributor_content">Consultă GitHub pentru o <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">listă a colaboratorilor</a>.</string>
     <string name="settings_backup_dialog_disable">Oprește oricum</string>
     <string name="settings_auto_restore_title">Restaurare automată</string>
     <string name="settings_auto_restore_summary_usb">Notă: %1$s trebuie conectat la rețea pentru ca acest lucru să funcționeze.</string>
@@ -142,8 +136,6 @@
     <string name="storage_fragment_restore_title">Unde să găsesc copiile de rezervă?</string>
     <string name="storage_user_selected_location_title">Locație aleasă de utilizator</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> liber</string>
-    <string name="storage_fake_nextcloud_summary_installed">Atinge pentru a configura contul</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Nu este instalat</string>
     <string name="recovery_code_12_word_intro">Ai nevoie de codul de recuperare din 12 cuvinte pentru a restabili datele din copia de rezervă.</string>
     <string name="recovery_code_confirm_button">Confirmă codul</string>
     <string name="recovery_code_confirm_intro">Introdu codul de recuperare din 12 cuvinte pentru a te asigura că va funcționa atunci când ai nevoie de el.</string>
@@ -172,7 +164,6 @@
     <string name="restore_app_not_installed">Aplicația nu este instalată</string>
     <string name="about_version">Versiune: %s</string>
     <string name="restore_installing_tap_to_install">Atinge pentru a instala</string>
-    <string name="notification_backup_already_running">Backup deja în desfășurare</string>
     <string name="backup_section_user">Aplicații</string>
     <string name="backup_sms">Mesaje text SMS</string>
     <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
@@ -215,7 +206,6 @@
     <string name="backup_section_system">Date de sistem</string>
     <string name="backup_app_was_stopped">Nu s-a creat copia de rezervă deoarece aplicația nu a fost folosită de mult timp</string>
     <string name="backup_app_no_data">Aplicația a raportat că nu există date pentru a face copii de rezervă</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Contul nu este disponibil. Configurează unul (sau dezactivează parola).</string>
     <string name="notification_space_error_title">Spațiu insuficient</string>
     <string name="notification_space_error_text">Locația copiilor de rezervă rămâne fără spațiu. Eliberează spațiu, astfel încât să poată rula copiile de rezervă.</string>
     <string name="backup_system_apps">Aplicații de sistem</string>

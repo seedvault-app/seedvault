@@ -24,5 +24,4 @@ object Padding {
         val bitMask = (2.toFloat().pow(lastBits) - 1).toInt()
         return (size + bitMask) and bitMask.inv()
     }
-
 }

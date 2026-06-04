@@ -94,5 +94,4 @@ internal class RetentionManager(private val context: Context) {
         }
         return toKeep
     }
-
 }

@@ -17,7 +17,6 @@ import android.os.Looper
 import android.provider.DocumentsContract.PROVIDER_INTERFACE
 import android.provider.DocumentsContract.buildRootsUri
 import android.util.Log
-import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.backend.saf.SafStorageOptions
 import com.stevesoltys.seedvault.backend.saf.StorageRootResolver
 import com.stevesoltys.seedvault.ui.storage.StorageOption.SafOption
@@ -29,24 +28,17 @@ const val ROOT_ID_DEVICE = "primary"
 const val ROOT_ID_HOME = "home"
 
 const val AUTHORITY_DOWNLOADS = "com.android.providers.downloads.documents"
-const val AUTHORITY_NEXTCLOUD = "org.nextcloud.documents"
-const val AUTHORITY_DAVX5 = "at.bitfire.davdroid.webdav"
 const val AUTHORITY_ROUND_SYNC = "de.felixnuesse.extract.vcp"
 
 internal interface RemovableStorageListener {
     fun onStorageChanged()
 }
 
-internal class StorageOptionFetcher(private val context: Context, private val isRestore: Boolean) {
+internal class StorageOptionFetcher(private val context: Context) {
 
     private val packageManager = context.packageManager
     private val contentResolver = context.contentResolver
-    private val whitelistedAuthorities = if (isRestore) {
-        context.resources.getStringArray(R.array.storage_authority_restore_allow_list)
-    } else {
-        context.resources.getStringArray(R.array.storage_authority_backup_allow_list)
-    }
-    private val safStorageOptions = SafStorageOptions(context, isRestore, whitelistedAuthorities)
+    private val safStorageOptions = SafStorageOptions(context)
 
     private var listener: RemovableStorageListener? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -111,16 +103,6 @@ internal class StorageOptionFetcher(private val context: Context, private val is
         } else if (authority == AUTHORITY_DOWNLOADS) {
             Log.w(TAG, "Not supporting $AUTHORITY_DOWNLOADS")
             false
-        } else if (!isAuthoritySupported(authority)) {
-            Log.w(TAG, "Authority $authority is not white-listed, ignoring...")
-            false
         } else true
     }
-
-    private fun isAuthoritySupported(authority: String): Boolean {
-        // just restrict where to store backups,
-        // restoring can be more free for forward compatibility
-        return isRestore || whitelistedAuthorities.contains(authority)
-    }
-
 }

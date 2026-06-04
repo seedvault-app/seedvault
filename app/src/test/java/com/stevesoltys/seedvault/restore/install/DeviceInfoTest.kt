@@ -89,5 +89,4 @@ internal class DeviceInfoTest {
         assertFalse(deviceInfo.isSupportedLanguage(getRandomString()))
         assertFalse(deviceInfo.isSupportedLanguage(getRandomString()))
     }
-
 }

@@ -34,5 +34,4 @@ public open class NotificationCheckObserver internal constructor(
     override fun onCheckFoundErrors(size: Long, speed: Long) {
         n.onCheckFinishedWithError(reportActivityClass, size, speed)
     }
-
 }

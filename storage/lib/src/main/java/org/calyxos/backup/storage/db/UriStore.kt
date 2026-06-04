@@ -30,5 +30,4 @@ internal interface UriStore {
 
     @Query("SELECT * FROM StoredUri")
     fun getStoredUris(): List<StoredUri>
-
 }

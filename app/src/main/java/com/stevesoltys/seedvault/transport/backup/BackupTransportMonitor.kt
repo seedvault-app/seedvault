@@ -22,7 +22,8 @@ internal class BackupTransportMonitor(
 
     override fun onEvent(id: Int, category: Int, packageName: String?, bundle: Bundle) {
         super.onEvent(id, category, packageName, bundle)
-        if (packageName != null && id == LOG_EVENT_ID_NO_DATA_TO_SEND &&
+        if (packageName != null &&
+            id == LOG_EVENT_ID_NO_DATA_TO_SEND &&
             category == LOG_EVENT_CATEGORY_BACKUP_MANAGER_POLICY
         ) {
             sendNoDataChanged(packageName)

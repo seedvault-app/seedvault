@@ -157,5 +157,4 @@ class KVDbImpl(context: Context, fileName: String) :
     override fun delete(key: String) {
         writableDatabase.delete(KVEntry.TABLE_NAME, "${KVEntry.COLUMN_NAME_KEY} = ?", arrayOf(key))
     }
-
 }

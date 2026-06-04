@@ -30,6 +30,7 @@ class CryptoImplTest {
     private val headerReader = HeaderReaderImpl()
 
     private val crypto = CryptoImpl(context, keyManager, cipherFactory, headerReader, "androidId")
+
     @Test
     fun `decrypting multiple segments on empty stream throws`() {
         val inputStream = ByteArrayInputStream(ByteArray(0))
@@ -97,5 +98,4 @@ class CryptoImplTest {
             crypto.getNameForApk(salt, packageName, getRandomString(5))
         )
     }
-
 }

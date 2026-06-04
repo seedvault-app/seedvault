@@ -82,7 +82,6 @@ internal class ZipChunker(
         zipOutputStream = NameZipOutputStream(outputStream)
         counter = 1
     }
-
 }
 
 /**

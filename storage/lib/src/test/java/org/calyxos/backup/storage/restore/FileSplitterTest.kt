@@ -80,5 +80,4 @@ internal class FileSplitterTest {
         assertEquals("3a", restorableChunk.files[2].name)
         assertEquals("4a", restorableChunk.files[3].name)
     }
-
 }

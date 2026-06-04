@@ -853,5 +853,4 @@ internal class ApkRestoreV1Test : TransportTest() {
         assertEquals(1, item.list.size)
         return item
     }
-
 }

@@ -66,5 +66,4 @@ class RecoveryCodeOutputFragment : Fragment() {
             layoutManager.spanCount = 2
         }
     }
-
 }

@@ -87,9 +87,11 @@ internal class ApkRestore(
                 state = if (isAllowedToInstallApks) QUEUED else FAILED,
                 metadata = metadata,
             )
-        }.sortedBy { apkInstallResult -> // sort list alphabetically ignoring case
+        }.sortedBy { apkInstallResult ->
+            // sort list alphabetically ignoring case
             apkInstallResult.name?.lowercase(Locale.getDefault())
-        }.associateBy { apkInstallResult -> // use a map, so we can quickly update individual apps
+        }.associateBy { apkInstallResult ->
+            // use a map, so we can quickly update individual apps
             apkInstallResult.packageName
         }
         if (!isAllowedToInstallApks) { // not allowed to install, so return list with all failed
@@ -191,7 +193,8 @@ internal class ApkRestore(
         )
 
         // parse APK (GET_SIGNATURES is needed even though deprecated)
-        @Suppress("DEPRECATION") val flags = GET_SIGNING_CERTIFICATES or GET_SIGNATURES
+        @Suppress("DEPRECATION")
+        val flags = GET_SIGNING_CERTIFICATES or GET_SIGNATURES
         val packageInfo = pm.getPackageArchiveInfo(cachedApk.absolutePath, flags)
             ?: throw IOException("getPackageArchiveInfo returned null")
 
@@ -275,7 +278,8 @@ internal class ApkRestore(
         val cachedApks = ArrayList<File>(splits.size + 1).apply {
             add(cachedApk) // don't forget the base APK
         }
-        splits.forEach { apkSplit -> // cache and check all splits
+        // cache and check all splits
+        splits.forEach { apkSplit ->
             val suffix = if (backup.version == 0.toByte()) "_${apkSplit.sha256}" else apkSplit.name
             val (file, sha256) = cacheApk(backup, packageName, apkSplit.chunkIds, suffix)
             // check APK split's SHA-256 hash for backup versions before 2

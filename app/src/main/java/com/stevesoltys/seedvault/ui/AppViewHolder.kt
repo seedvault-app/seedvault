@@ -85,5 +85,4 @@ internal abstract class AppViewHolder(protected val v: View) : RecyclerView.View
             appStatus.contentDescription = contentDescription
         }
     }
-
 }

@@ -5,7 +5,6 @@
     <string name="notification_error_channel_title">သတိပေးချက်အမှား</string>
     <string name="notification_failed_title">မအောင်မြင်ပါ</string>
     <string name="notification_success_title">Backup ပြီးဆုံးသွားပါပြီ</string>
-    <string name="notification_backup_already_running">Back upလုပ်နေပါသည်</string>
     <string name="notification_title">Back up ပြန်ဆောင်ရွက်နေပါသည်။</string>
     <string name="notification_channel_title">အရန်ကူးအကြောင်းကြားစာ</string>
     <string name="recovery_code_error_checksum_word">သင်ကုဒ်မှားယွင်းနေပါသည်။ပြန်လည်စစ်ဆေးပြီပြန်ရိုက်ထည့်ပါ</string>
@@ -34,9 +33,6 @@
     <string name="storage_check_fragment_backup_error">အရန်ကူးထားသောနေရာကိုဝင်ရောက်စဉ်အမှားတစ်ခုဖြစ်ပွားခဲ့သည် ။</string>
     <string name="storage_check_fragment_restore_title">အရန်သိုလှောင်ရန်ရှာဖွေခြင်း…</string>
     <string name="storage_check_fragment_backup_title">အရန်သိုလှောင်သည့်တည်နေရာတပ်ဆင်ခြင်း…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">အကောင့်မရနိုင်ပါ အသစ်ထပ်မှံပြုလုပ်ပါ .</string>
-    <string name="storage_fake_nextcloud_summary_installed">အကောင့်ပြုလုပ်ရန်နှိပ်ပါ ။</string>
-    <string name="storage_fake_nextcloud_summary">ထည့်သွင်းရန်နှိပ်ပါ</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> အခမဲ့.</string>
     <string name="storage_fake_drive_summary">ထပ်မံဖြေသွင်းခြင်း</string>
     <string name="storage_fake_drive_title">အချက်အလက်များသိုလှောင်သည့်ကဒ်</string>
@@ -52,7 +48,6 @@
     <string name="settings_backup_apk_dialog_title">အက်ပလီကေးရှင်းအရန်ကူးခြင်းကိုအမှန်ပိတ်ထားသလား ။</string>
     <string name="settings_backup_apk_summary">အက်ပ်များကိုသူတို့ကိုယ်တိုင်အရန်ကူးပါ။ ဒီလိုမှမဟုတ်ရင် app data များသာအရန်သင့်သိမ်းဆည်းလိမ့်မယ် ။</string>
     <string name="settings_backup_apk_title">အက်ပ်ဒေတာအရံကူးခြင်း ။</string>
-    <string name="settings_category_app_data_backup">အက်ပ်ဒေတာအရံကူးခြင်း</string>
     <string name="settings_auto_restore_summary_usb">သင်၏ %1$s ကိုဤအလုပ်မလုပ်ရန်ချိတ်ဆက်ရန်လိုအပ်သည်.</string>
     <string name="settings_auto_restore_summary">အက်ပ်တစ်ခုကိုပြန်လည်တပ်ဆင်သောအခါအရန်ကူးထားသည့်ချိန်ညှိချက်များနှင့်အချက်အလက်များကိုပြန်ယူပါ.</string>
     <string name="settings_auto_restore_title">အလိုအလျှောက် ပြန်လည်သိမ်းဆည်းခြင်း။</string>

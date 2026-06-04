@@ -117,5 +117,4 @@ public abstract class BackupContentFragment : Fragment(), ContentClickListener {
                 .show()
         }
     }
-
 }

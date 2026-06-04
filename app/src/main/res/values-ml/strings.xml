@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_backup_apk_title">ആപ്പ് ഡാറ്റ ബാക്കപ്പ്</string>
-    <string name="settings_category_app_data_backup">ആപ്പ് ഡാറ്റ ബാക്കപ്പ്</string>
     <string name="settings_auto_restore_summary_usb">കുറിപ്പ്: ഇത് പ്രവർത്തിക്കുന്നതിന് നിങ്ങളുടെ %1$s പ്ലഗ് ഇൻ ചെയ്യേണ്ടതുണ്ട്.</string>
     <string name="settings_auto_restore_summary">ഒരു ആപ്പ് വീണ്ടും ഇൻസ്റ്റാൾ ചെയ്യുമ്പോൾ, ബാക്കപ്പ് ചെയ്ത ക്രമീകരണങ്ങളും ഡാറ്റയും പുന സ്ഥാപിക്കുക.</string>
     <string name="settings_auto_restore_title">യാന്ത്രിക പുന .സ്ഥാപനം</string>

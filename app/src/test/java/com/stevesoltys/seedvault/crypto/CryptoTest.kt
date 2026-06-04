@@ -206,5 +206,4 @@ class CryptoTest {
             crypto.decryptSegment(inputStream)
         }
     }
-
 }

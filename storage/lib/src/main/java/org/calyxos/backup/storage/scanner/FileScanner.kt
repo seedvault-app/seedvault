@@ -91,5 +91,4 @@ internal class FileScanner(
         val documentUri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
         return documentScanner.scanDocumentUri(documentUri)
     }
-
 }

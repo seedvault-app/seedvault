@@ -8,7 +8,6 @@
     <string name="backup">نسخ احتياطي</string>
     <string name="settings_backup_apk_summary">ينسخ التطبيقات نفسها احتياطيًا. خلاف ذلك، سيتم نسخ بيانات التطبيق فقط احتياطيًا.</string>
     <string name="settings_backup_apk_title">نُسخ احتياطية لملفات APK</string>
-    <string name="settings_category_app_data_backup">النسخ الإحتياطي لبيانات التطبيق</string>
     <string name="settings_auto_restore_summary">عند إعادة تثبيت التطبيق، ستتم استعادة إعدادات وبيانات النسخ الاحتياطي.</string>
     <string name="settings_info">كل النُسخ الاحتياطية مُعمّاة على هاتفك. للإستعادة من النسخ الاحتياطي سوف تحتاج إلى رمز الاسترداد المكون من 12 كلمة الخاص بك.</string>
     <string name="settings_backup_location_internal">التخزين الداخلي</string>
@@ -82,12 +81,6 @@
     <string name="storage_fake_drive_summary">يحتاج أن يكون موصّل</string>
     <string name="storage_available_bytes"><xliff:g example="1 ج.بايت" id="size">%1$s</xliff:g> خالية</string>
     <string name="storage_round_sync_summary_prefix">RoundSync عن بُعد:</string>
-    <string name="storage_fake_nextcloud_summary">انقر للتثبيت</string>
-    <string name="storage_fake_nextcloud_summary_installed">انقر لإعداد الحساب</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">الحساب غير متاح. أعدَّ (أو عطّل رمز المرور).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">غير مثبت</string>
-    <string name="storage_fake_davx5_summary_installed">انقر لإعداد وصل WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">وصل WebDAV غير متاح. أعدَّه.</string>
     <string name="storage_check_fragment_backup_title">يهيئ موقع النسخ الاحتياطي…</string>
     <string name="storage_check_fragment_patience">قد يستغرق هذا بعض الوقت…</string>
     <string name="storage_check_fragment_restore_title">يبحث عن نُسخ احتياطية…</string>
@@ -143,12 +136,9 @@
     <string name="notification_finalizing_text">جارِ إنهاء النسخ الاحتياطي…</string>
     <string name="notification_apk_text">جارِ عمل نسخة احتياطية APK لـ %s</string>
     <string name="notification_apk_not_backed_up">جارِ حفظ قائمة التطبيقات التي لا يمكننا نسخها احتياطيًا.</string>
-    <string name="notification_backup_already_running">النسخ الاحتياطي قيد التقدم بالفعل</string>
-    <string name="notification_backup_disabled">النسخ الاحتياطي غير مُفعّل</string>
     <string name="notification_success_title">اكتمل النسخ الاحتياطي</string>
     <string name="notification_success_text">نُسخ %1$d من %2$d تطبيق احتياطيًا (%3$s). انقر لمعرفة المزيد.</string>
     <string name="notification_failed_title">فشل النسخ الاحتياطي</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (غير مستحسن)</string>
     <string name="notification_failed_text">حدث خطأ أثناء تشغيل النسخة الاحتياطية.</string>
     <string name="notification_failed_metered_text">أحبط النسخ الاحتياطي. هل تستخدم بيانات الجوال؟ اتصل بشبكة Wi-Fi للمتابعة.</string>
     <string name="notification_error_channel_title">إشعار بالخطأ</string>

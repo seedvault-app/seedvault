@@ -364,5 +364,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             .show()
     }
-
 }

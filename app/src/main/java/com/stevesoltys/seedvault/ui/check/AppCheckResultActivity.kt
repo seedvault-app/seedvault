@@ -131,5 +131,4 @@ class AppCheckResultActivity : BackupActivity() {
         requireViewById<TextView>(R.id.disclaimerView).text =
             "${result.e.localizedMessage}\n\n${result.e}"
     }
-
 }

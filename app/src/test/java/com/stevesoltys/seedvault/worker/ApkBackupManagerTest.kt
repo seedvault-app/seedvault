@@ -307,5 +307,4 @@ internal class ApkBackupManagerTest : TransportTest() {
         every { nm.onAppsNotBackedUp() } just Runs
         every { packageService.notBackedUpPackages } returns emptyList()
     }
-
 }

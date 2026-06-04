@@ -54,7 +54,8 @@ internal class BackupStorageViewModel(
             withContext(Dispatchers.IO) {
                 safHandler.setPlugin(safProperties)
             }
-            withContext(Dispatchers.Main) { // UiThread
+            // UiThread
+            withContext(Dispatchers.Main) {
                 if (safProperties.isUsb) {
                     // disable storage backup if new storage is on USB
                     Log.i(TAG, "Cancel backup workers, because we are on USB.")
@@ -132,5 +133,4 @@ internal class BackupStorageViewModel(
         val errorMsg = app.getString(R.string.storage_check_fragment_backup_error)
         mLocationChecked.postEvent(LocationResult(errorMsg))
     }
-
 }

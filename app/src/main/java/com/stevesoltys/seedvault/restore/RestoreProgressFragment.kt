@@ -106,5 +106,4 @@ class RestoreProgressFragment : Fragment() {
     private suspend fun loadIcon(item: AppRestoreResult, callback: (Drawable) -> Unit) {
         viewModel.loadIcon(item.packageName, callback)
     }
-
 }

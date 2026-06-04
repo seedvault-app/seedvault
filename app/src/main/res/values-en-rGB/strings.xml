@@ -25,14 +25,12 @@
     <string name="settings_auto_restore_title">Automatic restore</string>
     <string name="settings_auto_restore_summary">When reinstalling an app, restore backed up settings and data.</string>
     <string name="settings_auto_restore_summary_usb">Note: Your %1$s needs to be plugged in for this to work.</string>
-    <string name="settings_category_app_data_backup">App data backup</string>
     <string name="settings_backup_apk_title">APK backups</string>
     <string name="settings_backup_apk_summary">Backs up the apps themselves. Otherwise, only app data will get backed up.</string>
     <string name="settings_backup_apk_dialog_title">Really disable APK backups?</string>
     <string name="settings_backup_apk_dialog_cancel">Cancel</string>
     <string name="settings_backup_exclude_apps">Exclude apps</string>
     <string name="about_summary">A backup application using Android\'s internal backup API. It is Free Software, released under Apache 2 licence.\n\nLike all software, Seedvault may contain bugs or vulnerabilities.</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Not recommended)</string>
     <string name="backup_settings">Device settings</string>
     <string name="storage_internal_warning_use_anyway">Use anyway</string>
     <string name="storage_internal_warning_choose_other">Choose other</string>
@@ -87,13 +85,9 @@
     <string name="storage_webdav_option_summary">Integrated direct WebDAV access</string>
     <string name="settings_backup_status_next_backup">Next backup: %1$s</string>
     <string name="storage_fake_drive_title">USB flash drive</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV mount not available. Set one up.</string>
     <string name="settings_scheduling_charging_title">Back up only when charging</string>
     <string name="settings_expert_logcat_title">Save app log</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> free</string>
-    <string name="storage_fake_nextcloud_summary">Tap to install</string>
-    <string name="storage_fake_nextcloud_summary_installed">Tap to set up account</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Not installed</string>
     <string name="recovery_code_verification_ok_title">Recovery code verified</string>
     <string name="recovery_code_input_hint_4">Word 4</string>
     <string name="recovery_code_input_hint_3">Word 3</string>
@@ -169,7 +163,6 @@
     <string name="recovery_code_verification_ok_message">Your code is correct and will work for restoring your backup.</string>
     <string name="recovery_code_verification_new_dialog_title">Wait one second…</string>
     <string name="recovery_code_recreated">New recovery code has been created successfully. Exiting…</string>
-    <string name="notification_backup_disabled">Backup not enabled</string>
     <string name="notification_success_title">Backup finished</string>
     <string name="notification_failed_title">Backup failed</string>
     <string name="notification_error_channel_title">Error notification</string>
@@ -190,8 +183,6 @@
     <string name="restore_app_status_installed">Re-installed</string>
     <string name="notification_success_text">%1$d of %2$d apps backed up (%3$s). Tap to learn more.</string>
     <string name="storage_fake_drive_summary">Needs to be plugged in</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Account not available. Set one up (or disable passcode).</string>
-    <string name="storage_fake_davx5_summary_installed">Tap to set up a WebDAV mount</string>
     <string name="storage_check_fragment_patience">This may take some time…</string>
     <string name="storage_check_fragment_restore_title">Looking for backups…</string>
     <string name="recovery_code_confirm_button">Confirm code</string>
@@ -210,7 +201,6 @@
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
     <string name="notification_channel_title">Backup notification</string>
     <string name="notification_success_channel_title">Success notification</string>
-    <string name="notification_backup_already_running">Backup already in progress</string>
     <string name="notification_error_title">Backup error</string>
     <string name="notification_error_action">Fix</string>
     <string name="notification_restore_error_title">Could not restore data for %1$s</string>

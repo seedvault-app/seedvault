@@ -81,7 +81,8 @@ internal class ChunkWriter(
     @Throws(IOException::class, GeneralSecurityException::class)
     private suspend fun writeChunkData(chunkId: String, writer: (OutputStream) -> Unit): Long {
         val handle = FileBackupFileType.Blob(androidId, chunkId)
-        semaphore.withPermit { // only allow one writer using the buffer at a time
+        // only allow one writer using the buffer at a time
+        semaphore.withPermit {
             buffer.clear()
             buffer.writeByte(VERSION.toInt())
             val ad = streamCrypto.getAssociatedDataForChunk(chunkId)
@@ -165,5 +166,4 @@ internal class ChunkWriter(
         // needed to make the ZIP and thus the MAC deterministic
         lastModifiedTime = FileTime.fromMillis(0)
     }
-
 }

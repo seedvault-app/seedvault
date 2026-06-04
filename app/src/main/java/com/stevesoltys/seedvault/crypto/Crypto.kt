@@ -323,5 +323,4 @@ internal class CryptoImpl(
         // keys match if encrypted result is the same
         return encrypted.contentEquals(inputEncrypted)
     }
-
 }

@@ -88,7 +88,6 @@ internal class HeaderReaderImpl : HeaderReader {
 
         return SegmentHeader(segmentLength, nonce)
     }
-
 }
 
 class UnsupportedVersionException(val version: Byte) : IOException()

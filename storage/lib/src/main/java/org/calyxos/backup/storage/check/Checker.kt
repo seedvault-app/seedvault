@@ -160,8 +160,10 @@ internal class Checker(
         val passedTime = max(System.currentTimeMillis() - startTime, 1000) // no div by zero
         val bandwidth = size.get() / (passedTime.toDouble() / 1000).roundToLong()
         val storedSnapshotSize = snapshotInfo.storedSnapshotSize
-        return if (missingChunkIds.isEmpty() && badChunks.isEmpty() &&
-            snapshotInfo.snapshots.size == storedSnapshotSize && storedSnapshotSize > 0
+        return if (missingChunkIds.isEmpty() &&
+            badChunks.isEmpty() &&
+            snapshotInfo.snapshots.size == storedSnapshotSize &&
+            storedSnapshotSize > 0
         ) {
             checkObserver?.onCheckSuccess(s, bandwidth)
             CheckResult.Success(snapshotInfo.snapshots, percent, s)

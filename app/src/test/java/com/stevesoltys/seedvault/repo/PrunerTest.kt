@@ -188,19 +188,24 @@ internal class PrunerTest : TransportTest() {
     @Test
     fun `five snapshots with two from last week, removes only one oldest`() = runBlocking {
         val snapshotMap = mapOf(
-            snapshotHandle1 to snapshot.copy { // this week
+            snapshotHandle1 to snapshot.copy {
+                // this week
                 token = LocalDateTime.of(2024, 9, 18, 23, 0).toMillis()
             },
-            snapshotHandle2 to snapshot.copy { // this week, different day
+            snapshotHandle2 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 17, 20, 0).toMillis()
             },
-            snapshotHandle3 to snapshot.copy { // this week, different day
+            snapshotHandle3 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 16, 12, 0).toMillis()
             },
-            snapshotHandle4 to snapshot.copy { // last week
+            snapshotHandle4 to snapshot.copy {
+                // last week
                 token = LocalDateTime.of(2024, 9, 13, 23, 0).toMillis()
             },
-            snapshotHandle5 to snapshot.copy { // last week, different day
+            snapshotHandle5 to snapshot.copy {
+                // last week, different day
                 token = LocalDateTime.of(2024, 9, 12, 23, 0).toMillis()
             },
         )
@@ -219,19 +224,24 @@ internal class PrunerTest : TransportTest() {
     @Test
     fun `five snapshots with one from last week, removes oldest from this week`() = runBlocking {
         val snapshotMap = mapOf(
-            snapshotHandle1 to snapshot.copy { // this week
+            snapshotHandle1 to snapshot.copy {
+                // this week
                 token = LocalDateTime.of(2024, 9, 19, 23, 0).toMillis()
             },
-            snapshotHandle2 to snapshot.copy { // this week, different day
+            snapshotHandle2 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 18, 20, 0).toMillis()
             },
-            snapshotHandle3 to snapshot.copy { // this week, different day
+            snapshotHandle3 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 17, 12, 0).toMillis()
             },
-            snapshotHandle4 to snapshot.copy { // this week, different day
+            snapshotHandle4 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 16, 23, 0).toMillis()
             },
-            snapshotHandle5 to snapshot.copy { // last week
+            snapshotHandle5 to snapshot.copy {
+                // last week
                 token = LocalDateTime.of(2024, 9, 12, 23, 0).toMillis()
             },
         )
@@ -250,19 +260,24 @@ internal class PrunerTest : TransportTest() {
     @Test
     fun `five snapshots with two on the same day, removes oldest from same day`() = runBlocking {
         val snapshotMap = mapOf(
-            snapshotHandle1 to snapshot.copy { // this week
+            snapshotHandle1 to snapshot.copy {
+                // this week
                 token = LocalDateTime.of(2024, 9, 19, 23, 0).toMillis()
             },
-            snapshotHandle2 to snapshot.copy { // this week, same day
+            snapshotHandle2 to snapshot.copy {
+                // this week, same day
                 token = LocalDateTime.of(2024, 9, 19, 20, 0).toMillis()
             },
-            snapshotHandle3 to snapshot.copy { // this week, different day
+            snapshotHandle3 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 17, 12, 0).toMillis()
             },
-            snapshotHandle4 to snapshot.copy { // this week, different day
+            snapshotHandle4 to snapshot.copy {
+                // this week, different day
                 token = LocalDateTime.of(2024, 9, 16, 23, 0).toMillis()
             },
-            snapshotHandle5 to snapshot.copy { // this week, same day
+            snapshotHandle5 to snapshot.copy {
+                // this week, same day
                 token = LocalDateTime.of(2024, 9, 16, 22, 0).toMillis()
             },
         )
@@ -348,5 +363,4 @@ internal class PrunerTest : TransportTest() {
     private fun LocalDateTime.toMillis(): Long {
         return toInstant(UTC).toEpochMilli()
     }
-
 }

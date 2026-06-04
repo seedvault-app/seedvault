@@ -33,6 +33,10 @@ import java.io.IOException
 private val TAG = ApkBackup::class.java.simpleName
 internal const val BASE_SPLIT = "org.calyxos.seedvault.BASE_SPLIT"
 
+// Some ROM thought it is a good idea to rename internal string constants
+// and expected things not to break.
+internal const val BASE_SPLIT_GRAPHENE = "app.grapheneos.seedvault.BASE_SPLIT"
+
 internal class ApkBackup(
     private val pm: PackageManager,
     private val backupReceiver: BackupReceiver,
@@ -211,7 +215,6 @@ internal class ApkBackup(
     }
 
     private fun getOwner(packageName: String, split: String) = "APK backup $packageName $split"
-
 }
 
 /**

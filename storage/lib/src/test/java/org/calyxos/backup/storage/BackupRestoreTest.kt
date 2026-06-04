@@ -586,7 +586,6 @@ internal class BackupRestoreTest {
             chunksCache.get(chunkId)
         } returns null andThen CachedChunk(chunkId, 0, chunkSize)
     }
-
 }
 
 internal fun getRandomDocFile(size: Int) = DocFile(

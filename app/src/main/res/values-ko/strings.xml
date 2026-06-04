@@ -35,7 +35,6 @@
     <string name="restore_restoring">백업 복원 중</string>
     <string name="restore_title">백업에서 복원</string>
     <string name="notification_restore_error_action">앱 설치 제거</string>
-    <string name="notification_backup_already_running">백업이 이미 진행 중</string>
     <string name="recovery_code_error_checksum_word">코드가 잘못되었습니다. 모든 단어를 확인하고 다시 시도하세요!</string>
     <string name="recovery_code_error_invalid_word">단어가 틀렸습니다.</string>
     <string name="recovery_code_error_empty_word">이 단어를 입력하지 않았습니다.</string>
@@ -79,7 +78,6 @@
     <string name="settings_backup_apk_dialog_title">정말 앱 백업을 끄시겠습니까?</string>
     <string name="settings_backup_apk_summary">앱 자체를 백업합니다. 이 설정을 끄면 앱 데이터만 백업됩니다.</string>
     <string name="settings_backup_apk_title">앱 백업</string>
-    <string name="settings_category_app_data_backup">앱 데이터 백업</string>
     <string name="settings_auto_restore_summary">앱을 다시 설치하면 백업된 설정 및 데이터를 자동으로 복원합니다.</string>
     <string name="settings_auto_restore_title">자동 복원</string>
     <string name="settings_backup_last_backup_never">백업 없음</string>
@@ -94,9 +92,6 @@
     <string name="restore_app_not_yet_backed_up">아직 백업한 적 없음</string>
     <string name="notification_error_text">기기 백업에 실패했습니다.</string>
     <string name="storage_fragment_restore_title">어디에서 백업을 찾으시겠습니까\?</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">계정을 사용할 수 없습니다. 새 계정을 만들거나 비밀번호를 비활성화하세요.</string>
-    <string name="storage_fake_nextcloud_summary_installed">여기를 눌러 계정 만들기</string>
-    <string name="storage_fake_nextcloud_summary">여기를 눌러 설치</string>
     <string name="restore_restoring_error_message">앱을 다시 설치하면 (자동 복원 기능이 켜져 있는 경우) 자동으로 해당 앱의 데이터를 복원할 것입니다.</string>
     <string name="about_version">버전: %s</string>
     <string name="restore_restoring_error_title">복원하지 못한 앱</string>
@@ -138,8 +133,6 @@
     <string name="settings_category_apps">앱 백업</string>
     <string name="settings_category_storage">저장소 백업 (실험)</string>
     <string name="settings_backup_storage_title">내 파일들을 백업</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV 마운트 사용이 불가능 합니다. 하나를 설정하세요.</string>
-    <string name="storage_fake_davx5_summary_installed">탭하여 WebDAV 마운트 설정하기</string>
     <string name="recovery_code_auth_description">계속하려면 기기 암호를 입력하세요</string>
     <string name="storage_check_fragment_patience">시간이 좀 걸릴 수 있습니다…</string>
     <string name="restore_skip_apps">앱 복원 넘기기</string>
@@ -166,7 +159,6 @@
 \n
 \n불편함을 드려 죄송합니다.</string>
     <string name="settings_backup_new_code_code_dialog_ok">새로운 코드</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">설치되지 않음</string>
     <string name="backup_app_in_progress">백업 중</string>
     <string name="backup_app_success">백업됨</string>
     <string name="backup_app_warning">백업 경고</string>
@@ -174,7 +166,6 @@
     <string name="restore_app_status_install_error">설치할 수 없음</string>
     <string name="restore_app_status_restored">데이터 복원됨</string>
     <string name="restore_app_status_failed">복원 실패함</string>
-    <string name="notification_backup_disabled">백업이 활성화되지 않음</string>
     <string name="restore_app_status_installed">다시 설치됨</string>
     <string name="restore_app_status_warning">복원 경고</string>
 </resources>

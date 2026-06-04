@@ -14,5 +14,4 @@ class MutableLiveEvent<T> : LiveEvent<T>() {
     fun setEvent(value: T) {
         super.setValue(ConsumableEvent(value))
     }
-
 }

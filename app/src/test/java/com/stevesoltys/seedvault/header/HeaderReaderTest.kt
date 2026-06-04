@@ -310,7 +310,6 @@ internal class HeaderReaderTest {
     private fun byteArrayOf(vararg elements: Int): ByteArray {
         return elements.map { it.toByte() }.toByteArray()
     }
-
 }
 
 internal fun getRandomValidSegmentLength(): Short {

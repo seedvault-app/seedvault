@@ -120,5 +120,4 @@ internal class PrunerTest {
         assertEquals(expectedChunks.sorted(), actualChunks.captured.sorted())
         assertEquals(expectedChunks.sorted(), actualChunks2.captured.sorted())
     }
-
 }

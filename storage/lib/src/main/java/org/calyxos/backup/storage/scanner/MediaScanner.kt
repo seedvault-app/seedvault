@@ -49,7 +49,6 @@ public class MediaScanner(context: Context) {
         private const val PROJECTION_VOLUME_NAME = 6
         private const val PROJECTION_IS_FAVORITE = 7
         private const val PROJECTION_GENERATION_MODIFIED = 8
-
     }
 
     private val contentResolver = context.contentResolver
@@ -152,5 +151,4 @@ public class MediaScanner(context: Context) {
             0L
         }
     }
-
 }

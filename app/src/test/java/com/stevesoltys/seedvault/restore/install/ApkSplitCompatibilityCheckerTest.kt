@@ -209,5 +209,4 @@ internal class ApkSplitCompatibilityCheckerTest : TransportTest() {
             checker.isCompatible(deviceName, listOf("foo.config.xxxhdpi", "bar.config.arm64_v8a"))
         )
     }
-
 }

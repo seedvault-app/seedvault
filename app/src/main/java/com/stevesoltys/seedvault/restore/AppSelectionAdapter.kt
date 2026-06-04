@@ -192,5 +192,4 @@ internal class AppSelectionAdapter(
             appInfo.visibility = VISIBLE
         }
     }
-
 }

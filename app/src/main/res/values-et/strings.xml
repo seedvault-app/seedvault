@@ -19,7 +19,6 @@
     <string name="settings_backup_new_code_dialog_title">Vaja on uut taastekoodi</string>
     <string name="settings_backup_new_code_dialog_message">Rakenduste varunduse jätkamiseks pead looma uue taastekoodi.\n\nVabandame ebamugavuste pärast.</string>
     <string name="settings_backup_apk_title">APK varundus</string>
-    <string name="settings_category_app_data_backup">Rakenduste andmete varundamine</string>
     <string name="settings_backup_status_next_backup_usb">Varundamine toimub automaatselt, kui ühendad USB ketta</string>
     <string name="settings_backup_new_code_code_dialog_ok">Uus kood</string>
     <string name="settings_info">Kõik varukoopiad on telefonis krüptitud. Varukoopiast taastamiseks vajad 12-sõnalist taastekoodi.</string>
@@ -127,16 +126,12 @@
     <string name="restore_installing_packages">Rakenduste taaspaigaldamine</string>
     <string name="restore_set_empty_result">Antud asukohas sobivaid varukoopiaid ei leitud.\n\nTõenäoliselt on see tingitud valest taastekoodist või salvestusveast.</string>
     <string name="restore_app_status_restored">Andmed taastatud</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Konto pole saadaval. Seadista see (või keela pääsukood).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Pole paigaldatud</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV haage pole saadaval. Seadista see.</string>
     <string name="recovery_code_verification_try_again">Proovi uuesti</string>
     <string name="notification_error_text">Seadme varundamine nurjus.</string>
     <string name="settings_scheduling_frequency_3_days">3 päeva järel</string>
     <string name="settings_scheduling_frequency_weekly">Kord nädalas</string>
     <string name="settings_scheduling_category_conditions_title">Tingimused</string>
     <string name="settings_expert_logcat_title">Salvesta rakenduse logi</string>
-    <string name="notification_backup_already_running">Varundamine juba käib</string>
     <string name="settings_app_check_text2">Siin saad rakenduse varukoopia kinnitamiseks käivitada ühekordse kontrolli. Vali, kui suur osa rakenduse andmetest tuleks kontrollimiseks alla laadida. Mida rohkem, seda kauem see aega võtab, kuid seda usaldusväärsem on kontroll. See töötab taustal ja pärast kontrollimist kuvatakse märguanne.</string>
     <string name="notification_usb_monitor_text">Kui USB seade on saadaval, alustame varundamist.</string>
     <string name="backup_app_check_success_disclaimer">Märkus: me ei saa kontrollida, kas iga rakenduse kasutajaandmed on varukoopiasse kaasatud.</string>
@@ -156,8 +151,6 @@
     <string name="settings_expert_logcat_error">Viga: rakenduse logi ei saanud salvestada</string>
     <string name="storage_check_fragment_backup_title">Varunduskoha lähtestamine…</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> vaba</string>
-    <string name="storage_fake_nextcloud_summary_installed">Puuduta konto seadistamiseks</string>
-    <string name="storage_fake_davx5_summary_installed">Puuduta WebDAV haake seadistamiseks</string>
     <string name="storage_check_fragment_restore_title">Varukoopiate otsimine…</string>
     <string name="storage_check_fragment_patience">See võib veidi aega võtta…</string>
     <string name="storage_webdav_option_title">WebDAV Cloud (beeta)</string>
@@ -183,7 +176,6 @@
     <string name="recovery_code_auth_title">Sisesta oma ekraanilukk uuesti</string>
     <string name="recovery_code_auth_description">Jätkamiseks sisesta oma seadme mandaadid</string>
     <string name="notification_success_channel_title">Õnnestumise märguanne</string>
-    <string name="notification_backup_disabled">Varundamine pole lubatud</string>
     <string name="notification_apk_not_backed_up">Salvestatakse rakenduste loend, mida me ei saa varundada.</string>
     <string name="notification_restore_title">Toimub taastamine</string>
     <string name="notification_restore_error_title">%1$s andmeid ei saanud taastada</string>
@@ -231,8 +223,6 @@
     <string name="settings_app_check_button">Kontrolli varukoopiat</string>
     <string name="settings_app_check_warning">Hoiatus: suurte andmemahtude allalaadimine võib võtta kaua aega.</string>
     <string name="storage_user_selected_location_title">Kasutaja valitud asukoht</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Ei soovita)</string>
-    <string name="storage_fake_nextcloud_summary">Puuduta paigaldamiseks</string>
     <string name="settings_app_check_text">Iga varundusprotsess kontrollib automaatselt varukoopia terviklikkust. Aja säästmiseks ei laadita aga alla ega kinnitata rakenduse tegelikke andmeid.</string>
     <string name="restore_restore_set_can_not_get_restored">Sellel varukoopial on mõned vead. Võimalik, et saad selle osaliselt taastada.</string>
     <string name="notification_finalizing_text">Varunduse lõpetamine…</string>

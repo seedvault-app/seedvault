@@ -79,7 +79,8 @@ internal class SnapshotCreatorTest : TransportTest() {
             flags = if (isSystem) FLAG_SYSTEM else 0
         }
         packageInfo.applicationInfo = appInfo
-        val resolveInfo = ResolveInfo().apply { // if isSystem, then it will be launchable
+        val resolveInfo = ResolveInfo().apply {
+            // if isSystem, then it will be launchable
             activityInfo = ActivityInfo().apply {
                 packageName = this@SnapshotCreatorTest.packageName
             }
@@ -194,7 +195,8 @@ internal class SnapshotCreatorTest : TransportTest() {
                 type = Snapshot.BackupType.KV
                 size = 42L
                 chunkIds.addAll(listOf(chunkId1).forProto())
-                apk = apk { // @pm@ doesn't have an APK, but we just add one for testing
+                apk = apk {
+                    // @pm@ doesn't have an APK, but we just add one for testing
                     val split = split {
                         this.name = BASE_SPLIT
                         this.chunkIds.addAll(listOf(chunkId2).forProto())
@@ -256,5 +258,4 @@ internal class SnapshotCreatorTest : TransportTest() {
         assertEquals(0, s.iconChunkIdsCount)
         assertEquals(emptyMap<String, Snapshot.Blob>(), s.blobsMap)
     }
-
 }

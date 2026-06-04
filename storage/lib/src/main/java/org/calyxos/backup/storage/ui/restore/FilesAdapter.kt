@@ -38,7 +38,8 @@ private class FilesItemCallback : DiffUtil.ItemCallback<FilesItem>() {
     override fun areContentsTheSame(oldItem: FilesItem, newItem: FilesItem): Boolean {
         if (oldItem is FileItem && newItem is FileItem) return newItem.selected == oldItem.selected
         if (oldItem is FolderItem && newItem is FolderItem) {
-            return newItem.selected == oldItem.selected && newItem.expanded == oldItem.expanded &&
+            return newItem.selected == oldItem.selected &&
+                newItem.expanded == oldItem.expanded &&
                 newItem.partiallySelected == oldItem.partiallySelected
         }
         return false
@@ -132,5 +133,4 @@ internal class FilesAdapter(
             else -> R.drawable.ic_insert_drive_file
         }
     } ?: R.drawable.ic_insert_drive_file
-
 }

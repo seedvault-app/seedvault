@@ -44,6 +44,7 @@ internal class KVRestoreV1Test : RestoreTest() {
     private val backendManager: BackendManager = mockk()
     private val loader = mockk<Loader>()
     private val backend = mockk<Backend>()
+
     @Suppress("DEPRECATION")
     private val legacyPlugin = mockk<LegacyStoragePlugin>()
     private val dbManager = mockk<KvDbManager>()
@@ -415,5 +416,4 @@ internal class KVRestoreV1Test : RestoreTest() {
             fileDescriptor.close()
         }
     }
-
 }

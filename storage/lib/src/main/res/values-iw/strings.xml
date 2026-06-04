@@ -9,7 +9,6 @@
     <string name="notification_backup_scanning">הקבצים נסרקים…</string>
     <string name="notification_backup_backup_files">הקבצים מגובים…</string>
     <string name="notification_prune">הגיבויים הישנים נמחקים…</string>
-    <string name="notification_restore_channel_title">שחזור קובץ</string>
     <string name="notification_restore_title">הקבצים משוחזרים…</string>
     <string name="notification_restore_info">%1$d/%2$d</string>
     <string name="notification_restore_complete_title">שוחזרו %1$d מתוך %2$d קבצים</string>

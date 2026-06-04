@@ -62,7 +62,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
     }
 
     fun performRestore(): SeedvaultLargeTestResult {
-
         val result = SeedvaultLargeTestResult(
             full = mutableMapOf(),
             kv = mutableMapOf(),
@@ -122,7 +121,6 @@ internal interface LargeRestoreTestBase : LargeTestBase {
     }
 
     private fun waitForInstallResult() = runBlocking {
-
         withContext(Dispatchers.Main) {
             withTimeout(RESTORE_TIMEOUT) {
                 while (spyRestoreViewModel.installResult.value?.isFinished != true) {

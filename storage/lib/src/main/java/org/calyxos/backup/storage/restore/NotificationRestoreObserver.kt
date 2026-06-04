@@ -53,5 +53,4 @@ public open class NotificationRestoreObserver internal constructor(private val n
     protected open fun getRestoreCompleteIntent(): PendingIntent? {
         return null
     }
-
 }

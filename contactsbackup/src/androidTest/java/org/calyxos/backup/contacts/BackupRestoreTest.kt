@@ -91,5 +91,4 @@ class BackupRestoreTest {
         utils.deleteAllContacts()
         assertEquals(0, utils.getNumberOfContacts())
     }
-
 }

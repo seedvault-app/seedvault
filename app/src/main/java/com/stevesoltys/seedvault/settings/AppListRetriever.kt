@@ -55,7 +55,6 @@ internal class AppListRetriever(
 
     @WorkerThread
     fun getAppList(): List<AppListItem> {
-
         val appListSections = linkedMapOf(
             AppSectionTitle(R.string.backup_section_system) to getSpecialApps(),
             AppSectionTitle(R.string.backup_section_user) to getApps(),
@@ -141,5 +140,4 @@ internal class AppListRetriever(
         PackageState.UNKNOWN_ERROR -> FAILED
         PackageState.APK_AND_DATA -> SUCCEEDED
     }
-
 }

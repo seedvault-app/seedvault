@@ -70,7 +70,8 @@ internal class FileRestore(
         }
         var file = File(dir, docFile.name)
         // TODO should we also calculate and check the chunk IDs?
-        if (file.isFile && file.length() == docFile.size &&
+        if (file.isFile &&
+            file.length() == docFile.size &&
             file.lastModified() == docFile.lastModified
         ) {
             Log.i(TAG, "Not restoring $file, already there unchanged.")
@@ -194,5 +195,4 @@ internal class FileRestore(
         // and does not pick up lastModified changes done in file-system
         MediaScannerConnection.scanFile(context, arrayOf(file.path), null, null)
     }
-
 }

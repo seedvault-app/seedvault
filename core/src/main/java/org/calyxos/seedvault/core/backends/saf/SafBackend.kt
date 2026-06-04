@@ -181,7 +181,8 @@ public class SafBackend(
                     }
                 }
             }
-            if (LegacyAppBackupFile.Metadata::class in fileTypes && name == FILE_BACKUP_METADATA &&
+            if (LegacyAppBackupFile.Metadata::class in fileTypes &&
+                name == FILE_BACKUP_METADATA &&
                 parentName.matches(tokenRegex)
             ) {
                 val metadata = LegacyAppBackupFile.Metadata(parentName.toLong())
@@ -220,7 +221,6 @@ public class SafBackend(
         val toFile = DocumentFile.fromTreeUri(context, newUri)
             ?: throw IOException("renamed URI invalid: $newUri")
         if (toFile.name != toName) {
-            toFile.delete()
             throw IOException("renamed to ${toFile.name}, but expected $toName")
         }
     }
@@ -254,7 +254,6 @@ public class SafBackend(
         log.debugLog { "  ${providerInfo.packageName}" }
         providerInfo.packageName
     }
-
 }
 
 private inline fun KLogger.debugLog(crossinline block: () -> String) {

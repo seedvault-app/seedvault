@@ -79,5 +79,4 @@ class StorageCheckFragment : Fragment() {
             backButton.setOnClickListener { requireActivity().supportFinishAfterTransition() }
         }
     }
-
 }

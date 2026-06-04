@@ -48,7 +48,6 @@ internal interface LargeBackupTestBase : LargeTestBase {
 
     fun startBackup() {
         BackupScreen {
-
             if (!backupManager.isBackupEnabled) {
                 backupSwitch.click()
                 waitUntilIdle()
@@ -71,7 +70,6 @@ internal interface LargeBackupTestBase : LargeTestBase {
     }
 
     fun performBackup(): SeedvaultLargeTestResult {
-
         val backupResult = SeedvaultLargeTestResult(
             full = mutableMapOf(),
             kv = mutableMapOf(),

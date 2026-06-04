@@ -32,5 +32,4 @@ abstract class RequireProvisioningViewModel(
     open fun onBackendPropertiesChanged() {
         // noop can be overwritten by sub-classes
     }
-
 }

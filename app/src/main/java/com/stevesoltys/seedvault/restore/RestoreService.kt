@@ -42,5 +42,4 @@ class RestoreService : Service() {
         nm.cancelRestoreNotification()
         super.onDestroy()
     }
-
 }

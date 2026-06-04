@@ -59,7 +59,6 @@
     <string name="notification_failed_title">Varmuuskopiointi epäonnistui</string>
     <string name="notification_success_text">%1$d/%2$d sovellusta varmuuskopioitu (%3$s). Napauta saadaksesi lisätietoja.</string>
     <string name="notification_success_title">Varmuuskopiointi valmis</string>
-    <string name="notification_backup_already_running">Varmuuskopiointi on jo käynnissä</string>
     <string name="notification_title">Varmuuskopiointi on käynnissä</string>
     <string name="notification_channel_title">Varmuuskopiointi-ilmoitus</string>
     <string name="recovery_code_error_checksum_word">Koodisi on virheellinen. Tarkista kaikki sanat ja yritä uudelleen!</string>
@@ -89,9 +88,6 @@
     <string name="storage_check_fragment_backup_error">Varmuuskopiopaikan saannissa tapahtui virhe.</string>
     <string name="storage_check_fragment_restore_title">Etsitään varmuuskopioita…</string>
     <string name="storage_check_fragment_backup_title">Alustetaan varmuuskopioinnin sijaintia…</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Tili ei saatavilla. Määritä tili (tai poista tunnusluku).</string>
-    <string name="storage_fake_nextcloud_summary_installed">Määritä tili napauttamalla</string>
-    <string name="storage_fake_nextcloud_summary">Napauta asentaaksesi</string>
     <string name="storage_fake_drive_summary">Täytyy olla kytkettynä</string>
     <string name="storage_fake_drive_title">USB-muistitikku</string>
     <string name="storage_fragment_restore_title">Mistä löydät varmuuskopiot\?</string>
@@ -106,7 +102,6 @@
     <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten varmuuskopiointi todella käytöstä?</string>
     <string name="settings_backup_apk_summary">Varmuuskopioi itse sovellukset. Muuten vain sovellustiedot varmuuskopioidaan.</string>
     <string name="settings_backup_apk_title">APK-tiedostojen varmuuskopiointi</string>
-    <string name="settings_category_app_data_backup">Sovellustietojen varmuuskopiointi</string>
     <string name="settings_auto_restore_summary_usb">Huomaa: %1$s tarvitsee olla kytkettynä tämän toimiakseen.</string>
     <string name="settings_auto_restore_summary">Palauta varmuuskopioidut asetukset ja tiedot sovellusta uudellenasentaessasi.</string>
     <string name="settings_auto_restore_title">Automaattinen palautus</string>
@@ -153,7 +148,6 @@
 \n
 \nJotkin sovellukset (esim. Signal tai WhatsApp) saattavat vaatia tiedostojen täydellistä palauttamista varmuuskopion tuomiseksi. Yritä välttää näiden sovellusten käynnistämistä ennen kuin tiedoston palautus ei ole valmis.</string>
     <string name="restore_storage_got_it">Sain sen</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Ei asennettu</string>
     <string name="recovery_code_auth_title">Syötä näytön lukitus uudelleen</string>
     <string name="recovery_code_auth_description">Jatka kirjoittamalla laitteesi tunnistetiedot</string>
     <string name="backup_app_check_success_intro">%1$d tilannekuvaa löydettiin ja %2$d %% niiden tiedoista (%3$s) varmistettiin onnistuneesti:</string>
@@ -197,10 +191,7 @@
     <string name="settings_expert_logcat_summary">Kehittäjät voivat analysoida ongelmia näillä lokeilla.\n\nVaroitus: Loki saattaa sisältää henkilökohtaisia tietoja. Käy se läpi ja poista tarvittaessa lokitiedosto sen jakamisen jälkeen!</string>
     <string name="settings_expert_logcat_error">Virhe: Sovelluslokin tallentaminen epäonnistui</string>
     <string name="storage_user_selected_location_title">Käyttäjän valitsema sijainti</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Ei suositeltu)</string>
     <string name="storage_round_sync_summary_prefix">RoundSync:</string>
-    <string name="storage_fake_davx5_summary_installed">Napauta luodaksesi WebDAV-kiinnityksen</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV-kiinnitystä ei löydy. Luo uusi sellainen.</string>
     <string name="storage_webdav_option_title">WebDAV-palvelin (beta)</string>
     <string name="storage_webdav_option_summary">Sisäänrakennettu suora WebDAV-pääsy</string>
     <string name="storage_webdav_config_url">WebDAV-osoite</string>
@@ -216,7 +207,6 @@
     <string name="notification_finalizing_text">Viimeistellään varmuuskopiota…</string>
     <string name="notification_apk_text">Varmuuskopioidaan %s:n APK-tiedostoa</string>
     <string name="notification_apk_not_backed_up">Tallennetaan listaa sovelluksista joita ei voitu varmuuskopioida.</string>
-    <string name="notification_backup_disabled">Varmuuskopiot eivät käytössä</string>
     <string name="notification_failed_text">Varmuuskopiota suorittaessa tapahtui virhe.</string>
     <string name="notification_failed_metered_text">Varmuuskopio on keskeytetty. Käytätkö mobiilidataa? Vaihda wifiin jatkaaksesi.</string>
     <string name="notification_space_error_title">Tallennustila ei riitä</string>

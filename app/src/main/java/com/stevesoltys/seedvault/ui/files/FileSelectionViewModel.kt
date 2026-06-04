@@ -19,5 +19,4 @@ class FileSelectionViewModel(
     init {
         viewModelScope.launch { loadContent() }
     }
-
 }

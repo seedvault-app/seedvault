@@ -56,5 +56,4 @@ class Bip39ComparisonTest {
             actualCodeFromWords.toSeed()
         )
     }
-
 }

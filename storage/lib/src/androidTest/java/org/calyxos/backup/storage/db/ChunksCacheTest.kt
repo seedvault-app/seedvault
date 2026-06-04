@@ -165,5 +165,4 @@ internal class ChunksCacheTest {
         // marking something not in DB as corrupted isn't fatal
         chunksCache.markCorrupted("foo")
     }
-
 }

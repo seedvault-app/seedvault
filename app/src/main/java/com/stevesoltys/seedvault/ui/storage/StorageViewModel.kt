@@ -47,7 +47,7 @@ internal abstract class StorageViewModel(
     protected val mLocationChecked = MutableLiveEvent<LocationResult>()
     internal val locationChecked: LiveEvent<LocationResult> get() = mLocationChecked
 
-    private val storageOptionFetcher by lazy { StorageOptionFetcher(app, isRestoreOperation) }
+    private val storageOptionFetcher by lazy { StorageOptionFetcher(app) }
     private var safOption: SafOption? = null
 
     internal var isSetupWizard: Boolean = false
@@ -113,7 +113,6 @@ internal abstract class StorageViewModel(
         mLocationSet.setEvent(true)
         onWebDavConfigSet(properties, backend)
     }
-
 }
 
 class LocationResult(val errorMsg: String? = null)

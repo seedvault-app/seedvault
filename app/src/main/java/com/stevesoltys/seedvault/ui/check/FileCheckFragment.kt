@@ -85,5 +85,4 @@ class FileCheckFragment : Fragment() {
             sliderLabel.visibility = newVisibility
         }
     }
-
 }

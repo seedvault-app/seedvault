@@ -38,7 +38,6 @@ interface MetadataReader {
         expectedVersion: Byte? = null,
         expectedToken: Long? = null,
     ): BackupMetadata
-
 }
 
 internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
@@ -186,5 +185,4 @@ internal class MetadataReaderImpl(private val crypto: Crypto) : MetadataReader {
         }
         return splits
     }
-
 }

@@ -166,5 +166,4 @@ internal class SnapshotManager(
             }
         } ?: throw IOException("Could not access snapshotFolder")
     }
-
 }

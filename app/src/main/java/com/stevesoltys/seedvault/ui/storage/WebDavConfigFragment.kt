@@ -101,7 +101,6 @@ class WebDavConfigFragment : Fragment(), View.OnClickListener {
     private fun onConfigStateChanged(state: WebDavConfigState) {
         when (state) {
             WebDavConfigState.Empty -> {
-
             }
 
             WebDavConfigState.Checking -> {
@@ -129,5 +128,4 @@ class WebDavConfigFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
 }

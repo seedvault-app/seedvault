@@ -123,7 +123,6 @@ class RestoreSetFragment : Fragment() {
             exitProcess(0)
         }
     }
-
 }
 
 internal interface RestorableBackupClickListener {

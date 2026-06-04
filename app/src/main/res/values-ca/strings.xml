@@ -15,7 +15,6 @@
     <string name="current_destination_string">Paràmetres i estat de la còpia de seguretat</string>
     <string name="settings_backup">Crear còpia de seguretat de les meves aplicacions</string>
     <string name="settings_backup_location">Ubicació de la còpia de seguretat</string>
-    <string name="settings_category_app_data_backup">Còpia de seguretat de dades de l\'aplicació</string>
     <string name="settings_backup_apk_title">Copia de seguretat de l\'aplicació</string>
     <string name="settings_category_apps">Còpia de seguretat de l\'aplicació</string>
     <string name="settings_auto_restore_summary">Al reinstalar una aplicació, es restaura la configuració i les dades de la còpia de seguretat.</string>
@@ -42,7 +41,6 @@
     <string name="recovery_code_input_hint_2">Paraula 2</string>
     <string name="settings_backup_storage_dialog_ok">Activar de totes maneres</string>
     <string name="recovery_code_input_hint_11">Paraula 11</string>
-    <string name="storage_fake_davx5_summary_installed">Toca per configurar un muntatge WebDAV</string>
     <string name="storage_check_fragment_restore_title">Cercant còpies de seguretat…</string>
     <string name="storage_check_fragment_permission_error">No s\'ha pogut obtenir el permís per escriure a la ubicació de la còpia de seguretat.</string>
     <string name="recovery_code_input_hint_6">Paraula 6</string>
@@ -74,10 +72,6 @@
     <string name="storage_fragment_restore_title">On trobar les teves còpies de seguretat\?</string>
     <string name="storage_fake_drive_summary">S\'ha d\'endollar</string>
     <string name="storage_available_bytes"><xliff:g example="1 GB" id="size">%1$s</xliff:g> lliure</string>
-    <string name="storage_fake_nextcloud_summary">Fes un toc per instal·lar</string>
-    <string name="storage_fake_nextcloud_summary_installed">Fes un toc per configurar el compte</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">El compte no està disponible. Configura\'n un (o deshabilita el codi).</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">No instal·lat</string>
     <string name="storage_check_fragment_backup_title">Inicialitzant ubicació de la còpia de seguretat…</string>
     <string name="storage_check_fragment_patience">Això pot trigar una estona…</string>
     <string name="recovery_code_verification_try_again">Torna-ho a provar</string>
@@ -86,7 +80,6 @@
 \nSi has perdut el codi, toca a \'Genera un codi nou\' a continuació.</string>
     <string name="recovery_code_verification_generate_new">Genera un codi nou</string>
     <string name="recovery_code_verification_new_dialog_title">Espera un segon…</string>
-    <string name="storage_fake_davx5_summary_unavailable">Muntatge WebDAV no disponible. Configura\'n un.</string>
     <string name="storage_check_fragment_backup_error">S\'ha produït un error en accedir a la ubicació de la còpia de seguretat.</string>
     <string name="recovery_code_confirm_button">Confirmar codi</string>
     <string name="recovery_code_confirm_intro">Introdueix el teu codi de recuperació de 12 paraules per assegurar-te que funcionarà quan el necessitis.</string>
@@ -108,7 +101,6 @@
     <string name="notification_channel_title">Notificació de còpia de seguretat</string>
     <string name="notification_title">Còpia de seguretat en execució</string>
     <string name="notification_success_title">Còpia de seguretat finalitzada</string>
-    <string name="notification_backup_already_running">Còpia de seguretat en curs</string>
     <string name="notification_failed_title">La còpia de seguretat ha fallat</string>
     <string name="notification_restore_error_title">No s\'han pogut recuperar les dades per %1$s</string>
     <string name="notification_restore_error_text">Connecta el teu %1$s abans d\'instal·lar l\'aplicació per restaurar les seves dades des de la còpia de seguretat.</string>
@@ -169,7 +161,6 @@
     <string name="storage_internal_warning_use_anyway">Utilitzar de totes maneres</string>
     <string name="about_title">Quant a</string>
     <string name="about_version">Versió: %s</string>
-    <string name="notification_backup_disabled">Còpia de Seguretat deshabilitada</string>
     <string name="backup_app_in_progress">Fent còpia de seguretat</string>
     <string name="backup_app_success">Còpia de seguretat completada</string>
     <string name="backup_app_warning">Avís de còpia de seguretat</string>
@@ -179,7 +170,6 @@
     <string name="restore_app_status_restored">Dades restaurades</string>
     <string name="restore_app_status_failed">Ha fallat la restauració</string>
     <string name="restore_app_status_warning">Avís de restrauració</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (No recomanat)</string>
     <string name="settings_backup_dialog_title">Segur que voleu desactivar les còpies de seguretat de les aplicacions\?</string>
     <string name="settings_backup_dialog_message">Quan torneu a activar les còpies de seguretat, el procés de còpia de seguretat pot trigar més del que és habitual, i utilitzarà espai d\'emmagatzematge addicional.</string>
     <string name="settings_backup_dialog_disable">Apagar igualemnt</string>

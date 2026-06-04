@@ -29,9 +29,7 @@ import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.stevesoltys.seedvault.R
 import com.stevesoltys.seedvault.getStorageContext
-import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DAVX5
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_DOWNLOADS
-import com.stevesoltys.seedvault.ui.storage.AUTHORITY_NEXTCLOUD
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_ROUND_SYNC
 import com.stevesoltys.seedvault.ui.storage.AUTHORITY_STORAGE
 import com.stevesoltys.seedvault.ui.storage.ROOT_ID_DEVICE
@@ -149,14 +147,6 @@ internal object StorageRootResolver {
                 getDrawable(context, R.drawable.ic_usb)
             }
 
-            authority == AUTHORITY_NEXTCLOUD -> {
-                getDrawable(context, R.drawable.nextcloud)
-            }
-
-            authority == AUTHORITY_DAVX5 -> {
-                getDrawable(context, R.drawable.davx5)
-            }
-
             authority == AUTHORITY_ROUND_SYNC -> {
                 getDrawable(context, R.drawable.round_sync)
             }
@@ -175,5 +165,4 @@ internal object StorageRootResolver {
         }
         return null
     }
-
 }

@@ -11,7 +11,6 @@
     <string name="notification_backup_scanning">Scanning files…</string>
     <string name="notification_backup_backup_files">Backing up files…</string>
     <string name="notification_prune">Removing old backups…</string>
-    <string name="notification_restore_channel_title">File restore</string>
     <string name="notification_restore_title">Restoring files…</string>
     <string name="notification_restore_complete_title">%1$d of %2$d files restored</string>
     <string name="notification_restore_complete_dups">%1$d files were duplicates.</string>

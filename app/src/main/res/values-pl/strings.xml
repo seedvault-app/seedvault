@@ -3,8 +3,6 @@
     <string name="storage_check_fragment_backup_error">Wystąpił błąd podczas uzyskiwania dostępu do lokalizacji kopii zapasowej.</string>
     <string name="storage_check_fragment_restore_title">Szukanie kopii zapasowych…</string>
     <string name="storage_check_fragment_backup_title">Inicjowanie lokalizacji kopii zapasowej…</string>
-    <string name="storage_fake_nextcloud_summary_installed">Stuknij, aby skonfigurować konto</string>
-    <string name="storage_fake_nextcloud_summary">Stuknij, aby zainstalować</string>
     <string name="storage_fragment_backup_title">Wybierz miejsce przechowywania kopii zapasowych</string>
     <string name="settings_backup_now">Utwórz kopię zapasową teraz</string>
     <string name="settings_backup_exclude_apps">Wyklucz aplikacje</string>
@@ -13,7 +11,6 @@
     <string name="settings_backup_apk_dialog_cancel">Anuluj</string>
     <string name="settings_backup_apk_dialog_title">Naprawdę wyłączyć kopię zapasową plików APK?</string>
     <string name="settings_backup_apk_title">Kopia zapasowa plików APK</string>
-    <string name="settings_category_app_data_backup">Kopia zapasowa danych aplikacji</string>
     <string name="settings_auto_restore_summary">Podczas ponownej instalacji aplikacji przywróć ustawienia i dane z kopii zapasowej.</string>
     <string name="settings_auto_restore_title">Automatyczne przywracanie</string>
     <string name="settings_info">Wszystkie kopie zapasowe w telefonie są zaszyfrowane. Aby przywrócić dane z kopii zapasowej, będziesz potrzebować 12-słowowego kodu odzyskiwania.</string>
@@ -96,8 +93,6 @@
     <string name="backup_sms">Wiadomości tekstowe SMS</string>
     <string name="backup_section_system">Dane systemowe</string>
     <string name="notification_success_text">Skopiowano %1$d z %2$d aplikacji (%3$s). Naciśnij, aby dowiedzieć się więcej.</string>
-    <string name="notification_backup_already_running">Kopia zapasowa jest już tworzona</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">Konto nie jest dostępne. Skonfiguruj jakieś (lub wyłącz hasło).</string>
     <string name="about_summary">Aplikacja do tworzenia kopii zapasowych wykorzystująca wewnętrzny interfejs API systemu Android. To Wolne Oprogramowanie, wydane na licencji Apache 2.
 \n
 \nJak każde oprogramowanie, Seedvault może zawierać błędy i luki w zabezpieczeniach.</string>
@@ -158,11 +153,8 @@
     <string name="restore_storage_in_progress_title">Pliki są przywracane…</string>
     <string name="settings_expert_title">Ustawienia eksportu</string>
     <string name="restore_skip_apps">Pomiń odzyskiwanie aplikacji</string>
-    <string name="notification_backup_disabled">Kopia zapasowa nie jest włączona</string>
     <string name="restore_app_status_installing">Instalowanie ponownie</string>
     <string name="restore_app_status_installed">Zainstaluj ponownie</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (Nie zalecane)</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">Nie zainstalowano</string>
     <string name="storage_check_fragment_patience">Może to zająć trochę czasu…</string>
     <string name="recovery_code_auth_title">Wprowadź ponownie swój kod odblokowywania</string>
     <string name="notification_error_no_main_key_title">Kopie zapasowe wyłączone</string>
@@ -184,8 +176,6 @@
 \nNiektóre aplikacje (np. Signal czy WhatsApp) mogę wymagać by pliki były w pełni przywrócona aby zaimportować kopię zapasową. Postaraj się nie włączć tych aplikacji przed zakończeniem przywracania.</string>
     <string name="about_contributor_headline">Współautorzy</string>
     <string name="settings_backup_dialog_message">Kiedy ponownie włączysz kopię zapasową, proces kopiowanie może zająć więcej czasu niż zwykle, oraz wykożystać dodatkową przestrzeń na dysku.</string>
-    <string name="storage_fake_davx5_summary_installed">Dotknij, aby ustawić punkt montażu WebDAV</string>
-    <string name="storage_fake_davx5_summary_unavailable">Punkt montażu WebDAV niedostępny. Ustaw go.</string>
     <string name="settings_expert_logcat_summary">Deweloperzy mogą zdiagnozować błędy za pomocą informacji zawartych w raportach błędów.
 \n
 \nUwaga: Plik z raportem błędów może zawierać informacje na podstawie których można cię zidentyfikować. Zapoznaj się z nim i usuń go gdy nie będzie ci już potrzebny!</string>

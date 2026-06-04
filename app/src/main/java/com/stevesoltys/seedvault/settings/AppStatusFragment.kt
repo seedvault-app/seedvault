@@ -86,5 +86,4 @@ class AppStatusFragment : Fragment(), AppStatusToggleListener {
         adapter.onItemChanged(status)
         viewModel.onAppStatusToggled(status)
     }
-
 }

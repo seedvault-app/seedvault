@@ -235,7 +235,6 @@ internal class NotificationBackupObserver(
     }
 
     private fun getAppName(packageId: String): CharSequence = getAppName(context, packageId)
-
 }
 
 fun getAppName(

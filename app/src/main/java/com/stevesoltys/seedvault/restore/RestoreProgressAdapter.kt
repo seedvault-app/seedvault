@@ -83,5 +83,4 @@ internal class RestoreProgressAdapter(
             setState(item.state, true)
         }
     }
-
 }

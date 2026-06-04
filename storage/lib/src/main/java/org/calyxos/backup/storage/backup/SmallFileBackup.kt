@@ -158,5 +158,4 @@ internal class SmallFileBackup(
             hasChanged = zipChunk.wasUploaded,
         )
     }
-
 }

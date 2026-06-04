@@ -72,5 +72,4 @@ class ConfigurableBackupTransportService : Service(), KoinComponent {
         }
         Log.d(TAG, "Service destroyed.")
     }
-
 }

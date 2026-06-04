@@ -48,7 +48,6 @@ internal class InstallIntentCreator(
         }
         return if (isInstalled) packageName else null
     }
-
 }
 
 fun PackageManager.isInstalled(packageName: String): Boolean {

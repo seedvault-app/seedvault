@@ -221,5 +221,4 @@ public class FileSelectionManager {
         allFiles.clear()
         mFiles.value = emptyList()
     }
-
 }

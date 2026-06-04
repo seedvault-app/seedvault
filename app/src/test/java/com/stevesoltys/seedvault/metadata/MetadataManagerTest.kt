@@ -222,5 +222,4 @@ class MetadataManagerTest {
         every { cacheOutputStream.write(encodedMetadata) } just Runs
         every { cacheOutputStream.close() } just Runs
     }
-
 }

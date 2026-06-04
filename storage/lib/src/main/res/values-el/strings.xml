@@ -6,7 +6,6 @@
     <string name="notification_backup_scanning">Σάρωση αρχείων…</string>
     <string name="notification_backup_backup_files">Δημιουργία αντιγράφου ασφαλείας αρχείων…</string>
     <string name="notification_backup_title">Αντίγραφο ασφαλείας αρχείων</string>
-    <string name="notification_restore_channel_title">Επαναφορά αρχείων</string>
     <string name="content_audio">Αρχεία ήχου</string>
     <string name="notification_prune">Κατάργηση παλαιών αντιγράφων ασφαλείας…</string>
     <string name="notification_restore_title">Επαναφορά αρχείων…</string>
@@ -39,4 +38,5 @@
     <string name="check_files_text">Το \"%s\" περιλαμβάνει τα ακόλουθα αρχεία:</string>
     <string name="notification_check_channel_title">Έλεγχος ακεραιότητας αντιγράφου ασφαλείας αρχείων</string>
     <string name="check_files_error">Τα δεδομένα αντιγράφων ασφαλείας είναι κατεστραμμένα. Δεν θα γίνει πλήρης επαναφορά του αρχείου.</string>
+    <string name="content_remove">Αφαίρεση</string>
 </resources>

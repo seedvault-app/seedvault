@@ -153,5 +153,4 @@ class InstallProgressFragment : Fragment(), InstallItemListener {
             return packageName
         }
     }
-
 }

@@ -128,7 +128,8 @@ internal class SnapshotManagerTest : TransportTest() {
 
         assertEquals(listOf(snapshot), snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle)))
 
-        coVerify(exactly = 0) { // did not load from backend
+        coVerify(exactly = 0) {
+            // did not load from backend
             loader.loadFile(snapshotHandle, any())
         }
 
@@ -152,7 +153,8 @@ internal class SnapshotManagerTest : TransportTest() {
 
         assertEquals(listOf(snapshot), snapshotManager.onSnapshotsLoaded(listOf(snapshotHandle)))
 
-        coVerify { // did load from backend
+        coVerify {
+            // did load from backend
             loader.loadFile(snapshotHandle, file)
         }
     }

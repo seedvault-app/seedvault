@@ -15,7 +15,6 @@
     <string name="snapshots_title">Verfügbare Dateisicherungen</string>
     <string name="snapshots_empty">Keine Dateisicherungen gefunden \n \nEs gibt leider nichts, was wiederhergestellt werden kann.</string>
     <string name="snapshots_error">Fehler beim Laden von Datensicherungen</string>
-    <string name="notification_restore_channel_title">Dateiwiederherstellung</string>
     <string name="content_options">Optionen</string>
     <string name="notification_restore_complete_errors">%1$d Dateien enthielten Fehler.</string>
     <string name="select_files_title">Dateien zur Wiederherstellung überprüfen</string>

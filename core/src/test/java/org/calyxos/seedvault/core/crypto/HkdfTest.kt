@@ -78,5 +78,4 @@ internal class HkdfTest {
         require(digit != -1) { "Invalid Hexadecimal Character: $hexChar" }
         return digit
     }
-
 }

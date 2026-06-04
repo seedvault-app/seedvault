@@ -3,7 +3,6 @@
     <string name="notification_success_title">バックアップが完了しました</string>
     <string name="notification_title">バックアップ中</string>
     <string name="notification_failed_title">バックアップに失敗しました</string>
-    <string name="notification_backup_already_running">バックアップはすでに進行中です</string>
     <string name="recovery_code_verification_error_title">リカバリーコードが正しくありません</string>
     <string name="recovery_code_verification_ok_title">リカバリーコードが確認されました</string>
     <string name="recovery_code_verification_new_dialog_message">新しいコードを生成すると、既存のバックアップにアクセスできなり、可能な場合、削除されます。
@@ -24,7 +23,6 @@
     <string name="settings_backup_apk_dialog_disable">アプリのバックアップを無効にする</string>
     <string name="settings_backup_apk_dialog_cancel">キャンセル</string>
     <string name="settings_backup_apk_title">アプリのバックアップ</string>
-    <string name="settings_category_app_data_backup">アプリデータのバックアップ</string>
     <string name="settings_auto_restore_summary_usb">注：これを機能させるには、%1$s を接続する必要があります。</string>
     <string name="settings_auto_restore_summary">アプリを再インストールするとき、バックアップした設定とデータを復元します。</string>
     <string name="settings_auto_restore_title">自動復元</string>
@@ -37,8 +35,6 @@
     <string name="current_destination_string">バックアップの状態と設定</string>
     <string name="data_management_label">SeedVault バックアップ</string>
     <string name="backup">バックアップ</string>
-    <string name="storage_fake_nextcloud_summary_installed">タップしてアカウントをセットアップ</string>
-    <string name="storage_fake_nextcloud_summary">タップしてインストールする</string>
     <string name="settings_backup_apk_dialog_title">本当にアプリのバックアップを無効にしますか？</string>
     <string name="settings_backup_last_backup_never">未実施</string>
     <string name="storage_check_fragment_backup_error">バックアップ先へのアクセス中にエラーが発生しました。</string>
@@ -54,7 +50,6 @@
     <string name="storage_fake_drive_summary">接続する必要があります</string>
     <string name="storage_fragment_backup_title">バックアップを保存する場所を選択してください</string>
     <string name="settings_backup_recovery_code_summary">既存のコードを確認するか、新しいコードを生成します</string>
-    <string name="storage_fake_nextcloud_summary_unavailable">アカウントが見つかりません。新しくセットアップします。 (またはパスコードを無効にします)。</string>
     <string name="settings_backup_apk_summary">アプリ自体をバックアップしてください。さもなければ、アプリのデータのみがバックアップされます。</string>
     <string name="about_title">このアプリについて</string>
     <string name="recovery_code_confirm_intro">12 単語のリカバリコードを入力して、必要なときに機能することを確認してください。</string>
@@ -140,7 +135,6 @@
     <string name="settings_category_storage">ストレージバックアップ (試験的)</string>
     <string name="settings_backup_storage_title">ファイルをバックアップする</string>
     <string name="settings_backup_storage_dialog_ok">とにかく有効にする</string>
-    <string name="storage_fake_nextcloud_summary_unavailable_market">インストールされていません</string>
     <string name="storage_check_fragment_patience">これには時間がかかる場合があります…</string>
     <string name="restore_storage_skip">ファイルの復元をスキップする</string>
     <string name="restore_storage_choose_snapshot">復元するストレージバックアップを選択してください (試験的)</string>
@@ -165,12 +159,9 @@
     <string name="settings_backup_new_code_dialog_message">アプリのバックアップを引き続き使用するには、新しいリカバリコードを生成する必要があります。
 \n
 \nご不便をおかけして申し訳ありません。</string>
-    <string name="storage_fake_davx5_summary_unavailable">WebDAV マウントは使用できません。新しくセットアップします。</string>
-    <string name="storage_fake_davx5_summary_installed">タップして WebDAV マウントをセットアップします</string>
     <string name="notification_error_no_main_key_text">新しいリカバリコードを生成してアップグレードを完了し、バックアップを引き続き使用します。</string>
     <string name="error_no_store">エラー: アプリストアがインストールされていません</string>
     <string name="restore_app_status_warning">復元警告</string>
-    <string name="storage_not_recommended"><xliff:g example="Skynet">%1$s</xliff:g> (おすすめしません)</string>
     <string name="backup_app_in_progress">バックアップ中です</string>
     <string name="backup_app_success">バックアップ完了</string>
     <string name="backup_app_warning">バックアップ警告</string>
@@ -180,7 +171,6 @@
     <string name="about_contributor_headline">コントリビューター</string>
     <string name="about_contributor_content">以下のGithubのリンクへ移動してください。 <a href="https://github.com/seedvault-app/seedvault/graphs/contributors">コントリビューターのリスト</a>.</string>
     <string name="about_contributing_organizations_title">コントリビュートしている組織</string>
-    <string name="notification_backup_disabled">バックアップの保存が有効ありません</string>
     <string name="settings_expert_logcat_title">アプリのログを保存します</string>
     <string name="settings_expert_logcat_summary">開発者はログファイルをもとにバグを発見することが可能です。
 \n
