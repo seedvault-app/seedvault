@@ -11,6 +11,8 @@
     <string name="content_add">Add</string>
     <string name="content_remove">Remove</string>
 
+    <string name="nav_back">Navigate back</string>
+
     <string name="notification_backup_title">File backup</string>
     <string name="notification_backup_scanning">Scanning files…</string>
     <string name="notification_backup_backup_files">Backing up files…</string>
