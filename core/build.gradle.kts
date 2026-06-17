@@ -1,6 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 java {
@@ -22,15 +23,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        languageVersion = "1.8"
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xexplicit-api=strict"
-        )
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+        optIn.add("kotlin.RequiresOptIn")
     }
+    explicitApi()
 }
 
 dependencies {

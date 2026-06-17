@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * SPDX-FileCopyrightText: 2021 The Calyx Institute
  * SPDX-License-Identifier: Apache-2.0
@@ -7,7 +9,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.protobuf)
-    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
@@ -41,11 +42,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn")
-    }
-
     lint {
         disable += setOf(
             "DialogFragmentCallbacksDetector",
@@ -65,6 +61,13 @@ android {
                 "kotlin/internal/internal.kotlin_builtins"
             )
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+        optIn.add("kotlin.RequiresOptIn")
     }
 }
 

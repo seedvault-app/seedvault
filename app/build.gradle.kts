@@ -5,23 +5,24 @@
 
 import com.google.protobuf.gradle.id
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.protobuf)
 }
 
-val gitDescribe = {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "describe", "--always", "--tags", "--dirty=-dirty")
-        standardOutput = stdout
+val gitDescribe: String
+    get() {
+        val process =
+            ProcessBuilder("git", "describe", "--always", "--tags", "--dirty=-dirty")
+                .directory(rootDir)
+                .redirectErrorStream(true)
+                .start()
+        process.waitFor() // Ensure the command completes
+        return process.inputStream.use { it.readBytes().decodeToString().trim() }
     }
-    stdout.toString().trim()
-}
 
 android {
     namespace = "com.stevesoltys.seedvault"
@@ -30,7 +31,7 @@ android {
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionNameSuffix = "-${gitDescribe()}"
+        versionNameSuffix = "-$gitDescribe"
         testInstrumentationRunner = "com.stevesoltys.seedvault.KoinInstrumentationTestRunner"
         testInstrumentationRunnerArguments["disableAnalytics"] = "true"
     }
@@ -58,11 +59,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        languageVersion = "1.8"
     }
 
     packaging {
@@ -121,6 +117,8 @@ android {
         )
     }
 }
+
+kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }
 
 dependencies {
     val aospLibs: FileTree by rootProject.extra
@@ -246,54 +244,65 @@ configurations.all {
     }
 }
 
-tasks.register<Exec>("provisionEmulator") {
-    group = "emulator"
+androidComponents {
+    val sdkDirProvider = sdkComponents.sdkDirectory
 
-    dependsOn(tasks.getByName("assembleRelease"))
+    tasks.register<Exec>("provisionEmulator") {
+        group = "emulator"
+        inputs.dir(sdkDirProvider)
 
-    doFirst {
-        commandLine(
-            "${project.projectDir}/development/scripts/provision_emulator.sh",
-            "seedvault",
-            "system-images;android-34;default;x86_64"
-        )
+        dependsOn(tasks.getByName("assembleRelease"))
 
-        environment("ANDROID_HOME", android.sdkDirectory.absolutePath)
-        environment("JAVA_HOME", System.getProperty("java.home"))
+        doFirst {
+            commandLine(
+                "${project.projectDir}/development/scripts/provision_emulator.sh",
+                "seedvault",
+                "system-images;android-34;default;x86_64"
+            )
+            val sdkDirFile = sdkDirProvider.get().asFile
+            environment("ANDROID_HOME", sdkDirFile.absolutePath)
+            environment("JAVA_HOME", System.getProperty("java.home"))
+        }
     }
-}
 
-tasks.register<Exec>("startEmulator") {
-    group = "emulator"
+    tasks.register<Exec>("startEmulator") {
+        group = "emulator"
+        inputs.dir(sdkDirProvider)
 
-    doFirst {
-        commandLine("${project.projectDir}/development/scripts/start_emulator.sh", "seedvault")
+        doFirst {
+            commandLine("${project.projectDir}/development/scripts/start_emulator.sh", "seedvault")
 
-        environment("ANDROID_HOME", android.sdkDirectory.absolutePath)
-        environment("JAVA_HOME", System.getProperty("java.home"))
+            val sdkDirFile = sdkDirProvider.get().asFile
+            environment("ANDROID_HOME", sdkDirFile.absolutePath)
+            environment("JAVA_HOME", System.getProperty("java.home"))
+        }
     }
-}
 
-tasks.register<Exec>("installEmulatorRelease") {
-    group = "emulator"
+    tasks.register<Exec>("installEmulatorRelease") {
+        group = "emulator"
+        inputs.dir(sdkDirProvider)
 
-    dependsOn(tasks.getByName("assembleRelease"))
+        dependsOn(tasks.getByName("assembleRelease"))
 
-    doFirst {
-        commandLine("${project.projectDir}/development/scripts/install_app.sh")
+        doFirst {
+            commandLine("${project.projectDir}/development/scripts/install_app.sh")
 
-        environment("ANDROID_HOME", android.sdkDirectory.absolutePath)
-        environment("JAVA_HOME", System.getProperty("java.home"))
+            val sdkDirFile = sdkDirProvider.get().asFile
+            environment("ANDROID_HOME", sdkDirFile.absolutePath)
+            environment("JAVA_HOME", System.getProperty("java.home"))
+        }
     }
-}
 
-tasks.register<Exec>("clearEmulatorAppData") {
-    group = "emulator"
+    tasks.register<Exec>("clearEmulatorAppData") {
+        group = "emulator"
+        inputs.dir(sdkDirProvider)
 
-    doFirst {
-        commandLine("${project.projectDir}/development/scripts/clear_app_data.sh")
+        doFirst {
+            commandLine("${project.projectDir}/development/scripts/clear_app_data.sh")
 
-        environment("ANDROID_HOME", android.sdkDirectory.absolutePath)
-        environment("JAVA_HOME", System.getProperty("java.home"))
+            val sdkDirFile = sdkDirProvider.get().asFile
+            environment("ANDROID_HOME", sdkDirFile.absolutePath)
+            environment("JAVA_HOME", System.getProperty("java.home"))
+        }
     }
 }

@@ -5,7 +5,7 @@
 
 [versions]
 # Gradle plugin versions
-androidGradlePlugin = "8.10.1"
+androidGradlePlugin = "9.2.1"
 protobufPlugin = "0.9.5"
 ktlint = "12.2.0"
 

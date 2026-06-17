@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * SPDX-FileCopyrightText: 2020 The Calyx Institute
  * SPDX-License-Identifier: Apache-2.0
@@ -5,7 +7,6 @@
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
@@ -24,10 +25,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     packaging {
@@ -54,6 +51,8 @@ android {
         getByName("debug").signingConfig = signingConfigs.getByName("aosp")
     }
 }
+
+kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }
 
 // out/soong/.intermediates/frameworks/opt/vcard/com.android.vcard/android_common/javac/com.android.vcard.jar
 val aospDeps = fileTree(mapOf("include" to listOf("com.android.vcard.jar"), "dir" to "libs"))
