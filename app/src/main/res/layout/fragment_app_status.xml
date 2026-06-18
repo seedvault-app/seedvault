@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/app_status_menu"
+        app:navigationContentDescription="@string/nav_back"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/settings_backup_status_title" />
 

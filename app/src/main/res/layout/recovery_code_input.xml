@@ -28,7 +28,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput2" />
@@ -51,7 +51,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput4" />
@@ -74,7 +74,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput6" />
@@ -97,7 +97,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput8" />
@@ -120,7 +120,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput10" />
@@ -143,7 +143,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput12" />
@@ -167,7 +167,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput3" />
@@ -190,7 +190,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput5" />
@@ -213,7 +213,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput7" />
@@ -236,7 +236,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput9" />
@@ -259,7 +259,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionNext|flagNavigateNext|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions"
             android:nextFocusForward="@+id/wordInput11" />
@@ -282,7 +282,7 @@
             style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
+            android:completionThreshold="3"
             android:imeOptions="actionDone|flagNoPersonalizedLearning"
             android:inputType="textAutoComplete|textNoSuggestions" />
 
