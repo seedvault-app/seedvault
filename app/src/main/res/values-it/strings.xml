@@ -184,4 +184,19 @@
     <string name="settings_backup_status_next_backup_usb">I Backup avverrano automaticamente quando inserisci il tuo dispositivo USB</string>
     <string name="settings_backup_scheduling_title">Pianificazione Backup</string>
     <string name="settings_backup_app_check_title">Controllo integrità</string>
+    <string name="settings_backup_metered_title">Backup interroto</string>
+    <string name="settings_scheduling_frequency_title">Frequenza dei backup</string>
+    <string name="settings_scheduling_frequency_12_hours">Ogni 12 ore</string>
+    <string name="settings_scheduling_frequency_daily">Giornalmente</string>
+    <string name="settings_scheduling_frequency_3_days">Ogni 3 giorni</string>
+    <string name="settings_scheduling_frequency_weekly">Settimanalmente</string>
+    <string name="settings_scheduling_category_conditions_title">Condizioni</string>
+    <string name="settings_app_check_warning">Attenzione: Scaricare grandi quantità di dati può richiedere molto tempo.</string>
+    <string name="settings_app_check_button">Controlla Backup</string>
+    <string name="storage_webdav_config_url">WebDAV URL</string>
+    <string name="storage_webdav_config_user">Nome Utente</string>
+    <string name="storage_webdav_config_pass">Password</string>
+    <string name="storage_webdav_config_button">Usa WebDAV cloud</string>
+    <string name="storage_webdav_config_malformed_url">URL WebDAV non valido</string>
+    <string name="storage_webdav_name">WebDAV %s</string>
 </resources>
