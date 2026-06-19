@@ -5,7 +5,7 @@
 
 package org.calyxos.seedvault.core.backends.webdav
 
-import org.junit.Assume.assumeFalse
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import kotlin.test.fail
 
 internal object WebDavTestConfig {

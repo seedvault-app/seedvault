@@ -74,11 +74,11 @@ android {
     }
 
     sourceSets {
-        named("test") {
-            java.srcDirs("$projectDir/src/sharedTest/java")
+        getByName("test") {
+            kotlin.directories += "src/sharedTest/java"
         }
-        named("androidTest") {
-            java.srcDirs("$projectDir/src/sharedTest/java")
+        getByName("androidTest") {
+            kotlin.directories += "src/sharedTest/java"
         }
     }
 
@@ -195,6 +195,7 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.bitcoinj.core)
     testImplementation(libs.zstd.jni)
+    testRuntimeOnly(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(libs.junit.vintage.engine)
 
