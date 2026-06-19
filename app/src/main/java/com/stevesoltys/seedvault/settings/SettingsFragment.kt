@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.PreferenceFragmentCompat
@@ -30,6 +31,9 @@ import com.stevesoltys.seedvault.restore.RestoreActivity
 import com.stevesoltys.seedvault.settings.BackupPermission.BackupAllowed
 import com.stevesoltys.seedvault.ui.notification.BackupNotificationManager
 import com.stevesoltys.seedvault.ui.toRelativeTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.calyxos.seedvault.core.backends.BackendProperties
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -199,16 +203,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_backup -> {
             viewModel.backupNow()
-            if (!backendManager.canDoBackupNow()) {
-                // if USB isn't plugged in, this action shouldn't be enabled,
-                // so this leaves only that we are on a metered network
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.settings_backup_metered_title))
-                    .setMessage(getString(R.string.settings_backup_metered_text))
-                    .setNeutralButton(getString(R.string.restore_storage_got_it)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
+            lifecycleScope.launch {
+                val canDoBackupNow = withContext(Dispatchers.IO) {
+                    backendManager.canDoBackupNow()
+                }
+                if (!canDoBackupNow) withContext(Dispatchers.Main) {
+                    // if USB isn't plugged in, this action shouldn't be enabled,
+                    // so this leaves only that we are on a metered network
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.settings_backup_metered_title))
+                        .setMessage(getString(R.string.settings_backup_metered_text))
+                        .setNeutralButton(getString(R.string.restore_storage_got_it)) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                }
             }
             true
         }
