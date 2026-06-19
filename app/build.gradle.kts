@@ -5,7 +5,7 @@
 
 import com.google.protobuf.gradle.id
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.kotlin.dsl.implementation
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -212,6 +212,20 @@ dependencies {
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile::class) {
         options.compilerArgs.add("-Xbootclasspath/p:libs/aosp/android.jar:libs/aosp/libcore.jar")
+    }
+}
+
+tasks.withType<KotlinCompile> {
+    doFirst {
+        val aospFiles = project.files(
+            "$rootDir/libs/aosp/android.jar",
+            "$rootDir/libs/aosp/libcore.jar",
+        )
+        val list = buildList {
+            add(aospFiles)
+            addAll(libraries.from)
+        }
+        libraries.setFrom(list)
     }
 }
 
