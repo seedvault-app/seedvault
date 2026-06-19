@@ -39,11 +39,11 @@ lint-rules = { strictly = "0.1.0" }
 
 # IMPORTANT: Keep in sync with .jar versions at /libs and /core/libs
 # Logging libs
-logging = { strictly = "7.0.7" }
-slf4j-api = { strictly = "2.0.16" }
+kotlin-logging = { strictly = "8.0.4" }
+slf4j-api = { strictly = "2.0.18" }
 # careful with upgrading tink, so old backups continue to be decryptable
 # https://github.com/tink-crypto/tink-java/releases
-tink = { strictly = "1.17.0" }
+tink = { strictly = "1.22.0" }
 zstdJni = "1.5.7-3"
 
 # Google versions
@@ -91,7 +91,7 @@ androidXuiautomator = "2.3.0"
 robolectric = "4.16.1"
 espresso = "3.7.0"
 turbine = "1.2.1"
-slf4jSimple = "2.0.16"
+slf4jSimple = "2.0.18"
 hamcrest = "3.0"
 xpp3 = "1.1.6"
 bitcoinjCore = "0.17.1"
@@ -129,7 +129,7 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 squareup-okio = { module= "com.squareup.okio:okio", version.ref = "squareup-okio" }
-kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 # Test dependencies

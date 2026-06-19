@@ -73,7 +73,7 @@ public abstract class BackendTest {
         // try listing with top-level folder, should find two files of FileBackupFileType in there
         var numFiles = 0
         backend.list(
-            fileSnapshot!!.topLevelFolder,
+            fileSnapshot.topLevelFolder,
             FileBackupFileType.Snapshot::class,
             FileBackupFileType.Blob::class,
             LegacyAppBackupFile.Metadata::class,
@@ -123,15 +123,15 @@ public abstract class BackendTest {
 
         // rename snapshots
         val snapshotNewFolder = TopLevelFolder("a123456789abcdef.sv")
-        backend.rename(fileSnapshot!!.topLevelFolder, snapshotNewFolder)
+        backend.rename(fileSnapshot.topLevelFolder, snapshotNewFolder)
 
         // rename to existing folder should fail
         val e = assertFailsWith<Exception> {
-            backend.rename(snapshotNewFolder, metadata!!.topLevelFolder)
+            backend.rename(snapshotNewFolder, metadata.topLevelFolder)
         }
         println(e)
 
-        backend.remove(metadata!!.topLevelFolder)
+        backend.remove(metadata.topLevelFolder)
         backend.remove(snapshotNewFolder)
     }
 

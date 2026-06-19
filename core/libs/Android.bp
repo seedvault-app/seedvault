@@ -5,18 +5,18 @@
 
 java_import {
     name: "seedvault-lib-tink-android",
-    jars: ["tink-android-1.17.0.jar"],
+    jars: ["tink-android-1.22.0.jar"],
     sdk_version: "current",
 }
 
 java_import {
     name: "seedvault-lib-kotlin-logging-jvm",
-    jars: ["kotlin-logging-jvm-7.0.7.jar"],
+    jars: ["kotlin-logging-jvm-8.0.4.jar"],
     sdk_version: "current",
 }
 
 java_import {
     name: "seedvault-lib-slf4j-api",
-    jars: ["slf4j-api-2.0.17.jar"],
+    jars: ["slf4j-api-2.0.18.jar"],
     sdk_version: "current",
 }

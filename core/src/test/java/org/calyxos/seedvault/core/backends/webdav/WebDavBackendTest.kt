@@ -8,23 +8,23 @@ package org.calyxos.seedvault.core.backends.webdav
 import kotlinx.coroutines.runBlocking
 import org.calyxos.seedvault.core.backends.Backend
 import org.calyxos.seedvault.core.backends.BackendTest
-import kotlin.test.Test
+import org.junit.Test
 
-public class WebDavBackendTest : BackendTest() {
+internal class WebDavBackendTest : BackendTest() {
     override val backend: Backend = WebDavBackend(WebDavTestConfig.getConfig(), ".SeedvaultTest")
 
     @Test
-    public fun `test write, list, read, rename, delete`(): Unit = runBlocking {
+    fun `test write, list, read, rename, delete`(): Unit = runBlocking {
         testWriteListReadRenameDelete()
     }
 
     @Test
-    public fun `test remove, create, write file`(): Unit = runBlocking {
+    fun `test remove, create, write file`(): Unit = runBlocking {
         testRemoveCreateWriteFile()
     }
 
     @Test
-    public fun `test, free space and create app blob without root folder`(): Unit = runBlocking {
+    fun `test, free space and create app blob without root folder`(): Unit = runBlocking {
         testTestFreeSpaceAndCreateBlob()
     }
 }

@@ -9,7 +9,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import androidx.annotation.WorkerThread
-import at.bitfire.dav4jvm.exception.HttpException
+import at.bitfire.dav4jvm.ktor.exception.HttpException
 import java.io.IOException
 
 public abstract class BackendProperties<T> {
@@ -40,9 +40,9 @@ public abstract class BackendProperties<T> {
 public fun Exception.isOutOfSpace(): Boolean {
     return when (this) {
         is IOException -> message?.contains("No space left on device") == true ||
-            (cause as? HttpException)?.code == 507
+            (cause as? HttpException)?.statusCode == 507
 
-        is HttpException -> code == 507
+        is HttpException -> statusCode == 507
 
         else -> false
     }

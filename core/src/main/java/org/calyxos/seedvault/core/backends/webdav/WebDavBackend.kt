@@ -5,12 +5,13 @@
 
 package org.calyxos.seedvault.core.backends.webdav
 
-import at.bitfire.dav4jvm.BasicDigestAuthHandler
-import at.bitfire.dav4jvm.DavCollection
-import at.bitfire.dav4jvm.Response.HrefRelation.SELF
-import at.bitfire.dav4jvm.exception.HttpException
-import at.bitfire.dav4jvm.exception.NotFoundException
+import at.bitfire.dav4jvm.okhttp.BasicDigestAuthHandler
+import at.bitfire.dav4jvm.okhttp.DavCollection
+import at.bitfire.dav4jvm.okhttp.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.okhttp.exception.HttpException
+import at.bitfire.dav4jvm.okhttp.exception.NotFoundException
 import at.bitfire.dav4jvm.property.webdav.QuotaAvailableBytes
+import at.bitfire.dav4jvm.property.webdav.WebDAV
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import okhttp3.ConnectionSpec
@@ -108,7 +109,7 @@ public class WebDavBackend(
         val davCollection = DavCollection(okHttpClient, location)
 
         val availableBytes = suspendCoroutine { cont ->
-            davCollection.propfind(depth = 0, QuotaAvailableBytes.NAME) { response, _ ->
+            davCollection.propfind(depth = 0, WebDAV.QuotaAvailableBytes) { response, _ ->
                 log.debugLog { "getFreeSpace() = $response" }
                 val quota = response.properties.getOrNull(0) as? QuotaAvailableBytes
                 val availableBytes = quota?.quotaAvailableBytes ?: -1
@@ -372,7 +373,7 @@ public class WebDavBackend(
             return true
         } else if (e is IOException && e.message?.contains("unexpected end of stream") == true) {
             return true
-        } else if (e is HttpException && e.code == 423) {
+        } else if (e is HttpException && e.statusCode == 423) {
             return true // HTTP 423 Locked
         }
         return false

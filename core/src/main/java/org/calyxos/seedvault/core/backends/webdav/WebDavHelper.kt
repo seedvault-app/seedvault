@@ -5,18 +5,18 @@
 
 package org.calyxos.seedvault.core.backends.webdav
 
-import at.bitfire.dav4jvm.DavCollection
-import at.bitfire.dav4jvm.MultiResponseCallback
 import at.bitfire.dav4jvm.Property
-import at.bitfire.dav4jvm.Response
-import at.bitfire.dav4jvm.Response.HrefRelation.SELF
-import at.bitfire.dav4jvm.ResponseCallback
-import at.bitfire.dav4jvm.exception.ConflictException
-import at.bitfire.dav4jvm.exception.HttpException
-import at.bitfire.dav4jvm.exception.NotFoundException
-import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.okhttp.DavCollection
+import at.bitfire.dav4jvm.okhttp.MultiResponseCallback
+import at.bitfire.dav4jvm.okhttp.Response
+import at.bitfire.dav4jvm.okhttp.Response.HrefRelation.SELF
+import at.bitfire.dav4jvm.okhttp.ResponseCallback
+import at.bitfire.dav4jvm.okhttp.exception.ConflictException
+import at.bitfire.dav4jvm.okhttp.exception.HttpException
+import at.bitfire.dav4jvm.okhttp.exception.NotFoundException
 import at.bitfire.dav4jvm.property.webdav.GetContentLength
 import at.bitfire.dav4jvm.property.webdav.ResourceType
+import at.bitfire.dav4jvm.property.webdav.WebDAV
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import okhttp3.HttpUrl
@@ -26,21 +26,21 @@ private val log = KotlinLogging.logger {}
 /**
  * Tries to do [DavCollection.propfind] with a depth of `-1`.
  * Since `infinity` isn't supported by nginx either,
- * we fallback to iterating over all folders found with depth `1`
+ * we fall back to iterating over all folders found with depth `1`
  * and do another PROPFIND on those, passing the given [callback].
  *
- * @param maxDepth in case we need to fallback to recursive propfinds, we only go that far down.
+ * @param maxDepth in case we need to fall back to recursive propfinds, we only go that far down.
  */
 internal fun DavCollection.propfindDepthInfinity(maxDepth: Int, callback: MultiResponseCallback) {
     try {
         propfind(
             depth = -1,
-            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME, GetContentLength.NAME),
+            reqProp = arrayOf(WebDAV.DisplayName, WebDAV.ResourceType, WebDAV.GetContentLength),
             callback = callback,
         )
     } catch (e: HttpException) {
         if (e.isUnsupportedPropfind()) {
-            log.info { "Got ${e.response}, trying recursive depth=1 PROPFINDs..." }
+            log.info { "Got ${e.responseExcerpt}, trying recursive depth=1 PROPFINDs..." }
             propfindFakeInfinity(maxDepth, callback)
         } else {
             throw e
@@ -52,7 +52,7 @@ internal fun DavCollection.propfindFakeInfinity(depth: Int, callback: MultiRespo
     if (depth <= 0) return
     propfind(
         depth = 1,
-        reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME, GetContentLength.NAME),
+        reqProp = arrayOf(WebDAV.DisplayName, WebDAV.ResourceType, WebDAV.GetContentLength),
     ) { response, relation ->
         // This callback will be called for everything in the folder
         callback.onResponse(response, relation)
@@ -91,7 +91,7 @@ internal fun DavCollection.ensureFoldersExist(log: KLogger, folders: MutableSet<
     try {
         parentCollection.propfind(
             depth = 0,
-            reqProp = arrayOf(DisplayName.NAME, ResourceType.NAME),
+            reqProp = arrayOf(WebDAV.DisplayName, WebDAV.ResourceType),
         ) { response, relation ->
             log.debugLog { "propfind(0, $parent) = $response $relation" }
             folders.add(parent)
@@ -107,7 +107,7 @@ internal fun DavCollection.ensureFoldersExist(log: KLogger, folders: MutableSet<
 
 private fun HttpException.isUnsupportedPropfind(): Boolean {
     // nginx is not including 'propfind-finite-depth' in body, so just relay on code
-    return code == 403 || code == 400 // dufs returns 400
+    return statusCode == 403 || statusCode == 400 // dufs returns 400
 }
 
 internal fun List<Property>.contentLength(): Long {
@@ -116,5 +116,5 @@ internal fun List<Property>.contentLength(): Long {
 }
 
 internal fun Response.isFolder(): Boolean {
-    return this[ResourceType::class.java]?.types?.contains(ResourceType.COLLECTION) == true
+    return this[ResourceType::class.java]?.types?.contains(WebDAV.Collection) == true
 }

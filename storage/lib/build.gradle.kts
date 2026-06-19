@@ -104,7 +104,7 @@ dependencies {
     implementation(libs.google.protobuf.javalite)
     implementation(libs.squareup.okio)
 
-    ksp(group = "androidx.room", name = "room-compiler", version = libs.versions.room.get())
+    ksp("androidx.room:room-compiler:${libs.versions.room.get()}")
     lintChecks(libs.thirdegg.lint.rules)
     testImplementation(libs.junit4)
     testImplementation(libs.mockk)
