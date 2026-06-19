@@ -166,6 +166,7 @@ dependencies {
      * in the top-level `libs` folder to reflect that.
      * You can copy these libraries from ~/.gradle/caches/modules-2/files-2.1
      */
+    // implementation("io.insert-koin:koin-core-viewmodel-jvm:4.2.2")
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
