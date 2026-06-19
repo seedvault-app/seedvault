@@ -197,7 +197,7 @@
     <string name="settings_app_check_text2">Aqui pode executar uma verificação do seu backup de apps. Selecione quanto dos dados das apps devem serem descarregados para a verificação. Quanto mais selecionar, mais demorará, mas também mais segura a verificação será. Isto executará em segundo plano e uma notificação será enviada quando a verificação for concluída.</string>
     <string name="settings_file_check_title">Verificar integridade do backup de ficheiros</string>
     <string name="settings_file_check_text">Aqui pode executar uma verificação do seu backup de ficheiros.</string>
-    <string name="storage_webdav_option_title">Nuvem WebDAV (beta)</string>
+    <string name="storage_webdav_option_title">Nuvem WebDAV (recomendado)</string>
     <string name="storage_webdav_option_summary">Acesso direto ao WebDAV</string>
     <string name="storage_webdav_config_url">URL do WebDAV</string>
     <string name="storage_webdav_config_user">Nome de utilizador</string>

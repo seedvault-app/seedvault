@@ -187,7 +187,7 @@
     <string name="storage_webdav_config_button">Usar nuvem WebDAV</string>
     <string name="storage_webdav_config_malformed_url">URL do WebDAV inválido</string>
     <string name="storage_webdav_name">%s WebDAV</string>
-    <string name="storage_webdav_option_title">Nuvem WebDAV (beta)</string>
+    <string name="storage_webdav_option_title">Nuvem WebDAV (recomendado)</string>
     <string name="storage_webdav_config_url">URL do WebDAV</string>
     <string name="storage_webdav_config_url_helper">Certifique-se de digitar a URL inteira aqui. Por exemplo, para o Nextcloud, ela tem a forma de https://seuservidor.com/remote.php/webdav</string>
     <string name="notification_space_error_title">Espaço insuficiente de backup</string>
