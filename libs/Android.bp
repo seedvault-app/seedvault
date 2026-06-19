@@ -5,7 +5,7 @@
 
 android_library_import {
     name: "seedvault-lib-zstd-jni",
-    aars: ["zstd-jni-1.5.7-3.aar"],
+    aars: ["zstd-jni-1.5.7-11.aar"],
     sdk_version: "current",
     extract_jni: true,
 }
@@ -18,7 +18,7 @@ android_library_import {
 
 java_import {
     name: "seedvault-lib-protobuf-kotlin-lite",
-    jars: ["protobuf-kotlin-lite-3.21.12.jar"],
+    jars: ["protobuf-kotlin-lite-4.35.1.jar"],
     sdk_version: "current",
 }
 

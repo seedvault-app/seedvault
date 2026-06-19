@@ -44,7 +44,7 @@ slf4j-api = { strictly = "2.0.18" }
 # careful with upgrading tink, so old backups continue to be decryptable
 # https://github.com/tink-crypto/tink-java/releases
 tink = { strictly = "1.22.0" }
-zstdJni = "1.5.7-3"
+zstdJni = "1.5.7-11"
 
 # Google versions
 # https://android.googlesource.com/platform/external/protobuf/+/refs/tags/android-17.0.0_r1/java/pom.xml#7

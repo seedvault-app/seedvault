@@ -170,10 +170,12 @@ dependencies {
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs/koin-android").include("*.aar"))
 
+    // implementation("com.google.protobuf:protobuf-kotlin-lite:4.35.1")
     implementation(
         fileTree("${rootProject.rootDir}/libs").include("protobuf-kotlin-lite-*.jar")
     )
     implementation(fileTree("${rootProject.rootDir}/libs").include("seedvault-chunker-*.jar"))
+    // implementation("com.github.luben:zstd-jni:1.5.7-11@aar")
     implementation(fileTree("${rootProject.rootDir}/libs").include("zstd-jni-*.aar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("kotlin-bip39-jvm-*.jar"))
     implementation(fileTree("${rootProject.rootDir}/libs").include("logback-android-*.aar"))
