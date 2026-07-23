@@ -20,12 +20,14 @@ import android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
 import android.content.pm.PackageManager.MATCH_SYSTEM_ONLY
 import android.content.pm.ResolveInfo
 import android.os.RemoteException
+import android.os.UserHandle
 import android.util.Log
 import android.util.Log.INFO
 import androidx.annotation.WorkerThread
 import com.stevesoltys.seedvault.MAGIC_PACKAGE_MANAGER
 import com.stevesoltys.seedvault.backend.BackendManager
 import com.stevesoltys.seedvault.settings.SettingsManager
+import com.stevesoltys.seedvault.ui.PACKAGE_NAME_SMS
 import org.calyxos.seedvault.core.backends.Backend
 
 private val TAG = PackageService::class.java.simpleName
@@ -157,10 +159,14 @@ internal class PackageService(
 
         // We need to explicitly exclude DocumentsProvider and Seedvault.
         // Otherwise, they get killed while backing them up, terminating our backup.
-        val excludedPackages = setOf(
+        val excludedPackages = mutableSetOf(
             backend.providerPackageName,
             context.packageName
         )
+
+        if (UserHandle.myUserId() != UserHandle.USER_SYSTEM) {
+            excludedPackages += PACKAGE_NAME_SMS
+        }
 
         return enabled && !excludedPackages.contains(packageName)
     }
