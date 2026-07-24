@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -202,21 +203,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_backup -> {
-            viewModel.backupNow()
-            lifecycleScope.launch {
-                val canDoBackupNow = withContext(Dispatchers.IO) {
-                    backendManager.canDoBackupNow()
-                }
-                if (!canDoBackupNow) withContext(Dispatchers.Main) {
-                    // if USB isn't plugged in, this action shouldn't be enabled,
-                    // so this leaves only that we are on a metered network
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.settings_backup_metered_title))
-                        .setMessage(getString(R.string.settings_backup_metered_text))
-                        .setNeutralButton(getString(R.string.restore_storage_got_it)) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+            if (!backup.isChecked && !backupStorage.isChecked) {
+                showBackupInfoDialog(
+                    R.string.settings_backup_nothing_selected_title,
+                    R.string.settings_backup_nothing_selected_text,
+                )
+            } else {
+                viewModel.backupNow()
+                lifecycleScope.launch {
+                    val canDoBackupNow = withContext(Dispatchers.IO) {
+                        backendManager.canDoBackupNow()
+                    }
+                    if (!canDoBackupNow) withContext(Dispatchers.Main) {
+                        // if USB isn't plugged in, this action shouldn't be enabled,
+                        // so this leaves only that we are on a metered network
+                        showBackupInfoDialog(
+                            R.string.settings_backup_metered_title,
+                            R.string.settings_backup_metered_text,
+                        )
+                    }
                 }
             }
             true
@@ -240,6 +245,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         else -> false
+    }
+
+    private fun showBackupInfoDialog(@StringRes title: Int, @StringRes text: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(title))
+            .setMessage(getString(text))
+            .setNeutralButton(getString(R.string.restore_storage_got_it)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun trySetBackupEnabled(enabled: Boolean): Boolean {
