@@ -6,57 +6,70 @@ on:
       - android*
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   instrumentation_tests:
-    runs-on: macos-12
+    runs-on: ubuntu-latest
     if: github.repository == 'seedvault-app/seedvault'
     timeout-minutes: 80
     strategy:
       fail-fast: false
       matrix:
         android_target: [ 34 ]
-        emulator_type: [ aosp_atd ]
+        emulator_type: [ default ]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v3
+      # The emulator needs KVM hardware acceleration to run at a usable speed on
+      # ubuntu-latest runners.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '17'
+          distribution: 'corretto'
+          java-version: 21
           cache: 'gradle'
 
-      - name: Build Release APK
-        run: ./gradlew :app:assembleRelease
+      # Seedvault and ContactsBackup are installed as system priv-apps during
+      # provisioning, so both release APKs need to be built up front.
+      - name: Build Release APKs
+        run: ./gradlew :app:assembleRelease :contactsbackup:assembleRelease
 
       - name: Assemble tests
-        run: ./gradlew :app:assembleAndroidTest
+        run: ./gradlew assembleAndroidTest
 
       - name: Run tests
-        uses: Wandalen/wretry.action@v1.3.0
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          attempt_limit: 1
-          action: reactivecircus/android-emulator-runner@v2
-          with: |
-            api-level: ${{ matrix.android_target }}
-            target: ${{ matrix.emulator_type }}
-            arch: x86_64
-            force-avd-creation: true
-            emulator-options: -cores 2 -writable-system -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-            disk-size: '14G'
-            sdcard-path-or-size: '4096M'
-            disable-animations: true
-            script: |
-              ./app/development/scripts/provision_emulator.sh "test" "system-images;android-${{ matrix.android_target }};${{ matrix.emulator_type }};x86_64"
-              ./.github/scripts/run_tests.sh
+          api-level: ${{ matrix.android_target }}
+          target: ${{ matrix.emulator_type }}
+          arch: x86_64
+          force-avd-creation: true
+          emulator-options: -cores 2 -writable-system -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disk-size: '14G'
+          sdcard-path-or-size: '4096M'
+          disable-animations: true
+          script: |
+            ./app/development/scripts/provision_emulator.sh "test" "system-images;android-${{ matrix.android_target }};${{ matrix.emulator_type }};x86_64"
+            ./.github/scripts/run_tests.sh
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.emulator_type }}-${{ matrix.android_target }}-results
-          path: seedvault_test_results/**/*
+          path: |
+            seedvault_test_results/**/*
+            **/build/reports/**

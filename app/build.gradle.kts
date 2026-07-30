@@ -65,6 +65,13 @@ android {
         resources {
             excludes += listOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
         }
+        // Some androidTest dependencies (e.g. mockk-android) ship native libs
+        // with extractNativeLibs="true" in their manifest, which current AGP
+        // rejects when packaging the androidTest APK unless we opt into legacy
+        // packaging here (as :contactsbackup already does).
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     testOptions.unitTests {

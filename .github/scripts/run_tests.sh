@@ -10,8 +10,12 @@ echo "Installing Seedvault app..."
 ./gradlew --stacktrace :app:installDebugAndroidTest
 sleep 60
 
+# The large tests (the app's end-to-end backup/restore test) are run on their
+# own via the instrumentation runner's built-in size filtering.
 large_test_exit_code=0
-./gradlew --stacktrace -Pinstrumented_test_size=large :app:connectedAndroidTest || large_test_exit_code=$?
+./gradlew --stacktrace \
+    -Pandroid.testInstrumentationRunnerArguments.size=large \
+    :app:connectedAndroidTest || large_test_exit_code=$?
 
 adb pull /sdcard/seedvault_test_results
 
@@ -20,11 +24,14 @@ if [ "$large_test_exit_code" -ne 0 ]; then
     exit 1
 fi
 
-medium_test_exit_code=0
-./gradlew --stacktrace -Pinstrumented_test_size=medium :app:connectedAndroidTest || medium_test_exit_code=$?
+# All remaining (non-large) instrumentation tests across every module.
+other_test_exit_code=0
+./gradlew --stacktrace \
+    -Pandroid.testInstrumentationRunnerArguments.notAnnotation=androidx.test.filters.LargeTest \
+    connectedAndroidTest || other_test_exit_code=$?
 
-if [ "$medium_test_exit_code" -ne 0 ]; then
-    echo 'Medium tests failed.'
+if [ "$other_test_exit_code" -ne 0 ]; then
+    echo 'Non-large tests failed.'
     exit 1
 fi
 
