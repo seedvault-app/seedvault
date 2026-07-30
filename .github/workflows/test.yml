@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        android_target: [ 34 ]
+        android_target: [ 36 ]
         emulator_type: [ default ]
     steps:
       - name: Checkout Code
