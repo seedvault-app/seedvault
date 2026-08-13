@@ -13,6 +13,8 @@ import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDEN
 import android.hardware.biometrics.BiometricPrompt
 import android.os.Bundle
 import android.os.CancellationSignal
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -132,6 +134,7 @@ class RecoveryCodeInputFragment : Fragment() {
                 if (!focus) wordLayout.isErrorEnabled = false
             }
             editText.setAdapter(adapter)
+            editText.addTextChangedListener(SpaceAdvancesFocusWatcher(i))
         }
         doneButton.setOnClickListener { done() }
         newCodeButton.visibility = if (forStoringNewCode) GONE else VISIBLE
@@ -282,6 +285,21 @@ class RecoveryCodeInputFragment : Fragment() {
         val words = viewModel.wordList
         for (i in words.indices) {
             getWordLayout(i).editText!!.setText(String(words[i]))
+        }
+    }
+
+    /**
+     * Words never contain spaces, so treat pressing space as a request
+     * to jump to the next word field instead of inserting a character.
+     */
+    private inner class SpaceAdvancesFocusWatcher(private val index: Int) : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable) {
+            val spaceIndex = s.indexOf(" ")
+            if (spaceIndex == -1) return
+            s.delete(spaceIndex, spaceIndex + 1)
+            if (index < WORD_NUM - 1) getWordLayout(index + 1).editText?.requestFocus()
         }
     }
 }
