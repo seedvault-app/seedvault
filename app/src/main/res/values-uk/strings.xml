@@ -180,7 +180,7 @@
     <string name="notification_space_error_title">Брак місця для резервного копіювання</string>
     <string name="notification_space_error_text">У розміщенні резервної копії бракує місця. Для створення резервної копії його потрібно звільнити.</string>
     <string name="restore_storage_selection_description">Вибрані файли будуть відновлені. Для перегляду вмісту тек торкніться їх.</string>
-    <string name="storage_webdav_option_title">Хмара WebDAV (бета)</string>
+    <string name="storage_webdav_option_title">Хмара WebDAV (рекомендовано)</string>
     <string name="storage_webdav_option_summary">Інтегрований прямий доступ до WebDAV</string>
     <string name="storage_webdav_config_url">Адреса WebDAV</string>
     <string name="storage_webdav_config_button">Використовувати хмару WebDAV</string>
@@ -244,11 +244,11 @@
     <string name="restore_recycle_backup_title">Повторно використовувати цю резервну копію?</string>
     <string name="restore_recycle_backup_button_no">Створіть нову резервну копію</string>
     <string name="restore_recycle_backup_button_yes">Повторне використання резервної копії</string>
-    <string name="settings_backup_file_check_title">Перевірте цілісність резервної копії</string>
-    <string name="settings_backup_file_check_summary">Переконайтеся, що моя резервна копія працює для відновлення файлів</string>
-    <string name="settings_file_check_title">Перевірте цілісність резервної копії файлу</string>
-    <string name="settings_file_check_text">Тут ви можете запустити одноразову перевірку, щоб підтвердити резервну копію файлу.</string>
-    <string name="settings_file_check_text2">Виберіть, скільки даних файлів потрібно завантажити для перевірки. Чим більше ви виберете, тим довше це займе, але тим надійнішим буде перевірка. \n\nПеревірка виконуватиметься у фоновому режимі та надішле вам сповіщення, коли її буде завершено.</string>
+    <string name="settings_backup_file_check_title">Перевірити цілісність резервної копії</string>
+    <string name="settings_backup_file_check_summary">Переконатися, що моя резервна копія здатна відновити файли</string>
+    <string name="settings_file_check_title">Перевірити цілісність файлу резервної копії</string>
+    <string name="settings_file_check_text">Тут можна запустити одноразову перевірку файлу резервної копії.</string>
+    <string name="settings_file_check_text2">Виберіть, скільки файлових даних потрібно завантажити для перевірки. Чим більше Ви оберете, тим довшою, але й надійнішою буде перевірка. \n\nПеревірка виконуватиметься у фоновому режимі та надішле Вам сповіщення по завершенню.</string>
     <string name="settings_backup_metered_title">Резервне копіювання зупинено</string>
     <string name="notification_failed_metered_text">Резервне копіювання перервано. Ви використовуєте мобільні дані? Підключіться до Wi-Fi, щоб продовжити.</string>
     <string name="settings_backup_metered_text">Резервне копіювання не продовжиться, оскільки ваш пристрій використовує мобільні дані.\n\nВи можете ввімкнути резервне копіювання через мобільні дані в розділі «Розклад резервного копіювання».</string>
