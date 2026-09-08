@@ -38,4 +38,6 @@
     <string name="check_files_title">קבצים בגיבוי הזה</string>
     <string name="check_files_text">„%s” כולל את הקבצים הבאים:</string>
     <string name="check_files_error">נתוני הגיבוי פגומים. הקובץ לא ישוחזר במלואו.</string>
+    <string name="content_remove">הסר</string>
+    <string name="nav_back">ניווט אחורה</string>
 </resources>

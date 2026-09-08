@@ -40,4 +40,5 @@
     <string name="check_success_intro">%1$d تېز زاپاسلاش بايقالدى %2$d%% سانلىق مەلۇمات (%3$s) مۇۋەپپەقىيەتلىك دەلىللەندى:</string>
     <string name="check_files_text">«%s» دا تۆۋەندىكى ھۆججەتلەر بار:</string>
     <string name="content_remove">چىقىرىۋەت</string>
+    <string name="nav_back">كەينىگە قايت</string>
 </resources>
