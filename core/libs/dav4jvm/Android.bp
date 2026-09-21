@@ -14,3 +14,17 @@ java_import {
     jars: ["okhttp-4.12.0.jar"],
     sdk_version: "current",
 }
+
+// https://repo1.maven.org/maven2/io/ktor/ktor-http-jvm/3.5.1/ktor-http-jvm-3.5.1.jar
+java_import {
+    name: "seedvault-lib-ktor-http",
+    jars: ["ktor-http-jvm-3.5.1.jar"],
+    sdk_version: "current",
+}
+
+// https://repo1.maven.org/maven2/io/ktor/ktor-io-jvm/3.5.1/ktor-io-jvm-3.5.1.jar
+java_import {
+    name: "seedvault-lib-ktor-io",
+    jars: ["ktor-io-jvm-3.5.1.jar"],
+    sdk_version: "current",
+}

@@ -68,7 +68,9 @@ android_app {
         "com.stevesoltys.backup_privapp_allowlist"
     ],
     optimize: {
-        enabled: false,
+        proguard_flags_files: ["app/proguard-rules.pro"],
+        enabled: true,
+        shrink_resources: true,
     },
 }
 
