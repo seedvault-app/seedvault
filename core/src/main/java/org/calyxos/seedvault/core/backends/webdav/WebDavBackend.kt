@@ -53,6 +53,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.reflect.KClass
 
 private const val DEBUG_LOG = true
+private val DELETE_HEADERS = mapOf("X-NC-Skip-Trashbin" to "true")
 
 public class WebDavBackend(
     webDavConfig: WebDavConfig,
@@ -304,7 +305,7 @@ public class WebDavBackend(
 
         try {
             val response = suspendCoroutine { cont ->
-                davCollection.delete { response ->
+                davCollection.delete(headers = DELETE_HEADERS) { response ->
                     cont.resume(response)
                 }
             }
@@ -345,7 +346,7 @@ public class WebDavBackend(
         val location = "$url/".toHttpUrl()
         val davCollection = DavCollection(okHttpClient, location)
         try {
-            davCollection.delete { response ->
+            davCollection.delete(headers = DELETE_HEADERS) { response ->
                 log.debugLog { "removeAll() = $response" }
             }
         } catch (e: NotFoundException) {
