@@ -205,7 +205,7 @@
     <string name="notification_restore_error_title">Kunde inte återställa data för %1$s</string>
     <string name="notification_error_action">Åtgärda</string>
     <string name="notification_error_channel_title">Felmeddelande</string>
-    <string name="storage_webdav_option_title">WebDAV moln (beta)</string>
+    <string name="storage_webdav_option_title">WebDAV moln (rekommenderad)</string>
     <string name="restore_storage_selection_description">Valda filer kommer återställas. Tryck på mapparna för att se filerna i dom.</string>
     <string name="first_start_text">Vill du återställa din enhet från en tidigare säkerhetskopia eller starta en ny säkerhetskopiering?</string>
     <string name="setup_button">Starta ny</string>
@@ -233,7 +233,7 @@
     <string name="notification_failed_text">Ett fel påträffades under säkerhetskopieringen.</string>
     <string name="notification_failed_metered_text">Säkerhetskopieringen har avbrutits. Använder du mobildata? Anslut till Wi-Fi för att fortsätta.</string>
     <string name="notification_restore_title">Återställning körs</string>
-    <string name="notification_restore_error_channel_title">USB-minnefel vid automatisk återställning</string>
+    <string name="notification_restore_error_channel_title">Fel vid automatisk återställning från USB-minne</string>
     <string name="notification_pruning_channel_title">Avisering för borttagande av gamla säkerhetskopior</string>
     <string name="notification_pruning_title">Tar bort gamla säkerhetskopior…</string>
     <string name="notification_pruning_blobs_title">Tar bort gamla säkerhetskopiors data…</string>
@@ -268,4 +268,5 @@
     <string name="restore_recycle_backup_button_yes">Återanvänd säkerhetskopia</string>
     <string name="storage_webdav_option_summary">WebDAV med integrerad direkttillgång</string>
     <string name="notification_restore_channel_title">Återställningsavisering</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync-fjärrplats:</string>
 </resources>

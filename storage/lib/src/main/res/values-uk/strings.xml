@@ -40,4 +40,5 @@
     <string name="check_error_only_broken_snapshots">Ми знайшли %1$d резервні знімки. Проте всі вони були зіпсовані. Будь ласка, запустіть успішне резервне копіювання, а потім повторіть перевірку.</string>
     <string name="check_error_has_snapshots">Ми знайшли %1$d резервних знімків, деякі з них пошкоджені або містять помилки. Нижче наведено резервні копії, які можна (частково) відновити.</string>
     <string name="content_remove">Вилучити</string>
+    <string name="nav_back">Навігація назад</string>
 </resources>
