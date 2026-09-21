@@ -33,4 +33,12 @@ $ADB push "$ROOT_PROJECT_DIR"/app/build/outputs/apk/release/app-release.apk /sys
 echo "Installing Seedvault permissions..."
 $ADB push "$ROOT_PROJECT_DIR"/permissions_com.stevesoltys.seedvault.xml /system/etc/permissions/privapp-permissions-seedvault.xml
 $ADB push "$ROOT_PROJECT_DIR"/allowlist_com.stevesoltys.seedvault.xml /system/etc/sysconfig/allowlist-seedvault.xml
+
+echo "Installing ContactsBackup app..."
+$ADB shell mkdir -p /system/priv-app/ContactsBackup
+$ADB push "$ROOT_PROJECT_DIR"/contactsbackup/build/outputs/apk/release/contactsbackup-release.apk /system/priv-app/ContactsBackup/ContactsBackup.apk
+
+echo "Installing ContactsBackup permissions..."
+$ADB push "$ROOT_PROJECT_DIR"/contactsbackup/default-permissions_org.calyxos.backup.contacts.xml /system/etc/default-permissions/default-permissions_org.calyxos.backup.contacts.xml
+
 $ADB shell am broadcast -a android.intent.action.BOOT_COMPLETED

@@ -42,7 +42,7 @@
     <string name="recovery_code_done_button">Verify</string>
     <string name="settings_backup_new_code_code_dialog_ok">New code</string>
     <string name="settings_backup_new_code_dialog_title">New recovery code required</string>
-    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (recommended)</string>
     <string name="storage_webdav_config_user">User name</string>
     <string name="storage_webdav_config_url">WebDAV URL</string>
     <string name="storage_webdav_config_malformed_url">Invalid WebDAV URL</string>

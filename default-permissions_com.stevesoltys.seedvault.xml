@@ -9,5 +9,7 @@
         <permission name="android.permission.POST_NOTIFICATIONS" fixed="false"/>
         <!-- Needed to back up original files with all metadata -->
         <permission name="android.permission.ACCESS_MEDIA_LOCATION" fixed="true"/>
+        <!-- Needed to access servers in local network with built-in WebDAV backend -->
+        <permission name="android.permission.ACCESS_LOCAL_NETWORK" fixed="false"/>
     </exception>
 </exceptions>

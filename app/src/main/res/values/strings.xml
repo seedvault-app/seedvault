@@ -61,6 +61,8 @@
     <string name="settings_backup_new_code_code_dialog_ok">New code</string>
     <string name="settings_backup_metered_title">Backup stopped</string>
     <string name="settings_backup_metered_text">The backup won\'t proceed because your device is using mobile data.\n\nYou can enable backups on mobile data under \"Backup scheduling\".</string>
+    <string name="settings_backup_nothing_selected_title">Nothing to back up</string>
+    <string name="settings_backup_nothing_selected_text">You haven\'t selected anything to back up.\n\nTurn on \"Backup my apps\" or \"Backup my files\" first.</string>
 
 
     <string name="settings_scheduling_frequency_title">Backup frequency</string>

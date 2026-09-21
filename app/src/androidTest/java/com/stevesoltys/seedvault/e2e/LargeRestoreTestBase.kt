@@ -53,7 +53,7 @@ internal interface LargeRestoreTestBase : LargeTestBase {
             waitUntilIdle()
 
             code.forEachIndexed { index, word ->
-                wordTextField(index).setText(word)
+                wordTextField(index).scrollTo().setText(word)
             }
 
             waitUntilIdle()

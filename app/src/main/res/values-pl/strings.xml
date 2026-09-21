@@ -216,8 +216,8 @@
     <string name="restore_storage_selection_description">Wybrane pliki zostaną przywrócone. Dotknij folderów, aby wyświetlić znajdujące się w nich pliki.</string>
     <string name="setup_button">Zacznij nową</string>
     <string name="first_start_text">Czy chcesz przywrócić urządzenie z istniejącej kopii zapasowej albo rozpocząć tworzenie nowej kopii zapasowej?</string>
-    <string name="notification_restore_channel_title">Przywróć powiadomienia</string>
-    <string name="notification_restore_title">Przywróć działanie</string>
+    <string name="notification_restore_channel_title">Powiadomienie o przywracaniu kopii zapasowej</string>
+    <string name="notification_restore_title">Trwa przywracanie kopii zapasowej</string>
     <string name="settings_backup_app_check_title">Sprawdź integralność</string>
     <string name="settings_app_check_title">Zweryfikuj integralności kopii zapasowej aplikacji</string>
     <string name="settings_app_check_warning">Ostrzeżenie: Pobieranie dużej ilości danych może zająć dużo czasu.</string>

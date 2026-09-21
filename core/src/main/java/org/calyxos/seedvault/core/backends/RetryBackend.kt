@@ -7,7 +7,9 @@ package org.calyxos.seedvault.core.backends
 
 import androidx.annotation.VisibleForTesting
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import kotlin.reflect.KClass
 
@@ -75,7 +77,12 @@ internal class RetryBackend(private val delegate: Backend) : Backend {
             val newDelayMs = delayMs + LINEAR_DELAY_MS
             if (newRetries < MAX_RETRIES && isTransientException(e)) {
                 log.warn(e) { "Retrying #$newRetries after error and delay ${newDelayMs}ms: " }
-                delay(newDelayMs)
+                // Don't let this delay be cancelled. These calls run under runBlocking on
+                // a binder thread, and when the backup framework times out it interrupts
+                // that thread. A delay() cancelled that way hits a kotlinx.coroutines bug
+                // (CompletedContinuation cannot be cast to DispatchedContinuation) that
+                // crashes the whole process instead of throwing CancellationException.
+                withContext(NonCancellable) { delay(newDelayMs) }
                 return retry(newRetries, newDelayMs, block)
             } else {
                 log.warn { "Last retry reached, throwing exception..." }

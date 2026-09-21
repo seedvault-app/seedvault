@@ -20,6 +20,9 @@
     <!-- This is needed to check for internet access when backup is stored on network storage -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- This is needed to access servers in local network with built-in WebDAV backend -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+
     <!-- Used for internal WebDAV plugin -->
     <uses-permission android:name="android.permission.INTERNET" />
 

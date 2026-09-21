@@ -53,6 +53,7 @@ It uses the same internal APIs as `adb backup` which is deprecated and thus need
 ## Permissions
 * `android.permission.BACKUP` to back up application data.
 * `android.permission.ACCESS_NETWORK_STATE` to check if there is internet access when network storage is used.
+* `android.permission.ACCESS_LOCAL_NETWORK` to access servers in local network with built-in WebDAV backend.
 * `android.permission.MANAGE_USB` to access the serial number of USB mass storage devices.
 * `android.permission.WRITE_SECURE_SETTINGS` to change system backup settings and enable call log backup.
 * `android.permission.QUERY_ALL_PACKAGES` to get information about all installed apps for backup.
