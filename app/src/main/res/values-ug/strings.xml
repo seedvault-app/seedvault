@@ -108,7 +108,7 @@
     <string name="storage_check_fragment_restore_title">زاپاسنى ئىزدەۋاتىدۇ…</string>
     <string name="storage_check_fragment_backup_error">زاپاسلاش ئورنىنى زىيارەت قىلىۋاتقاندا خاتالىق كۆرۈلدى.</string>
     <string name="storage_check_fragment_permission_error">زاپاسلاش ئورنىغا يېزىش ئىجازىتىگە ئېرىشەلمەيدۇ.</string>
-    <string name="storage_webdav_option_title">WebDAV بۇلۇت (سىناق)</string>
+    <string name="storage_webdav_option_title">WebDAV بۇلۇت (تەۋسىيە)</string>
     <string name="storage_webdav_option_summary">بىۋاسىتە WebDAV زىيارىتى توپلاشتۇرۇلغان</string>
     <string name="storage_webdav_config_url">WebDAV تور ئادرېسى</string>
     <string name="storage_webdav_config_url_helper">بۇ جايغا تولۇق تور ئادرېسىنى كىرگۈزۈشكە كاپالەتلىك قىلىڭ. مەسىلەن، Nextcloud قا نىسبەتەن، تەلەپكە لايىق تور ئادرېسى https://yourserver.com/remote.php/webdav</string>
