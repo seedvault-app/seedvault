@@ -5,8 +5,7 @@ We appreciate your efforts to responsibly disclose your findings,
 and will make every effort to acknowledge your contributions.
 
 To report a security issue,
-please send an email to `security@seedvault.app`
-or use the GitHub Security Advisory
+please use the GitHub Security Advisory
 ["Report a Vulnerability"](https://github.com/seedvault-app/seedvault/security/advisories/new) tab.
 
 The Seedvault team will send a response indicating the next steps in handling your report.
