@@ -32,12 +32,20 @@ private val log = KotlinLogging.logger {}
  * @param maxDepth in case we need to fall back to recursive propfinds, we only go that far down.
  */
 internal fun DavCollection.propfindDepthInfinity(maxDepth: Int, callback: MultiResponseCallback) {
+    var numMembers = 0
     try {
         propfind(
             depth = -1,
             reqProp = arrayOf(WebDAV.DisplayName, WebDAV.ResourceType, WebDAV.GetContentLength),
-            callback = callback,
-        )
+        ) { response, relation ->
+            if (relation != SELF) numMembers++
+            callback.onResponse(response, relation)
+        }
+        if (numMembers == 0) {
+            // Some servers (e.g. cPanel's cpdavd) return 0 members for Depth: infinity.
+            log.info { "Depth infinity returned no members, falling back to depth=1..." }
+            propfindFakeInfinity(maxDepth, callback)
+        }
     } catch (e: HttpException) {
         if (e.isUnsupportedPropfind()) {
             log.info { "Got ${e.responseExcerpt}, trying recursive depth=1 PROPFINDs..." }
