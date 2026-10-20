@@ -270,4 +270,6 @@
     <string name="restore_set_bad_decrypt">无法解密备份。\n\n当前的恢复码很可能不是用来制作备份的代码。</string>
     <string name="restore_set_button_try_again">再次尝试</string>
     <string name="restore_set_button_restart">从头开始</string>
+    <string name="settings_backup_nothing_selected_title">没什么可备份的</string>
+    <string name="settings_backup_nothing_selected_text">尚未选择要备份的内容。\n\n先打开 “备份我的应用”或 “备份我的文件”。</string>
 </resources>
