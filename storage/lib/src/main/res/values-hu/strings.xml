@@ -37,4 +37,6 @@
     <string name="check_files_text">A \"%s\" magában foglalja az alábbi fájlokat:</string>
     <string name="check_files_error">A mentési adat sérült. A fájlt nem lehet teljes mértékben visszaállítani.</string>
     <string name="snapshots_title">Elérhető fájl biztonsági mentések</string>
+    <string name="content_remove">Eltávolít</string>
+    <string name="nav_back">Navigálás vissza</string>
 </resources>

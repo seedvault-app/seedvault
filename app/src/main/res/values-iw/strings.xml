@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="settings_backup_apk_dialog_message">גיבוי מושבת של יישומון עדיין יגבה את נתוני היישומון. עם זאת, הוא לא ישוחזר אוטומטית. \n \nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
+    <string name="settings_backup_apk_dialog_message">לאחר השבתת גיבויי קובצי APK, נתוני היישומונים עדיין יגובו. עם זאת, הם לא ישוחזרו אוטומטית. \n \nיהיה עליך להתקין את כל היישומונים ידנית תוך שהאפשרות „שחזור אוטומטי” פעילה.</string>
     <string name="notification_title">הגיבוי פועל</string>
     <string name="notification_channel_title">התראת גיבוי</string>
     <string name="recovery_code_error_checksum_word">הקוד שלך שגוי. נא לאמת את כל המילים ואת מיקומן ולנסות שוב!</string>
@@ -38,10 +38,10 @@
     <string name="settings_backup_now">לגבות כעת</string>
     <string name="settings_backup_exclude_apps">החרגת יישומונים</string>
     <string name="settings_backup_status_summary">גיבוי אחרון: %1$s</string>
-    <string name="settings_backup_apk_dialog_disable">להשבית את גיבוי היישומון</string>
+    <string name="settings_backup_apk_dialog_disable">השבתת גיבוי קובצי APK</string>
     <string name="settings_backup_apk_dialog_cancel">ביטול</string>
     <string name="settings_backup_apk_dialog_title">להשבית את גיבויי ה־APK?</string>
-    <string name="settings_backup_apk_summary">לגבות את היישומונים עצמם, אחרת, רק נתוני היישומונים יגובו.</string>
+    <string name="settings_backup_apk_summary">גיבוי היישומונים עצמם, אחרת, רק נתוני היישומונים יגובו.</string>
     <string name="restore_set_empty_result">לא נמצאו גיבויים מתאימים במיקום הנתון.
 \n
 \nכנראה שמדובר בקוד שחזור שגוי או בשגיאת אחסון.</string>
@@ -84,7 +84,7 @@
     <string name="restore_installing_packages">היישומונים מותקנים מחדש</string>
     <string name="restore_app_was_stopped">לא גובה כיוון שלא נעשה בו שימוש לאחרונה</string>
     <string name="restore_app_not_yet_backed_up">עדיין לא גובה</string>
-    <string name="settings_backup_apk_title">גיבוי יישומונים</string>
+    <string name="settings_backup_apk_title">גיבוי קובצי APK</string>
     <string name="settings_auto_restore_summary_usb">לתשומת לבך: עליך לחבר את %1$s שלך לחשמל כדי שזה יפעל.</string>
     <string name="settings_auto_restore_summary">בעת התקנת יישומון מחדש, לשחזר את ההגדרות והנתונים שגובו.</string>
     <string name="settings_auto_restore_title">שחזור אוטומטי</string>
@@ -236,4 +236,9 @@
     <string name="settings_backup_file_check_title">בדיקת אמינות גיבוי</string>
     <string name="settings_backup_file_check_summary">נא לוודא שהגיבוי שלי עובד כדי לשחזר ממנו קבצים</string>
     <string name="settings_backup_metered_title">הגיבוי נעצר</string>
+    <string name="settings_backup_metered_text">הגיבוי לא ימשיך כיוון שהמכשיר שלך מחובר דרך חיבור נתונים סלולרי.\n\nאפשר להפעיל את הגיבויים דרך הרשת הסלולרית תחת „תזמון גיבוי”.</string>
+    <string name="settings_backup_nothing_selected_title">אין מה לגבות</string>
+    <string name="settings_backup_nothing_selected_text">עדיין לא בחרת שום דבר לגיבוי.\n\nיש להפעיל את „גיבוי היישומונים שלי” או „גיבוי הקבצים שלי” תחילה.</string>
+    <string name="settings_file_check_title">אימות אמינות גיבוי קבצים</string>
+    <string name="settings_file_check_text">כאן אפשר להריץ בדיקה חד פעמית כדי לאמת את גיבוי הקבצים שלך.</string>
 </resources>
