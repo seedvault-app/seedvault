@@ -189,7 +189,7 @@
     <string name="notification_space_error_title">Ανεπαρκής χώρος αντιγράφων ασφαλείας</string>
     <string name="notification_space_error_text">Ο χώρος στην τοποθεσία των αντιγράφων ασφαλείας σας εξαντλείται. Ελευθερώστε χώρο, ώστε τα αντίγραφα ασφαλείας να συνεχίσουν να εκτελούνται.</string>
     <string name="backup_system_apps">Εφαρμογές συστήματος</string>
-    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (συνιστάται)</string>
     <string name="storage_webdav_option_summary">Ενσωματωμένη άμεση πρόσβαση WebDAV</string>
     <string name="storage_webdav_config_user">Όνομα χρήστη</string>
     <string name="storage_webdav_config_pass">Κωδικός πρόσβασης</string>
@@ -236,7 +236,7 @@
     <string name="settings_app_check_title">Επαληθεύστε την ακεραιότητα της δημιουργίας αντιγράφων ασφαλείας εφαρμογών</string>
     <string name="settings_app_check_text">Κάθε διαδικασία δημιουργίας αντιγράφων ασφαλείας θα ελέγχει αυτόματα την ακεραιότητα της δημιουργίας αντιγράφων ασφαλείας. Ωστόσο, για εξοικονόμηση χρόνου, τα πραγματικά δεδομένα εφαρμογών δεν θα ληφθούν και δεν θα επαληθευτούν.</string>
     <string name="settings_app_check_button">Έλεγχος αντιγράφων ασφαλείας</string>
-    <string name="storage_round_sync_summary_prefix">Τηλεχειριστήριο RoundSync:</string>
+    <string name="storage_round_sync_summary_prefix">RoundSync Remote:</string>
     <string name="notification_init_text">Προετοιμασία υπαρχόντων δεδομένων αντιγράφων ασφαλείας για επαναχρησιμοποίηση…</string>
     <string name="notification_checking_error_title">Βρέθηκαν σφάλματα δημιουργίας αντιγράφων ασφαλείας</string>
     <string name="restore_restore_set_apps_no_size">Έχει δεδομένα χρήστη για <xliff:g example="42" id="εφαρμογές">%1$d</xliff:g> εφαρμογές</string>
@@ -251,4 +251,6 @@
     <string name="notification_pruning_channel_title">Κατάργηση ειδοποίησης παλιών αντιγράφων ασφαλείας</string>
     <string name="notification_pruning_title">Αφαίρεση παλιών αντιγράφων ασφαλείας…</string>
     <string name="notification_checking_channel_title">Έλεγχος ακεραιότητας δημιουργίας αντιγράφων ασφαλείας εφαρμογών</string>
+    <string name="settings_backup_nothing_selected_title">Δεν υπάρχει τίποτα για δημιουργία αντιγράφων ασφαλείας</string>
+    <string name="settings_backup_nothing_selected_text">Δεν έχετε επιλέξει τίποτα για δημιουργία αντιγράφων ασφαλείας.\n\nΕνεργοποιήστε πρώτα την επιλογή \"Δημιουργία αντιγράφου ασφαλείας των εφαρμογών μου\" ή \"Δημιουργία αντιγράφου ασφαλείας των αρχείων μου\".</string>
 </resources>
