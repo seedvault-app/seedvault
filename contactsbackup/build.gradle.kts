@@ -50,7 +50,11 @@ android {
     }
 
     buildTypes {
-        getByName("release").signingConfig = signingConfigs.getByName("aosp")
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("aosp")
+        }
         getByName("debug").signingConfig = signingConfigs.getByName("aosp")
     }
 }
