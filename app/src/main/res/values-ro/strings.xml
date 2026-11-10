@@ -267,4 +267,6 @@
     <string name="restore_set_button_try_again">Reîncearcă</string>
     <string name="restore_set_button_restart">Pornește de la început</string>
     <string name="notification_finalizing_text">Finalizarea copiei de rezervă…</string>
+    <string name="settings_backup_nothing_selected_title">Nimic de rezervat</string>
+    <string name="settings_backup_nothing_selected_text">Nu ai selectat nimic pentru copiere de rezervă.\n\nActivează mai întâi „Copii de rezervă pentru aplicațiile mele” sau „Copii de rezervă pentru fișierele mele”.</string>
 </resources>

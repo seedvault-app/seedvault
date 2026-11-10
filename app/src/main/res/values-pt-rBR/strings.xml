@@ -251,4 +251,6 @@
     <string name="restore_set_bad_decrypt">Não foi possível descriptografar os backups.\n\nO código de recuperação atual provavelmente não é mesmo do que o que foi usado para criar o backup.</string>
     <string name="restore_set_button_try_again">Tentar novamente</string>
     <string name="restore_set_button_restart">Iniciar do começo</string>
+    <string name="settings_backup_nothing_selected_title">Nada para fazer backup</string>
+    <string name="settings_backup_nothing_selected_text">Você não selecionou nada para fazer backup.\n\nAtive \"Fazer backup dos apps\" ou \"Fazer backup dos arquivos\" primeiro.</string>
 </resources>
