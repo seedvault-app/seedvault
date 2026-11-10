@@ -269,4 +269,6 @@
     <string name="restore_restore_set_apps"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama için kullanıcı verileri var (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
     <string name="restore_restore_set_apks"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama içerir (<xliff:g example="1 GB" id="size">%2$s</xliff:g>)</string>
     <string name="restore_restore_set_apks_no_size"><xliff:g example="42" id="apps">%1$d</xliff:g> uygulama içerir</string>
+    <string name="settings_backup_nothing_selected_title">Yedeklenecek bir şey yok</string>
+    <string name="settings_backup_nothing_selected_text">Yedeklemek için bir şey seçmediniz.\n\nÖnce \"Uygulamalarımı yedekle\" veya \"Dosyalarımı yedekle\" seçeneğini etkinleştirin.</string>
 </resources>
