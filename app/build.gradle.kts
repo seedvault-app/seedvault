@@ -48,12 +48,20 @@ android {
     }
 
     buildTypes {
-        all {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("aosp")
         }
 
-        getByName("release").signingConfig = signingConfigs.getByName("aosp")
-        getByName("debug").signingConfig = signingConfigs.getByName("aosp")
+        getByName("debug") {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("aosp")
+        }
     }
 
     compileOptions {
