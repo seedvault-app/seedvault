@@ -54,8 +54,23 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
+      # GitHub Code Scanning requires every run in a SARIF file to have a distinct category.
+      # Codacy emits one run per tool, so assign a deterministic category to each run before upload.
+      - name: Assign unique SARIF categories
+        run: |
+          jq '
+            .runs |= (
+              to_entries
+              | map(
+                  .value.automationDetails = (.value.automationDetails // {})
+                  | .value.automationDetails.id = "codacy-\(.key)"
+                  | .value
+                )
+            )
+          ' results.sarif > categorized-results.sarif
+
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: results.sarif
+          sarif_file: categorized-results.sarif
