@@ -25,15 +25,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Setup python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: 3.14
 
       - name: Run mobsfscan
-        uses: MobSF/mobsfscan@4645ea70bc093268502fe9f6df93e41bb482254a
+        uses: MobSF/mobsfscan@18cce72c077cbac1925439c3158363fd3bb361aa
         with:
           args: . --sarif --output results.sarif || true
 
