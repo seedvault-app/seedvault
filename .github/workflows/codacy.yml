@@ -57,20 +57,24 @@ jobs:
       # GitHub Code Scanning requires every run in a SARIF file to have a distinct category.
       # Codacy emits one run per tool, so assign a deterministic category to each run before upload.
       - name: Assign unique SARIF categories
+        id: prep-sarif
         run: |
           jq '
             .runs |= (
-              to_entries
+              map(select((.results // []) | length > 0))
+              | to_entries
               | map(
                   .value.automationDetails = (.value.automationDetails // {})
-                  | .value.automationDetails.id = "codacy-\(.key)"
+                  | .value.automationDetails.id = "codacy-\(.key)/"
                   | .value
                 )
             )
           ' results.sarif > categorized-results.sarif
+          echo "run_count=$(jq '.runs | length' categorized-results.sarif)" >> "$GITHUB_OUTPUT"
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
+        if: steps.prep-sarif.outputs.run_count > 0
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: categorized-results.sarif
