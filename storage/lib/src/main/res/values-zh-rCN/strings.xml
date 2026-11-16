@@ -40,4 +40,5 @@
     <string name="check_error_only_broken_snapshots">我们找到了 %1$d 个备份快照。然而，它们全都损坏了。请运行一次成功的备份，然后再试着检查。</string>
     <string name="check_files_error">备份文件损坏了。文件不会完全恢复。</string>
     <string name="content_remove">删除</string>
+    <string name="nav_back">返回</string>
 </resources>

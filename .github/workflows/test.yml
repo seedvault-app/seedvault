@@ -25,7 +25,7 @@ jobs:
         emulator_type: [ default ]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # The emulator needs KVM hardware acceleration to run at a usable speed on
       # ubuntu-latest runners.
@@ -36,7 +36,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'corretto'
           java-version: 21
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.emulator_type }}-${{ matrix.android_target }}-results
           path: |

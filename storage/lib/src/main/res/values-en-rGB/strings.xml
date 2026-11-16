@@ -39,4 +39,5 @@
     <string name="check_error_only_broken_snapshots">We found %1$d backup snapshots. However, all of them were corrupted. Please run a successful backup and then try checking again.</string>
     <string name="check_error_has_snapshots">We found %1$d backup snapshots, some of them are corrupted or have errors. Below are the backups that can (partly) be restored.</string>
     <string name="content_remove">Remove</string>
+    <string name="nav_back">Navigate back</string>
 </resources>

@@ -84,12 +84,12 @@
     <string name="settings_backup_exclude_apps">Исключить приложения</string>
     <string name="settings_backup_status_summary">Последняя резервная копия: %1$s</string>
     <string name="settings_backup">Резервное копирование приложений</string>
-    <string name="settings_backup_apk_summary">Сделайте резервную копию самих приложений. В противном случае будет выполнено резервное копирование только данных приложений.</string>
-    <string name="settings_backup_apk_title">Резервное копирование приложений</string>
+    <string name="settings_backup_apk_summary">Создание резервных копий самих приложений. Иначе будут копироваться только их данные.</string>
+    <string name="settings_backup_apk_title">Резервное копирование APK</string>
     <string name="settings_auto_restore_summary">При переустановке приложений восстановите резервные копии настроек и данных.</string>
-    <string name="settings_backup_apk_dialog_disable">Отключить резервное копирование приложений</string>
+    <string name="settings_backup_apk_dialog_disable">Отключить резервное копирование APK</string>
     <string name="settings_backup_apk_dialog_message">При отключенном резервном копировании приложений по-прежнему будут выполняться резервные копии данных приложений. Однако он не будет восстановлен автоматически. \n \nВам нужно будет установить все свои приложения вручную при включённом \"Автоматическом восстановлении\".</string>
-    <string name="settings_backup_apk_dialog_title">Действительно отключить резервное копирование приложений?</string>
+    <string name="settings_backup_apk_dialog_title">Действительно отключить резервное копирование APK?</string>
     <string name="settings_auto_restore_summary_usb">Примечание: Ваш %1$s должен быть подключен к электросети, чтобы это работало.</string>
     <string name="settings_info">Все резервные копии на вашем телефоне зашифрованы. Для восстановления из резервной копии вам понадобится код восстановления из 12 слов.</string>
     <string name="settings_backup_location_none">Ни одно</string>
@@ -134,7 +134,7 @@
     <string name="settings_backup_recovery_code">Код восстановления</string>
     <string name="settings_backup_files_title">Включая файлы и папки</string>
     <string name="settings_backup_files_summary">Ничего</string>
-    <string name="settings_backup_storage_dialog_title">Экспериментальная функция</string>
+    <string name="settings_backup_storage_dialog_title">Бета-функция</string>
     <string name="settings_backup_storage_dialog_ok">Включить в любом случае</string>
     <string name="settings_expert_title">Продвинутые настройки</string>
     <string name="restore_skip_apps">Пропустить восстановление приложений</string>
@@ -144,12 +144,12 @@
     <string name="restore_storage_in_progress_info">Ваши файлы восстанавливаются в фоновом режиме. Вы можете начать пользоваться телефоном во время выполнения этой операции.
 \n
 \nНекоторые приложения (такие, как Signal или WhatsApp) могут требовать полного восстановления файлов для корректной работы. Избегайте их запуска до окончания восстановления.</string>
-    <string name="settings_category_storage">Резервное копирование пользовательских данных (экспериментальная функция)</string>
+    <string name="settings_category_storage">Резервное копирование файлов (бета)</string>
     <string name="settings_backup_storage_title">Резервное копирование файлов</string>
     <string name="storage_check_fragment_patience">Это может занять некоторое время…</string>
     <string name="recovery_code_auth_title">Введите пароль экрана блокировки повторно</string>
     <string name="restore_storage_in_progress_title">Файлы будут восстановлены…</string>
-    <string name="settings_backup_storage_dialog_message">Резервное копирование файлов - экспериментальная функция. Не используйте для важных файлов.</string>
+    <string name="settings_backup_storage_dialog_message">Резервное копирование файлов - бета-функция. Не используйте для важных файлов.</string>
     <string name="restore_storage_choose_snapshot">Выберите бэкап для восстановления (экспериментально)</string>
     <string name="recovery_code_auth_description">Введите учетные данные вашего устройства, чтобы продолжить</string>
     <string name="notification_error_no_main_key_title">Резервные копии отключены</string>
@@ -212,4 +212,6 @@
     <string name="storage_webdav_config_malformed_url">Неверный URL-адрес WebDAV</string>
     <string name="notification_apk_not_backed_up">Сохраняем список приложений, резервное копирование которых невозможно.</string>
     <string name="storage_webdav_name">WebDAV %s</string>
+    <string name="settings_backup_app_check_title">Проверить целостность</string>
+    <string name="settings_backup_file_check_title">Проверка целостности резервной копии</string>
 </resources>

@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Android build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.android/build-cache
@@ -28,14 +28,14 @@ jobs:
           restore-keys: ${{ runner.os }}-android
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: 'corretto'
           java-version: 21
           cache: 'gradle'
 
       - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v4
+        uses: gradle/actions/wrapper-validation@v6
 
       - name: Build
         env:
@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew compileDebugAndroidTestSources check assemble ktlintCheck
 
       - name: Upload APKs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: seedvault-${{ github.sha }}-apks
           path: |
@@ -54,7 +54,7 @@ jobs:
             storage/demo/build/outputs/apk/debug/demo-debug.apk
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@v6
         if: success() || failure()
         with:
           report_paths: '**/build/test-results/**/TEST-*.xml'

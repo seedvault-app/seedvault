@@ -203,7 +203,7 @@
     <string name="storage_webdav_config_button">WebDAV bulutu kullan</string>
     <string name="storage_webdav_config_malformed_url">Geçersiz WebDAV URL\'si</string>
     <string name="storage_webdav_name">WebDAV %s</string>
-    <string name="storage_webdav_option_title">WebDAV Bulut (beta)</string>
+    <string name="storage_webdav_option_title">WebDAV Bulut (tavsiye edilen)</string>
     <string name="storage_webdav_config_url">WebDAV URL\'si</string>
     <string name="storage_webdav_config_user">Kullanıcı adı</string>
     <string name="storage_webdav_config_pass">Parola</string>

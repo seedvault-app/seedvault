@@ -40,4 +40,5 @@
     <string name="check_files_text">„%s“ zahrnuje následující soubory:</string>
     <string name="check_files_error">Data zálohy jsou poškozená. Soubor nebude plně obnoven.</string>
     <string name="content_remove">Odstranit</string>
+    <string name="nav_back">Přejít zpět</string>
 </resources>

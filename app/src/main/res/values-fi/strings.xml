@@ -99,7 +99,7 @@
     <string name="settings_backup_apk_dialog_disable">Poista sovellusten varmuuskopiointi käytöstä</string>
     <string name="settings_backup_apk_dialog_cancel">Peruuta</string>
     <string name="settings_backup_apk_dialog_message">Poistettu sovelluksen varmuuskopiointi silti varmuuskopioi sovellustiedot. Sitä ei kuitenkaan palauteta automaattisesti. \n \nSinun on asennettava kaikki sovelluksesi manuaalisesti, kun \"Automaattinen Palautus\" on päällä.</string>
-    <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten varmuuskopiointi todella käytöstä?</string>
+    <string name="settings_backup_apk_dialog_title">Poistetaanko sovellusten asennustiedostojen varmuuskopiointi todella käytöstä?</string>
     <string name="settings_backup_apk_summary">Varmuuskopioi itse sovellukset. Muuten vain sovellustiedot varmuuskopioidaan.</string>
     <string name="settings_backup_apk_title">APK-tiedostojen varmuuskopiointi</string>
     <string name="settings_auto_restore_summary_usb">Huomaa: %1$s tarvitsee olla kytkettynä tämän toimiakseen.</string>

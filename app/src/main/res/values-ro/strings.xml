@@ -166,7 +166,7 @@
     <string name="restore_installing_tap_to_install">Atinge pentru a instala</string>
     <string name="backup_section_user">Aplicații</string>
     <string name="backup_sms">Mesaje text SMS</string>
-    <string name="storage_webdav_option_title">WebDAV Cloud (beta)</string>
+    <string name="storage_webdav_option_title">WebDAV Cloud (recomandat)</string>
     <string name="storage_webdav_option_summary">Acces direct WebDAV integrat</string>
     <string name="storage_webdav_config_url">URL WebDAV</string>
     <string name="restore_installing_error_message">Datele pot fi restaurate numai dacă este instalată o aplicație.
