@@ -39,12 +39,12 @@
     <string name="settings_backup_exclude_apps">Appok kizárása</string>
     <string name="settings_backup_status_summary">Utolsó mentés: %1$s</string>
     <string name="settings_backup_status_title">Biztonsági mentés állapota</string>
-    <string name="settings_backup_apk_dialog_disable">App biztonsági mentés kikapcsolása</string>
+    <string name="settings_backup_apk_dialog_disable">APK biztonsági mentés kikapcsolása</string>
     <string name="settings_backup_apk_dialog_cancel">Mégse</string>
-    <string name="settings_backup_apk_dialog_message">Az app biztonsági mentés kikapcsolása továbbra is menti az adatokat. Azonban nem kerül visszaállításra automatikusan.\n\nMinden appot kézzel kell telepíteni ha az \"Automatikus Visszaállítás\" be van kapcsolva.</string>
-    <string name="settings_backup_apk_dialog_title">Biztosan ki kívánja kapcsolni az app biztonsági mentést?</string>
+    <string name="settings_backup_apk_dialog_message">Az APK biztonsági mentés kikapcsolását követően is mentésre kerülnek az app adatok. Azonban nem kerül visszaállításra automatikusan.\n\nMinden appot kézzel kell telepíteni ha az \"Automatikus Visszaállítás\" be van kapcsolva.</string>
+    <string name="settings_backup_apk_dialog_title">Biztosan ki kívánja kapcsolni az APK biztonsági mentést?</string>
     <string name="settings_backup_apk_summary">Mentse el magát az appot is. Máskülönben csak az app adatok kerülnek mentésre.</string>
-    <string name="settings_backup_apk_title">App biztonsági mentés</string>
+    <string name="settings_backup_apk_title">APK biztonsági mentés</string>
     <string name="settings_auto_restore_summary_usb">Megjegyzés: A %1$s be kell legyen dugva, hogy ez működjön.</string>
     <string name="settings_auto_restore_summary">Egy app újratelepítése esetén visszaállítja a korábbi beállításokat és adatokat.</string>
     <string name="settings_auto_restore_title">Automatikus visszaállítás</string>
@@ -97,7 +97,7 @@
     <string name="settings_backup_status_next_backup_estimate">Következő mentés (becslés): %1$s</string>
     <string name="settings_backup_status_next_backup_usb">A mentés akkor kezdődik meg, amint bedugja az USB meghajtót</string>
     <string name="settings_backup_scheduling_title">Betervezett biztonsági mentés</string>
-    <string name="settings_category_storage">Tárhely biztonsági mentés (béta)</string>
+    <string name="settings_category_storage">Fájl biztonsági mentés (béta)</string>
     <string name="settings_backup_storage_title">Fájljaim biztonsági mentése</string>
     <string name="settings_backup_files_title">Beleértve a fájlokat és mappákat</string>
     <string name="settings_backup_files_summary">Nincs</string>
@@ -134,7 +134,7 @@
     <string name="settings_scheduling_charging_title">Csak töltés közben mentsen</string>
     <string name="settings_expert_logcat_summary">A napló alapján fejlesztők diagnosztizálhatják a hibákat.\n\nFigyelem: A napló tartalmazhat személyes adatokat. Emiatt tekintse át küldés előtt, és törölje a megosztást követően!</string>
     <string name="storage_check_fragment_patience">Ez eltarthat egy darabig…</string>
-    <string name="storage_webdav_option_title">WebDAV Felhő (béta)</string>
+    <string name="storage_webdav_option_title">WebDAV Felhő (ajánlott)</string>
     <string name="storage_webdav_option_summary">Integrált direkt WebDAV hozzáférés</string>
     <string name="storage_webdav_config_url">WebDAV Hivatkozás</string>
     <string name="recovery_code_verification_generate_new">Új kód generálása</string>
@@ -246,4 +246,11 @@
     <string name="storage_internal_warning_choose_other">Másik választása</string>
     <string name="storage_internal_warning_use_anyway">Használja mindenképp</string>
     <string name="backup_sms">SMS szöveges üzenetek</string>
+    <string name="settings_backup_nothing_selected_title">Nincs mit menteni</string>
+    <string name="settings_backup_nothing_selected_text">Nem jelölt ki semmit mentésre.\n\nKapcsolja be a \"App-jaim mentése\" vagy \"Fájljaim mentése\" opciókat először.</string>
+    <string name="notification_finalizing_text">Biztonsági mentés véglegesítése…</string>
+    <string name="notification_pruning_blobs_title">Régi biztonsági mentés adatainak eltávolítása…</string>
+    <string name="restore_set_bad_decrypt">A mentések feloldása sikertelen.\n\nA megadott visszaállító kód feltehetően nem egyezik meg a mentéskor használt kóddal.</string>
+    <string name="restore_set_button_try_again">Próbálja meg újra</string>
+    <string name="restore_set_button_restart">Kezdés a legelejéről</string>
 </resources>

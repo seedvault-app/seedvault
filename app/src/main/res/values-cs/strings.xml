@@ -268,4 +268,6 @@
     <string name="restore_set_button_restart">Začít od začátku</string>
     <string name="restore_set_bad_decrypt">Nepodařilo se dešifrovat zálohy:\n\nAktuální obnovovací kód nejspíše není totožný s tím, který byl použit pro vytvoření zálohy.</string>
     <string name="restore_set_button_try_again">Zkusit znovu</string>
+    <string name="settings_backup_nothing_selected_title">Nic k zálohování</string>
+    <string name="settings_backup_nothing_selected_text">Nevybrali jste nic k zálohování.\n\nNejprve zapněte „Zálohovat moje aplikace“ nebo „Zálohovat moje soubory“.</string>
 </resources>

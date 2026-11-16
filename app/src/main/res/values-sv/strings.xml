@@ -269,4 +269,6 @@
     <string name="storage_webdav_option_summary">WebDAV med integrerad direkttillgång</string>
     <string name="notification_restore_channel_title">Återställningsavisering</string>
     <string name="storage_round_sync_summary_prefix">RoundSync-fjärrplats:</string>
+    <string name="settings_backup_nothing_selected_title">Inget att säkerhetskopiera</string>
+    <string name="settings_backup_nothing_selected_text">Du har inte valt något att säkerhetskopiera.\n\nAktivera ”Säkerhetskopiera mina appar” eller ”Säkerhetskopiera mina filer” först.</string>
 </resources>
