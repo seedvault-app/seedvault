@@ -29,6 +29,8 @@ android_library {
         // WebDAV
         "seedvault-lib-dav4jvm",
         "seedvault-lib-okhttp",
+        "seedvault-lib-ktor-http",
+        "seedvault-lib-ktor-io",
         "okio-lib",
     ],
     manifest: "src/main/AndroidManifest.xml",
