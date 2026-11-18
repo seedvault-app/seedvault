@@ -95,6 +95,7 @@ slf4jSimple = "2.0.18"
 hamcrest = "3.0"
 xpp3 = "1.1.6"
 bitcoinjCore = "0.17.1"
+mockwebserver = "4.12.0"
 
 [libraries]
 # Kotlin standard dependencies
@@ -156,6 +157,7 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jSimple" 
 bitcoinj-core = { module = "org.bitcoinj:bitcoinj-core", version.ref = "bitcoinjCore" }
 xpp3 = { module = "org.ogce:xpp3", version.ref = "xpp3" }
 zstd-jni = { module = "com.github.luben:zstd-jni", version.ref = "zstdJni" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk8", "kotlin-stdlib-common"]

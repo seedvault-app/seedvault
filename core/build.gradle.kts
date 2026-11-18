@@ -65,4 +65,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.xpp3)
     testImplementation(libs.slf4j.simple)
+    testImplementation(libs.mockwebserver) {
+        // okhttp 4.12.0 is already bundled as a local jar; avoid duplicating it.
+        exclude(group = "com.squareup.okhttp3", module = "okhttp")
+    }
 }
