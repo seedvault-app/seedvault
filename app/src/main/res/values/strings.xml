@@ -116,7 +116,7 @@
     <!-- Recovery Code -->
     <string name="recovery_code_title">Recovery code</string>
     <string name="recovery_code_12_word_intro">You need your 12-word recovery code to restore backed up data.</string>
-    <string name="recovery_code_write_it_down">Write it down on paper now!</string>
+    <string name="recovery_code_write_it_down">Write it down on paper or save to password manager now!</string>
     <string name="recovery_code_confirm_button">Confirm code</string>
     <string name="recovery_code_confirm_intro">Enter your 12-word recovery code to ensure that it will work when you need it.</string>
     <string name="recovery_code_input_intro">Enter your 12-word recovery code that you wrote down when setting up backups.</string>
@@ -147,6 +147,24 @@
     <string name="recovery_code_recreated">New recovery code has been created successfully. Exiting…</string>
     <string name="recovery_code_auth_title">Re-enter your screen lock</string>
     <string name="recovery_code_auth_description">Enter your device credentials to continue</string>
+
+    <!-- Saving the recovery code to a password manager -->
+    <string name="recovery_code_save_to_password_manager">Save to password manager</string>
+    <string name="recovery_code_password_manager_dialog_title">Save to password manager?</string>
+    <string name="recovery_code_password_manager_trust_body">Only store your recovery code in a password manager that you trust is secure. Anyone who has your recovery code can restore your backups.</string>
+    <string name="recovery_code_password_manager_google_body">Google Password Manager is your default password manager. It is recommended to turn on-device encryption on first in Google Password Manager, so Google can\'t read your recovery code.</string>
+    <string name="recovery_code_password_manager_learn_more">Learn more</string>
+    <string name="recovery_code_password_manager_open_google">Open Google Password Manager</string>
+    <string name="recovery_code_password_manager_continue_anyway">Continue anyway</string>
+    <string name="recovery_code_password_manager_continue">Continue</string>
+    <string name="recovery_code_password_manager_saved">Saved to your password manager</string>
+    <!-- Name of the entry in the password manager. %1$s is the app name, e.g. Seedvault -->
+    <string name="recovery_code_password_manager_id">%1$s recovery code</string>
+    <string name="recovery_code_password_manager_cant_save_title">Can\'t save to password manager</string>
+    <string name="recovery_code_password_manager_missing">You don\'t have a password manager set up, or the one you\'re using isn\'t supported.</string>
+    <!-- %1$s is the app name, e.g. Seedvault -->
+    <string name="recovery_code_password_manager_prompt_disabled">You previously chose not to save passwords for %1$s. Remove %1$s from your password manager\'s declined apps and try again.</string>
+    <string name="recovery_code_password_manager_go_to_settings">Go to settings</string>
 
     <!-- Notification -->
     <string name="notification_channel_title">Backup notification</string>

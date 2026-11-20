@@ -152,6 +152,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.credentials)
     implementation(libs.google.material)
 
     implementation(libs.google.protobuf.javalite)

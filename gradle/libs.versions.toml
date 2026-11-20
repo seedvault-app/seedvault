@@ -76,6 +76,8 @@ androidx-constraintlayout = { strictly = "2.2.1" } # 2.3.0-alpha01 in AOSP but i
 androidx-documentfile = { strictly = "1.1.0-rc01" }
 # https://android.googlesource.com/platform/prebuilts/sdk/+/android-17.0.0_r1/current/androidx/m2repository/androidx/work/work-runtime-ktx?autodive=0
 androidx-work-runtime = { strictly = "2.11.2" } # 2.12.0-alpha01 in AOSP but isn't released
+# https://android.googlesource.com/platform/prebuilts/sdk/+/android-17.0.0_r1/current/androidx/m2repository/androidx/credentials/credentials?autodive=0
+androidx-credentials = { strictly = "1.7.0-alpha01" }
 
 # https://android.googlesource.com/platform/external/okio/+/refs/tags/android-17.0.0_r1/CHANGELOG.md
 squareup-okio = { strictly = "3.10.2" }
@@ -126,6 +128,7 @@ androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-lived
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-documentfile = { module = "androidx.documentfile:documentfile", version.ref = "androidx-documentfile" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work-runtime" }
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "androidx-credentials" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
 squareup-okio = { module= "com.squareup.okio:okio", version.ref = "squareup-okio" }
