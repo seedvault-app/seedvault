@@ -6,4 +6,7 @@
 <lint>
     <issue id="MissingTranslation" severity="ignore" />
     <issue id="ExtraTranslation" severity="ignore" />
+    <!-- Digital Asset Links tie an app's saved passwords to a website. The recovery code
+         is saved for this app only and Seedvault has no website, so none are needed. -->
+    <issue id="CredManMissingDal" severity="ignore" />
 </lint>

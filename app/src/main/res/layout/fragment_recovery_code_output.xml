@@ -76,7 +76,7 @@
         android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/confirmCodeButton"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsTop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -84,6 +84,27 @@
         app:spanCount="2"
         tools:itemCount="12"
         tools:listitem="@layout/list_item_recovery_code_output" />
+
+    <!-- The word list ends above whichever button is taller, e.g. when a long label wraps -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/buttonsTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="savePasswordManagerButton,confirmCodeButton" />
+
+    <Button
+        android:id="@+id/savePasswordManagerButton"
+        style="@style/SudSecondaryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="@string/recovery_code_save_to_password_manager"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/confirmCodeButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/confirmCodeButton"
@@ -93,7 +114,6 @@
         android:layout_marginEnd="40dp"
         android:text="@string/recovery_code_confirm_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordList" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
